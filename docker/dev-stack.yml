@@ -1,0 +1,24 @@
+# A dockerized stack for development
+# execute with `docker-compose -f dev-stack.yml up`
+version: '3.3'
+services:
+  db:
+    image: mysql:5.6.39
+    volumes:
+      - osmt_sql_db:/var/lib/mysql:rw
+    environment:
+      - "MYSQL_PASSWORD=password"
+      - "MYSQL_HOST=0.0.0.0"
+      - "MYSQL_ROOT_PASSWORD=password"
+      - "MYSQL_USER=user"
+    ports:
+      - 3306:3306
+    networks:
+      - osmt
+
+networks:
+  osmt:
+    driver: bridge
+
+volumes:
+  osmt_sql_db:

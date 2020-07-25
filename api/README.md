@@ -18,3 +18,11 @@ This module represents the Spring Boot backend application.
   * For `Main class`, use `edu.wgu.osmt.Application`
   * Set `VM options` to `-Dspring.profiles.active=dev`
   * Click 'ok'
+  
+### Spring Boot configuration
+  This project makes use of configuring Spring boot via property files. These are located at `./api/src/main/resources/config/`. A `dev` profile exists for 
+  local development, and can be applied by passing the `-Dspring.profiles.active=dev` argument on launch. 
+  
+### Database migrations
+  This project is configure to use [FlywayDb](https://flywaydb.org/). SQL Migrations can be placed in `./api/src/main/resources/db/migration/`.
+  Scripts in this folder will be automatically processed when the app is run with the appropriate `application.properties` settings in `spring.flyway.*` 

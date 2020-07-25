@@ -1,6 +1,8 @@
 package edu.wgu.osmt.richskill
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -18,9 +20,9 @@ class RichSkillApi @Autowired constructor(val richSkillRepository: RichSkillRepo
 
     // TODO remove once testing framework is implemented
     @GetMapping("/insert-random")
-    suspend fun insertRandom(): String{
+    suspend fun insertRandom(@AuthenticationPrincipal user: OAuth2User?): String{
         val title = UUID.randomUUID().toString()
-        val result = richSkillRepository.insert(RichSkillDescriptor(title, "a randomly inserted skill", null))
+        val result = richSkillRepository.insert(RichSkillDescriptor(title, "a randomly inserted skill", null), user)
         return "<html>" +
                 "<body>" +
                 "<p>inserted ${result.toString()}</p>" +

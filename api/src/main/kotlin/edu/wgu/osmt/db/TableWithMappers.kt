@@ -8,5 +8,5 @@ abstract class TableWithMappers<T>(name: String): Table(name){
     val id = long("id").autoIncrement().primaryKey()
 
     abstract fun fromRow(t: ResultRow): T
-    abstract fun toRow(it: UpdateBuilder<Number>, t: T)
+    abstract fun toRow(updateBuilder: UpdateBuilder<Number>, t: T)
 }

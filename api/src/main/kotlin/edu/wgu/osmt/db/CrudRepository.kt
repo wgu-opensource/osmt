@@ -6,6 +6,8 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.transaction.annotation.Transactional
 
 interface CrudRepository<T> where T : DatabaseData<T> {
@@ -20,7 +22,8 @@ interface CrudRepository<T> where T : DatabaseData<T> {
     }
 
     @Transactional
-    suspend fun insert(t: T): T = newSuspendedTransaction() {
+    suspend fun insert(t: T, user: OAuth2User? = null): T = newSuspendedTransaction() {
+        println(user.toString())
         val id = table.insert{
             toRow(it, t)
         } get table.id

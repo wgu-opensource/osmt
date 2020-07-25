@@ -18,9 +18,9 @@ class RichSkillDescriptorTable: TableWithMappers<RichSkillDescriptor>("RichSkill
             r[id]
     )
 
-    override fun toRow(it: UpdateBuilder<Number>, t: RichSkillDescriptor){
-        if (t.id != null) it[id] = t.id
-        it[title] = t.title
-        it[description] = t.description
+    override fun toRow(updateBuilder: UpdateBuilder<Number>, t: RichSkillDescriptor){
+        t.id?.let{updateBuilder[id] = it}
+        updateBuilder[title] = t.title
+        updateBuilder[description] = t.description
     }
 }

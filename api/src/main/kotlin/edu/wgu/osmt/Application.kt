@@ -21,39 +21,39 @@ import org.springframework.web.reactive.config.EnableWebFlux
 @EnableWebFlux
 class Application {
 
-	@Autowired
-	private lateinit var appConfig: AppConfig
+    @Autowired
+    private lateinit var appConfig: AppConfig
 
-	@Autowired
-	private lateinit var flywayManager: FlywayManager
+    @Autowired
+    private lateinit var flywayManager: FlywayManager
 
-	@Autowired
-	private lateinit var esRichSkillRepository: EsRichSkillRepository
+    @Autowired
+    private lateinit var esRichSkillRepository: EsRichSkillRepository
 
-	@Autowired
-	private lateinit var tables: List<TableWithMappers<*,*>>
+    @Autowired
+    private lateinit var tables: List<TableWithMappers<*, *>>
 
-	@Bean
-	fun commandLineRunner(): CommandLineRunner {
-		return CommandLineRunner {
-			initializeTables()
+    @Bean
+    fun commandLineRunner(): CommandLineRunner {
+        return CommandLineRunner {
+            initializeTables()
 
-			// TODO this works for happy path migrations, additional logic may be necessary for other flows
-			flywayManager.flyway.migrate()
-		}
-	}
+            // TODO this works for happy path migrations, additional logic may be necessary for other flows
+            flywayManager.flyway.migrate()
+        }
+    }
 
-	fun initializeTables() {
-		runBlocking {
-			if (appConfig.dbConfig.createTablesAndColumnsIfMissing) {
-				tables.forEach { table ->
-					transaction { SchemaUtils.createMissingTablesAndColumns(table) }
-				}
-			}
-		}
-	}
+    fun initializeTables() {
+        runBlocking {
+            if (appConfig.dbConfig.createTablesAndColumnsIfMissing) {
+                tables.forEach { table ->
+                    transaction { SchemaUtils.createMissingTablesAndColumns(table) }
+                }
+            }
+        }
+    }
 }
 
 fun main(args: Array<String>) {
-	runApplication<Application>(*args)
+    runApplication<Application>(*args)
 }

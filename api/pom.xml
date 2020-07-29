@@ -29,6 +29,7 @@
 		<exposed.version>0.24.1</exposed.version>
 		<flywaydb.version>6.5.1</flywaydb.version>
 		<okta.version>1.3.0</okta.version>
+		<kotlin.code.style>official</kotlin.code.style>
 	</properties>
 
 	<dependencies>

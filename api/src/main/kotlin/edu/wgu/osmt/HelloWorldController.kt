@@ -19,10 +19,10 @@ class HelloWorldController {
         return "<html><body>" +
                 "<p>Hello, world!</p>" +
 
-                "<p>${user?.toString() ?: "No user, maybe you should login? <a href=\"/login\">login</a>" }</p>" +
+                "<p>${user?.toString() ?: "No user, maybe you should login? <a href=\"/login\">login</a>"}</p>" +
                 "<p>PROTECTED - <a href=\"/rich-skill/insert-random\">Insert a random Rich Skill</a></p>" +
                 "<p>PUBLIC - <a href=\"/rich-skill\">View all Rich Skills</a></p>" +
-                "${user?.let{"<a href=\"/logout\">logout</a> "} ?: "" } " +
+                "${user?.let { "<a href=\"/logout\">logout</a> " } ?: ""} " +
                 "</body></html>"
     }
 }

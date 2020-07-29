@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.`java-time`.datetime
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 
-abstract class TableWithMappers<T: DatabaseData<T>, in UpdateObjectType: UpdateObject> (name: String) : Table(name){
+abstract class TableWithMappers<T : DatabaseData<T>, in UpdateObjectType : UpdateObject>(name: String) : Table(name) {
     val id = long("id").autoIncrement().primaryKey()
     val creationDate = datetime("creationDate")
 
@@ -14,9 +14,9 @@ abstract class TableWithMappers<T: DatabaseData<T>, in UpdateObjectType: UpdateO
 
     abstract fun toRowFromUpdateObject(updateBuilder: UpdateBuilder<Number>, updateObject: UpdateObjectType)
 
-    open fun toRowFromT(updateBuilder: UpdateBuilder<Number>, t: T){
+    open fun toRowFromT(updateBuilder: UpdateBuilder<Number>, t: T) {
         // deal with id and metadata
-        t.id?.let{updateBuilder[id] = it}
+        t.id?.let { updateBuilder[id] = it }
         updateBuilder[creationDate] = t.creationDate
     }
 }

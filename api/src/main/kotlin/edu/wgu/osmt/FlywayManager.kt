@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class FlywayManager @Autowired constructor(dbConfig: DbConfig, flyConfig: FlyConfig){
+class FlywayManager @Autowired constructor(dbConfig: DbConfig, flyConfig: FlyConfig) {
 
     val flyway = Flyway.configure()
-            .dataSource(dbConfig.url, dbConfig.username, dbConfig.password)
-            .createSchemas(flyConfig.enabled)
-            .baselineOnMigrate(flyConfig.baselineOnMigrate)
-            .load()
+        .dataSource(dbConfig.url, dbConfig.username, dbConfig.password)
+        .createSchemas(flyConfig.enabled)
+        .baselineOnMigrate(flyConfig.baselineOnMigrate)
+        .load()
 }

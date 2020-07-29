@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono
 
 //TODO not sure why this is needed
 @Component
-class AuthenticationManager : ReactiveAuthenticationManager{
+class AuthenticationManager : ReactiveAuthenticationManager {
 
     @Override
     override fun authenticate(authentication: Authentication): Mono<Authentication> {

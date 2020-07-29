@@ -10,7 +10,7 @@ import java.time.ZoneOffset
 
 
 @Service
-class RichSkillDescriptorTable: TableWithMappers<RichSkillDescriptor, RsdUpdateObject>("RichSkillDescriptor") {
+class RichSkillDescriptorTable : TableWithMappers<RichSkillDescriptor, RsdUpdateObject>("RichSkillDescriptor") {
 
     val title = text("title")
     val description = text("description")
@@ -18,20 +18,20 @@ class RichSkillDescriptorTable: TableWithMappers<RichSkillDescriptor, RsdUpdateO
     val updateDate = datetime("updateDate")
 
     override fun fromRow(t: ResultRow): RichSkillDescriptor = RichSkillDescriptor(
-            title = t[title],
-            description = t[description],
-            id = t[id],
-            creationDate = t[creationDate],
-            updateDate = t[updateDate],
-            nullableField = t[nullableField]
+        title = t[title],
+        description = t[description],
+        id = t[id],
+        creationDate = t[creationDate],
+        updateDate = t[updateDate],
+        nullableField = t[nullableField]
     )
 
-    override fun toRowFromUpdateObject(updateBuilder: UpdateBuilder<Number>, updateObject: RsdUpdateObject){
-        updateObject.title?.let{updateBuilder[title] = it}
+    override fun toRowFromUpdateObject(updateBuilder: UpdateBuilder<Number>, updateObject: RsdUpdateObject) {
+        updateObject.title?.let { updateBuilder[title] = it }
         updateBuilder[updateDate] = LocalDateTime.now(ZoneOffset.UTC)
     }
 
-    override fun toRowFromT(updateBuilder: UpdateBuilder<Number>, t: RichSkillDescriptor){
+    override fun toRowFromT(updateBuilder: UpdateBuilder<Number>, t: RichSkillDescriptor) {
         super<TableWithMappers>.toRowFromT(updateBuilder, t)
         updateBuilder[updateDate] = LocalDateTime.now(ZoneOffset.UTC)
         updateBuilder[title] = t.title

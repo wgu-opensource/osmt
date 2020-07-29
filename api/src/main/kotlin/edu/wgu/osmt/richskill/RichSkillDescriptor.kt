@@ -10,31 +10,38 @@ import java.time.ZoneOffset
 
 @Document(indexName = "richskillrepository", createIndex = true)
 data class RichSkillDescriptor(
-        override val id: Long?,
-        val title: String,
-        val description: String,
-        val nullableField: String? = null,
-        override val creationDate: LocalDateTime,
-        override val updateDate:LocalDateTime): DatabaseData<RichSkillDescriptor>(), HasUpdateDate{
+    override val id: Long?,
+    val title: String,
+    val description: String,
+    val nullableField: String? = null,
+    override val creationDate: LocalDateTime,
+    override val updateDate: LocalDateTime
+) : DatabaseData<RichSkillDescriptor>(), HasUpdateDate {
 
     override fun withId(id: Long): RichSkillDescriptor {
         return copy(id = id)
     }
 
     companion object {
-        fun create(title: String, description: String): RichSkillDescriptor{
+        fun create(title: String, description: String): RichSkillDescriptor {
             val now = LocalDateTime.now(ZoneOffset.UTC)
-            return RichSkillDescriptor(id = null, title = title, description = description, creationDate = now, updateDate = now)
+            return RichSkillDescriptor(
+                id = null,
+                title = title,
+                description = description,
+                creationDate = now,
+                updateDate = now
+            )
         }
     }
 }
 
 
 data class RsdUpdateObject(
-        override val id: Long,
-        val title: String?,
-        val description: String?,
-        val nullableField: NullableFieldUpdate<String>?
-): UpdateObject
+    override val id: Long,
+    val title: String?,
+    val description: String?,
+    val nullableField: NullableFieldUpdate<String>?
+) : UpdateObject
 
 

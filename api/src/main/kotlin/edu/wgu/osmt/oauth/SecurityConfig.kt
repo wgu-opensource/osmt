@@ -15,11 +15,11 @@ class SecurityConfig {
     lateinit var authenticationManager: AuthenticationManager
 
     @Bean
-    fun springSecurityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain{
+    fun springSecurityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         http.authorizeExchange()
-                .pathMatchers("/rich-skill/**").authenticated()
-                .pathMatchers("/", "/rich-skill").permitAll()
-                .and().oauth2Login()
+            .pathMatchers("/rich-skill/**").authenticated()
+            .pathMatchers("/", "/rich-skill").permitAll()
+            .and().oauth2Login()
 
         return http.build()
     }

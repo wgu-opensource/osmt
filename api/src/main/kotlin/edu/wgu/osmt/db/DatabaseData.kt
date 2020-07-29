@@ -2,7 +2,7 @@ package edu.wgu.osmt.db
 
 import java.time.LocalDateTime
 
-interface HasUpdateDate{
+interface HasUpdateDate {
     val updateDate: LocalDateTime
 }
 

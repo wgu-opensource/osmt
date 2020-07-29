@@ -26,3 +26,7 @@ This module represents the Spring Boot backend application.
 ### Database migrations
   This project is configure to use [FlywayDb](https://flywaydb.org/). SQL Migrations can be placed in `./api/src/main/resources/db/migration/`.
   Scripts in this folder will be automatically processed when the app is run with the appropriate `application.properties` settings in `spring.flyway.*` 
+
+
+### Code style
+To automatically apply the official Kotlin code style, Install the IntelliJ plugin `Save Actions`. Configure `Save Actions` in preferences to `Reformat file` on save.    

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-class AuditLogRepository @Autowired constructor(override val table: AuditLogTable): BaseRepository<AuditLog>, HasInsert<AuditLog>{}
+class AuditLogRepository @Autowired constructor(override val table: AuditLogTable) : BaseRepository<AuditLog>,
+    HasInsert<AuditLog> {}

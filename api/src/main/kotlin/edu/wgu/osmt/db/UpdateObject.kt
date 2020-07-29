@@ -1,5 +1,5 @@
 package edu.wgu.osmt.db
 
-interface UpdateObject{
+interface UpdateObject {
     val id: Long
 }

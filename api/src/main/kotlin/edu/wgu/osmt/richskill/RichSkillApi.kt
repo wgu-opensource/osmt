@@ -15,7 +15,11 @@ import java.util.*
 @Service
 @RestController
 @RequestMapping("/rich-skill")
-class RichSkillApi @Autowired constructor(val richSkillRepository: RichSkillRepository, val esRichSkillRepository: EsRichSkillRepository, val auditLogRepository: AuditLogRepository){
+class RichSkillApi @Autowired constructor(
+    val richSkillRepository: RichSkillRepository,
+    val esRichSkillRepository: EsRichSkillRepository,
+    val auditLogRepository: AuditLogRepository
+) {
 
 
     @GetMapping()
@@ -23,10 +27,10 @@ class RichSkillApi @Autowired constructor(val richSkillRepository: RichSkillRepo
 
     // TODO remove once testing framework is implemented
     @GetMapping("/insert-random")
-    suspend fun insertRandom(@AuthenticationPrincipal user: OAuth2User?): String{
+    suspend fun insertRandom(@AuthenticationPrincipal user: OAuth2User?): String {
         val title = UUID.randomUUID().toString()
         val result = richSkillRepository.insert(RichSkillDescriptor.create(title, "a randomly inserted skill"))
-        val auditLogResult =  auditLogRepository.insert(AuditLog.fromRichSkillDescriptorInsert(result, user!!))
+        val auditLogResult = auditLogRepository.insert(AuditLog.fromRichSkillDescriptorInsert(result, user!!))
         esRichSkillRepository.save(result)
         return "<html>" +
                 "<body>" +

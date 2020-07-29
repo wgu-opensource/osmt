@@ -2,14 +2,11 @@ package edu.wgu.osmt
 
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.TableWithMappers
-import edu.wgu.osmt.elasticsearch.ElasticsearchService
-import edu.wgu.osmt.richskill.RichSkillDescriptorTable
+import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import kotlinx.coroutines.runBlocking
-import org.elasticsearch.client.RestHighLevelClient
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
@@ -31,10 +28,10 @@ class Application {
 	private lateinit var flywayManager: FlywayManager
 
 	@Autowired
-	private lateinit var elasticsearchService: ElasticsearchService
+	private lateinit var esRichSkillRepository: EsRichSkillRepository
 
 	@Autowired
-	private lateinit var tables: List<TableWithMappers<*>>
+	private lateinit var tables: List<TableWithMappers<*,*>>
 
 	@Bean
 	fun commandLineRunner(): CommandLineRunner {
@@ -43,9 +40,6 @@ class Application {
 
 			// TODO this works for happy path migrations, additional logic may be necessary for other flows
 			flywayManager.flyway.migrate()
-
-			elasticsearchService.findAll()
-
 		}
 	}
 
@@ -57,8 +51,6 @@ class Application {
 				}
 			}
 		}
-
-
 	}
 }
 

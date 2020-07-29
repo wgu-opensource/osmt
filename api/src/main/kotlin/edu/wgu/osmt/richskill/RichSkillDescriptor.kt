@@ -1,10 +1,40 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.db.DatabaseData
+import edu.wgu.osmt.db.HasUpdateDate
+import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.db.UpdateObject
+import org.springframework.data.elasticsearch.annotations.Document
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
-data class RichSkillDescriptor(val title: String, val description: String, override val id: Long?): DatabaseData<RichSkillDescriptor>(){
+@Document(indexName = "richskillrepository", createIndex = true)
+data class RichSkillDescriptor(
+        override val id: Long?,
+        val title: String,
+        val description: String,
+        val nullableField: String? = null,
+        override val creationDate: LocalDateTime,
+        override val updateDate:LocalDateTime): DatabaseData<RichSkillDescriptor>(), HasUpdateDate{
 
     override fun withId(id: Long): RichSkillDescriptor {
         return copy(id = id)
     }
+
+    companion object {
+        fun create(title: String, description: String): RichSkillDescriptor{
+            val now = LocalDateTime.now(ZoneOffset.UTC)
+            return RichSkillDescriptor(id = null, title = title, description = description, creationDate = now, updateDate = now)
+        }
+    }
 }
+
+
+data class RsdUpdateObject(
+        override val id: Long,
+        val title: String?,
+        val description: String?,
+        val nullableField: NullableFieldUpdate<String>?
+): UpdateObject
+
+

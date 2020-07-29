@@ -1,5 +1,8 @@
 package edu.wgu.osmt.richskill
 
+import edu.wgu.osmt.auditlog.AuditLog
+import edu.wgu.osmt.auditlog.AuditLogRepository
+import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.user.OAuth2User
@@ -12,7 +15,7 @@ import java.util.*
 @Service
 @RestController
 @RequestMapping("/rich-skill")
-class RichSkillApi @Autowired constructor(val richSkillRepository: RichSkillRepository){
+class RichSkillApi @Autowired constructor(val richSkillRepository: RichSkillRepository, val esRichSkillRepository: EsRichSkillRepository, val auditLogRepository: AuditLogRepository){
 
 
     @GetMapping()
@@ -22,7 +25,9 @@ class RichSkillApi @Autowired constructor(val richSkillRepository: RichSkillRepo
     @GetMapping("/insert-random")
     suspend fun insertRandom(@AuthenticationPrincipal user: OAuth2User?): String{
         val title = UUID.randomUUID().toString()
-        val result = richSkillRepository.insert(RichSkillDescriptor(title, "a randomly inserted skill", null), user)
+        val result = richSkillRepository.insert(RichSkillDescriptor.create(title, "a randomly inserted skill"))
+        val auditLogResult =  auditLogRepository.insert(AuditLog.fromRichSkillDescriptorInsert(result, user!!))
+        esRichSkillRepository.save(result)
         return "<html>" +
                 "<body>" +
                 "<p>inserted ${result.toString()}</p>" +

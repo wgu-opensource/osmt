@@ -1,0 +1,131 @@
+openapi: 3.0.0
+info:
+  version: 0.9.0
+  title: OSMT API
+  description: Draft API for the Open Skills Management Toolset
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/coffindragger/OSMT/1.0.0
+security:
+  - bearerAuth: []
+  
+paths:
+  /skills:
+    get:
+      summary: Get all skills
+      description: Return all skills in the library
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Skill'
+            text/csv:
+              schema:
+                type: string
+                example: >-
+                  Foo,Bar,Baz
+
+                  1,2,3
+
+                  2,3,3
+      tags:
+        - Skills
+  /skills/{uuid}:
+    parameters:
+      - name: uuid
+        in: path
+        description: uuid of skill
+        required: true
+        schema:
+          type: string
+    get: 
+      summary: Get a Skill 
+      description: >-
+        Return the full information about a Rich Skill Descriptor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Skill'
+      tags:
+        - Skills
+  /skills/{uuid}/update:
+    post:
+      summary: Update a Skill
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: One or more fields did not validate
+      tags:
+        - Skills
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Skill:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+          readOnly: true
+        type:
+          type: string
+          readOnly: true
+          description: \"RichSkillDescriptor\"
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        author:
+          type: string
+          format: uri
+        skillName: 
+          type: string
+        skillStatement:
+          type: string
+        category:
+          type: string
+        keywords:
+          type: array
+          items: 
+            type: string
+          description: List of keyword strings
+        alignments:
+          type: array
+          items:
+            type: string
+            format: uri
+        certifications:
+          type: array
+          items:
+            type: string
+            format: uri
+        occupations:
+          type: array
+          items:
+            type: string
+            format: job code
+        employers:
+          type: array
+          items:
+            type: string
+        skillsEmbodied:
+          type: array
+          items:
+            type: string
+
+
+
+

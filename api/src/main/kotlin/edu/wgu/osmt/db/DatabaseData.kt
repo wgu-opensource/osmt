@@ -6,9 +6,9 @@ interface HasUpdateDate {
     val updateDate: LocalDateTime
 }
 
-abstract class DatabaseData<T> {
-    abstract val id: Long?
-    abstract val creationDate: LocalDateTime
+interface DatabaseData<T> {
+    val id: Long?
+    val creationDate: LocalDateTime
 
-    abstract fun withId(id: Long): T
+    fun withId(id: Long): T
 }

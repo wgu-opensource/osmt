@@ -5,6 +5,7 @@ import edu.wgu.osmt.db.TableWithMappers
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
@@ -31,7 +32,7 @@ class Application {
     private lateinit var esRichSkillRepository: EsRichSkillRepository
 
     @Autowired
-    private lateinit var tables: List<TableWithMappers<*, *>>
+    private lateinit var tables: List<Table>
 
     @Bean
     fun commandLineRunner(): CommandLineRunner {

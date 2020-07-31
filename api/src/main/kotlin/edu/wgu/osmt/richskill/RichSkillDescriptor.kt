@@ -11,12 +11,12 @@ import java.time.ZoneOffset
 @Document(indexName = "richskillrepository", createIndex = true)
 data class RichSkillDescriptor(
     override val id: Long?,
+    override val creationDate: LocalDateTime,
+    override val updateDate: LocalDateTime,
     val title: String,
     val description: String,
-    val nullableField: String? = null,
-    override val creationDate: LocalDateTime,
-    override val updateDate: LocalDateTime
-) : DatabaseData<RichSkillDescriptor>(), HasUpdateDate {
+    val nullableField: String? = null
+) : DatabaseData<RichSkillDescriptor>, HasUpdateDate {
 
     override fun withId(id: Long): RichSkillDescriptor {
         return copy(id = id)

@@ -21,7 +21,6 @@ class RichSkillApi @Autowired constructor(
     val auditLogRepository: AuditLogRepository
 ) {
 
-
     @GetMapping()
     suspend fun findAll() = richSkillRepository.findAll()
 

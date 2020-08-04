@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.9.0
+  version: 0.8.0
   title: OSMT API
   description: Draft API for the Open Skills Management Toolset
 servers:
@@ -8,7 +8,7 @@ servers:
     url: https://virtserver.swaggerhub.com/coffindragger/OSMT/1.0.0
 security:
   - bearerAuth: []
-  
+
 paths:
   /skills:
     get:
@@ -17,23 +17,33 @@ paths:
       responses:
         '200':
           description: OK
+          headers:
+            Link: 
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Skill'
+                  $ref: '#/components/schemas/RichSkillDescriptor'
             text/csv:
               schema:
                 type: string
                 example: >-
-                  Foo,Bar,Baz
+                  id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
 
-                  1,2,3
-
-                  2,3,3
+                  https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac, RichSkillDescriptor, "https://osmt.example.com/organization", "Document Saving", "The learner copies and saves documents to their local machine.", "https://skillsource.example.com/base-skills/simple-compuhacking", "documents, file operations, computer basics", "Productivity Software", "13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
       tags:
         - Skills
+
   /skills/{uuid}:
     parameters:
       - name: uuid
@@ -52,19 +62,34 @@ paths:
           content:
             application/json:
               schema: 
-                $ref: '#/components/schemas/Skill'
+                $ref: '#/components/schemas/RichSkillDescriptor'
+            text/html:
+              schema:
+                type: string
+                example: A human readable description of the skill
       tags:
         - Skills
-  /skills/{uuid}/update:
-    post:
-      summary: Update a Skill
+
+  /results/{uuid}:
+    parameters:
+      - name: uuid
+        in: path
+        description: Task uuid 
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Check the results of a task
+      description: Return the results of a previously requested task, or its status if not complete yet
       responses:
         '200':
           description: OK
-        '400':
-          description: One or more fields did not validate
+          content:
+            application/json:
+              description: "The results of the previously requested task"
       tags:
-        - Skills
+        - Tasks
+
 
 
 components:
@@ -72,8 +97,19 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+  headers:
+    Link: 
+      type: string
+      description: |
+        Links to related resources in 
+        [RFC 5988](https://tools.ietf.org/html/rfc5988#section-5) format.
+        This will include a link with relation type `next` or `prev` if present.
+    XTotalCount:
+      type: String
+      description: |
+        The total number of records returned on all pages for this request.
   schemas:
-    Skill:
+    RichSkillDescriptor:
       type: object
       properties:
         id:
@@ -125,6 +161,46 @@ components:
           type: array
           items:
             type: string
+
+      example:
+        id: https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac
+        type: RichSkillDescriptor
+        author: https://osmt.example.com/organization
+        skillName: Document Saving
+        skillStatement: The learner copies and saves documents to their local machine.
+        alignments: 
+          - "https://skillsource.example.com/base-skills/simple-compuhacking"
+        keywords: 
+          - "documents"
+          - "file operations"
+          - "computer basics"
+        category: "Productivity Software"
+        occupations: 
+          - "13-0000"
+          - "13-2000"
+          - "13-2010"
+          - "13-2030"
+          - "13-2040"
+          - "13-2060"
+          - "13-2080"
+    TaskResult:
+      type: object
+      properties:
+        href: 
+          type: string
+          format: uri
+          example: "/results/3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        content-type:
+          type: string
+          example: "text/csv"
+        status:
+          type: string
+          enum: ["Processing","Ready"]
+
 
 
 

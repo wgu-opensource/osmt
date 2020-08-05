@@ -1,19 +1,29 @@
 openapi: 3.0.0
 info:
-  version: 0.8.0
+  version: 0.5.0
   title: OSMT API
   description: Draft API for the Open Skills Management Toolset
-servers:
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/coffindragger/OSMT/1.0.0
 security:
   - bearerAuth: []
 
 paths:
-  /skills:
+  /api/skills:
     get:
       summary: Get all skills
       description: Return all skills in the library
+      parameters:
+        - in: query
+          name: per_page
+          description: maximum number of skills to return per page
+          default: 100
+          schema:
+            type: number
+        - in: query
+          name: page
+          description: page number to return
+          default: 1
+          schema:
+            type: number
       responses:
         '200':
           description: OK
@@ -22,6 +32,13 @@ paths:
               $ref: '#/components/headers/Link'
             X-Total-Count:
               $ref: '#/components/headers/XTotalCount'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+
           content:
             application/json:
               schema:
@@ -44,7 +61,7 @@ paths:
       tags:
         - Skills
 
-  /skills/{uuid}:
+  /api/skills/{uuid}:
     parameters:
       - name: uuid
         in: path
@@ -70,11 +87,11 @@ paths:
       tags:
         - Skills
 
-  /results/{uuid}:
+  /api/tasks/{uuid}:
     parameters:
       - name: uuid
         in: path
-        description: Task uuid 
+        description: Task uuid
         required: true
         schema:
           type: string
@@ -83,10 +100,23 @@ paths:
       description: Return the results of a previously requested task, or its status if not complete yet
       responses:
         '200':
-          description: OK
+          description: OK - Returns the results of the task in the content-type originally requested.
+          content:
+            '*/*':
+              description: "The results of the previously requested task"
+        '202':
+          description: Accepted - Returns the status of the in-progress Task.
           content:
             application/json:
-              description: "The results of the previously requested task"
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
       tags:
         - Tasks
 
@@ -105,9 +135,21 @@ components:
         [RFC 5988](https://tools.ietf.org/html/rfc5988#section-5) format.
         This will include a link with relation type `next` or `prev` if present.
     XTotalCount:
-      type: String
+      type: string
       description: |
         The total number of records returned on all pages for this request.
+    XRateLimit:
+      type: number
+      description: |
+        The number of requests permitted to make per hour.
+    XRateRemaining:
+      type: number
+      description: |
+        The number of requests remaining in the current rate limit window.
+    XRateReset:
+      type: string
+      description: |
+        The time at which the current rate limit window resets in UTC epoch seconds.
   schemas:
     RichSkillDescriptor:
       type: object
@@ -137,7 +179,6 @@ components:
           type: array
           items: 
             type: string
-          description: List of keyword strings
         alignments:
           type: array
           items:
@@ -189,17 +230,20 @@ components:
         href: 
           type: string
           format: uri
-          example: "/results/3fa85f64-5717-4562-b3fc-2c963f66afa6"
         uuid:
           type: string
           format: uuid
           readOnly: true
         content-type:
           type: string
-          example: "text/csv"
         status:
           type: string
           enum: ["Processing","Ready"]
+      example:
+        href: "/tasks/3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        uuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        content-type: "text/csv"
+        status: "Processing"
 
 
 

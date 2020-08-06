@@ -28,7 +28,7 @@ interface HasInsert<T : DatabaseData<T>> {
         val id = table.insert {
             insertStatementApplyFromT(it, t)
         } get table.id
-        t.withId(id)
+        t.withId(id.value)
     }
 }
 

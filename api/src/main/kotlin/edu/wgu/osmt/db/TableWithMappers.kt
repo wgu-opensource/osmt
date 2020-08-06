@@ -1,5 +1,6 @@
 package edu.wgu.osmt.db
 
+import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.`java-time`.datetime
@@ -9,15 +10,15 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 
-abstract class TableWithMappers<T : DatabaseData<T>>(name: String) : Table(name) {
-    val id = long("id").autoIncrement().primaryKey()
+abstract class TableWithMappers<T : DatabaseData<T>>(name: String) : LongIdTable(name) {
+    //override val id = long("id").autoIncrement().primaryKey()
     val creationDate = datetime("creationDate")
 
     abstract fun fromRow(t: ResultRow): T
 
     open fun insertStatementApplyFromT(insertStatement: InsertStatement<Number>, t: T) {
         // deal with id and metadata
-        t.id?.let { insertStatement[id] = it }
+        //t.id?.let { insertStatement[id] = it }
         insertStatement[creationDate] = t.creationDate
     }
 }

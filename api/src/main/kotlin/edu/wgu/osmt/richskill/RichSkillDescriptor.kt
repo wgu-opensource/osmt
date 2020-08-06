@@ -2,7 +2,6 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.db.DatabaseData
 import edu.wgu.osmt.db.HasUpdateDate
-import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.UpdateObject
 import org.springframework.data.elasticsearch.annotations.Document
 import java.time.LocalDateTime
@@ -15,7 +14,7 @@ data class RichSkillDescriptor(
     override val updateDate: LocalDateTime,
     val title: String,
     val description: String,
-    val nullableField: String? = null
+    val jobCodes: List<JobCode> = listOf()
 ) : DatabaseData<RichSkillDescriptor>, HasUpdateDate {
 
     override fun withId(id: Long): RichSkillDescriptor {
@@ -36,12 +35,10 @@ data class RichSkillDescriptor(
     }
 }
 
-
 data class RsdUpdateObject(
     override val id: Long,
     val title: String?,
-    val description: String?,
-    val nullableField: NullableFieldUpdate<String>?
+    val description: String?
 ) : UpdateObject
 
 

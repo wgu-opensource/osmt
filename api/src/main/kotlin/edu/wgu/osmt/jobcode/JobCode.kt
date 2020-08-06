@@ -1,4 +1,4 @@
-package edu.wgu.osmt.richskill
+package edu.wgu.osmt.jobcode
 
 import edu.wgu.osmt.db.DatabaseData
 import edu.wgu.osmt.db.HasUpdateDate
@@ -26,7 +26,12 @@ data class JobCode(
     companion object {
         fun create(code: String): JobCode {
             val now = LocalDateTime.now(ZoneOffset.UTC)
-            return JobCode(id = null, creationDate = now, updateDate = now, code = code)
+            return JobCode(
+                id = null,
+                creationDate = now,
+                updateDate = now,
+                code = code
+            )
         }
     }
 }

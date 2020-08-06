@@ -1,31 +1,26 @@
 package edu.wgu.osmt.richskill
 
-import edu.wgu.osmt.db.ExposedCrudRepository
-import edu.wgu.osmt.db.TableWithUpdateMapper
-import org.jetbrains.exposed.sql.JoinType
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import edu.wgu.osmt.db.DslCrudRepository
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.springframework.stereotype.Repository
-import org.springframework.beans.factory.annotation.Autowired
 
-interface RichSkillRepository : ExposedCrudRepository<RichSkillDescriptor, RsdUpdateObject>
+interface RichSkillRepository : DslCrudRepository<RichSkillDescriptor, RsdUpdateObject> {
+    val dao: RichSkillDescriptorDao.Companion
+    suspend fun findAll(): List<RichSkillDescriptor>
+    suspend fun findById(id: Long): RichSkillDescriptor?
+}
 
 @Repository
 class RichSkillRepositoryImpl :
     RichSkillRepository {
-    override val table: TableWithUpdateMapper<RichSkillDescriptor, RsdUpdateObject> = RichSkillDescriptorTable
+    override val dao = RichSkillDescriptorDao.Companion
+    override val table = RichSkillDescriptorTable
 
+    override suspend fun findAll() = newSuspendedTransaction {
+        dao.all().map { it.toModel() }
+    }
 
-    override suspend fun findAll(): List<RichSkillDescriptor> = newSuspendedTransaction() {
-        table.leftJoin(RichSkillJobCodes).leftJoin(JobCodeTable)
-            .selectAll().map {
-                val richSkillDescriptor = table.fromRow(it)
-                val maybeJobCode = JobCodeTable.maybeJobCodeInflator(it)
-                richSkillDescriptor to maybeJobCode
-            }
-            .groupBy({ it.first }, { it.second })
-            .map { (rsd, jc) -> rsd.copy(jobCodes = jc.filterNotNull()) }
+    override suspend fun findById(id: Long) = newSuspendedTransaction {
+        dao.findById(id)?.toModel()
     }
 }

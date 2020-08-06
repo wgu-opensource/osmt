@@ -14,13 +14,14 @@ import java.util.*
 
 @Service
 @RestController
-@RequestMapping("/rich-skill")
+@RequestMapping("/skills")
 class RichSkillApi @Autowired constructor(
     val richSkillRepository: RichSkillRepository,
     val esRichSkillRepository: EsRichSkillRepository,
     val auditLogRepository: AuditLogRepository
 ) {
 
+    // TODO pagination according to spec
     @GetMapping()
     suspend fun findAll() = richSkillRepository.findAll()
 

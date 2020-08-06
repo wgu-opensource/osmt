@@ -17,8 +17,8 @@ class SecurityConfig {
     @Bean
     fun springSecurityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         http.authorizeExchange()
-            .pathMatchers("/rich-skill/**").authenticated()
-            .pathMatchers("/", "/rich-skill").permitAll()
+            .pathMatchers("/skills/**", "/jobcode/**").authenticated()
+            .pathMatchers("/", "/skills", "jobcode").permitAll()
             .and().oauth2Login()
 
         return http.build()

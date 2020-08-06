@@ -1,29 +1,16 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.db.TableWithUpdateMapper
-import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.LongIdTable
+import edu.wgu.osmt.jobcode.JobCodeTable
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
-import org.springframework.beans.factory.annotation.Autowired
 
 
 object RichSkillDescriptorTable : TableWithUpdateMapper<RichSkillDescriptor, RsdUpdateObject>("RichSkillDescriptor") {
     val title = text("title")
     val description = text("description")
-
-    override fun fromRow(t: ResultRow): RichSkillDescriptor {
-        return RichSkillDescriptor(
-            id = t[id].value,
-            creationDate = t[creationDate],
-            updateDate = t[updateDate],
-            title = t[title],
-            description = t[description]
-        )
-    }
 
     override fun updateBuilderApplyFromUpdateObject(
         updateBuilder: UpdateBuilder<Number>,

@@ -3,6 +3,8 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.db.DatabaseData
 import edu.wgu.osmt.db.HasUpdateDate
 import edu.wgu.osmt.db.UpdateObject
+import edu.wgu.osmt.jobcode.JobCode
+import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.springframework.data.elasticsearch.annotations.Document
 import java.time.LocalDateTime
 import java.time.ZoneOffset

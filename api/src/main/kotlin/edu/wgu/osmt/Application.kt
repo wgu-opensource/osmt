@@ -2,9 +2,8 @@ package edu.wgu.osmt
 
 import edu.wgu.osmt.auditlog.AuditLogTable
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.db.TableWithMappers
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
-import edu.wgu.osmt.richskill.JobCodeTable
+import edu.wgu.osmt.jobcode.JobCodeTable
 import edu.wgu.osmt.richskill.RichSkillDescriptorTable
 import edu.wgu.osmt.richskill.RichSkillJobCodes
 import kotlinx.coroutines.runBlocking

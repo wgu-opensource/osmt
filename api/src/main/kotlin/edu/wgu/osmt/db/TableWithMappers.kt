@@ -11,14 +11,12 @@ import java.time.ZoneOffset
 
 
 abstract class TableWithMappers<T : DatabaseData<T>>(name: String) : LongIdTable(name) {
-    //override val id = long("id").autoIncrement().primaryKey()
+    // id provided by LongIdTable
     val creationDate = datetime("creationDate")
-
-    abstract fun fromRow(t: ResultRow): T
 
     open fun insertStatementApplyFromT(insertStatement: InsertStatement<Number>, t: T) {
         // deal with id and metadata
-        //t.id?.let { insertStatement[id] = it }
+        t.id?.let { throw Exception("tried to insert an object with an existing id") }
         insertStatement[creationDate] = t.creationDate
     }
 }

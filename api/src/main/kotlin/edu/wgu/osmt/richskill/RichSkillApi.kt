@@ -36,11 +36,12 @@ class RichSkillApi @Autowired constructor(
             )
         )
         val auditLogResult = auditLogRepository.insert(AuditLog.fromRichSkillDescriptorInsert(result, user!!))
+        val updateResult = richSkillRepository.update(RsdUpdateObject(result.id!!, "updated title", null), user)
         esRichSkillRepository.save(result)
         return "<html>" +
                 "<body>" +
-                "<p>inserted ${result.toString()}</p>" +
-                "<p><a href=\"/rich-skill\">View all Rich Skills</a></p>" +
+                "<p>inserted ${updateResult.toString()}</p>" +
+                "<p><a href=\"/skills\">View all Rich Skills</a></p>" +
                 "</body>" +
                 "</html>"
     }

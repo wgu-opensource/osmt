@@ -1,6 +1,7 @@
 package edu.wgu.osmt.db
 
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.update
 import org.springframework.security.oauth2.core.user.OAuth2User
@@ -18,18 +19,6 @@ interface HasInsert<T : DatabaseData<T>> {
     }
 }
 
-interface HasUpdate<T : DatabaseData<T>, in UpdateObjectType : UpdateObject> {
-    val table: TableWithUpdateMapper<T, UpdateObjectType>
-
-    @Transactional
-    suspend fun update(updateObject: UpdateObjectType, user: OAuth2User? = null): Int? = newSuspendedTransaction {
-        table.update({ table.id eq updateObject.id }) {
-            updateBuilderApplyFromUpdateObject(it, updateObject)
-        }
-    }
-}
-
-interface DslCrudRepository<T : DatabaseData<T>, in UpdateObjectType : UpdateObject> : HasInsert<T>,
-    HasUpdate<T, UpdateObjectType>
+interface DslCrudRepository<T : DatabaseData<T>, in UpdateObjectType : UpdateObject> : HasInsert<T>
 
 

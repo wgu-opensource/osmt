@@ -1,28 +1,42 @@
 package edu.wgu.osmt.richskill
 
+import com.google.gson.Gson
+import edu.wgu.osmt.auditlog.AuditLog
+import edu.wgu.osmt.auditlog.AuditLogRepository
+import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.db.DslCrudRepository
-import kotlinx.coroutines.runBlocking
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransaction
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Repository
-import org.springframework.transaction.annotation.Transactional
 
 interface RichSkillRepository : DslCrudRepository<RichSkillDescriptor, RsdUpdateObject> {
-    val dao: RichSkillDescriptorDao.Companion
-    suspend fun update(updateObject: RsdUpdateObject, user: OAuth2User?): RichSkillDescriptor?
+    suspend fun insert(t: RichSkillDescriptor, user: OAuth2User): RichSkillDescriptor
+    suspend fun update(updateObject: RsdUpdateObject, user: OAuth2User): RichSkillDescriptor?
     suspend fun findAll(): List<RichSkillDescriptor>
     suspend fun findById(id: Long): RichSkillDescriptor?
 }
 
 @Repository
-class RichSkillRepositoryImpl :
+class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: AuditLogRepository) :
     RichSkillRepository {
-    override val dao = RichSkillDescriptorDao.Companion
+    val dao = RichSkillDescriptorDao.Companion
     override val table = RichSkillDescriptorTable
+
+    override suspend fun insert(t: RichSkillDescriptor, user: OAuth2User): RichSkillDescriptor {
+        val resultId = table.insert(t)
+        val fetched = findById(resultId)!!
+        auditLogRepository.insert(
+            AuditLog.fromAtomicOp(
+                table,
+                resultId,
+                Gson().toJson(fetched),
+                user,
+                AuditOperationType.Insert
+            )
+        )
+        return fetched
+    }
 
     override suspend fun findAll() = newSuspendedTransaction {
         dao.all().map { it.toModel() }
@@ -32,13 +46,23 @@ class RichSkillRepositoryImpl :
         dao.findById(id)?.toModel()
     }
 
-    @Transactional
-    override suspend fun update(updateObject: RsdUpdateObject, user: OAuth2User?): RichSkillDescriptor? {
+    override suspend fun update(updateObject: RsdUpdateObject, user: OAuth2User): RichSkillDescriptor? {
         newSuspendedTransaction {
             val original = dao.findById(updateObject.id)?.toModel()
-            original?.let { updateObject.diff(it) }
-            table.update({ table.id eq updateObject.id }) {
-                updateBuilderApplyFromUpdateObject(it, updateObject)
+            val changes = original?.let { updateObject.diff(it) }
+
+            table.update(updateObject)
+
+            changes?.let {
+                auditLogRepository.insert(
+                    AuditLog.fromAtomicOp(
+                        table,
+                        updateObject.id,
+                        it.toString(),
+                        user,
+                        AuditOperationType.Update
+                    )
+                )
             }
         }
         return newSuspendedTransaction { dao.findById(updateObject.id)?.toModel() }

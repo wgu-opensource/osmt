@@ -27,15 +27,14 @@ class RichSkillApi @Autowired constructor(
 
     // TODO remove once testing framework is implemented
     @GetMapping("/insert-random")
-    suspend fun insertRandom(@AuthenticationPrincipal user: OAuth2User?): String {
+    suspend fun insertRandom(@AuthenticationPrincipal user: OAuth2User): String {
         val title = UUID.randomUUID().toString()
         val result = richSkillRepository.insert(
             RichSkillDescriptor.create(
                 title,
                 "a randomly inserted skill"
-            )
+            ), user
         )
-        val auditLogResult = auditLogRepository.insert(AuditLog.fromRichSkillDescriptorInsert(result, user!!))
         val updateResult = richSkillRepository.update(RsdUpdateObject(result.id!!, "updated title", null), user)
         esRichSkillRepository.save(result)
         return "<html>" +

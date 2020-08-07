@@ -1,12 +1,13 @@
 package edu.wgu.osmt.auditlog
 
-import edu.wgu.osmt.db.HasInsert
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 
 @Repository
-class AuditLogRepository : HasInsert<AuditLog> {
-    override val table: AuditLogTable = AuditLogTable
+class AuditLogRepository {
+    val table: AuditLogTable = AuditLogTable
+
+    @Transactional
+    suspend fun insert(t: AuditLog): Long? = table.insert(t)
 }

@@ -6,10 +6,10 @@ import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 object JobCodeTable : TableWithUpdateMapper<JobCode, JobCodeUpdate>("JobCode") {
-    val code: Column<String> = text("code")
-    val name: Column<String?> = text("name").nullable()
+    val code: Column<String> = varchar("code", 128)
+    val name: Column<String?> = varchar("name", 128).nullable()
     val description: Column<String?> = text("description").nullable()
-    val sourceColumn: Column<String?> = text("source").nullable()
+    val sourceColumn: Column<String?> = varchar("source", 1024).nullable()
 
 
     override fun updateBuilderApplyFromUpdateObject(updateBuilder: UpdateBuilder<Number>, updateObject: JobCodeUpdate) {

@@ -1,11 +1,12 @@
 package edu.wgu.osmt.db
 
 import org.jetbrains.exposed.dao.id.LongIdTable
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.`java-time`.datetime
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.update
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -19,10 +20,18 @@ abstract class TableWithMappers<T : DatabaseData<T>>(name: String) : LongIdTable
         t.id?.let { throw Exception("tried to insert an object with an existing id") }
         insertStatement[creationDate] = t.creationDate
     }
+
+    open suspend fun insert(t: T): Long = newSuspendedTransaction() {
+        val id = insert {
+            insertStatementApplyFromT(it, t)
+        } get super.id
+        id.value
+    }
 }
 
 abstract class TableWithUpdateMapper<T : DatabaseData<T>, in UpdateObjectType : UpdateObject>(name: String) :
     TableWithMappers<T>(name) {
+
 
     val updateDate = datetime("updateDate")
 
@@ -35,5 +44,11 @@ abstract class TableWithUpdateMapper<T : DatabaseData<T>, in UpdateObjectType : 
 
     open fun updateBuilderApplyFromUpdateObject(updateBuilder: UpdateBuilder<Number>, updateObject: UpdateObjectType) {
         updateBuilder[updateDate] = LocalDateTime.now(ZoneOffset.UTC)
+    }
+
+    open suspend fun update(updateObject: UpdateObjectType): Int = newSuspendedTransaction() {
+        update({ this@TableWithUpdateMapper.id eq updateObject.id }) {
+            updateBuilderApplyFromUpdateObject(it, updateObject)
+        }
     }
 }

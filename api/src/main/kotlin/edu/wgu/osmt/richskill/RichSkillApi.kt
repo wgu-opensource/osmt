@@ -14,13 +14,14 @@ import java.util.*
 
 @Service
 @RestController
-@RequestMapping("/rich-skill")
+@RequestMapping("/skills")
 class RichSkillApi @Autowired constructor(
     val richSkillRepository: RichSkillRepository,
     val esRichSkillRepository: EsRichSkillRepository,
     val auditLogRepository: AuditLogRepository
 ) {
 
+    // TODO pagination according to spec
     @GetMapping()
     suspend fun findAll() = richSkillRepository.findAll()
 
@@ -28,13 +29,19 @@ class RichSkillApi @Autowired constructor(
     @GetMapping("/insert-random")
     suspend fun insertRandom(@AuthenticationPrincipal user: OAuth2User?): String {
         val title = UUID.randomUUID().toString()
-        val result = richSkillRepository.insert(RichSkillDescriptor.create(title, "a randomly inserted skill"))
+        val result = richSkillRepository.insert(
+            RichSkillDescriptor.create(
+                title,
+                "a randomly inserted skill"
+            )
+        )
         val auditLogResult = auditLogRepository.insert(AuditLog.fromRichSkillDescriptorInsert(result, user!!))
+        val updateResult = richSkillRepository.update(RsdUpdateObject(result.id!!, "updated title", null), user)
         esRichSkillRepository.save(result)
         return "<html>" +
                 "<body>" +
-                "<p>inserted ${result.toString()}</p>" +
-                "<p><a href=\"/rich-skill\">View all Rich Skills</a></p>" +
+                "<p>inserted ${updateResult.toString()}</p>" +
+                "<p><a href=\"/skills\">View all Rich Skills</a></p>" +
                 "</body>" +
                 "</html>"
     }

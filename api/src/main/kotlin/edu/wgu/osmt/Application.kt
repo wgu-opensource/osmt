@@ -1,9 +1,16 @@
 package edu.wgu.osmt
 
+import edu.wgu.osmt.auditlog.AuditLogTable
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.db.TableWithMappers
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
+import edu.wgu.osmt.jobcode.JobCodeTable
+import edu.wgu.osmt.keyword.KeywordTable
+import edu.wgu.osmt.keyword.KeywordTypeTable
+import edu.wgu.osmt.richskill.RichSkillDescriptorTable
+import edu.wgu.osmt.richskill.RichSkillJobCodes
+import edu.wgu.osmt.richskill.RichSkillKeywords
 import kotlinx.coroutines.runBlocking
+import org.flywaydb.core.api.FlywayException
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -22,6 +29,16 @@ import org.springframework.web.reactive.config.EnableWebFlux
 @EnableWebFlux
 class Application {
 
+    private val tableList: List<Table> = listOf(
+        AuditLogTable,
+        RichSkillDescriptorTable,
+        JobCodeTable,
+        RichSkillJobCodes,
+        KeywordTable,
+        RichSkillKeywords,
+        KeywordTypeTable
+    )
+
     @Autowired
     private lateinit var appConfig: AppConfig
 
@@ -31,23 +48,25 @@ class Application {
     @Autowired
     private lateinit var esRichSkillRepository: EsRichSkillRepository
 
-    @Autowired
-    private lateinit var tables: List<Table>
-
     @Bean
     fun commandLineRunner(): CommandLineRunner {
         return CommandLineRunner {
             initializeTables()
 
             // TODO this works for happy path migrations, additional logic may be necessary for other flows
-            flywayManager.flyway.migrate()
+            try {
+                flywayManager.flyway.migrate()
+            } catch (e: FlywayException) {
+                println("Migration exception occurred: ${e.message.toString()}")
+            }
+
         }
     }
 
     fun initializeTables() {
         runBlocking {
             if (appConfig.dbConfig.createTablesAndColumnsIfMissing) {
-                tables.forEach { table ->
+                tableList.forEach { table ->
                     transaction { SchemaUtils.createMissingTablesAndColumns(table) }
                 }
             }

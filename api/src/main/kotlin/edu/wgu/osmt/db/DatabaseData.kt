@@ -12,3 +12,7 @@ interface DatabaseData<T> {
 
     fun withId(id: Long): T
 }
+
+interface OutputsModel<T> {
+    fun toModel(): T
+}

@@ -2,8 +2,10 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.db.DatabaseData
 import edu.wgu.osmt.db.HasUpdateDate
-import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.UpdateObject
+import edu.wgu.osmt.jobcode.JobCode
+import edu.wgu.osmt.keyword.Keyword
+import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.springframework.data.elasticsearch.annotations.Document
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -15,7 +17,8 @@ data class RichSkillDescriptor(
     override val updateDate: LocalDateTime,
     val title: String,
     val description: String,
-    val nullableField: String? = null
+    val jobCodes: List<JobCode> = listOf(),
+    val keywords: List<Keyword> = listOf()
 ) : DatabaseData<RichSkillDescriptor>, HasUpdateDate {
 
     override fun withId(id: Long): RichSkillDescriptor {
@@ -36,12 +39,24 @@ data class RichSkillDescriptor(
     }
 }
 
-
 data class RsdUpdateObject(
     override val id: Long,
     val title: String?,
-    val description: String?,
-    val nullableField: NullableFieldUpdate<String>?
-) : UpdateObject
+    val description: String?
+) : UpdateObject {
+    fun compareTitle(that: RichSkillDescriptor) {
+        if (title != null) {
+            if (title != that.title) {
+                println("changed title from ${that.title} to $title")
+            } else {
+                println("no change")
+            }
+        }
+    }
+
+    fun diff(that: RichSkillDescriptor) {
+        compareTitle(that)
+    }
+}
 
 

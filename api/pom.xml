@@ -30,6 +30,7 @@
         <flywaydb.version>6.5.1</flywaydb.version>
         <okta.version>1.3.0</okta.version>
         <kotest.version>4.1.3</kotest.version>
+        <redis-starter.version>2.3.2.RELEASE</redis-starter.version>
         <kotlin.code.style>official</kotlin.code.style>
     </properties>
 
@@ -96,12 +97,13 @@
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-reactor</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
+        <!-- Commenting this out for now as it causes an illegal reflective access warning, see https://github.com/spring-projects/spring-framework/issues/22814 -->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-devtools</artifactId>-->
+        <!--            <scope>runtime</scope>-->
+        <!--            <optional>true</optional>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -142,6 +144,16 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.8.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+            <version>2.3.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sonus21</groupId>
+            <artifactId>rqueue-spring-boot-starter</artifactId>
+            <version>2.0.4-RELEASE</version>
         </dependency>
     </dependencies>
 

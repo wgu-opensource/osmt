@@ -3,6 +3,7 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.db.OutputsModel
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
+import edu.wgu.osmt.keyword.KeywordTable
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -20,6 +21,8 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
 
     var keywords by KeywordDao via RichSkillKeywords
 
+    var category by KeywordDao optionalReferencedOn RichSkillDescriptorTable.category
+
     override fun toModel(): RichSkillDescriptor {
         return RichSkillDescriptor(
             id = id.value,
@@ -28,7 +31,8 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
             title = title,
             description = description,
             jobCodes = jobCodes.map { it.toModel() },
-            keywords = keywords.map { it.toModel() }
+            keywords = keywords.map { it.toModel() },
+            category = category?.toModel()
         )
     }
 }

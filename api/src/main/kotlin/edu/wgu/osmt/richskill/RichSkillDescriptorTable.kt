@@ -13,6 +13,7 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 object RichSkillDescriptorTable : TableWithUpdateMapper<RichSkillDescriptor, RsdUpdateObject>("RichSkillDescriptor") {
     val title = text("title")
     val description = text("description")
+    val category = reference("cat_id", KeywordTable, ReferenceOption.RESTRICT).nullable()
 
     override fun updateBuilderApplyFromUpdateObject(
         updateBuilder: UpdateBuilder<Number>,

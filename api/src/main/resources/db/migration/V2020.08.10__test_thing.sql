@@ -1,0 +1,7 @@
+USE osmt_db;
+CREATE TABLE IF NOT EXISTS blah
+(
+    id INT AUTO_INCREMENT PRIMARY KEY
+);
+
+DROP TABLE blah;

@@ -2,7 +2,9 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
+import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
+import edu.wgu.osmt.keyword.Keyword
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.user.OAuth2User
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.*
 
 @Service
@@ -23,11 +27,11 @@ class RichSkillApi @Autowired constructor(
 
     // TODO pagination according to spec
     @GetMapping()
-    suspend fun findAll() = richSkillRepository.findAll()
+    fun findAll() = richSkillRepository.findAll()
 
     // TODO remove once testing framework is implemented
     @GetMapping("/insert-random")
-    suspend fun insertRandom(@AuthenticationPrincipal user: OAuth2User): String {
+    fun insertRandom(@AuthenticationPrincipal user: OAuth2User): String {
         val title = UUID.randomUUID().toString()
         val result = richSkillRepository.insert(
             RichSkillDescriptor.create(

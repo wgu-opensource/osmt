@@ -16,6 +16,6 @@ class JobCodeApi @Autowired constructor(
 ) {
 
     @GetMapping()
-    suspend fun findAll() = jobCodeRepository.findAll()
-    
+    fun findAll() = jobCodeRepository.findAll()
+
 }

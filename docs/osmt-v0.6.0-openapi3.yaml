@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.5.0
+  version: 0.6.0
   title: OSMT API
   description: Draft API for the Open Skills Management Toolset
 security:
@@ -70,6 +70,8 @@ paths:
         schema:
           type: string
     get: 
+      tags:
+        - Skills
       summary: Get a Skill 
       description: >-
         Return the full information about a Rich Skill Descriptor
@@ -84,8 +86,31 @@ paths:
               schema:
                 type: string
                 example: A human readable description of the skill
+    post:
       tags:
         - Skills
+      summary: Update a Skill
+      description: Update information in an existing Rich Skill Descriptor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillUpdateDescriptor'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/RichSkillDescriptor'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+
 
   /api/tasks/{uuid}:
     parameters:
@@ -224,6 +249,67 @@ components:
           - "13-2040"
           - "13-2060"
           - "13-2080"
+    SkillUpdateDescriptor:
+      type: object
+      properties:
+        skillUuid:  
+          type: string
+          format: uri
+          optional: true
+        author:
+          type: string
+          format: uri
+          optional: true
+        skillName: 
+          type: string
+          optional: true
+        skillStatement:
+          type: string
+          optional: true
+        category:
+          type: string
+          optional: true
+        keywords:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListUpdateDescriptor'
+        alignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListUpdateDescriptor'
+        certifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListUpdateDescriptor'
+        occupations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListUpdateDescriptor'
+        employers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListUpdateDescriptor'
+        skillsEmbodied:
+          type: array
+          items:
+      example:
+        skillName: "New Skill Name"
+        keywords: 
+          - operation: add
+            name: "Added Keyword"
+          - operation: remove
+            name: "Removed Keyword"
+        occupation:
+          - operation: add
+            name: "11-9013"
+    ListUpdateDescriptor:
+      type: object
+      properties:
+        operation:
+          type: string
+          enum: ["add", "remove"]
+        name:
+          type: string
     TaskResult:
       type: object
       properties:
@@ -244,6 +330,20 @@ components:
         uuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         content-type: "text/csv"
         status: "Processing"
+    ErrorResult:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+              field:
+                type: string
 
 
 

@@ -110,8 +110,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
-
-
   /api/tasks/{uuid}:
     parameters:
       - name: uuid
@@ -178,22 +176,25 @@ components:
   schemas:
     RichSkillDescriptor:
       type: object
+      required:
+        - skillName
+        - skillStatement
       properties:
         id:
           type: string
           format: uri
           readOnly: true
         type:
-          type: string
+          type: '"RichSkillDescriptor"'
           readOnly: true
-          description: \"RichSkillDescriptor\"
         uuid:
           type: string
           format: uuid
           readOnly: true
-        author:
+        status:
           type: string
-          format: uri
+          enum: ["draft","published","archived"]
+          default: draft
         skillName: 
           type: string
         skillStatement:
@@ -227,11 +228,15 @@ components:
           type: array
           items:
             type: string
+        author:
+          type: string
+          format: uri
 
       example:
         id: https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac
         type: RichSkillDescriptor
         author: https://osmt.example.com/organization
+        status: published
         skillName: Document Saving
         skillStatement: The learner copies and saves documents to their local machine.
         alignments: 
@@ -255,6 +260,10 @@ components:
         skillUuid:  
           type: string
           format: uri
+          optional: true
+        status:
+          type: string
+          enum: ["draft","published","archived"]
           optional: true
         author:
           type: string

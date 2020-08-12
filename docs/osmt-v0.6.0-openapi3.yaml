@@ -2,11 +2,32 @@ openapi: 3.0.0
 info:
   version: 0.6.0
   title: OSMT API
-  description: Draft API for the Open Skills Management Toolset
+  description: Draft API for the Open Skills Management Toolset (MVP)
 security:
   - bearerAuth: []
 
 paths:
+  /api/skills/search:
+    post:
+      tags:
+        - Skills
+      summary: Search for skills
+      description: Find Rich Skill Descriptors matching the query
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillSearchDescriptor'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Skill'
   /api/skills:
     get:
       summary: Get all skills
@@ -44,7 +65,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/RichSkillDescriptor'
+                  $ref: '#/components/schemas/Skill'
             text/csv:
               schema:
                 type: string
@@ -60,6 +81,32 @@ paths:
                 $ref: '#/components/schemas/TaskResult'
       tags:
         - Skills
+    post:
+      tags:
+        - Skills
+      summary: Create skills
+      description: Define one or more new Rich Skill Descriptors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Skill'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/Skill'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
 
   /api/skills/{uuid}:
     parameters:
@@ -72,7 +119,7 @@ paths:
     get: 
       tags:
         - Skills
-      summary: Get a Skill 
+      summary: Retrieve a skill 
       description: >-
         Return the full information about a Rich Skill Descriptor
       responses:
@@ -81,7 +128,7 @@ paths:
           content:
             application/json:
               schema: 
-                $ref: '#/components/schemas/RichSkillDescriptor'
+                $ref: '#/components/schemas/Skill'
             text/html:
               schema:
                 type: string
@@ -89,7 +136,7 @@ paths:
     post:
       tags:
         - Skills
-      summary: Update a Skill
+      summary: Update a skill
       description: Update information in an existing Rich Skill Descriptor
       requestBody:
         required: true
@@ -103,13 +150,82 @@ paths:
           content:
             application/json:
               schema: 
-                $ref: '#/components/schemas/RichSkillDescriptor'
+                $ref: '#/components/schemas/Skill'
         '400':
-          description: Bad request
+          description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+
+  /api/collections/search:
+    post:
+      tags:
+        - Collections
+      summary: Search for collections
+      description: Find collections matching the query
+
+  /api/collections:
+    get:
+      tags:
+        - Collections
+      summary: Get all collections
+      description: Retrieve all the collections
+    post:
+      tags:
+        - Collections
+      summary: Create a collection
+      description: Define a new collection
+
+
+  /api/collections/{uuid}:
+    parameters:
+      - name: uuid
+        in: path
+        description: Collection UUID
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Collections
+      summary: Retrieve a collection
+      description: Retrieve all the information about a collection
+    post:
+      tags:
+        - Collections
+      summary: Update a collection
+      description: Update an existing collection 
+    delete:
+      tags:
+        - Collections
+      summary: Destroy a collection
+      description: Permanently destroy a collection.  This operation can not be un-done.
+
+  /api/collections/{uuid}/skills:
+    parameters:
+      - name: uuid
+        in: path
+        description: Collection UUID
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Collections
+      summary: Retrieve the skills in a collection
+      description: Retrieve all the information about skills in a collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Skill'
+
+
   /api/tasks/{uuid}:
     parameters:
       - name: uuid
@@ -174,7 +290,7 @@ components:
       description: |
         The time at which the current rate limit window resets in UTC epoch seconds.
   schemas:
-    RichSkillDescriptor:
+    Skill:
       type: object
       required:
         - skillName
@@ -259,25 +375,16 @@ components:
       properties:
         skillUuid:  
           type: string
-          format: uri
-          optional: true
+          format: uuid
+        skillName: 
+          type: string
+        skillStatement:
+          type: string
         status:
           type: string
           enum: ["draft","published","archived"]
-          optional: true
-        author:
-          type: string
-          format: uri
-          optional: true
-        skillName: 
-          type: string
-          optional: true
-        skillStatement:
-          type: string
-          optional: true
         category:
           type: string
-          optional: true
         keywords:
           type: array
           items:
@@ -301,6 +408,10 @@ components:
         skillsEmbodied:
           type: array
           items:
+            $ref: '#/components/schemas/ListUpdateDescriptor'
+        author:
+          type: string
+          format: uri
       example:
         skillName: "New Skill Name"
         keywords: 
@@ -319,6 +430,62 @@ components:
           enum: ["add", "remove"]
         name:
           type: string
+    SkillSearchDescriptor:
+      type: object
+      properties:
+        skillName: 
+          type: string
+        skillStatement:
+          type: string
+        status:
+          type: string
+          enum: ["draft","published","archived"]
+          default: draft
+        category:
+          type: string
+        keywords:
+          type: array
+          items: 
+            type: string
+        alignments:
+          type: array
+          items:
+            type: string
+            format: uri
+        certifications:
+          type: array
+          items:
+            type: string
+            format: uri
+        occupations:
+          type: array
+          items:
+            type: string
+            format: job code
+        employers:
+          type: array
+          items:
+            type: string
+        skillsEmbodied:
+          type: array
+          items:
+            type: string
+        author:
+          type: string
+          format: uri
+
+    Collection:
+      type: object
+      properties:      
+        name: 
+          type: string
+        description: 
+          type: string
+        skills: 
+          type: array
+          items:
+            type: string
+            format: uri
     TaskResult:
       type: object
       properties:

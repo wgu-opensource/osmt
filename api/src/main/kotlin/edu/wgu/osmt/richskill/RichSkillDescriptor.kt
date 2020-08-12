@@ -15,14 +15,17 @@ import org.valiktor.validate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import org.valiktor.functions.validate
+import java.util.*
 
 @Document(indexName = "richskillrepository", createIndex = true)
 data class RichSkillDescriptor(
     override val id: Long?,
     override val creationDate: LocalDateTime,
     override val updateDate: LocalDateTime,
-    val title: String,
-    val description: String,
+    val uuid: UUID,
+    val name: String,
+    val statement: String,
+    val author: String,
     val jobCodes: List<JobCode> = listOf(),
     val keywords: List<Keyword> = listOf(),
     val category: Keyword? = null
@@ -33,12 +36,14 @@ data class RichSkillDescriptor(
     }
 
     companion object {
-        fun create(title: String, description: String): RichSkillDescriptor {
+        fun create(name: String, statement: String, author: String): RichSkillDescriptor {
             val now = LocalDateTime.now(ZoneOffset.UTC)
             return RichSkillDescriptor(
                 id = null,
-                title = title,
-                description = description,
+                uuid = UUID.randomUUID(),
+                name = name,
+                statement = statement,
+                author = author,
                 creationDate = now,
                 updateDate = now
             )
@@ -48,8 +53,9 @@ data class RichSkillDescriptor(
 
 data class RsdUpdateObject(
     override val id: Long,
-    val title: String?,
-    val description: String?,
+    val name: String? = null,
+    val statement: String? = null,
+    val author: String? = null,
     val category: NullableFieldUpdate<Keyword>? = null
 ) : UpdateObject {
 
@@ -64,12 +70,12 @@ data class RsdUpdateObject(
     }
 
     fun compareTitle(that: RichSkillDescriptor): JSONObject? {
-        return title?.let {
-            if (title != that.title) JSONObject(
+        return name?.let {
+            if (name != that.name) JSONObject(
                 mutableMapOf(
-                    that::title.name to mutableMapOf(
-                        "old" to that.title,
-                        "new" to title
+                    that::name.name to mutableMapOf(
+                        "old" to that.name,
+                        "new" to name
                     )
                 )
             ) else null
@@ -77,12 +83,12 @@ data class RsdUpdateObject(
     }
 
     fun compareDescription(that: RichSkillDescriptor): JSONObject? {
-        return description?.let {
-            if (description != that.description) JSONObject(
+        return statement?.let {
+            if (statement != that.statement) JSONObject(
                 mutableMapOf(
-                    that::description.name to mutableMapOf(
-                        "original" to that.description,
-                        "new" to description
+                    that::statement.name to mutableMapOf(
+                        "original" to that.statement,
+                        "new" to statement
                     )
                 )
             ) else null
@@ -104,8 +110,21 @@ data class RsdUpdateObject(
         }
     }
 
+    fun compareAuthor(that: RichSkillDescriptor): JSONObject? {
+        return author?.let {
+            if (author != that.author) JSONObject(
+                mutableMapOf(
+                    that::author.name to mutableMapOf(
+                        "original" to that.author,
+                        "new" to author
+                    )
+                )
+            ) else null
+        }
+    }
+
     fun diff(that: RichSkillDescriptor): JSONArray {
-        val l = listOfNotNull(compareTitle(that), compareDescription(that), compareCategory(that))
+        val l = listOfNotNull(compareTitle(that), compareDescription(that), compareCategory(that), compareAuthor(that))
         val jsonObj = JSONArray()
         l.forEach { jsonObj.add(it) }
         return jsonObj

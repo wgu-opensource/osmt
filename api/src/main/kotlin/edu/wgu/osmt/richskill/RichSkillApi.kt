@@ -21,7 +21,7 @@ import java.util.*
 @RequestMapping("/skills")
 class RichSkillApi @Autowired constructor(
     val richSkillRepository: RichSkillRepository,
-    val esRichSkillRepository: EsRichSkillRepository,
+    //val esRichSkillRepository: EsRichSkillRepository,
     val auditLogRepository: AuditLogRepository
 ) {
 
@@ -36,11 +36,12 @@ class RichSkillApi @Autowired constructor(
         val result = richSkillRepository.insert(
             RichSkillDescriptor.create(
                 title,
-                "a randomly inserted skill"
+                "a randomly inserted skill",
+                "an author"
             ), user
         )
-        val updateResult = richSkillRepository.update(RsdUpdateObject(result.id!!, "updated title", null), user)
-        esRichSkillRepository.save(result)
+        val updateResult = richSkillRepository.update(RsdUpdateObject(result.id!!, "updated title", null, null), user)
+        //esRichSkillRepository.save(result)
         return "<html>" +
                 "<body>" +
                 "<p>inserted ${updateResult.toString()}</p>" +

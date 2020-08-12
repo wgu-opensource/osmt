@@ -3,6 +3,7 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.db.TableWithUpdateMapper
 import edu.wgu.osmt.jobcode.JobCodeTable
 import edu.wgu.osmt.keyword.KeywordTable
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
@@ -11,22 +12,35 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 
 object RichSkillDescriptorTable : TableWithUpdateMapper<RichSkillDescriptor, RsdUpdateObject>("RichSkillDescriptor") {
-    val title = text("title")
-    val description = text("description")
+    val uuid = varchar("uuid", 36).uniqueIndex()
+    val name = text("name")
+    val statement = text("statement")
     val category = reference("cat_id", KeywordTable, ReferenceOption.RESTRICT).nullable()
+    val author = text("author")
 
     override fun updateBuilderApplyFromUpdateObject(
         updateBuilder: UpdateBuilder<Number>,
         updateObject: RsdUpdateObject
     ) {
         super.updateBuilderApplyFromUpdateObject(updateBuilder, updateObject)
-        updateObject.title?.let { updateBuilder[title] = it }
+        updateObject.name?.let { updateBuilder[name] = it }
+        updateObject.statement?.let { updateBuilder[statement] = it }
+        updateObject.category?.let {
+            if (it.t != null) {
+                updateBuilder[category] = EntityID<Long>(it.t.id!!, KeywordTable)
+            } else {
+                updateBuilder[category] = null
+            }
+        }
+        updateObject.author?.let { updateBuilder[author] = it }
     }
 
     override fun insertStatementApplyFromT(insertStatement: InsertStatement<Number>, t: RichSkillDescriptor) {
         super.insertStatementApplyFromT(insertStatement, t)
-        insertStatement[title] = t.title
-        insertStatement[description] = t.description
+        insertStatement[uuid] = t.uuid.toString()
+        insertStatement[name] = t.name
+        insertStatement[statement] = t.statement
+        insertStatement[author] = t.author
     }
 }
 

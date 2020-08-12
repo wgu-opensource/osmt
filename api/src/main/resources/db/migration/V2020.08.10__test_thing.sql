@@ -1,7 +1,9 @@
 USE osmt_db;
-CREATE TABLE IF NOT EXISTS blah
-(
-    id INT AUTO_INCREMENT PRIMARY KEY
-);
 
-DROP TABLE blah;
+ALTER TABLE osmt_db.Keyword
+    DROP FOREIGN KEY fk_Keyword_keyword_type_id_id;
+
+ALTER TABLE osmt_db.Keyword
+    DROP COLUMN keyword_type_id;
+
+DROP TABLE osmt_db.KeywordType;

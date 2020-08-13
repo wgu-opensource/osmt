@@ -9,5 +9,5 @@ class AuditLogRepository {
     val table: AuditLogTable = AuditLogTable
 
     @Transactional
-    suspend fun insert(t: AuditLog): Long? = table.insert(t)
+    fun insert(t: AuditLog): Long? = table.insert(t)
 }

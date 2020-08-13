@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.`java-time`.datetime
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -21,7 +21,7 @@ abstract class TableWithMappers<T : DatabaseData<T>>(name: String) : LongIdTable
         insertStatement[creationDate] = t.creationDate
     }
 
-    open suspend fun insert(t: T): Long = newSuspendedTransaction() {
+    open fun insert(t: T): Long = transaction {
         val id = insert {
             insertStatementApplyFromT(it, t)
         } get super.id
@@ -29,7 +29,7 @@ abstract class TableWithMappers<T : DatabaseData<T>>(name: String) : LongIdTable
     }
 }
 
-abstract class TableWithUpdateMapper<T : DatabaseData<T>, in UpdateObjectType : UpdateObject>(name: String) :
+abstract class TableWithUpdateMapper<T : DatabaseData<T>, in UpdateObjectType : UpdateObject<T>>(name: String) :
     TableWithMappers<T>(name) {
 
 
@@ -46,7 +46,7 @@ abstract class TableWithUpdateMapper<T : DatabaseData<T>, in UpdateObjectType : 
         updateBuilder[updateDate] = LocalDateTime.now(ZoneOffset.UTC)
     }
 
-    open suspend fun update(updateObject: UpdateObjectType): Int = newSuspendedTransaction() {
+    open fun update(updateObject: UpdateObjectType): Int = transaction {
         update({ this@TableWithUpdateMapper.id eq updateObject.id }) {
             updateBuilderApplyFromUpdateObject(it, updateObject)
         }

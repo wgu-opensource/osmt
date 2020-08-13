@@ -4,6 +4,7 @@ import edu.wgu.osmt.db.DatabaseData
 import edu.wgu.osmt.db.HasUpdateDate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.UpdateObject
+import net.minidev.json.JSONObject
 import org.springframework.data.elasticsearch.annotations.Document
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -42,4 +43,32 @@ data class JobCodeUpdate(
     val name: NullableFieldUpdate<String>?,
     val description: NullableFieldUpdate<String>?,
     val source: NullableFieldUpdate<String>?
-) : UpdateObject
+) : UpdateObject<JobCode> {
+
+    fun compareCode(that: JobCode): JSONObject? {
+        return code?.let {
+            compare(that::code, this::code)
+        }
+    }
+
+    fun compareName(that: JobCode): JSONObject? {
+        return name?.let {
+            compare(that::name, it::t, stringOutput)
+        }
+    }
+
+    fun compareDescription(that: JobCode): JSONObject? {
+        return description?.let {
+            compare(that::description, it::t, stringOutput)
+        }
+    }
+
+    fun compareSource(that: JobCode): JSONObject? {
+        return source?.let {
+            compare(that::source, it::t, stringOutput)
+        }
+    }
+
+    override val comparisonList: List<(t: JobCode) -> JSONObject?> =
+        listOf(::compareCode, ::compareName, ::compareDescription, ::compareSource)
+}

@@ -7,28 +7,37 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import java.time.LocalDateTime
+import java.util.*
 
 class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<RichSkillDescriptor> {
     companion object : LongEntityClass<RichSkillDescriptorDao>(RichSkillDescriptorTable)
 
     var creationDate: LocalDateTime by RichSkillDescriptorTable.creationDate
     var updateDate: LocalDateTime by RichSkillDescriptorTable.updateDate
-    var title: String by RichSkillDescriptorTable.title
-    var description: String by RichSkillDescriptorTable.description
+
+    var uuid: String by RichSkillDescriptorTable.uuid
+    var name: String by RichSkillDescriptorTable.name
+    var statement: String by RichSkillDescriptorTable.statement
+    var author: String by RichSkillDescriptorTable.author
 
     var jobCodes by JobCodeDao via RichSkillJobCodes
 
     var keywords by KeywordDao via RichSkillKeywords
+
+    var category by KeywordDao optionalReferencedOn RichSkillDescriptorTable.category
 
     override fun toModel(): RichSkillDescriptor {
         return RichSkillDescriptor(
             id = id.value,
             creationDate = creationDate,
             updateDate = updateDate,
-            title = title,
-            description = description,
+            uuid = UUID.fromString(uuid),
+            name = name,
+            statement = statement,
             jobCodes = jobCodes.map { it.toModel() },
-            keywords = keywords.map { it.toModel() }
+            keywords = keywords.map { it.toModel() },
+            category = category?.toModel(),
+            author = author
         )
     }
 }

@@ -1,27 +1,22 @@
 package edu.wgu.osmt.oauth
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Bean
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
-import org.springframework.security.config.web.server.ServerHttpSecurity
-import org.springframework.security.web.server.SecurityWebFilterChain
+import org.springframework.context.annotation.Configuration
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 
-@EnableWebFluxSecurity
-@EnableReactiveMethodSecurity
+@Configuration
+@EnableWebSecurity
 class SecurityConfig {
 
     @Autowired
     lateinit var authenticationManager: AuthenticationManager
 
-    @Bean
-    fun springSecurityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
-        http.authorizeExchange()
-            .pathMatchers("/skills/**", "/jobcode/**").authenticated()
-            .pathMatchers("/", "/skills", "jobcode", "/enqueue").permitAll()
+    @Override
+    fun configure(http: HttpSecurity) {
+        http.authorizeRequests().antMatchers("/skills/**", "/jobcode/**").authenticated()
+            .antMatchers("/", "/skills", "jobcode", "/enqueue").permitAll()
             .and().oauth2Login()
-
-        return http.build()
     }
 
 }

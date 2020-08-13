@@ -1,28 +1,30 @@
 package edu.wgu.osmt.richskill
 
-import com.google.gson.JsonObject
-import edu.wgu.osmt.db.DatabaseData
-import edu.wgu.osmt.db.HasUpdateDate
-import edu.wgu.osmt.db.UpdateObject
+import edu.wgu.osmt.db.*
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
-import net.minidev.json.JSONArray
+import edu.wgu.osmt.keyword.KeywordTypeEnum
 import net.minidev.json.JSONObject
-import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.springframework.data.elasticsearch.annotations.Document
-import org.springframework.security.oauth2.core.user.OAuth2User
+import org.valiktor.functions.isEqualTo
+import org.valiktor.validate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import org.valiktor.functions.validate
+import java.util.*
 
 @Document(indexName = "richskillrepository", createIndex = true)
 data class RichSkillDescriptor(
     override val id: Long?,
     override val creationDate: LocalDateTime,
     override val updateDate: LocalDateTime,
-    val title: String,
-    val description: String,
+    val uuid: UUID,
+    val name: String,
+    val statement: String,
+    val author: String,
     val jobCodes: List<JobCode> = listOf(),
-    val keywords: List<Keyword> = listOf()
+    val keywords: List<Keyword> = listOf(),
+    val category: Keyword? = null
 ) : DatabaseData<RichSkillDescriptor>, HasUpdateDate {
 
     override fun withId(id: Long): RichSkillDescriptor {
@@ -30,12 +32,14 @@ data class RichSkillDescriptor(
     }
 
     companion object {
-        fun create(title: String, description: String): RichSkillDescriptor {
+        fun create(name: String, statement: String, author: String): RichSkillDescriptor {
             val now = LocalDateTime.now(ZoneOffset.UTC)
             return RichSkillDescriptor(
                 id = null,
-                title = title,
-                description = description,
+                uuid = UUID.randomUUID(),
+                name = name,
+                statement = statement,
+                author = author,
                 creationDate = now,
                 updateDate = now
             )
@@ -45,42 +49,48 @@ data class RichSkillDescriptor(
 
 data class RsdUpdateObject(
     override val id: Long,
-    val title: String?,
-    val description: String?
-) : UpdateObject {
+    val name: String?,
+    val statement: String? = null,
+    val author: String? = null,
+    val category: NullableFieldUpdate<Keyword>? = null
+) : UpdateObject<RichSkillDescriptor> {
 
-    fun compareTitle(that: RichSkillDescriptor): JSONObject? {
-        return title?.let {
-            if (title != that.title) JSONObject(
-                mutableMapOf(
-                    that::title.name to mutableMapOf(
-                        "old" to that.title,
-                        "new" to title
-                    )
-                )
-            ) else null
+    init {
+        validate(this) {
+            validate(RsdUpdateObject::category).validate {
+                validate(NullableFieldUpdate<Keyword>::t).validate {
+                    validate(Keyword::type).isEqualTo(KeywordTypeEnum.Category)
+                }
+            }
         }
     }
 
-    fun compareDescription(that: RichSkillDescriptor): JSONObject? {
-        return description?.let {
-            if (description != that.description) JSONObject(
-                mutableMapOf(
-                    that::description.name to mutableMapOf(
-                        "original" to that.description,
-                        "new" to description
-                    )
-                )
-            ) else null
+    fun compareName(that: RichSkillDescriptor): JSONObject? {
+        return name?.let {
+            compare(that::name, this::name, stringOutput)
         }
     }
 
-    fun diff(that: RichSkillDescriptor): JSONArray {
-        val l = listOfNotNull(compareTitle(that), compareDescription(that))
-        val jsonObj = JSONArray()
-        l.forEach { jsonObj.add(it) }
-        return jsonObj
+    fun compareStatement(that: RichSkillDescriptor): JSONObject? {
+        return statement?.let {
+            compare(that::statement, this::statement, stringOutput)
+        }
     }
+
+    fun compareCategory(that: RichSkillDescriptor): JSONObject? {
+        return category?.let {
+            compare(that::category, it::t, keywordOutput)
+        }
+    }
+
+    fun compareAuthor(that: RichSkillDescriptor): JSONObject? {
+        return author?.let {
+            compare(that::author, this::author, stringOutput)
+        }
+    }
+
+    override val comparisonList: List<(t: RichSkillDescriptor) -> JSONObject?> =
+        listOf(::compareName, ::compareStatement, ::compareCategory, ::compareAuthor)
 }
 
 

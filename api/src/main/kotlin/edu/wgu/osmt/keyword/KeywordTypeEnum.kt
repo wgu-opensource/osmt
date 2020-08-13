@@ -6,13 +6,13 @@ package edu.wgu.osmt.keyword
  */
 enum class KeywordTypeEnum {
     Category,
+    Certifications,
+    Other,
     ProfessionalStandards {
         override val displayName = "Professional Standards"
     },
     Sel,
-    Tools,
-    Certifications,
-    Other;
+    Tools;
 
     open val displayName: String = this.name
 }

@@ -5,6 +5,8 @@ import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import edu.wgu.osmt.keyword.Keyword
+import edu.wgu.osmt.keyword.KeywordDao
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.user.OAuth2User
@@ -23,7 +25,9 @@ class RichSkillApi @Autowired constructor(
     val richSkillRepository: RichSkillRepository,
     //val esRichSkillRepository: EsRichSkillRepository,
     val auditLogRepository: AuditLogRepository
+
 ) {
+    val keywordDao = KeywordDao.Companion
 
     // TODO pagination according to spec
     @GetMapping()
@@ -40,7 +44,14 @@ class RichSkillApi @Autowired constructor(
                 "an author"
             ), user
         )
-        val updateResult = richSkillRepository.update(RsdUpdateObject(result.id!!, "updated title", null, null), user)
+        val updateResult = richSkillRepository.update(
+            RsdUpdateObject(
+                result.id!!,
+                "updated title",
+                "updated description",
+                "updatedAuthor"
+            ), user
+        )
         //esRichSkillRepository.save(result)
         return "<html>" +
                 "<body>" +

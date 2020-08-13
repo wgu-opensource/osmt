@@ -1,13 +1,9 @@
 package edu.wgu.osmt.richskill
 
-import edu.wgu.osmt.db.DatabaseData
-import edu.wgu.osmt.db.HasUpdateDate
-import edu.wgu.osmt.db.NullableFieldUpdate
-import edu.wgu.osmt.db.UpdateObject
+import edu.wgu.osmt.db.*
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import net.minidev.json.JSONArray
 import net.minidev.json.JSONObject
 import org.springframework.data.elasticsearch.annotations.Document
 import org.valiktor.functions.isEqualTo
@@ -53,11 +49,11 @@ data class RichSkillDescriptor(
 
 data class RsdUpdateObject(
     override val id: Long,
-    val name: String? = null,
+    val name: String?,
     val statement: String? = null,
     val author: String? = null,
     val category: NullableFieldUpdate<Keyword>? = null
-) : UpdateObject {
+) : UpdateObject<RichSkillDescriptor> {
 
     init {
         validate(this) {
@@ -69,66 +65,32 @@ data class RsdUpdateObject(
         }
     }
 
-    fun compareTitle(that: RichSkillDescriptor): JSONObject? {
+    fun compareName(that: RichSkillDescriptor): JSONObject? {
         return name?.let {
-            if (name != that.name) JSONObject(
-                mutableMapOf(
-                    that::name.name to mutableMapOf(
-                        "old" to that.name,
-                        "new" to name
-                    )
-                )
-            ) else null
+            compare(that::name, this::name, stringOutput)
         }
     }
 
-    fun compareDescription(that: RichSkillDescriptor): JSONObject? {
+    fun compareStatement(that: RichSkillDescriptor): JSONObject? {
         return statement?.let {
-            if (statement != that.statement) JSONObject(
-                mutableMapOf(
-                    that::statement.name to mutableMapOf(
-                        "original" to that.statement,
-                        "new" to statement
-                    )
-                )
-            ) else null
+            compare(that::statement, this::statement, stringOutput)
         }
     }
 
     fun compareCategory(that: RichSkillDescriptor): JSONObject? {
         return category?.let {
-            if (category.t != that.category) {
-                JSONObject(
-                    mutableMapOf(
-                        that::category.name to mutableMapOf(
-                            "original" to that.category?.value,
-                            "new" to category.t?.value
-                        )
-                    )
-                )
-            } else null
+            compare(that::category, it::t, keywordOutput)
         }
     }
 
     fun compareAuthor(that: RichSkillDescriptor): JSONObject? {
         return author?.let {
-            if (author != that.author) JSONObject(
-                mutableMapOf(
-                    that::author.name to mutableMapOf(
-                        "original" to that.author,
-                        "new" to author
-                    )
-                )
-            ) else null
+            compare(that::author, this::author, stringOutput)
         }
     }
 
-    fun diff(that: RichSkillDescriptor): JSONArray {
-        val l = listOfNotNull(compareTitle(that), compareDescription(that), compareCategory(that), compareAuthor(that))
-        val jsonObj = JSONArray()
-        l.forEach { jsonObj.add(it) }
-        return jsonObj
-    }
+    override val comparisonList: List<(t: RichSkillDescriptor) -> JSONObject?> =
+        listOf(::compareName, ::compareStatement, ::compareCategory, ::compareAuthor)
 }
 
 

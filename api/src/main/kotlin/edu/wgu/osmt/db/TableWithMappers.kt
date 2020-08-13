@@ -29,7 +29,7 @@ abstract class TableWithMappers<T : DatabaseData<T>>(name: String) : LongIdTable
     }
 }
 
-abstract class TableWithUpdateMapper<T : DatabaseData<T>, in UpdateObjectType : UpdateObject>(name: String) :
+abstract class TableWithUpdateMapper<T : DatabaseData<T>, in UpdateObjectType : UpdateObject<T>>(name: String) :
     TableWithMappers<T>(name) {
 
 

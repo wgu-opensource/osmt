@@ -24,7 +24,8 @@ data class RichSkillDescriptor(
     val author: String,
     val jobCodes: List<JobCode> = listOf(),
     val keywords: List<Keyword> = listOf(),
-    val category: Keyword? = null
+    val category: Keyword? = null,
+    val publishStatus: PublishStatus
 ) : DatabaseData, HasUpdateDate {
 
     companion object {
@@ -37,7 +38,8 @@ data class RichSkillDescriptor(
                 statement = statement,
                 author = author,
                 creationDate = now,
-                updateDate = now
+                updateDate = now,
+                publishStatus = PublishStatus.Unpublished
             )
         }
     }

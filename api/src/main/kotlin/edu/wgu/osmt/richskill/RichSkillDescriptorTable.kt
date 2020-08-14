@@ -1,5 +1,6 @@
 package edu.wgu.osmt.richskill
 
+import edu.wgu.osmt.db.PublishStatusTable
 import edu.wgu.osmt.db.TableWithUpdateMapper
 import edu.wgu.osmt.jobcode.JobCodeTable
 import edu.wgu.osmt.keyword.KeywordTable
@@ -22,6 +23,7 @@ object RichSkillDescriptorTable : TableWithUpdateMapper<RsdUpdateObject>, LongId
     val statement = text("statement")
     val category = reference("cat_id", KeywordTable, ReferenceOption.RESTRICT).nullable()
     val author = text("author")
+    val publishStatus = reference("publish_status_id", PublishStatusTable, ReferenceOption.RESTRICT)
 
     override fun updateBuilderApplyFromUpdateObject(
         updateBuilder: UpdateBuilder<Number>,

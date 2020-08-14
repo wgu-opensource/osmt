@@ -2,6 +2,7 @@ package edu.wgu.osmt
 
 import edu.wgu.osmt.auditlog.AuditLogTable
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.db.PublishStatusTable
 import edu.wgu.osmt.jobcode.JobCodeTable
 import edu.wgu.osmt.keyword.KeywordTable
 import edu.wgu.osmt.richskill.RichSkillDescriptorTable
@@ -33,7 +34,8 @@ class Application {
         JobCodeTable,
         RichSkillJobCodes,
         KeywordTable,
-        RichSkillKeywords
+        RichSkillKeywords,
+        PublishStatusTable
     )
 
     @Autowired

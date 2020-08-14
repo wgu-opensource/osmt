@@ -4,11 +4,14 @@ import com.google.gson.Gson
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
+import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.db.PublishStatusDao
+import edu.wgu.osmt.db.PublishStatusTable
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -87,6 +90,8 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
                 this.name = name
                 this.statement = statement
                 this.author = author
+                this.publishStatus =
+                    PublishStatusDao[EntityID(PublishStatus.Unpublished.ordinal.toLong(), PublishStatusTable)]
             }
         }
         transaction {

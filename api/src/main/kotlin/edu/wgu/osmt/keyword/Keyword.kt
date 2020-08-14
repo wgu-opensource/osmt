@@ -41,6 +41,5 @@ object KeywordTable : TableWithUpdateMapper<KeywordUpdateObj>, LongIdTable("Keyw
     val keyword_type_enum =
         customEnumeration(
             "keyword_type_enum",
-            "Enum('Category', 'Certifications', 'Keyword', 'Other', 'ProfessionalStandards', 'Sel', 'Tools')",
-            { value -> KeywordTypeEnum.valueOf(value as String) }, { it.name })
+            fromDb = { value -> KeywordTypeEnum.valueOf(value as String) }, toDb = { it.name })
 }

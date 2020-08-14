@@ -5,7 +5,7 @@ import net.minidev.json.JSONArray
 import net.minidev.json.JSONObject
 import kotlin.reflect.KProperty0
 
-interface UpdateObject<T : DatabaseData<T>> {
+interface UpdateObject<T> {
     val id: Long
 
     val comparisonList: List<(t: T) -> JSONObject?>
@@ -28,14 +28,15 @@ interface UpdateObject<T : DatabaseData<T>> {
         thisProp: KProperty0<R>,
         outputR: (R) -> String?
     ): JSONObject? {
-        return if (thisProp.get() != thatProp.get()) JSONObject(
-            mutableMapOf(
-                thatProp.name to mutableMapOf(
-                    "old" to outputR(thatProp.get()),
-                    "new" to outputR(thisProp.get())
-                )
-            )
+        return if (thisProp.get() != thatProp.get()) jsonUpdateStatement(
+            thatProp.name,
+            outputR(thatProp.get()),
+            outputR(thisProp.get())
         ) else null
+    }
+
+    fun jsonUpdateStatement(fieldName: String, oldValue: String?, newValue: String?): JSONObject {
+        return JSONObject(mutableMapOf(fieldName to mutableMapOf("old" to oldValue, "new" to newValue)))
     }
 
     fun diff(that: T): JSONArray {

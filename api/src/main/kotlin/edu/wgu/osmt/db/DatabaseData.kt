@@ -6,13 +6,11 @@ interface HasUpdateDate {
     val updateDate: LocalDateTime
 }
 
-interface DatabaseData<T : DatabaseData<T>> {
+interface DatabaseData {
     val id: Long?
     val creationDate: LocalDateTime
-
-    fun withId(id: Long): T
 }
 
-interface OutputsModel<T : DatabaseData<T>> {
+interface OutputsModel<out T> {
     fun toModel(): T
 }

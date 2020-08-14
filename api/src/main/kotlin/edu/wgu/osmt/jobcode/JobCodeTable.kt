@@ -1,11 +1,16 @@
 package edu.wgu.osmt.jobcode
 
 import edu.wgu.osmt.db.TableWithUpdateMapper
+import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.statements.InsertStatement
+import org.jetbrains.exposed.sql.`java-time`.datetime
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
-object JobCodeTable : TableWithUpdateMapper<JobCode, JobCodeUpdate>("JobCode") {
+object JobCodeTable : TableWithUpdateMapper<JobCodeUpdate>, LongIdTable("JobCode") {
+    override val table = this
+
+    override val creationDate = datetime("creationDate")
+    override val updateDate = datetime("updateDate")
     val code: Column<String> = varchar("code", 128)
     val name: Column<String?> = varchar("name", 128).nullable()
     val description: Column<String?> = text("description").nullable()
@@ -18,13 +23,5 @@ object JobCodeTable : TableWithUpdateMapper<JobCode, JobCodeUpdate>("JobCode") {
         updateObject.name?.let { it.t?.let { updateBuilder[name] = it } }
         updateObject.description?.let { it.t?.let { updateBuilder[description] = it } }
         updateObject.source?.let { it.t?.let { updateBuilder[sourceColumn] = it } }
-    }
-
-    override fun insertStatementApplyFromT(insertStatement: InsertStatement<Number>, t: JobCode) {
-        super.insertStatementApplyFromT(insertStatement, t)
-        insertStatement[code] = t.code
-        insertStatement[name] = t.name
-        insertStatement[description] = t.description
-        insertStatement[sourceColumn] = t.source
     }
 }

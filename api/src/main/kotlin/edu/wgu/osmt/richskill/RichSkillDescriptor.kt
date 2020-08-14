@@ -25,11 +25,7 @@ data class RichSkillDescriptor(
     val jobCodes: List<JobCode> = listOf(),
     val keywords: List<Keyword> = listOf(),
     val category: Keyword? = null
-) : DatabaseData<RichSkillDescriptor>, HasUpdateDate {
-
-    override fun withId(id: Long): RichSkillDescriptor {
-        return copy(id = id)
-    }
+) : DatabaseData, HasUpdateDate {
 
     companion object {
         fun create(name: String, statement: String, author: String): RichSkillDescriptor {
@@ -53,7 +49,7 @@ data class RsdUpdateObject(
     val statement: String? = null,
     val author: String? = null,
     val category: NullableFieldUpdate<Keyword>? = null
-) : UpdateObject<RichSkillDescriptor> {
+) : UpdateObject<RichSkillDescriptorDao> {
 
     init {
         validate(this) {
@@ -65,31 +61,33 @@ data class RsdUpdateObject(
         }
     }
 
-    fun compareName(that: RichSkillDescriptor): JSONObject? {
+    fun compareName(that: RichSkillDescriptorDao): JSONObject? {
         return name?.let {
             compare(that::name, this::name, stringOutput)
         }
     }
 
-    fun compareStatement(that: RichSkillDescriptor): JSONObject? {
+    fun compareStatement(that: RichSkillDescriptorDao): JSONObject? {
         return statement?.let {
             compare(that::statement, this::statement, stringOutput)
         }
     }
 
-    fun compareCategory(that: RichSkillDescriptor): JSONObject? {
+    fun compareCategory(that: RichSkillDescriptorDao): JSONObject? {
         return category?.let {
-            compare(that::category, it::t, keywordOutput)
+            if (that.category?.let { id } != it.t?.id) {
+                jsonUpdateStatement(that.name, that.category?.let { it.value }, it.t?.value)
+            } else null
         }
     }
 
-    fun compareAuthor(that: RichSkillDescriptor): JSONObject? {
+    fun compareAuthor(that: RichSkillDescriptorDao): JSONObject? {
         return author?.let {
             compare(that::author, this::author, stringOutput)
         }
     }
 
-    override val comparisonList: List<(t: RichSkillDescriptor) -> JSONObject?> =
+    override val comparisonList: List<(t: RichSkillDescriptorDao) -> JSONObject?> =
         listOf(::compareName, ::compareStatement, ::compareCategory, ::compareAuthor)
 }
 

@@ -1,11 +1,10 @@
 package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.db.*
-import edu.wgu.osmt.richskill.RichSkillDescriptor
-import net.minidev.json.JSONArray
 import net.minidev.json.JSONObject
+import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.ReferenceOption
+import org.jetbrains.exposed.sql.`java-time`.datetime
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import java.time.LocalDateTime
 
@@ -16,8 +15,7 @@ data class Keyword(
     val value: String,
     val type: KeywordTypeEnum,
     val uri: String? = null
-) : DatabaseData<Keyword>, HasUpdateDate {
-    override fun withId(id: Long): Keyword = copy(id = id)
+) : DatabaseData, HasUpdateDate {
 }
 
 data class KeywordUpdateObj(override val id: Long, val value: String?, val uri: NullableFieldUpdate<String>?) :
@@ -34,7 +32,10 @@ data class KeywordUpdateObj(override val id: Long, val value: String?, val uri: 
     override val comparisonList: List<(t: Keyword) -> JSONObject?> = listOf(::compareValue, ::compareUri)
 }
 
-object KeywordTable : TableWithUpdateMapper<Keyword, KeywordUpdateObj>("Keyword") {
+object KeywordTable : TableWithUpdateMapper<KeywordUpdateObj>, LongIdTable("Keyword") {
+    override val table: LongIdTable = this
+    override val creationDate = datetime("creationDate")
+    override val updateDate = datetime("updateDate")
     val value: Column<String> = varchar("value", 1024)
     val uri = text("uri").nullable()
     val keyword_type_enum =
@@ -42,9 +43,4 @@ object KeywordTable : TableWithUpdateMapper<Keyword, KeywordUpdateObj>("Keyword"
             "keyword_type_enum",
             "Enum('Category', 'Certifications', 'Keyword', 'Other', 'ProfessionalStandards', 'Sel', 'Tools')",
             { value -> KeywordTypeEnum.valueOf(value as String) }, { it.name })
-
-    override fun insertStatementApplyFromT(insertStatement: InsertStatement<Number>, t: Keyword) {
-        super.insertStatementApplyFromT(insertStatement, t)
-        insertStatement[value] = t.value
-    }
 }

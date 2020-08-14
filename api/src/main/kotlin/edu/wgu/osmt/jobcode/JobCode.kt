@@ -18,11 +18,7 @@ data class JobCode(
     val name: String? = null,
     val description: String? = null,
     val source: String? = null
-) : DatabaseData<JobCode>, HasUpdateDate {
-
-    override fun withId(id: Long): JobCode {
-        return copy(id = id)
-    }
+) : DatabaseData, HasUpdateDate {
 
     companion object {
         fun create(code: String): JobCode {

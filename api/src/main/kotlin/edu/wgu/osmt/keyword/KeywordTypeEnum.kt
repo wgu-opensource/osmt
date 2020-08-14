@@ -12,7 +12,13 @@ enum class KeywordTypeEnum {
         override val displayName = "Professional Standards"
     },
     Sel,
-    Tools;
+    Tools,
+    Keyword,
+    Alignment,
+    Occupation,
+    Employers,
+    ;
+
 
     open val displayName: String = this.name
 }

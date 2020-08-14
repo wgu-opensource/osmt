@@ -1,31 +1,22 @@
 package edu.wgu.osmt.richskill
 
-import edu.wgu.osmt.auditlog.AuditLog
-import edu.wgu.osmt.auditlog.AuditLogRepository
-import edu.wgu.osmt.db.NullableFieldUpdate
-import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
-import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordDao
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.util.*
 
 @Service
 @RestController
 @RequestMapping("/skills")
 class RichSkillApi @Autowired constructor(
-    val richSkillRepository: RichSkillRepository,
+    val richSkillRepository: RichSkillRepository
     //val esRichSkillRepository: EsRichSkillRepository,
-    val auditLogRepository: AuditLogRepository
-
 ) {
     val keywordDao = KeywordDao.Companion
 
@@ -33,20 +24,19 @@ class RichSkillApi @Autowired constructor(
     @GetMapping()
     fun findAll() = richSkillRepository.findAll()
 
+    @GetMapping("/{uuid}")
+    fun byUUID(@PathVariable uuid: String): RichSkillDescriptor? {
+        return richSkillRepository.findByUUID(uuid)
+    }
+
     // TODO remove once testing framework is implemented
     @GetMapping("/insert-random")
     fun insertRandom(@AuthenticationPrincipal user: OAuth2User): String {
         val title = UUID.randomUUID().toString()
-        val result = richSkillRepository.insert(
-            RichSkillDescriptor.create(
-                title,
-                "a randomly inserted skill",
-                "an author"
-            ), user
-        )
+        val result = richSkillRepository.create(title, "a randomly inserted skill", "an author", user)
         val updateResult = richSkillRepository.update(
             RsdUpdateObject(
-                result.id!!,
+                result.id.value,
                 "updated title",
                 "updated description",
                 "updatedAuthor"

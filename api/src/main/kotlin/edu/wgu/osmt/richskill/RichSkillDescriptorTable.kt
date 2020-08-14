@@ -4,14 +4,19 @@ import edu.wgu.osmt.db.TableWithUpdateMapper
 import edu.wgu.osmt.jobcode.JobCodeTable
 import edu.wgu.osmt.keyword.KeywordTable
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.statements.InsertStatement
+import org.jetbrains.exposed.sql.`java-time`.datetime
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
 
-object RichSkillDescriptorTable : TableWithUpdateMapper<RichSkillDescriptor, RsdUpdateObject>("RichSkillDescriptor") {
+object RichSkillDescriptorTable : TableWithUpdateMapper<RsdUpdateObject>, LongIdTable("RichSkillDescriptor") {
+    override val table = this
+
+    override val creationDate = datetime("creationDate")
+    override val updateDate = datetime("updateDate")
     val uuid = varchar("uuid", 36).uniqueIndex()
     val name = text("name")
     val statement = text("statement")
@@ -33,14 +38,6 @@ object RichSkillDescriptorTable : TableWithUpdateMapper<RichSkillDescriptor, Rsd
             }
         }
         updateObject.author?.let { updateBuilder[author] = it }
-    }
-
-    override fun insertStatementApplyFromT(insertStatement: InsertStatement<Number>, t: RichSkillDescriptor) {
-        super.insertStatementApplyFromT(insertStatement, t)
-        insertStatement[uuid] = t.uuid.toString()
-        insertStatement[name] = t.name
-        insertStatement[statement] = t.statement
-        insertStatement[author] = t.author
     }
 }
 

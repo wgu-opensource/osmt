@@ -1,9 +1,13 @@
 package edu.wgu.osmt.auditlog
 
-import edu.wgu.osmt.db.TableWithMappers
+import edu.wgu.osmt.db.TableWithInsertMapper
+import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.sql.`java-time`.datetime
 import org.jetbrains.exposed.sql.statements.InsertStatement
 
-object AuditLogTable : TableWithMappers<AuditLog>("AuditLog") {
+object AuditLogTable : TableWithInsertMapper<AuditLog>, LongIdTable("AuditLog") {
+    override val table = this
+    override val creationDate = datetime("creationDate")
     val user = varchar("user", 256)
     val operationType = varchar("operationType", 128)
     val targetTableName = varchar("tableName", 128)

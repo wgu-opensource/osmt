@@ -4,40 +4,38 @@ import com.google.gson.Gson
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
-import edu.wgu.osmt.db.DslCrudRepository
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.util.*
 
-interface RichSkillRepository : DslCrudRepository<RichSkillDescriptor, RsdUpdateObject> {
-    fun insert(t: RichSkillDescriptor, user: OAuth2User): RichSkillDescriptor
-    fun update(updateObject: RsdUpdateObject, user: OAuth2User): RichSkillDescriptor?
+interface RichSkillRepository {
+    val table: RichSkillDescriptorTable
+    val dao: RichSkillDescriptorDao.Companion
+    fun update(updateObject: RsdUpdateObject, user: OAuth2User?): RichSkillDescriptor?
     fun findAll(): List<RichSkillDescriptor>
     fun findById(id: Long): RichSkillDescriptor?
+    fun findByUUID(uuid: String): RichSkillDescriptor?
+    fun create(
+        name: String,
+        statement: String,
+        author: String,
+        user: OAuth2User?
+    ): RichSkillDescriptorDao
 }
 
 @Repository
 class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: AuditLogRepository) :
     RichSkillRepository {
-    val dao = RichSkillDescriptorDao.Companion
+    override val dao = RichSkillDescriptorDao.Companion
     override val table = RichSkillDescriptorTable
-
-    override fun insert(t: RichSkillDescriptor, user: OAuth2User): RichSkillDescriptor {
-        val resultId = table.insert(t)
-        val fetched = findById(resultId)!!
-        auditLogRepository.insert(
-            AuditLog.fromAtomicOp(
-                table,
-                resultId,
-                Gson().toJson(fetched),
-                user,
-                AuditOperationType.Insert
-            )
-        )
-        return fetched
-    }
 
     override fun findAll() = transaction {
         dao.all().map { it.toModel() }
@@ -47,25 +45,61 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
         dao.findById(id)?.toModel()
     }
 
-    override fun update(updateObject: RsdUpdateObject, user: OAuth2User): RichSkillDescriptor? {
+    @Transactional
+    override fun update(updateObject: RsdUpdateObject, user: OAuth2User?): RichSkillDescriptor? {
         transaction {
-            val original = dao.findById(updateObject.id)?.toModel()
+            val original = dao.findById(updateObject.id)
             val changes = original?.let { updateObject.diff(it) }
-
-            table.update(updateObject)
-
-            changes?.let {
+            changes?.let { it ->
                 auditLogRepository.insert(
                     AuditLog.fromAtomicOp(
                         table,
                         updateObject.id,
                         it.toString(),
-                        user,
+                        user!!,
                         AuditOperationType.Update
                     )
                 )
             }
+            table.update({ table.id eq updateObject.id }) {
+                updateBuilderApplyFromUpdateObject(it, updateObject)
+            }
         }
         return transaction { dao.findById(updateObject.id)?.toModel() }
+    }
+
+    override fun findByUUID(uuid: String): RichSkillDescriptor? = transaction {
+        val query = table.select { table.uuid eq uuid }.singleOrNull()
+        query?.let { dao.wrapRow(it).toModel() }
+    }
+
+    override fun create(
+        name: String,
+        statement: String,
+        author: String,
+        user: OAuth2User?
+    ): RichSkillDescriptorDao {
+        val newRichSkill = transaction {
+            dao.new {
+                this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
+                this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
+                this.uuid = UUID.randomUUID().toString()
+                this.name = name
+                this.statement = statement
+                this.author = author
+            }
+        }
+        transaction {
+            auditLogRepository.insert(
+                AuditLog.fromAtomicOp(
+                    table,
+                    newRichSkill.id.value,
+                    Gson().toJson(newRichSkill.toModel()),
+                    user!!,
+                    AuditOperationType.Insert
+                )
+            )
+        }
+        return newRichSkill
     }
 }

@@ -14,7 +14,7 @@ class SecurityConfig {
 
     @Override
     fun configure(http: HttpSecurity) {
-        http.authorizeRequests().antMatchers("/skills/**", "/jobcode/**").authenticated()
+        http.authorizeRequests().antMatchers("/skills/insert-random", "/jobcode/**").authenticated()
             .antMatchers("/", "/skills", "jobcode", "/enqueue").permitAll()
             .and().oauth2Login()
     }

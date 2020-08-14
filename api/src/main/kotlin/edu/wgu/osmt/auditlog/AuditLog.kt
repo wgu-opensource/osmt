@@ -20,10 +20,7 @@ data class AuditLog(
     val entityId: Long,
     val user: String,
     val changedFields: String
-) : DatabaseData<AuditLog> {
-    override fun withId(id: Long): AuditLog {
-        return copy(id = id)
-    }
+) : DatabaseData {
 
     companion object {
         fun fromAtomicOp(

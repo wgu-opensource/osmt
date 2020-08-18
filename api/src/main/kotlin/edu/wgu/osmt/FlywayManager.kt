@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 class FlywayManager @Autowired constructor(dbConfig: DbConfig, flyConfig: FlyConfig) {
 
     val flyway = Flyway.configure()
-        .dataSource(dbConfig.url, dbConfig.username, dbConfig.password)
+        .dataSource(dbConfig.composedUri, "", "")
         .createSchemas(flyConfig.enabled)
         .baselineOnMigrate(flyConfig.baselineOnMigrate)
         .load()

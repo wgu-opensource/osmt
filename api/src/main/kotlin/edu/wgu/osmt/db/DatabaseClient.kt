@@ -12,7 +12,7 @@ abstract class DatabaseClient {
 @Service
 class DatabaseClientImpl @Autowired constructor(dbConfig: DbConfig) : DatabaseClient() {
     override val db: Database = Database.connect(
-        url = dbConfig.url,
-        driver = "com.mysql.cj.jdbc.Driver", user = dbConfig.username, password = dbConfig.password
+        url = dbConfig.composedUri,
+        driver = "com.mysql.cj.jdbc.Driver", user = "", password = ""
     )
 }

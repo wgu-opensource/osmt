@@ -1,0 +1,71 @@
+package edu.wgu.osmt.keyword
+
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+
+interface KeywordRepository {
+    val table: KeywordTable
+    val dao: KeywordDao.Companion
+
+    fun findAll(): List<Keyword>
+    fun findById(id: Long): Keyword?
+    fun findByType(type: KeywordTypeEnum): List<Keyword>
+    fun findByValueOrCreate(
+        type: KeywordTypeEnum,
+        value: String,
+        uri: String? = null
+    ): Keyword
+    fun create(
+        type: KeywordTypeEnum,
+        value: String,
+        uri: String? = null
+    ): KeywordDao
+}
+
+
+@Repository
+class KeywordRepositoryImpl @Autowired constructor(): KeywordRepository {
+    override val dao = KeywordDao.Companion
+    override val table = KeywordTable
+
+    override fun findAll() = transaction {
+        dao.all().map { it.toModel() }
+    }
+
+    override fun findById(id: Long) = transaction {
+        dao.findById(id)?.toModel()
+    }
+
+    override fun findByType(type: KeywordTypeEnum): List<Keyword> {
+        return transaction {
+            table.select { table.keyword_type_enum eq type }.map { dao.wrapRow(it).toModel() }
+        }
+    }
+
+    override fun findByValueOrCreate(type: KeywordTypeEnum, value: String, uri: String?): Keyword {
+        val existing: Keyword? = transaction {
+            val query = table.select {
+                (table.keyword_type_enum eq type) and (table.value eq value)
+            }.singleOrNull()
+            query?.let { dao.wrapRow(it).toModel() }
+        }
+        return existing ?: create(type,value,uri).toModel()
+    }
+
+    override fun create(type: KeywordTypeEnum, value: String, uri: String?): KeywordDao {
+        return transaction {
+            dao.new {
+                updateDate = LocalDateTime.now(ZoneOffset.UTC)
+                creationDate = LocalDateTime.now(ZoneOffset.UTC)
+                this.type = type
+                this.value = value
+                this.uri = uri
+            }
+        }
+    }
+}

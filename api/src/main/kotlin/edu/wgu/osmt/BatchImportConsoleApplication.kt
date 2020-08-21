@@ -1,8 +1,12 @@
 package edu.wgu.osmt
 
 import com.opencsv.bean.CsvBindByName
-import com.opencsv.bean.CsvToBean
 import com.opencsv.bean.CsvToBeanBuilder
+import edu.wgu.osmt.db.ListFieldUpdate
+import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.keyword.Keyword
+import edu.wgu.osmt.keyword.KeywordRepository
+import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RsdUpdateObject
 import org.slf4j.Logger
@@ -63,7 +67,7 @@ class RichSkillRow {
     var employer: String? = null
 
     @CsvBindByName(column = "Alignment")
-    var Alignment: String? = null
+    var alignment: String? = null
 }
 
 @SpringBootApplication
@@ -77,9 +81,67 @@ class BatchImportConsoleApplication : CommandLineRunner {
     @Autowired
     private lateinit var richSkillRepository: RichSkillRepository;
 
+    @Autowired
+    private lateinit var keywordRepository: KeywordRepository;
+
+    val defaultAuthor = "Western Governors University";
+
+    fun parse_keywords(keywordType: KeywordTypeEnum, rowValue: String?, useUri: Boolean = false):List<Keyword>? {
+        val splitValues = rowValue?.let { it.split(';').map { it.trim() } }
+        return splitValues?.map {
+            if (useUri)
+                keywordRepository.findOrCreate(keywordType, uri=it)
+            else
+                keywordRepository.findOrCreate(keywordType, value=it)
+        }
+    }
+
+    fun <T> concatenate(vararg lists: List<T>?): List<T>? {
+        val flat = lists.filterNotNull().flatten()
+        return when {
+            flat.isNotEmpty() -> flat
+            else -> null
+        }
+    }
+
     fun handleRows(rows: List<RichSkillRow>) {
-        LOG.info("got some rows: ${rows.size}")
-        LOG.info("first statement: ${rows[0].skillStatement}")
+        LOG.debug("got ${rows.size} rows.")
+
+        for (row in rows) {
+            val user = null
+            var category: Keyword? = null
+            var keywords: List<Keyword>? = null
+            var standards: List<Keyword>? = null
+            var certifications: List<Keyword>? = null
+            var employers: List<Keyword>? = null
+            var occupations: List<Keyword>? = null
+            var alignments: List<Keyword>? = null
+
+            category = row.skillCategory?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Category, value = it) }
+
+            keywords = parse_keywords(KeywordTypeEnum.Keyword, row.keywords)
+            standards = parse_keywords(KeywordTypeEnum.ProfessionalStandards, row.standards)
+            certifications = parse_keywords(KeywordTypeEnum.Certifications, row.certifications)
+            employers = parse_keywords(KeywordTypeEnum.Employers, row.employer)
+            occupations = parse_keywords(KeywordTypeEnum.Occupation, row.jobRoles)
+            alignments = parse_keywords(KeywordTypeEnum.Alignment, row.alignment, useUri = true)
+
+            val all_keywords = concatenate(keywords, standards, certifications, employers, occupations, alignments)
+
+            if (row.skillName != null && row.skillStatement != null) {
+                val newSkill = richSkillRepository.create(
+                    row.skillName!!,
+                    row.skillStatement!!,
+                   row.author ?: defaultAuthor,
+                    user)
+                richSkillRepository.update(RsdUpdateObject(
+                   id = newSkill.id.value,
+                   category = NullableFieldUpdate(category),
+                   keywords = all_keywords?.let { ListFieldUpdate(add=it) }
+                ), user)
+            }
+        }
+
     }
 
     fun processCsv(csv_path: String) {

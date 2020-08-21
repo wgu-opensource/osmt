@@ -8,6 +8,7 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.db.PublishStatusDao
 import edu.wgu.osmt.db.PublishStatusTable
 import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -40,6 +41,8 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
     override val dao = RichSkillDescriptorDao.Companion
     override val table = RichSkillDescriptorTable
 
+    val richSkillKeywordTable = RichSkillKeywords
+
     override fun findAll() = transaction {
         dao.all().map { it.toModel() }
     }
@@ -67,6 +70,18 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
             table.update({ table.id eq updateObject.id }) {
                 updateBuilderApplyFromUpdateObject(it, updateObject)
             }
+
+            // update keywords
+            updateObject.keywords?.let {
+                it.add?.map {
+                    richSkillKeywordTable.create(richSkillId = updateObject.id, keywordId = it.id!!)
+                }
+
+                it.remove?.map {
+                    richSkillKeywordTable.delete(richSkillId = updateObject.id, keywordId = it.id!!)
+                }
+            }
+
         }
         return transaction { dao.findById(updateObject.id)?.toModel() }
     }

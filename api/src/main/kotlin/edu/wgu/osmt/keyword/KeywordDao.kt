@@ -11,9 +11,9 @@ class KeywordDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Keyword> {
     var creationDate by KeywordTable.creationDate
     var updateDate by KeywordTable.updateDate
 
-    var value by KeywordTable.value
     var type by KeywordTable.keyword_type_enum
-    var uri by KeywordTable.uri
+    var value: String? by KeywordTable.value
+    var uri: String? by KeywordTable.uri
 
     override fun toModel(): Keyword = Keyword(
         id = id.value,

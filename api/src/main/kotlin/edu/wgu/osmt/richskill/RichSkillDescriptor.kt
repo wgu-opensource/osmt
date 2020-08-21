@@ -50,7 +50,8 @@ data class RsdUpdateObject(
     val name: String? = null,
     val statement: String? = null,
     val author: String? = null,
-    val category: NullableFieldUpdate<Keyword>? = null
+    val category: NullableFieldUpdate<Keyword>? = null,
+    val keywords: ListFieldUpdate<Keyword>? = null
 ) : UpdateObject<RichSkillDescriptorDao> {
 
     init {

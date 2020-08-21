@@ -5,13 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.user.OAuth2User
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.ModelAndView
 import java.util.*
 
-@Service
-@RestController
+@Controller
 @RequestMapping("/api/skills")
 class RichSkillApi @Autowired constructor(
     val richSkillRepository: RichSkillRepository
@@ -21,16 +19,19 @@ class RichSkillApi @Autowired constructor(
 
     // TODO pagination according to spec
     @GetMapping()
+    @ResponseBody
     fun findAll() = richSkillRepository.findAll()
 
     @GetMapping("/{uuid}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
     fun byUUID(@PathVariable uuid: String): RichSkillDescriptor? {
         return richSkillRepository.findByUUID(uuid)
     }
 
-    @GetMapping("/{uuid}", produces = [MediaType.TEXT_HTML_VALUE])
-    fun byUUIDHtmlView(@PathVariable uuid: String): ModelAndView {
-        return ModelAndView(richSkillRepository.findByUUID(uuid).toString())
+    @RequestMapping("/{uuid}", produces = [MediaType.TEXT_HTML_VALUE])
+    fun byUUIDHtmlView(@PathVariable uuid: String): String {
+        println("aaaaa")
+        return "forward:/skills/$uuid"
     }
 
     // TODO remove once testing framework is implemented

@@ -1,4 +1,4 @@
-package edu.wgu.osmt.config
+package edu.wgu.osmt.db
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
@@ -8,6 +8,6 @@ import org.springframework.boot.context.properties.ConstructorBinding
 data class DbConfig(
     val name: String,
     val uri: String,
-    val composedUri: String,
+    val composedUrl: String,
     val createTablesAndColumnsIfMissing: Boolean = false
 )

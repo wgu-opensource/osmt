@@ -16,10 +16,6 @@ class UiAppConfig : WebMvcConfigurer {
             .addResourceLocations("classpath:/ui/")
     }
 
-    /**
-     * Add forwarding rules to the UI here
-     * - forward non-api routes to UI to handle
-     */
     @Override
     override fun addViewControllers(registry: ViewControllerRegistry) {
         registry.addViewController("/{notApi:(?!api)[^\\.]*(?!\\.\\w+)}/**").setViewName("forward:/")

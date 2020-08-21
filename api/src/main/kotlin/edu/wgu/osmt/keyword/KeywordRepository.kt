@@ -1,5 +1,6 @@
 package edu.wgu.osmt.keyword
 
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -15,14 +16,14 @@ interface KeywordRepository {
     fun findAll(): List<Keyword>
     fun findById(id: Long): Keyword?
     fun findByType(type: KeywordTypeEnum): List<Keyword>
-    fun findByValueOrCreate(
+    fun findOrCreate(
         type: KeywordTypeEnum,
-        value: String,
+        value: String? = null,
         uri: String? = null
     ): Keyword
     fun create(
         type: KeywordTypeEnum,
-        value: String,
+        value: String? = null,
         uri: String? = null
     ): KeywordDao
 }
@@ -47,17 +48,27 @@ class KeywordRepositoryImpl @Autowired constructor(): KeywordRepository {
         }
     }
 
-    override fun findByValueOrCreate(type: KeywordTypeEnum, value: String, uri: String?): Keyword {
+    override fun findOrCreate(type: KeywordTypeEnum, value: String?, uri: String?): Keyword {
         val existing: Keyword? = transaction {
-            val query = table.select {
-                (table.keyword_type_enum eq type) and (table.value eq value)
-            }.singleOrNull()
-            query?.let { dao.wrapRow(it).toModel() }
+            val condition = when {
+                value != null && uri != null ->
+                    (table.keyword_type_enum eq type) and (table.value eq value) and (table.uri eq uri)
+                value != null ->
+                    (table.keyword_type_enum eq type) and (table.value eq value)
+                uri != null ->
+                    (table.keyword_type_enum eq type) and (table.uri eq uri)
+                else -> null
+            }
+
+            transaction {
+                val query = condition?.let { table.select(it).singleOrNull() }
+                query?.let { dao.wrapRow(it).toModel() }
+            }
         }
         return existing ?: create(type,value,uri).toModel()
     }
 
-    override fun create(type: KeywordTypeEnum, value: String, uri: String?): KeywordDao {
+    override fun create(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao {
         return transaction {
             dao.new {
                 updateDate = LocalDateTime.now(ZoneOffset.UTC)

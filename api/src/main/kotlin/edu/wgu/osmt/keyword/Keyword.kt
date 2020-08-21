@@ -12,8 +12,8 @@ data class Keyword(
     override val id: Long?,
     override val creationDate: LocalDateTime,
     override val updateDate: LocalDateTime,
-    val value: String,
     val type: KeywordTypeEnum,
+    val value: String? = null,
     val uri: String? = null
 ) : DatabaseData, HasUpdateDate {
 }
@@ -36,7 +36,7 @@ object KeywordTable : TableWithUpdateMapper<KeywordUpdateObj>, LongIdTable("Keyw
     override val table: LongIdTable = this
     override val creationDate = datetime("creationDate")
     override val updateDate = datetime("updateDate")
-    val value: Column<String> = varchar("value", 1024)
+    val value: Column<String?> = varchar("value", 1024).nullable()
     val uri = text("uri").nullable()
     val keyword_type_enum =
         customEnumeration(

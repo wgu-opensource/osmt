@@ -16,7 +16,7 @@ class ElasticsearchConfig {
     @Override
     @Bean
     fun elasticSearchClient(): RestHighLevelClient {
-        val clientConfiguration = ClientConfiguration.builder().connectedTo("${esConfig.host}:${esConfig.port}").build()
+        val clientConfiguration = ClientConfiguration.builder().connectedTo(esConfig.uri).build()
         return RestClients.create(clientConfiguration).rest()
     }
 }

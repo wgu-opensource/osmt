@@ -32,6 +32,4 @@ class PublishStatusDao(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<PublishStatusDao>(PublishStatusTable)
 
     var name by PublishStatusTable.name
-    val statusEnum: PublishStatus
-        get() = PublishStatus.values()[id.value.toInt()]
 }

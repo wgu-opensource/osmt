@@ -7,7 +7,7 @@ import {catchError, tap} from "rxjs/operators"
 @Injectable({
   providedIn: "root"
 })
-export class RichSkillServiceService {
+export class RichSkillService {
 
   constructor(private httpClient: HttpClient) {
   }

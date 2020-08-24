@@ -3,7 +3,7 @@ USE osmt_db;
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT = @@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS = @@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION = @@COLLATION_CONNECTION */;
-SET NAMES utf8;
+SET NAMES utf8mb3;
 /*!40103 SET @OLD_TIME_ZONE = @@TIME_ZONE */;
 /*!40103 SET TIME_ZONE = '+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0 */;
@@ -17,7 +17,7 @@ SET NAMES utf8;
 
 DROP TABLE IF EXISTS `AuditLog`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb4;
+SET character_set_client = utf8mb3;
 CREATE TABLE `AuditLog`
 (
     `id`            bigint(20)   NOT NULL AUTO_INCREMENT,
@@ -30,7 +30,7 @@ CREATE TABLE `AuditLog`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 5
-  DEFAULT CHARSET = latin1;
+  DEFAULT CHARSET = utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `AuditLog`
 
 DROP TABLE IF EXISTS `JobCode`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb4;
+SET character_set_client = utf8mb3;
 CREATE TABLE `JobCode`
 (
     `id`           bigint(20)   NOT NULL AUTO_INCREMENT,
@@ -51,7 +51,7 @@ CREATE TABLE `JobCode`
     `source`       varchar(1024) DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = latin1;
+  DEFAULT CHARSET = utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -71,7 +71,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `Keyword`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb4;
+SET character_set_client = utf8mb3;
 CREATE TABLE `Keyword`
 (
     `id`                bigint(20)                                                                                 NOT NULL AUTO_INCREMENT,
@@ -82,7 +82,7 @@ CREATE TABLE `Keyword`
     `keyword_type_enum` enum ('Category','Certifications','Keyword','Other','ProfessionalStandards','Sel','Tools') NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = latin1;
+  DEFAULT CHARSET = utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +102,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `PublishStatus`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb4;
+SET character_set_client = utf8mb3;
 CREATE TABLE `PublishStatus`
 (
     `id`   bigint(20)  NOT NULL AUTO_INCREMENT,
@@ -110,7 +110,7 @@ CREATE TABLE `PublishStatus`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 6
-  DEFAULT CHARSET = latin1;
+  DEFAULT CHARSET = utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,7 +134,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `RichSkillDescriptor`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb4;
+SET character_set_client = utf8mb3;
 CREATE TABLE `RichSkillDescriptor`
 (
     `id`                bigint(20)  NOT NULL AUTO_INCREMENT,
@@ -154,7 +154,7 @@ CREATE TABLE `RichSkillDescriptor`
     CONSTRAINT `fk_RichSkillDescriptor_publish_status_id_id` FOREIGN KEY (`publish_status_id`) REFERENCES `PublishStatus` (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 3
-  DEFAULT CHARSET = latin1;
+  DEFAULT CHARSET = utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -164,7 +164,7 @@ CREATE TABLE `RichSkillDescriptor`
 
 DROP TABLE IF EXISTS `RichSkillJobSkills`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb4;
+SET character_set_client = utf8mb3;
 CREATE TABLE `RichSkillJobSkills`
 (
     `id`           bigint(20) NOT NULL,
@@ -176,7 +176,7 @@ CREATE TABLE `RichSkillJobSkills`
     CONSTRAINT `fk_RichSkillJobSkills_jobcode_id_id` FOREIGN KEY (`jobcode_id`) REFERENCES `JobCode` (`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_RichSkillJobSkills_richskill_id_id` FOREIGN KEY (`richskill_id`) REFERENCES `RichSkillDescriptor` (`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = latin1;
+  DEFAULT CHARSET = utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -196,7 +196,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `RichSkillKeywords`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb4;
+SET character_set_client = utf8mb3;
 CREATE TABLE `RichSkillKeywords`
 (
     `id`           bigint(20) NOT NULL,
@@ -208,7 +208,7 @@ CREATE TABLE `RichSkillKeywords`
     CONSTRAINT `fk_RichSkillKeywords_keyword_id_id` FOREIGN KEY (`keyword_id`) REFERENCES `Keyword` (`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_RichSkillKeywords_richskill_id_id` FOREIGN KEY (`richskill_id`) REFERENCES `RichSkillDescriptor` (`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = latin1;
+  DEFAULT CHARSET = utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -228,7 +228,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `flyway_schema_history`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb4;
+SET character_set_client = utf8mb3;
 CREATE TABLE `flyway_schema_history`
 (
     `installed_rank` int(11)       NOT NULL,
@@ -244,7 +244,7 @@ CREATE TABLE `flyway_schema_history`
     PRIMARY KEY (`installed_rank`),
     KEY `flyway_schema_history_s_idx` (`success`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = latin1;
+  DEFAULT CHARSET = utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

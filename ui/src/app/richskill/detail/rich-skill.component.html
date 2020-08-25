@@ -1,2 +1,11 @@
-<p>richskill mostly works!</p>
-
+<div *ngIf="richSkill">
+  <p>name - {{richSkill.name}}</p>
+  <p>uuid - {{richSkill.uuid}}</p>
+  <p>updateDate - {{richSkill.updateDate}}</p>
+  <p>creationDate - {{richSkill.creationDate}}</p>
+  <p>keywords - {{richSkill.keywords}}</p>
+  <p>statement - {{richSkill.statement}}</p>
+  <p>author - {{richSkill.author}}</p>
+  <p>category - {{richSkill.category?.value}}</p>
+  <p>publishstatus - {{richSkill.publishStatus}}</p>
+</div>

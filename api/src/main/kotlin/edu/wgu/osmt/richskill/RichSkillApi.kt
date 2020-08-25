@@ -30,7 +30,6 @@ class RichSkillApi @Autowired constructor(
 
     @RequestMapping("/{uuid}", produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(@PathVariable uuid: String): String {
-        println("aaaaa")
         return "forward:/skills/$uuid"
     }
 

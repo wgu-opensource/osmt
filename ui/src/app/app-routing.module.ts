@@ -9,6 +9,10 @@ const routes: Routes = [
     component: RichSkillComponent
   },
   {
+    path: "api/skills/:uuid",
+    component: RichSkillComponent
+  },
+  {
     path: "skills",
     component: RichSkillsComponent
   }

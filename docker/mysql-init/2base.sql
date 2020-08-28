@@ -75,9 +75,12 @@ CREATE TABLE `Keyword`
     `id`                bigint(20)                                                                                 NOT NULL AUTO_INCREMENT,
     `creationDate`      datetime(6)                                                                                NOT NULL,
     `updateDate`        datetime(6)                                                                                NOT NULL,
-    `value`             varchar(1024)                                                                              NOT NULL,
-    `uri`               text,
-    `keyword_type_enum` enum ('Category','Certifications','Keyword','Other','ProfessionalStandards','Sel','Tools') NOT NULL,
+    `value`             varchar(768),
+    `uri`               varchar(768),
+    `keyword_type_enum` enum ('Category','Keyword','Standard','Certification','Alignment','Employer') NOT NULL,
+    KEY `idx_Keyword_value` (`keyword_type_enum`, `value`),
+    KEY `idx_Keyword_uri` (`keyword_type_enum`, `uri`),
+
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -162,11 +165,10 @@ DROP TABLE IF EXISTS `RichSkillJobSkills`;
 SET character_set_client = utf8mb3;
 CREATE TABLE `RichSkillJobSkills`
 (
-    `id`           bigint(20) NOT NULL,
     `richskill_id` bigint(20) NOT NULL,
     `jobcode_id`   bigint(20) NOT NULL,
     PRIMARY KEY (`richskill_id`, `jobcode_id`),
-    UNIQUE KEY `RichSkillJobSkills_id_unique` (`id`),
+    KEY `fk_RichSkillKeywords_richskill_id_id` (`richskill_id`),
     KEY `fk_RichSkillJobSkills_jobcode_id_id` (`jobcode_id`),
     CONSTRAINT `fk_RichSkillJobSkills_jobcode_id_id` FOREIGN KEY (`jobcode_id`) REFERENCES `JobCode` (`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_RichSkillJobSkills_richskill_id_id` FOREIGN KEY (`richskill_id`) REFERENCES `RichSkillDescriptor` (`id`) ON DELETE CASCADE
@@ -193,10 +195,9 @@ DROP TABLE IF EXISTS `RichSkillKeywords`;
 SET character_set_client = utf8mb3;
 CREATE TABLE `RichSkillKeywords`
 (
-    `id`           bigint(20) NOT NULL,
     `richskill_id` bigint(20) NOT NULL,
     `keyword_id`   bigint(20) NOT NULL,
-    UNIQUE KEY `RichSkillKeywords_id_unique` (`id`),
+    PRIMARY KEY (`richskill_id`, `keyword_id`),
     KEY `fk_RichSkillKeywords_richskill_id_id` (`richskill_id`),
     KEY `fk_RichSkillKeywords_keyword_id_id` (`keyword_id`),
     CONSTRAINT `fk_RichSkillKeywords_keyword_id_id` FOREIGN KEY (`keyword_id`) REFERENCES `Keyword` (`id`) ON DELETE CASCADE,

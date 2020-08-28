@@ -1,8 +1,6 @@
 package edu.wgu.osmt.richskill
 
-import edu.wgu.osmt.db.BaseTable
 import edu.wgu.osmt.db.PublishStatusTable
-import edu.wgu.osmt.db.TableWithInsertMapper
 import edu.wgu.osmt.db.TableWithUpdateMapper
 import edu.wgu.osmt.jobcode.JobCodeTable
 import edu.wgu.osmt.keyword.KeywordTable
@@ -45,13 +43,12 @@ object RichSkillDescriptorTable : TableWithUpdateMapper<RsdUpdateObject>, LongId
 
 // many-to-many table for RichSkillDescriptor and JobCode relationship
 object RichSkillJobCodes : Table("RichSkillJobSkills") {
-    val id: Column<Long> = long("id").uniqueIndex()
     val richSkillId = reference("richskill_id", RichSkillDescriptorTable, onDelete = ReferenceOption.CASCADE).index()
     val jobCodeId = reference("jobcode_id", JobCodeTable, onDelete = ReferenceOption.CASCADE).index()
     override val primaryKey = PrimaryKey(richSkillId, jobCodeId, name = "PK_RichSkillJobCodes_rs_jc")
 }
 
-object RichSkillKeywords : LongIdTable("RichSkillKeywords") {
+object RichSkillKeywords : Table("RichSkillKeywords") {
     val richSkillId = reference("richskill_id", RichSkillDescriptorTable, onDelete = ReferenceOption.CASCADE).index()
     val keywordId = reference("keyword_id", KeywordTable, onDelete = ReferenceOption.CASCADE).index()
     override val primaryKey = PrimaryKey(richSkillId, keywordId, name = "PK_RichSkillKeywords_rs_kw")

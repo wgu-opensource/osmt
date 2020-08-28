@@ -41,6 +41,7 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
     override val table = RichSkillDescriptorTable
 
     val richSkillKeywordTable = RichSkillKeywords
+    val richSkillJobCodeTable = RichSkillJobCodes
 
 
     override fun findAll() = transaction {
@@ -84,6 +85,16 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
 
                 it.remove?.forEach { keyword ->
                     richSkillKeywordTable.delete(richSkillId = updateObject.id, keywordId = keyword.id!!)
+                }
+            }
+
+            // update jobcodes
+            updateObject.jobCodes?.let {
+                it.add?.forEach { jobCode ->
+                    richSkillJobCodeTable.create(richSkillId = updateObject.id, jobCodeId = jobCode.id!!)
+                }
+                it.remove?.forEach { jobCode ->
+                    richSkillJobCodeTable.delete(richSkillId = updateObject.id, jobCodeId = jobCode.id!!)
                 }
             }
         }

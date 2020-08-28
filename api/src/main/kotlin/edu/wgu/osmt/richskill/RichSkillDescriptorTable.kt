@@ -46,6 +46,19 @@ object RichSkillJobCodes : Table("RichSkillJobSkills") {
     val richSkillId = reference("richskill_id", RichSkillDescriptorTable, onDelete = ReferenceOption.CASCADE).index()
     val jobCodeId = reference("jobcode_id", JobCodeTable, onDelete = ReferenceOption.CASCADE).index()
     override val primaryKey = PrimaryKey(richSkillId, jobCodeId, name = "PK_RichSkillJobCodes_rs_jc")
+
+    fun create(richSkillId: Long, jobCodeId: Long) {
+        insert {
+            it[this.richSkillId] = EntityID(richSkillId, RichSkillDescriptorTable)
+            it[this.jobCodeId] = EntityID(jobCodeId, JobCodeTable)
+        }
+    }
+
+    fun delete(richSkillId: Long, jobCodeId: Long) {
+        deleteWhere {
+            (RichSkillJobCodes.richSkillId eq richSkillId) and (RichSkillJobCodes.jobCodeId eq jobCodeId)
+        }
+    }
 }
 
 object RichSkillKeywords : Table("RichSkillKeywords") {

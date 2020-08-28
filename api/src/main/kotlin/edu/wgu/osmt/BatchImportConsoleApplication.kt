@@ -4,6 +4,8 @@ import com.opencsv.bean.CsvBindByName
 import com.opencsv.bean.CsvToBeanBuilder
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.jobcode.JobCode
+import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
@@ -84,15 +86,28 @@ class BatchImportConsoleApplication : CommandLineRunner {
     @Autowired
     private lateinit var keywordRepository: KeywordRepository;
 
+    @Autowired
+    private lateinit var jobCodeRepository: JobCodeRepository;
+
     val defaultAuthor = "Western Governors University";
 
+    fun split_field(value: String?, delimiters: String = ";"): List<String>? {
+        return value?.let { it.split(delimiters).map { it.trim() } }?.distinct()
+    }
+
     fun parse_keywords(keywordType: KeywordTypeEnum, rowValue: String?, useUri: Boolean = false):List<Keyword>? {
-        val splitValues = rowValue?.let { it.split(';').map { it.trim() } }?.distinct()
-        return splitValues?.map {
+        return split_field(rowValue)?.map {
             if (useUri)
                 keywordRepository.findOrCreate(keywordType, uri=it)
             else
                 keywordRepository.findOrCreate(keywordType, value=it)
+        }
+    }
+
+    fun parse_jobcodes(rowValue: String?):List<JobCode>? {
+        return split_field(rowValue)?.map { code ->
+            val jobCode = jobCodeRepository.findByCode(code)
+            jobCode ?: jobCodeRepository.create(code).toModel()
         }
     }
 
@@ -114,8 +129,8 @@ class BatchImportConsoleApplication : CommandLineRunner {
             var standards: List<Keyword>? = null
             var certifications: List<Keyword>? = null
             var employers: List<Keyword>? = null
-            var occupations: List<Keyword>? = null
             var alignments: List<Keyword>? = null
+            var occupations: List<JobCode>? = null
 
             category = row.skillCategory?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Category, value = it) }
 
@@ -123,10 +138,10 @@ class BatchImportConsoleApplication : CommandLineRunner {
             standards = parse_keywords(KeywordTypeEnum.Standard, row.standards)
             certifications = parse_keywords(KeywordTypeEnum.Certification, row.certifications)
             employers = parse_keywords(KeywordTypeEnum.Employer, row.employer)
-//            occupations = parse_keywords(KeywordTypeEnum.Occupation, row.jobRoles)
             alignments = parse_keywords(KeywordTypeEnum.Alignment, row.alignment, useUri = true)
+            occupations = parse_jobcodes(row.jobRoles)
 
-            val all_keywords = concatenate(keywords, standards, certifications, employers, occupations, alignments)
+            val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
 
             if (row.skillName != null && row.skillStatement != null) {
                 val newSkill = richSkillRepository.create(
@@ -134,11 +149,14 @@ class BatchImportConsoleApplication : CommandLineRunner {
                     row.skillStatement!!,
                    row.author ?: defaultAuthor,
                     user)
+
                 richSkillRepository.update(RsdUpdateObject(
                    id = newSkill.id.value,
                    category = NullableFieldUpdate(category),
-                   keywords = all_keywords?.let { ListFieldUpdate(add=it) }
+                   keywords = all_keywords?.let { ListFieldUpdate(add=it) },
+                   jobCodes = occupations?.let { ListFieldUpdate(add=it) }
                 ), user)
+
                 LOG.info("created skill '${row.skillName!!}")
             }
         }

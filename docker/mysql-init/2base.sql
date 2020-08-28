@@ -45,10 +45,15 @@ CREATE TABLE `JobCode`
     `creationDate` datetime(6)  NOT NULL,
     `updateDate`   datetime(6)  NOT NULL,
     `code`         varchar(128) NOT NULL,
-    `name`         varchar(128)  DEFAULT NULL,
+    `name`         varchar(1024) DEFAULT NULL,
+    `major`        varchar(1024) DEFAULT NULL,
+    `minor`        varchar(1024) DEFAULT NULL,
+    `broad`        varchar(1024) DEFAULT NULL,
+    `detailed`     varchar(1024) DEFAULT NULL,
     `description`  text,
-    `source`       varchar(1024) DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    `framework`    varchar(1024) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_JobCode_code` (`code`)
 ) ENGINE = InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

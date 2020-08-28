@@ -12,10 +12,15 @@ class JobCodeDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<JobCode> {
     var creationDate by JobCodeTable.creationDate
     var updateDate by JobCodeTable.updateDate
 
+    var major by JobCodeTable.major
+    var minor by JobCodeTable.minor
+    var broad by JobCodeTable.broad
+    var detailed by JobCodeTable.detailed
+
     var code by JobCodeTable.code
     var name by JobCodeTable.name
     var description by JobCodeTable.description
-    var sourceColumn by JobCodeTable.sourceColumn
+    var framework by JobCodeTable.framework
 
 
     override fun toModel(): JobCode =
@@ -23,10 +28,14 @@ class JobCodeDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<JobCode> {
             id = id.value,
             creationDate = creationDate,
             updateDate = updateDate,
+            major = major,
+            minor = minor,
+            broad = broad,
+            detailed = detailed,
             code = code,
             name = name,
             description = description,
-            source = sourceColumn
+            framework = framework
         )
 
 }

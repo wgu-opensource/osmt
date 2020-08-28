@@ -16,10 +16,6 @@ interface BaseTable {
 
     // id provided by LongIdTable
     val creationDate: Column<LocalDateTime>
-
-    companion object {
-        val defaultCollation = "utf8mb3"
-    }
 }
 
 interface TableWithInsertMapper<T : DatabaseData> : BaseTable {

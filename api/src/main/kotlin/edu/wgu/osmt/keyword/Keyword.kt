@@ -36,8 +36,8 @@ object KeywordTable : TableWithUpdateMapper<KeywordUpdateObj>, LongIdTable("Keyw
     override val table: LongIdTable = this
     override val creationDate = datetime("creationDate")
     override val updateDate = datetime("updateDate")
-    val value: Column<String> = varchar("value", 1024, BaseTable.defaultCollation)
-    val uri = text("uri", BaseTable.defaultCollation).nullable()
+    val value: Column<String> = varchar("value", 1024)
+    val uri = text("uri").nullable()
     val keyword_type_enum =
         customEnumeration(
             "keyword_type_enum",

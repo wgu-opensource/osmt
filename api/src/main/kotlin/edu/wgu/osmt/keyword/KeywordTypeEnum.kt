@@ -7,19 +7,12 @@ package edu.wgu.osmt.keyword
  */
 enum class KeywordTypeEnum {
     Category,
-    Certifications,
-    Other,
-    ProfessionalStandards {
-        override val displayName = "Professional Standards"
-    },
-    Sel,
-    Tools,
     Keyword,
+    Standard,
+    Certification,
     Alignment,
-    Occupation,
-    Employers,
+    Employer,
     ;
-
 
     open val displayName: String = this.name
 }

@@ -45,22 +45,21 @@ object RichSkillDescriptorTable : TableWithUpdateMapper<RsdUpdateObject>, LongId
 // many-to-many table for RichSkillDescriptor and JobCode relationship
 object RichSkillJobCodes : Table("RichSkillJobSkills") {
     val id: Column<Long> = long("id").uniqueIndex()
-    val richSkillId = reference("richskill_id", RichSkillDescriptorTable, onDelete = ReferenceOption.CASCADE)
-    val jobCodeId = reference("jobcode_id", JobCodeTable, onDelete = ReferenceOption.CASCADE)
+    val richSkillId = reference("richskill_id", RichSkillDescriptorTable, onDelete = ReferenceOption.CASCADE).index()
+    val jobCodeId = reference("jobcode_id", JobCodeTable, onDelete = ReferenceOption.CASCADE).index()
     override val primaryKey = PrimaryKey(richSkillId, jobCodeId, name = "PK_RichSkillJobCodes_rs_jc")
 }
 
 object RichSkillKeywords : LongIdTable("RichSkillKeywords") {
-    val richSkillId = reference("richskill_id", RichSkillDescriptorTable, onDelete = ReferenceOption.CASCADE)
-    val keywordId = reference("keyword_id", KeywordTable, onDelete = ReferenceOption.CASCADE)
+    val richSkillId = reference("richskill_id", RichSkillDescriptorTable, onDelete = ReferenceOption.CASCADE).index()
+    val keywordId = reference("keyword_id", KeywordTable, onDelete = ReferenceOption.CASCADE).index()
     override val primaryKey = PrimaryKey(richSkillId, keywordId, name = "PK_RichSkillKeywords_rs_kw")
 
-    fun create(richSkillId: Long, keywordId: Long): Long {
-        val id = insert {
+    fun create(richSkillId: Long, keywordId: Long) {
+        insert {
             it[this.richSkillId] = EntityID(richSkillId, RichSkillDescriptorTable)
             it[this.keywordId] = EntityID(keywordId, KeywordTable)
         }
-        return id.get(this.id).value
     }
 
     fun delete(richSkillId: Long, keywordId: Long) {

@@ -8,7 +8,6 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.db.PublishStatusDao
 import edu.wgu.osmt.db.PublishStatusTable
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -43,6 +42,7 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
 
     val richSkillKeywordTable = RichSkillKeywords
 
+
     override fun findAll() = transaction {
         dao.all().map { it.toModel() }
     }
@@ -56,33 +56,38 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
         transaction {
             val original = dao.findById(updateObject.id)
             val changes = original?.let { updateObject.diff(it) }
-            changes?.let { it ->
-                auditLogRepository.insert(
-                    AuditLog.fromAtomicOp(
-                        table,
-                        updateObject.id,
-                        it.toString(),
-                        user!!,
-                        AuditOperationType.Update
+
+            user?.let { definedUser ->
+                changes?.let { it ->
+                    auditLogRepository.insert(
+                        AuditLog.fromAtomicOp(
+                            table,
+                            updateObject.id,
+                            it.toString(),
+                            definedUser,
+                            AuditOperationType.Update
+                        )
                     )
-                )
+                }
             }
+
             table.update({ table.id eq updateObject.id }) {
                 updateBuilderApplyFromUpdateObject(it, updateObject)
             }
 
             // update keywords
             updateObject.keywords?.let {
-                it.add?.map {
-                    richSkillKeywordTable.create(richSkillId = updateObject.id, keywordId = it.id!!)
+
+                it.add?.forEach { keyword ->
+                    richSkillKeywordTable.create(richSkillId = updateObject.id, keywordId = keyword.id!!)
                 }
 
-                it.remove?.map {
-                    richSkillKeywordTable.delete(richSkillId = updateObject.id, keywordId = it.id!!)
+                it.remove?.forEach { keyword ->
+                    richSkillKeywordTable.delete(richSkillId = updateObject.id, keywordId = keyword.id!!)
                 }
             }
-
         }
+
         return transaction { dao.findById(updateObject.id)?.toModel() }
     }
 
@@ -109,16 +114,18 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
                     PublishStatusDao[EntityID(PublishStatus.Unpublished.ordinal.toLong(), PublishStatusTable)]
             }
         }
-        transaction {
-            auditLogRepository.insert(
-                AuditLog.fromAtomicOp(
-                    table,
-                    newRichSkill.id.value,
-                    Gson().toJson(newRichSkill.toModel()),
-                    user!!,
-                    AuditOperationType.Insert
+        user?.let { definedUser ->
+            transaction {
+                auditLogRepository.insert(
+                    AuditLog.fromAtomicOp(
+                        table,
+                        newRichSkill.id.value,
+                        Gson().toJson(newRichSkill.toModel()),
+                        definedUser,
+                        AuditOperationType.Insert
+                    )
                 )
-            )
+            }
         }
         return newRichSkill
     }

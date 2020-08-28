@@ -87,7 +87,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
     val defaultAuthor = "Western Governors University";
 
     fun parse_keywords(keywordType: KeywordTypeEnum, rowValue: String?, useUri: Boolean = false):List<Keyword>? {
-        val splitValues = rowValue?.let { it.split(';').map { it.trim() } }
+        val splitValues = rowValue?.let { it.split(';').map { it.trim() } }?.distinct()
         return splitValues?.map {
             if (useUri)
                 keywordRepository.findOrCreate(keywordType, uri=it)
@@ -105,7 +105,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
     }
 
     fun handleRows(rows: List<RichSkillRow>) {
-        LOG.debug("got ${rows.size} rows.")
+        LOG.info("got ${rows.size} rows.")
 
         for (row in rows) {
             val user = null
@@ -120,10 +120,10 @@ class BatchImportConsoleApplication : CommandLineRunner {
             category = row.skillCategory?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Category, value = it) }
 
             keywords = parse_keywords(KeywordTypeEnum.Keyword, row.keywords)
-            standards = parse_keywords(KeywordTypeEnum.ProfessionalStandards, row.standards)
-            certifications = parse_keywords(KeywordTypeEnum.Certifications, row.certifications)
-            employers = parse_keywords(KeywordTypeEnum.Employers, row.employer)
-            occupations = parse_keywords(KeywordTypeEnum.Occupation, row.jobRoles)
+            standards = parse_keywords(KeywordTypeEnum.Standard, row.standards)
+            certifications = parse_keywords(KeywordTypeEnum.Certification, row.certifications)
+            employers = parse_keywords(KeywordTypeEnum.Employer, row.employer)
+//            occupations = parse_keywords(KeywordTypeEnum.Occupation, row.jobRoles)
             alignments = parse_keywords(KeywordTypeEnum.Alignment, row.alignment, useUri = true)
 
             val all_keywords = concatenate(keywords, standards, certifications, employers, occupations, alignments)
@@ -139,6 +139,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
                    category = NullableFieldUpdate(category),
                    keywords = all_keywords?.let { ListFieldUpdate(add=it) }
                 ), user)
+                LOG.info("created skill '${row.skillName!!}")
             }
         }
 
@@ -167,8 +168,10 @@ class BatchImportConsoleApplication : CommandLineRunner {
     }
 
     override fun run(vararg args: String?) {
-        args[0]?.let { processCsv(it) }
-        (applicationContext as ConfigurableApplicationContext).close()
+        if (args.size > 0) {
+            args[0]?.let { processCsv(it) }
+            (applicationContext as ConfigurableApplicationContext).close()
+        }
     }
 }
 

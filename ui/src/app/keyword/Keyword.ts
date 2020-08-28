@@ -1,9 +1,8 @@
-import {IHasUpdateDate, ILongIdDatabaseEntity} from "../ResponseEntity"
-
-export interface Keyword extends ILongIdDatabaseEntity, IHasUpdateDate {
-  creationDate: string
-  updateDate: string
-  value: string,
-  type: number,
+export interface IKeyword {
+  id?: number
+  creationDate?: string
+  updateDate?: string
+  value?: string,
+  type: string,
   uri?: string
 }

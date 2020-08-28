@@ -20,9 +20,8 @@ export class RichSkillComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.uuidParam) {
-      console.log(this.uuidParam!)
-      this.getSkill(this.uuidParam!)
+    if (this.uuidParam !== null) {
+      this.getSkill(this.uuidParam)
     }
   }
 

@@ -28,6 +28,33 @@ data class RichSkillDescriptor(
     val publishStatus: PublishStatus
 ) : DatabaseData, HasUpdateDate {
 
+    val certifications: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Certifications }
+
+    val otherKeywords: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Other }
+
+    val profStds: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.ProfessionalStandards }
+
+    val sels: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Sel }
+
+    val tools: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Tools }
+
+    val searchingKeywords: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Keyword }
+
+    val alignments: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Alignment }
+
+    val occupations: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Tools }
+
+    val employers: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Employers }
+    
     companion object {
         fun create(name: String, statement: String, author: String): RichSkillDescriptor {
             val now = LocalDateTime.now(ZoneOffset.UTC)

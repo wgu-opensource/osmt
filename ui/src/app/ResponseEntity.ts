@@ -1,13 +1,13 @@
+// tslint:disable-next-line:no-empty-interface
 export interface IResponseEntity {
-  creationDate: string
 }
 
-export interface IHasUpdateDate extends IResponseEntity {
-  updateDate: string,
+export interface IHasUpdateDate {
+  updateDate: string
 }
 
-export interface IUuidDatabaseEntity extends IHasUpdateDate {
-  uuid: string
+export interface IUuidDatabaseEntity extends IResponseEntity {
+  id: string
 }
 
 export interface ILongIdDatabaseEntity extends IResponseEntity {

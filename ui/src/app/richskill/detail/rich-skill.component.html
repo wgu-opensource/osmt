@@ -1,11 +1,12 @@
 <div *ngIf="richSkill">
-  <p>name - {{richSkill.name}}</p>
   <p>uuid - {{richSkill.uuid}}</p>
+  <p>skillName - {{richSkill.name}}</p>
+  <p>skillStatement - {{richSkill.statement}}</p>
+  <p>certifications - {{richSkill.certifications}}</p>
+
+
+  <h3>Metadata</h3>
   <p>updateDate - {{richSkill.updateDate}}</p>
   <p>creationDate - {{richSkill.creationDate}}</p>
-  <p>keywords - {{richSkill.keywords}}</p>
-  <p>statement - {{richSkill.statement}}</p>
-  <p>author - {{richSkill.author}}</p>
-  <p>category - {{richSkill.category?.value}}</p>
   <p>publishstatus - {{richSkill.publishStatus}}</p>
 </div>

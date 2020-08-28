@@ -1,5 +1,6 @@
 package edu.wgu.osmt.config
 
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.util.StdDateFormat
@@ -18,6 +19,7 @@ class WebMvcConfig : WebMvcConfigurer {
     @Bean
     fun objectMapper(): ObjectMapper {
         return ObjectMapper()
+            .configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false)
             .registerModule(JavaTimeModule())
             .setDateFormat(StdDateFormat())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)

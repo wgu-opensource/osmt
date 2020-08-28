@@ -1,5 +1,6 @@
 package edu.wgu.osmt.auditlog
 
+import edu.wgu.osmt.db.BaseTable
 import edu.wgu.osmt.db.TableWithInsertMapper
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.`java-time`.datetime

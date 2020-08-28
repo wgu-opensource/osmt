@@ -3,7 +3,7 @@
 version: '3.3'
 services:
   db:
-    image: library/mysql:5.7
+    image: library/mysql:8
     volumes:
       - osmt_sql_db:/var/lib/mysql:rw
       - ./mysql-init:/docker-entrypoint-initdb.d

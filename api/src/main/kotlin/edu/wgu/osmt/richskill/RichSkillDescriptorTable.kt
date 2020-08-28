@@ -1,5 +1,6 @@
 package edu.wgu.osmt.richskill
 
+import edu.wgu.osmt.db.BaseTable
 import edu.wgu.osmt.db.PublishStatusTable
 import edu.wgu.osmt.db.TableWithInsertMapper
 import edu.wgu.osmt.db.TableWithUpdateMapper

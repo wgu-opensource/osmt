@@ -2,18 +2,15 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.keyword.KeywordDao
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.user.OAuth2User
-import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.*
 import java.util.*
 
-@Service
-@RestController
-@RequestMapping("/skills")
+@Controller
+@RequestMapping("/api/skills")
 class RichSkillApi @Autowired constructor(
     val richSkillRepository: RichSkillRepository
     //val esRichSkillRepository: EsRichSkillRepository,
@@ -22,11 +19,19 @@ class RichSkillApi @Autowired constructor(
 
     // TODO pagination according to spec
     @GetMapping()
+    @ResponseBody
     fun findAll() = richSkillRepository.findAll()
 
-    @GetMapping("/{uuid}")
+    @GetMapping("/{uuid}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
     fun byUUID(@PathVariable uuid: String): RichSkillDescriptor? {
         return richSkillRepository.findByUUID(uuid)
+    }
+
+    @RequestMapping("/{uuid}", produces = [MediaType.TEXT_HTML_VALUE])
+    fun byUUIDHtmlView(@PathVariable uuid: String): String {
+        println("aaaaa")
+        return "forward:/skills/$uuid"
     }
 
     // TODO remove once testing framework is implemented

@@ -3,10 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.2.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>edu.wgu.osmt</groupId>
+        <artifactId>osmt-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <repositories>
@@ -22,11 +21,10 @@
         </repository>
     </repositories>
 
-    <groupId>edu.wgu</groupId>
-    <artifactId>osmt</artifactId>
+    <groupId>edu.wgu.osmt</groupId>
+    <artifactId>osmt-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>OSMT</name>
-    <description>WGU‎ Open Skills Management Toolset</description>
+    <description>WGU Open Skills Management Toolset</description>
 
     <properties>
         <java.version>11</java.version>
@@ -40,6 +38,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>edu.wgu.osmt</groupId>
+            <artifactId>osmt-ui</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
@@ -182,6 +185,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.3.2.RELEASE</version>
             </plugin>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>

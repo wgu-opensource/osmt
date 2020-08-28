@@ -29,8 +29,7 @@ CREATE TABLE `AuditLog`
     `changedFields` text         NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 5
-  DEFAULT CHARSET = utf8mb3;
+  AUTO_INCREMENT = 5;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -50,8 +49,7 @@ CREATE TABLE `JobCode`
     `description`  text,
     `source`       varchar(1024) DEFAULT NULL,
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3;
+) ENGINE = InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -81,8 +79,7 @@ CREATE TABLE `Keyword`
     `uri`               text,
     `keyword_type_enum` enum ('Category','Certifications','Keyword','Other','ProfessionalStandards','Sel','Tools') NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3;
+) ENGINE = InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,8 +106,7 @@ CREATE TABLE `PublishStatus`
     `name` varchar(64) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 6
-  DEFAULT CHARSET = utf8mb3;
+  AUTO_INCREMENT = 6;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,8 +149,7 @@ CREATE TABLE `RichSkillDescriptor`
     CONSTRAINT `fk_RichSkillDescriptor_cat_id_id` FOREIGN KEY (`cat_id`) REFERENCES `Keyword` (`id`),
     CONSTRAINT `fk_RichSkillDescriptor_publish_status_id_id` FOREIGN KEY (`publish_status_id`) REFERENCES `PublishStatus` (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 3
-  DEFAULT CHARSET = utf8mb3;
+  AUTO_INCREMENT = 3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -175,8 +170,7 @@ CREATE TABLE `RichSkillJobSkills`
     KEY `fk_RichSkillJobSkills_jobcode_id_id` (`jobcode_id`),
     CONSTRAINT `fk_RichSkillJobSkills_jobcode_id_id` FOREIGN KEY (`jobcode_id`) REFERENCES `JobCode` (`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_RichSkillJobSkills_richskill_id_id` FOREIGN KEY (`richskill_id`) REFERENCES `RichSkillDescriptor` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3;
+) ENGINE = InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -207,8 +201,7 @@ CREATE TABLE `RichSkillKeywords`
     KEY `fk_RichSkillKeywords_keyword_id_id` (`keyword_id`),
     CONSTRAINT `fk_RichSkillKeywords_keyword_id_id` FOREIGN KEY (`keyword_id`) REFERENCES `Keyword` (`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_RichSkillKeywords_richskill_id_id` FOREIGN KEY (`richskill_id`) REFERENCES `RichSkillDescriptor` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3;
+) ENGINE = InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -243,8 +236,7 @@ CREATE TABLE `flyway_schema_history`
     `success`        tinyint(1)    NOT NULL,
     PRIMARY KEY (`installed_rank`),
     KEY `flyway_schema_history_s_idx` (`success`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3;
+) ENGINE = InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

@@ -120,7 +120,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
     }
 
     fun handleRows(rows: List<RichSkillRow>) {
-        LOG.info("got ${rows.size} rows.")
+        LOG.info("Processing ${rows.size} rows...")
 
         for (row in rows) {
             val user = null
@@ -157,14 +157,14 @@ class BatchImportConsoleApplication : CommandLineRunner {
                    jobCodes = occupations?.let { ListFieldUpdate(add=it) }
                 ), user)
 
-                LOG.info("created skill '${row.skillName!!}")
+                LOG.info("created skill '${row.skillName!!}'")
             }
         }
 
     }
 
     fun processCsv(csv_path: String) {
-        LOG.info("hello process csv: ${csv_path}")
+        LOG.info("Starting to process csv: ${csv_path}")
 
         var fileReader: BufferedReader? = null
 

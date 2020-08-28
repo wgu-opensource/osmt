@@ -42,7 +42,7 @@ object RichSkillDescriptorTable : TableWithUpdateMapper<RsdUpdateObject>, LongId
 }
 
 // many-to-many table for RichSkillDescriptor and JobCode relationship
-object RichSkillJobCodes : Table("RichSkillJobSkills") {
+object RichSkillJobCodes : Table("RichSkillJobCodes") {
     val richSkillId = reference("richskill_id", RichSkillDescriptorTable, onDelete = ReferenceOption.CASCADE).index()
     val jobCodeId = reference("jobcode_id", JobCodeTable, onDelete = ReferenceOption.CASCADE).index()
     override val primaryKey = PrimaryKey(richSkillId, jobCodeId, name = "PK_RichSkillJobCodes_rs_jc")

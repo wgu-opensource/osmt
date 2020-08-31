@@ -1,0 +1,251 @@
+openapi: 3.0.0
+info:
+  version: 0.5.0
+  title: OSMT API
+  description: Draft API for the Open Skills Management Toolset (rdot5 release)
+security:
+  - bearerAuth: []
+
+paths:
+  /api/skills:
+    get:
+      summary: Get all skills
+      description: Return all skills in the library
+      parameters:
+        - in: query
+          name: per_page
+          description: maximum number of skills to return per page
+          default: 100
+          schema:
+            type: number
+        - in: query
+          name: page
+          description: page number to return
+          default: 1
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          headers:
+            Link: 
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RichSkillDescriptor'
+            text/csv:
+              schema:
+                type: string
+                example: >-
+                  id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
+
+                  https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac, RichSkillDescriptor, "https://osmt.example.com/organization", "Document Saving", "The learner copies and saves documents to their local machine.", "https://skillsource.example.com/base-skills/simple-compuhacking", "documents, file operations, computer basics", "Productivity Software", "13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+      tags:
+        - Skills
+
+  /api/skills/{uuid}:
+    parameters:
+      - name: uuid
+        in: path
+        description: uuid of skill
+        required: true
+        schema:
+          type: string
+    get: 
+      summary: Get a Skill 
+      description: >-
+        Return the full information about a Rich Skill Descriptor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/RichSkillDescriptor'
+            text/html:
+              schema:
+                type: string
+                example: A human readable description of the skill
+      tags:
+        - Skills
+
+  /api/tasks/{uuid}:
+    parameters:
+      - name: uuid
+        in: path
+        description: Task uuid
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Check the results of a task
+      description: Return the results of a previously requested task, or its status if not complete yet
+      responses:
+        '200':
+          description: OK - Returns the results of the task in the content-type originally requested.
+          content:
+            '*/*':
+              description: "The results of the previously requested task"
+        '202':
+          description: Accepted - Returns the status of the in-progress Task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+      tags:
+        - Tasks
+
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  headers:
+    Link: 
+      type: string
+      description: |
+        Links to related resources in 
+        [RFC 5988](https://tools.ietf.org/html/rfc5988#section-5) format.
+        This will include a link with relation type `next` or `prev` if present.
+    XTotalCount:
+      type: string
+      description: |
+        The total number of records returned on all pages for this request.
+    XRateLimit:
+      type: number
+      description: |
+        The number of requests permitted to make per hour.
+    XRateRemaining:
+      type: number
+      description: |
+        The number of requests remaining in the current rate limit window.
+    XRateReset:
+      type: string
+      description: |
+        The time at which the current rate limit window resets in UTC epoch seconds.
+  schemas:
+    RichSkillDescriptor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+          readOnly: true
+        type:
+          type: string
+          readOnly: true
+          description: \"RichSkillDescriptor\"
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        author:
+          type: string
+          format: uri
+        skillName: 
+          type: string
+        skillStatement:
+          type: string
+        category:
+          type: string
+        keywords:
+          type: array
+          items: 
+            type: string
+        alignments:
+          type: array
+          items:
+            type: string
+            format: uri
+        certifications:
+          type: array
+          items:
+            type: string
+            format: uri
+        occupations:
+          type: array
+          items:
+            type: string
+            format: job code
+        employers:
+          type: array
+          items:
+            type: string
+        skillsEmbodied:
+          type: array
+          items:
+            type: string
+
+      example:
+        id: https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac
+        type: RichSkillDescriptor
+        author: https://osmt.example.com/organization
+        skillName: Document Saving
+        skillStatement: The learner copies and saves documents to their local machine.
+        alignments: 
+          - "https://skillsource.example.com/base-skills/simple-compuhacking"
+        keywords: 
+          - "documents"
+          - "file operations"
+          - "computer basics"
+        category: "Productivity Software"
+        occupations: 
+          - "13-0000"
+          - "13-2000"
+          - "13-2010"
+          - "13-2030"
+          - "13-2040"
+          - "13-2060"
+          - "13-2080"
+    TaskResult:
+      type: object
+      properties:
+        href: 
+          type: string
+          format: uri
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        content-type:
+          type: string
+        status:
+          type: string
+          enum: ["Processing","Ready"]
+      example:
+        href: "/tasks/3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        uuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        content-type: "text/csv"
+        status: "Processing"
+
+
+
+
+

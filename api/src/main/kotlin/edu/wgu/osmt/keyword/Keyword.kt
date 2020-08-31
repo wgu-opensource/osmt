@@ -20,7 +20,7 @@ data class Keyword(
     override val updateDate: LocalDateTime,
 
     @field:JsonView(RichSkillView.PublicDetailView::class)
-    val value: String,
+    val value: String? = null,
 
     @field:JsonView(RichSkillView.PublicDetailView::class)
     val type: KeywordTypeEnum,
@@ -48,10 +48,16 @@ object KeywordTable : TableWithUpdateMapper<KeywordUpdateObj>, LongIdTable("Keyw
     override val table: LongIdTable = this
     override val creationDate = datetime("creationDate")
     override val updateDate = datetime("updateDate")
-    val value: Column<String> = varchar("value", 1024)
-    val uri = text("uri").nullable()
+    val value: Column<String?> = varchar("value", 768).nullable()
+    val uri: Column<String?> = varchar("uri", 768).nullable()
+
     val keyword_type_enum =
         customEnumeration(
             "keyword_type_enum",
             fromDb = { value -> KeywordTypeEnum.valueOf(value as String) }, toDb = { it.name })
+
+    init {
+        index(true, keyword_type_enum, value)
+        index(true, keyword_type_enum, uri)
+    }
 }

@@ -40,6 +40,10 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
     override val dao = RichSkillDescriptorDao.Companion
     override val table = RichSkillDescriptorTable
 
+    val richSkillKeywordTable = RichSkillKeywords
+    val richSkillJobCodeTable = RichSkillJobCodes
+
+
     override fun findAll() = transaction {
         dao.all().map { it.toModel() }
     }
@@ -53,21 +57,48 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
         transaction {
             val original = dao.findById(updateObject.id)
             val changes = original?.let { updateObject.diff(it) }
-            changes?.let { it ->
-                auditLogRepository.insert(
-                    AuditLog.fromAtomicOp(
-                        table,
-                        updateObject.id,
-                        it.toString(),
-                        user!!,
-                        AuditOperationType.Update
+
+            user?.let { definedUser ->
+                changes?.let { it ->
+                    auditLogRepository.insert(
+                        AuditLog.fromAtomicOp(
+                            table,
+                            updateObject.id,
+                            it.toString(),
+                            definedUser,
+                            AuditOperationType.Update
+                        )
                     )
-                )
+                }
             }
+
             table.update({ table.id eq updateObject.id }) {
                 updateBuilderApplyFromUpdateObject(it, updateObject)
             }
+
+            // update keywords
+            updateObject.keywords?.let {
+
+                it.add?.forEach { keyword ->
+                    richSkillKeywordTable.create(richSkillId = updateObject.id, keywordId = keyword.id!!)
+                }
+
+                it.remove?.forEach { keyword ->
+                    richSkillKeywordTable.delete(richSkillId = updateObject.id, keywordId = keyword.id!!)
+                }
+            }
+
+            // update jobcodes
+            updateObject.jobCodes?.let {
+                it.add?.forEach { jobCode ->
+                    richSkillJobCodeTable.create(richSkillId = updateObject.id, jobCodeId = jobCode.id!!)
+                }
+                it.remove?.forEach { jobCode ->
+                    richSkillJobCodeTable.delete(richSkillId = updateObject.id, jobCodeId = jobCode.id!!)
+                }
+            }
         }
+
         return transaction { dao.findById(updateObject.id)?.toModel() }
     }
 
@@ -94,16 +125,18 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
                     PublishStatusDao[EntityID(PublishStatus.Unpublished.ordinal.toLong(), PublishStatusTable)]
             }
         }
-        transaction {
-            auditLogRepository.insert(
-                AuditLog.fromAtomicOp(
-                    table,
-                    newRichSkill.id.value,
-                    Gson().toJson(newRichSkill.toModel()),
-                    user!!,
-                    AuditOperationType.Insert
+        user?.let { definedUser ->
+            transaction {
+                auditLogRepository.insert(
+                    AuditLog.fromAtomicOp(
+                        table,
+                        newRichSkill.id.value,
+                        Gson().toJson(newRichSkill.toModel()),
+                        definedUser,
+                        AuditOperationType.Insert
+                    )
                 )
-            )
+            }
         }
         return newRichSkill
     }

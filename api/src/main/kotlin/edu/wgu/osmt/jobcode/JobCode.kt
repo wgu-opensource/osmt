@@ -9,15 +9,22 @@ import org.springframework.data.elasticsearch.annotations.Document
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
+
 @Document(indexName = "jobCode", createIndex = true)
 data class JobCode(
     override val id: Long?,
     override val creationDate: LocalDateTime,
     override val updateDate: LocalDateTime,
-    val code: String,
-    val name: String? = null,
+
+    val major: String? = null,             // bls major category name
+    val minor: String? = null,             // bls minor category name
+    val broad: String? = null,             // bls broad category name
+    val detailed: String? = null,          // bls detailed (for o*net level codes -- blank for bls detailed)
+
+    val code: String,                           // bls detailed code or a o*net code: XX-XXXX or XX-XXXX.XX
+    val name: String? = null,                   // human readable label
     val description: String? = null,
-    val source: String? = null
+    val framework: String? = null               // e.g.: "bls" or "o*net"
 ) : DatabaseData, HasUpdateDate {
 
     companion object {
@@ -35,11 +42,39 @@ data class JobCode(
 
 data class JobCodeUpdate(
     override val id: Long,
+    val major: NullableFieldUpdate<String>?,
+    val minor: NullableFieldUpdate<String>?,
+    val broad: NullableFieldUpdate<String>?,
+    val detailed: NullableFieldUpdate<String>?,
     val code: String?,
     val name: NullableFieldUpdate<String>?,
     val description: NullableFieldUpdate<String>?,
-    val source: NullableFieldUpdate<String>?
+    val framework: NullableFieldUpdate<String>?
 ) : UpdateObject<JobCode> {
+
+    fun compareMajor(that: JobCode): JSONObject? {
+        return major?.let {
+            compare(that::major, it::t, stringOutput)
+        }
+    }
+
+    fun compareMinor(that: JobCode): JSONObject? {
+        return minor?.let {
+            compare(that::minor, it::t, stringOutput)
+        }
+    }
+
+    fun compareBroad(that: JobCode): JSONObject? {
+        return broad?.let {
+            compare(that::broad, it::t, stringOutput)
+        }
+    }
+
+    fun compareDetailed(that: JobCode): JSONObject? {
+        return detailed?.let {
+            compare(that::detailed, it::t, stringOutput)
+        }
+    }
 
     fun compareCode(that: JobCode): JSONObject? {
         return code?.let {
@@ -59,12 +94,20 @@ data class JobCodeUpdate(
         }
     }
 
-    fun compareSource(that: JobCode): JSONObject? {
-        return source?.let {
-            compare(that::source, it::t, stringOutput)
+    fun compareFramework(that: JobCode): JSONObject? {
+        return framework?.let {
+            compare(that::framework, it::t, stringOutput)
         }
     }
 
     override val comparisonList: List<(t: JobCode) -> JSONObject?> =
-        listOf(::compareCode, ::compareName, ::compareDescription, ::compareSource)
+        listOf(
+            ::compareMajor,
+            ::compareMinor,
+            ::compareBroad,
+            ::compareDetailed,
+            ::compareCode,
+            ::compareName,
+            ::compareDescription,
+            ::compareFramework)
 }

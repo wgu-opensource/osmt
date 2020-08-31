@@ -59,22 +59,16 @@ WORKDIR ${BASE_DIR}/build/api
 
 USER ${USER}
 
-RUN mvn package -Dmaven.test.skip.exec
+RUN mvn package
 
 ######################
 ### PACKAGING IMAGE ##
 ######################
-FROM osmt-base
-
-ENV JAVA_HOME=/etc/alternatives/jre
-ENV JAVA_VERSION=11.0.8.10
-ENV USER=osmt
-ENV BASE_DIR=/opt/${USER}
-
-COPY --from=build --chown=${USER}:${USER} ${BASE_DIR}/build/api/target/osmt-*.jar ${BASE_DIR}/bin/osmt.jar
-
-ADD ./docker/ /${BASE_DIR}/
-
-EXPOSE 8080
-
-ENTRYPOINT ["/opt/osmt/bin/docker_entrypoint.sh"]
+#FROM osmt-base
+#
+#ENV JAVA_HOME=/etc/alternatives/jre
+#ENV JAVA_VERSION=11.0.8.10
+#ENV USER=osmt
+#ENV BASE_DIR=/opt/${USER}
+#
+#COPY --from=build --chown=${USER}:${USER}</path/to/fat-jar> ${BASE_DIR}/bin

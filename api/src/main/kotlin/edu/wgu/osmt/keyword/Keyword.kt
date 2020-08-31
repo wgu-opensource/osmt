@@ -20,10 +20,10 @@ data class Keyword(
     override val updateDate: LocalDateTime,
 
     @field:JsonView(RichSkillView.PublicDetailView::class)
-    val value: String? = null,
+    val type: KeywordTypeEnum,
 
     @field:JsonView(RichSkillView.PublicDetailView::class)
-    val type: KeywordTypeEnum,
+    val value: String? = null,
 
     @field:JsonView(RichSkillView.PublicDetailView::class)
     val uri: String? = null

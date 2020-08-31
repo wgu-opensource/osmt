@@ -37,26 +37,4 @@ class RichSkillApi @Autowired constructor(
     fun byUUIDHtmlView(@PathVariable uuid: String): String {
         return "forward:/skills/$uuid"
     }
-
-    // TODO remove once testing framework is implemented
-    @GetMapping("/insert-random")
-    fun insertRandom(@AuthenticationPrincipal user: OAuth2User): String {
-        val title = UUID.randomUUID().toString()
-        val result = richSkillRepository.create(title, "a randomly inserted skill", "an author", user)
-        val updateResult = richSkillRepository.update(
-            RsdUpdateObject(
-                result.id.value,
-                "updated title",
-                "updated description",
-                "updatedAuthor"
-            ), user
-        )
-        //esRichSkillRepository.save(result)
-        return "<html>" +
-                "<body>" +
-                "<p>inserted ${updateResult.toString()}</p>" +
-                "<p><a href=\"/skills\">View all Rich Skills</a></p>" +
-                "</body>" +
-                "</html>"
-    }
 }

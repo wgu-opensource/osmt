@@ -12,7 +12,9 @@ enum class KeywordTypeEnum {
     Certification,
     Alignment,
     Employer,
+    Author
     ;
+
 
     open val displayName: String = this.name
 }

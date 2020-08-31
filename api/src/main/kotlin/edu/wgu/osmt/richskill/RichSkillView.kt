@@ -1,12 +1,14 @@
 package edu.wgu.osmt.richskill
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonView
+import com.google.gson.JsonObject
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
+import edu.wgu.osmt.keyword.KeywordDTO
 import net.minidev.json.JSONObject
 import java.time.LocalDateTime
-import java.util.*
 
 
 class RichSkillView {
@@ -14,60 +16,86 @@ class RichSkillView {
     interface PrivateDetailView : PublicDetailView {}
 }
 
-class RichSkillDTO(rsd: RichSkillDescriptor, baseDomain: String) {
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseDomain: String) {
 
-    // TODO don't include uri if null
-    fun keywordJsonOutput(kw: Keyword): JSONObject = JSONObject(mutableMapOf("name" to kw.value, "uri" to kw.uri))
-
-    @field:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonView(RichSkillView.PublicDetailView::class)
     @JsonProperty("@context")
     val context = "https://rsd.osmt.dev/context-v1.json"
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonView(RichSkillView.PublicDetailView::class)
     val `type` = "RichSkillDescriptor"
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
-    val author: String = rsd.author
+    @get:JsonView(RichSkillView.PublicDetailView::class)
+    val author: KeywordDTO?
+        get() = rsd.author?.let { KeywordDTO(it) }
 
-    @field:JsonView(RichSkillView.PrivateDetailView::class)
-    val creationDate: LocalDateTime = rsd.creationDate
+    @get:JsonView(RichSkillView.PrivateDetailView::class)
+    val creationDate: LocalDateTime
+        get() = rsd.creationDate
 
-    @field:JsonView(RichSkillView.PrivateDetailView::class)
-    val updateDate: LocalDateTime = rsd.updateDate
+    @get:JsonView(RichSkillView.PrivateDetailView::class)
+    val updateDate: LocalDateTime
+        get() = rsd.updateDate
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
-    val skillName: String = rsd.name
+    @get:JsonView(RichSkillView.PublicDetailView::class)
+    val skillName: String
+        get() = rsd.name
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
-    val skillStatement: String = rsd.statement
+    @get:JsonView(RichSkillView.PublicDetailView::class)
+    val skillStatement: String
+        get() = rsd.statement
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
-    val jobCodes: List<JobCode> = rsd.jobCodes
+    @get:JsonView(RichSkillView.PublicDetailView::class)
+    val jobCodes: List<JobCode>
+        get() = rsd.jobCodes
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
-    val keywords: List<String> = rsd.searchingKeywords.map { it.value }
+    @get:JsonView(RichSkillView.PublicDetailView::class)
+    val keywords: List<KeywordDTO>
+        get() = rsd.searchingKeywords.map { kw -> KeywordDTO(kw) }
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
-    val category: String? = rsd.category?.value
+    @get:JsonView(RichSkillView.PublicDetailView::class)
+    val category: String?
+        get() = rsd.category?.value
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
-    @JsonProperty("id")
-    val canonicalUri: String = "$baseDomain/skill/${rsd.uuid}"
+    @get:JsonView(RichSkillView.PublicDetailView::class)
+    val canonicalUri: String
+        @JsonProperty("id")
+        get() = "$baseDomain/skill/${rsd.uuid}"
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
-    val certifications: List<JSONObject> = rsd.certifications.map { keywordJsonOutput(it) }
+    @get:JsonView(RichSkillView.PublicDetailView::class)
+    val uuid: String
+        @JsonProperty("uuid")
+        get() = rsd.uuid.toString()
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
-    val standards: List<JSONObject> = rsd.profStds.map { keywordJsonOutput(it) }
+    @get:JsonView(RichSkillView.PublicDetailView::class)
+    val certifications: List<KeywordDTO>
+        get() = rsd.certifications.map { KeywordDTO(it) }
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
-    val alignments: List<Keyword> = rsd.alignments
+    @get:JsonView(RichSkillView.PublicDetailView::class)
+    val standards: List<KeywordDTO>
+        get() = rsd.standards.map { KeywordDTO(it) }
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
-    val occupations: List<JobCode> = rsd.jobCodes
+    @get:JsonView(RichSkillView.PublicDetailView::class)
+    val alignments: List<KeywordDTO>
+        get() = rsd.alignments.map { KeywordDTO(it) }
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
-    val employers: List<JSONObject> = rsd.employers.map { keywordJsonOutput(it) }
+    @get:JsonView(RichSkillView.PublicDetailView::class)
+    val occupations: List<JSONObject>
+        get() = rsd.occupations.map { occupation ->
+            JSONObject(
+                mutableMapOf(
+                    "code" to occupation.code,
+                    "id" to occupation.url,
+                    "name" to occupation.name,
+                    "framework" to occupation.framework
+                )
+            )
+        }
+
+    @get:JsonView(RichSkillView.PublicDetailView::class)
+    val employers: List<KeywordDTO>
+        get() = rsd.employers.map { KeywordDTO(it) }
 }
 
 

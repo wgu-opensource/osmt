@@ -52,6 +52,7 @@ CREATE TABLE `JobCode`
     `detailed`     varchar(1024) DEFAULT NULL,
     `description`  text,
     `framework`    varchar(1024) DEFAULT NULL,
+    `url`          varchar(1024) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `idx_JobCode_code` (`code`)
 ) ENGINE = InnoDB;
@@ -77,12 +78,12 @@ DROP TABLE IF EXISTS `Keyword`;
 SET character_set_client = utf8mb3;
 CREATE TABLE `Keyword`
 (
-    `id`                bigint(20)                                                                                 NOT NULL AUTO_INCREMENT,
-    `creationDate`      datetime(6)                                                                                NOT NULL,
-    `updateDate`        datetime(6)                                                                                NOT NULL,
+    `id`                bigint(20)                                                                             NOT NULL AUTO_INCREMENT,
+    `creationDate`      datetime(6)                                                                            NOT NULL,
+    `updateDate`        datetime(6)                                                                            NOT NULL,
     `value`             varchar(768),
     `uri`               varchar(768),
-    `keyword_type_enum` enum ('Category','Keyword','Standard','Certification','Alignment','Employer') NOT NULL,
+    `keyword_type_enum` enum ('Category','Keyword','Standard','Certification','Alignment','Employer','Author') NOT NULL,
     KEY `idx_Keyword_value` (`keyword_type_enum`, `value`),
     KEY `idx_Keyword_uri` (`keyword_type_enum`, `uri`),
 
@@ -148,14 +149,16 @@ CREATE TABLE `RichSkillDescriptor`
     `name`              text        NOT NULL,
     `statement`         text        NOT NULL,
     `cat_id`            bigint(20) DEFAULT NULL,
-    `author`            text        NOT NULL,
     `publish_status_id` bigint(20)  NOT NULL,
+    `author_id`         bigint(20) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `RichSkillDescriptor_uuid_unique` (`uuid`),
     KEY `fk_RichSkillDescriptor_cat_id_id` (`cat_id`),
+    KEY `fk_RichSkillDescriptor_author_id_id` (`author_id`),
     KEY `fk_RichSkillDescriptor_publish_status_id_id` (`publish_status_id`),
-    CONSTRAINT `fk_RichSkillDescriptor_cat_id_id` FOREIGN KEY (`cat_id`) REFERENCES `Keyword` (`id`),
-    CONSTRAINT `fk_RichSkillDescriptor_publish_status_id_id` FOREIGN KEY (`publish_status_id`) REFERENCES `PublishStatus` (`id`)
+    CONSTRAINT `fk_RichSkillDescriptor_cat_id_id` FOREIGN KEY (`cat_id`) REFERENCES `Keyword` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT `fk_RichSkillDescriptor_author_id_id` FOREIGN KEY (`author_id`) REFERENCES `Keyword` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT `fk_RichSkillDescriptor_publish_status_id_id` FOREIGN KEY (`publish_status_id`) REFERENCES `PublishStatus` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 3;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -175,8 +178,8 @@ CREATE TABLE `RichSkillJobCodes`
     PRIMARY KEY (`richskill_id`, `jobcode_id`),
     KEY `fk_RichSkillKeywords_richskill_id_id` (`richskill_id`),
     KEY `fk_RichSkillJobCodes_jobcode_id_id` (`jobcode_id`),
-    CONSTRAINT `fk_RichSkillJobCodes_jobcode_id_id` FOREIGN KEY (`jobcode_id`) REFERENCES `JobCode` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `fk_RichSkillJobCodes_richskill_id_id` FOREIGN KEY (`richskill_id`) REFERENCES `RichSkillDescriptor` (`id`) ON DELETE CASCADE
+    CONSTRAINT `fk_RichSkillJobCodes_jobcode_id_id` FOREIGN KEY (`jobcode_id`) REFERENCES `JobCode` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_RichSkillJobCodes_richskill_id_id` FOREIGN KEY (`richskill_id`) REFERENCES `RichSkillDescriptor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -205,8 +208,8 @@ CREATE TABLE `RichSkillKeywords`
     PRIMARY KEY (`richskill_id`, `keyword_id`),
     KEY `fk_RichSkillKeywords_richskill_id_id` (`richskill_id`),
     KEY `fk_RichSkillKeywords_keyword_id_id` (`keyword_id`),
-    CONSTRAINT `fk_RichSkillKeywords_keyword_id_id` FOREIGN KEY (`keyword_id`) REFERENCES `Keyword` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `fk_RichSkillKeywords_richskill_id_id` FOREIGN KEY (`richskill_id`) REFERENCES `RichSkillDescriptor` (`id`) ON DELETE CASCADE
+    CONSTRAINT `fk_RichSkillKeywords_keyword_id_id` FOREIGN KEY (`keyword_id`) REFERENCES `Keyword` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_RichSkillKeywords_richskill_id_id` FOREIGN KEY (`richskill_id`) REFERENCES `RichSkillDescriptor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

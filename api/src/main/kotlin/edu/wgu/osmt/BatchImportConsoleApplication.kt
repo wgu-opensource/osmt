@@ -95,16 +95,16 @@ class BatchImportConsoleApplication : CommandLineRunner {
         return value?.let { it.split(delimiters).map { it.trim() } }?.distinct()
     }
 
-    fun parse_keywords(keywordType: KeywordTypeEnum, rowValue: String?, useUri: Boolean = false):List<Keyword>? {
+    fun parse_keywords(keywordType: KeywordTypeEnum, rowValue: String?, useUri: Boolean = false): List<Keyword>? {
         return split_field(rowValue)?.map {
             if (useUri)
-                keywordRepository.findOrCreate(keywordType, uri=it)
+                keywordRepository.findOrCreate(keywordType, uri = it)
             else
-                keywordRepository.findOrCreate(keywordType, value=it)
+                keywordRepository.findOrCreate(keywordType, value = it)
         }
     }
 
-    fun parse_jobcodes(rowValue: String?):List<JobCode>? {
+    fun parse_jobcodes(rowValue: String?): List<JobCode>? {
         return split_field(rowValue)?.map { code ->
             val jobCode = jobCodeRepository.findByCode(code)
             jobCode ?: jobCodeRepository.create(code).toModel()
@@ -121,6 +121,9 @@ class BatchImportConsoleApplication : CommandLineRunner {
 
     fun handleRows(rows: List<RichSkillRow>) {
         LOG.info("Processing ${rows.size} rows...")
+
+        val defaultAuthor =
+            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = "Western Governors University")
 
         for (row in rows) {
             val user = null
@@ -143,18 +146,22 @@ class BatchImportConsoleApplication : CommandLineRunner {
 
             val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
 
+            val rowAuthorOrDefault =
+                row.author?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it) } ?: defaultAuthor
+
             if (row.skillName != null && row.skillStatement != null) {
                 val newSkill = richSkillRepository.create(
-                    row.skillName!!,
-                    row.skillStatement!!,
-                   row.author ?: defaultAuthor,
-                    user)
+                    name = row.skillName!!,
+                    statement = row.skillStatement!!,
+                    author = rowAuthorOrDefault,
+                    user = user
+                )
 
                 richSkillRepository.update(RsdUpdateObject(
-                   id = newSkill.id.value,
-                   category = NullableFieldUpdate(category),
-                   keywords = all_keywords?.let { ListFieldUpdate(add=it) },
-                   jobCodes = occupations?.let { ListFieldUpdate(add=it) }
+                    id = newSkill.id.value,
+                    category = NullableFieldUpdate(category),
+                    keywords = all_keywords?.let { ListFieldUpdate(add = it) },
+                    jobCodes = occupations?.let { ListFieldUpdate(add = it) }
                 ), user)
 
                 LOG.info("created skill '${row.skillName!!}'")

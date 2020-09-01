@@ -21,6 +21,7 @@ object JobCodeTable : TableWithUpdateMapper<JobCodeUpdate>, LongIdTable("JobCode
     val name: Column<String?> = varchar("name", 1024).nullable()
     val description: Column<String?> = text("description").nullable()
     val framework: Column<String?> = varchar("framework", 1024).nullable()
+    val url: Column<String?> = varchar("url", 1024).nullable()
 
 
     override fun updateBuilderApplyFromUpdateObject(updateBuilder: UpdateBuilder<Number>, updateObject: JobCodeUpdate) {
@@ -34,5 +35,6 @@ object JobCodeTable : TableWithUpdateMapper<JobCodeUpdate>, LongIdTable("JobCode
         updateObject.name?.let { it.t?.let { updateBuilder[name] = it } }
         updateObject.description?.let { it.t?.let { updateBuilder[description] = it } }
         updateObject.framework?.let { it.t?.let { updateBuilder[framework] = it } }
+        updateObject.url?.let { fieldUpdate -> fieldUpdate.t?.let { updateBuilder[url] = it } }
     }
 }

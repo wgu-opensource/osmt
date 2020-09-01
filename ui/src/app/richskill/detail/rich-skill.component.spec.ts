@@ -1,19 +1,19 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing"
-import {RichskillComponent} from "./richskill.component"
+import {RichSkillComponent} from "./rich-skill.component"
 
 describe("RichskillComponent", () => {
-  let component: RichskillComponent
-  let fixture: ComponentFixture<RichskillComponent>
+  let component: RichSkillComponent
+  let fixture: ComponentFixture<RichSkillComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [RichskillComponent]
+      declarations: [RichSkillComponent]
     })
       .compileComponents()
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RichskillComponent)
+    fixture = TestBed.createComponent(RichSkillComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })

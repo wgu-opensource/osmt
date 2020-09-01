@@ -93,7 +93,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
     @Autowired
     private lateinit var jobCodeRepository: JobCodeRepository;
 
-    val defaultAuthor = "Western Governors University";
+    val defaultAuthor:Keyword? = keywordRepository.getDefaultAuthor()
 
     fun split_field(value: String?, delimiters: String = ";"): List<String>? {
         return value?.let { it.split(delimiters).map { it.trim() } }?.distinct()
@@ -125,9 +125,6 @@ class BatchImportConsoleApplication : CommandLineRunner {
 
     fun handleRows(rows: List<RichSkillRow>) {
         LOG.info("Processing ${rows.size} rows...")
-
-        val defaultAuthor =
-            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = "Western Governors University")
 
         for (row in rows) {
             val user = null

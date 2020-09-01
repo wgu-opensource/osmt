@@ -1,5 +1,6 @@
 package edu.wgu.osmt.keyword
 
+import edu.wgu.osmt.config.AppConfig
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
@@ -27,11 +28,13 @@ interface KeywordRepository {
         value: String? = null,
         uri: String? = null
     ): KeywordDao
+
+    fun getDefaultAuthor(): Keyword
 }
 
 
 @Repository
-class KeywordRepositoryImpl @Autowired constructor() : KeywordRepository {
+class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : KeywordRepository {
     override val dao = KeywordDao.Companion
     override val table = KeywordTable
 
@@ -47,6 +50,10 @@ class KeywordRepositoryImpl @Autowired constructor() : KeywordRepository {
         return transaction {
             table.select { table.keyword_type_enum eq type }.map { dao.wrapRow(it).toModel() }
         }
+    }
+
+    override fun getDefaultAuthor(): Keyword {
+        return findOrCreate(KeywordTypeEnum.Author, appConfig.defaultAuthorName, appConfig.defaultAuthorUri)
     }
 
     override fun findOrCreate(type: KeywordTypeEnum, value: String?, uri: String?): Keyword {

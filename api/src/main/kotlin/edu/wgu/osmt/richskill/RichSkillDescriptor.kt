@@ -23,11 +23,12 @@ data class RichSkillDescriptor(
     val statement: String,
     val publishStatus: PublishStatus,
     val jobCodes: List<JobCode> = listOf(),
-    val keywords: List<Keyword> = listOf(),
+    private val keywords: List<Keyword> = listOf(),
     val category: Keyword? = null,
     val author: Keyword? = null
 ) : DatabaseData, HasUpdateDate {
 
+    // Keyword collections
     val certifications: List<Keyword>
         get() = this.keywords.filter { it.type == KeywordTypeEnum.Certification }
 
@@ -39,9 +40,6 @@ data class RichSkillDescriptor(
 
     val alignments: List<Keyword>
         get() = this.keywords.filter { it.type == KeywordTypeEnum.Alignment }
-
-    val occupations: List<JobCode>
-        get() = this.jobCodes
 
     val employers: List<Keyword>
         get() = this.keywords.filter { it.type == KeywordTypeEnum.Employer }

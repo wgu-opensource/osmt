@@ -47,10 +47,6 @@ class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseDomain:
         get() = rsd.statement
 
     @get:JsonView(RichSkillView.PublicDetailView::class)
-    val jobCodes: List<JobCode>
-        get() = rsd.jobCodes
-
-    @get:JsonView(RichSkillView.PublicDetailView::class)
     val keywords: List<KeywordDTO>
         get() = rsd.searchingKeywords.map { kw -> KeywordDTO(kw) }
 
@@ -59,9 +55,9 @@ class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseDomain:
         get() = rsd.category?.value
 
     @get:JsonView(RichSkillView.PublicDetailView::class)
-    val canonicalUri: String
+    val id: String
         @JsonProperty("id")
-        get() = "$baseDomain/skill/${rsd.uuid}"
+        get() = "$baseDomain/api/skills/${rsd.uuid}"
 
     @get:JsonView(RichSkillView.PublicDetailView::class)
     val uuid: String
@@ -82,13 +78,13 @@ class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseDomain:
 
     @get:JsonView(RichSkillView.PublicDetailView::class)
     val occupations: List<JSONObject>
-        get() = rsd.occupations.map { occupation ->
+        get() = rsd.jobCodes.map { jobCode ->
             JSONObject(
                 mutableMapOf(
-                    "code" to occupation.code,
-                    "id" to occupation.url,
-                    "name" to occupation.name,
-                    "framework" to occupation.framework
+                    "code" to jobCode.code,
+                    "id" to jobCode.url,
+                    "name" to jobCode.name,
+                    "framework" to jobCode.framework
                 )
             )
         }

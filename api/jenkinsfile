@@ -1,0 +1,71 @@
+pipeline {
+  agent { label 'master' }
+  environment {
+    gitRepository = 'ssh://git@github.com:concentricsky/wgu-osmt.git'
+    projectName = 'osmt'
+    dockerhubCredentials = credentials('dockerhub')
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+//        // Cleaning build context
+        deleteDir()
+        // Checkout the osmt repo 
+        checkout([$class: 'GitSCM', 
+                  branches: [[name: scm.branches[0].name]],
+                  doGenerateSubmoduleConfigurations: false,
+                  extensions:,
+                  submoduleCfg: [],
+                  userRemoteConfigs: [[credentialsId: 'jenkins',
+                  url: 'ssh://git@github.com:concentricsky/wgu-osmt.git']]])
+      }
+    }
+    stage('Setup') {
+      steps {
+        script {
+          gitHash = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%H'").trim()
+          hasTag = sh(returnStatus: true, script: "git describe  --exact-match --tags ${gitHash}")
+          if (hasTag == 0) {
+            gitLabel = sh(returnStdout: true, script: "git describe --exact-match --tags ${gitHash}").trim()
+          } else {
+            gitLabel = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+          }
+          echo gitLabel
+          date = sh(returnStdout: true, script: "date +%Y.%m").trim()
+        }
+      }
+    }
+    stage('Build') {
+      steps {
+        dir('./api') {
+          sh """
+            docker login --username ${dockerhubCredentials_USR} --password ${dockerhubCredentials_PSW}
+            pwd
+            docker build . \
+              -t concentricsky/${projectName}:${gitLabel} #\
+              #--build-arg git_commit=${gitHash} \
+              #--build-arg version=${gitLabel} \
+              #--build-arg build_date=${date} \
+          """
+        }
+      }
+    }
+    stage('Publish'){
+      steps {
+        sh """
+        docker login --username ${dockerhubCredentials_USR} --password ${dockerhubCredentials_PSW}
+        docker tag concentricsky/${projectName}:${gitLabel} concentricsky/${projectName}:latest
+        docker push concentricsky/${projectName}:${gitLabel}
+        docker push concentricsky/${projectName}:latest
+        """
+      }
+    }
+  }
+  post {
+    always {
+      sh "docker rmi concentricsky/${projectName}:latest"
+      sh "docker rmi concentricsky/${projectName}:${gitLabel}"
+    }
+  }
+}

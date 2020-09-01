@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConstructorBinding
 
 @ConstructorBinding
 @ConfigurationProperties(prefix = "spring.flyway", ignoreInvalidFields = true)
-data class FlyConfig(val enabled: Boolean,  val locations: String){
+data class FlyConfig(val enabled: Boolean, val locations: String) {
 
     @Value("\${spring.flyway.baseline-on-migrate}")
     var baselineOnMigrate: Boolean = false

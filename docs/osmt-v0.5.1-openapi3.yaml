@@ -1,0 +1,292 @@
+openapi: 3.0.0
+info:
+  version: 0.5.1
+  title: OSMT API
+  description: Draft API for the Open Skills Management Toolset (rdot5 release)
+security:
+  - bearerAuth: []
+
+paths:
+  /api/skills:
+    get:
+      summary: Get all skills
+      description: Return all skills in the library
+      parameters:
+        - in: query
+          name: per_page
+          description: maximum number of skills to return per page
+          default: 100
+          schema:
+            type: number
+        - in: query
+          name: page
+          description: page number to return
+          default: 1
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          headers:
+            Link: 
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RichSkillDescriptor'
+            text/csv:
+              schema:
+                type: string
+                example: >-
+                  id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
+
+                  https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac, RichSkillDescriptor, "https://osmt.example.com/organization", "Document Saving", "The learner copies and saves documents to their local machine.", "https://skillsource.example.com/base-skills/simple-compuhacking", "documents, file operations, computer basics", "Productivity Software", "13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+      tags:
+        - Skills
+
+  /api/skills/{uuid}:
+    parameters:
+      - name: uuid
+        in: path
+        description: uuid of skill
+        required: true
+        schema:
+          type: string
+    get: 
+      summary: Get a Skill 
+      description: >-
+        Return the full information about a Rich Skill Descriptor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/RichSkillDescriptor'
+            text/html:
+              schema:
+                type: string
+                example: A human readable description of the skill
+      tags:
+        - Skills
+
+  /api/tasks/{uuid}:
+    parameters:
+      - name: uuid
+        in: path
+        description: Task uuid
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Check the results of a task
+      description: Return the results of a previously requested task, or its status if not complete yet
+      responses:
+        '200':
+          description: OK - Returns the results of the task in the content-type originally requested.
+          content:
+            '*/*':
+              description: "The results of the previously requested task"
+        '202':
+          description: Accepted - Returns the status of the in-progress Task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+      tags:
+        - Tasks
+
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  headers:
+    Link: 
+      type: string
+      description: |
+        Links to related resources in 
+        [RFC 5988](https://tools.ietf.org/html/rfc5988#section-5) format.
+        This will include a link with relation type `next` or `prev` if present.
+    XTotalCount:
+      type: string
+      description: |
+        The total number of records returned on all pages for this request.
+    XRateLimit:
+      type: number
+      description: |
+        The number of requests permitted to make per hour.
+    XRateRemaining:
+      type: number
+      description: |
+        The number of requests remaining in the current rate limit window.
+    XRateReset:
+      type: string
+      description: |
+        The time at which the current rate limit window resets in UTC epoch seconds.
+  schemas:
+    RichSkillDescriptor:
+      type: object
+      required:
+        - skillName
+        - skillStatement
+      properties:
+        id:
+          type: string
+          format: uri
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        skillName:
+          type: string
+        skillStatement:
+          type: string
+        category:
+          type: string
+        keywords:
+          type: array
+          items: 
+            type: string
+        alignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+        standards:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+        certifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+        occupations:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobCode'
+        employers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+        author:
+          $ref: '#/components/schemas/NamedReference'
+
+      example:
+        id: https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac
+        type: RichSkillDescriptor
+        author: https://example.osmt.wgu.edu/organization
+        category: Business Ethics
+        skillName: "Business Ethics: Responsibility Acceptance"
+        skillStatement: The learner accepts responsibility and repercussions related to ethical behavior.
+        alignments:
+          - id: "https://emsiservices.com/skills/versions/latest/skills/KS120FG6YP8PQYY"
+        keywords:
+          - "Business Ethics"
+          - "Being"
+        standards:
+          - name: "NICE: Investigate - Digital Forensics"
+          - name: "NICE: Protect and Defend - Computer Defense Analysis"
+          - name: "NICE: Protect and Defend - Cyber Defense Infrastructure Support"
+          - name: "NICE: Protect and Defend - Incident Response; NICE: Protect and Defend - Vulnerability Assessment and Management"
+          - name: "NICE: Operate and Maintain - Customer Service and Technical Support"
+          - name: "NICE: Operate and Maintain - Network Services"
+          - name: "NICE: Operate and Maintain - System Administration"
+          - name: "NSA-CAE KU: Networking"
+          - name: "NSA-CAE KU: Wireless Security"
+          - name: "NSA-CAE KU: HCI/Usability Security"
+          - name: "NSA-CAE KU: Wireless Security"
+        certifications:
+          - name: CCNA Security
+          - name: CCIE Security
+          - name: CCNP Security
+        occupations:
+          - code: 11-3031.00
+          - code: 11-3031.02
+          - code: 13-1021.00
+          - code: 13-1022.00
+          - code: 13-1023.00
+          - code: 13-1111.00
+          - code: 13-1161.00
+          - code: 13-2011.01
+          - code: 13-2041.00
+          - code: 15-2041.00
+          - code: 19-3011.00
+          - code: 19-4061.00
+          - code: 15-1122.00
+        employer:
+          - name: Sample Company
+
+    NamedReference:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+        name:
+          type: string
+    JobCode:
+      type: object
+      properties:
+        code:
+          type: string
+        id:
+          type: string
+          format: uri
+        name:
+          type: string
+        framework:
+          type: string
+      required:
+        - code
+    TaskResult:
+      type: object
+      properties:
+        href: 
+          type: string
+          format: uri
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        content-type:
+          type: string
+        status:
+          type: string
+          enum: ["Processing","Ready"]
+      example:
+        href: "/tasks/3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        uuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        content-type: "text/csv"
+        status: "Processing"
+
+
+
+
+

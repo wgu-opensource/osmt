@@ -3,7 +3,7 @@
 version: '3.3'
 services:
   db:
-    image: library/mysql:5.7
+    image: library/mysql:8
     volumes:
       - osmt_sql_db:/var/lib/mysql:rw
       - ./mysql-init:/docker-entrypoint-initdb.d
@@ -16,10 +16,28 @@ services:
       - 3306:3306
     networks:
       - osmt
-
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+    environment:
+      - "discovery.type=single-node"
+      - "net=host"
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - osmt
+  redis:
+    image: library/redis:6.0.6
+    networks:
+      - osmt
+    ports:
+      - 6379:6379
 networks:
   osmt:
     driver: bridge
 
 volumes:
   osmt_sql_db:
+  elastic_data:

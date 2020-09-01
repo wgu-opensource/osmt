@@ -2,8 +2,10 @@ package edu.wgu.osmt
 
 import com.opencsv.bean.CsvBindByName
 import com.opencsv.bean.CsvToBeanBuilder
+import edu.wgu.osmt.db.DbConfig
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.elasticsearch.EsConfig
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.Keyword
@@ -18,6 +20,7 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
 import java.io.BufferedReader
@@ -74,6 +77,7 @@ class RichSkillRow {
 
 @SpringBootApplication
 @ConfigurationPropertiesScan("edu.wgu.osmt.config")
+@EnableConfigurationProperties(DbConfig::class, EsConfig::class)
 class BatchImportConsoleApplication : CommandLineRunner {
     val LOG: Logger = LoggerFactory.getLogger(BatchImportConsoleApplication::class.java)
 
@@ -180,7 +184,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
         } catch (e: FileNotFoundException) {
             LOG.error("Could not find file: ${csv_path}")
         } finally {
-            fileReader!!.close()
+            fileReader?.close()
         }
 
     }
@@ -189,6 +193,8 @@ class BatchImportConsoleApplication : CommandLineRunner {
         if (args.size > 0) {
             args[0]?.let { processCsv(it) }
             (applicationContext as ConfigurableApplicationContext).close()
+        } else {
+            LOG.error("Missing csv argument")
         }
     }
 }

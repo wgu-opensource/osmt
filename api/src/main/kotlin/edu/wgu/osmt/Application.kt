@@ -68,24 +68,23 @@ class Application {
     fun printMissingTableAndColumnStatements() {
         runBlocking {
             if (appConfig.dbConfig.showMissingCreateTableStatements) {
-                var missingStatements = 0
+                var missingStatements:MutableList<String> = mutableListOf()
                 tableList.forEach { table ->
                     transaction {
                         val statements = SchemaUtils.createStatements(table)
                         val missingColumnStatements = SchemaUtils.addMissingColumnsStatementsPublic(table)
                         if (statements.isNotEmpty()) {
-                            missingStatements += 1
-                            println("${table.tableName} create statement:")
-                            println(statements)
+                            missingStatements.addAll(statements)
                         }
                         if (missingColumnStatements.isNotEmpty()) {
-                            missingStatements += 1
-                            println("${table.tableName} missing column statements:")
-                            println(missingColumnStatements)
+                            missingStatements.addAll(missingColumnStatements)
                         }
                     }
                 }
-                if (missingStatements == 0) {
+                if (missingStatements.size > 0) {
+                    println("Database out of sync with application!")
+                    missingStatements.forEach { println("$it;") }
+                } else {
                     println("Tables ${tableList.map { it.tableName }} are in sync with application!")
                 }
             }

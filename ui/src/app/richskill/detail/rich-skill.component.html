@@ -1,12 +1,47 @@
 <div *ngIf="richSkill">
-  <p>uuid - {{richSkill.uuid}}</p>
-  <p>skillName - {{richSkill.name}}</p>
-  <p>skillStatement - {{richSkill.statement}}</p>
-  <p>certifications - {{richSkill.certifications}}</p>
+  <h1>Business Ethics: {{richSkill.skillName}}</h1>
+  <p>Author: <br>&emsp;{{richSkill.author}}</p>
+  <p>Published <br>&emsp;{{richSkill.updateDate}}</p>
+  <br>
+  <p><b>ID</b>: <br>&emsp;{{richSkill.id}}</p>
+  <p><b>Type</b>: <br>&emsp;{{richSkill.type}}</p>
+  <p><b>UUID</b>: <br>&emsp;{{richSkill.uuid}}</p>
+  <p><b>Author</b>: <br>&emsp;{{richSkill.author}}</p>
+  <p><b>Category</b>: <br>&emsp;{{richSkill.category}}</p>
+  <p><b>Skill Statement</b>: <br>&emsp;{{richSkill.statement}}</p>
+  <p><b>Alignments</b>:</p>
+  <ul>
+    <li *ngFor="let alignment of richSkill.alignments">
+      <p>
+        {{alignment}}
+      </p>
+    </li>
+  </ul>
+  <p><b>Keywords</b>:</p>
+  <ul>
+    <li *ngFor="let keyword of richSkill.keywords">
+      <p>
+        {{keyword}}
+      </p>
+    </li>
+  </ul>
+  <p><b>Standards</b>:</p>
+  <ul>
+    <li *ngFor="let standard of richSkill.standards">
+      <p>
+        {{standard}}
+      </p>
+    </li>
+  </ul>
+  <p><b>Certifications</b></p>
+  <ul>
+    <li *ngFor="let standard of richSkill.certifications">
+      <p>
+        {{standard}}
+      </p>
+    </li>
+  </ul>
+  <p><b>Occupations</b>: <br>&emsp;<i>fillme</i></p>
+  <p><b>Employer</b>: <br>&emsp;{{richSkill.employer}}</p>
 
-
-  <h3>Metadata</h3>
-  <p>updateDate - {{richSkill.updateDate}}</p>
-  <p>creationDate - {{richSkill.creationDate}}</p>
-  <p>publishstatus - {{richSkill.publishStatus}}</p>
 </div>

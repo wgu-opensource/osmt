@@ -15,22 +15,33 @@ export interface IRichSkillResponse extends IUuidDatabaseEntity {
   publishStatus: PublishStatus
   category?: IKeyword
   certifications: IKeyword[]
+  alignments: IKeyword[]
+  standards: IKeyword[]
+  type: string
+  employer: IKeyword
 }
 
 export class RichSkill {
+  id: number
   uuid: string
   creationDate?: Date = undefined
   updateDate?: Date = undefined
   name: string
   statement: string
   author: string
-  keywords: IKeyword[] = []
+  keywords: IKeyword[]
   publishStatus: PublishStatus
   category?: IKeyword
   certifications: IKeyword[]
+  alignments: IKeyword[]
+  standards: IKeyword[]
+  type: string
+  skillName: string
+  employer: IKeyword = {creationDate: "", id: 0, type: "", updateDate: "", uri: "", value: "" }
 
   constructor(iRichSkill: IRichSkillResponse) {
-    this.uuid = iRichSkill.id
+    this.id = iRichSkill.id || -1
+    this.uuid = iRichSkill.uuid
     if (iRichSkill.creationDate) {
       this.creationDate = new Date(iRichSkill.creationDate)
     }
@@ -44,5 +55,10 @@ export class RichSkill {
     this.publishStatus = iRichSkill.publishStatus
     this.category = iRichSkill.category
     this.certifications = iRichSkill.certifications
+    this.alignments = iRichSkill.alignments
+    this.standards = iRichSkill.standards
+    this.type = iRichSkill.type || ""
+    this.skillName = iRichSkill.skillName
+    this.employer = iRichSkill.employer
   }
 }

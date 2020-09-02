@@ -3,7 +3,7 @@
 ################
 FROM centos:centos8.2.2004 as osmt-base
 
-LABEL Maintainter="Francisco Gray, <fgray@concentricsky.com>"
+LABEL Maintainer="Francisco Gray, <fgray@concentricsky.com>"
 LABEL Version="1.0"
 
 ENV JAVA_VERSION=11.0.8.10
@@ -59,7 +59,7 @@ WORKDIR ${BASE_DIR}/build/api
 
 USER ${USER}
 
-RUN mvn package -Dmaven.test.skip.exec
+RUN mvn clean package -Dmaven.test.skip.exec
 
 ######################
 ### PACKAGING IMAGE ##

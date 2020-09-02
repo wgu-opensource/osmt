@@ -23,6 +23,8 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
+import org.springframework.context.annotation.Profile
+import org.springframework.stereotype.Component
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.FileReader
@@ -75,9 +77,8 @@ class RichSkillRow {
     var alignment: String? = null
 }
 
-@SpringBootApplication
-@ConfigurationPropertiesScan("edu.wgu.osmt.config")
-@EnableConfigurationProperties(DbConfig::class, EsConfig::class)
+@Component
+@Profile("import")
 class BatchImportConsoleApplication : CommandLineRunner {
     val LOG: Logger = LoggerFactory.getLogger(BatchImportConsoleApplication::class.java)
 
@@ -197,12 +198,16 @@ class BatchImportConsoleApplication : CommandLineRunner {
     }
 
     override fun run(vararg args: String?) {
-        if (args.size > 0) {
-            args[0]?.let { processCsv(it) }
-            (applicationContext as ConfigurableApplicationContext).close()
+        // --csv=path/to/csv
+        val arguments = args.filterNotNull().flatMap { it.split(",") }
+
+        val csvPath = arguments.find { it.contains("--csv") }?.split("=")?.last()
+        if (csvPath != null) {
+            processCsv(csvPath)
         } else {
-            LOG.error("Missing csv argument")
+            LOG.error("Missing --csv=path/to/csv argument")
         }
+        (applicationContext as ConfigurableApplicationContext).close()
     }
 }
 

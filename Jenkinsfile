@@ -15,10 +15,9 @@ pipeline {
         checkout([$class: 'GitSCM', 
                   branches: [[name: scm.branches[0].name]],
                   doGenerateSubmoduleConfigurations: false,
-                  extensions:,
                   submoduleCfg: [],
                   userRemoteConfigs: [[credentialsId: 'jenkins',
-                  url: 'ssh://git@github.com:concentricsky/wgu-osmt.git']]])
+                  url: 'git@github.com:concentricsky/wgu-osmt.git']]])
       }
     }
     stage('Setup') {
@@ -38,7 +37,9 @@ pipeline {
     stage('Build') {
       steps {
         sh """
+          set +x
           docker login --username ${dockerhubCredentials_USR} --password ${dockerhubCredentials_PSW}
+          set -x
           pwd
           docker build . \
             -t concentricsky/${projectName}:${gitLabel}
@@ -48,7 +49,9 @@ pipeline {
     stage('Publish'){
       steps {
         sh """
+        set +x
         docker login --username ${dockerhubCredentials_USR} --password ${dockerhubCredentials_PSW}
+        set -x
         docker tag concentricsky/${projectName}:${gitLabel} concentricsky/${projectName}:latest
         docker push concentricsky/${projectName}:${gitLabel}
         docker push concentricsky/${projectName}:latest

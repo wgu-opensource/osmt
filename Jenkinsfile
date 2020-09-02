@@ -32,23 +32,17 @@ pipeline {
             gitLabel = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
           }
           echo gitLabel
-          date = sh(returnStdout: true, script: "date +%Y.%m").trim()
         }
       }
     }
     stage('Build') {
       steps {
-        dir('./api') {
-          sh """
-            docker login --username ${dockerhubCredentials_USR} --password ${dockerhubCredentials_PSW}
-            pwd
-            docker build . \
-              -t concentricsky/${projectName}:${gitLabel} #\
-              #--build-arg git_commit=${gitHash} \
-              #--build-arg version=${gitLabel} \
-              #--build-arg build_date=${date} \
-          """
-        }
+        sh """
+          docker login --username ${dockerhubCredentials_USR} --password ${dockerhubCredentials_PSW}
+          pwd
+          docker build . \
+            -t concentricsky/${projectName}:${gitLabel}
+        """
       }
     }
     stage('Publish'){

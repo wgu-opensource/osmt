@@ -4,5 +4,6 @@ export interface IKeyword {
   updateDate?: string
   value?: string,
   type: string,
-  uri?: string
+  uri?: string,
+  name: string
 }

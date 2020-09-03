@@ -1,19 +1,16 @@
-<div *ngIf="richSkill">
+<div *ngIf="richSkill; else noSkill">
   <h1>Business Ethics: {{richSkill.skillName}}</h1>
-  <p>Author: <br>&emsp;{{richSkill.author}}</p>
-  <p>Published <br>&emsp;{{richSkill.updateDate}}</p>
-  <br>
+  <p><b>Author</b>: <br>&emsp;{{richSkill.author.name}}</p>
   <p><b>ID</b>: <br>&emsp;{{richSkill.id}}</p>
   <p><b>Type</b>: <br>&emsp;{{richSkill.type}}</p>
   <p><b>UUID</b>: <br>&emsp;{{richSkill.uuid}}</p>
-  <p><b>Author</b>: <br>&emsp;{{richSkill.author}}</p>
   <p><b>Category</b>: <br>&emsp;{{richSkill.category}}</p>
   <p><b>Skill Statement</b>: <br>&emsp;{{richSkill.statement}}</p>
   <p><b>Alignments</b>:</p>
   <ul>
     <li *ngFor="let alignment of richSkill.alignments">
       <p>
-        {{alignment}}
+        {{alignment.id}}
       </p>
     </li>
   </ul>
@@ -21,7 +18,7 @@
   <ul>
     <li *ngFor="let keyword of richSkill.keywords">
       <p>
-        {{keyword}}
+        {{keyword.name}}
       </p>
     </li>
   </ul>
@@ -29,19 +26,31 @@
   <ul>
     <li *ngFor="let standard of richSkill.standards">
       <p>
-        {{standard}}
+        {{standard.name}}
       </p>
     </li>
   </ul>
   <p><b>Certifications</b></p>
   <ul>
-    <li *ngFor="let standard of richSkill.certifications">
+    <li *ngFor="let certification of richSkill.certifications">
       <p>
-        {{standard}}
+        {{certification.name}}
       </p>
     </li>
   </ul>
-  <p><b>Occupations</b>: <br>&emsp;<i>fillme</i></p>
+  <p><b>Occupations</b></p>
+  <ul>
+    <li *ngFor="let occupation of richSkill.occupations">
+      <p>id=[{{occupation.id}}] name=[{{occupation.name}}] code=[{{occupation.code}}] framework=[{{occupation.framework}}]</p>
+    </li>
+  </ul>
   <p><b>Employer</b>: <br>&emsp;{{richSkill.employer}}</p>
-
 </div>
+<ng-template #noSkill>
+  <div *ngIf="loading; else noData">
+    Loading...
+  </div>
+  <ng-template #noData>
+    No data to load.
+  </ng-template>
+</ng-template>

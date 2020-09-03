@@ -12,6 +12,7 @@ export class RichSkillComponent implements OnInit {
 
   uuidParam: string | null
   richSkill: RichSkill | null = null
+  loading = true
 
   constructor(private richSkillService: RichSkillService, private route: ActivatedRoute) {
     this.route.params.subscribe(params => console.log(params))
@@ -26,7 +27,16 @@ export class RichSkillComponent implements OnInit {
   }
 
   getSkill(uuid: string): void {
-    this.richSkillService.getSkillByUUID(uuid).subscribe(skill => this.richSkill = skill)
+    this.richSkillService.getSkillByUUID(uuid).subscribe(
+      skill => {
+        this.richSkill = skill
+        this.loading = false
+      },
+      (error) => {
+        console.log(`Error loading skill: ${error}`)
+        this.loading = false
+      }
+    )
   }
-
 }
+

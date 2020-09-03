@@ -1,4 +1,5 @@
 import {IKeyword} from "../keyword/Keyword"
+import { IJobCode } from "../jobcode/Jobcode"
 import {IUuidDatabaseEntity} from "../ResponseEntity"
 import {PublishStatus} from "../PublishStatus"
 
@@ -10,7 +11,7 @@ export interface IRichSkillResponse extends IUuidDatabaseEntity {
   updateDate?: string
   skillName: string
   skillStatement: string
-  author: string
+  author: IKeyword
   keywords: IKeyword[]
   publishStatus: PublishStatus
   category?: IKeyword
@@ -19,7 +20,8 @@ export interface IRichSkillResponse extends IUuidDatabaseEntity {
   standards: IKeyword[]
   type: string
   employer: IKeyword
-}
+  occupations: IJobCode[]
+ }
 
 export class RichSkill {
   id: number
@@ -28,7 +30,7 @@ export class RichSkill {
   updateDate?: Date = undefined
   name: string
   statement: string
-  author: string
+  author: IKeyword
   keywords: IKeyword[]
   publishStatus: PublishStatus
   category?: IKeyword
@@ -37,7 +39,8 @@ export class RichSkill {
   standards: IKeyword[]
   type: string
   skillName: string
-  employer: IKeyword = {creationDate: "", id: 0, type: "", updateDate: "", uri: "", value: "" }
+  employer: IKeyword
+  occupations: IJobCode[]
 
   constructor(iRichSkill: IRichSkillResponse) {
     this.id = iRichSkill.id || -1
@@ -57,8 +60,9 @@ export class RichSkill {
     this.certifications = iRichSkill.certifications
     this.alignments = iRichSkill.alignments
     this.standards = iRichSkill.standards
-    this.type = iRichSkill.type || ""
+    this.type = iRichSkill.type
     this.skillName = iRichSkill.skillName
     this.employer = iRichSkill.employer
+    this.occupations = iRichSkill.occupations
   }
 }

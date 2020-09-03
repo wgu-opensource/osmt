@@ -21,6 +21,7 @@ class JobCodeDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<JobCode> {
     var name by JobCodeTable.name
     var description by JobCodeTable.description
     var framework by JobCodeTable.framework
+    var url by JobCodeTable.url
 
 
     override fun toModel(): JobCode =
@@ -35,7 +36,8 @@ class JobCodeDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<JobCode> {
             code = code,
             name = name,
             description = description,
-            framework = framework
+            framework = framework,
+            url = url
         )
 
 }

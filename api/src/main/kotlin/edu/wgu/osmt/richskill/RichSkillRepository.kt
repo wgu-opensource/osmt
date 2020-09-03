@@ -7,6 +7,9 @@ import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.db.PublishStatusDao
 import edu.wgu.osmt.db.PublishStatusTable
+import edu.wgu.osmt.keyword.Keyword
+import edu.wgu.osmt.keyword.KeywordDao
+import edu.wgu.osmt.keyword.KeywordTable
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -29,7 +32,7 @@ interface RichSkillRepository {
     fun create(
         name: String,
         statement: String,
-        author: String,
+        author: Keyword?,
         user: OAuth2User?
     ): RichSkillDescriptorDao
 }
@@ -42,6 +45,8 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
 
     val richSkillKeywordTable = RichSkillKeywords
     val richSkillJobCodeTable = RichSkillJobCodes
+
+    val keywordDao = KeywordDao.Companion
 
 
     override fun findAll() = transaction {
@@ -110,7 +115,7 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
     override fun create(
         name: String,
         statement: String,
-        author: String,
+        author: Keyword?,
         user: OAuth2User?
     ): RichSkillDescriptorDao {
         val newRichSkill = transaction {
@@ -120,7 +125,7 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
                 this.uuid = UUID.randomUUID().toString()
                 this.name = name
                 this.statement = statement
-                this.author = author
+                this.author = author?.let { KeywordDao[EntityID(it.id!!, KeywordTable)] }
                 this.publishStatus =
                     PublishStatusDao[EntityID(PublishStatus.Unpublished.ordinal.toLong(), PublishStatusTable)]
             }

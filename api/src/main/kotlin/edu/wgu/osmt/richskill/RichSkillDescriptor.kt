@@ -21,22 +21,37 @@ data class RichSkillDescriptor(
     val uuid: UUID,
     val name: String,
     val statement: String,
-    val author: String,
+    val publishStatus: PublishStatus,
     val jobCodes: List<JobCode> = listOf(),
-    val keywords: List<Keyword> = listOf(),
+    private val keywords: List<Keyword> = listOf(),
     val category: Keyword? = null,
-    val publishStatus: PublishStatus
+    val author: Keyword? = null
 ) : DatabaseData, HasUpdateDate {
 
+    // Keyword collections
+    val certifications: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Certification }
+
+    val standards: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Standard }
+
+    val searchingKeywords: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Keyword }
+
+    val alignments: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Alignment }
+
+    val employers: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Employer }
+
     companion object {
-        fun create(name: String, statement: String, author: String): RichSkillDescriptor {
+        fun create(name: String, statement: String): RichSkillDescriptor {
             val now = LocalDateTime.now(ZoneOffset.UTC)
             return RichSkillDescriptor(
                 id = null,
                 uuid = UUID.randomUUID(),
                 name = name,
                 statement = statement,
-                author = author,
                 creationDate = now,
                 updateDate = now,
                 publishStatus = PublishStatus.Unpublished
@@ -49,7 +64,7 @@ data class RsdUpdateObject(
     override val id: Long,
     val name: String? = null,
     val statement: String? = null,
-    val author: String? = null,
+    val author: NullableFieldUpdate<Keyword>? = null,
     val category: NullableFieldUpdate<Keyword>? = null,
     val keywords: ListFieldUpdate<Keyword>? = null,
     val jobCodes: ListFieldUpdate<JobCode>? = null
@@ -60,6 +75,11 @@ data class RsdUpdateObject(
             validate(RsdUpdateObject::category).validate {
                 validate(NullableFieldUpdate<Keyword>::t).validate {
                     validate(Keyword::type).isEqualTo(KeywordTypeEnum.Category)
+                }
+            }
+            validate(RsdUpdateObject::author).validate {
+                validate(NullableFieldUpdate<Keyword>::t).validate {
+                    validate(Keyword::type).isEqualTo(KeywordTypeEnum.Author)
                 }
             }
         }
@@ -87,7 +107,9 @@ data class RsdUpdateObject(
 
     fun compareAuthor(that: RichSkillDescriptorDao): JSONObject? {
         return author?.let {
-            compare(that::author, this::author, stringOutput)
+            if (that.author?.let { id } != it.t?.id) {
+                jsonUpdateStatement(that.name, that.author?.let { it.value }, it.t?.value)
+            } else null
         }
     }
 

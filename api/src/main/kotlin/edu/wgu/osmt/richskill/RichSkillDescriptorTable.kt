@@ -19,9 +19,24 @@ object RichSkillDescriptorTable : TableWithUpdateMapper<RsdUpdateObject>, LongId
     val uuid = varchar("uuid", 36).uniqueIndex()
     val name = text("name")
     val statement = text("statement")
-    val category = reference("cat_id", KeywordTable, ReferenceOption.RESTRICT).nullable()
-    val author = text("author")
-    val publishStatus = reference("publish_status_id", PublishStatusTable, ReferenceOption.RESTRICT)
+    val category = reference(
+        "cat_id",
+        KeywordTable,
+        onDelete = ReferenceOption.RESTRICT,
+        onUpdate = ReferenceOption.CASCADE
+    ).nullable()
+    val author = reference(
+        "author_id",
+        KeywordTable,
+        onDelete = ReferenceOption.RESTRICT,
+        onUpdate = ReferenceOption.CASCADE
+    ).nullable()
+    val publishStatus = reference(
+        "publish_status_id",
+        PublishStatusTable,
+        onDelete = ReferenceOption.RESTRICT,
+        onUpdate = ReferenceOption.CASCADE
+    )
 
     override fun updateBuilderApplyFromUpdateObject(
         updateBuilder: UpdateBuilder<Number>,
@@ -37,14 +52,30 @@ object RichSkillDescriptorTable : TableWithUpdateMapper<RsdUpdateObject>, LongId
                 updateBuilder[category] = null
             }
         }
-        updateObject.author?.let { updateBuilder[author] = it }
+        updateObject.author?.let {
+            if (it.t != null) {
+                updateBuilder[author] = EntityID<Long>(it.t.id!!, KeywordTable)
+            } else {
+                updateBuilder[author] = null
+            }
+        }
     }
 }
 
 // many-to-many table for RichSkillDescriptor and JobCode relationship
 object RichSkillJobCodes : Table("RichSkillJobCodes") {
-    val richSkillId = reference("richskill_id", RichSkillDescriptorTable, onDelete = ReferenceOption.CASCADE).index()
-    val jobCodeId = reference("jobcode_id", JobCodeTable, onDelete = ReferenceOption.CASCADE).index()
+    val richSkillId = reference(
+        "richskill_id",
+        RichSkillDescriptorTable,
+        onDelete = ReferenceOption.CASCADE,
+        onUpdate = ReferenceOption.CASCADE
+    ).index()
+    val jobCodeId = reference(
+        "jobcode_id",
+        JobCodeTable,
+        onDelete = ReferenceOption.CASCADE,
+        onUpdate = ReferenceOption.CASCADE
+    ).index()
     override val primaryKey = PrimaryKey(richSkillId, jobCodeId, name = "PK_RichSkillJobCodes_rs_jc")
 
     fun create(richSkillId: Long, jobCodeId: Long) {
@@ -62,8 +93,18 @@ object RichSkillJobCodes : Table("RichSkillJobCodes") {
 }
 
 object RichSkillKeywords : Table("RichSkillKeywords") {
-    val richSkillId = reference("richskill_id", RichSkillDescriptorTable, onDelete = ReferenceOption.CASCADE).index()
-    val keywordId = reference("keyword_id", KeywordTable, onDelete = ReferenceOption.CASCADE).index()
+    val richSkillId = reference(
+        "richskill_id",
+        RichSkillDescriptorTable,
+        onDelete = ReferenceOption.CASCADE,
+        onUpdate = ReferenceOption.CASCADE
+    ).index()
+    val keywordId = reference(
+        "keyword_id",
+        KeywordTable,
+        onDelete = ReferenceOption.CASCADE,
+        onUpdate = ReferenceOption.CASCADE
+    ).index()
     override val primaryKey = PrimaryKey(richSkillId, keywordId, name = "PK_RichSkillKeywords_rs_kw")
 
     fun create(richSkillId: Long, keywordId: Long) {
@@ -76,7 +117,7 @@ object RichSkillKeywords : Table("RichSkillKeywords") {
     fun delete(richSkillId: Long, keywordId: Long) {
         deleteWhere {
             (RichSkillKeywords.richSkillId eq richSkillId) and
-            (RichSkillKeywords.keywordId eq keywordId)
+                    (RichSkillKeywords.keywordId eq keywordId)
         }
     }
 }

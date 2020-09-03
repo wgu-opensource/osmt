@@ -2,8 +2,10 @@ package edu.wgu.osmt
 
 import com.opencsv.bean.CsvBindByName
 import com.opencsv.bean.CsvToBeanBuilder
+import edu.wgu.osmt.db.DbConfig
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.elasticsearch.EsConfig
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.Keyword
@@ -18,8 +20,11 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
+import org.springframework.context.annotation.Profile
+import org.springframework.stereotype.Component
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.FileReader
@@ -72,8 +77,8 @@ class RichSkillRow {
     var alignment: String? = null
 }
 
-@SpringBootApplication
-@ConfigurationPropertiesScan("edu.wgu.osmt.config")
+@Component
+@Profile("import")
 class BatchImportConsoleApplication : CommandLineRunner {
     val LOG: Logger = LoggerFactory.getLogger(BatchImportConsoleApplication::class.java)
 
@@ -95,16 +100,16 @@ class BatchImportConsoleApplication : CommandLineRunner {
         return value?.let { it.split(delimiters).map { it.trim() } }?.distinct()
     }
 
-    fun parse_keywords(keywordType: KeywordTypeEnum, rowValue: String?, useUri: Boolean = false):List<Keyword>? {
+    fun parse_keywords(keywordType: KeywordTypeEnum, rowValue: String?, useUri: Boolean = false): List<Keyword>? {
         return split_field(rowValue)?.map {
             if (useUri)
-                keywordRepository.findOrCreate(keywordType, uri=it)
+                keywordRepository.findOrCreate(keywordType, uri = it)
             else
-                keywordRepository.findOrCreate(keywordType, value=it)
+                keywordRepository.findOrCreate(keywordType, value = it)
         }
     }
 
-    fun parse_jobcodes(rowValue: String?):List<JobCode>? {
+    fun parse_jobcodes(rowValue: String?): List<JobCode>? {
         return split_field(rowValue)?.map { code ->
             val jobCode = jobCodeRepository.findByCode(code)
             jobCode ?: jobCodeRepository.create(code).toModel()
@@ -121,6 +126,9 @@ class BatchImportConsoleApplication : CommandLineRunner {
 
     fun handleRows(rows: List<RichSkillRow>) {
         LOG.info("Processing ${rows.size} rows...")
+
+        val defaultAuthor =
+            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = "Western Governors University")
 
         for (row in rows) {
             val user = null
@@ -143,18 +151,22 @@ class BatchImportConsoleApplication : CommandLineRunner {
 
             val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
 
+            val rowAuthorOrDefault =
+                row.author?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it) } ?: defaultAuthor
+
             if (row.skillName != null && row.skillStatement != null) {
                 val newSkill = richSkillRepository.create(
-                    row.skillName!!,
-                    row.skillStatement!!,
-                   row.author ?: defaultAuthor,
-                    user)
+                    name = row.skillName!!,
+                    statement = row.skillStatement!!,
+                    author = rowAuthorOrDefault,
+                    user = user
+                )
 
                 richSkillRepository.update(RsdUpdateObject(
-                   id = newSkill.id.value,
-                   category = NullableFieldUpdate(category),
-                   keywords = all_keywords?.let { ListFieldUpdate(add=it) },
-                   jobCodes = occupations?.let { ListFieldUpdate(add=it) }
+                    id = newSkill.id.value,
+                    category = NullableFieldUpdate(category),
+                    keywords = all_keywords?.let { ListFieldUpdate(add = it) },
+                    jobCodes = occupations?.let { ListFieldUpdate(add = it) }
                 ), user)
 
                 LOG.info("created skill '${row.skillName!!}'")
@@ -180,16 +192,22 @@ class BatchImportConsoleApplication : CommandLineRunner {
         } catch (e: FileNotFoundException) {
             LOG.error("Could not find file: ${csv_path}")
         } finally {
-            fileReader!!.close()
+            fileReader?.close()
         }
 
     }
 
     override fun run(vararg args: String?) {
-        if (args.size > 0) {
-            args[0]?.let { processCsv(it) }
-            (applicationContext as ConfigurableApplicationContext).close()
+        // --csv=path/to/csv
+        val arguments = args.filterNotNull().flatMap { it.split(",") }
+
+        val csvPath = arguments.find { it.contains("--csv") }?.split("=")?.last()
+        if (csvPath != null) {
+            processCsv(csvPath)
+        } else {
+            LOG.error("Missing --csv=path/to/csv argument")
         }
+        (applicationContext as ConfigurableApplicationContext).close()
     }
 }
 

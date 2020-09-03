@@ -9,5 +9,5 @@ data class DbConfig(
     val name: String,
     val uri: String,
     val composedUrl: String,
-    val createTablesAndColumnsIfMissing: Boolean = false
+    val showMissingCreateTableStatements: Boolean = false
 )

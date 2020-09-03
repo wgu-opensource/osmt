@@ -16,17 +16,44 @@ This module represents the Spring Boot backend application.
   * Click the plus icon for "Add New Configuration"
   * Select "Spring Boot"
   * For `Main class`, use `edu.wgu.osmt.Application`
-  * Set `VM options` to `-Dspring.profiles.active=dev`
+  * Set `VM options` to `-Dspring.profiles.active=dev,apiserver`
   * Click 'ok'
-  
-### Spring Boot configuration
-  This project makes use of configuring Spring boot via property files. These are located at `./api/src/main/resources/config/`. A `dev` profile exists for 
-  local development, and can be applied by passing the `-Dspring.profiles.active=dev` argument on launch. 
-  
-### Database migrations
-  This project is configure to use [FlywayDb](https://flywaydb.org/). SQL Migrations can be placed in `./api/src/main/resources/db/migration/`.
-  Scripts in this folder will be automatically processed when the app is run with the appropriate `application.properties` settings in `spring.flyway.*` 
 
+## Spring Boot configuration / Profiles
+This project makes use of configuring Spring boot via property files. These are located at `./api/src/main/resources/config/`. A `dev` profile exists for 
+  local development, and can be applied by passing the `-Dspring.profiles.active=dev` argument on launch. Active profiles also control what Spring Boot `@component`(s) are run.
 
-### Code style
+| Configuration Profile     | Properties file           |
+| -----------               | -----------               |
+| (none)                    | application.properties    |
+| dev                       | application-dev.properties|
+
+| Component Profile         | Note                                                    |
+| ---                       | ---                                                     |
+| import                    | runs the batch import process, expects `--csv=` argument | 
+| apiserver                 | runs the api server                                     |
+
+For example to run the import component with a dev configuration, set active profiles by passing a JVM argument like so:
+`-Dspring-boot.run.profiles=dev,import`
+  
+## Database migrations
+This project uses [FlywayDb](https://flywaydb.org/). SQL Migrations can be placed in `./api/src/main/resources/db/migration/`.
+Scripts in this folder will be automatically processed when the app is ran with the appropriate `application.properties` settings in `spring.flyway.*` 
+
+## Code style
 To automatically apply the official Kotlin code style, Install the IntelliJ plugin `Save Actions`. Configure `Save Actions` in preferences to `Reformat file` on save.    
+
+## Command Line execution
+#### Building the jar:
+```mvn clean package -Dmaven.test.skip.exec```
+
+#### Run the web service:
+```mvn -Dspring-boot.run.profiles=dev,apiserver spring-boot:run```
+
+#### Running the web service from the jar:
+```java -Dspring.profiles.active=dev,apiserver -jar api/target/osmt-api-0.0.1-SNAPSHOT.jar```
+
+#### Running batch import from the jar:
+```
+java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-0.0.1-SNAPSHOT.jar --csv=path/to/csv    
+```

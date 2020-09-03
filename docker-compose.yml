@@ -3,11 +3,12 @@ version: '3.3'
 services:
   app:
     build:
-      context: ./api
+      context: ./
       dockerfile: Dockerfile
     environment:
-      - "DB_URI=osmt:password@db:3306"
-      - "ES_URI=elasticsearch:9200"
+      - "ENVIRONMENT=apiserver,dev"
+      - "MYSQL_DB_URI=osmt:password@db:3306"
+      - "ELASTICSEARCH_URI=elasticsearch:9200"
       - "REDIS_URI=redis:6379"
     depends_on:
       - db

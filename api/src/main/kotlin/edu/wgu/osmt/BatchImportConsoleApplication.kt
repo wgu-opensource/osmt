@@ -2,10 +2,8 @@ package edu.wgu.osmt
 
 import com.opencsv.bean.CsvBindByName
 import com.opencsv.bean.CsvToBeanBuilder
-import edu.wgu.osmt.db.DbConfig
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
-import edu.wgu.osmt.elasticsearch.EsConfig
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.Keyword
@@ -18,9 +16,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Profile
@@ -94,7 +89,6 @@ class BatchImportConsoleApplication : CommandLineRunner {
     @Autowired
     private lateinit var jobCodeRepository: JobCodeRepository;
 
-    val defaultAuthor = "Western Governors University";
 
     fun split_field(value: String?, delimiters: String = ";"): List<String>? {
         return value?.let { it.split(delimiters).map { it.trim() } }?.distinct()
@@ -127,9 +121,6 @@ class BatchImportConsoleApplication : CommandLineRunner {
     fun handleRows(rows: List<RichSkillRow>) {
         LOG.info("Processing ${rows.size} rows...")
 
-        val defaultAuthor =
-            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = "Western Governors University")
-
         for (row in rows) {
             val user = null
             var category: Keyword? = null
@@ -151,14 +142,13 @@ class BatchImportConsoleApplication : CommandLineRunner {
 
             val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
 
-            val rowAuthorOrDefault =
-                row.author?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it) } ?: defaultAuthor
+            val author:Keyword? = row.author?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it) }
 
             if (row.skillName != null && row.skillStatement != null) {
                 val newSkill = richSkillRepository.create(
                     name = row.skillName!!,
                     statement = row.skillStatement!!,
-                    author = rowAuthorOrDefault,
+                    author = author,
                     user = user
                 )
 

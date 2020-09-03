@@ -17,9 +17,16 @@ class AppConfig {
     @Value("\${app.baseUrl}")
     lateinit var baseUrl: String
 
+    @Value("\${app.defaultAuthorName}")
+    lateinit var defaultAuthorName: String
+
+    @Value("\${app.defaultAuthorUri}")
+    lateinit var defaultAuthorUri: String
+
     @Autowired
     lateinit var environment: Environment
 
     @Autowired
     lateinit var dbConfig: DbConfig
+
 }

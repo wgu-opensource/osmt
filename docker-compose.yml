@@ -16,6 +16,8 @@ services:
       - redis
     ports:
       - "8080:8080"
+    networks:
+      - osmt
 
   db:
     image: library/mysql:8.0
@@ -25,6 +27,7 @@ services:
     environment:
       - "MYSQL_PASSWORD=password"
       - "MYSQL_HOST=0.0.0.0"
+      - "MYSQL_DATABASE=osmt_db"
       - "MYSQL_ROOT_PASSWORD=password"
       - "MYSQL_USER=osmt"
     ports:

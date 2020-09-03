@@ -9,6 +9,7 @@ import edu.wgu.osmt.db.PublishStatusDao
 import edu.wgu.osmt.db.PublishStatusTable
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordDao
+import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTable
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.select
@@ -38,7 +39,8 @@ interface RichSkillRepository {
 }
 
 @Repository
-class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: AuditLogRepository) :
+class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: AuditLogRepository,
+                                                     val keywordRepository: KeywordRepository) :
     RichSkillRepository {
     override val dao = RichSkillDescriptorDao.Companion
     override val table = RichSkillDescriptorTable
@@ -119,13 +121,14 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
         user: OAuth2User?
     ): RichSkillDescriptorDao {
         val newRichSkill = transaction {
+            val authorKeyword = author ?: keywordRepository.getDefaultAuthor()
             dao.new {
                 this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
                 this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
                 this.uuid = UUID.randomUUID().toString()
                 this.name = name
                 this.statement = statement
-                this.author = author?.let { KeywordDao[EntityID(it.id!!, KeywordTable)] }
+                this.author = KeywordDao[EntityID(authorKeyword.id!!, KeywordTable)]
                 this.publishStatus =
                     PublishStatusDao[EntityID(PublishStatus.Unpublished.ordinal.toLong(), PublishStatusTable)]
             }

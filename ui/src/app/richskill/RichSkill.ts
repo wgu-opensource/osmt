@@ -1,12 +1,13 @@
 import {IKeyword} from "../keyword/Keyword"
 import { IJobCode } from "../jobcode/Jobcode"
-import {IUuidDatabaseEntity} from "../ResponseEntity"
 import {PublishStatus} from "../PublishStatus"
 
 /**
  * The interface to a RichSkill response we get from the backend
  */
-export interface IRichSkillResponse extends IUuidDatabaseEntity {
+export interface IRichSkillResponse {
+  id: string
+  uuid: string
   creationDate?: string
   updateDate?: string
   skillName: string
@@ -19,12 +20,12 @@ export interface IRichSkillResponse extends IUuidDatabaseEntity {
   alignments: IKeyword[]
   standards: IKeyword[]
   type: string
-  employer: IKeyword
+  employers: IKeyword[]
   occupations: IJobCode[]
  }
 
 export class RichSkill {
-  id: number
+  id: string
   uuid: string
   creationDate?: Date = undefined
   updateDate?: Date = undefined
@@ -39,11 +40,11 @@ export class RichSkill {
   standards: IKeyword[]
   type: string
   skillName: string
-  employer: IKeyword
+  employers: IKeyword[]
   occupations: IJobCode[]
 
   constructor(iRichSkill: IRichSkillResponse) {
-    this.id = iRichSkill.id || -1
+    this.id = iRichSkill.id
     this.uuid = iRichSkill.uuid
     if (iRichSkill.creationDate) {
       this.creationDate = new Date(iRichSkill.creationDate)
@@ -62,7 +63,7 @@ export class RichSkill {
     this.standards = iRichSkill.standards
     this.type = iRichSkill.type
     this.skillName = iRichSkill.skillName
-    this.employer = iRichSkill.employer
+    this.employers = iRichSkill.employers
     this.occupations = iRichSkill.occupations
   }
 }

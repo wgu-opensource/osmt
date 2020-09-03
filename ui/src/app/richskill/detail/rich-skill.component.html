@@ -44,7 +44,12 @@
       <p>id=[{{occupation.id}}] name=[{{occupation.name}}] code=[{{occupation.code}}] framework=[{{occupation.framework}}]</p>
     </li>
   </ul>
-  <p><b>Employer</b>: <br>&emsp;{{richSkill.employer}}</p>
+  <p><b>Employers</b></p>
+  <ul>
+    <li *ngFor="let employer of richSkill.employers">
+      <p>{{employer.name}}</p>
+    </li>
+  </ul>
 </div>
 <ng-template #noSkill>
   <div *ngIf="loading; else noData">

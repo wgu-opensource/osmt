@@ -38,33 +38,43 @@
   <p><b>Occupations</b></p>
   <ul>
     <p><b>Major codes</b></p>
-    <li *ngFor="let majorCodes of getMajorJobCodes()">
-      <p>{{majorCodes}}</p>
-    </li>
+    <div *ngFor="let code of majorCodes">
+      <li *ngIf="code">
+        <p>{{code}}</p>
+      </li>
+    </div>
   </ul>
   <ul>
     <p><b>Minor codes</b></p>
-    <li *ngFor="let minorCodes of getMinorJobCodes()">
-      <p>{{minorCodes}}</p>
-    </li>
+    <div *ngFor="let code of minorCodes">
+      <li *ngIf="code">
+        <p>{{code}}</p>
+      </li>
+    </div>
   </ul>
   <ul>
     <p><b>Broad codes</b></p>
-    <li *ngFor="let broadCodes of getBroadJobCodes()">
-      <p>{{broadCodes}}</p>
-    </li>
+    <div *ngFor="let code of broadCodes">
+      <li *ngIf="code">
+        <p>{{code}}</p>
+      </li>
+    </div>
   </ul>
   <ul>
     <p><b>Detailed codes</b></p>
-    <li *ngFor="let detailedCodes of getDetailedJobCodes()">
-      <p>{{detailedCodes}}</p>
-    </li>
+    <div *ngFor="let code of detailedCodes">
+      <li *ngIf="code">
+        <p>{{code}}</p>
+      </li>
+    </div>
   </ul>
   <ul>
     <p><b>Job Role codes</b></p>
-    <li *ngFor="let jobRoleCodes of getJobRoleCodes()">
-      <p>{{jobRoleCodes}}</p>
-    </li>
+    <div *ngFor="let code of jobRoleCodes">
+      <li *ngIf="code">
+        <p>{{code}}</p>
+      </li>
+    </div>
   </ul>
   <p><b>Employers</b></p>
   <ul>

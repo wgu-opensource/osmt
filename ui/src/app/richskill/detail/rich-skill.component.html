@@ -1,12 +1,9 @@
 <div *ngIf="richSkill; else noSkill">
-  <h1>Business Ethics: {{richSkill.skillName}}</h1>
-  <p><b>Author</b>: <br>&emsp;{{richSkill.author.name}}</p>
-  <p><b>ID</b>: <br>&emsp;{{richSkill.id}}</p>
-  <p><b>Type</b>: <br>&emsp;{{richSkill.type}}</p>
-  <p><b>UUID</b>: <br>&emsp;{{richSkill.uuid}}</p>
-  <p><b>Category</b>: <br>&emsp;{{richSkill.category}}</p>
-  <p><b>Skill Statement</b>: <br>&emsp;{{richSkill.statement}}</p>
-  <p><b>Alignments</b>:</p>
+  <h1>{{richSkill.skillName}}</h1>
+  <p><b>Skill Statement</b><br>&emsp;{{richSkill.statement}}</p>
+  <p><b>ID</b><br>&emsp;{{richSkill.id}}</p>
+  <p><b>Category</b><br>&emsp;{{richSkill.category}}</p>
+  <p><b>Alignments</b></p>
   <ul>
     <li *ngFor="let alignment of richSkill.alignments">
       <p>
@@ -14,7 +11,7 @@
       </p>
     </li>
   </ul>
-  <p><b>Keywords</b>:</p>
+  <p><b>Keywords</b></p>
   <ul>
     <li *ngFor="let keyword of richSkill.keywords">
       <p>
@@ -22,7 +19,7 @@
       </p>
     </li>
   </ul>
-  <p><b>Standards</b>:</p>
+  <p><b>Standards</b></p>
   <ul>
     <li *ngFor="let standard of richSkill.standards">
       <p>
@@ -40,8 +37,33 @@
   </ul>
   <p><b>Occupations</b></p>
   <ul>
-    <li *ngFor="let occupation of richSkill.occupations">
-      <p>id=[{{occupation.id}}] name=[{{occupation.name}}] code=[{{occupation.code}}] framework=[{{occupation.framework}}]</p>
+    <p><b>Major codes</b></p>
+    <li *ngFor="let majorCodes of getMajorJobCodes()">
+      <p>{{majorCodes}}</p>
+    </li>
+  </ul>
+  <ul>
+    <p><b>Minor codes</b></p>
+    <li *ngFor="let minorCodes of getMinorJobCodes()">
+      <p>{{minorCodes}}</p>
+    </li>
+  </ul>
+  <ul>
+    <p><b>Broad codes</b></p>
+    <li *ngFor="let broadCodes of getBroadJobCodes()">
+      <p>{{broadCodes}}</p>
+    </li>
+  </ul>
+  <ul>
+    <p><b>Detailed codes</b></p>
+    <li *ngFor="let detailedCodes of getDetailedJobCodes()">
+      <p>{{detailedCodes}}</p>
+    </li>
+  </ul>
+  <ul>
+    <p><b>Job Role codes</b></p>
+    <li *ngFor="let jobRoleCodes of getJobRoleCodes()">
+      <p>{{jobRoleCodes}}</p>
     </li>
   </ul>
   <p><b>Employers</b></p>
@@ -50,6 +72,7 @@
       <p>{{employer.name}}</p>
     </li>
   </ul>
+  <p><b>Author</b><br>&emsp;{{richSkill.author.name}}</p>
 </div>
 <ng-template #noSkill>
   <div *ngIf="loading; else noData">

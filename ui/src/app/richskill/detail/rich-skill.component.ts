@@ -1,7 +1,8 @@
-import {Component, OnInit} from "@angular/core"
-import {RichSkill} from "../RichSkill"
-import {RichSkillService} from "../service/rich-skill.service"
-import {ActivatedRoute, ParamMap} from "@angular/router"
+import { Component, OnInit } from "@angular/core"
+import { RichSkill } from "../RichSkill"
+import { RichSkillService } from "../service/rich-skill.service"
+import { ActivatedRoute } from "@angular/router"
+import { JobcodeParser, JobCodeType } from "../../jobcode/JobcodeParser"
 
 @Component({
   selector: "app-richskill",
@@ -37,6 +38,34 @@ export class RichSkillComponent implements OnInit {
         this.loading = false
       }
     )
+  }
+
+  getJobCodes(type: JobCodeType): string[] {
+    const parser = new JobcodeParser()
+    return this.richSkill?.occupations
+        .map(({code}) => code)
+        .filter(code => parser.parseCode(code) === type)
+      || []
+  }
+
+  getMajorJobCodes(): string[] {
+    return this.getJobCodes(JobCodeType.Major)
+  }
+
+  getMinorJobCodes(): string[] {
+    return this.getJobCodes(JobCodeType.Minor)
+  }
+
+  getBroadJobCodes(): string[] {
+    return this.getJobCodes(JobCodeType.Broad)
+  }
+
+  getDetailedJobCodes(): string[] {
+    return this.getJobCodes(JobCodeType.Detailed)
+  }
+
+  getJobRoleCodes(): string[] {
+    return this.getJobCodes(JobCodeType.JobRole)
   }
 }
 

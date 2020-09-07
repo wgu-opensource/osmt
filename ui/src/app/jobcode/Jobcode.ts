@@ -36,7 +36,7 @@ export class JobCodeBreakout {
   private jobRolePart(): string | null {
     const matcher = this.code.match(/\.(\d{2})$/)
     if (matcher && matcher[1]) {
-      return matcher[1]
+      return +matcher[1] > 0 ? matcher[1] : null // even if defined, if zero then don't display it
     } else {
       return null
     }
@@ -45,7 +45,7 @@ export class JobCodeBreakout {
   majorCode(): string | null {
     const majorPart = this.majorPart()
     return +majorPart > 0
-      ? `${majorPart}-0000`
+        ? `${majorPart}-0000`
       : null
   }
 

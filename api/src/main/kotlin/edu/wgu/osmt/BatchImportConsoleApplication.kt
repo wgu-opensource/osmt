@@ -11,6 +11,11 @@ import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RsdUpdateObject
+import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.collection.CollectionRepository
+import edu.wgu.osmt.collection.CollectionSkills
+import edu.wgu.osmt.richskill.RichSkillKeywords
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -89,6 +94,10 @@ class BatchImportConsoleApplication : CommandLineRunner {
     @Autowired
     private lateinit var jobCodeRepository: JobCodeRepository;
 
+    @Autowired
+    private lateinit var collectionRepository: CollectionRepository;
+
+    val collectionSkillsTable = CollectionSkills
 
     fun split_field(value: String?, delimiters: String = ";"): List<String>? {
         return value?.let { it.split(delimiters).map { it.trim() } }?.distinct()
@@ -107,6 +116,13 @@ class BatchImportConsoleApplication : CommandLineRunner {
         return split_field(rowValue)?.map { code ->
             val jobCode = jobCodeRepository.findByCode(code)
             jobCode ?: jobCodeRepository.create(code).toModel()
+        }
+    }
+
+    fun parse_collections(rowValue: String?): List<Collection>? {
+        return split_field(rowValue)?.filter { it.isNotBlank() }?.map { collectionName ->
+            val collection = collectionRepository.findByName(collectionName)
+            collection ?: transaction { collectionRepository.create(collectionName).toModel() }
         }
     }
 
@@ -130,6 +146,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
             var employers: List<Keyword>? = null
             var alignments: List<Keyword>? = null
             var occupations: List<JobCode>? = null
+            var collections: List<Collection>? = null
 
             category = row.skillCategory?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Category, value = it) }
 
@@ -139,6 +156,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
             employers = parse_keywords(KeywordTypeEnum.Employer, row.employer)
             alignments = parse_keywords(KeywordTypeEnum.Alignment, row.alignment, useUri = true)
             occupations = parse_jobcodes(row.jobRoles)
+            collections = parse_collections(row.collections)
 
             val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
 
@@ -158,6 +176,12 @@ class BatchImportConsoleApplication : CommandLineRunner {
                     keywords = all_keywords?.let { ListFieldUpdate(add = it) },
                     jobCodes = occupations?.let { ListFieldUpdate(add = it) }
                 ), user)
+
+                collections?.forEach { collection ->
+                    transaction {
+                        collectionSkillsTable.create(collection.id!!, newSkill.id.value)
+                    }
+                }
 
                 LOG.info("created skill '${row.skillName!!}'")
             }

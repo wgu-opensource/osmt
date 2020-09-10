@@ -1,8 +1,11 @@
 package edu.wgu.osmt
 
 import edu.wgu.osmt.auditlog.AuditLogTable
+import edu.wgu.osmt.collection.CollectionSkills
+import edu.wgu.osmt.collection.CollectionTable
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatusTable
+import edu.wgu.osmt.db.addMissingColumnsStatementsPublic
 import edu.wgu.osmt.jobcode.JobCodeTable
 import edu.wgu.osmt.keyword.KeywordTable
 import edu.wgu.osmt.richskill.RichSkillDescriptorTable
@@ -19,7 +22,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
-import edu.wgu.osmt.db.addMissingColumnsStatementsPublic
 
 @Component
 @Profile("apiserver")
@@ -32,7 +34,9 @@ class ApiServer {
         RichSkillJobCodes,
         KeywordTable,
         RichSkillKeywords,
-        PublishStatusTable
+        PublishStatusTable,
+        CollectionTable,
+        CollectionSkills
     )
 
     @Autowired

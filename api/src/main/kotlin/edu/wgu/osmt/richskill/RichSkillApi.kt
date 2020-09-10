@@ -5,11 +5,9 @@ import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.keyword.KeywordDao
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
-import java.util.*
+import javax.servlet.http.HttpServletRequest
 
 @Controller
 @RequestMapping("/api/skills")
@@ -21,9 +19,14 @@ class RichSkillApi @Autowired constructor(
     val keywordDao = KeywordDao.Companion
 
     // TODO pagination according to spec
-    @GetMapping()
+    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun findAll() = richSkillRepository.findAll()
+    fun allSkills(request: HttpServletRequest): List<RichSkillDTO> {
+        println(request.getHeader("Accept"))
+        return richSkillRepository.findAll().map {
+            RichSkillDTO(it, appConfig.baseUrl)
+        }
+    }
 
     @GetMapping("/{uuid}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @JsonView(RichSkillView.PublicDetailView::class)
@@ -37,4 +40,6 @@ class RichSkillApi @Autowired constructor(
     fun byUUIDHtmlView(@PathVariable uuid: String): String {
         return "forward:/skills/$uuid"
     }
+
+
 }

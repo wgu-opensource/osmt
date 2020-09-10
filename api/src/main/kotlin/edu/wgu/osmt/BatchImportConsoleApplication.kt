@@ -31,11 +31,14 @@ import java.io.FileReader
 
 
 class RichSkillRow {
-    @CsvBindByName(column = "Skill Category")
-    var skillCategory: String? = null
+    @CsvBindByName(column = "Collection")
+    var collections: String? = null
 
     @CsvBindByName(column = "Skill Name")
     var skillName: String? = null
+
+    @CsvBindByName(column = "Skill Category")
+    var skillCategory: String? = null
 
     @CsvBindByName(column = "Contextualized Skill Statement")
     var skillStatement: String? = null
@@ -43,28 +46,25 @@ class RichSkillRow {
     @CsvBindByName(column = "Keywords")
     var keywords: String? = null
 
-    @CsvBindByName(column = "Collection")
-    var collections: String? = null
-
     @CsvBindByName(column = "Professional Standards")
     var standards: String? = null
 
     @CsvBindByName(column = "Certifications")
     var certifications: String? = null
 
-    @CsvBindByName(column = "BLS Industry Major Group(s)")
+    @CsvBindByName(column = "BLS Major Group")
     var blsMajors: String? = null
 
-    @CsvBindByName(column = "BLS Industry(s) {Minor Group}")
+    @CsvBindByName(column = "BLS Minor Group")
     var blsMinors: String? = null
 
-    @CsvBindByName(column = "BLS Occupation(s) {Broad Occupation}")
+    @CsvBindByName(column = "BLS Broad Occupation")
     var blsBroads: String? = null
 
-    @CsvBindByName(column = "BLS Job Function(s) {Detailed Occupation}")
-    var blsJobFunctions: String? = null
+    @CsvBindByName(column = "BLS Detailed Occupation")
+    var blsDetaileds: String? = null
 
-    @CsvBindByName(column = "O*NET Job Role(s)")
+    @CsvBindByName(column = "O*NET Job Role")
     var jobRoles: String? = null
 
     @CsvBindByName(column = "Author")
@@ -73,8 +73,11 @@ class RichSkillRow {
     @CsvBindByName(column = "Employer")
     var employer: String? = null
 
+    @CsvBindByName(column = "Alignment Title")
+    var alignmentTitle: String? = null
+
     @CsvBindByName(column = "Alignment")
-    var alignment: String? = null
+    var alignmentUri: String? = null
 }
 
 @Component
@@ -154,9 +157,12 @@ class BatchImportConsoleApplication : CommandLineRunner {
             standards = parse_keywords(KeywordTypeEnum.Standard, row.standards)
             certifications = parse_keywords(KeywordTypeEnum.Certification, row.certifications)
             employers = parse_keywords(KeywordTypeEnum.Employer, row.employer)
-            alignments = parse_keywords(KeywordTypeEnum.Alignment, row.alignment, useUri = true)
             occupations = parse_jobcodes(row.jobRoles)
             collections = parse_collections(row.collections)
+
+            if (row.alignmentTitle != null || row.alignmentUri != null) {
+                alignments = listOf( keywordRepository.findOrCreate(KeywordTypeEnum.Alignment, value = row.alignmentTitle, uri = row.alignmentUri) )
+            }
 
             val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
 

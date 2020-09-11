@@ -1,23 +1,24 @@
 package edu.wgu.osmt.jobcode
 
-// While most codes follow one of these exact formats xx-xxxx or xx-xxxx.xx. I've found some that have a single
-// major code like x-xxxx.xx which means that a little extra processing needs to be done since the character's indexes
-// in the string are not 100% consistent
+// While most codes follow one of these exact formats xx-xxxx or xx-xxxx.xx. I've found some that have these following
+// formats: x-xxxx.xx and x.xxxx.xx major code like x-xxxx.xx which means that a little extra processing needs to be done
 object JobCodeBreakout {
 
-    private fun majorPart(code: String): String? = code.split("-")
+    private val codePartDelimeter = "[-.]".toRegex() // used to split code on either hyphen (-) or period (.)
+
+    private fun majorPart(code: String): String? = code.split(codePartDelimeter)
             .takeIf { it.isNotEmpty() }
             ?.let { it[0] }
             ?.takeIf { it.toIntOrNull() != null }
 
-    private fun minorPart(code: String): String? = code.split("-")
+    private fun minorPart(code: String): String? = code.split(codePartDelimeter)
             .takeIf { it.size > 1 }
             ?.let { it[1] }
             ?.takeIf { it.length >= 2 }
             ?.substring(0, 2)
             ?.takeIf { it.toIntOrNull() != null }
 
-    private fun broadPart(code: String): String? = code.split("-")
+    private fun broadPart(code: String): String? = code.split(codePartDelimeter)
             .takeIf { it.size > 1 }
             ?.let { it[1] }
             ?.takeIf { it.length >= 3 }
@@ -25,18 +26,16 @@ object JobCodeBreakout {
             ?.takeIf { it.toIntOrNull() != null }
 
 
-    private fun detailedPart(code: String): String? = code.split("-")
+    private fun detailedPart(code: String): String? = code.split(codePartDelimeter)
             .takeIf { it.size > 1 }
             ?.let { it[1] }
             ?.takeIf { it.length >= 4 }
             ?.substring(3, 4)
             ?.takeIf { it.toIntOrNull() != null }
 
-    private fun jobRolePart(code: String): String? = ".*\\.(\\d{2})$".toRegex() // captures group: xx-xxxx.(xx)
-            .find(code)
-            ?.groupValues
-            ?.takeIf { it.size > 1 }
-            ?.let { it[1] }
+    private fun jobRolePart(code: String): String? = code.split(codePartDelimeter)
+            .takeIf { it.size > 2 }
+            ?.let { it[2] }
             ?.takeIf { it.toIntOrNull() != null }
 
     // For use on major, minor, broad and detailed codes to determine if it's

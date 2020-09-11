@@ -19,6 +19,8 @@ class RichSkillView {
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseDomain: String) {
 
+    // TODO include view of collection
+
     @get:JsonView(RichSkillView.PublicDetailView::class)
     @JsonProperty("@context")
     val context = "https://rsd.osmt.dev/context-v1.json"

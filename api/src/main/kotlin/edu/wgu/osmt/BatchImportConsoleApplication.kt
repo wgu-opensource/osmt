@@ -2,6 +2,7 @@ package edu.wgu.osmt
 
 import com.opencsv.bean.CsvBindByName
 import com.opencsv.bean.CsvToBeanBuilder
+import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.jobcode.JobCode
@@ -23,7 +24,8 @@ import org.springframework.stereotype.Component
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.FileReader
-
+import edu.wgu.osmt.collection.Collection
+import org.jetbrains.exposed.sql.transactions.transaction
 
 class RichSkillRow {
     @CsvBindByName(column = "Skill Category")
@@ -78,16 +80,19 @@ class BatchImportConsoleApplication : CommandLineRunner {
     val LOG: Logger = LoggerFactory.getLogger(BatchImportConsoleApplication::class.java)
 
     @Autowired
-    private lateinit var applicationContext: ApplicationContext;
+    private lateinit var applicationContext: ApplicationContext
 
     @Autowired
-    private lateinit var richSkillRepository: RichSkillRepository;
+    private lateinit var richSkillRepository: RichSkillRepository
 
     @Autowired
-    private lateinit var keywordRepository: KeywordRepository;
+    private lateinit var keywordRepository: KeywordRepository
 
     @Autowired
-    private lateinit var jobCodeRepository: JobCodeRepository;
+    private lateinit var jobCodeRepository: JobCodeRepository
+
+    @Autowired
+    private lateinit var collectionRepository: CollectionRepository
 
 
     fun split_field(value: String?, delimiters: String = ";"): List<String>? {
@@ -118,6 +123,13 @@ class BatchImportConsoleApplication : CommandLineRunner {
         }
     }
 
+    fun parse_collections(rowValue: String?): List<Collection>?{
+        return split_field(rowValue)?.map { c ->
+            val collection = transaction {collectionRepository.create(c, null).toModel()}
+            collection
+        }
+    }
+
     fun handleRows(rows: List<RichSkillRow>) {
         LOG.info("Processing ${rows.size} rows...")
 
@@ -130,6 +142,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
             var employers: List<Keyword>? = null
             var alignments: List<Keyword>? = null
             var occupations: List<JobCode>? = null
+            var collections: List<Collection>? = null
 
             category = row.skillCategory?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Category, value = it) }
 
@@ -139,6 +152,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
             employers = parse_keywords(KeywordTypeEnum.Employer, row.employer)
             alignments = parse_keywords(KeywordTypeEnum.Alignment, row.alignment, useUri = true)
             occupations = parse_jobcodes(row.jobRoles)
+            collections = parse_collections(row.collections)
 
             val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
 
@@ -157,7 +171,8 @@ class BatchImportConsoleApplication : CommandLineRunner {
                     id = newSkill.id.value,
                     category = NullableFieldUpdate(category),
                     keywords = all_keywords?.let { ListFieldUpdate(add = it) },
-                    jobCodes = occupations?.let { ListFieldUpdate(add = it) }
+                    jobCodes = occupations?.let { ListFieldUpdate(add = it) },
+                    collections = collections?.let {ListFieldUpdate(add = it)}
                 ), user)
 
                 LOG.info("created skill '${row.skillName!!}'")

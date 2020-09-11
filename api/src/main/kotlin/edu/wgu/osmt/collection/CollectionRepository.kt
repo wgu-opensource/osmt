@@ -54,6 +54,7 @@ class CollectionRepositoryImpl @Autowired constructor(val keywordRepository: Key
            val authorKeyword = author ?: keywordRepository.getDefaultAuthor()
            dao.new {
                this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
+               this.updateDate = this.creationDate
                this.uuid = UUID.randomUUID().toString()
                this.name = name
                this.author = KeywordDao[EntityID(authorKeyword.id!!, KeywordTable)]

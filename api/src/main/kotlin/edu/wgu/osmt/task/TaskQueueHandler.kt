@@ -2,7 +2,10 @@ package edu.wgu.osmt.task
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
 import edu.wgu.osmt.richskill.RichSkillCsvExport
+import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillRepository
+import org.jetbrains.exposed.dao.with
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +30,14 @@ class TaskQueueHandler {
     fun csvJobProcessor(csvTask: CsvTask) {
         logger.info("Started processing task id: ${csvTask.uuid}")
 
-        val allSkills = richSkillRepository.findAll()
+        val allSkills = transaction {
+            richSkillRepository.dao.all().with(RichSkillDescriptorDao::collections)
+                .map { rsdao ->
+                    val rs = rsdao.toModel()
+                    rs.collections = rsdao.collections.map{it.toModel()}
+                    rs
+                }
+        }
 
         val csvString = RichSkillCsvExport.toCsv(allSkills)
 

@@ -10,6 +10,7 @@ import {RichSkill} from "../RichSkill"
 export class RichSkillsComponent implements OnInit {
 
   skills: RichSkill[] = []
+  loading = true
 
   constructor(private richSkillService: RichSkillService) {
   }
@@ -19,7 +20,17 @@ export class RichSkillsComponent implements OnInit {
   }
 
   getSkills(): void {
-    this.richSkillService.getSkills().subscribe(skills => this.skills = skills)
+    this.richSkillService.getSkills()
+      .subscribe(
+        skills => {
+          this.skills = skills
+          this.loading = false
+        },
+        (error) => {
+          console.log(`Error loading skill: ${error}`)
+          this.loading = false
+        }
+      )
   }
 
 }

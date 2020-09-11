@@ -59,7 +59,7 @@ class RichSkillRow {
     @CsvBindByName(column = "BLS Job Function(s) {Detailed Occupation}")
     var blsJobFunctions: String? = null
 
-    @CsvBindByName(column = "O*NET Job Role(s)")
+    @CsvBindByName(column = "O*NET Job Role")
     var jobRoles: String? = null
 
     @CsvBindByName(column = "Author")
@@ -142,7 +142,8 @@ class BatchImportConsoleApplication : CommandLineRunner {
 
             val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
 
-            val author:Keyword? = row.author?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it) }
+            val author: Keyword? =
+                row.author?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it) }
 
             if (row.skillName != null && row.skillStatement != null) {
                 val newSkill = richSkillRepository.create(

@@ -1,6 +1,8 @@
 package edu.wgu.osmt.task
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
+import edu.wgu.osmt.richskill.RichSkillCsvExport
+import edu.wgu.osmt.richskill.RichSkillRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,6 +15,9 @@ class TaskQueueHandler {
     @Autowired
     lateinit var taskMessageService: TaskMessageService
 
+    @Autowired
+    lateinit var richSkillRepository: RichSkillRepository
+
     @RqueueListener(
         value = [TaskMessageService.allSkillsCsv],
         deadLetterQueueListenerEnabled = "true",
@@ -22,17 +27,14 @@ class TaskQueueHandler {
     fun csvJobProcessor(csvTask: CsvTask) {
         logger.info("Started processing task id: ${csvTask.uuid}")
 
-        val updatedStatus = csvTask.copy(status = TaskStatus.Processing)
-        taskMessageService.opsForHash.put(TaskMessageService.taskHashTable, csvTask.uuid, updatedStatus)
+        val allSkills = richSkillRepository.findAll()
 
-        val retrieved = taskMessageService.taskResultForUuidAndType<CsvTask>(csvTask.uuid)
+        val csvString = RichSkillCsvExport.toCsv(allSkills)
 
-        // TODO actual processing
-        Thread.sleep(20000)
         taskMessageService.opsForHash.put(
             TaskMessageService.taskHashTable,
             csvTask.uuid,
-            updatedStatus.copy(result = "TEST RESULT STRING", status = TaskStatus.Ready)
+            csvTask.copy(result = csvString, status = TaskStatus.Ready)
         )
         logger.info("Task ${csvTask.uuid} completed")
     }

@@ -1,6 +1,7 @@
 package edu.wgu.osmt
 
 import edu.wgu.osmt.config.AppConfig
+import org.junit.jupiter.api.AfterAll
 import org.jetbrains.exposed.sql.Database
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
@@ -15,6 +16,13 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+
+@SpringBootTest
+@ActiveProfiles("test,apiserver")
+@ConfigurationPropertiesScan("edu.wgu.osmt.config")
+@ContextConfiguration(classes = [ServerConnection::class])
+@Import(ServerConnection::class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
@@ -25,15 +33,15 @@ import javax.annotation.PreDestroy
 @ConfigurationPropertiesScan("edu.wgu.osmt.config")
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ContextConfiguration(classes = [RedisTestConnection::class])
-@Import(RedisTestConnection::class)
+@ContextConfiguration(classes = [ServerConnection::class])
+@Import(ServerConnection::class)
 abstract class ApplicationTest {
 
     @Autowired
     protected lateinit var appConfig: AppConfig
 
-    @PreDestroy
-    fun tearDown() {
+    @AfterAll
+    fun stopRedis() {
         redisContainer.stop()
     }
 
@@ -55,15 +63,11 @@ abstract class ApplicationTest {
 }
 
 @TestConfiguration
-class RedisTestConnection {
+class ServerConnection {
     @Bean
     @Primary
     fun redisConnectionFactory(): LettuceConnectionFactory {
-        val host = ApplicationTest.redisContainer.host
-        val port = ApplicationTest.redisContainer.firstMappedPort
-        println(host)
-        println(port)
-        val redisStandaloneConfiguration = RedisStandaloneConfiguration(host, port)
+        val redisStandaloneConfiguration = RedisStandaloneConfiguration("localhost", 6380)
         return LettuceConnectionFactory(redisStandaloneConfiguration)
     }
 

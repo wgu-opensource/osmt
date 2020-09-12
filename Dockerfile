@@ -55,7 +55,7 @@ RUN tar -xf apache-maven-${M2_VERSION}-bin.tar.gz \
 # Copy in source code.
 COPY --chown=${USER}:${USER} ./ ${BASE_DIR}/build/
 
-WORKDIR ${BASE_DIR}/build/api
+WORKDIR ${BASE_DIR}/build
 
 USER ${USER}
 

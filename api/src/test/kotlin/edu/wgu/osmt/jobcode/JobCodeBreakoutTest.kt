@@ -80,4 +80,30 @@ internal class JobCodeBreakoutTest {
         assert(detailedResult == expectedDetailed) { "Wrong detailed code.  Expected=[$expectedDetailed] Actual=[$detailedResult]" }
         assert(jobRoleResult == expectedJobRole) { "Wrong job role code.  Expected=[$expectedJobRole] Actual=[$jobRoleResult]" }
     }
+
+    @Test
+    fun dotInsteadOfHyphenTest() {
+        // Setup
+        val code = "11.1111.11"
+
+        val expectedMajor = "11-0000"
+        val expectedMinor = "11-1100"
+        val expectedBroad = "11-1110"
+        val expectedDetailed = "11-1111"
+        val expectedJobRole = "11-1111.11"
+
+        // Execute
+        val majorResult = JobCodeBreakout.majorCode(code)
+        val minorResult = JobCodeBreakout.minorCode(code)
+        val broadResult = JobCodeBreakout.broadCode(code)
+        val detailedResult = JobCodeBreakout.detailedCode(code)
+        val jobRoleResult = JobCodeBreakout.jobRoleCode(code)
+
+        // Verify
+        assert(majorResult == expectedMajor) { "Wrong major code.  Expected=[$expectedMajor] Actual=[$majorResult]" }
+        assert(minorResult == expectedMinor) { "Wrong minor code.  Expected=[$expectedMinor] Actual=[$minorResult]" }
+        assert(broadResult == expectedBroad) { "Wrong broad code.  Expected=[$expectedBroad] Actual=[$broadResult]" }
+        assert(detailedResult == expectedDetailed) { "Wrong detailed code.  Expected=[$expectedDetailed] Actual=[$detailedResult]" }
+        assert(jobRoleResult == expectedJobRole) { "Wrong job role code.  Expected=[null] Actual=[$jobRoleResult]" }
+    }
 }

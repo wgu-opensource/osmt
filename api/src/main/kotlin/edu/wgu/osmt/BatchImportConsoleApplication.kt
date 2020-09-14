@@ -11,6 +11,11 @@ import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RsdUpdateObject
+import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.collection.CollectionRepository
+import edu.wgu.osmt.collection.CollectionSkills
+import edu.wgu.osmt.richskill.RichSkillKeywords
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,11 +31,14 @@ import java.io.FileReader
 
 
 class RichSkillRow {
-    @CsvBindByName(column = "Skill Category")
-    var skillCategory: String? = null
+    @CsvBindByName(column = "Collection")
+    var collections: String? = null
 
     @CsvBindByName(column = "Skill Name")
     var skillName: String? = null
+
+    @CsvBindByName(column = "Skill Category")
+    var skillCategory: String? = null
 
     @CsvBindByName(column = "Contextualized Skill Statement")
     var skillStatement: String? = null
@@ -38,28 +46,25 @@ class RichSkillRow {
     @CsvBindByName(column = "Keywords")
     var keywords: String? = null
 
-    @CsvBindByName(column = "Collection")
-    var collections: String? = null
-
     @CsvBindByName(column = "Professional Standards")
     var standards: String? = null
 
     @CsvBindByName(column = "Certifications")
     var certifications: String? = null
 
-    @CsvBindByName(column = "BLS Industry Major Group(s)")
+    @CsvBindByName(column = "BLS Major Group")
     var blsMajors: String? = null
 
-    @CsvBindByName(column = "BLS Industry(s) {Minor Group}")
+    @CsvBindByName(column = "BLS Minor Group")
     var blsMinors: String? = null
 
-    @CsvBindByName(column = "BLS Occupation(s) {Broad Occupation}")
+    @CsvBindByName(column = "BLS Broad Occupation")
     var blsBroads: String? = null
 
-    @CsvBindByName(column = "BLS Job Function(s) {Detailed Occupation}")
-    var blsJobFunctions: String? = null
+    @CsvBindByName(column = "BLS Detailed Occupation")
+    var blsDetaileds: String? = null
 
-    @CsvBindByName(column = "O*NET Job Role(s)")
+    @CsvBindByName(column = "O*NET Job Role")
     var jobRoles: String? = null
 
     @CsvBindByName(column = "Author")
@@ -68,8 +73,11 @@ class RichSkillRow {
     @CsvBindByName(column = "Employer")
     var employer: String? = null
 
+    @CsvBindByName(column = "Alignment Title")
+    var alignmentTitle: String? = null
+
     @CsvBindByName(column = "Alignment")
-    var alignment: String? = null
+    var alignmentUri: String? = null
 }
 
 @Component
@@ -78,17 +86,21 @@ class BatchImportConsoleApplication : CommandLineRunner {
     val LOG: Logger = LoggerFactory.getLogger(BatchImportConsoleApplication::class.java)
 
     @Autowired
-    private lateinit var applicationContext: ApplicationContext;
+    private lateinit var applicationContext: ApplicationContext
 
     @Autowired
-    private lateinit var richSkillRepository: RichSkillRepository;
+    private lateinit var richSkillRepository: RichSkillRepository
 
     @Autowired
-    private lateinit var keywordRepository: KeywordRepository;
+    private lateinit var keywordRepository: KeywordRepository
 
     @Autowired
-    private lateinit var jobCodeRepository: JobCodeRepository;
+    private lateinit var jobCodeRepository: JobCodeRepository
 
+    @Autowired
+    private lateinit var collectionRepository: CollectionRepository;
+
+    val collectionSkillsTable = CollectionSkills
 
     fun split_field(value: String?, delimiters: String = ";"): List<String>? {
         return value?.let { it.split(delimiters).map { it.trim() } }?.distinct()
@@ -107,6 +119,13 @@ class BatchImportConsoleApplication : CommandLineRunner {
         return split_field(rowValue)?.map { code ->
             val jobCode = jobCodeRepository.findByCode(code)
             jobCode ?: jobCodeRepository.create(code).toModel()
+        }
+    }
+
+    fun parse_collections(rowValue: String?): List<Collection>? {
+        return split_field(rowValue)?.filter { it.isNotBlank() }?.map { collectionName ->
+            val collection = collectionRepository.findByName(collectionName)
+            collection ?: transaction { collectionRepository.create(collectionName).toModel() }
         }
     }
 
@@ -130,6 +149,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
             var employers: List<Keyword>? = null
             var alignments: List<Keyword>? = null
             var occupations: List<JobCode>? = null
+            var collections: List<Collection>? = null
 
             category = row.skillCategory?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Category, value = it) }
 
@@ -137,8 +157,12 @@ class BatchImportConsoleApplication : CommandLineRunner {
             standards = parse_keywords(KeywordTypeEnum.Standard, row.standards)
             certifications = parse_keywords(KeywordTypeEnum.Certification, row.certifications)
             employers = parse_keywords(KeywordTypeEnum.Employer, row.employer)
-            alignments = parse_keywords(KeywordTypeEnum.Alignment, row.alignment, useUri = true)
             occupations = parse_jobcodes(row.jobRoles)
+            collections = parse_collections(row.collections)
+
+            if (row.alignmentTitle != null || row.alignmentUri != null) {
+                alignments = listOf( keywordRepository.findOrCreate(KeywordTypeEnum.Alignment, value = row.alignmentTitle, uri = row.alignmentUri) )
+            }
 
             val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
 
@@ -156,9 +180,9 @@ class BatchImportConsoleApplication : CommandLineRunner {
                     id = newSkill.id.value,
                     category = NullableFieldUpdate(category),
                     keywords = all_keywords?.let { ListFieldUpdate(add = it) },
-                    jobCodes = occupations?.let { ListFieldUpdate(add = it) }
+                    jobCodes = occupations?.let { ListFieldUpdate(add = it) },
+                    collections = collections?.let {ListFieldUpdate(add = it)}
                 ), user)
-
                 LOG.info("created skill '${row.skillName!!}'")
             }
         }

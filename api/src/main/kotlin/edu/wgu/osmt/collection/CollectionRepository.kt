@@ -26,8 +26,9 @@ interface CollectionRepository {
     fun findAll(): List<Collection>
     fun findById(id: Long): Collection?
     fun findByUUID(uuid: String): Collection?
-    fun create(name: String, author: Keyword?): CollectionDao
-    fun update(updateObject: CollectionUpdateObject, user: OAuth2User?): Collection?
+    fun findByName(name: String): Collection?
+    fun create(name: String, author: Keyword? = null): CollectionDao
+    fun update(updateObject: CollectionUpdateObject, user: OAuth2User? = null): Collection?
 }
 
 
@@ -49,11 +50,18 @@ class CollectionRepositoryImpl @Autowired constructor(val keywordRepository: Key
         query?.let { dao.wrapRow(it).toModel() }
     }
 
+   override fun findByName(name: String): Collection? = transaction {
+        val query = table.select { table.name eq name }.singleOrNull()
+        query?.let { dao.wrapRow(it).toModel() }
+    }
+
     override fun create(name: String, author: Keyword?): CollectionDao {
        return transaction {
            val authorKeyword = author ?: keywordRepository.getDefaultAuthor()
            dao.new {
+               this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
                this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
+               this.updateDate = this.creationDate
                this.uuid = UUID.randomUUID().toString()
                this.name = name
                this.author = KeywordDao[EntityID(authorKeyword.id!!, KeywordTable)]

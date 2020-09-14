@@ -1,10 +1,13 @@
 package edu.wgu.osmt.richskill
 
+import edu.wgu.osmt.collection.CollectionDao
+import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.db.OutputsModel
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.db.PublishStatusDao
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
+import edu.wgu.osmt.keyword.KeywordTypeEnum
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -29,6 +32,8 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
     var category by KeywordDao optionalReferencedOn RichSkillDescriptorTable.category
 
     var publishStatus by PublishStatusDao referencedOn RichSkillDescriptorTable.publishStatus
+
+    var collections by CollectionDao via CollectionSkills
 
     override fun toModel(): RichSkillDescriptor {
         return RichSkillDescriptor(

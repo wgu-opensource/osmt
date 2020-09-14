@@ -12,6 +12,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import org.valiktor.functions.validate
 import java.util.*
+import edu.wgu.osmt.collection.Collection
 
 @Document(indexName = "richskillrepository", createIndex = true)
 data class RichSkillDescriptor(
@@ -27,6 +28,8 @@ data class RichSkillDescriptor(
     val category: Keyword? = null,
     val author: Keyword? = null
 ) : DatabaseData, HasUpdateDate {
+
+    var collections: List<Collection> = listOf()
 
     // Keyword collections
     val certifications: List<Keyword>
@@ -67,7 +70,8 @@ data class RsdUpdateObject(
     val author: NullableFieldUpdate<Keyword>? = null,
     val category: NullableFieldUpdate<Keyword>? = null,
     val keywords: ListFieldUpdate<Keyword>? = null,
-    val jobCodes: ListFieldUpdate<JobCode>? = null
+    val jobCodes: ListFieldUpdate<JobCode>? = null,
+    val collections: ListFieldUpdate<Collection>? = null
 ) : UpdateObject<RichSkillDescriptorDao> {
 
     init {

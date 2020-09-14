@@ -10,7 +10,7 @@ object RichSkillCsvExport: CsvResource<RichSkillDescriptor>("RichSkillCsvExport"
 
     override fun columnTranslations(): Array<CsvColumn<RichSkillDescriptor>> {
         return arrayOf(
-                CsvColumn("Collection") { "" }, // TODO to be implemented
+                CsvColumn("Collection") { it.collections.map {it.name}.joinToString(listDelimeter) },
                 CsvColumn("Skill Name") { it.name },
                 CsvColumn("Skill Category") { it.category?.value ?: "" },
                 CsvColumn("Contextualized Skill Statement") { it.statement },

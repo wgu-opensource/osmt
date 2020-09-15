@@ -31,11 +31,9 @@ The backend will serve any routes not already configured to the API to the front
 ## Deploy steps
 ### CSV import
 
-1. clone github repository
-1. copy docker/mysql-init/ to a host which can connect to mysql database
-1. Run the .sql files against mysql database
-  1. mysql -u <DB_USER> -p -h <DB_HOST> -P 3306 < osmt_initial.sql
-1. Run the app container: `docker run -ti --entrypoint /bin/bash -v <full_path_csv_folder>:/mnt concentricsky/osmt:0.5.0`
+1. Copy the osmt_initial.sql file & csv import file to a server with access to the mysql database.
+1. Run the .sql file against the mysql database: `mysql -u <DB_USER> -p -h <DB_HOST> -P 3306 < osmt_initial.sql`
+1. Run the app container: `docker run -ti --entrypoint /bin/bash -v <full_path_to_csv_folder>:/mnt concentricsky/osmt:0.5.0`
 1. Run the csv import:
 ```
 cd /mnt/
@@ -51,8 +49,8 @@ cd /mnt/
 
 ### Run The Container
 
-1. Run the container and pass the following environment variables to it: ENVIRONMENT, ENVIRONMENT_DOMAIN_NAME, REDIS_URI, MYSQL_DB_URI, ELASTICSEARCH_URI. The use of these variables can be references in the [docker entrypoint script](docker/bin/docker_entrypoint.sh):
-  1. Example enviroment variables:
+1. Run the container and pass the following environment variables to it: ENVIRONMENT, ENVIRONMENT_DOMAIN_NAME, REDIS_URI, MYSQL_DB_URI, ELASTICSEARCH_URI. The use of these variables can be referenced in the [docker entrypoint script](docker/bin/docker_entrypoint.sh):
+1. Example enviroment variables:
   ```
     ENVIRONMENT=apiserver,review
     ENVIRONMENT_DOMAIN_NAME=<BASE_DOMAIN_NAME>

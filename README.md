@@ -35,7 +35,7 @@ The backend will serve any routes not already configured to the API to the front
 1. copy docker/mysql-init/ to a host which can connect to mysql database
 1. Run the .sql files against mysql database
   1. mysql -u <DB_USER> -p -h <DB_HOST> -P 3306 < osmt_initial.sql
-1. Run the app container: `docker run -ti --entrypoint /bin/bash -v <full_path_csv_folder>:/mnt concentricsky/osmt:0.5.0
+1. Run the app container: `docker run -ti --entrypoint /bin/bash -v <full_path_csv_folder>:/mnt concentricsky/osmt:0.5.0`
 1. Run the csv import:
 ```
 cd /mnt/

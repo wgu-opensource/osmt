@@ -10,7 +10,6 @@ class RichSkillCsvExport(
     private val appConfig: AppConfig
 ): CsvResource<RichSkillDescriptor>("RichSkillCsvExport") {
     val listDelimeter = "; "
-    val baseUrl = "http://osmt.wgu.edu";  // FIXME: should be using AppConfig.baseUrl here
 
     override fun columnTranslations(): Array<CsvColumn<RichSkillDescriptor>> {
         return arrayOf(

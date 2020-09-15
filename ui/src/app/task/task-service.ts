@@ -27,7 +27,7 @@ export class TaskService {
   // tslint:disable-next-line:no-any
   getTaskResultsIfComplete(uuid: string): Observable<any> {
     return this.httpClient
-      .get(this.serviceUrl + "/" + uuid, {
+      .get(this.serviceUrl + uuid, {
         responseType: "text",
         observe: "response"
       })

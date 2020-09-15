@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core"
 import { TaskService } from "../../task/task-service"
 import { ITaskResponse } from "../../task/TaskInProgress"
+import { saveAs } from 'file-saver';
+
 
 @Component({
   selector: "app-richskills-csv-export",
@@ -32,19 +34,13 @@ export class RichSkillsCsvExportComponent implements OnInit {
           this.taskUuidInProgress = undefined
 
           clearInterval(this.intervalHandle)
-          this.downloadFile(body, "text/csv")
+
+          const blob = new Blob([body], { type: "text/csv;charset=utf-8;" })
+          const filename = `OSMT Skills Library - ${new Date().toDateString()}.csv`
+          saveAs(blob, filename)
+
         }
       })
-  }
-
-  // tslint:disable-next-line:no-any
-  downloadFile(data: any, type: string): void {
-    const blob = new Blob([data], { type })
-    const url = window.URL.createObjectURL(blob)
-    const pwa = window.open(url)
-    if (!pwa || pwa.closed || typeof pwa.closed === "undefined") {
-      alert( "Please disable your Pop-up blocker and try again.")
-    }
   }
 
   startDownloadTask(): void {

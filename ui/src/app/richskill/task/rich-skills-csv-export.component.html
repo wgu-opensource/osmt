@@ -1,4 +1,13 @@
-<button (click)="startDownloadTask()">download all skills as csv</button>
 
-<p *ngIf="taskUuidInProgress">Export in progress: {{taskUuidInProgress}}</p>
-<p *ngIf="csvExport">{{csvExport}}</p>
+<div *ngIf="!csvExport && !taskUuidInProgress">
+<button (click)="startDownloadTask()">Download all skills as CSV</button>
+</div>
+
+<div *ngIf="csvExport">
+  CSV Generated.  Please check your Downloads folder.
+</div>
+
+<div *ngIf="taskUuidInProgress">
+  <p>Generating csv...</p>
+  <div class="lds-dual-ring"></div>
+</div>

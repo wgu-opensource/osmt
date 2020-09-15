@@ -32,6 +32,7 @@ if [[ ${MISSING_ARGS} != 0 ]]; then
 else
   JAVA_CMD="/bin/java
               -Dspring.profiles.active=${ENVIRONMENT}
+              -Dapp.baseDomain=${ENVIRONMENT_DOMAIN_NAME}
               -Dredis.uri=${REDIS_URI}
               -Ddb.uri=${MYSQL_DB_URI}
               -Des.uri=${ELASTICSEARCH_URI}

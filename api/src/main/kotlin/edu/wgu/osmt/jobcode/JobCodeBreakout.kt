@@ -1,7 +1,7 @@
 package edu.wgu.osmt.jobcode
 
 // While most codes follow one of these exact formats xx-xxxx or xx-xxxx.xx. I've found some that have these following
-// formats: x-xxxx.xx and x.xxxx.xx major code like x-xxxx.xx which means that a little extra processing needs to be done
+// formats: x-xxxx.xx and xx.xxxx.xx which means that a little extra processing needs to be done.
 object JobCodeBreakout {
 
     private val codePartDelimeter = "[-.]".toRegex() // used to split code on either hyphen (-) or period (.)

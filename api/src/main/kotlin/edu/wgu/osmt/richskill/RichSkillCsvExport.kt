@@ -1,18 +1,21 @@
 package edu.wgu.osmt.richskill
 
+import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.csv.CsvColumn
 import edu.wgu.osmt.csv.CsvResource
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeBreakout
 
-object RichSkillCsvExport: CsvResource<RichSkillDescriptor>("RichSkillCsvExport") {
+class RichSkillCsvExport(
+    private val appConfig: AppConfig
+): CsvResource<RichSkillDescriptor>("RichSkillCsvExport") {
     val listDelimeter = "; "
     val baseUrl = "http://osmt.wgu.edu";  // FIXME: should be using AppConfig.baseUrl here
 
     override fun columnTranslations(): Array<CsvColumn<RichSkillDescriptor>> {
         return arrayOf(
             return arrayOf(
-                CsvColumn("Canonical URL") { it.canonicalUrl(baseUrl) },
+                CsvColumn("Canonical URL") { it.canonicalUrl(appConfig.baseUrl) },
                 CsvColumn("Collection") { it.collections.map {it.name}.joinToString(listDelimeter) },
                 CsvColumn("Skill Name") { it.name },
                 CsvColumn("Skill Category") { it.category?.value ?: "" },

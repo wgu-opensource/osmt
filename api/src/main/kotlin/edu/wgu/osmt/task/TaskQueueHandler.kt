@@ -1,6 +1,7 @@
 package edu.wgu.osmt.task
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
+import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.richskill.RichSkillCsvExport
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillRepository
@@ -21,6 +22,9 @@ class TaskQueueHandler {
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository
 
+    @Autowired
+    lateinit var appConfig: AppConfig
+
     @RqueueListener(
         value = [TaskMessageService.allSkillsCsv],
         deadLetterQueueListenerEnabled = "true",
@@ -39,7 +43,7 @@ class TaskQueueHandler {
                 }
         }
 
-        val csvString = RichSkillCsvExport.toCsv(allSkills)
+        val csvString = RichSkillCsvExport(appConfig).toCsv(allSkills)
 
         taskMessageService.opsForHash.put(
             TaskMessageService.taskHashTable,

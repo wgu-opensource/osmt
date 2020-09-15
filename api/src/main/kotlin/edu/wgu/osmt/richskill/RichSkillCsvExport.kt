@@ -7,9 +7,12 @@ import edu.wgu.osmt.jobcode.JobCodeBreakout
 
 object RichSkillCsvExport: CsvResource<RichSkillDescriptor>("RichSkillCsvExport") {
     val listDelimeter = "; "
+    val baseUrl = "http://osmt.wgu.edu";  // FIXME: should be using AppConfig.baseUrl here
 
     override fun columnTranslations(): Array<CsvColumn<RichSkillDescriptor>> {
         return arrayOf(
+            return arrayOf(
+                CsvColumn("Canonical URL") { it.canonicalUrl(baseUrl) },
                 CsvColumn("Collection") { it.collections.map {it.name}.joinToString(listDelimeter) },
                 CsvColumn("Skill Name") { it.name },
                 CsvColumn("Skill Category") { it.category?.value ?: "" },
@@ -24,6 +27,7 @@ object RichSkillCsvExport: CsvResource<RichSkillDescriptor>("RichSkillCsvExport"
                 CsvColumn("Certifications") { it.certifications.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },
                 CsvColumn("Alignment Title") { it.alignments.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },
                 CsvColumn("Alignment") { it.alignments.map { keyword -> keyword.uri ?: "" }.joinToString(listDelimeter) }
+            )
         )
     }
 
@@ -38,4 +42,4 @@ object RichSkillCsvExport: CsvResource<RichSkillDescriptor>("RichSkillCsvExport"
             .distinct()
             .joinToString(listDelimeter)
 
-}
+    }

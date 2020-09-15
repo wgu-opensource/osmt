@@ -1,0 +1,4 @@
+<button (click)="startDownloadTask()">download all skills as csv</button>
+
+<p *ngIf="taskUuidInProgress">Export in progress: {{taskUuidInProgress}}</p>
+<p *ngIf="csvExport">{{csvExport}}</p>

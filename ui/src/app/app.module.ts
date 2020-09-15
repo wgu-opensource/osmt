@@ -5,12 +5,14 @@ import {AppComponent} from "./app.component"
 import {HttpClientModule} from "@angular/common/http"
 import {RichSkillsComponent} from "./richskill/detail/rich-skills.component"
 import {RichSkillComponent} from "./richskill/detail/rich-skill.component"
+import {RichSkillsCsvExportComponent} from "./richskill/task/rich-skills-csv-export.component"
 
 @NgModule({
   declarations: [
     AppComponent,
     RichSkillComponent,
-    RichSkillsComponent
+    RichSkillsComponent,
+    RichSkillsCsvExportComponent
   ],
   imports: [
     BrowserModule,

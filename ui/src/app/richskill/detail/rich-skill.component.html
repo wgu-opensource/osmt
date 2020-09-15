@@ -1,0 +1,40 @@
+<div *ngIf="richSkill; else noSkill">
+  <h1>{{richSkill.skillName}}</h1>
+  <p><b>Skill Statement</b><br>{{richSkill.statement}}</p>
+  <p><b>Category</b><br>{{richSkill.category}}</p>
+  <p><b>Keywords</b><br>{{joinKeywords()}}</p>
+  <b>Standards</b><br>
+  <div *ngFor="let standard of richSkill.standards">
+    {{standard.name}}
+  </div>
+  <br>
+  <b>Certifications</b><br>
+  <div *ngFor="let certification of richSkill.certifications">
+    {{certification.name}}
+  </div>
+  <br>
+  <b>Occupations</b>
+  <br><b>&emsp;Major codes</b>
+  <br>&emsp;{{majorCodes}}
+  <br><b>&emsp;Minor codes</b>
+  <br>&emsp;{{minorCodes}}
+  <br><b>&emsp;Broad codes</b>
+  <br>&emsp;{{broadCodes}}
+  <br><b>&emsp;Detailed codes</b>
+  <br>&emsp;{{detailedCodes}}
+  <br><b>&emsp;O*NET Job Roles</b>
+  <br>&emsp;{{jobRoleCodes}}
+
+  <p><b>Employers</b><br>{{joinEmployers()}}</p>
+  <p><b>Alignment</b><br><span *ngFor="let alignment of richSkill.alignments">
+  <a href="{{alignment.id}}">{{alignment.id}}</a>
+</span></p>
+  <p><b>ID</b><br><a href="{{richSkill.id}}">{{richSkill.id}}</a></p>
+  <p><b>Author</b><br>{{richSkill.author.name}}</p>
+</div>
+<ng-template #noSkill>
+  <div *ngIf="loading; else noData" class="lds-dual-ring">Loading...</div>
+  <ng-template #noData>
+    No data to load.
+  </ng-template>
+</ng-template>

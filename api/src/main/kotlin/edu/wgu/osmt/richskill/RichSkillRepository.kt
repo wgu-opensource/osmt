@@ -4,9 +4,14 @@ import com.google.gson.Gson
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
+import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.db.PublishStatusDao
 import edu.wgu.osmt.db.PublishStatusTable
+import edu.wgu.osmt.keyword.Keyword
+import edu.wgu.osmt.keyword.KeywordDao
+import edu.wgu.osmt.keyword.KeywordRepository
+import edu.wgu.osmt.keyword.KeywordTable
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -23,29 +28,41 @@ interface RichSkillRepository {
     val table: RichSkillDescriptorTable
     val dao: RichSkillDescriptorDao.Companion
     fun update(updateObject: RsdUpdateObject, user: OAuth2User?): RichSkillDescriptor?
-    fun findAll(): List<RichSkillDescriptor>
+    fun findAll(includeCollections: Boolean = false): List<RichSkillDescriptor>
     fun findById(id: Long): RichSkillDescriptor?
     fun findByUUID(uuid: String): RichSkillDescriptor?
     fun create(
         name: String,
         statement: String,
-        author: String,
+        author: Keyword?,
         user: OAuth2User?
     ): RichSkillDescriptorDao
 }
 
 @Repository
-class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: AuditLogRepository) :
+class RichSkillRepositoryImpl @Autowired constructor(
+    val auditLogRepository: AuditLogRepository,
+    val keywordRepository: KeywordRepository
+) :
     RichSkillRepository {
     override val dao = RichSkillDescriptorDao.Companion
     override val table = RichSkillDescriptorTable
 
     val richSkillKeywordTable = RichSkillKeywords
     val richSkillJobCodeTable = RichSkillJobCodes
+    val richSkillCollectionTable = CollectionSkills
+
+    val keywordDao = KeywordDao.Companion
 
 
-    override fun findAll() = transaction {
-        dao.all().map { it.toModel() }
+    override fun findAll(includeCollections: Boolean) = transaction {
+        dao.all().map { r ->
+            val model = r.toModel()
+            if (includeCollections) {
+                model.collections = r.collections.map { it.toModel() }
+            }
+            model
+        }
     }
 
     override fun findById(id: Long) = transaction {
@@ -97,6 +114,19 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
                     richSkillJobCodeTable.delete(richSkillId = updateObject.id, jobCodeId = jobCode.id!!)
                 }
             }
+
+            // update collections
+            updateObject.collections?.let {
+                it.add?.forEach { collection ->
+                    richSkillCollectionTable.create(
+                        collectionId = collection.id!!,
+                        skillId = updateObject.id
+                    )
+                }
+                it.remove?.forEach {collection ->
+                    richSkillCollectionTable.delete(collectionId = collection.id!!, skillId = updateObject.id)
+                }
+            }
         }
 
         return transaction { dao.findById(updateObject.id)?.toModel() }
@@ -110,17 +140,18 @@ class RichSkillRepositoryImpl @Autowired constructor(val auditLogRepository: Aud
     override fun create(
         name: String,
         statement: String,
-        author: String,
+        author: Keyword?,
         user: OAuth2User?
     ): RichSkillDescriptorDao {
         val newRichSkill = transaction {
+            val authorKeyword = author ?: keywordRepository.getDefaultAuthor()
             dao.new {
                 this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
                 this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
                 this.uuid = UUID.randomUUID().toString()
                 this.name = name
                 this.statement = statement
-                this.author = author
+                this.author = KeywordDao[EntityID(authorKeyword.id!!, KeywordTable)]
                 this.publishStatus =
                     PublishStatusDao[EntityID(PublishStatus.Unpublished.ordinal.toLong(), PublishStatusTable)]
             }

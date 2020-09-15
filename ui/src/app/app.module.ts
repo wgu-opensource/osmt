@@ -3,12 +3,16 @@ import {NgModule} from "@angular/core"
 import {AppRoutingModule} from "./app-routing.module"
 import {AppComponent} from "./app.component"
 import {HttpClientModule} from "@angular/common/http"
-import {RichskillComponent} from "./richskill/detail/richskill.component"
+import {RichSkillsComponent} from "./richskill/detail/rich-skills.component"
+import {RichSkillComponent} from "./richskill/detail/rich-skill.component"
+import {RichSkillsCsvExportComponent} from "./richskill/task/rich-skills-csv-export.component"
 
 @NgModule({
   declarations: [
     AppComponent,
-    RichskillComponent
+    RichSkillComponent,
+    RichSkillsComponent,
+    RichSkillsCsvExportComponent
   ],
   imports: [
     BrowserModule,

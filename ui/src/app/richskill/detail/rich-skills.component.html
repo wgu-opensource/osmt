@@ -1,0 +1,22 @@
+<div>
+  Skills
+  <div *ngIf="skills.length > 0; else noSkills">
+    <ul>
+      <li *ngFor="let skill of skills">
+        <p>
+          <a routerLink="/skills/{{skill.uuid}}">{{skill.name}} - {{skill.uuid}}</a>
+        </p>
+      </li>
+    </ul>
+  </div>
+  <ng-template #noSkills>
+    <br>
+    <div *ngIf="loading; else noData">
+      Loading...
+    </div>
+    <ng-template #noData>
+      No data to load.
+    </ng-template>
+  </ng-template>
+
+</div>

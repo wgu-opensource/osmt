@@ -1,5 +1,6 @@
 package edu.wgu.osmt.keyword
 
+import edu.wgu.osmt.config.AppConfig
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
@@ -21,16 +22,19 @@ interface KeywordRepository {
         value: String? = null,
         uri: String? = null
     ): Keyword
+
     fun create(
         type: KeywordTypeEnum,
         value: String? = null,
         uri: String? = null
     ): KeywordDao
+
+    fun getDefaultAuthor(): Keyword
 }
 
 
 @Repository
-class KeywordRepositoryImpl @Autowired constructor(): KeywordRepository {
+class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : KeywordRepository {
     override val dao = KeywordDao.Companion
     override val table = KeywordTable
 
@@ -48,8 +52,13 @@ class KeywordRepositoryImpl @Autowired constructor(): KeywordRepository {
         }
     }
 
+    override fun getDefaultAuthor(): Keyword {
+        val authorUri:String? = if (appConfig.defaultAuthorUri.isBlank()) null else appConfig.defaultAuthorUri
+        return findOrCreate(KeywordTypeEnum.Author, appConfig.defaultAuthorName, authorUri)
+    }
+
     override fun findOrCreate(type: KeywordTypeEnum, value: String?, uri: String?): Keyword {
-        val existing: Keyword? = transaction {
+        val existing: KeywordDao? = transaction {
             val condition = when {
                 value != null && uri != null ->
                     (table.keyword_type_enum eq type) and (table.value eq value) and (table.uri eq uri)
@@ -62,10 +71,10 @@ class KeywordRepositoryImpl @Autowired constructor(): KeywordRepository {
 
             transaction {
                 val query = condition?.let { table.select(it).singleOrNull() }
-                query?.let { dao.wrapRow(it).toModel() }
+                query?.let { dao.wrapRow(it) }
             }
         }
-        return existing ?: create(type,value,uri).toModel()
+        return existing?.toModel() ?: create(type, value, uri).toModel()
     }
 
     override fun create(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao {

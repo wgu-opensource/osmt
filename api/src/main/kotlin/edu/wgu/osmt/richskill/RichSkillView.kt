@@ -17,7 +17,7 @@ class RichSkillView {
 }
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseDomain: String) {
+class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseUrl: String) {
 
     // TODO include view of collection
 
@@ -59,7 +59,7 @@ class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseDomain:
     @get:JsonView(RichSkillView.PublicDetailView::class)
     val id: String
         @JsonProperty("id")
-        get() = "$baseDomain/api/skills/${rsd.uuid}"
+        get() = rsd.canonicalUrl(baseUrl)
 
     @get:JsonView(RichSkillView.PublicDetailView::class)
     val uuid: String

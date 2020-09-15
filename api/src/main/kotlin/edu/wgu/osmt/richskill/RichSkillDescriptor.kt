@@ -47,6 +47,8 @@ data class RichSkillDescriptor(
     val employers: List<Keyword>
         get() = this.keywords.filter { it.type == KeywordTypeEnum.Employer }
 
+    fun canonicalUrl(baseUrl:String): String = "$baseUrl/api/skills/${uuid}"
+
     companion object {
         fun create(name: String, statement: String): RichSkillDescriptor {
             val now = LocalDateTime.now(ZoneOffset.UTC)

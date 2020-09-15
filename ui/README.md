@@ -36,6 +36,19 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
+## Whitelabel JSON config
+The default config file is located in `src/assets/config.json`.  This file is loaded dynamically at runtime and can be 
+replaced without rebuilding with access to the deployed file.
+
+The uri of the configuration can be set for each angular environment by setting `environment.whiteLabelConfigUri` to any uri other 
+than the default location.  At app launch, the file is downloaded in an api call and is deserialized into the AppConfig property `AppConfig.settings` which is available globally.
+
+### How to update the shape of the config
+If any changes to the signatures need to be made.  Such as adding new properties, then the interface used to type-check the configuration must be updated.
+ 
+The interface IAppConfig provides the expected shape of the json files.  Modify this interface, then ensure that all json config files that may be loaded are similarly updated.
+If the file can't be deserialized into an implementation of IAppConfig, the app should fail at launch.
+    
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

@@ -51,10 +51,12 @@ cd /mnt/
 
 ### Run The Container
 
-1. Run the container and pass the following environment vars to it: ENVIRONMENT, ENVIRONMENT_DOMAIN_NAME, REDIS_URI, MYSQL_DB_URI, ELASTICSEARCH_URI
-  1. Example:
+1. Run the container and pass the following environment variables to it: ENVIRONMENT, ENVIRONMENT_DOMAIN_NAME, REDIS_URI, MYSQL_DB_URI, ELASTICSEARCH_URI. The use of these variables can be references in the [docker entrypoint script](docker/bin/docker_entrypoint.sh):
+  1. Example enviroment variables:
+  ```
     ENVIRONMENT=apiserver,review
     ENVIRONMENT_DOMAIN_NAME=<BASE_DOMAIN_NAME>
     REDIS_URI=<HOST>:<PORT>
     MYSQL_DB_URI=<USER>:<PASSWORD>@<HOST>:<PORT>
     ELASTICSEARCH_URI=<HOST>:<PORT>
+  ```

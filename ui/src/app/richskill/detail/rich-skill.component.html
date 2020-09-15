@@ -1,9 +1,4 @@
 <div *ngIf="richSkill; else noSkill">
-  <span>
-    <button>Copy URL</button>
-    <button>Download CSV</button>
-    <button>Download JSON</button>
-  </span>
   <h1>{{richSkill.skillName}}</h1>
   <p><b>Skill Statement</b><br>{{richSkill.statement}}</p>
   <p><b>Category</b><br>{{richSkill.category}}</p>
@@ -38,9 +33,7 @@
   <p><b>Author</b><br>{{richSkill.author.name}}</p>
 </div>
 <ng-template #noSkill>
-  <div *ngIf="loading; else noData">
-    Loading...
-  </div>
+  <div *ngIf="loading; else noData" class="lds-dual-ring">Loading...</div>
   <ng-template #noData>
     No data to load.
   </ng-template>

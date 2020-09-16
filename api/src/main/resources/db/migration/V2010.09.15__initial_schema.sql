@@ -3,11 +3,25 @@ USE osmt_db;
 SET NAMES utf8mb3;
 SET character_set_client = utf8mb3;
 
+-- Stored procedure for CREATE INDEX IF NOT EXIST
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `osmt_db`.`createIndexIfNotExist` $$
+CREATE PROCEDURE `osmt_db`.`createIndexIfNotExist` (tableName VARCHAR(128), in indexName VARCHAR(128), in indexColumns VARCHAR(128))
+BEGIN
+    IF((SELECT COUNT(*) AS index_exists FROM information_schema.statistics WHERE TABLE_SCHEMA = DATABASE() AND table_name = tableName AND index_name = indexName)  = 0) THEN
+        SET @sqlCommand = CONCAT('CREATE INDEX ' , indexName, ' ON ', tableName, '(', indexColumns , ')');
+        PREPARE _preparedStatement FROM @sqlCommand;
+        EXECUTE _preparedStatement;
+    END IF;
+END $$
+DELIMITER ;
+
+
 --
 -- Table structure for table `AuditLog`
 --
 
-CREATE TABLE `AuditLog`
+CREATE TABLE IF NOT EXISTS `AuditLog`
 (
     `id`            bigint(20)   NOT NULL AUTO_INCREMENT,
     `creationDate`  datetime(6)  NOT NULL,
@@ -24,7 +38,7 @@ CREATE TABLE `AuditLog`
 -- Table structure for table `JobCode`
 --
 
-CREATE TABLE `JobCode`
+CREATE TABLE IF NOT EXISTS `JobCode`
 (
     `id`           bigint(20)   NOT NULL AUTO_INCREMENT,
     `creationDate` datetime(6)  NOT NULL,
@@ -46,7 +60,7 @@ CREATE TABLE `JobCode`
 -- Table structure for table `Keyword`
 --
 
-CREATE TABLE `Keyword`
+CREATE TABLE IF NOT EXISTS `Keyword`
 (
     `id`                bigint(20)                                                                             NOT NULL AUTO_INCREMENT,
     `creationDate`      datetime(6)                                                                            NOT NULL,
@@ -60,7 +74,7 @@ CREATE TABLE `Keyword`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
-CREATE TABLE `PublishStatus`
+CREATE TABLE IF NOT EXISTS `PublishStatus`
 (
     `id`   bigint(20)  NOT NULL,
     `name` varchar(64) NOT NULL,
@@ -75,7 +89,7 @@ CREATE TABLE `PublishStatus`
 LOCK TABLES `PublishStatus` WRITE;
 /*!40000 ALTER TABLE `PublishStatus`
     DISABLE KEYS */;
-INSERT INTO `PublishStatus`
+INSERT IGNORE INTO `PublishStatus`
 VALUES (0, 'Unpublished'),
        (1, 'Published'),
        (2, 'Archived');
@@ -87,7 +101,7 @@ UNLOCK TABLES;
 -- Table structure for table `RichSkillDescriptor`xf
 --
 
-CREATE TABLE `RichSkillDescriptor`
+CREATE TABLE IF NOT EXISTS `RichSkillDescriptor`
 (
     `id`                bigint(20)  NOT NULL AUTO_INCREMENT,
     `creationDate`      datetime(6) NOT NULL,
@@ -114,7 +128,7 @@ CREATE TABLE `RichSkillDescriptor`
 -- Table structure for table `RichSkillJobCodes`
 --
 
-CREATE TABLE `RichSkillJobCodes`
+CREATE TABLE IF NOT EXISTS `RichSkillJobCodes`
 (
     `richskill_id` bigint(20) NOT NULL,
     `jobcode_id`   bigint(20) NOT NULL,
@@ -129,7 +143,7 @@ CREATE TABLE `RichSkillJobCodes`
 -- Table structure for table `RichSkillKeywords`
 --
 
-CREATE TABLE `RichSkillKeywords`
+CREATE TABLE IF NOT EXISTS `RichSkillKeywords`
 (
     `richskill_id` bigint(20) NOT NULL,
     `keyword_id`   bigint(20) NOT NULL,
@@ -160,5 +174,8 @@ CREATE TABLE IF NOT EXISTS CollectionSkills
     CONSTRAINT fk_CollectionSkills_collection_id_id FOREIGN KEY (collection_id) REFERENCES Collection (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_CollectionSkills_skill_id_id FOREIGN KEY (skill_id) REFERENCES RichSkillDescriptor (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB;
-CREATE INDEX CollectionSkills_collection_id ON CollectionSkills (collection_id);
-CREATE INDEX CollectionSkills_skill_id ON CollectionSkills (skill_id);
+
+CALL createIndexIfNotExist('CollectionSkills', 'CollectionSkills_collection_id', 'collection_id');
+CALL createIndexIfNotExist('CollectionSkills', 'CollectionSkills_skill_id', 'skill_id');
+#CREATE INDEX CollectionSkills_collection_id ON CollectionSkills (collection_id);
+#CREATE INDEX CollectionSkills_skill_id ON CollectionSkills (skill_id);

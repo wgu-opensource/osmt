@@ -53,7 +53,7 @@ cd /mnt/
 1. Example enviroment variables:
   ```
     ENVIRONMENT=apiserver,review
-    ENVIRONMENT_DOMAIN_NAME=<BASE_DOMAIN_NAME>
+    BASE_DOMAIN=<BASE_DOMAIN_NAME>
     REDIS_URI=<HOST>:<PORT>
     MYSQL_DB_URI=<USER>:<PASSWORD>@<HOST>:<PORT>
     ELASTICSEARCH_URI=<HOST>:<PORT>

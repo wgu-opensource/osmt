@@ -1,23 +1,12 @@
 USE osmt_db;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT = @@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS = @@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION = @@COLLATION_CONNECTION */;
 SET NAMES utf8mb3;
-/*!40103 SET @OLD_TIME_ZONE = @@TIME_ZONE */;
-/*!40103 SET TIME_ZONE = '+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0 */;
-/*!40101 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES = @@SQL_NOTES, SQL_NOTES = 0 */;
+SET character_set_client = utf8mb3;
 
 --
 -- Table structure for table `AuditLog`
 --
 
-DROP TABLE IF EXISTS `AuditLog`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb3;
 CREATE TABLE `AuditLog`
 (
     `id`            bigint(20)   NOT NULL AUTO_INCREMENT,
@@ -30,15 +19,11 @@ CREATE TABLE `AuditLog`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 5;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `JobCode`
 --
 
-DROP TABLE IF EXISTS `JobCode`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb3;
 CREATE TABLE `JobCode`
 (
     `id`           bigint(20)   NOT NULL AUTO_INCREMENT,
@@ -56,26 +41,11 @@ CREATE TABLE `JobCode`
     PRIMARY KEY (`id`),
     KEY `idx_JobCode_code` (`code`)
 ) ENGINE = InnoDB;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `JobCode`
---
-
-LOCK TABLES `JobCode` WRITE;
-/*!40000 ALTER TABLE `JobCode`
-    DISABLE KEYS */;
-/*!40000 ALTER TABLE `JobCode`
-    ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `Keyword`
 --
 
-DROP TABLE IF EXISTS `Keyword`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb3;
 CREATE TABLE `Keyword`
 (
     `id`                bigint(20)                                                                             NOT NULL AUTO_INCREMENT,
@@ -89,34 +59,14 @@ CREATE TABLE `Keyword`
 
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `Keyword`
---
-
-LOCK TABLES `Keyword` WRITE;
-/*!40000 ALTER TABLE `Keyword`
-    DISABLE KEYS */;
-/*!40000 ALTER TABLE `Keyword`
-    ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `PublishStatus`
---
-
-DROP TABLE IF EXISTS `PublishStatus`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb3;
 CREATE TABLE `PublishStatus`
 (
-    `id`   bigint(20)  NOT NULL AUTO_INCREMENT,
+    `id`   bigint(20)  NOT NULL,
     `name` varchar(64) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 6;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  AUTO_INCREMENT = 1;
 
 --
 -- Dumping data for table `PublishStatus`
@@ -134,12 +84,9 @@ VALUES (0, 'Unpublished'),
 UNLOCK TABLES;
 
 --
--- Table structure for table `RichSkillDescriptor`
+-- Table structure for table `RichSkillDescriptor`xf
 --
 
-DROP TABLE IF EXISTS `RichSkillDescriptor`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb3;
 CREATE TABLE `RichSkillDescriptor`
 (
     `id`                bigint(20)  NOT NULL AUTO_INCREMENT,
@@ -161,16 +108,12 @@ CREATE TABLE `RichSkillDescriptor`
     CONSTRAINT `fk_RichSkillDescriptor_publish_status_id_id` FOREIGN KEY (`publish_status_id`) REFERENCES `PublishStatus` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 3;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 
 --
 -- Table structure for table `RichSkillJobCodes`
 --
 
-DROP TABLE IF EXISTS `RichSkillJobCodes`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb3;
 CREATE TABLE `RichSkillJobCodes`
 (
     `richskill_id` bigint(20) NOT NULL,
@@ -181,26 +124,11 @@ CREATE TABLE `RichSkillJobCodes`
     CONSTRAINT `fk_RichSkillJobCodes_jobcode_id_id` FOREIGN KEY (`jobcode_id`) REFERENCES `JobCode` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_RichSkillJobCodes_richskill_id_id` FOREIGN KEY (`richskill_id`) REFERENCES `RichSkillDescriptor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `RichSkillJobCodes`
---
-
-LOCK TABLES `RichSkillJobCodes` WRITE;
-/*!40000 ALTER TABLE `RichSkillJobCodes`
-    DISABLE KEYS */;
-/*!40000 ALTER TABLE `RichSkillJobCodes`
-    ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `RichSkillKeywords`
 --
 
-DROP TABLE IF EXISTS `RichSkillKeywords`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb3;
 CREATE TABLE `RichSkillKeywords`
 (
     `richskill_id` bigint(20) NOT NULL,
@@ -211,61 +139,26 @@ CREATE TABLE `RichSkillKeywords`
     CONSTRAINT `fk_RichSkillKeywords_keyword_id_id` FOREIGN KEY (`keyword_id`) REFERENCES `Keyword` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_RichSkillKeywords_richskill_id_id` FOREIGN KEY (`richskill_id`) REFERENCES `RichSkillDescriptor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `RichSkillKeywords`
---
-
-LOCK TABLES `RichSkillKeywords` WRITE;
-/*!40000 ALTER TABLE `RichSkillKeywords`
-    DISABLE KEYS */;
-/*!40000 ALTER TABLE `RichSkillKeywords`
-    ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `flyway_schema_history`
---
-
-DROP TABLE IF EXISTS `flyway_schema_history`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-SET character_set_client = utf8mb3;
-CREATE TABLE `flyway_schema_history`
+CREATE TABLE IF NOT EXISTS `Collection`
 (
-    `installed_rank` int(11)       NOT NULL,
-    `version`        varchar(50)            DEFAULT NULL,
-    `description`    varchar(200)  NOT NULL,
-    `type`           varchar(20)   NOT NULL,
-    `script`         varchar(1000) NOT NULL,
-    `checksum`       int(11)                DEFAULT NULL,
-    `installed_by`   varchar(100)  NOT NULL,
-    `installed_on`   timestamp     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `execution_time` int(11)       NOT NULL,
-    `success`        tinyint(1)    NOT NULL,
-    PRIMARY KEY (`installed_rank`),
-    KEY `flyway_schema_history_s_idx` (`success`)
+    `id`           BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    `creationDate` DATETIME(6) NOT NULL,
+    `updateDate`   DATETIME(6) NOT NULL,
+    `uuid`         VARCHAR(36) NOT NULL,
+    `name`         TEXT        NOT NULL,
+    `author_id`    BIGINT      NULL,
+    CONSTRAINT fk_Collection_author_id_id
+        FOREIGN KEY (author_id) REFERENCES Keyword (id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE = InnoDB;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `flyway_schema_history`
---
-
-LOCK TABLES `flyway_schema_history` WRITE;
-/*!40000 ALTER TABLE `flyway_schema_history`
-    DISABLE KEYS */;
-/*!40000 ALTER TABLE `flyway_schema_history`
-    ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE = @OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT = @OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS = @OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES = @OLD_SQL_NOTES */;
-
--- Dump completed on 2020-08-14 16:13:52
+CREATE TABLE IF NOT EXISTS CollectionSkills
+(
+    collection_id BIGINT(20) NOT NULL,
+    skill_id      BIGINT(20) NOT NULL,
+    CONSTRAINT PK_CollectionSkills_c_rs PRIMARY KEY (collection_id, skill_id),
+    CONSTRAINT fk_CollectionSkills_collection_id_id FOREIGN KEY (collection_id) REFERENCES Collection (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_CollectionSkills_skill_id_id FOREIGN KEY (skill_id) REFERENCES RichSkillDescriptor (id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB;
+CREATE INDEX CollectionSkills_collection_id ON CollectionSkills (collection_id);
+CREATE INDEX CollectionSkills_skill_id ON CollectionSkills (skill_id);

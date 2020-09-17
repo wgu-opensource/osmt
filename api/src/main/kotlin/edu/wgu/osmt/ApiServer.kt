@@ -12,10 +12,11 @@ import edu.wgu.osmt.richskill.RichSkillDescriptorTable
 import edu.wgu.osmt.richskill.RichSkillJobCodes
 import edu.wgu.osmt.richskill.RichSkillKeywords
 import kotlinx.coroutines.runBlocking
-import org.flywaydb.core.api.FlywayException
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
@@ -27,6 +28,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 @Profile("apiserver")
 @EnableWebMvc
 class ApiServer {
+    val logger: Logger = LoggerFactory.getLogger(ApiServer::class.java)
+
     private val tableList: List<Table> = listOf(
         AuditLogTable,
         RichSkillDescriptorTable,
@@ -42,19 +45,9 @@ class ApiServer {
     @Autowired
     private lateinit var appConfig: AppConfig
 
-    @Autowired
-    private lateinit var flywayManager: FlywayManager
-
     @Bean
     fun commandLineRunner(): CommandLineRunner {
         return CommandLineRunner {
-            // TODO this works for happy path migrations, additional logic may be necessary for other flows
-            try {
-                flywayManager.flyway.info()
-                flywayManager.flyway.migrate()
-            } catch (e: FlywayException) {
-                println("Migration exception occurred: ${e.message.toString()}")
-            }
             printMissingTableAndColumnStatements()
         }
     }
@@ -76,10 +69,10 @@ class ApiServer {
                     }
                 }
                 if (missingStatements.size > 0) {
-                    println("Database out of sync with application!")
+                    logger.warn("Database out of sync with application!")
                     missingStatements.forEach { println("$it;") }
                 } else {
-                    println("Tables ${tableList.map { it.tableName }} are in sync with application!")
+                    logger.info("Tables ${tableList.map { it.tableName }} are in sync with application!")
                 }
             }
         }

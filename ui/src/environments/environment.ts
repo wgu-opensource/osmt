@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  whitelabelConfigUri: "assets/config.json"
+  whitelabelConfigUri: ""
 }
 
 /*

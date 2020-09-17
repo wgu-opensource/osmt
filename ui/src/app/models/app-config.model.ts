@@ -1,5 +1,8 @@
 export interface IAppConfig {
-  sample: {
-    name: string
-  }
+    baseApiUrl: string
+}
+
+// Default configuration
+export class DefaultAppConfig implements IAppConfig {
+  baseApiUrl = ""
 }

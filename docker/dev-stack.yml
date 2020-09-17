@@ -4,6 +4,7 @@ version: '3.3'
 services:
   db:
     image: library/mysql:8
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb3 --collation-server=utf8mb3_unicode_ci
     volumes:
       - osmt_sql_db:/var/lib/mysql:rw
       - ./mysql-init:/docker-entrypoint-initdb.d

@@ -37,7 +37,7 @@ The backend will serve any routes not already configured to the API to the front
 When you start up the 'apiserver' environment profile, it will automatically migrate the database to be in line with the latest schema.
 Run the docker container and pass the following environment variables to it: 
  * ENVIRONMENT
- * ENVIRONMENT_DOMAIN_NAME
+ * BASE_DOMAIN
  * REDIS_URI
  * MYSQL_DB_URI
  * ELASTICSEARCH_URI
@@ -47,7 +47,7 @@ The use of these variables can be referenced in the [docker entrypoint script](d
 Example:
   ```
     ENVIRONMENT=review,apiserver
-    BASE_DOMAIN=<BASE_DOMAIN_NAME>
+    BASE_DOMAIN=osmt.example.com
     REDIS_URI=<HOST>:<PORT>
     MYSQL_DB_URI=<USER>:<PASSWORD>@<HOST>:<PORT>
     ELASTICSEARCH_URI=<HOST>:<PORT>
@@ -56,7 +56,6 @@ Example:
 ### Manual CSV import
 
 To do a manual batch import from a CSV:
-1. Have previously started up the apiserver
 1. Run the app container: `docker run -ti --entrypoint /bin/bash -v <full_path_to_csv_folder>:/mnt concentricsky/osmt:0.5.1`
 1. Run the csv import:
 ```
@@ -64,7 +63,7 @@ cd /mnt/
 /bin/java \
   -Dspring.profiles.active=review,import \
   -Dredis.uri=<REDIS_HOST>:<REDIS_PORT> \
-  -Dapp.baseDomain=<BASE_DOMAIN_NAME> \
+  -Dapp.baseDomain=<BASE_DOMAIN> \
   -Ddb.uri=<DB_USER>:<DB_PASS>@<DB_HOST>:3306 \
   -Des.uri=<HOST>:<PORT> \
   -jar /opt/osmt/bin/osmt.jar \

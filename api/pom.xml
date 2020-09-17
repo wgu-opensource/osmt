@@ -5,7 +5,7 @@
     <parent>
         <groupId>edu.wgu.osmt</groupId>
         <artifactId>osmt-parent</artifactId>
-        <version>0.5.0</version>
+        <version>0.5.1</version>
     </parent>
 
     <repositories>
@@ -23,7 +23,7 @@
 
     <groupId>edu.wgu.osmt</groupId>
     <artifactId>osmt-api</artifactId>
-    <version>0.5.0</version>
+    <version>0.5.1</version>
     <description>WGU Open Skills Management Toolset</description>
 
     <properties>

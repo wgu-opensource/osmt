@@ -29,11 +29,35 @@ Running the command `mvn clean install` will result in a fat jar being built tha
 The backend will serve any routes not already configured to the API to the frontend, allowing Angular's routing to takeover. 
 
 ## Deploy steps
-### CSV import
+### Create the Database and Database user
+1. Copy the [./docker/mysql-init/1init.sql](docker/mysql-init/1init.sql) file from this repository to a server with access to the mysql database.
+1. Run the .sql file against the mysql database: `mysql -u <DB_USER> -p -h <DB_HOST> -P 3306 < 1init.sql`
 
-1. Copy the osmt_initial.sql file & csv import file to a server with access to the mysql database.
-1. Run the .sql file against the mysql database: `mysql -u <DB_USER> -p -h <DB_HOST> -P 3306 < osmt_initial.sql`
-1. Run the app container: `docker run -ti --entrypoint /bin/bash -v <full_path_to_csv_folder>:/mnt concentricsky/osmt:0.5.0`
+### Run The API Server from the Container
+When you start up the 'apiserver' environment profile, it will automatically migrate the database to be in line with the latest schema.
+Run the docker container and pass the following environment variables to it: 
+ * ENVIRONMENT
+ * ENVIRONMENT_DOMAIN_NAME
+ * REDIS_URI
+ * MYSQL_DB_URI
+ * ELASTICSEARCH_URI
+ 
+The use of these variables can be referenced in the [docker entrypoint script](docker/bin/docker_entrypoint.sh).
+
+Example:
+  ```
+    ENVIRONMENT=review,apiserver
+    BASE_DOMAIN=<BASE_DOMAIN_NAME>
+    REDIS_URI=<HOST>:<PORT>
+    MYSQL_DB_URI=<USER>:<PASSWORD>@<HOST>:<PORT>
+    ELASTICSEARCH_URI=<HOST>:<PORT>
+  ```
+
+### Manual CSV import
+
+To do a manual batch import from a CSV:
+1. Have previously started up the apiserver
+1. Run the app container: `docker run -ti --entrypoint /bin/bash -v <full_path_to_csv_folder>:/mnt concentricsky/osmt:0.5.1`
 1. Run the csv import:
 ```
 cd /mnt/
@@ -47,14 +71,3 @@ cd /mnt/
   --csv=/mnt/<PATH_TO_CSV>
 ```
 
-### Run The Container
-
-1. Run the container and pass the following environment variables to it: ENVIRONMENT, ENVIRONMENT_DOMAIN_NAME, REDIS_URI, MYSQL_DB_URI, ELASTICSEARCH_URI. The use of these variables can be referenced in the [docker entrypoint script](docker/bin/docker_entrypoint.sh):
-1. Example enviroment variables:
-  ```
-    ENVIRONMENT=apiserver,review
-    BASE_DOMAIN=<BASE_DOMAIN_NAME>
-    REDIS_URI=<HOST>:<PORT>
-    MYSQL_DB_URI=<USER>:<PASSWORD>@<HOST>:<PORT>
-    ELASTICSEARCH_URI=<HOST>:<PORT>
-  ```

@@ -37,7 +37,7 @@ The backend will serve any routes not already configured to the API to the front
 When you start up the 'apiserver' environment profile, it will automatically migrate the database to be in line with the latest schema.
 Run the docker container and pass the following environment variables to it: 
  * ENVIRONMENT
- * ENVIRONMENT_DOMAIN_NAME
+ * BASE_DOMAIN
  * REDIS_URI
  * MYSQL_DB_URI
  * ELASTICSEARCH_URI

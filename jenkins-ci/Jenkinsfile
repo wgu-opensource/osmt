@@ -1,0 +1,37 @@
+pipeline {
+  agent { label 'master' }
+  environment {
+    gitRepository = 'ssh://git@github.com:concentricsky/wgu-osmt.git'
+    projectName = 'osmt'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        deleteDir()
+        checkout scm
+      }
+    }
+
+    stage("Build") {
+      steps {
+        sh "docker build . -t client-test -f jenkins-ci/Dockerfile.front"
+      }
+    }
+
+    stage('Front end tests') {
+      steps {
+        sh "ps"
+        sh "ls"
+        sh "docker run --volume ${WORKSPACE}/ui:/ui client-test"
+      }
+    }
+  }
+  
+  post {
+    always {
+      sh 'docker rm $(docker ps -aq -f STATUS=exited -f ANCESTOR=client-test)'
+      sh "docker rmi client-test"
+    }
+  }
+}

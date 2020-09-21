@@ -53,7 +53,8 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
     }
 
     override fun getDefaultAuthor(): Keyword {
-        return findOrCreate(KeywordTypeEnum.Author, appConfig.defaultAuthorName, appConfig.defaultAuthorUri)
+        val authorUri:String? = if (appConfig.defaultAuthorUri.isBlank()) null else appConfig.defaultAuthorUri
+        return findOrCreate(KeywordTypeEnum.Author, appConfig.defaultAuthorName, authorUri)
     }
 
     override fun findOrCreate(type: KeywordTypeEnum, value: String?, uri: String?): Keyword {

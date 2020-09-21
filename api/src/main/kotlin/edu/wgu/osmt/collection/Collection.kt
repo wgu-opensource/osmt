@@ -6,6 +6,7 @@ import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptor
 import net.minidev.json.JSONObject
 import org.valiktor.functions.isEqualTo
+import org.valiktor.functions.isNotEqualTo
 import org.valiktor.functions.validate
 import org.valiktor.validate
 import java.time.LocalDateTime
@@ -19,8 +20,10 @@ data class Collection(
     val uuid: UUID,
     val name: String,
     val author: Keyword? = null,
-    val skills: List<RichSkillDescriptor> = listOf()
-) : DatabaseData, HasUpdateDate {
+    val skills: List<RichSkillDescriptor> = listOf(),
+    override val archiveDate: LocalDateTime? = null,
+    override val publishDate: LocalDateTime? = null
+) : DatabaseData, HasUpdateDate, PublishStatusDetails {
 
 }
 
@@ -28,8 +31,9 @@ data class CollectionUpdateObject(
     override val id: Long,
     val name: String? = null,
     val author: NullableFieldUpdate<Keyword>? = null,
-    val skills: ListFieldUpdate<RichSkillDescriptor>? = null
-) : UpdateObject<CollectionDao> {
+    val skills: ListFieldUpdate<RichSkillDescriptor>? = null,
+    override val publishStatus: PublishStatus?
+) : UpdateObject<CollectionDao>, HasPublishStatus {
     init {
         validate(this) {
             validate(CollectionUpdateObject::author).validate {
@@ -37,6 +41,7 @@ data class CollectionUpdateObject(
                     validate(Keyword::type).isEqualTo(KeywordTypeEnum.Author)
                 }
             }
+            validate(CollectionUpdateObject::publishStatus).isNotEqualTo(PublishStatus.Unpublished)
         }
     }
     fun compareName(that: CollectionDao): JSONObject? {
@@ -53,7 +58,13 @@ data class CollectionUpdateObject(
         }
     }
 
+    fun comparePublishStatus(that: CollectionDao): JSONObject?{
+        return publishStatus?.let{
+            jsonUpdateStatement(::publishStatus.name, that.publishStatus().name, it.name)
+        }
+    }
+
     override val comparisonList: List<(t: CollectionDao) -> JSONObject?> =
-        listOf(::compareName, ::compareAuthor)
+        listOf(::compareName, ::compareAuthor, ::comparePublishStatus)
 }
 

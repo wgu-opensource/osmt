@@ -1,6 +1,7 @@
 package edu.wgu.osmt.task
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
+import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.richskill.RichSkillCsvExport
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillRepository
@@ -9,9 +10,11 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 @Component
+@Profile("apiserver")
 class TaskQueueHandler {
     val logger: Logger = LoggerFactory.getLogger(TaskQueueHandler::class.java)
 
@@ -20,6 +23,9 @@ class TaskQueueHandler {
 
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository
+
+    @Autowired
+    lateinit var appConfig: AppConfig
 
     @RqueueListener(
         value = [TaskMessageService.allSkillsCsv],
@@ -39,7 +45,7 @@ class TaskQueueHandler {
                 }
         }
 
-        val csvString = RichSkillCsvExport.toCsv(allSkills)
+        val csvString = RichSkillCsvExport(appConfig).toCsv(allSkills)
 
         taskMessageService.opsForHash.put(
             TaskMessageService.taskHashTable,

@@ -1,24 +1,36 @@
 import {Injectable} from "@angular/core"
-import {HttpClient, HttpHeaders} from "@angular/common/http"
-import {Observable, of} from "rxjs"
+import {HttpClient} from "@angular/common/http"
+import {Observable} from "rxjs"
 import {IRichSkillResponse, RichSkill} from "../RichSkill"
-import {catchError, map, tap} from "rxjs/operators"
+import {map} from "rxjs/operators"
+import {AbstractService} from "../../abstract.service"
+
 
 @Injectable({
   providedIn: "root"
 })
-export class RichSkillService {
+export class RichSkillService extends AbstractService {
 
-  constructor(private httpClient: HttpClient) {
+  constructor(httpClient: HttpClient) {
+    super(httpClient)
   }
 
   private serviceUrl = "api/skills"
 
   getSkills(): Observable<RichSkill[]> {
-    return this.httpClient.get<IRichSkillResponse[]>(this.serviceUrl).pipe(map((xs: IRichSkillResponse[]) => xs.map(x => new RichSkill(x))))
+    return this.get<IRichSkillResponse[]>({
+      path: this.serviceUrl
+    })
+      .pipe(map(({body}) => {
+        return body?.map(skill => new RichSkill(skill)) || []
+      }))
   }
 
   getSkillByUUID(uuid: string): Observable<RichSkill> {
-    return this.httpClient.get<IRichSkillResponse>(`${this.serviceUrl}/${uuid}`).pipe(map((irs: IRichSkillResponse) => new RichSkill(irs)))
+    const errorMsg = `Could not find skill by uuid [${uuid}]`
+    return this.get<IRichSkillResponse>({
+      path: `${this.serviceUrl}/${uuid}`
+    })
+      .pipe(map(({body}) => new RichSkill(this.safeUnwrapBody(body, errorMsg))))
   }
 }

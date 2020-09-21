@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  whitelabelConfigUri: ""
+  baseApiUrl: "http://localhost:8080"
 }
 
 /*

@@ -24,20 +24,18 @@ describe("AppConfig", () => {
   })
 
   describe("whitelabel configuration", () => {
-    it("should load a config from uri", () => {
+    it("should load app config from environment", () => {
+      const expectedApiUrl = "https://unit-test.osmt.dev"
       const dummyConfig: IAppConfig = {
-        baseApiUrl: "https://unit-test.wgu.dev"
+        baseApiUrl: expectedApiUrl
       }
 
-      environment.whitelabelConfigUri = "www.url.com"
+      environment.baseApiUrl = expectedApiUrl
 
       service.load().finally(() => {
         expect(AppConfig.settings.baseApiUrl).toBe(dummyConfig.baseApiUrl)
       })
 
-      const req = httpMock.expectOne(`www.url.com`)
-      expect(req.request.method).toBe("GET")
-      req.flush(dummyConfig)
     })
   })
 

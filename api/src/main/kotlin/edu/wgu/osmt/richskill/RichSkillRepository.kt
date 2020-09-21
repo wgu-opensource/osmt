@@ -5,9 +5,6 @@ import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.collection.CollectionSkills
-import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.db.PublishStatusDao
-import edu.wgu.osmt.db.PublishStatusTable
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
@@ -152,8 +149,6 @@ class RichSkillRepositoryImpl @Autowired constructor(
                 this.name = name
                 this.statement = statement
                 this.author = KeywordDao[EntityID(authorKeyword.id!!, KeywordTable)]
-                this.publishStatus =
-                    PublishStatusDao[EntityID(PublishStatus.Unpublished.ordinal.toLong(), PublishStatusTable)]
             }
         }
         user?.let { definedUser ->

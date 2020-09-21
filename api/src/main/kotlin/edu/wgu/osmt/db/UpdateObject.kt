@@ -46,4 +46,8 @@ interface UpdateObject<T> {
     }
 }
 
+interface HasPublishStatus{
+    val publishStatus: PublishStatus?
+}
+
 

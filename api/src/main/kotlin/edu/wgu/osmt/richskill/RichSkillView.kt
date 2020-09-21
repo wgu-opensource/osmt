@@ -3,13 +3,9 @@ package edu.wgu.osmt.richskill
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonView
-import com.google.gson.JsonObject
-import edu.wgu.osmt.jobcode.JobCode
-import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordDTO
 import net.minidev.json.JSONObject
 import java.time.LocalDateTime
-
 
 class RichSkillView {
     interface PublicDetailView {}

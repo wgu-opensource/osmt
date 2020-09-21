@@ -26,9 +26,7 @@ export class RichSkillsCsvExportComponent implements OnInit {
     }
 
     this.taskService.getTaskResultsIfComplete(this.taskUuidInProgress)
-      .subscribe(response => {
-        const { body, status } = response
-
+      .subscribe(({body, status}) => {
         if (status === 200) {
           this.csvExport = body as string
           this.taskUuidInProgress = undefined

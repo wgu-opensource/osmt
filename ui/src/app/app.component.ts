@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
 
   title = "Future home of the OSMT"
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.titleService.setTitle("OSMT")
   }
 }

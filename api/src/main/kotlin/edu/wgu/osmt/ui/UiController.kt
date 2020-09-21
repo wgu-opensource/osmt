@@ -11,5 +11,4 @@ class UiController {
     fun index(): String {
         return javaClass.getResource("/ui/index.html")?.readText(Charsets.UTF_8) ?: "UI not configured"
     }
-
 }

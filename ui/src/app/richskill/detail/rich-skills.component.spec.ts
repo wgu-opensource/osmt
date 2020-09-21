@@ -2,6 +2,7 @@ import {async, ComponentFixture, TestBed} from "@angular/core/testing"
 
 import {RichSkillsComponent} from "./rich-skills.component"
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
+import { AppConfig } from 'src/app/app.config'
 
 describe("RichSkillsComponent", () => {
   let component: RichSkillsComponent
@@ -31,7 +32,7 @@ describe("RichSkillsComponent", () => {
   })
 
   it("should create", () => {
-    const req = httpMock.expectOne("api/skills")
+    const req = httpMock.expectOne(`${AppConfig.settings.baseApiUrl}/api/skills`)
     expect(req.request.method).toBe("GET")
     req.flush([])
     expect(component).toBeTruthy()

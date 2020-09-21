@@ -2,7 +2,6 @@
 # docker build . -t client -f jenkins-ci/Dockerfile.front
 FROM node:slim
 
-VOLUME /ui
 COPY /ui /ui
 WORKDIR /ui
 

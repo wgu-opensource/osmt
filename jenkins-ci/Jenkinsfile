@@ -21,16 +21,13 @@ pipeline {
 
     stage('Front end tests') {
       steps {
-        sh "ps"
-        sh "ls"
-        sh "docker run --volume ${WORKSPACE}/ui:/ui client-test"
+        sh "docker run --rm client-test"
       }
     }
   }
   
   post {
     always {
-      sh 'docker rm $(docker ps -aq -f STATUS=exited -f ANCESTOR=client-test)'
       sh "docker rmi client-test"
     }
   }

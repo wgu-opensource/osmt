@@ -1,0 +1,34 @@
+pipeline {
+  agent { label 'master' }
+  environment {
+    gitRepository = 'ssh://git@github.com:concentricsky/wgu-osmt.git'
+    projectName = 'osmt'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        deleteDir()
+        checkout scm
+      }
+    }
+
+    stage("Build") {
+      steps {
+        sh "docker build . -t client-test -f jenkins-ci/Dockerfile.front"
+      }
+    }
+
+    stage('Front end tests') {
+      steps {
+        sh "docker run --rm client-test"
+      }
+    }
+  }
+  
+  post {
+    always {
+      sh "docker rmi client-test"
+    }
+  }
+}

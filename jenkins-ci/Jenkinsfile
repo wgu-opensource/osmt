@@ -16,6 +16,7 @@ pipeline {
     stage("Build") {
       steps {
         sh "docker build . -t client-test -f jenkins-ci/Dockerfile.front"
+        sh "docker build . -t api-test -f jenkins-ci/Dockerfile."
       }
     }
 
@@ -24,11 +25,18 @@ pipeline {
         sh "docker run --rm client-test"
       }
     }
+
+    stage("Back end tests") {
+      steps {
+        sh "docker run --rm api-test"
+      }
+    }
   }
   
   post {
     always {
       sh "docker rmi client-test"
+      sh "docker rmi api-test"
     }
   }
 }

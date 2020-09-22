@@ -526,9 +526,6 @@ components:
           type: string
           format: uri
           readOnly: true
-        type:
-          type: '"RichSkillDescriptor"'
-          readOnly: true
         uuid:
           type: string
           format: uuid
@@ -550,59 +547,78 @@ components:
         alignments:
           type: array
           items:
-            type: string
-            format: uri
+            $ref: '#/components/schemas/NamedReference'
+        standards:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
         certifications:
           type: array
           items:
-            type: string
-            format: uri
+            $ref: '#/components/schemas/NamedReference'
         occupations:
           type: array
           items:
-            type: string
-            format: job code
+            $ref: '#/components/schemas/JobCode'
         employers:
           type: array
           items:
-            type: string
-        skillsEmbodied:
-          type: array
-          items:
-            type: string
+            $ref: '#/components/schemas/NamedReference'
         author:
-          type: string
-          format: uri
+          $ref: '#/components/schemas/NamedReference'
 
       example:
         id: https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac
         type: RichSkillDescriptor
-        author: https://osmt.example.com/organization
-        status: published
-        skillName: Document Saving
-        skillStatement: The learner copies and saves documents to their local machine.
-        alignments: 
-          - "https://skillsource.example.com/base-skills/simple-compuhacking"
-        keywords: 
-          - "documents"
-          - "file operations"
-          - "computer basics"
-        category: "Productivity Software"
-        occupations: 
-          - "13-0000"
-          - "13-2000"
-          - "13-2010"
-          - "13-2030"
-          - "13-2040"
-          - "13-2060"
-          - "13-2080"
+        author: https://example.osmt.wgu.edu/organization
+        category: Business Ethics
+        skillName: "Business Ethics: Responsibility Acceptance"
+        skillStatement: The learner accepts responsibility and repercussions related to ethical behavior.
+        alignments:
+          - id: "https://emsiservices.com/skills/versions/latest/skills/KS120FG6YP8PQYY"
+        keywords:
+          - "Business Ethics"
+          - "Being"
+        standards:
+          - name: "NICE: Investigate - Digital Forensics"
+          - name: "NICE: Protect and Defend - Computer Defense Analysis"
+          - name: "NICE: Protect and Defend - Cyber Defense Infrastructure Support"
+          - name: "NICE: Protect and Defend - Incident Response; NICE: Protect and Defend - Vulnerability Assessment and Management"
+          - name: "NICE: Operate and Maintain - Customer Service and Technical Support"
+          - name: "NICE: Operate and Maintain - Network Services"
+          - name: "NICE: Operate and Maintain - System Administration"
+          - name: "NSA-CAE KU: Networking"
+          - name: "NSA-CAE KU: Wireless Security"
+          - name: "NSA-CAE KU: HCI/Usability Security"
+          - name: "NSA-CAE KU: Wireless Security"
+        certifications:
+          - name: CCNA Security
+          - name: CCIE Security
+          - name: CCNP Security
+        occupations:
+          - code: 11-3031.00
+          - code: 11-3031.02
+          - code: 13-1021.00
+          - code: 13-1022.00
+          - code: 13-1023.00
+          - code: 13-1111.00
+          - code: 13-1161.00
+          - code: 13-2011.01
+          - code: 13-2041.00
+          - code: 15-2041.00
+          - code: 19-3011.00
+          - code: 19-4061.00
+          - code: 15-1122.00
+        employer:
+          - name: Sample Company
+
     SkillUpdateDescriptor:
       type: object
       properties:
         skillUuid:  
           type: string
           format: uuid
-        skillName: 
+        skillName:
           type: string
         skillStatement:
           type: string
@@ -714,6 +730,31 @@ components:
           type: string
         skills:
           $ref: '#/components/schemas/ListUpdateDescriptor'
+
+    NamedReference:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+        name:
+          type: string
+
+    JobCode:
+      type: object
+      properties:
+        code:
+          type: string
+        id:
+          type: string
+          format: uri
+        name:
+          type: string
+        framework:
+          type: string
+      required:
+        - code
+
     TaskResult:
       type: object
       properties:

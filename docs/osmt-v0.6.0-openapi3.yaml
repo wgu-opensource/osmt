@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  version: 0.6.0
+  version: 0.6.0-SNAPSHOT
   title: OSMT API
-  description: Draft API for the Open Skills Management Toolset (MVP)
+  description: API for the Open Skills Management Toolset (Sapphire)
 security:
   - bearerAuth: []
 
@@ -127,7 +127,7 @@ paths:
     post:
       tags:
         - Skills
-      summary: Create skills
+      summary: Create new skills
       description: Define one or more new Rich Skill Descriptors
       requestBody:
         required: true
@@ -136,14 +136,16 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Skill'
+                $ref: '#/components/schemas/SkillUpdateDescriptor'
       responses:
         '200':
           description: OK
           content:
             application/json:
-              schema: 
-                $ref: '#/components/schemas/Skill'
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Skill'
         '202':
           description: Accepted
           content:
@@ -335,7 +337,7 @@ paths:
     post:
       tags:
         - Collections
-      summary: Create a collection
+      summary: Create new collections
       description: Define a new collection
       requestBody:
         required: true
@@ -344,14 +346,16 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Collection'
+                $ref: '#/components/schemas/CollectionUpdateDescriptor'
       responses:
         '200':
           description: OK
           content:
             application/json:
-              schema: 
-                $ref: '#/components/schemas/Collection'
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collection'
         '400':
           description: Bad Request
           content:
@@ -644,14 +648,14 @@ components:
           format: uri
       example:
         skillName: "New Skill Name"
-        keywords: 
-          - operation: add
-            name: "Added Keyword"
-          - operation: remove
-            name: "Removed Keyword"
-        occupation:
-          - operation: add
-            name: "11-9013"
+        keywords:
+          add:
+            - "Added Keyword"
+          remove:
+            - "Removed Keyword"
+        occupations:
+          add:
+            - 11-9013
     ListUpdateDescriptor:
       type: object
       properties:

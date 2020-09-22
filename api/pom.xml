@@ -33,7 +33,6 @@
         <flywaydb.version>6.5.1</flywaydb.version>
         <okta.version>1.3.0</okta.version>
         <kotest.version>4.1.3</kotest.version>
-        <redis-starter.version>2.0.4.RELEASE</redis-starter.version>
         <kotlin.code.style>official</kotlin.code.style>
         <start-class>edu.wgu.osmt.ApplicationKt</start-class>
     </properties>
@@ -176,6 +175,10 @@
             <version>5.2</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
             <groupId>it.ozimov</groupId>
             <artifactId>embedded-redis</artifactId>
             <version>0.7.3</version>
@@ -219,6 +222,44 @@
                         <version>${kotlin.version}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>${flywaydb.version}</version>
+                <configuration>
+                    <url>jdbc:mysql://localhost:3306/osmt_db</url>
+                    <user>changeme</user>
+                    <password>password</password>
+                    <locations>
+                        <location>classpath:db/migration</location>
+                    </locations>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.0.0</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <dotGitDirectory>${project.basedir}/../.git</dotGitDirectory>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
+                        <includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
+                        <includeOnlyProperty>^git.tags$</includeOnlyProperty>
+                    </includeOnlyProperties>
+                    <commitIdGenerationMode>full</commitIdGenerationMode>
+                </configuration>
             </plugin>
         </plugins>
     </build>

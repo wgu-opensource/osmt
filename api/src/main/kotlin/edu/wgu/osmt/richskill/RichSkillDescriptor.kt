@@ -13,6 +13,7 @@ import java.time.ZoneOffset
 import org.valiktor.functions.validate
 import java.util.*
 import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.keyword.KeywordDao
 import org.valiktor.functions.isNotEqualTo
 
 @Document(indexName = "richskillrepository", createIndex = true)
@@ -28,7 +29,8 @@ data class RichSkillDescriptor(
     val category: Keyword? = null,
     val author: Keyword? = null,
     override val archiveDate: LocalDateTime? = null,
-    override val publishDate: LocalDateTime? = null
+    override val publishDate: LocalDateTime? = null,
+    val collectionIds: List<Long> = listOf()
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
 
     var collections: List<Collection> = listOf()
@@ -70,9 +72,9 @@ data class RsdUpdateObject(
     override val id: Long,
     val name: String? = null,
     val statement: String? = null,
-    val author: NullableFieldUpdate<Keyword>? = null,
-    val category: NullableFieldUpdate<Keyword>? = null,
-    val keywords: ListFieldUpdate<Keyword>? = null,
+    val author: NullableFieldUpdate<KeywordDao>? = null,
+    val category: NullableFieldUpdate<KeywordDao>? = null,
+    val keywords: ListFieldUpdate<KeywordDao>? = null,
     val jobCodes: ListFieldUpdate<JobCode>? = null,
     val collections: ListFieldUpdate<Collection>? = null,
     override val publishStatus: PublishStatus? = null
@@ -81,13 +83,13 @@ data class RsdUpdateObject(
     init {
         validate(this) {
             validate(RsdUpdateObject::category).validate {
-                validate(NullableFieldUpdate<Keyword>::t).validate {
-                    validate(Keyword::type).isEqualTo(KeywordTypeEnum.Category)
+                validate(NullableFieldUpdate<KeywordDao>::t).validate {
+                    validate(KeywordDao::type).isEqualTo(KeywordTypeEnum.Category)
                 }
             }
             validate(RsdUpdateObject::author).validate {
-                validate(NullableFieldUpdate<Keyword>::t).validate {
-                    validate(Keyword::type).isEqualTo(KeywordTypeEnum.Author)
+                validate(NullableFieldUpdate<KeywordDao>::t).validate {
+                    validate(KeywordDao::type).isEqualTo(KeywordTypeEnum.Author)
                 }
             }
             validate(RsdUpdateObject::publishStatus).isNotEqualTo(PublishStatus.Unpublished)
@@ -108,7 +110,7 @@ data class RsdUpdateObject(
 
     fun compareCategory(that: RichSkillDescriptorDao): JSONObject? {
         return category?.let {
-            if (that.category?.let { id } != it.t?.id) {
+            if (that.category?.value?.let { id } != it.t?.id?.value) {
                 jsonUpdateStatement(that.name, that.category?.let { it.value }, it.t?.value)
             } else null
         }
@@ -116,8 +118,8 @@ data class RsdUpdateObject(
 
     fun compareAuthor(that: RichSkillDescriptorDao): JSONObject? {
         return author?.let {
-            if (that.author?.let { id } != it.t?.id) {
-                jsonUpdateStatement(that.name, that.author?.let { it.value }, it.t?.value)
+            if (that.author?.value?.let { id } != it.t?.id?.value) {
+                jsonUpdateStatement(that.name, that.author?.value?.let { it }, it.t?.value)
             } else null
         }
     }

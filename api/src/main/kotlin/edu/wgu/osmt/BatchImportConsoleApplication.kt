@@ -12,8 +12,11 @@ import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RsdUpdateObject
 import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.collection.CollectionSkills
+import edu.wgu.osmt.jobcode.JobCodeDao
+import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.richskill.RichSkillKeywords
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
@@ -83,6 +86,11 @@ class RichSkillRow {
 @Component
 @Profile("import")
 class BatchImportConsoleApplication : CommandLineRunner {
+
+    companion object {
+        const val user = "Batch Import"
+    }
+
     val LOG: Logger = LoggerFactory.getLogger(BatchImportConsoleApplication::class.java)
 
     @Autowired
@@ -103,10 +111,11 @@ class BatchImportConsoleApplication : CommandLineRunner {
     val collectionSkillsTable = CollectionSkills
 
     fun split_field(value: String?, delimiters: String = ";"): List<String>? {
-        return value?.let { it.split(delimiters).map { it.trim() } }?.distinct()
+        val strings = value?.let { it.split(delimiters).map { it.trim() } }?.distinct()
+        return strings?.map{if (it.isBlank()) null else it}?.filterNotNull()
     }
 
-    fun parse_keywords(keywordType: KeywordTypeEnum, rowValue: String?, useUri: Boolean = false): List<Keyword>? {
+    fun parse_keywords(keywordType: KeywordTypeEnum, rowValue: String?, useUri: Boolean = false): List<KeywordDao>? {
         return split_field(rowValue)?.map {
             if (useUri)
                 keywordRepository.findOrCreate(keywordType, uri = it)
@@ -115,17 +124,17 @@ class BatchImportConsoleApplication : CommandLineRunner {
         }
     }
 
-    fun parse_jobcodes(rowValue: String?): List<JobCode>? {
+    fun parse_jobcodes(rowValue: String?): List<JobCodeDao>? {
         return split_field(rowValue)?.map { code ->
             val jobCode = jobCodeRepository.findByCode(code)
-            jobCode ?: jobCodeRepository.create(code).toModel()
+            jobCode ?: jobCodeRepository.create(code)
         }
     }
 
-    fun parse_collections(rowValue: String?): List<Collection>? {
+    fun parse_collections(rowValue: String?): List<CollectionDao>? {
         return split_field(rowValue)?.filter { it.isNotBlank() }?.map { collectionName ->
             val collection = collectionRepository.findByName(collectionName)
-            collection ?: transaction { collectionRepository.create(collectionName).toModel() }
+            collection ?: transaction { collectionRepository.create(collectionName) }
         }
     }
 
@@ -140,16 +149,15 @@ class BatchImportConsoleApplication : CommandLineRunner {
     fun handleRows(rows: List<RichSkillRow>) {
         LOG.info("Processing ${rows.size} rows...")
 
-        for (row in rows) {
-            val user = null
-            var category: Keyword? = null
-            var keywords: List<Keyword>? = null
-            var standards: List<Keyword>? = null
-            var certifications: List<Keyword>? = null
-            var employers: List<Keyword>? = null
-            var alignments: List<Keyword>? = null
-            var occupations: List<JobCode>? = null
-            var collections: List<Collection>? = null
+        for (row in rows) transaction {
+            var category: KeywordDao? = null
+            var keywords: List<KeywordDao>? = null
+            var standards: List<KeywordDao>? = null
+            var certifications: List<KeywordDao>? = null
+            var employers: List<KeywordDao>? = null
+            var alignments: List<KeywordDao>? = null
+            var occupations: List<JobCodeDao>? = null
+            var collections: List<CollectionDao>? = null
 
             category = row.skillCategory?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Category, value = it) }
 
@@ -166,23 +174,19 @@ class BatchImportConsoleApplication : CommandLineRunner {
 
             val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
 
-            val author:Keyword? = row.author?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it) }
+            val author:KeywordDao? = row.author?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it) }
 
             if (row.skillName != null && row.skillStatement != null) {
                 val newSkill = richSkillRepository.create(
                     name = row.skillName!!,
                     statement = row.skillStatement!!,
                     author = author,
-                    user = user
+                    user = user,
+                    category = category,
+                    keywords = all_keywords,
+                    collections = collections,
+                    jobCodes = occupations
                 )
-
-                richSkillRepository.update(RsdUpdateObject(
-                    id = newSkill.id.value,
-                    category = NullableFieldUpdate(category),
-                    keywords = all_keywords?.let { ListFieldUpdate(add = it) },
-                    jobCodes = occupations?.let { ListFieldUpdate(add = it) },
-                    collections = collections?.let {ListFieldUpdate(add = it)}
-                ), user)
                 LOG.info("created skill '${row.skillName!!}'")
             }
         }

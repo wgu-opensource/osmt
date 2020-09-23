@@ -1,5 +1,6 @@
 package edu.wgu.osmt.auditlog
 
+import edu.wgu.osmt.db.insertObject
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
@@ -9,5 +10,5 @@ class AuditLogRepository {
     val table: AuditLogTable = AuditLogTable
 
     @Transactional
-    fun insert(t: AuditLog): Long? = table.insert(t)
+    fun insert(t: AuditLog): Long? = table.insertObject(t)
 }

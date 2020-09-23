@@ -1,8 +1,10 @@
 pipeline {
   agent { label 'master' }
   environment {
-    feContainer = "client-test"
-    beContainer = "api-test"
+    clientContainer = "client-test"
+    apiContainer = "api-test"
+    apiCommitContext = "Back end"
+    clientCommitContext = "Front end"
   }
 
   stages {
@@ -14,16 +16,38 @@ pipeline {
     }
 
     stage("Build") {
-      parallel {
+      parallel {        
         stage("Front end") {
           steps {
-            sh "docker build . -t ${feContainer} -f jenkins-ci/Dockerfile.front"
+            githubNotify context: clientCommitContext, description: 'Building...',  status: 'PENDING'
+            sh "docker build . -t ${clientContainer} -f jenkins-ci/Dockerfile.front"
+          }
+
+          post {
+            success {
+              githubNotify context: clientCommitContext, description: 'Build Success!  Tests not yet started.',  status: 'PENDING'
+            }
+
+            failure {
+              githubNotify context: clientCommitContext, description: 'Build failed!',  status: 'FAILURE'
+            }
           }
         }
 
         stage("Back end") {
           steps {
-            sh "docker build . -t ${beContainer} -f jenkins-ci/Dockerfile.back"
+            githubNotify context: apiCommitContext, description: 'Building...',  status: 'PENDING'
+            sh "docker build . -t ${apiContainer} -f jenkins-ci/Dockerfile.back"
+          }
+
+          post {
+            success {
+              githubNotify context: apiCommitContext, description: 'Build success!  Tests not started yet.',  status: 'PENDING'
+            }
+
+            failure {
+              githubNotify context: apiCommitContext, description: 'Build failed!',  status: 'FAILURE'
+            }
           }
         }
       }
@@ -33,28 +57,45 @@ pipeline {
       parallel {
         stage("Front end") {
            steps {
-            sh "docker run --rm ${feContainer}"
+            githubNotify context: clientCommitContext, description: 'Running tests...',  status: 'PENDING'
+            sh "docker run --rm ${clientContainer}"
           }
 
           post {
-            always {
-              sh "docker rmi ${feContainer}"
+            success {
+              githubNotify context: clientCommitContext, description: 'All tests passed!', status: 'SUCCESS'
+            }
+
+            failure {
+              githubNotify context: clientCommitContext, description: 'There were test failures!', status: 'FAILURE'
             }
           }
         }
         
         stage("Back end") {
           steps {
-            sh "docker run --rm ${beContainer}"
+            githubNotify context: apiCommitContext, description: 'Running tests...',  status: 'PENDING'
+            sh "docker run --rm ${apiContainer}"
           }
 
           post {
-            always {
-              sh "docker rmi ${beContainer}"
+            success {
+              githubNotify context: apiCommitContext, description: 'All tests passed!', status: 'SUCCESS'
+            }
+
+            failure {
+              githubNotify context: apiCommitContext, description: 'There were test failures!', status: 'FAILURE'
             }
           }
         }
       }
+    }
+  }
+
+  post {
+    always {
+      sh "docker rmi ${clientContainer}"
+      sh "docker rmi ${apiContainer}"
     }
   }
 }

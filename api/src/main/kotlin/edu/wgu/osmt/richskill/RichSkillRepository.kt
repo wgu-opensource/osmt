@@ -34,6 +34,7 @@ interface RichSkillRepository {
         author: Keyword?,
         user: OAuth2User?
     ): RichSkillDescriptorDao
+    fun createFromUpdateObject(updateObject: RsdUpdateObject, user: OAuth2User?): RichSkillDescriptor?
 }
 
 @Repository
@@ -69,7 +70,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
     @Transactional
     override fun update(updateObject: RsdUpdateObject, user: OAuth2User?): RichSkillDescriptor? {
         transaction {
-            val original = dao.findById(updateObject.id)
+            val original = dao.findById(updateObject.id!!)
             val changes = original?.let { updateObject.diff(it) }
 
             user?.let { definedUser ->
@@ -77,7 +78,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
                     auditLogRepository.insert(
                         AuditLog.fromAtomicOp(
                             table,
-                            updateObject.id,
+                            updateObject.id!!,
                             it.toString(),
                             definedUser,
                             AuditOperationType.Update
@@ -126,12 +127,18 @@ class RichSkillRepositoryImpl @Autowired constructor(
             }
         }
 
-        return transaction { dao.findById(updateObject.id)?.toModel() }
+        return transaction { dao.findById(updateObject.id!!)?.toModel() }
     }
 
     override fun findByUUID(uuid: String): RichSkillDescriptor? = transaction {
         val query = table.select { table.uuid eq uuid }.singleOrNull()
         query?.let { dao.wrapRow(it).toModel() }
+    }
+
+    override fun createFromUpdateObject(updateObject: RsdUpdateObject, user: OAuth2User?): RichSkillDescriptor?
+    {
+        val skill = create(updateObject.name!!, updateObject.statement!!, updateObject.author?.t, user)
+        return update(updateObject.copy(id = skill.id.value), user)
     }
 
     override fun create(

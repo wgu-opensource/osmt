@@ -16,7 +16,7 @@ pipeline {
     stage("Build") {
       steps {
         sh "docker build . -t client-test -f jenkins-ci/Dockerfile.front"
-        sh "docker build . -t api-test -f jenkins-ci/Dockerfile."
+        sh "docker build . -t api-test -f jenkins-ci/Dockerfile.back"
       }
     }
 

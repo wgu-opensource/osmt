@@ -1,10 +1,26 @@
 pipeline {
   agent { label 'master' }
   environment {
-    clientContainer = "client-test"
-    apiContainer = "api-test"
-    apiCommitContext = "Back end"
+
+    uniqueId = "${env.CHANGE_ID}-${env.BUILD_NUMBER}"
+    
+    clientContainer = "client-test-${uniqueId}"
+    apiContainer    = "api-test-${uniqueId}"
+
+    clientDockerfileLocation  = "jenkins-ci/Dockerfile.front"
+    apiDockerfileLocation     = "jenkins-ci/Dockerfile.back"
+
+    apiCommitContext    = "Back end"
     clientCommitContext = "Front end"
+
+    // github commit status messages
+    buildStarted = "Building..."
+    buildSuccess = "Build success!  Tests not yet started..."
+    buildFailure = "Build failed!"
+
+    testStarted = "Running tests..."
+    testSuccess = "All tests passed!"
+    testFailure = "Test failures!"
   }
 
   stages {
@@ -19,34 +35,34 @@ pipeline {
       parallel {        
         stage("Front end") {
           steps {
-            githubNotify context: clientCommitContext, description: 'Building...',  status: 'PENDING'
-            sh "docker build . -t ${clientContainer} -f jenkins-ci/Dockerfile.front"
+            githubNotify context: clientCommitContext, description: buildStarted,  status: 'PENDING'
+            sh "docker build . -t ${clientContainer} -f ${clientDockerfileLocation}"
           }
 
           post {
             success {
-              githubNotify context: clientCommitContext, description: 'Build Success!  Tests not yet started.',  status: 'PENDING'
+              githubNotify context: clientCommitContext, description: buildSuccess,  status: 'PENDING'
             }
 
             failure {
-              githubNotify context: clientCommitContext, description: 'Build failed!',  status: 'FAILURE'
+              githubNotify context: clientCommitContext, description: buildFailure,  status: 'FAILURE'
             }
           }
         }
 
         stage("Back end") {
           steps {
-            githubNotify context: apiCommitContext, description: 'Building...',  status: 'PENDING'
-            sh "docker build . -t ${apiContainer} -f jenkins-ci/Dockerfile.back"
+            githubNotify context: apiCommitContext, description: buildStarted,  status: 'PENDING'
+            sh "docker build . -t ${apiContainer} -f ${apiDockerfileLocation}"
           }
 
           post {
             success {
-              githubNotify context: apiCommitContext, description: 'Build success!  Tests not started yet.',  status: 'PENDING'
+              githubNotify context: apiCommitContext, description: buildSuccess,  status: 'PENDING'
             }
 
             failure {
-              githubNotify context: apiCommitContext, description: 'Build failed!',  status: 'FAILURE'
+              githubNotify context: apiCommitContext, description: buildFailure,  status: 'FAILURE'
             }
           }
         }
@@ -57,34 +73,34 @@ pipeline {
       parallel {
         stage("Front end") {
            steps {
-            githubNotify context: clientCommitContext, description: 'Running tests...',  status: 'PENDING'
+            githubNotify context: clientCommitContext, description: testStarted,  status: 'PENDING'
             sh "docker run --rm ${clientContainer}"
           }
 
           post {
             success {
-              githubNotify context: clientCommitContext, description: 'All tests passed!', status: 'SUCCESS'
+              githubNotify context: clientCommitContext, description: testSuccess, status: 'SUCCESS'
             }
 
             failure {
-              githubNotify context: clientCommitContext, description: 'There were test failures!', status: 'FAILURE'
+              githubNotify context: clientCommitContext, description: testFailure, status: 'FAILURE'
             }
           }
         }
         
         stage("Back end") {
           steps {
-            githubNotify context: apiCommitContext, description: 'Running tests...',  status: 'PENDING'
+            githubNotify context: apiCommitContext, description: testStarted,  status: 'PENDING'
             sh "docker run --rm ${apiContainer}"
           }
 
           post {
             success {
-              githubNotify context: apiCommitContext, description: 'All tests passed!', status: 'SUCCESS'
+              githubNotify context: apiCommitContext, description: testSuccess, status: 'SUCCESS'
             }
 
             failure {
-              githubNotify context: apiCommitContext, description: 'There were test failures!', status: 'FAILURE'
+              githubNotify context: apiCommitContext, description: testFailure, status: 'FAILURE'
             }
           }
         }

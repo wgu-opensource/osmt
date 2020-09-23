@@ -3,6 +3,8 @@ package edu.wgu.osmt.richskill
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonView
+import edu.wgu.osmt.api.ApiFieldError
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.keyword.KeywordDTO
 import net.minidev.json.JSONObject
 import java.time.LocalDateTime
@@ -92,4 +94,39 @@ class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseUrl: St
         get() = rsd.employers.map { KeywordDTO(it) }
 }
 
+data class SkillUpdateDescriptor(
+    @JsonProperty("skillName")
+    val skillName: String?,
+
+    @JsonProperty("skillStatement")
+    val skillStatement: String?,
+
+    @JsonProperty("status")
+    val publishStatus: PublishStatus?
+
+) {
+    fun asRsdUpdateObject(): RsdUpdateObject {
+        return RsdUpdateObject(name=skillName, statement=skillStatement)
+    }
+
+    fun validate(): List<ApiFieldError>? {
+        val errors = mutableListOf<ApiFieldError>()
+        return if (errors.size > 0) errors else null
+    }
+
+    fun validateForCreation(rowNumber:Number? = null): List<ApiFieldError>? {
+        val errors = mutableListOf<ApiFieldError>()
+
+        if (skillName.isNullOrBlank()) {
+            errors.add(ApiFieldError(field="skillName", message="Name is required", rowNumber=rowNumber))
+        }
+        if (skillStatement.isNullOrBlank()) {
+            errors.add(ApiFieldError(field="skillStatement", message="Statement is required", rowNumber=rowNumber))
+        }
+
+        validate()?.let { errors.addAll(it) }
+
+        return if (errors.size > 0) errors else null
+    }
+}
 

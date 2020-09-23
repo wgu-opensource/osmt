@@ -1,8 +1,8 @@
 pipeline {
   agent { label 'master' }
   environment {
-    gitRepository = 'ssh://git@github.com:concentricsky/wgu-osmt.git'
-    projectName = 'osmt'
+    feContainer = "client-test"
+    beContainer = "api-test"
   }
 
   stages {
@@ -14,29 +14,47 @@ pipeline {
     }
 
     stage("Build") {
-      steps {
-        sh "docker build . -t client-test -f jenkins-ci/Dockerfile.front"
-        sh "docker build . -t api-test -f jenkins-ci/Dockerfile.back"
+      parallel {
+        stage("Front end") {
+          steps {
+            sh "docker build . -t ${feContainer} -f jenkins-ci/Dockerfile.front"
+          }
+        }
+
+        stage("Back end") {
+          steps {
+            sh "docker build . -t ${beContainer} -f jenkins-ci/Dockerfile.back"
+          }
+        }
       }
     }
 
-    stage('Front end tests') {
-      steps {
-        sh "docker run --rm client-test"
-      }
-    }
+    stage("Tests") {
+      parallel {
+        stage("Front end") {
+           steps {
+            sh "docker run --rm ${feContainer}"
+          }
 
-    stage("Back end tests") {
-      steps {
-        sh "docker run --rm api-test"
+          post {
+            always {
+              sh "docker rmi ${feContainer}"
+            }
+          }
+        }
+        
+        stage("Back end") {
+          steps {
+            sh "docker run --rm ${beContainer}"
+          }
+
+          post {
+            always {
+              sh "docker rmi ${beContainer}"
+            }
+          }
+        }
       }
-    }
-  }
-  
-  post {
-    always {
-      sh "docker rmi client-test"
-      sh "docker rmi api-test"
     }
   }
 }

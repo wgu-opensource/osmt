@@ -641,11 +641,8 @@ components:
           $ref: '#/components/schemas/ListUpdateDescriptor'
         employers:
           $ref: '#/components/schemas/ListUpdateDescriptor'
-        skillsEmbodied:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
         author:
-          type: string
-          format: uri
+          $ref: '#/components/schemas/NamedReference'
       example:
         skillName: "New Skill Name"
         keywords:
@@ -661,12 +658,12 @@ components:
       properties:
         add:
           type: array
-          items: 
-            type: string
+          items:
+            $ref: '#/components/schemas/NamedReference'
         remove:
           type: array
-          items: 
-            type: string
+          items:
+            $ref: '#/components/schemas/NamedReference'
     SkillSearchDescriptor:
       type: object
       properties:
@@ -703,13 +700,8 @@ components:
           type: array
           items:
             type: string
-        skillsEmbodied:
-          type: array
-          items:
-            type: string
         author:
-          type: string
-          format: uri
+          $ref: '#/components/schemas/NamedReference'
 
     Collection:
       type: object

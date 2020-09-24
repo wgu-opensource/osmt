@@ -42,7 +42,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SkillSearchDescriptor'
+              $ref: '#/components/schemas/SkillSearch'
       responses:
         '200':
           description: OK
@@ -136,7 +136,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/SkillUpdateDescriptor'
+                $ref: '#/components/schemas/SkillUpdate'
       responses:
         '200':
           description: OK
@@ -220,7 +220,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SkillUpdateDescriptor'
+              $ref: '#/components/schemas/SkillUpdate'
       responses:
         '200':
           description: OK
@@ -346,7 +346,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/CollectionUpdateDescriptor'
+                $ref: '#/components/schemas/CollectionUpdate'
       responses:
         '200':
           description: OK
@@ -415,7 +415,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CollectionUpdateDescriptor'
+              $ref: '#/components/schemas/CollectionUpdate'
       responses:
         '200':
           description: OK
@@ -616,7 +616,7 @@ components:
         employer:
           - name: Sample Company
 
-    SkillUpdateDescriptor:
+    SkillUpdate:
       type: object
       properties:
         skillUuid:  
@@ -632,15 +632,15 @@ components:
         category:
           type: string
         keywords:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
+          $ref: '#/components/schemas/StringListUpdate'
         alignments:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
+          $ref: '#/components/schemas/ReferenceListUpdate'
         certifications:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
+          $ref: '#/components/schemas/ReferenceListUpdate'
         occupations:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
+          $ref: '#/components/schemas/ReferenceListUpdate'
         employers:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
+          $ref: '#/components/schemas/ReferenceListUpdate'
         author:
           $ref: '#/components/schemas/NamedReference'
       example:
@@ -653,7 +653,7 @@ components:
         occupations:
           add:
             - 11-9013
-    ListUpdateDescriptor:
+    ReferenceListUpdate:
       type: object
       properties:
         add:
@@ -664,7 +664,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NamedReference'
-    SkillSearchDescriptor:
+    StringListUpdate:
+      type: object
+      properties:
+        add:
+          type: array
+          items:
+            type: string
+        remove:
+          type: array
+          items:
+            type: string
+    SkillSearch:
       type: object
       properties:
         skillName: 
@@ -717,7 +728,7 @@ components:
           items:
             type: string
             format: uri
-    CollectionUpdateDescriptor:
+    CollectionUpdate:
       type: object
       properties:
         name: 
@@ -725,7 +736,7 @@ components:
         description: 
           type: string
         skills:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
+          $ref: '#/components/schemas/ReferenceListUpdate'
 
     NamedReference:
       type: object

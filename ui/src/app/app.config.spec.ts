@@ -3,6 +3,8 @@ import {getTestBed, TestBed} from "@angular/core/testing"
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing"
 import {IAppConfig} from "./models/app-config.model"
 import {environment} from "../environments/environment"
+import {APP_INITIALIZER} from "@angular/core"
+import {initializeApp} from "./app.module"
 
 describe("AppConfig", () => {
   let injector: TestBed
@@ -12,7 +14,12 @@ describe("AppConfig", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [AppConfig]
+      providers: [
+        AppConfig,
+        { provide: APP_INITIALIZER,
+          useFactory: initializeApp,
+          deps: [AppConfig], multi: true }
+      ]
     })
     injector = getTestBed()
     service = TestBed.inject(AppConfig)

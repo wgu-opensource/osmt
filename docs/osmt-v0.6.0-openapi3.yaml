@@ -1,68 +1,12 @@
 openapi: 3.0.0
 info:
-  version: 0.6.0
+  version: 0.6.0-SNAPSHOT
   title: OSMT API
-  description: Draft API for the Open Skills Management Toolset (MVP)
+  description: API for the Open Skills Management Toolset (Sapphire)
 security:
   - bearerAuth: []
 
 paths:
-  /api/skills/search:
-    post:
-      tags:
-        - Skills
-      summary: Search for skills
-      description: Find Rich Skill Descriptors matching the query
-      parameters:
-        - in: query
-          name: per_page
-          description: maximum number of skills to return per page
-          schema:
-            type: number
-            default: 50
-        - in: query
-          name: page
-          description: page number to return
-          schema:
-            type: number
-            default: 1
-        - in: query
-          name: sort
-          description: column to sort by
-          schema:
-            type: string
-            default: rank-desc
-            enum: ["rank-asc","rank-desc", "name-asc", "name-desc", "category-asc", "category-desc"]
-        - in: query
-          name: q
-          description: generic search query
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SkillSearchDescriptor'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema: 
-                type: array
-                items:
-                  $ref: '#/components/schemas/Skill'
-          headers:
-            Link: 
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
 
   /api/skills:
     get:
@@ -127,7 +71,7 @@ paths:
     post:
       tags:
         - Skills
-      summary: Create skills
+      summary: Create new skills
       description: Define one or more new Rich Skill Descriptors
       requestBody:
         required: true
@@ -136,14 +80,16 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Skill'
+                $ref: '#/components/schemas/SkillUpdate'
       responses:
         '200':
           description: OK
           content:
             application/json:
-              schema: 
-                $ref: '#/components/schemas/Skill'
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Skill'
         '202':
           description: Accepted
           content:
@@ -218,7 +164,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SkillUpdateDescriptor'
+              $ref: '#/components/schemas/SkillUpdate'
       responses:
         '200':
           description: OK
@@ -233,57 +179,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
 
-  /api/collections/search:
-    post:
-      tags:
-        - Collections
-      summary: Search for collections
-      description: Find collections matching the query
-      parameters:
-        - in: query
-          name: per_page
-          description: maximum number of skills to return per page
-          schema:
-            type: number
-            default: 50
-        - in: query
-          name: page
-          description: page number to return
-          schema:
-            type: number
-            default: 1
-        - in: query
-          name: sort
-          description: column to sort by
-          schema:
-            type: string
-            default: rank-desc
-            enum: ["rank-asc","rank-desc", "name-asc", "name-desc"]
-        - in: query
-          name: q
-          description: generic search query
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema: 
-                type: array
-                items:
-                  $ref: '#/components/schemas/Collection'
-          headers:
-            Link: 
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
 
   /api/collections:
     get:
@@ -335,7 +230,7 @@ paths:
     post:
       tags:
         - Collections
-      summary: Create a collection
+      summary: Create new collections
       description: Define a new collection
       requestBody:
         required: true
@@ -344,14 +239,16 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Collection'
+                $ref: '#/components/schemas/CollectionUpdate'
       responses:
         '200':
           description: OK
           content:
             application/json:
-              schema: 
-                $ref: '#/components/schemas/Collection'
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collection'
         '400':
           description: Bad Request
           content:
@@ -411,7 +308,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CollectionUpdateDescriptor'
+              $ref: '#/components/schemas/CollectionUpdate'
       responses:
         '200':
           description: OK
@@ -526,9 +423,6 @@ components:
           type: string
           format: uri
           readOnly: true
-        type:
-          type: '"RichSkillDescriptor"'
-          readOnly: true
         uuid:
           type: string
           format: uuid
@@ -550,59 +444,78 @@ components:
         alignments:
           type: array
           items:
-            type: string
-            format: uri
+            $ref: '#/components/schemas/NamedReference'
+        standards:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
         certifications:
           type: array
           items:
-            type: string
-            format: uri
+            $ref: '#/components/schemas/NamedReference'
         occupations:
           type: array
           items:
-            type: string
-            format: job code
+            $ref: '#/components/schemas/JobCode'
         employers:
           type: array
           items:
-            type: string
-        skillsEmbodied:
-          type: array
-          items:
-            type: string
+            $ref: '#/components/schemas/NamedReference'
         author:
-          type: string
-          format: uri
+          $ref: '#/components/schemas/NamedReference'
 
       example:
         id: https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac
         type: RichSkillDescriptor
-        author: https://osmt.example.com/organization
-        status: published
-        skillName: Document Saving
-        skillStatement: The learner copies and saves documents to their local machine.
-        alignments: 
-          - "https://skillsource.example.com/base-skills/simple-compuhacking"
-        keywords: 
-          - "documents"
-          - "file operations"
-          - "computer basics"
-        category: "Productivity Software"
-        occupations: 
-          - "13-0000"
-          - "13-2000"
-          - "13-2010"
-          - "13-2030"
-          - "13-2040"
-          - "13-2060"
-          - "13-2080"
-    SkillUpdateDescriptor:
+        author: https://example.osmt.wgu.edu/organization
+        category: Business Ethics
+        skillName: "Business Ethics: Responsibility Acceptance"
+        skillStatement: The learner accepts responsibility and repercussions related to ethical behavior.
+        alignments:
+          - id: "https://emsiservices.com/skills/versions/latest/skills/KS120FG6YP8PQYY"
+        keywords:
+          - "Business Ethics"
+          - "Being"
+        standards:
+          - name: "NICE: Investigate - Digital Forensics"
+          - name: "NICE: Protect and Defend - Computer Defense Analysis"
+          - name: "NICE: Protect and Defend - Cyber Defense Infrastructure Support"
+          - name: "NICE: Protect and Defend - Incident Response; NICE: Protect and Defend - Vulnerability Assessment and Management"
+          - name: "NICE: Operate and Maintain - Customer Service and Technical Support"
+          - name: "NICE: Operate and Maintain - Network Services"
+          - name: "NICE: Operate and Maintain - System Administration"
+          - name: "NSA-CAE KU: Networking"
+          - name: "NSA-CAE KU: Wireless Security"
+          - name: "NSA-CAE KU: HCI/Usability Security"
+          - name: "NSA-CAE KU: Wireless Security"
+        certifications:
+          - name: CCNA Security
+          - name: CCIE Security
+          - name: CCNP Security
+        occupations:
+          - code: 11-3031.00
+          - code: 11-3031.02
+          - code: 13-1021.00
+          - code: 13-1022.00
+          - code: 13-1023.00
+          - code: 13-1111.00
+          - code: 13-1161.00
+          - code: 13-2011.01
+          - code: 13-2041.00
+          - code: 15-2041.00
+          - code: 19-3011.00
+          - code: 19-4061.00
+          - code: 15-1122.00
+        employer:
+          - name: Sample Company
+
+    SkillUpdate:
       type: object
       properties:
         skillUuid:  
           type: string
           format: uuid
-        skillName: 
+        skillName:
           type: string
         skillStatement:
           type: string
@@ -612,84 +525,27 @@ components:
         category:
           type: string
         keywords:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
+          $ref: '#/components/schemas/StringListUpdate'
         alignments:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
+          $ref: '#/components/schemas/ReferenceListUpdate'
         certifications:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
+          $ref: '#/components/schemas/ReferenceListUpdate'
         occupations:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
+          $ref: '#/components/schemas/ReferenceListUpdate'
         employers:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
-        skillsEmbodied:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
+          $ref: '#/components/schemas/ReferenceListUpdate'
         author:
-          type: string
-          format: uri
+          $ref: '#/components/schemas/NamedReference'
       example:
         skillName: "New Skill Name"
-        keywords: 
-          - operation: add
-            name: "Added Keyword"
-          - operation: remove
-            name: "Removed Keyword"
-        occupation:
-          - operation: add
-            name: "11-9013"
-    ListUpdateDescriptor:
-      type: object
-      properties:
-        add:
-          type: array
-          items: 
-            type: string
-        remove:
-          type: array
-          items: 
-            type: string
-    SkillSearchDescriptor:
-      type: object
-      properties:
-        skillName: 
-          type: string
-        skillStatement:
-          type: string
-        status:
-          type: string
-          enum: ["draft","published","archived"]
-          default: draft
-        category:
-          type: string
         keywords:
-          type: array
-          items: 
-            type: string
-        alignments:
-          type: array
-          items:
-            type: string
-            format: uri
-        certifications:
-          type: array
-          items:
-            type: string
-            format: uri
+          add:
+            - "Added Keyword"
+          remove:
+            - "Removed Keyword"
         occupations:
-          type: array
-          items:
-            type: string
-            format: job code
-        employers:
-          type: array
-          items:
-            type: string
-        skillsEmbodied:
-          type: array
-          items:
-            type: string
-        author:
-          type: string
-          format: uri
+          add:
+            - 11-9013
 
     Collection:
       type: object
@@ -705,7 +561,7 @@ components:
           items:
             type: string
             format: uri
-    CollectionUpdateDescriptor:
+    CollectionUpdate:
       type: object
       properties:
         name: 
@@ -713,7 +569,56 @@ components:
         description: 
           type: string
         skills:
-          $ref: '#/components/schemas/ListUpdateDescriptor'
+          $ref: '#/components/schemas/ReferenceListUpdate'
+
+    NamedReference:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+        name:
+          type: string
+
+    ReferenceListUpdate:
+      type: object
+      properties:
+        add:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+        remove:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+
+    StringListUpdate:
+      type: object
+      properties:
+        add:
+          type: array
+          items:
+            type: string
+        remove:
+          type: array
+          items:
+            type: string
+
+    JobCode:
+      type: object
+      properties:
+        code:
+          type: string
+        id:
+          type: string
+          format: uri
+        name:
+          type: string
+        framework:
+          type: string
+      required:
+        - code
+
     TaskResult:
       type: object
       properties:
@@ -734,6 +639,7 @@ components:
         uuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         content-type: "text/csv"
         status: "Processing"
+
     ErrorResult:
       type: object
       properties:

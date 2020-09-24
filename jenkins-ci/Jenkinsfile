@@ -1,8 +1,26 @@
 pipeline {
   agent { label 'master' }
   environment {
-    gitRepository = 'ssh://git@github.com:concentricsky/wgu-osmt.git'
-    projectName = 'osmt'
+
+    uniqueId = "${env.CHANGE_ID}-${env.BUILD_NUMBER}"
+    
+    clientContainer = "client-test-${uniqueId}"
+    apiContainer    = "api-test-${uniqueId}"
+
+    clientDockerfileLocation  = "jenkins-ci/Dockerfile.front"
+    apiDockerfileLocation     = "jenkins-ci/Dockerfile.back"
+
+    apiCommitContext    = "Back end"
+    clientCommitContext = "Front end"
+
+    // github commit status messages
+    buildStarted = "Building..."
+    buildSuccess = "Build success!  Tests not yet started..."
+    buildFailure = "Build failed!"
+
+    testStarted = "Running tests..."
+    testSuccess = "All tests passed!"
+    testFailure = "Test failures!"
   }
 
   stages {
@@ -14,21 +32,86 @@ pipeline {
     }
 
     stage("Build") {
-      steps {
-        sh "docker build . -t client-test -f jenkins-ci/Dockerfile.front"
+      parallel {        
+        stage("Front end") {
+          steps {
+            githubNotify context: clientCommitContext, description: buildStarted,  status: 'PENDING'
+            sh "docker build . -t ${clientContainer} -f ${clientDockerfileLocation}"
+          }
+
+          post {
+            success {
+              githubNotify context: clientCommitContext, description: buildSuccess,  status: 'PENDING'
+            }
+
+            failure {
+              githubNotify context: clientCommitContext, description: buildFailure,  status: 'FAILURE'
+            }
+          }
+        }
+
+        stage("Back end") {
+          steps {
+            githubNotify context: apiCommitContext, description: buildStarted,  status: 'PENDING'
+            sh "docker build . -t ${apiContainer} -f ${apiDockerfileLocation}"
+          }
+
+          post {
+            success {
+              githubNotify context: apiCommitContext, description: buildSuccess,  status: 'PENDING'
+            }
+
+            failure {
+              githubNotify context: apiCommitContext, description: buildFailure,  status: 'FAILURE'
+            }
+          }
+        }
       }
     }
 
-    stage('Front end tests') {
-      steps {
-        sh "docker run --rm client-test"
+    stage("Tests") {
+      parallel {
+        stage("Front end") {
+           steps {
+            githubNotify context: clientCommitContext, description: testStarted,  status: 'PENDING'
+            sh "docker run --rm ${clientContainer}"
+          }
+
+          post {
+            success {
+              githubNotify context: clientCommitContext, description: testSuccess, status: 'SUCCESS'
+            }
+
+            failure {
+              githubNotify context: clientCommitContext, description: testFailure, status: 'FAILURE'
+            }
+          }
+        }
+        
+        stage("Back end") {
+          steps {
+            githubNotify context: apiCommitContext, description: testStarted,  status: 'PENDING'
+            sh "docker run --rm ${apiContainer}"
+          }
+
+          post {
+            success {
+              githubNotify context: apiCommitContext, description: testSuccess, status: 'SUCCESS'
+            }
+
+            failure {
+              githubNotify context: apiCommitContext, description: testFailure, status: 'FAILURE'
+            }
+          }
+        }
       }
     }
   }
-  
+
   post {
     always {
-      sh "docker rmi client-test"
+      sh "docker rmi ${clientContainer}"
+      sh "docker rmi ${apiContainer}"
     }
   }
 }

@@ -12,6 +12,7 @@ interface JobCodeRepository {
     fun findAll(): List<JobCode>
     fun findById(id: Long): JobCode?
     fun findByCode(code: String): JobCode?
+    fun findByCodeOrCreate(code: String, framework: String? = null): JobCode
     fun create(code: String, framework: String? = null): JobCodeDao
 }
 
@@ -32,6 +33,11 @@ class JobCodeRepositoryImpl : JobCodeRepository {
         return transaction {
             table.select { table.code eq code }.singleOrNull()?.let { dao.wrapRow(it).toModel() }
         }
+    }
+
+    override fun findByCodeOrCreate(code: String, framework: String?): JobCode {
+        val existing = findByCode(code)
+        return existing ?: create(code, framework).toModel()
     }
 
     override fun create(code: String, framework: String?): JobCodeDao {

@@ -3,7 +3,9 @@ package edu.wgu.osmt.richskill
 import com.fasterxml.jackson.annotation.JsonView
 import edu.wgu.osmt.api.FormValidationException
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordDao
+import edu.wgu.osmt.keyword.KeywordRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -16,6 +18,8 @@ import javax.servlet.http.HttpServletRequest
 @RequestMapping("/api/skills")
 class RichSkillApi @Autowired constructor(
     val richSkillRepository: RichSkillRepository,
+    val keywordRepository: KeywordRepository,
+    val jobCodeRepository: JobCodeRepository,
     val appConfig: AppConfig
     //val esRichSkillRepository: EsRichSkillRepository,
 ) {
@@ -32,20 +36,20 @@ class RichSkillApi @Autowired constructor(
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun createSkills(@RequestBody skillUpdateDescriptors: List<SkillUpdateDescriptor>,
+    fun createSkills(@RequestBody rsdUpdates: List<RsdUpdateDTO>,
                      @AuthenticationPrincipal user: OAuth2User?): List<RichSkillDTO>
     {
         // pre validate all rows
-        val allErrors = skillUpdateDescriptors.mapIndexed { i, descriptor ->
-            descriptor.validateForCreation(i)
+        val allErrors = rsdUpdates.mapIndexed { i, updateDto ->
+            updateDto.validateForCreation(i)
         }.filterNotNull().flatten()
         if (allErrors.isNotEmpty()) {
             throw FormValidationException("Invalid SkillUpdateDescriptor", allErrors)
         }
 
         // create records
-        val newSkills = skillUpdateDescriptors.map { update ->
-            richSkillRepository.createFromUpdateObject(update.asRsdUpdateObject(), user)
+        val newSkills = rsdUpdates.map { update ->
+            richSkillRepository.createFromUpdateObject(update.asRsdUpdateObject(keywordRepository, jobCodeRepository), user)
         }
         return newSkills.filterNotNull().map { RichSkillDTO(it, appConfig.baseUrl) }
     }

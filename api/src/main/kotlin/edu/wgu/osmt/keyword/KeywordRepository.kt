@@ -17,6 +17,11 @@ interface KeywordRepository {
     fun findAll(): List<Keyword>
     fun findById(id: Long): Keyword?
     fun findByType(type: KeywordTypeEnum): List<Keyword>
+    fun findByValueOrUri(
+        type: KeywordTypeEnum,
+        value: String? = null,
+        uri: String? = null
+    ): KeywordDao?
     fun findOrCreate(
         type: KeywordTypeEnum,
         value: String? = null,
@@ -58,7 +63,12 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
     }
 
     override fun findOrCreate(type: KeywordTypeEnum, value: String?, uri: String?): Keyword {
-        val existing: KeywordDao? = transaction {
+        val existing = findByValueOrUri(type, value, uri)
+        return existing?.toModel() ?: create(type, value, uri).toModel()
+    }
+
+    override fun findByValueOrUri(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao? {
+        return transaction {
             val condition = when {
                 value != null && uri != null ->
                     (table.keyword_type_enum eq type) and (table.value eq value) and (table.uri eq uri)
@@ -74,7 +84,6 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
                 query?.let { dao.wrapRow(it) }
             }
         }
-        return existing?.toModel() ?: create(type, value, uri).toModel()
     }
 
     override fun create(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao {

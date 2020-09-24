@@ -7,62 +7,6 @@ security:
   - bearerAuth: []
 
 paths:
-  /api/skills/search:
-    post:
-      tags:
-        - Skills
-      summary: Search for skills
-      description: Find Rich Skill Descriptors matching the query
-      parameters:
-        - in: query
-          name: per_page
-          description: maximum number of skills to return per page
-          schema:
-            type: number
-            default: 50
-        - in: query
-          name: page
-          description: page number to return
-          schema:
-            type: number
-            default: 1
-        - in: query
-          name: sort
-          description: column to sort by
-          schema:
-            type: string
-            default: rank-desc
-            enum: ["rank-asc","rank-desc", "name-asc", "name-desc", "category-asc", "category-desc"]
-        - in: query
-          name: q
-          description: generic search query
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SkillSearch'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema: 
-                type: array
-                items:
-                  $ref: '#/components/schemas/Skill'
-          headers:
-            Link: 
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
 
   /api/skills:
     get:
@@ -235,57 +179,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
 
-  /api/collections/search:
-    post:
-      tags:
-        - Collections
-      summary: Search for collections
-      description: Find collections matching the query
-      parameters:
-        - in: query
-          name: per_page
-          description: maximum number of skills to return per page
-          schema:
-            type: number
-            default: 50
-        - in: query
-          name: page
-          description: page number to return
-          schema:
-            type: number
-            default: 1
-        - in: query
-          name: sort
-          description: column to sort by
-          schema:
-            type: string
-            default: rank-desc
-            enum: ["rank-asc","rank-desc", "name-asc", "name-desc"]
-        - in: query
-          name: q
-          description: generic search query
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema: 
-                type: array
-                items:
-                  $ref: '#/components/schemas/Collection'
-          headers:
-            Link: 
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
 
   /api/collections:
     get:
@@ -653,66 +546,6 @@ components:
         occupations:
           add:
             - 11-9013
-    ReferenceListUpdate:
-      type: object
-      properties:
-        add:
-          type: array
-          items:
-            $ref: '#/components/schemas/NamedReference'
-        remove:
-          type: array
-          items:
-            $ref: '#/components/schemas/NamedReference'
-    StringListUpdate:
-      type: object
-      properties:
-        add:
-          type: array
-          items:
-            type: string
-        remove:
-          type: array
-          items:
-            type: string
-    SkillSearch:
-      type: object
-      properties:
-        skillName: 
-          type: string
-        skillStatement:
-          type: string
-        status:
-          type: string
-          enum: ["draft","published","archived"]
-          default: draft
-        category:
-          type: string
-        keywords:
-          type: array
-          items: 
-            type: string
-        alignments:
-          type: array
-          items:
-            type: string
-            format: uri
-        certifications:
-          type: array
-          items:
-            type: string
-            format: uri
-        occupations:
-          type: array
-          items:
-            type: string
-            format: job code
-        employers:
-          type: array
-          items:
-            type: string
-        author:
-          $ref: '#/components/schemas/NamedReference'
 
     Collection:
       type: object
@@ -746,6 +579,30 @@ components:
           format: uri
         name:
           type: string
+
+    ReferenceListUpdate:
+      type: object
+      properties:
+        add:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+        remove:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+
+    StringListUpdate:
+      type: object
+      properties:
+        add:
+          type: array
+          items:
+            type: string
+        remove:
+          type: array
+          items:
+            type: string
 
     JobCode:
       type: object
@@ -782,6 +639,7 @@ components:
         uuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         content-type: "text/csv"
         status: "Processing"
+
     ErrorResult:
       type: object
       properties:

@@ -12,7 +12,8 @@ class TaskTest : ApplicationTest() {
     @Autowired
     lateinit var tms: TaskMessageService
 
-    @Test
+    // TODO Disabled until the new testcontainer infrastructure is integrated into CI job
+    // @Test
     fun `can serialize and deserialize a task into task hash table`() {
         val csvTask = CsvTask()
         tms.opsForHash.put(TaskMessageService.taskHashTable, csvTask.uuid, csvTask)

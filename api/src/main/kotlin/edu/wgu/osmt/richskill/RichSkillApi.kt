@@ -39,20 +39,7 @@ class RichSkillApi @Autowired constructor(
     fun createSkills(@RequestBody rsdUpdates: List<RsdUpdateDTO>,
                      @AuthenticationPrincipal user: OAuth2User?): List<RichSkillDTO>
     {
-        // pre validate all rows
-        val allErrors = rsdUpdates.mapIndexed { i, updateDto ->
-            updateDto.validateForCreation(i)
-        }.filterNotNull().flatten()
-        if (allErrors.isNotEmpty()) {
-            throw FormValidationException("Invalid SkillUpdateDescriptor", allErrors)
-        }
-
-        // create records
-        val newSkills = rsdUpdates.map { update ->
-            val rsdUpdateObject = richSkillRepository.rsdUpdateFromApi(update)
-            richSkillRepository.createFromUpdateObject(rsdUpdateObject, user)
-        }
-        return newSkills.filterNotNull().map { RichSkillDTO(it, appConfig.baseUrl) }
+        return richSkillRepository.createFromApi(rsdUpdates, user).map { RichSkillDTO(it, appConfig.baseUrl) }
     }
 
     @GetMapping("/{uuid}", produces = [MediaType.APPLICATION_JSON_VALUE])

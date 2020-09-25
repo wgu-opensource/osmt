@@ -1,10 +1,12 @@
 package edu.wgu.osmt.richskill
 
 import com.google.gson.Gson
+import edu.wgu.osmt.api.FormValidationException
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.collection.CollectionSkills
+import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.jobcode.JobCode
@@ -35,6 +37,9 @@ interface RichSkillRepository {
         author: Keyword?,
         user: OAuth2User?
     ): RichSkillDescriptorDao
+
+    fun createFromApi(skillUpdates: List<RsdUpdateDTO>, user: OAuth2User?): List<RichSkillDescriptor>
+
     fun createFromUpdateObject(updateObject: RsdUpdateObject, user: OAuth2User?): RichSkillDescriptor?
     fun rsdUpdateFromApi(skillUpdate: RsdUpdateDTO): RsdUpdateObject
 }
@@ -43,7 +48,8 @@ interface RichSkillRepository {
 class RichSkillRepositoryImpl @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
     val jobCodeRepository: JobCodeRepository,
-    val keywordRepository: KeywordRepository
+    val keywordRepository: KeywordRepository,
+    val appConfig: AppConfig
 ) :
     RichSkillRepository {
     override val dao = RichSkillDescriptorDao.Companion
@@ -175,6 +181,23 @@ class RichSkillRepositoryImpl @Autowired constructor(
             }
         }
         return newRichSkill
+    }
+
+    override fun createFromApi(skillUpdates: List<RsdUpdateDTO>, user: OAuth2User?): List<RichSkillDescriptor> {
+        // pre validate all rows
+        val allErrors = skillUpdates.mapIndexed { i, updateDto ->
+            updateDto.validateForCreation(i)
+        }.filterNotNull().flatten()
+        if (allErrors.isNotEmpty()) {
+            throw FormValidationException("Invalid SkillUpdateDescriptor", allErrors)
+        }
+
+        // create records
+        val newSkills = skillUpdates.map { update ->
+            val rsdUpdateObject = rsdUpdateFromApi(update)
+            createFromUpdateObject(rsdUpdateObject, user)
+        }
+        return newSkills.filterNotNull()
     }
 
     override fun rsdUpdateFromApi(skillUpdate: RsdUpdateDTO): RsdUpdateObject {

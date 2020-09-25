@@ -68,10 +68,10 @@ export class RichSkillFormComponent implements OnInit {
 
     if (this.skillUuid) {
       console.log("Updating record", updateObject)
-      // this.skillSaved = this.richSkillService.updateSkill(this.skillUuid, updateObject)
+      this.skillSaved = this.richSkillService.updateSkill(this.skillUuid, updateObject)
     } else {
       console.log("creating record", updateObject)
-      // this.skillSaved = this.richSkillService.createSkill(updateObject)
+      this.skillSaved = this.richSkillService.createSkill(updateObject)
     }
   }
 
@@ -85,5 +85,9 @@ export class RichSkillFormComponent implements OnInit {
       category: skill.category?.name ? skill.category.name : "",
       keywords: ""
     })
+  }
+
+  handleFormErrors(errors: any): void {
+    console.log("component got errors", errors)
   }
 }

@@ -49,7 +49,12 @@
 
     <p>valid: {{skillForm.valid}}</p>
     <p>dirty: {{skillForm.dirty}}</p>
-    <input [disabled]="!skillForm.dirty || !skillForm.valid" type="submit" value="Save"/>
+
+    <app-formfield-submit
+      [formGroup]="skillForm"
+      [observables]="[skillSaved]"
+      (errorsOccurred)="handleFormErrors($event)"
+    ></app-formfield-submit>
   </form>
 </div>
 

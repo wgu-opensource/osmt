@@ -5,10 +5,8 @@ pipeline {
     uniqueId = "${env.CHANGE_ID}-${env.BUILD_NUMBER}"
     
     clientContainer = "client-test-${uniqueId}"
-    apiContainer    = "api-test-${uniqueId}"
 
     clientDockerfileLocation  = "jenkins-ci/Dockerfile.front"
-    apiDockerfileLocation     = "jenkins-ci/Dockerfile.back"
 
     apiCommitContext    = "Back end"
     clientCommitContext = "Front end"
@@ -53,7 +51,7 @@ pipeline {
         stage("Back end") {
           steps {
             githubNotify context: apiCommitContext, description: buildStarted,  status: 'PENDING'
-            sh "docker build . -t ${apiContainer} -f ${apiDockerfileLocation}"
+            sh "mvn clean package -Dmaven.test.skip.exec -pl api"
           }
 
           post {
@@ -91,7 +89,7 @@ pipeline {
         stage("Back end") {
           steps {
             githubNotify context: apiCommitContext, description: testStarted,  status: 'PENDING'
-            sh "docker run --rm ${apiContainer}"
+            sh "mvn -pl api test"
           }
 
           post {
@@ -111,7 +109,6 @@ pipeline {
   post {
     always {
       sh "docker rmi ${clientContainer}"
-      sh "docker rmi ${apiContainer}"
     }
   }
 }

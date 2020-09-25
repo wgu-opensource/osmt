@@ -36,7 +36,7 @@ class RedisConfig {
         template.hashKeySerializer = stringSerializer
         template.valueSerializer = jackson2JsonRedisSerializer
         template.hashValueSerializer = jackson2JsonRedisSerializer
-        template.setEnableTransactionSupport(true)
+        template.setEnableTransactionSupport(false)
         template.afterPropertiesSet()
         return template
     }

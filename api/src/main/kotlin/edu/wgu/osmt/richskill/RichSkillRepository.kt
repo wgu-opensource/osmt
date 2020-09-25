@@ -13,7 +13,6 @@ import edu.wgu.osmt.keyword.KeywordRepository
 import org.jetbrains.exposed.sql.SizedCollection
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.update
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -33,10 +32,7 @@ interface RichSkillRepository {
         statement: String,
         author: KeywordDao?,
         user: String,
-        category: KeywordDao?,
-        keywords: List<KeywordDao>? = null,
-        collections: List<CollectionDao>? = null,
-        jobCodes: List<JobCodeDao>? = null
+        category: KeywordDao?
     ): RichSkillDescriptorDao
 }
 
@@ -69,15 +65,16 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
 
         changes?.let { it ->
-            auditLogRepository.insert(
-                AuditLog.fromAtomicOp(
-                    table,
-                    updateObject.id,
-                    it.toString(),
-                    user,
-                    AuditOperationType.Update
+            if (it.isNotEmpty())
+                auditLogRepository.insert(
+                    AuditLog.fromAtomicOp(
+                        table,
+                        updateObject.id,
+                        it.toString(),
+                        user,
+                        AuditOperationType.Update
+                    )
                 )
-            )
         }
 
         table.updateFromObject(updateObject)
@@ -97,10 +94,10 @@ class RichSkillRepositoryImpl @Autowired constructor(
         // update jobcodes
         updateObject.jobCodes?.let {
             it.add?.forEach { jobCode ->
-                richSkillJobCodeTable.create(richSkillId = updateObject.id, jobCodeId = jobCode.id!!)
+                richSkillJobCodeTable.create(richSkillId = updateObject.id, jobCodeId = jobCode.id.value!!)
             }
             it.remove?.forEach { jobCode ->
-                richSkillJobCodeTable.delete(richSkillId = updateObject.id, jobCodeId = jobCode.id!!)
+                richSkillJobCodeTable.delete(richSkillId = updateObject.id, jobCodeId = jobCode.id.value!!)
             }
         }
 
@@ -108,12 +105,12 @@ class RichSkillRepositoryImpl @Autowired constructor(
         updateObject.collections?.let {
             it.add?.forEach { collection ->
                 richSkillCollectionTable.create(
-                    collectionId = collection.id!!,
+                    collectionId = collection.id.value!!,
                     skillId = updateObject.id
                 )
             }
             it.remove?.forEach { collection ->
-                richSkillCollectionTable.delete(collectionId = collection.id!!, skillId = updateObject.id)
+                richSkillCollectionTable.delete(collectionId = collection.id.value!!, skillId = updateObject.id)
             }
         }
 
@@ -125,15 +122,13 @@ class RichSkillRepositoryImpl @Autowired constructor(
         return query?.let { dao.wrapRow(it) }
     }
 
+    // TODO this might take an "update" object and we can reuse the audit log serializing from that
     override fun create(
         name: String,
         statement: String,
         author: KeywordDao?,
         user: String,
-        category: KeywordDao?,
-        keywords: List<KeywordDao>?,
-        collections: List<CollectionDao>?,
-        jobCodes: List<JobCodeDao>?
+        category: KeywordDao?
     ): RichSkillDescriptorDao {
         val authorKeyword: KeywordDao? = author ?: keywordRepository.getDefaultAuthor()
 
@@ -145,17 +140,6 @@ class RichSkillRepositoryImpl @Autowired constructor(
             this.statement = statement
             this.author = authorKeyword
             this.category = category
-        }
-
-        // create the relationships between entities
-        keywords?.let {
-            newRsd.keywords = SizedCollection(it)
-        }
-        collections?.let {
-            newRsd.collections = SizedCollection(it)
-        }
-        jobCodes?.let {
-            newRsd.jobCodes = SizedCollection(it)
         }
 
         auditLogRepository.insert(

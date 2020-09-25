@@ -182,11 +182,15 @@ class BatchImportConsoleApplication : CommandLineRunner {
                     statement = row.skillStatement!!,
                     author = author,
                     user = user,
-                    category = category,
-                    keywords = all_keywords,
-                    collections = collections,
-                    jobCodes = occupations
+                    category = category
                 )
+
+                richSkillRepository.update(RsdUpdateObject(
+                    id = newSkill.id.value,
+                    keywords = all_keywords?.let { ListFieldUpdate(add = it) },
+                    jobCodes = occupations?.let { ListFieldUpdate(add = it) },
+                    collections = collections?.let {ListFieldUpdate(add = it)}
+                ), user)
                 LOG.info("created skill '${row.skillName!!}'")
             }
         }

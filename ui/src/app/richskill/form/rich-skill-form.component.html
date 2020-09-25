@@ -1,3 +1,5 @@
+<ng-template [appLoadingObservables]="[skillLoaded]">
+
 <div class="m-skillBackground">
   <h2 class="t-type-heading2 t-verticalSpacing-medium">
     <div class="l-flex l-flex-alignCenter">
@@ -5,7 +7,7 @@
         <use xlink:href="/images/svg-defs.svg#icon-doc"></use>
       </svg>
       <span>
-        Create Rich Skill Descriptor
+        {{pageTitle()}}
       </span>
     </div>
   </h2>
@@ -48,3 +50,5 @@
     <input [disabled]="!skillForm.valid" type="submit" value="Save"/>
   </form>
 </div>
+
+</ng-template>

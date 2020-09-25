@@ -12,6 +12,8 @@ import {ReactiveFormsModule} from "@angular/forms"
 import {FormField} from "./form/form-field.component";
 import {FormFieldText} from "./form/form-field-text.component";
 import {FormFieldTextArea} from "./form/form-field-textarea.component";
+import {LoadingObservablesDirective} from "./loading/loading-observables.directive";
+import {LoadingComponent} from "./loading/loading.component";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -26,7 +28,9 @@ export function initializeApp(appConfig: AppConfig): () => void {
     RichSkillFormComponent,
     FormField,
     FormFieldText,
-    FormFieldTextArea
+    FormFieldTextArea,
+    LoadingComponent,
+    LoadingObservablesDirective,
   ],
   imports: [
     BrowserModule,

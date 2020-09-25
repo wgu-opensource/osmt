@@ -1,5 +1,6 @@
 package edu.wgu.osmt.collection
 
+import edu.wgu.osmt.db.PublishStatusUpdate
 import edu.wgu.osmt.db.TableWithUpdateMapper
 import edu.wgu.osmt.keyword.KeywordTable
 import edu.wgu.osmt.richskill.RichSkillDescriptorTable
@@ -8,12 +9,15 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.`java-time`.datetime
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import java.time.LocalDateTime
 
 
-object CollectionTable: TableWithUpdateMapper<CollectionUpdateObject>, LongIdTable("Collection") {
+object CollectionTable: TableWithUpdateMapper<CollectionUpdateObject>, PublishStatusUpdate<CollectionUpdateObject>, LongIdTable("Collection") {
     override val table: LongIdTable = this
     override val creationDate = datetime("creationDate")
     override val updateDate = datetime("updateDate")
+    override val archiveDate: Column<LocalDateTime?> = datetime("archiveDate").nullable()
+    override val publishDate: Column<LocalDateTime?> = datetime("publishDate").nullable()
     val uuid = varchar("uuid", 36).uniqueIndex()
     val name = text("name")
     val author = reference(
@@ -27,7 +31,8 @@ object CollectionTable: TableWithUpdateMapper<CollectionUpdateObject>, LongIdTab
         updateBuilder: UpdateBuilder<Number>,
         updateObject: CollectionUpdateObject
     ) {
-        super.updateBuilderApplyFromUpdateObject(updateBuilder, updateObject)
+        super<TableWithUpdateMapper>.updateBuilderApplyFromUpdateObject(updateBuilder, updateObject)
+        super<PublishStatusUpdate>.updateBuilderApplyFromUpdateObject(updateBuilder, updateObject)
         updateObject.name?.let { updateBuilder[name] = it }
         updateObject.author?.let {
             if (it.t != null) {

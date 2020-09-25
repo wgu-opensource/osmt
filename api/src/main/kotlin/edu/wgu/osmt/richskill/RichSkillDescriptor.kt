@@ -12,6 +12,8 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import org.valiktor.functions.validate
 import java.util.*
+import edu.wgu.osmt.collection.Collection
+import org.valiktor.functions.isNotEqualTo
 
 @Document(indexName = "richskillrepository", createIndex = true)
 data class RichSkillDescriptor(
@@ -21,12 +23,15 @@ data class RichSkillDescriptor(
     val uuid: UUID,
     val name: String,
     val statement: String,
-    val publishStatus: PublishStatus,
     val jobCodes: List<JobCode> = listOf(),
     private val keywords: List<Keyword> = listOf(),
     val category: Keyword? = null,
-    val author: Keyword? = null
-) : DatabaseData, HasUpdateDate {
+    val author: Keyword? = null,
+    override val archiveDate: LocalDateTime? = null,
+    override val publishDate: LocalDateTime? = null
+) : DatabaseData, HasUpdateDate, PublishStatusDetails {
+
+    var collections: List<Collection> = listOf()
 
     // Keyword collections
     val certifications: List<Keyword>
@@ -44,6 +49,8 @@ data class RichSkillDescriptor(
     val employers: List<Keyword>
         get() = this.keywords.filter { it.type == KeywordTypeEnum.Employer }
 
+    fun canonicalUrl(baseUrl:String): String = "$baseUrl/api/skills/${uuid}"
+
     companion object {
         fun create(name: String, statement: String): RichSkillDescriptor {
             val now = LocalDateTime.now(ZoneOffset.UTC)
@@ -53,8 +60,7 @@ data class RichSkillDescriptor(
                 name = name,
                 statement = statement,
                 creationDate = now,
-                updateDate = now,
-                publishStatus = PublishStatus.Unpublished
+                updateDate = now
             )
         }
     }
@@ -67,8 +73,10 @@ data class RsdUpdateObject(
     val author: NullableFieldUpdate<Keyword>? = null,
     val category: NullableFieldUpdate<Keyword>? = null,
     val keywords: ListFieldUpdate<Keyword>? = null,
-    val jobCodes: ListFieldUpdate<JobCode>? = null
-) : UpdateObject<RichSkillDescriptorDao> {
+    val jobCodes: ListFieldUpdate<JobCode>? = null,
+    val collections: ListFieldUpdate<Collection>? = null,
+    override val publishStatus: PublishStatus? = null
+) : UpdateObject<RichSkillDescriptorDao>, HasPublishStatus {
 
     init {
         validate(this) {
@@ -82,6 +90,7 @@ data class RsdUpdateObject(
                     validate(Keyword::type).isEqualTo(KeywordTypeEnum.Author)
                 }
             }
+            validate(RsdUpdateObject::publishStatus).isNotEqualTo(PublishStatus.Unpublished)
         }
     }
 
@@ -113,8 +122,14 @@ data class RsdUpdateObject(
         }
     }
 
+    fun comparePublishStatus(that: RichSkillDescriptorDao): JSONObject?{
+        return publishStatus?.let{
+            jsonUpdateStatement(::publishStatus.name, that.publishStatus().name, it.name)
+        }
+    }
+
     override val comparisonList: List<(t: RichSkillDescriptorDao) -> JSONObject?> =
-        listOf(::compareName, ::compareStatement, ::compareCategory, ::compareAuthor)
+        listOf(::compareName, ::compareStatement, ::compareCategory, ::compareAuthor, ::comparePublishStatus)
 }
 
 

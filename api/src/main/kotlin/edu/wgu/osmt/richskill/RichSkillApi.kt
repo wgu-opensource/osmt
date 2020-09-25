@@ -22,7 +22,6 @@ class RichSkillApi @Autowired constructor(
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun allSkills(request: HttpServletRequest): List<RichSkillDTO> {
-        println(request.getHeader("Accept"))
         return richSkillRepository.findAll().map {
             RichSkillDTO(it, appConfig.baseUrl)
         }

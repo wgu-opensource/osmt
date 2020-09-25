@@ -1,16 +1,21 @@
 package edu.wgu.osmt.richskill
 
+import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.csv.CsvColumn
 import edu.wgu.osmt.csv.CsvResource
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeBreakout
 
-object RichSkillCsvExport: CsvResource<RichSkillDescriptor>("RichSkillCsvExport") {
+class RichSkillCsvExport(
+    private val appConfig: AppConfig
+): CsvResource<RichSkillDescriptor>("RichSkillCsvExport") {
     val listDelimeter = "; "
 
     override fun columnTranslations(): Array<CsvColumn<RichSkillDescriptor>> {
         return arrayOf(
-                CsvColumn("Collection") { "" }, // TODO to be implemented
+            return arrayOf(
+                CsvColumn("Canonical URL") { it.canonicalUrl(appConfig.baseUrl) },
+                CsvColumn("Collection") { it.collections.map {it.name}.joinToString(listDelimeter) },
                 CsvColumn("Skill Name") { it.name },
                 CsvColumn("Skill Category") { it.category?.value ?: "" },
                 CsvColumn("Contextualized Skill Statement") { it.statement },
@@ -24,6 +29,7 @@ object RichSkillCsvExport: CsvResource<RichSkillDescriptor>("RichSkillCsvExport"
                 CsvColumn("Certifications") { it.certifications.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },
                 CsvColumn("Alignment Title") { it.alignments.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },
                 CsvColumn("Alignment") { it.alignments.map { keyword -> keyword.uri ?: "" }.joinToString(listDelimeter) }
+            )
         )
     }
 
@@ -38,4 +44,4 @@ object RichSkillCsvExport: CsvResource<RichSkillDescriptor>("RichSkillCsvExport"
             .distinct()
             .joinToString(listDelimeter)
 
-}
+    }

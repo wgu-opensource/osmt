@@ -9,7 +9,8 @@
     "build-prod": "./node_modules/@angular/cli/bin/ng build --prod",
     "test": "./node_modules/@angular/cli/bin/ng test",
     "lint": "./node_modules/@angular/cli/bin/ng lint",
-    "e2e": "./node_modules/@angular/cli/bin/ng e2e"
+    "e2e": "./node_modules/@angular/cli/bin/ng e2e",
+    "ci-test": "./node_modules/@angular/cli/bin/ng test --no-watch --no-progress --karma-config=karma.ci.conf.js"
   },
   "private": true,
   "dependencies": {
@@ -21,6 +22,8 @@
     "@angular/platform-browser": "~10.0.9",
     "@angular/platform-browser-dynamic": "~10.0.9",
     "@angular/router": "~10.0.9",
+    "@types/file-saver": "^2.0.1",
+    "file-saver": "^2.0.2",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"

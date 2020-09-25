@@ -22,25 +22,20 @@ class JobCodeRepositoryImpl : JobCodeRepository {
     val dao = JobCodeDao.Companion
     override val table = JobCodeTable
 
-    override fun findAll() = transaction {
-        dao.all().map { it.toModel() }
+    override fun findAll() = dao.all().map { it.toModel()
     }
 
-    override fun findById(id: Long): JobCodeDao? {
-        return dao.findById(id)
-    }
+    override fun findById(id: Long): JobCodeDao? = dao.findById(id)
 
     override fun findByCode(code: String): JobCodeDao? {
         return table.select { table.code eq code }.singleOrNull()?.let { dao.wrapRow(it) }
     }
 
     override fun create(code: String, framework: String?): JobCodeDao {
-        return transaction {
-            dao.new {
-                creationDate = LocalDateTime.now(ZoneOffset.UTC)
-                this.code = code
-                this.framework = framework
-            }
+        return dao.new {
+            creationDate = LocalDateTime.now(ZoneOffset.UTC)
+            this.code = code
+            this.framework = framework
         }
     }
 }

@@ -49,35 +49,32 @@ class CollectionRepositoryImpl @Autowired constructor(val keywordRepository: Key
     }
 
     override fun create(name: String, author: KeywordDao?): CollectionDao {
-       return transaction {
-           val authorKeyword: KeywordDao? = author ?: keywordRepository.getDefaultAuthor()
-           dao.new {
-               this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
-               this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
-               this.updateDate = this.creationDate
-               this.uuid = UUID.randomUUID().toString()
-               this.name = name
-               this.author = authorKeyword
-           }
+       val authorKeyword: KeywordDao? = author ?: keywordRepository.getDefaultAuthor()
+       return dao.new {
+           this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
+           this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
+           this.updateDate = this.creationDate
+           this.uuid = UUID.randomUUID().toString()
+           this.name = name
+           this.author = authorKeyword
        }
     }
 
     override fun update(updateObject: CollectionUpdateObject, user: OAuth2User?): CollectionDao? {
-        transaction {
-            val original = dao.findById(updateObject.id)
-            val changes = original?.let { updateObject.diff(it) }
-            table.updateFromObject(updateObject)
+        val original = dao.findById(updateObject.id)
+        val changes = original?.let { updateObject.diff(it) }
+        table.updateFromObject(updateObject)
 
-            // update skills
-            updateObject.skills?.let {
-                it.add?.forEach { skill ->
-                    CollectionSkills.create(collectionId = updateObject.id, skillId = skill.id!!)
-                }
-                it.remove?.forEach { skill ->
-                    CollectionSkills.delete(collectionId = updateObject.id, skillId = skill.id!!)
-                }
+        // update skills
+        updateObject.skills?.let {
+            it.add?.forEach { skill ->
+                CollectionSkills.create(collectionId = updateObject.id, skillId = skill.id!!)
+            }
+            it.remove?.forEach { skill ->
+                CollectionSkills.delete(collectionId = updateObject.id, skillId = skill.id!!)
             }
         }
+
         return  dao.findById(updateObject.id)
     }
 }

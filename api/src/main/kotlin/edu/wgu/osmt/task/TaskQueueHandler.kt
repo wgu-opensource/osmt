@@ -38,14 +38,13 @@ class TaskQueueHandler {
     fun csvJobProcessor(csvTask: CsvTask) {
         logger.info("Started processing task id: ${csvTask.uuid}")
 
-        val allSkills = transaction {
+        val allSkills =
             richSkillRepository.dao.all().with(RichSkillDescriptorDao::collections)
                 .map { rsdao ->
                     val rs = rsdao.toModel()
                     rs.collections = rsdao.collections.map{it.toModel()}
                     rs
                 }
-        }
 
         val csvString = RichSkillCsvExport(appConfig).toCsv(allSkills)
 

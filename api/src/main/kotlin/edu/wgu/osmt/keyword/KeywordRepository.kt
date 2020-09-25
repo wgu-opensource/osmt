@@ -5,9 +5,9 @@ import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -35,6 +35,7 @@ interface KeywordRepository {
 
 
 @Repository
+@Transactional
 class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : KeywordRepository {
     override val dao = KeywordDao.Companion
     override val table = KeywordTable
@@ -53,34 +54,30 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
     }
 
     override fun findOrCreate(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao {
-        val existing: KeywordDao? = transaction {
-            val condition = when {
-                value != null && uri != null ->
-                    (table.keyword_type_enum eq type) and (table.value eq value) and (table.uri eq uri)
-                value != null ->
-                    (table.keyword_type_enum eq type) and (table.value eq value)
-                uri != null ->
-                    (table.keyword_type_enum eq type) and (table.uri eq uri)
-                else -> null
-            }
-
-            transaction {
-                val query = condition?.let { table.select(it).singleOrNull() }
-                query?.let { dao.wrapRow(it) }
-            }
+        val condition = when {
+            value != null && uri != null ->
+                (table.keyword_type_enum eq type) and (table.value eq value) and (table.uri eq uri)
+            value != null ->
+                (table.keyword_type_enum eq type) and (table.value eq value)
+            uri != null ->
+                (table.keyword_type_enum eq type) and (table.uri eq uri)
+            else -> null
         }
+
+        val query = condition?.let { table.select(it).singleOrNull() }
+
+        val existing: KeywordDao? = query?.let { dao.wrapRow(it) }
+
         return existing ?: create(type, value, uri)
     }
 
     override fun create(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao {
-        return transaction {
-            dao.new {
+        return dao.new {
                 updateDate = LocalDateTime.now(ZoneOffset.UTC)
                 creationDate = LocalDateTime.now(ZoneOffset.UTC)
                 this.type = type
                 this.value = value
                 this.uri = uri
             }
-        }
     }
 }

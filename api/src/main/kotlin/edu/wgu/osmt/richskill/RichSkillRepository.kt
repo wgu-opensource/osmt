@@ -5,10 +5,11 @@ import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.collection.CollectionSkills
-import edu.wgu.osmt.keyword.Keyword
-import edu.wgu.osmt.keyword.KeywordDao
-import edu.wgu.osmt.keyword.KeywordRepository
-import edu.wgu.osmt.keyword.KeywordTable
+import edu.wgu.osmt.db.ListFieldUpdate
+import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.jobcode.JobCode
+import edu.wgu.osmt.jobcode.JobCodeRepository
+import edu.wgu.osmt.keyword.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -35,11 +36,13 @@ interface RichSkillRepository {
         user: OAuth2User?
     ): RichSkillDescriptorDao
     fun createFromUpdateObject(updateObject: RsdUpdateObject, user: OAuth2User?): RichSkillDescriptor?
+    fun rsdUpdateFromApi(skillUpdate: RsdUpdateDTO): RsdUpdateObject
 }
 
 @Repository
 class RichSkillRepositoryImpl @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
+    val jobCodeRepository: JobCodeRepository,
     val keywordRepository: KeywordRepository
 ) :
     RichSkillRepository {
@@ -172,5 +175,92 @@ class RichSkillRepositoryImpl @Autowired constructor(
             }
         }
         return newRichSkill
+    }
+
+    override fun rsdUpdateFromApi(skillUpdate: RsdUpdateDTO): RsdUpdateObject {
+        val authorKeyword = skillUpdate.author?.let {
+            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value=it.name, uri=it.id)
+        }
+
+        val categoryKeyword = skillUpdate.category?.let {
+            keywordRepository.findOrCreate(KeywordTypeEnum.Category, value=it)
+        }
+
+        val addingKeywords = mutableListOf<Keyword>()
+        val removingKeywords = mutableListOf<Keyword>()
+        val jobsToAdd = mutableListOf<JobCode>()
+        val jobsToRemove = mutableListOf<JobCode>()
+
+        fun lookup_references(lud: ListUpdate, keywordType: KeywordTypeEnum) {
+            lud.add?.map {
+                keywordRepository.findOrCreate(keywordType, value=it.name, uri=it.id)
+            }?.let {
+                addingKeywords.addAll(it)
+            }
+
+            lud.remove?.map {
+                keywordRepository.findByValueOrUri(keywordType, value=it.name, uri=it.id)
+            }?.let {
+                removingKeywords.addAll(it.map { it?.toModel() }.filterNotNull())
+            }
+        }
+
+        fun lookup_keywords(slud: StringListUpdate, keywordType: KeywordTypeEnum) {
+            slud.add?.map {
+                keywordRepository.findOrCreate(keywordType, value=it)
+            }?.let {
+                addingKeywords.addAll(it)
+            }
+
+            slud.remove?.map {
+                keywordRepository.findByValueOrUri(keywordType, value=it)
+            }?.let {
+                removingKeywords.addAll(it.map { it?.toModel() }.filterNotNull())
+            }
+        }
+
+        skillUpdate.occupations?.let {
+            it.add?.map {
+                jobCodeRepository.findByCodeOrCreate(code=it)
+            }?.let { jobsToAdd.addAll(it) }
+
+            it.remove?.map {
+                jobCodeRepository.findByCode(it)
+            }?.let { jobsToRemove.addAll(it.filterNotNull()) }
+        }
+
+        skillUpdate.keywords?.let { lookup_keywords(it, KeywordTypeEnum.Keyword) }
+        skillUpdate.certifications?.let { lookup_references(it, KeywordTypeEnum.Certification) }
+        skillUpdate.standards?.let { lookup_references(it, KeywordTypeEnum.Standard) }
+        skillUpdate.alignments?.let { lookup_references(it, KeywordTypeEnum.Alignment) }
+        skillUpdate.employers?.let { lookup_references(it, KeywordTypeEnum.Employer) }
+
+        val allKeywordsUpdate = if (addingKeywords.size > 0 || removingKeywords.size > 0) {
+            ListFieldUpdate<Keyword>(
+                add=if (addingKeywords.size > 0) addingKeywords else listOf(),
+                remove=if (removingKeywords.size > 0) removingKeywords else listOf()
+            )
+        } else {
+            null
+        }
+
+        val jobCodesUpdate = if (jobsToAdd.size > 0 || jobsToRemove.size > 0) {
+            ListFieldUpdate<JobCode>(
+                add=if (jobsToAdd.size > 0) jobsToAdd else listOf(),
+                remove=if (jobsToRemove.size > 0) jobsToRemove else listOf()
+            )
+        } else {
+            null
+        }
+
+        return RsdUpdateObject(
+            name = skillUpdate.skillName,
+            statement = skillUpdate.skillStatement,
+            publishStatus = skillUpdate.publishStatus,
+            author = authorKeyword?.let { NullableFieldUpdate(it) },
+            category = categoryKeyword?.let { NullableFieldUpdate(it) },
+            keywords = allKeywordsUpdate,
+            jobCodes = jobCodesUpdate
+        )
     }
 }

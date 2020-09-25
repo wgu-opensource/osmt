@@ -49,7 +49,8 @@ class RichSkillApi @Autowired constructor(
 
         // create records
         val newSkills = rsdUpdates.map { update ->
-            richSkillRepository.createFromUpdateObject(update.asRsdUpdateObject(keywordRepository, jobCodeRepository), user)
+            val rsdUpdateObject = richSkillRepository.rsdUpdateFromApi(update)
+            richSkillRepository.createFromUpdateObject(rsdUpdateObject, user)
         }
         return newSkills.filterNotNull().map { RichSkillDTO(it, appConfig.baseUrl) }
     }

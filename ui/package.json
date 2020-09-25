@@ -26,7 +26,8 @@
     "file-saver": "^2.0.2",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
-    "zone.js": "~0.10.3"
+    "zone.js": "~0.10.3",
+    "wgu-design-system-patternlibrary": "0.2.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1000.6",

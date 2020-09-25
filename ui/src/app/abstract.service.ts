@@ -9,7 +9,8 @@ interface ApiGetParams {
   },
   params?: HttpParams | {
     [param: string]: string | string[];
-  }
+  },
+  body?: unknown
 }
 
 export abstract class AbstractService {
@@ -29,6 +30,9 @@ export abstract class AbstractService {
    */
   get<T>({path, headers, params}: ApiGetParams): Observable<HttpResponse<T>> {
     return this.httpClient.get<T>(this.buildUrl(path), { headers, params, observe: "response"})
+  }
+  post<T>({path, headers, params, body}: ApiGetParams): Observable<HttpResponse<T>> {
+    return this.httpClient.post<T>(this.buildUrl(path), body, { headers, params, observe: "response"})
   }
 
   protected safeUnwrapBody<T>(body: T | null, failureMessage: string): T {

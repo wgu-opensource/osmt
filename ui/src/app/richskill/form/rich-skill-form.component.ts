@@ -4,6 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {RichSkillService} from "../service/rich-skill.service";
 import {Observable} from "rxjs";
 import {RichSkill} from "../RichSkill";
+import {RichSkillUpdate} from "../RichSkillUpdate";
 
 
 @Component({
@@ -19,15 +20,15 @@ export class RichSkillFormComponent implements OnInit {
     keywords: new FormControl(""),
   })
   skillUuid: string | null = null
-  skillLoaded: Observable<RichSkill> | null = null
   existingSkill: RichSkill | null = null
+
+  skillLoaded: Observable<RichSkill> | null = null
+  skillSaved: Observable<RichSkill> | null = null
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private richSkillService: RichSkillService
-  ) {
-  }
+    private richSkillService: RichSkillService) { }
 
   ngOnInit(): void {
     this.skillUuid = this.route.snapshot.paramMap.get("uuid")
@@ -42,8 +43,36 @@ export class RichSkillFormComponent implements OnInit {
     return `${this.existingSkill != null ? "Edit" : "Create"} Rich Skill Descriptor`
   }
 
+  updateObject(): RichSkillUpdate {
+    const update = new RichSkillUpdate({})
+    const formValue = this.skillForm.value
+
+    if (!this.existingSkill || this.existingSkill.name != formValue.skillName) {
+      update.skillName = formValue.skillName
+    }
+    if (!this.existingSkill || this.existingSkill.statement != formValue.skillStatement) {
+      update.skillStatement = formValue.skillStatement
+    }
+
+    return update
+  }
+
   onSubmit(): void {
-    console.log("do the submit", this.skillForm.value)
+    const updateObject = this.updateObject()
+    console.log("do the submit", this.skillForm.value, Object.keys(updateObject))
+
+    if (Object.keys(updateObject).length < 1) {
+      console.log("no changes to submit")
+      return
+    }
+
+    if (this.skillUuid) {
+      console.log("Updating record", updateObject)
+      // this.skillSaved = this.richSkillService.updateSkill(this.skillUuid, updateObject)
+    } else {
+      console.log("creating record", updateObject)
+      // this.skillSaved = this.richSkillService.createSkill(updateObject)
+    }
   }
 
   setSkill(skill: RichSkill): void {

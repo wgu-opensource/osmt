@@ -47,7 +47,9 @@
       helpMessage="Add topic terms separated by semicolon"
     ></app-formfield-textarea>
 
-    <input [disabled]="!skillForm.valid" type="submit" value="Save"/>
+    <p>valid: {{skillForm.valid}}</p>
+    <p>dirty: {{skillForm.dirty}}</p>
+    <input [disabled]="!skillForm.dirty || !skillForm.valid" type="submit" value="Save"/>
   </form>
 </div>
 

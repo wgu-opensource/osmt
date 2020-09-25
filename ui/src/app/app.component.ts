@@ -10,7 +10,7 @@ export class AppComponent implements OnInit {
   public constructor(private titleService: Title) {
   }
 
-  title = "Future home of the OSMT"
+  title = "OSMT"
 
   ngOnInit(): void {
     this.titleService.setTitle("OSMT")

@@ -1,0 +1,14 @@
+<div class="t-verticalSpacing-medium">
+  <div class="t-verticalSpacing-extraSmall">
+    <label class="t-type-smallBold">{{label}}</label>
+    <div *ngIf="helpMessage" class="t-type-small">{{helpMessage}}</div>
+  </div>
+
+  <div class="t-verticalSpacing-extraSmall">
+    <div class="m-formInput" [class.m-formInput-is-error]="control.errors">
+      <ng-content></ng-content>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage && control.errors" class="t-type-small t-type-attention">{{errorMessage}}</div>
+</div>

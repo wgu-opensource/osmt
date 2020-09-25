@@ -1,0 +1,50 @@
+<div class="m-skillBackground">
+  <h2 class="t-type-heading2 t-verticalSpacing-medium">
+    <div class="l-flex l-flex-alignCenter">
+      <svg class="t-icon t-horizontalSpacing-extraSmall">
+        <use xlink:href="/images/svg-defs.svg#icon-doc"></use>
+      </svg>
+      <span>
+        Create Rich Skill Descriptor
+      </span>
+    </div>
+  </h2>
+
+  <form [formGroup]="skillForm" (ngSubmit)="onSubmit()">
+
+    <app-formfield-text
+      [control]="skillForm.controls.skillName"
+      label="Skill Name (Required)"
+      placeholder="Health Education Development"
+    >
+    </app-formfield-text>
+
+    <app-formfield-text
+      [control]="skillForm.controls.author"
+      label="Author (Required)"
+    ></app-formfield-text>
+
+    <app-formfield-textarea
+      [control]="skillForm.controls.skillStatement"
+      label="Skill Statement (Required)"
+      placeholder="Develop education programs to improve health outcomes for patient populations."
+      helpMessage="A skill statement is a string that expresses information about who the skill applies to, the nature of the skill itself, and the context in which it is applied."
+    ></app-formfield-textarea>
+
+    <app-formfield-text
+      [control]="skillForm.controls.category"
+      label="Category"
+      placeholder="Health Education"
+      helpMessage="A term that can be used to group multiple skills"
+    ></app-formfield-text>
+
+    <app-formfield-textarea
+      [control]="skillForm.controls.keywords"
+      label="Keywords"
+      placeholder="Health Education; Education Program Development; Heath Instruction; Health Outcome Improvement; Health Education Design"
+      helpMessage="Add topic terms separated by semicolon"
+    ></app-formfield-textarea>
+
+    <input [disabled]="!skillForm.valid" type="submit" value="Save"/>
+  </form>
+</div>

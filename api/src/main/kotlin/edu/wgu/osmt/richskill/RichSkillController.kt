@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest
 @Controller
 @RequestMapping("/api/skills")
 @Transactional
-class RichSkillApi @Autowired constructor(
+class RichSkillController @Autowired constructor(
     val richSkillRepository: RichSkillRepository,
     val keywordRepository: KeywordRepository,
     val jobCodeRepository: JobCodeRepository,

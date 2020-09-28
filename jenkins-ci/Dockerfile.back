@@ -1,6 +1,0 @@
-FROM maven:3.6.3-jdk-11
-
-COPY . /workspace
-WORKDIR /workspace
-RUN mvn package -Dmaven.test.skip.exec
-ENTRYPOINT mvn -Dspring-boot.run.jvmArguments="-Dspring.profiles.active='dev,apiserver'" -pl api test

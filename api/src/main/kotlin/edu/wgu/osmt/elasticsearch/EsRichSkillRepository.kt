@@ -4,5 +4,5 @@ import edu.wgu.osmt.richskill.RichSkillDescriptor
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
-@Repository
-interface EsRichSkillRepository : CrudRepository<Any, Int> // TODO create elasticsearch document model
+//@Repository
+//interface EsRichSkillRepository : CrudRepository<Any, Int> // TODO create elasticsearch document model

@@ -19,6 +19,8 @@ pipeline {
     testStarted = "Running tests..."
     testSuccess = "All tests passed!"
     testFailure = "Test failures!"
+    
+    JAVA_HOME="/usr" // bin/java is inferred
   }
 
   stages {

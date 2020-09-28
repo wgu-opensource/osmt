@@ -35,7 +35,7 @@ interface RichSkillRepository {
     fun findByUUID(uuid: String): RichSkillDescriptorDao?
     fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao?
 
-    fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: OAuth2User): List<RichSkillDescriptorDao>
+    fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao>
     fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate): RsdUpdateObject
 }
 
@@ -142,7 +142,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         return update(updateWithIdAndAuthor, user)
     }
 
-    override fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: OAuth2User): List<RichSkillDescriptorDao> {
+    override fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao> {
         // pre validate all rows
         val allErrors = skillUpdates.mapIndexed { i, updateDto ->
             updateDto.validateForCreation(i)
@@ -154,7 +154,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         // create records
         val newSkills = skillUpdates.map { update ->
             val rsdUpdateObject = rsdUpdateFromApi(update)
-            create(rsdUpdateObject, user.name)
+            create(rsdUpdateObject, user)
         }
         return newSkills.filterNotNull()
     }

@@ -4,6 +4,8 @@ import edu.wgu.osmt.api.model.ApiSkill
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.keyword.KeywordDao
+import edu.wgu.osmt.security.OAuth2Helper
+import edu.wgu.osmt.security.OAuth2Helper.readableUsername
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -37,7 +39,9 @@ class RichSkillController @Autowired constructor(
     fun createSkills(@RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
                      @AuthenticationPrincipal user: OAuth2User?): List<ApiSkill>
     {
-        return richSkillRepository.createFromApi(apiSkillUpdates, user!!).map { ApiSkill(it.toModel(), appConfig.baseUrl) }
+        return richSkillRepository.createFromApi(apiSkillUpdates, readableUsername(user)).map {
+            ApiSkill(it.toModel(), appConfig.baseUrl)
+        }
     }
 
     @GetMapping("/{uuid}", produces = [MediaType.APPLICATION_JSON_VALUE])

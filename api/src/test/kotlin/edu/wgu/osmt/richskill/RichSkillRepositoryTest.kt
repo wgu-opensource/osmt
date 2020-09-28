@@ -1,6 +1,7 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.api.model.ApiSkillUpdate
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,6 +26,28 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
     lateinit var richSkillRepository: RichSkillRepository
 
     val userString = "unittestuser"
+
+    @Test
+    fun `should create skills from ApiSkillUpdate objects`() {
+        val name = UUID.randomUUID().toString()
+        val statement = UUID.randomUUID().toString()
+
+        val skillUpdates = listOf(
+            ApiSkillUpdate(
+                skillName=name,
+                skillStatement=statement
+            )
+        )
+
+        val results: List<RichSkillDescriptorDao> = richSkillRepository.createFromApi(skillUpdates, userString)
+
+        results.forEachIndexed { i, skillDao ->
+            val skill = skillDao.toModel()
+            val apiObj = skillUpdates[i]
+            assertThat(skill.name).isEqualTo(apiObj.skillName)
+            assertThat(skill.statement).isEqualTo(apiObj.skillStatement)
+        }
+    }
 
     @Test
     fun `should not create a rich skill without a non-blank name and statement`(){

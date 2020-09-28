@@ -5,37 +5,37 @@ import edu.wgu.osmt.db.PublishStatus
 
 data class ApiSkillUpdate(
     @JsonProperty("skillName")
-    val skillName: String?,
+    val skillName: String? = null,
 
     @JsonProperty("skillStatement")
-    val skillStatement: String?,
+    val skillStatement: String? = null,
 
     @JsonProperty("status")
-    val publishStatus: PublishStatus?,
+    val publishStatus: PublishStatus? = null,
 
     @JsonProperty("category")
-    val category: String?,
+    val category: String? = null,
 
     @JsonProperty("author")
-    val author: ApiNamedReference?,
+    val author: ApiNamedReference? = null,
 
     @JsonProperty("keywords")
-    val keywords: ApiStringListUpdate?,
+    val keywords: ApiStringListUpdate? = null,
 
     @JsonProperty("certifications")
-    val certifications: ApiReferenceListUpdate?,
+    val certifications: ApiReferenceListUpdate? = null,
 
     @JsonProperty("standards")
-    val standards: ApiReferenceListUpdate?,
+    val standards: ApiReferenceListUpdate? = null,
 
     @JsonProperty("alignments")
-    val alignments: ApiReferenceListUpdate?,
+    val alignments: ApiReferenceListUpdate? = null,
 
     @JsonProperty("employers")
-    val employers: ApiReferenceListUpdate?,
+    val employers: ApiReferenceListUpdate? = null,
 
     @JsonProperty("occupations")
-    val occupations: ApiStringListUpdate?
+    val occupations: ApiStringListUpdate? = null
 ) {
 
     fun validate(): List<ApiFieldError>? {

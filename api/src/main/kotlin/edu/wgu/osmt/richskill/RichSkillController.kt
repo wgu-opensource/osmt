@@ -26,25 +26,25 @@ class RichSkillController @Autowired constructor(
     // TODO pagination according to spec
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun allSkills(request: HttpServletRequest): List<RichSkillDTO>  {
+    fun allSkills(request: HttpServletRequest): List<ApiSkill>  {
         return richSkillRepository.findAll().map {
-            RichSkillDTO(it.toModel(), appConfig.baseUrl)
+            ApiSkill(it.toModel(), appConfig.baseUrl)
         }
     }
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createSkills(@RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
-                     @AuthenticationPrincipal user: OAuth2User?): List<RichSkillDTO>
+                     @AuthenticationPrincipal user: OAuth2User?): List<ApiSkill>
     {
-        return richSkillRepository.createFromApi(apiSkillUpdates, user!!).map { RichSkillDTO(it.toModel(), appConfig.baseUrl) }
+        return richSkillRepository.createFromApi(apiSkillUpdates, user!!).map { ApiSkill(it.toModel(), appConfig.baseUrl) }
     }
 
     @GetMapping("/{uuid}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @JsonView(RichSkillView.PublicDetailView::class)
     @ResponseBody
-    fun byUUID(@PathVariable uuid: String): RichSkillDTO? {
-        return richSkillRepository.findByUUID(uuid)?.let { RichSkillDTO(it.toModel(), appConfig.baseUrl) }
+    fun byUUID(@PathVariable uuid: String): ApiSkill? {
+        return richSkillRepository.findByUUID(uuid)?.let { ApiSkill(it.toModel(), appConfig.baseUrl) }
     }
 
     @RequestMapping("/{uuid}", produces = [MediaType.TEXT_HTML_VALUE])

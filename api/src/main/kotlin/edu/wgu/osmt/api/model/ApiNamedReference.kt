@@ -1,10 +1,19 @@
 package edu.wgu.osmt.api.model
 
+import edu.wgu.osmt.keyword.Keyword
+import edu.wgu.osmt.keyword.KeywordDao
+
 
 data class ApiNamedReference(
     val id: String? = null,
     val name: String? = null
-)
+) {
+    companion object factory {
+        fun fromKeyword(keyword: Keyword): ApiNamedReference {
+            return ApiNamedReference(id=keyword.uri, name=keyword.value)
+        }
+    }
+}
 
 data class ApiReferenceListUpdate(
     val add: List<ApiNamedReference>? = null,

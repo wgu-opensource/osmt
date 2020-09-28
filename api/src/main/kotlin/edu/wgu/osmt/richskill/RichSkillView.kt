@@ -3,7 +3,7 @@ package edu.wgu.osmt.richskill
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonView
-import edu.wgu.osmt.keyword.KeywordDTO
+import edu.wgu.osmt.api.model.ApiNamedReference
 import net.minidev.json.JSONObject
 import java.time.LocalDateTime
 
@@ -13,7 +13,7 @@ class RichSkillView {
 }
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseUrl: String) {
+class ApiSkill(private val rsd: RichSkillDescriptor, private val baseUrl: String) {
 
     // TODO include view of collection
 
@@ -25,8 +25,8 @@ class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseUrl: St
     val `type` = "RichSkillDescriptor"
 
     @get:JsonView(RichSkillView.PublicDetailView::class)
-    val author: KeywordDTO?
-        get() = rsd.author?.let { KeywordDTO(it) }
+    val author: ApiNamedReference?
+        get() = rsd.author?.let { ApiNamedReference.fromKeyword(it) }
 
     @get:JsonView(RichSkillView.PrivateDetailView::class)
     val creationDate: LocalDateTime
@@ -45,8 +45,8 @@ class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseUrl: St
         get() = rsd.statement
 
     @get:JsonView(RichSkillView.PublicDetailView::class)
-    val keywords: List<KeywordDTO>
-        get() = rsd.searchingKeywords.map { kw -> KeywordDTO(kw) }
+    val keywords: List<ApiNamedReference>
+        get() = rsd.searchingKeywords.map { ApiNamedReference.fromKeyword(it) }
 
     @get:JsonView(RichSkillView.PublicDetailView::class)
     val category: String?
@@ -63,16 +63,16 @@ class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseUrl: St
         get() = rsd.uuid.toString()
 
     @get:JsonView(RichSkillView.PublicDetailView::class)
-    val certifications: List<KeywordDTO>
-        get() = rsd.certifications.map { KeywordDTO(it) }
+    val certifications: List<ApiNamedReference>
+        get() = rsd.certifications.map { ApiNamedReference.fromKeyword(it) }
 
     @get:JsonView(RichSkillView.PublicDetailView::class)
-    val standards: List<KeywordDTO>
-        get() = rsd.standards.map { KeywordDTO(it) }
+    val standards: List<ApiNamedReference>
+        get() = rsd.standards.map { ApiNamedReference.fromKeyword(it) }
 
     @get:JsonView(RichSkillView.PublicDetailView::class)
-    val alignments: List<KeywordDTO>
-        get() = rsd.alignments.map { KeywordDTO(it) }
+    val alignments: List<ApiNamedReference>
+        get() = rsd.alignments.map { ApiNamedReference.fromKeyword(it) }
 
     @get:JsonView(RichSkillView.PublicDetailView::class)
     val occupations: List<JSONObject>
@@ -88,8 +88,8 @@ class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseUrl: St
         }
 
     @get:JsonView(RichSkillView.PublicDetailView::class)
-    val employers: List<KeywordDTO>
-        get() = rsd.employers.map { KeywordDTO(it) }
+    val employers: List<ApiNamedReference>
+        get() = rsd.employers.map { ApiNamedReference.fromKeyword(it) }
 }
 
 

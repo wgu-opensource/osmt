@@ -1,6 +1,8 @@
 package edu.wgu.osmt.api
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
+import edu.wgu.osmt.api.model.ApiError
+import edu.wgu.osmt.api.model.ApiFieldError
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -10,17 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
-
-data class ApiError(
-    val message: String? = null,
-    val errors: List<ApiFieldError> = listOf()
-)
-
-data class ApiFieldError(
-    val field: String,
-    val message: String,
-    val rowNumber: Number? = null
-)
 
 class FormValidationException(override val message: String, val errors:List<ApiFieldError>): Exception(message)
 

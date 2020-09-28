@@ -1,10 +1,9 @@
 package edu.wgu.osmt.richskill
 
 import com.fasterxml.jackson.annotation.JsonView
+import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordDao
-import edu.wgu.osmt.keyword.KeywordRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -35,10 +34,10 @@ class RichSkillController @Autowired constructor(
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun createSkills(@RequestBody rsdUpdates: List<RsdUpdateDTO>,
+    fun createSkills(@RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
                      @AuthenticationPrincipal user: OAuth2User?): List<RichSkillDTO>
     {
-        return richSkillRepository.createFromApi(rsdUpdates, user!!).map { RichSkillDTO(it.toModel(), appConfig.baseUrl) }
+        return richSkillRepository.createFromApi(apiSkillUpdates, user!!).map { RichSkillDTO(it.toModel(), appConfig.baseUrl) }
     }
 
     @GetMapping("/{uuid}", produces = [MediaType.APPLICATION_JSON_VALUE])

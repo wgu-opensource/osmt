@@ -2,12 +2,12 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.api.FormValidationException
 import edu.wgu.osmt.api.model.ApiReferenceListUpdate
+import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.collection.CollectionSkills
-import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.updateFromObject
@@ -35,8 +35,8 @@ interface RichSkillRepository {
     fun findByUUID(uuid: String): RichSkillDescriptorDao?
     fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao?
 
-    fun createFromApi(skillUpdates: List<RsdUpdateDTO>, user: OAuth2User): List<RichSkillDescriptorDao>
-    fun rsdUpdateFromApi(skillUpdate: RsdUpdateDTO): RsdUpdateObject
+    fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: OAuth2User): List<RichSkillDescriptorDao>
+    fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate): RsdUpdateObject
 }
 
 @Repository
@@ -136,7 +136,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         return update(updateWithIdAndAuthor, user)
     }
 
-    override fun createFromApi(skillUpdates: List<RsdUpdateDTO>, user: OAuth2User): List<RichSkillDescriptorDao> {
+    override fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: OAuth2User): List<RichSkillDescriptorDao> {
         // pre validate all rows
         val allErrors = skillUpdates.mapIndexed { i, updateDto ->
             updateDto.validateForCreation(i)
@@ -153,7 +153,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         return newSkills.filterNotNull()
     }
 
-    override fun rsdUpdateFromApi(skillUpdate: RsdUpdateDTO): RsdUpdateObject {
+    override fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate): RsdUpdateObject {
         val authorKeyword = skillUpdate.author?.let {
             keywordRepository.findOrCreate(KeywordTypeEnum.Author, value=it.name, uri=it.id)
         }

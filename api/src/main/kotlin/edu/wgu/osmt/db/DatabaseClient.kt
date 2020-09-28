@@ -5,6 +5,7 @@ import org.jetbrains.exposed.sql.Database
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import javax.sql.DataSource
 
 @Configuration
@@ -17,6 +18,7 @@ class DatabaseClient @Autowired constructor(val dbConfig: DbConfig) {
     )
 
     @Bean
+    @Primary
     fun transactionManager(dataSource: DataSource): SpringTransactionManager {
         return SpringTransactionManager(dataSource)
     }

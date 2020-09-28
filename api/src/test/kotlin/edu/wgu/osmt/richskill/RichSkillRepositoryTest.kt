@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @SpringBootTest
@@ -17,6 +18,7 @@ import java.util.*
 @ConfigurationPropertiesScan("edu.wgu.osmt.config")
 @ContextConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Transactional
 class RichSkillRepositoryTest: BaseDockerizedTest() {
 
     @Autowired
@@ -26,10 +28,10 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
     fun `should insert and retrieve a rich skill to the database`(){
         val name = UUID.randomUUID().toString()
         val statement = UUID.randomUUID().toString()
-        val created = transaction { richSkillRepository.create(name = name, statement = statement, author = null, user = null).toModel() }
-        val retrieved  = transaction { richSkillRepository.findById(created.id!!) }
+        val created = richSkillRepository.create(name = name, statement = statement, author = null, user = "test", category = null).toModel()
+        val retrieved  = richSkillRepository.findById(created.id!!)
 
-        assertThat(created.id).isEqualTo(retrieved?.id)
+        assertThat(created.id!!).isEqualTo(retrieved?.id?.value)
         assertThat(retrieved?.name).isEqualTo(name)
         assertThat(retrieved?.statement).isEqualTo(statement)
     }

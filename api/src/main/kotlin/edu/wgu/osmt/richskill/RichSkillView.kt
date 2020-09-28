@@ -3,16 +3,12 @@ package edu.wgu.osmt.richskill
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonView
-import edu.wgu.osmt.api.ApiFieldError
-import edu.wgu.osmt.db.ListFieldUpdate
-import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.api.model.ApiFieldError
+import edu.wgu.osmt.api.model.ApiNamedReference
+import edu.wgu.osmt.api.model.ApiReferenceListUpdate
+import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.jobcode.JobCode
-import edu.wgu.osmt.jobcode.JobCodeRepository
-import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordDTO
-import edu.wgu.osmt.keyword.KeywordRepository
-import edu.wgu.osmt.keyword.KeywordTypeEnum
 import net.minidev.json.JSONObject
 import java.time.LocalDateTime
 
@@ -102,20 +98,6 @@ class RichSkillDTO(private val rsd: RichSkillDescriptor, private val baseUrl: St
 }
 
 
-data class NamedReference(
-  val id: String? = null,
-  val name: String? = null
-)
-
-data class ListUpdate(
-    val add: List<NamedReference>? = null,
-    val remove: List<NamedReference>? = null
-)
-
-data class StringListUpdate(
-    val add: List<String>? = null,
-    val remove: List<String>? = null
-)
 
 data class RsdUpdateDTO(
     @JsonProperty("skillName")
@@ -131,25 +113,25 @@ data class RsdUpdateDTO(
     val category: String?,
 
     @JsonProperty("author")
-    val author: NamedReference?,
+    val author: ApiNamedReference?,
 
     @JsonProperty("keywords")
-    val keywords: StringListUpdate?,
+    val keywords: ApiStringListUpdate?,
 
     @JsonProperty("certifications")
-    val certifications: ListUpdate?,
+    val certifications: ApiReferenceListUpdate?,
 
     @JsonProperty("standards")
-    val standards: ListUpdate?,
+    val standards: ApiReferenceListUpdate?,
 
     @JsonProperty("alignments")
-    val alignments: ListUpdate?,
+    val alignments: ApiReferenceListUpdate?,
 
     @JsonProperty("employers")
-    val employers: ListUpdate?,
+    val employers: ApiReferenceListUpdate?,
 
     @JsonProperty("occupations")
-    val occupations: StringListUpdate?
+    val occupations: ApiStringListUpdate?
 ) {
 
     fun validate(): List<ApiFieldError>? {

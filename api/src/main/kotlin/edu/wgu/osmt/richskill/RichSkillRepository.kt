@@ -1,27 +1,25 @@
 package edu.wgu.osmt.richskill
 
-import com.google.gson.Gson
 import edu.wgu.osmt.api.FormValidationException
+import edu.wgu.osmt.api.model.ApiReferenceListUpdate
+import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.collection.CollectionSkills
-<<<<<<< HEAD
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
-import edu.wgu.osmt.jobcode.JobCode
-import edu.wgu.osmt.jobcode.JobCodeRepository
-import edu.wgu.osmt.keyword.*
-import org.jetbrains.exposed.dao.id.EntityID
-=======
 import edu.wgu.osmt.db.updateFromObject
+import edu.wgu.osmt.jobcode.JobCodeDao
+import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
+import edu.wgu.osmt.keyword.KeywordTypeEnum
 import org.jetbrains.exposed.sql.SizedIterable
->>>>>>> feature/osmt-271-code-cleanup
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -35,17 +33,9 @@ interface RichSkillRepository {
     fun findAll(): SizedIterable<RichSkillDescriptorDao>
     fun findById(id: Long): RichSkillDescriptorDao?
     fun findByUUID(uuid: String): RichSkillDescriptorDao?
-    fun create(
-        name: String,
-        statement: String,
-        author: KeywordDao?,
-        user: String,
-        category: KeywordDao?
-    ): RichSkillDescriptorDao
+    fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao?
 
-    fun createFromApi(skillUpdates: List<RsdUpdateDTO>, user: OAuth2User?): List<RichSkillDescriptor>
-
-    fun createFromUpdateObject(updateObject: RsdUpdateObject, user: OAuth2User?): RichSkillDescriptor?
+    fun createFromApi(skillUpdates: List<RsdUpdateDTO>, user: OAuth2User): List<RichSkillDescriptorDao>
     fun rsdUpdateFromApi(skillUpdate: RsdUpdateDTO): RsdUpdateObject
 }
 
@@ -54,8 +44,7 @@ interface RichSkillRepository {
 class RichSkillRepositoryImpl @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
     val jobCodeRepository: JobCodeRepository,
-    val keywordRepository: KeywordRepository,
-    val appConfig: AppConfig
+    val keywordRepository: KeywordRepository
 ) :
     RichSkillRepository {
     override val dao = RichSkillDescriptorDao.Companion
@@ -65,38 +54,15 @@ class RichSkillRepositoryImpl @Autowired constructor(
     val richSkillJobCodeTable = RichSkillJobCodes
     val richSkillCollectionTable = CollectionSkills
 
-    val keywordDao = KeywordDao.Companion
-
 
     override fun findAll() = dao.all()
-
 
     override fun findById(id: Long) = dao.findById(id)
 
     override fun update(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao? {
-
-        val original = dao.findById(updateObject.id)
+        val original = dao.findById(updateObject.id!!)
         val changes = original?.let { updateObject.diff(it) }
 
-
-<<<<<<< HEAD
-    @Transactional
-    override fun update(updateObject: RsdUpdateObject, user: OAuth2User?): RichSkillDescriptor? {
-        transaction {
-            val original = dao.findById(updateObject.id!!)
-            val changes = original?.let { updateObject.diff(it) }
-
-            user?.let { definedUser ->
-                changes?.let { it ->
-                    auditLogRepository.insert(
-                        AuditLog.fromAtomicOp(
-                            table,
-                            updateObject.id!!,
-                            it.toString(),
-                            definedUser,
-                            AuditOperationType.Update
-                        )
-=======
         changes?.let { it ->
             if (it.isNotEmpty())
                 auditLogRepository.insert(
@@ -106,7 +72,6 @@ class RichSkillRepositoryImpl @Autowired constructor(
                         it.toString(),
                         user,
                         AuditOperationType.Update
->>>>>>> feature/osmt-271-code-cleanup
                     )
                 )
         }
@@ -148,11 +113,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
             }
         }
 
-<<<<<<< HEAD
-        return transaction { dao.findById(updateObject.id!!)?.toModel() }
-=======
         return dao.findById(updateObject.id)
->>>>>>> feature/osmt-271-code-cleanup
     }
 
     override fun findByUUID(uuid: String): RichSkillDescriptorDao? {
@@ -160,49 +121,22 @@ class RichSkillRepositoryImpl @Autowired constructor(
         return query?.let { dao.wrapRow(it) }
     }
 
-<<<<<<< HEAD
-    override fun createFromUpdateObject(updateObject: RsdUpdateObject, user: OAuth2User?): RichSkillDescriptor?
-    {
-        val skill = create(updateObject.name!!, updateObject.statement!!, updateObject.author?.t, user)
-        return update(updateObject.copy(id = skill.id.value), user)
-    }
-
-=======
-    // TODO this might take an "update" object and we can reuse the audit log serializing from that
->>>>>>> feature/osmt-271-code-cleanup
-    override fun create(
-        name: String,
-        statement: String,
-        author: KeywordDao?,
-        user: String,
-        category: KeywordDao?
-    ): RichSkillDescriptorDao {
-        val authorKeyword: KeywordDao? = author ?: keywordRepository.getDefaultAuthor()
-
+    override fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao? {
         val newRsd = dao.new {
             this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
             this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.uuid = UUID.randomUUID().toString()
-            this.name = name
-            this.statement = statement
-            this.author = authorKeyword
-            this.category = category
         }
 
-        auditLogRepository.insert(
-            AuditLog.fromAtomicOp(
-                table,
-                newRsd.id.value,
-                Gson().toJson(newRsd.toModel()),
-                user,
-                AuditOperationType.Insert
-            )
+        val updateWithIdAndAuthor = updateObject.copy(
+            id=newRsd.id.value,
+            author=updateObject.author ?: NullableFieldUpdate(keywordRepository.getDefaultAuthor())
         )
 
-        return newRsd
+        return update(updateWithIdAndAuthor, user)
     }
 
-    override fun createFromApi(skillUpdates: List<RsdUpdateDTO>, user: OAuth2User?): List<RichSkillDescriptor> {
+    override fun createFromApi(skillUpdates: List<RsdUpdateDTO>, user: OAuth2User): List<RichSkillDescriptorDao> {
         // pre validate all rows
         val allErrors = skillUpdates.mapIndexed { i, updateDto ->
             updateDto.validateForCreation(i)
@@ -214,7 +148,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         // create records
         val newSkills = skillUpdates.map { update ->
             val rsdUpdateObject = rsdUpdateFromApi(update)
-            createFromUpdateObject(rsdUpdateObject, user)
+            create(rsdUpdateObject, user.name)
         }
         return newSkills.filterNotNull()
     }
@@ -228,12 +162,12 @@ class RichSkillRepositoryImpl @Autowired constructor(
             keywordRepository.findOrCreate(KeywordTypeEnum.Category, value=it)
         }
 
-        val addingKeywords = mutableListOf<Keyword>()
-        val removingKeywords = mutableListOf<Keyword>()
-        val jobsToAdd = mutableListOf<JobCode>()
-        val jobsToRemove = mutableListOf<JobCode>()
+        val addingKeywords = mutableListOf<KeywordDao>()
+        val removingKeywords = mutableListOf<KeywordDao>()
+        val jobsToAdd = mutableListOf<JobCodeDao>()
+        val jobsToRemove = mutableListOf<JobCodeDao>()
 
-        fun lookup_references(lud: ListUpdate, keywordType: KeywordTypeEnum) {
+        fun lookup_references(lud: ApiReferenceListUpdate, keywordType: KeywordTypeEnum) {
             lud.add?.map {
                 keywordRepository.findOrCreate(keywordType, value=it.name, uri=it.id)
             }?.let {
@@ -243,11 +177,11 @@ class RichSkillRepositoryImpl @Autowired constructor(
             lud.remove?.map {
                 keywordRepository.findByValueOrUri(keywordType, value=it.name, uri=it.id)
             }?.let {
-                removingKeywords.addAll(it.map { it?.toModel() }.filterNotNull())
+                removingKeywords.addAll(it.filterNotNull())
             }
         }
 
-        fun lookup_keywords(slud: StringListUpdate, keywordType: KeywordTypeEnum) {
+        fun lookup_keywords(slud: ApiStringListUpdate, keywordType: KeywordTypeEnum) {
             slud.add?.map {
                 keywordRepository.findOrCreate(keywordType, value=it)
             }?.let {
@@ -257,7 +191,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
             slud.remove?.map {
                 keywordRepository.findByValueOrUri(keywordType, value=it)
             }?.let {
-                removingKeywords.addAll(it.map { it?.toModel() }.filterNotNull())
+                removingKeywords.addAll(it.filterNotNull())
             }
         }
 
@@ -278,7 +212,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         skillUpdate.employers?.let { lookup_references(it, KeywordTypeEnum.Employer) }
 
         val allKeywordsUpdate = if (addingKeywords.size > 0 || removingKeywords.size > 0) {
-            ListFieldUpdate<Keyword>(
+            ListFieldUpdate<KeywordDao>(
                 add=if (addingKeywords.size > 0) addingKeywords else listOf(),
                 remove=if (removingKeywords.size > 0) removingKeywords else listOf()
             )
@@ -287,7 +221,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         }
 
         val jobCodesUpdate = if (jobsToAdd.size > 0 || jobsToRemove.size > 0) {
-            ListFieldUpdate<JobCode>(
+            ListFieldUpdate<JobCodeDao>(
                 add=if (jobsToAdd.size > 0) jobsToAdd else listOf(),
                 remove=if (jobsToRemove.size > 0) jobsToRemove else listOf()
             )
@@ -305,4 +239,5 @@ class RichSkillRepositoryImpl @Autowired constructor(
             jobCodes = jobCodesUpdate
         )
     }
+
 }

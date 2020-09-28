@@ -11,6 +11,7 @@ import edu.wgu.osmt.richskill.RsdUpdateObject
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.collection.CollectionSkills
+import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -169,19 +170,11 @@ class BatchImportConsoleApplication : CommandLineRunner {
 
             val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
 
-            val author:KeywordDao? = row.author?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it) }
-
             if (row.skillName != null && row.skillStatement != null) {
-                val newSkill = richSkillRepository.create(
+                richSkillRepository.create(RsdUpdateObject(
                     name = row.skillName!!,
                     statement = row.skillStatement!!,
-                    author = author,
-                    user = user,
-                    category = category
-                )
-
-                richSkillRepository.update(RsdUpdateObject(
-                    id = newSkill.id.value,
+                    category = NullableFieldUpdate(category),
                     keywords = all_keywords?.let { ListFieldUpdate(add = it) },
                     jobCodes = occupations?.let { ListFieldUpdate(add = it) },
                     collections = collections?.let {ListFieldUpdate(add = it)}

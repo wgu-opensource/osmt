@@ -19,8 +19,6 @@ import javax.servlet.http.HttpServletRequest
 @Transactional
 class RichSkillController @Autowired constructor(
     val richSkillRepository: RichSkillRepository,
-    val keywordRepository: KeywordRepository,
-    val jobCodeRepository: JobCodeRepository,
     val appConfig: AppConfig
     //val esRichSkillRepository: EsRichSkillRepository,
 ) {
@@ -40,7 +38,7 @@ class RichSkillController @Autowired constructor(
     fun createSkills(@RequestBody rsdUpdates: List<RsdUpdateDTO>,
                      @AuthenticationPrincipal user: OAuth2User?): List<RichSkillDTO>
     {
-        return richSkillRepository.createFromApi(rsdUpdates, user).map { RichSkillDTO(it, appConfig.baseUrl) }
+        return richSkillRepository.createFromApi(rsdUpdates, user!!).map { RichSkillDTO(it.toModel(), appConfig.baseUrl) }
     }
 
     @GetMapping("/{uuid}", produces = [MediaType.APPLICATION_JSON_VALUE])

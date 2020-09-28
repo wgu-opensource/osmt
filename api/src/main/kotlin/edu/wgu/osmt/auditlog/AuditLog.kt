@@ -23,11 +23,12 @@ data class AuditLog(
 ) : DatabaseData {
 
     companion object {
+
         fun fromAtomicOp(
             table: Table,
             entityId: Long,
             changes: String,
-            user: OAuth2User,
+            user: String,
             opType: AuditOperationType
         ): AuditLog {
             return AuditLog(
@@ -36,9 +37,19 @@ data class AuditLog(
                 operationType = opType.name,
                 tableName = table.tableName,
                 entityId = entityId,
-                user = user.name.toString(),
+                user = user,
                 changedFields = changes
             )
+        }
+
+        fun fromAtomicOp(
+            table: Table,
+            entityId: Long,
+            changes: String,
+            user: OAuth2User,
+            opType: AuditOperationType
+        ): AuditLog {
+            return fromAtomicOp(table,entityId,changes,user.name.toString(),opType)
         }
     }
 }

@@ -12,9 +12,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 @Profile("apiserver")
+@Transactional
 class TaskQueueHandler {
     val logger: Logger = LoggerFactory.getLogger(TaskQueueHandler::class.java)
 
@@ -36,14 +38,13 @@ class TaskQueueHandler {
     fun csvJobProcessor(csvTask: CsvTask) {
         logger.info("Started processing task id: ${csvTask.uuid}")
 
-        val allSkills = transaction {
+        val allSkills =
             richSkillRepository.dao.all().with(RichSkillDescriptorDao::collections)
                 .map { rsdao ->
                     val rs = rsdao.toModel()
                     rs.collections = rsdao.collections.map{it.toModel()}
                     rs
                 }
-        }
 
         val csvString = RichSkillCsvExport(appConfig).toCsv(allSkills)
 

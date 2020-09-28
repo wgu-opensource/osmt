@@ -1,33 +1,20 @@
 package edu.wgu.osmt.keyword
 
-import com.fasterxml.jackson.annotation.JsonView
 import edu.wgu.osmt.db.*
-import edu.wgu.osmt.richskill.RichSkillView
 import net.minidev.json.JSONObject
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.`java-time`.datetime
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
-import org.jetbrains.exposed.sql.update
 import java.time.LocalDateTime
 
 data class Keyword(
-    @field:JsonView(RichSkillView.PrivateDetailView::class)
     override val id: Long?,
-
-    @field:JsonView(RichSkillView.PrivateDetailView::class)
     override val creationDate: LocalDateTime,
-
-    @field:JsonView(RichSkillView.PrivateDetailView::class)
     override val updateDate: LocalDateTime,
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
     val type: KeywordTypeEnum,
-
-    @field:JsonView(RichSkillView.PublicDetailView::class)
     val value: String? = null,
-
-    @field:JsonView(RichSkillView.PublicDetailView::class)
     val uri: String? = null
 ) : DatabaseData, HasUpdateDate {
 }

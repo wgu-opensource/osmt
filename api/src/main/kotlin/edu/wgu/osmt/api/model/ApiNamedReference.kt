@@ -1,7 +1,6 @@
 package edu.wgu.osmt.api.model
 
 import edu.wgu.osmt.keyword.Keyword
-import edu.wgu.osmt.keyword.KeywordDao
 
 
 data class ApiNamedReference(

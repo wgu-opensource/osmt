@@ -1,80 +1,71 @@
-package edu.wgu.osmt.richskill
+package edu.wgu.osmt.api.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonView
-import edu.wgu.osmt.api.model.ApiNamedReference
+import edu.wgu.osmt.richskill.RichSkillDescriptor
 import net.minidev.json.JSONObject
 import java.time.LocalDateTime
-
-class RichSkillView {
-    interface PublicDetailView {}
-    interface PrivateDetailView : PublicDetailView {}
-}
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 class ApiSkill(private val rsd: RichSkillDescriptor, private val baseUrl: String) {
 
     // TODO include view of collection
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
     @JsonProperty("@context")
     val context = "https://rsd.osmt.dev/context-v1.json"
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
+    @JsonProperty
     val `type` = "RichSkillDescriptor"
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonProperty
     val author: ApiNamedReference?
         get() = rsd.author?.let { ApiNamedReference.fromKeyword(it) }
 
-    @get:JsonView(RichSkillView.PrivateDetailView::class)
+    @get:JsonProperty
     val creationDate: LocalDateTime
         get() = rsd.creationDate
 
-    @get:JsonView(RichSkillView.PrivateDetailView::class)
+    @get:JsonProperty
     val updateDate: LocalDateTime
         get() = rsd.updateDate
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonProperty
     val skillName: String
         get() = rsd.name
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonProperty
     val skillStatement: String
         get() = rsd.statement
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonProperty
     val keywords: List<ApiNamedReference>
         get() = rsd.searchingKeywords.map { ApiNamedReference.fromKeyword(it) }
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonProperty
     val category: String?
         get() = rsd.category?.value
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonProperty
     val id: String
-        @JsonProperty("id")
         get() = rsd.canonicalUrl(baseUrl)
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonProperty
     val uuid: String
-        @JsonProperty("uuid")
         get() = rsd.uuid.toString()
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonProperty
     val certifications: List<ApiNamedReference>
         get() = rsd.certifications.map { ApiNamedReference.fromKeyword(it) }
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonProperty
     val standards: List<ApiNamedReference>
         get() = rsd.standards.map { ApiNamedReference.fromKeyword(it) }
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonProperty
     val alignments: List<ApiNamedReference>
         get() = rsd.alignments.map { ApiNamedReference.fromKeyword(it) }
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonProperty
     val occupations: List<JSONObject>
         get() = rsd.jobCodes.map { jobCode ->
             JSONObject(
@@ -87,7 +78,7 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val baseUrl: String
             )
         }
 
-    @get:JsonView(RichSkillView.PublicDetailView::class)
+    @get:JsonProperty
     val employers: List<ApiNamedReference>
         get() = rsd.employers.map { ApiNamedReference.fromKeyword(it) }
 }

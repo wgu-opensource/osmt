@@ -1,6 +1,6 @@
 package edu.wgu.osmt.richskill
 
-import com.fasterxml.jackson.annotation.JsonView
+import edu.wgu.osmt.api.model.ApiSkill
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.keyword.KeywordDao
@@ -41,14 +41,12 @@ class RichSkillController @Autowired constructor(
     }
 
     @GetMapping("/{uuid}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @JsonView(RichSkillView.PublicDetailView::class)
     @ResponseBody
     fun byUUID(@PathVariable uuid: String): ApiSkill? {
         return richSkillRepository.findByUUID(uuid)?.let { ApiSkill(it.toModel(), appConfig.baseUrl) }
     }
 
     @RequestMapping("/{uuid}", produces = [MediaType.TEXT_HTML_VALUE])
-    @JsonView(RichSkillView.PublicDetailView::class)
     fun byUUIDHtmlView(@PathVariable uuid: String): String {
         return "forward:/skills/$uuid"
     }

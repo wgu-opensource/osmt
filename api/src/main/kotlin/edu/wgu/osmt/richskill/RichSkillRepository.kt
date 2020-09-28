@@ -122,7 +122,13 @@ class RichSkillRepositoryImpl @Autowired constructor(
     }
 
     override fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao? {
+        if (updateObject.name.isNullOrBlank() || updateObject.statement.isNullOrBlank()) {
+            return null
+        }
+
         val newRsd = dao.new {
+            this.name = updateObject.name
+            this.statement = updateObject.statement
             this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
             this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.uuid = UUID.randomUUID().toString()

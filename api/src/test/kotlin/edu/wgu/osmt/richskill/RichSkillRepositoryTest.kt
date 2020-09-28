@@ -24,14 +24,27 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository
 
+    val userString = "unittestuser"
+
+    @Test
+    fun `should not create a rich skill without a non-blank name and statement`(){
+        assertThat(richSkillRepository.create(RsdUpdateObject(), userString)).isNull()
+        assertThat(richSkillRepository.create(RsdUpdateObject(name="name"), userString)).isNull()
+        assertThat(richSkillRepository.create(RsdUpdateObject(statement="statement"), userString)).isNull()
+        assertThat(richSkillRepository.create(RsdUpdateObject(name=" ",statement=" "), userString)).isNull()
+    }
+
     @Test
     fun `should insert and retrieve a rich skill to the database`(){
         val name = UUID.randomUUID().toString()
         val statement = UUID.randomUUID().toString()
-        val created = richSkillRepository.create(name = name, statement = statement, author = null, user = "test", category = null).toModel()
-        val retrieved  = richSkillRepository.findById(created.id!!)
+        val updateObject = RsdUpdateObject(name = name, statement = statement)
 
-        assertThat(created.id!!).isEqualTo(retrieved?.id?.value)
+        val created = richSkillRepository.create(updateObject, userString)
+        assertThat(created).isNotNull
+
+        val retrieved  = richSkillRepository.findById(created!!.id.value)
+        assertThat(created.id.value).isEqualTo(retrieved?.id?.value)
         assertThat(retrieved?.name).isEqualTo(name)
         assertThat(retrieved?.statement).isEqualTo(statement)
     }

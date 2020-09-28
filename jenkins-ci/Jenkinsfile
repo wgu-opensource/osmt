@@ -4,7 +4,8 @@ pipeline {
 
     uniqueId = "${env.CHANGE_ID}-${env.BUILD_NUMBER}"
     
-    clientContainer = "client-test-${uniqueId}"
+    clientImageName = "client-image-${uniqueId}"
+    clientContainerName = "client-container-${uniqueId}"
 
     clientDockerfileLocation  = "jenkins-ci/Dockerfile.front"
 
@@ -36,7 +37,7 @@ pipeline {
         stage("Front end") {
           steps {
             githubNotify context: clientCommitContext, description: buildStarted,  status: 'PENDING'
-            sh "docker build . -t ${clientContainer} -f ${clientDockerfileLocation}"
+            sh "docker build . -t ${clientImageName} -f ${clientDockerfileLocation}"
           }
 
           post {
@@ -74,7 +75,8 @@ pipeline {
         stage("Front end") {
            steps {
             githubNotify context: clientCommitContext, description: testStarted,  status: 'PENDING'
-            sh "docker run --rm ${clientContainer}"
+            sh "docker run --name ${clientContainerName} ${clientImageName}"
+            sh "docker cp ${clientContainerName}:/ui/test-results ${env.WORKSPACE}/ui/test-results"
           }
 
           post {
@@ -110,7 +112,11 @@ pipeline {
 
   post {
     always {
-      sh "docker rmi ${clientContainer}"
+      sh "docker stop ${clientContainerName}"
+      sh "docker rm ${clientContainerName}"
+      sh "docker rmi ${clientImageName}"
+      junit "api/target/surefire-reports/*.xml"
+      junit "ui/test-results/*.xml"
     }
   }
 }

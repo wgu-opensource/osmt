@@ -25,6 +25,28 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
     lateinit var richSkillRepository: RichSkillRepository
 
     @Test
+    fun `should update an existing skill`() {
+        val name = UUID.randomUUID().toString()
+        val statement = UUID.randomUUID().toString()
+        val created = richSkillRepository.create(name = name, statement = statement, author = null, user = "test", category = null).toModel()
+        assertThat(created.name).isEqualTo(name)
+
+        val newName = UUID.randomUUID().toString()
+        val newStatement = UUID.randomUUID().toString()
+
+        val updated = richSkillRepository.update(RsdUpdateObject(
+            id=created.id!!,
+            name=newName,
+            statement=newStatement
+        ), "test")
+        val retrieved  = richSkillRepository.findById(created.id!!)
+
+        assertThat(retrieved?.name).isEqualTo(newName)
+        assertThat(updated?.name).isEqualTo(newName)
+
+    }
+
+    @Test
     fun `should insert and retrieve a rich skill to the database`(){
         val name = UUID.randomUUID().toString()
         val statement = UUID.randomUUID().toString()

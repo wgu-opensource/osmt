@@ -148,18 +148,24 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
     fun `should update an existing skill`() {
         val name = UUID.randomUUID().toString()
         val statement = UUID.randomUUID().toString()
-        val created = richSkillRepository.create(name = name, statement = statement, author = null, user = "test", category = null).toModel()
-        assertThat(created.name).isEqualTo(name)
+        val created = richSkillRepository.create(RsdUpdateObject(
+            name = name,
+            statement = statement,
+            author = null,
+            category = null
+        ), "test")
+        assertThat(created).isNotNull
+        assertThat(created!!.name).isEqualTo(name)
 
         val newName = UUID.randomUUID().toString()
         val newStatement = UUID.randomUUID().toString()
 
         val updated = richSkillRepository.update(RsdUpdateObject(
-            id=created.id!!,
+            id=created.id.value,
             name=newName,
             statement=newStatement
         ), "test")
-        val retrieved  = richSkillRepository.findById(created.id!!)
+        val retrieved  = richSkillRepository.findById(created.id.value)
 
         assertThat(retrieved?.name).isEqualTo(newName)
         assertThat(updated?.name).isEqualTo(newName)

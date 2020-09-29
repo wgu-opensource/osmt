@@ -37,6 +37,7 @@ object RichSkillDescriptorTable : LongIdTable("RichSkillDescriptor"), TableWithU
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
 
+    // TODO remove and rely on DAO updates
     override fun updateBuilderApplyFromUpdateObject(
         updateBuilder: UpdateBuilder<Number>,
         updateObject: RsdUpdateObject

@@ -10,7 +10,7 @@ import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
-import edu.wgu.osmt.db.updateFromObject
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordDao
@@ -19,7 +19,6 @@ import edu.wgu.osmt.keyword.KeywordTypeEnum
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -59,6 +58,71 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
     override fun findById(id: Long) = dao.findById(id)
 
+    fun applyUpdate(updateObject: RsdUpdateObject): RichSkillDescriptorDao? {
+        return dao.findById(updateObject.id!!)?.let { rsdDao ->
+            rsdDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
+            when (updateObject.publishStatus) {
+                PublishStatus.Archived -> rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+                PublishStatus.Published -> rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+                PublishStatus.Unpublished -> {
+                } // non-op
+            }
+            updateObject.name?.let { rsdDao.name = it }
+            updateObject.statement?.let { rsdDao.statement = it }
+            updateObject.category?.let {
+                if (it.t != null) {
+                    rsdDao.category = it.t
+                } else {
+                    rsdDao.category = null
+                }
+            }
+            updateObject.author?.let {
+                if (it.t != null) {
+                    rsdDao.author = it.t
+                } else {
+                    rsdDao.author = null
+                }
+            }
+
+            // update keywords
+            updateObject.keywords?.let {
+
+                it.add?.forEach { keyword ->
+                    richSkillKeywordTable.create(richSkillId = updateObject.id, keywordId = keyword.id.value!!)
+                }
+
+                it.remove?.forEach { keyword ->
+                    richSkillKeywordTable.delete(richSkillId = updateObject.id, keywordId = keyword.id.value!!)
+                }
+            }
+
+            // update jobcodes
+            updateObject.jobCodes?.let {
+                it.add?.forEach { jobCode ->
+                    richSkillJobCodeTable.create(richSkillId = updateObject.id, jobCodeId = jobCode.id.value!!)
+                }
+                it.remove?.forEach { jobCode ->
+                    richSkillJobCodeTable.delete(richSkillId = updateObject.id, jobCodeId = jobCode.id.value!!)
+                }
+            }
+
+            // update collections
+            updateObject.collections?.let {
+                it.add?.forEach { collection ->
+                    richSkillCollectionTable.create(
+                        collectionId = collection.id.value!!,
+                        skillId = updateObject.id
+                    )
+                }
+                it.remove?.forEach { collection ->
+                    richSkillCollectionTable.delete(collectionId = collection.id.value!!, skillId = updateObject.id)
+                }
+            }
+
+            rsdDao
+        }
+    }
+
     override fun update(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao? {
         val original = dao.findById(updateObject.id!!)
         val changes = original?.let { updateObject.diff(it) }
@@ -76,44 +140,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
                 )
         }
 
-        table.updateFromObject(updateObject)
-
-        // update keywords
-        updateObject.keywords?.let {
-
-            it.add?.forEach { keyword ->
-                richSkillKeywordTable.create(richSkillId = updateObject.id, keywordId = keyword.id.value!!)
-            }
-
-            it.remove?.forEach { keyword ->
-                richSkillKeywordTable.delete(richSkillId = updateObject.id, keywordId = keyword.id.value!!)
-            }
-        }
-
-        // update jobcodes
-        updateObject.jobCodes?.let {
-            it.add?.forEach { jobCode ->
-                richSkillJobCodeTable.create(richSkillId = updateObject.id, jobCodeId = jobCode.id.value!!)
-            }
-            it.remove?.forEach { jobCode ->
-                richSkillJobCodeTable.delete(richSkillId = updateObject.id, jobCodeId = jobCode.id.value!!)
-            }
-        }
-
-        // update collections
-        updateObject.collections?.let {
-            it.add?.forEach { collection ->
-                richSkillCollectionTable.create(
-                    collectionId = collection.id.value!!,
-                    skillId = updateObject.id
-                )
-            }
-            it.remove?.forEach { collection ->
-                richSkillCollectionTable.delete(collectionId = collection.id.value!!, skillId = updateObject.id)
-            }
-        }
-
-        return dao.findById(updateObject.id)
+        return applyUpdate(updateObject)
     }
 
     override fun findByUUID(uuid: String): RichSkillDescriptorDao? {

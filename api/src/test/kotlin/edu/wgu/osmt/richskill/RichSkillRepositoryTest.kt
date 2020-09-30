@@ -6,6 +6,7 @@ import edu.wgu.osmt.api.model.ApiReferenceListUpdate
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -90,12 +91,84 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
         assertThat(keyword?.value).isEqualTo(namedReference?.name)
     }
 
+    fun assertThatKeywordsMatchStringList(keywords: List<Keyword>, stringList: ApiStringListUpdate) {
+        stringList.add?.forEach { str ->
+            val found = keywords.find { it.value == str }
+            assertThat(found).isNotNull
+        }
+
+        stringList.remove?.forEach { str ->
+            val found = keywords.find { it.value == str }
+            assertThat(found).isNull()
+        }
+    }
+
+    fun assertThatJobCodesMatchStringList(jobCodes: List<JobCode>, stringList: ApiStringListUpdate) {
+        stringList.add?.forEach { str ->
+            val found = jobCodes.find { it.code == str }
+            assertThat(found).isNotNull
+        }
+
+        stringList.remove?.forEach { str ->
+            val found = jobCodes.find { it.code == str }
+            assertThat(found).isNull()
+        }
+    }
+
     fun assertThatKeywordsMatchReferenceList(keywords: List<Keyword>, referenceList: ApiReferenceListUpdate) {
         referenceList.add?.forEach { namedReference ->
             val found = keywords.find { it.value == namedReference.name && it.uri == namedReference.id }
             assertThat(found).isNotNull
             assertThatKeywordMatchesNamedReference(found, namedReference)
         }
+
+        referenceList.remove?.forEach { namedReference ->
+            val found = keywords.find { it.value == namedReference.name && it.uri == namedReference.id }
+            assertThat(found).isNull()
+        }
+    }
+
+    fun assertThatRichSkillMatchesApiSkillUpdate(skill: RichSkillDescriptor, apiObj: ApiSkillUpdate) {
+        assertThat(skill.name).isEqualTo(apiObj.skillName)
+        assertThat(skill.statement).isEqualTo(apiObj.skillStatement)
+
+        assertThat(skill.category).isNotNull
+        assertThat(skill.category?.value).isEqualTo(apiObj.category)
+        assertThat(skill.category?.uri).isNull()
+
+        assertThatKeywordMatchesNamedReference(skill.author, apiObj.author)
+
+        assertThatKeywordsMatchStringList(skill.searchingKeywords, apiObj.keywords!!)
+
+        assertThatKeywordsMatchReferenceList(skill.certifications, apiObj.certifications!!)
+        assertThatKeywordsMatchReferenceList(skill.standards, apiObj.standards!!)
+        assertThatKeywordsMatchReferenceList(skill.alignments, apiObj.alignments!!)
+        assertThatKeywordsMatchReferenceList(skill.employers, apiObj.employers!!)
+
+        assertThatJobCodesMatchStringList(skill.jobCodes, apiObj.occupations!!)
+
+        assertThat(skill.publishStatus()).isEqualTo(apiObj.publishStatus)
+    }
+
+    @Test
+    fun `should update an existing skill from an ApiSkillUpdate object`() {
+        val originalSkillUpdate = random_skill_update()
+        val originalSkillDao = richSkillRepository.createFromApi(listOf(originalSkillUpdate), userString).first()
+
+        val newSkillUpdate = random_skill_update()
+        newSkillUpdate.copy(
+            keywords=newSkillUpdate.keywords?.copy(remove=originalSkillUpdate.keywords?.add),
+            certifications=newSkillUpdate.certifications?.copy(remove=originalSkillUpdate.certifications?.add),
+            standards=newSkillUpdate.standards?.copy(remove=originalSkillUpdate.standards?.add),
+            alignments=newSkillUpdate.alignments?.copy(remove=originalSkillUpdate.alignments?.add),
+            employers=newSkillUpdate.employers?.copy(remove=originalSkillUpdate.employers?.add),
+            occupations=newSkillUpdate.occupations?.copy(remove=originalSkillUpdate.occupations?.add)
+        )
+
+        val updatedDao = richSkillRepository.updateFromApi(originalSkillDao.id.value, newSkillUpdate, userString)
+        assertThat(updatedDao).isNotNull
+        val updated = updatedDao!!.toModel()
+        assertThatRichSkillMatchesApiSkillUpdate(updated, newSkillUpdate)
     }
 
     @Test
@@ -108,31 +181,7 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
         results.forEachIndexed { i, skillDao ->
             val skill = skillDao.toModel()
             val apiObj = skillUpdates[i]
-            assertThat(skill.name).isEqualTo(apiObj.skillName)
-            assertThat(skill.statement).isEqualTo(apiObj.skillStatement)
-
-            assertThat(skill.category).isNotNull
-            assertThat(skill.category?.value).isEqualTo(apiObj.category)
-            assertThat(skill.category?.uri).isNull()
-
-            assertThatKeywordMatchesNamedReference(skill.author, apiObj.author)
-
-            apiObj.keywords!!.add!!.forEach { kwString ->
-                val foundKeyword = skill.searchingKeywords.find { it.value == kwString }
-                assertThat(foundKeyword).isNotNull
-            }
-
-            assertThatKeywordsMatchReferenceList(skill.certifications, apiObj.certifications!!)
-            assertThatKeywordsMatchReferenceList(skill.standards, apiObj.standards!!)
-            assertThatKeywordsMatchReferenceList(skill.alignments, apiObj.alignments!!)
-            assertThatKeywordsMatchReferenceList(skill.employers, apiObj.employers!!)
-
-            apiObj.occupations!!.add!!.forEach { jobCode ->
-                val found = skill.jobCodes.find { it.code == jobCode }
-                assertThat(found).isNotNull
-            }
-
-            assertThat(skill.publishStatus()).isEqualTo(apiObj.publishStatus)
+            assertThatRichSkillMatchesApiSkillUpdate(skill, apiObj)
         }
     }
 

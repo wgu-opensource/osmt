@@ -70,7 +70,7 @@ data class RichSkillDescriptor(
 }
 
 data class RsdUpdateObject(
-    override val id: Long,
+    override val id: Long? = null,
     val name: String? = null,
     val statement: String? = null,
     val author: NullableFieldUpdate<KeywordDao>? = null,

@@ -13,6 +13,7 @@ interface JobCodeRepository {
     fun findAll(): List<JobCode>
     fun findById(id: Long): JobCodeDao?
     fun findByCode(code: String): JobCodeDao?
+    fun findByCodeOrCreate(code: String, framework: String? = null): JobCodeDao
     fun create(code: String, framework: String? = null): JobCodeDao
 }
 
@@ -29,6 +30,11 @@ class JobCodeRepositoryImpl : JobCodeRepository {
 
     override fun findByCode(code: String): JobCodeDao? {
         return table.select { table.code eq code }.singleOrNull()?.let { dao.wrapRow(it) }
+    }
+
+    override fun findByCodeOrCreate(code: String, framework: String?): JobCodeDao {
+        val existing = findByCode(code)
+        return existing ?: create(code, framework)
     }
 
     override fun create(code: String, framework: String?): JobCodeDao {

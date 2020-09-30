@@ -531,7 +531,7 @@ components:
         certifications:
           $ref: '#/components/schemas/ReferenceListUpdate'
         occupations:
-          $ref: '#/components/schemas/ReferenceListUpdate'
+          $ref: '#/components/schemas/StringListUpdate'
         employers:
           $ref: '#/components/schemas/ReferenceListUpdate'
         author:

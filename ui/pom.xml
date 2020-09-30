@@ -5,12 +5,12 @@
   <parent>
     <groupId>edu.wgu.osmt</groupId>
     <artifactId>osmt-parent</artifactId>
-    <version>0.5.1</version>
+    <version>0.5.2</version>
   </parent>
 
   <groupId>edu.wgu.osmt</groupId>
   <artifactId>osmt-ui</artifactId>
-  <version>0.5.1</version>
+  <version>0.5.2</version>
 
   <packaging>pom</packaging>
 

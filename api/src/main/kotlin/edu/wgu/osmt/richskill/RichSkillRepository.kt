@@ -35,7 +35,9 @@ interface RichSkillRepository {
     fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao?
 
     fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao>
+    fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String): RichSkillDescriptorDao?
     fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate): RsdUpdateObject
+
 }
 
 @Repository
@@ -184,6 +186,19 @@ class RichSkillRepositoryImpl @Autowired constructor(
             create(rsdUpdateObject, user)
         }
         return newSkills.filterNotNull()
+    }
+
+    override fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String): RichSkillDescriptorDao? {
+        val errors = skillUpdate.validateForCreation(0)
+        if (errors?.isNotEmpty() == true) {
+            throw FormValidationException("Invalid SkillUpdateDescriptor", errors)
+        }
+
+        val rsdUpdateObject = rsdUpdateFromApi(skillUpdate)
+        val updateObjectWithId = rsdUpdateObject.copy(
+            id = existingSkillId
+        )
+        return update(updateObjectWithId, user)
     }
 
     override fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate): RsdUpdateObject {

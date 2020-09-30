@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  version: 0.5.1
-  title: OSMT API
-  description: Draft API for the Open Skills Management Toolset (rdot5 release)
+  version: 0.5.2
+  title: OSMT API - Quartz
+  description: API for the Open Skills Management Toolset
 security:
   - bearerAuth: []
 
@@ -15,14 +15,14 @@ paths:
         - in: query
           name: per_page
           description: maximum number of skills to return per page
-          default: 100
           schema:
+            default: 100
             type: number
         - in: query
           name: page
           description: page number to return
-          default: 1
           schema:
+            default: 1
             type: number
       responses:
         '200':
@@ -103,7 +103,9 @@ paths:
           description: OK - Returns the results of the task in the content-type originally requested.
           content:
             '*/*':
-              description: "The results of the previously requested task"
+              schema:
+                type: string
+                format: binary
         '202':
           description: Accepted - Returns the status of the in-progress Task.
           content:
@@ -128,26 +130,31 @@ components:
       type: http
       scheme: bearer
   headers:
-    Link: 
-      type: string
+    Link:
+      schema:
+        type: string
       description: |
         Links to related resources in 
         [RFC 5988](https://tools.ietf.org/html/rfc5988#section-5) format.
         This will include a link with relation type `next` or `prev` if present.
     XTotalCount:
-      type: string
+      schema:
+        type: string
       description: |
         The total number of records returned on all pages for this request.
     XRateLimit:
-      type: number
+      schema:
+        type: number
       description: |
         The number of requests permitted to make per hour.
     XRateRemaining:
-      type: number
+      schema:
+        type: number
       description: |
         The number of requests remaining in the current rate limit window.
     XRateReset:
-      type: string
+      schema:
+        type: string
       description: |
         The time at which the current rate limit window resets in UTC epoch seconds.
   schemas:

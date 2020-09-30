@@ -4,44 +4,44 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 interface JobCodeRepository {
     val table: Table
     fun findAll(): List<JobCode>
-    fun findById(id: Long): JobCode?
-    fun findByCode(code: String): JobCode?
+    fun findById(id: Long): JobCodeDao?
+    fun findByCode(code: String): JobCodeDao?
+    fun findByCodeOrCreate(code: String, framework: String? = null): JobCodeDao
     fun create(code: String, framework: String? = null): JobCodeDao
 }
 
 @Repository
+@Transactional
 class JobCodeRepositoryImpl : JobCodeRepository {
     val dao = JobCodeDao.Companion
     override val table = JobCodeTable
 
-    override fun findAll() = transaction {
-        dao.all().map { it.toModel() }
+    override fun findAll() = dao.all().map { it.toModel()
     }
 
-    override fun findById(id: Long): JobCode? = transaction {
-        dao.findById(id)?.toModel()
+    override fun findById(id: Long): JobCodeDao? = dao.findById(id)
+
+    override fun findByCode(code: String): JobCodeDao? {
+        return table.select { table.code eq code }.singleOrNull()?.let { dao.wrapRow(it) }
     }
 
-    override fun findByCode(code: String): JobCode? {
-        return transaction {
-            table.select { table.code eq code }.singleOrNull()?.let { dao.wrapRow(it).toModel() }
-        }
+    override fun findByCodeOrCreate(code: String, framework: String?): JobCodeDao {
+        val existing = findByCode(code)
+        return existing ?: create(code, framework)
     }
 
     override fun create(code: String, framework: String?): JobCodeDao {
-        return transaction {
-            dao.new {
-                updateDate = LocalDateTime.now(ZoneOffset.UTC)
-                creationDate = LocalDateTime.now(ZoneOffset.UTC)
-                this.code = code
-                this.framework = framework
-            }
+        return dao.new {
+            creationDate = LocalDateTime.now(ZoneOffset.UTC)
+            this.code = code
+            this.framework = framework
         }
     }
 }

@@ -1,7 +1,7 @@
 package edu.wgu.osmt.richskill
 
+import edu.wgu.osmt.db.TableWithUpdate
 import edu.wgu.osmt.db.PublishStatusUpdate
-import edu.wgu.osmt.db.TableWithUpdateMapper
 import edu.wgu.osmt.jobcode.JobCodeTable
 import edu.wgu.osmt.keyword.KeywordTable
 import org.jetbrains.exposed.dao.id.EntityID
@@ -12,9 +12,8 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.time.LocalDateTime
 
 
-object RichSkillDescriptorTable : TableWithUpdateMapper<RsdUpdateObject>, LongIdTable("RichSkillDescriptor"),
+object RichSkillDescriptorTable : LongIdTable("RichSkillDescriptor"), TableWithUpdate<RsdUpdateObject>,
     PublishStatusUpdate<RsdUpdateObject> {
-    override val table = this
 
     override val creationDate = datetime("creationDate")
     override val updateDate = datetime("updateDate")
@@ -38,24 +37,25 @@ object RichSkillDescriptorTable : TableWithUpdateMapper<RsdUpdateObject>, LongId
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
 
+    // TODO remove and rely on DAO updates
     override fun updateBuilderApplyFromUpdateObject(
         updateBuilder: UpdateBuilder<Number>,
         updateObject: RsdUpdateObject
     ) {
-        super<TableWithUpdateMapper>.updateBuilderApplyFromUpdateObject(updateBuilder, updateObject)
+        super<TableWithUpdate>.updateBuilderApplyFromUpdateObject(updateBuilder, updateObject)
         super<PublishStatusUpdate>.updateBuilderApplyFromUpdateObject(updateBuilder, updateObject)
         updateObject.name?.let { updateBuilder[name] = it }
         updateObject.statement?.let { updateBuilder[statement] = it }
         updateObject.category?.let {
             if (it.t != null) {
-                updateBuilder[category] = EntityID<Long>(it.t.id!!, KeywordTable)
+                updateBuilder[category] = EntityID<Long>(it.t.id.value!!, KeywordTable)
             } else {
                 updateBuilder[category] = null
             }
         }
         updateObject.author?.let {
             if (it.t != null) {
-                updateBuilder[author] = EntityID<Long>(it.t.id!!, KeywordTable)
+                updateBuilder[author] = EntityID<Long>(it.t.id.value!!, KeywordTable)
             } else {
                 updateBuilder[author] = null
             }

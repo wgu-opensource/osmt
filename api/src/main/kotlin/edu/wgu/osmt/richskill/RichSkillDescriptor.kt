@@ -13,6 +13,9 @@ import java.time.ZoneOffset
 import org.valiktor.functions.validate
 import java.util.*
 import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.collection.CollectionDao
+import edu.wgu.osmt.jobcode.JobCodeDao
+import edu.wgu.osmt.keyword.KeywordDao
 import org.valiktor.functions.isNotEqualTo
 
 @Document(indexName = "richskillrepository", createIndex = true)
@@ -49,7 +52,7 @@ data class RichSkillDescriptor(
     val employers: List<Keyword>
         get() = this.keywords.filter { it.type == KeywordTypeEnum.Employer }
 
-    fun canonicalUrl(baseUrl:String): String = "$baseUrl/api/skills/${uuid}"
+    fun canonicalUrl(baseUrl: String): String = "$baseUrl/api/skills/${uuid}"
 
     companion object {
         fun create(name: String, statement: String): RichSkillDescriptor {
@@ -67,27 +70,27 @@ data class RichSkillDescriptor(
 }
 
 data class RsdUpdateObject(
-    override val id: Long,
+    override val id: Long? = null,
     val name: String? = null,
     val statement: String? = null,
-    val author: NullableFieldUpdate<Keyword>? = null,
-    val category: NullableFieldUpdate<Keyword>? = null,
-    val keywords: ListFieldUpdate<Keyword>? = null,
-    val jobCodes: ListFieldUpdate<JobCode>? = null,
-    val collections: ListFieldUpdate<Collection>? = null,
+    val author: NullableFieldUpdate<KeywordDao>? = null,
+    val category: NullableFieldUpdate<KeywordDao>? = null,
+    val keywords: ListFieldUpdate<KeywordDao>? = null,
+    val jobCodes: ListFieldUpdate<JobCodeDao>? = null,
+    val collections: ListFieldUpdate<CollectionDao>? = null,
     override val publishStatus: PublishStatus? = null
 ) : UpdateObject<RichSkillDescriptorDao>, HasPublishStatus {
 
     init {
         validate(this) {
             validate(RsdUpdateObject::category).validate {
-                validate(NullableFieldUpdate<Keyword>::t).validate {
-                    validate(Keyword::type).isEqualTo(KeywordTypeEnum.Category)
+                validate(NullableFieldUpdate<KeywordDao>::t).validate {
+                    validate(KeywordDao::type).isEqualTo(KeywordTypeEnum.Category)
                 }
             }
             validate(RsdUpdateObject::author).validate {
-                validate(NullableFieldUpdate<Keyword>::t).validate {
-                    validate(Keyword::type).isEqualTo(KeywordTypeEnum.Author)
+                validate(NullableFieldUpdate<KeywordDao>::t).validate {
+                    validate(KeywordDao::type).isEqualTo(KeywordTypeEnum.Author)
                 }
             }
             validate(RsdUpdateObject::publishStatus).isNotEqualTo(PublishStatus.Unpublished)
@@ -108,28 +111,64 @@ data class RsdUpdateObject(
 
     fun compareCategory(that: RichSkillDescriptorDao): JSONObject? {
         return category?.let {
-            if (that.category?.let { id } != it.t?.id) {
-                jsonUpdateStatement(that.name, that.category?.let { it.value }, it.t?.value)
+            if (that.category?.value?.let { id } != it.t?.id?.value) {
+                jsonUpdateStatement(that::category.name, that.category?.let { it.value }, it.t?.value)
             } else null
         }
     }
 
     fun compareAuthor(that: RichSkillDescriptorDao): JSONObject? {
         return author?.let {
-            if (that.author?.let { id } != it.t?.id) {
-                jsonUpdateStatement(that.name, that.author?.let { it.value }, it.t?.value)
+            if (that.author?.value?.let { id } != it.t?.id?.value) {
+                jsonUpdateStatement(that::author.name, that.author?.value?.let { it }, it.t?.value)
             } else null
         }
     }
 
-    fun comparePublishStatus(that: RichSkillDescriptorDao): JSONObject?{
-        return publishStatus?.let{
-            jsonUpdateStatement(::publishStatus.name, that.publishStatus().name, it.name)
+    fun comparePublishStatus(that: RichSkillDescriptorDao): JSONObject? {
+        return publishStatus?.let {
+            jsonUpdateStatement(that::publishStatus.name, that.publishStatus().name, it.name)
+        }
+    }
+
+    fun compareKeywords(that: RichSkillDescriptorDao): JSONObject? {
+        val added = keywords?.add?.map { mutableMapOf("id" to it.id.value, "value" to it.value, "type" to it.type) }
+        val removed = keywords?.remove?.map { mutableMapOf("id" to it.id.value, "value" to it.value, "type" to it.type) }
+        val addedPair = added?.let { "added" to it }
+        val removedPair = removed?.let { "removed" to it }
+        val operationsList = listOfNotNull(addedPair, removedPair).toTypedArray()
+
+        return if (added?.isNotEmpty() == true or (removed?.isNotEmpty() == true)) {
+            JSONObject(mutableMapOf(that::keywords.name to mutableMapOf(*operationsList)))
+        } else {
+            null
+        }
+    }
+
+    fun compareCollections(that: RichSkillDescriptorDao): JSONObject? {
+        val added = collections?.add?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
+        val removed = collections?.remove?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
+        val addedPair = added?.let { "added" to it }
+        val removedPair = removed?.let { "removed" to it }
+        val operationsList = listOfNotNull(addedPair, removedPair).toTypedArray()
+
+        return if (added?.isNotEmpty() == true or (removed?.isNotEmpty() == true)) {
+            JSONObject(mutableMapOf(that::collections.name to mutableMapOf(*operationsList)))
+        } else {
+            null
         }
     }
 
     override val comparisonList: List<(t: RichSkillDescriptorDao) -> JSONObject?> =
-        listOf(::compareName, ::compareStatement, ::compareCategory, ::compareAuthor, ::comparePublishStatus)
+        listOf(
+            ::compareName,
+            ::compareStatement,
+            ::compareCategory,
+            ::compareAuthor,
+            ::comparePublishStatus,
+            ::compareKeywords,
+            ::compareCollections
+        )
 }
 
 

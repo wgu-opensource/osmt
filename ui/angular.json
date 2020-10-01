@@ -49,7 +49,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/wgu-design-system-patternlibrary/dist/css/screen.css"
             ],
             "scripts": []
           },

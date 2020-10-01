@@ -247,8 +247,8 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
         val name = UUID.randomUUID().toString()
         val statement = UUID.randomUUID().toString()
         val keywordName = UUID.randomUUID().toString()
-        val keyword = keywordRepository.findOrCreate(KeywordTypeEnum.Keyword, value=keywordName)
-        val otherKeyword = keywordRepository.findOrCreate(KeywordTypeEnum.Keyword, value=UUID.randomUUID().toString())
+        val keyword = keywordRepository.findOrCreate(KeywordTypeEnum.Keyword, value=keywordName)!!
+        val otherKeyword = keywordRepository.findOrCreate(KeywordTypeEnum.Keyword, value=UUID.randomUUID().toString())!!
         val createObject = RsdUpdateObject(
             name = name,
             statement = statement,
@@ -267,7 +267,5 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
         val skill = updated!!.toModel()
         assertThat(skill.searchingKeywords.size).isEqualTo(1)
         assertThat(skill.searchingKeywords[0].value == keywordName)
-
-
     }
 }

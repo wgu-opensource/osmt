@@ -3,7 +3,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {RichSkillService} from "../service/rich-skill.service";
 import {Observable} from "rxjs";
-import {INamedReference, RichSkill} from "../RichSkill";
+import {ApiNamedReference, INamedReference, ApiSkill} from "../ApiSkill";
 import {ApiStringListUpdate, IStringListUpdate, ApiSkillUpdate} from "../ApiSkillUpdate";
 
 
@@ -20,10 +20,10 @@ export class RichSkillFormComponent implements OnInit {
     keywords: new FormControl(""),
   })
   skillUuid: string | null = null
-  existingSkill: RichSkill | null = null
+  existingSkill: ApiSkill | null = null
 
-  skillLoaded: Observable<RichSkill> | null = null
-  skillSaved: Observable<RichSkill> | null = null
+  skillLoaded: Observable<ApiSkill> | null = null
+  skillSaved: Observable<ApiSkill> | null = null
 
   constructor(
     private fb: FormBuilder,
@@ -55,6 +55,19 @@ export class RichSkillFormComponent implements OnInit {
     return textValue.split(";").map(it => it.trim())
   }
 
+  parseAuthor(textValue: string): ApiNamedReference | undefined {
+    const val: string = textValue.trim()
+    if (val.length < 1) {
+      return undefined
+    }
+
+    if (val.indexOf("://") !== -1) {
+      return new ApiNamedReference({id: val})
+    } else {
+      return new ApiNamedReference({name: val})
+    }
+  }
+
   updateObject(): ApiSkillUpdate {
     const update = new ApiSkillUpdate()
     const formValue = this.skillForm.value
@@ -62,11 +75,21 @@ export class RichSkillFormComponent implements OnInit {
     if (!this.existingSkill || this.existingSkill.skillName !== formValue.skillName) {
       update.skillName = formValue.skillName
     }
+
     if (!this.existingSkill || this.existingSkill.skillStatement !== formValue.skillStatement) {
       update.skillStatement = formValue.skillStatement
     }
 
-    update.keywords = this.differenceStringList(this.splitTextarea(formValue.keywords), this.existingSkill?.keywords)
+    const author = this.parseAuthor(formValue.author)
+    if (author) { update.author = author }
+
+    if (!this.existingSkill || this.existingSkill.category !== formValue.category) {
+      update.category = formValue.category
+    }
+
+    const keywordDiff = this.differenceStringList(this.splitTextarea(formValue.keywords), this.existingSkill?.keywords)
+    if (keywordDiff) { update.keywords = keywordDiff }
+
 
     return update
   }
@@ -89,12 +112,12 @@ export class RichSkillFormComponent implements OnInit {
     }
   }
 
-  setSkill(skill: RichSkill): void {
+  setSkill(skill: ApiSkill): void {
     console.log("retrieved skill", skill)
     this.existingSkill = skill
     this.skillForm.setValue({
       skillName: skill.skillName,
-      author: skill.author?.name ? skill.author.name : "",
+      author: skill.author?.name ? skill.author.name : skill.author?.id ? skill.author?.id : "",
       skillStatement: skill.skillStatement,
       category: skill.category,
       keywords: skill.keywords.join("; ")

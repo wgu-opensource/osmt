@@ -1,4 +1,4 @@
-import {INamedReference} from "./RichSkill"
+import {ApiNamedReference, INamedReference} from "./ApiSkill"
 import {PublishStatus} from "../PublishStatus"
 
 export interface IStringListUpdate {
@@ -20,6 +20,12 @@ export interface IReferenceListUpdate {
   remove?: INamedReference[]
 }
 
+export interface ApiReferenceListUpdate {
+  add?: ApiNamedReference[]
+  remove?: ApiNamedReference[]
+}
+
+
 export interface IRichSkillUpdate {
   skillName?: string
   skillStatement?: string
@@ -40,11 +46,11 @@ export class ApiSkillUpdate {
   status?: PublishStatus
   category?: string
   keywords?: ApiStringListUpdate
-  alignments?: IReferenceListUpdate
-  certifications?: IReferenceListUpdate
-  standards?: IReferenceListUpdate
-  occupations?: IStringListUpdate
-  employers?: IReferenceListUpdate
-  author?: INamedReference
+  alignments?: ApiReferenceListUpdate
+  certifications?: ApiReferenceListUpdate
+  standards?: ApiReferenceListUpdate
+  occupations?: ApiStringListUpdate
+  employers?: ApiReferenceListUpdate
+  author?: ApiNamedReference
 
 }

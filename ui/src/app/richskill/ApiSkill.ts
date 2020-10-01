@@ -3,15 +3,23 @@ import {PublishStatus} from "../PublishStatus"
 
 
 /**
- * The interface to a RichSkill response we get from the backend
+ * The interface to a ApiSkill response we get from the backend
  */
 
 export interface INamedReference {
-  id?: number
-  name: string
+  id?: string
+  name?: string
+}
+export class ApiNamedReference {
+  id?: string
+  name?: string
+  constructor(reference: INamedReference) {
+    this.id = reference.id
+    this.name = reference.name
+  }
 }
 
-export interface IRichSkillResponse {
+export interface ISkill {
   id: string
   uuid: string
   creationDate?: string
@@ -30,7 +38,7 @@ export interface IRichSkillResponse {
   author: INamedReference
 }
 
-export class RichSkill {
+export class ApiSkill {
   id: string
   uuid: string
   creationDate?: Date = undefined
@@ -48,7 +56,7 @@ export class RichSkill {
   employers: INamedReference[]
   author: INamedReference
 
-  constructor(iRichSkill: IRichSkillResponse) {
+  constructor(iRichSkill: ISkill) {
     this.id = iRichSkill.id
     this.uuid = iRichSkill.uuid
     if (iRichSkill.creationDate) {

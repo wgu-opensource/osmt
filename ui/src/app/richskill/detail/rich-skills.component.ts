@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core"
 import {RichSkillService} from "../service/rich-skill.service"
-import {RichSkill} from "../RichSkill"
+import {ApiSkill} from "../ApiSkill"
 
 @Component({
   selector: "app-rich-skills",
@@ -9,7 +9,7 @@ import {RichSkill} from "../RichSkill"
 })
 export class RichSkillsComponent implements OnInit {
 
-  skills: RichSkill[] = []
+  skills: ApiSkill[] = []
   loading = true
 
   constructor(private richSkillService: RichSkillService) {

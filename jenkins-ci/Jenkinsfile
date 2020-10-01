@@ -4,11 +4,10 @@ pipeline {
 
     uniqueId = "${env.CHANGE_ID}-${env.BUILD_NUMBER}"
     
-    clientContainer = "client-test-${uniqueId}"
-    apiContainer    = "api-test-${uniqueId}"
+    clientImageName = "client-image-${uniqueId}"
+    clientContainerName = "client-container-${uniqueId}"
 
     clientDockerfileLocation  = "jenkins-ci/Dockerfile.front"
-    apiDockerfileLocation     = "jenkins-ci/Dockerfile.back"
 
     apiCommitContext    = "Back end"
     clientCommitContext = "Front end"
@@ -21,6 +20,8 @@ pipeline {
     testStarted = "Running tests..."
     testSuccess = "All tests passed!"
     testFailure = "Test failures!"
+    
+    JAVA_HOME="/usr" // bin/java is inferred
   }
 
   stages {
@@ -36,7 +37,7 @@ pipeline {
         stage("Front end") {
           steps {
             githubNotify context: clientCommitContext, description: buildStarted,  status: 'PENDING'
-            sh "docker build . -t ${clientContainer} -f ${clientDockerfileLocation}"
+            sh "docker build . -t ${clientImageName} -f ${clientDockerfileLocation}"
           }
 
           post {
@@ -53,7 +54,7 @@ pipeline {
         stage("Back end") {
           steps {
             githubNotify context: apiCommitContext, description: buildStarted,  status: 'PENDING'
-            sh "docker build . -t ${apiContainer} -f ${apiDockerfileLocation}"
+            sh "mvn clean package -Dmaven.test.skip.exec -pl api"
           }
 
           post {
@@ -74,7 +75,8 @@ pipeline {
         stage("Front end") {
            steps {
             githubNotify context: clientCommitContext, description: testStarted,  status: 'PENDING'
-            sh "docker run --rm ${clientContainer}"
+            sh "docker run --name ${clientContainerName} ${clientImageName}"
+            sh "docker cp ${clientContainerName}:/ui/test-results ${env.WORKSPACE}/ui/test-results"
           }
 
           post {
@@ -91,7 +93,7 @@ pipeline {
         stage("Back end") {
           steps {
             githubNotify context: apiCommitContext, description: testStarted,  status: 'PENDING'
-            sh "docker run --rm ${apiContainer}"
+            sh "mvn -pl api test"
           }
 
           post {
@@ -110,8 +112,11 @@ pipeline {
 
   post {
     always {
-      sh "docker rmi ${clientContainer}"
-      sh "docker rmi ${apiContainer}"
+      sh "docker stop ${clientContainerName}"
+      sh "docker rm ${clientContainerName}"
+      sh "docker rmi ${clientImageName}"
+      junit "api/target/surefire-reports/*.xml"
+      junit "ui/test-results/*.xml"
     }
   }
 }

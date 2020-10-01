@@ -38,7 +38,7 @@ data class ApiSkillUpdate(
     val occupations: ApiStringListUpdate? = null
 ) {
 
-    fun validate(): List<ApiFieldError>? {
+    fun validate(rowNumber:Number? = null): List<ApiFieldError>? {
         val errors = mutableListOf<ApiFieldError>()
         return if (errors.size > 0) errors else null
     }

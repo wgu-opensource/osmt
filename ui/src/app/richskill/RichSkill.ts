@@ -1,47 +1,52 @@
-import {IKeyword} from "../keyword/Keyword"
-import { IJobCode } from "../jobcode/Jobcode"
+import {IJobCode} from "../jobcode/Jobcode"
 import {PublishStatus} from "../PublishStatus"
+
 
 /**
  * The interface to a RichSkill response we get from the backend
  */
+
+export interface INamedReference {
+  id?: number
+  name: string
+}
+
 export interface IRichSkillResponse {
   id: string
   uuid: string
   creationDate?: string
   updateDate?: string
+  type: string
+  status: PublishStatus
   skillName: string
   skillStatement: string
-  author: IKeyword
-  keywords: IKeyword[]
-  publishStatus: PublishStatus
-  category?: IKeyword
-  certifications: IKeyword[]
-  alignments: IKeyword[]
-  standards: IKeyword[]
-  type: string
-  employers: IKeyword[]
+  category?: string
+  keywords: string[]
+  alignments: INamedReference[]
+  standards: INamedReference[]
+  certifications: INamedReference[]
   occupations: IJobCode[]
- }
+  employers: INamedReference[]
+  author: INamedReference
+}
 
 export class RichSkill {
   id: string
   uuid: string
   creationDate?: Date = undefined
   updateDate?: Date = undefined
-  name: string
-  statement: string
-  author: IKeyword
-  keywords: IKeyword[]
-  publishStatus: PublishStatus
-  category?: IKeyword
-  certifications: IKeyword[]
-  alignments: IKeyword[]
-  standards: IKeyword[]
   type: string
+  status: PublishStatus
   skillName: string
-  employers: IKeyword[]
+  skillStatement: string
+  category?: string
+  keywords: string[]
+  alignments: INamedReference[]
+  standards: INamedReference[]
+  certifications: INamedReference[]
   occupations: IJobCode[]
+  employers: INamedReference[]
+  author: INamedReference
 
   constructor(iRichSkill: IRichSkillResponse) {
     this.id = iRichSkill.id
@@ -52,17 +57,16 @@ export class RichSkill {
     if (iRichSkill.updateDate) {
       this.updateDate = new Date(iRichSkill.updateDate)
     }
-    this.name = iRichSkill.skillName
-    this.statement = iRichSkill.skillStatement
+    this.skillName = iRichSkill.skillName
+    this.skillStatement = iRichSkill.skillStatement
     this.author = iRichSkill.author
     this.keywords = iRichSkill.keywords
-    this.publishStatus = iRichSkill.publishStatus
+    this.status = iRichSkill.status
     this.category = iRichSkill.category
     this.certifications = iRichSkill.certifications
     this.alignments = iRichSkill.alignments
     this.standards = iRichSkill.standards
     this.type = iRichSkill.type
-    this.skillName = iRichSkill.skillName
     this.employers = iRichSkill.employers
     this.occupations = iRichSkill.occupations
   }

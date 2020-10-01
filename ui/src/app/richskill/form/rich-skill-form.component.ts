@@ -3,8 +3,8 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
 import {RichSkillService} from "../service/rich-skill.service";
 import {Observable} from "rxjs";
-import {RichSkill} from "../RichSkill";
-import {RichSkillUpdate} from "../RichSkillUpdate";
+import {INamedReference, RichSkill} from "../RichSkill";
+import {ApiStringListUpdate, IStringListUpdate, ApiSkillUpdate} from "../ApiSkillUpdate";
 
 
 @Component({
@@ -43,16 +43,30 @@ export class RichSkillFormComponent implements OnInit {
     return `${this.existingSkill != null ? "Edit" : "Create"} Rich Skill Descriptor`
   }
 
-  updateObject(): RichSkillUpdate {
-    const update = new RichSkillUpdate({})
+  differenceStringList(words: string[], keywords?: string[]): ApiStringListUpdate | undefined {
+    const existing = new Set(keywords)
+    const provided = new Set(words)
+    const removing: string[] = [...existing].filter(x => !provided.has(x))
+    const adding: string[] = [...provided].filter(x => !existing.has(x))
+    return (removing.length > 0 || adding.length > 0) ? new ApiStringListUpdate(adding, removing) : undefined
+  }
+
+  splitTextarea(textValue: string): Array<string> {
+    return textValue.split(";").map(it => it.trim())
+  }
+
+  updateObject(): ApiSkillUpdate {
+    const update = new ApiSkillUpdate()
     const formValue = this.skillForm.value
 
-    if (!this.existingSkill || this.existingSkill.name != formValue.skillName) {
+    if (!this.existingSkill || this.existingSkill.skillName !== formValue.skillName) {
       update.skillName = formValue.skillName
     }
-    if (!this.existingSkill || this.existingSkill.statement != formValue.skillStatement) {
+    if (!this.existingSkill || this.existingSkill.skillStatement !== formValue.skillStatement) {
       update.skillStatement = formValue.skillStatement
     }
+
+    update.keywords = this.differenceStringList(this.splitTextarea(formValue.keywords), this.existingSkill?.keywords)
 
     return update
   }
@@ -79,15 +93,15 @@ export class RichSkillFormComponent implements OnInit {
     console.log("retrieved skill", skill)
     this.existingSkill = skill
     this.skillForm.setValue({
-      skillName: skill.name,
+      skillName: skill.skillName,
       author: skill.author?.name ? skill.author.name : "",
-      skillStatement: skill.statement,
-      category: skill.category?.name ? skill.category.name : "",
-      keywords: ""
+      skillStatement: skill.skillStatement,
+      category: skill.category,
+      keywords: skill.keywords.join("; ")
     })
   }
 
-  handleFormErrors(errors: any): void {
+  handleFormErrors(errors: unknown): void {
     console.log("component got errors", errors)
   }
 }

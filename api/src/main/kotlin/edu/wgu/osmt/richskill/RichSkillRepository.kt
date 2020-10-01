@@ -189,7 +189,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
     }
 
     override fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String): RichSkillDescriptorDao? {
-        val errors = skillUpdate.validateForCreation(0)
+        val errors = skillUpdate.validate(0)
         if (errors?.isNotEmpty() == true) {
             throw FormValidationException("Invalid SkillUpdateDescriptor", errors)
         }

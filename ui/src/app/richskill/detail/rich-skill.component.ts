@@ -1,9 +1,8 @@
 import { Component, OnInit } from "@angular/core"
-import { RichSkill } from "../RichSkill"
+import {INamedReference, RichSkill} from "../RichSkill"
 import { RichSkillService } from "../service/rich-skill.service"
 import { ActivatedRoute } from "@angular/router"
 import {JobCodeBreakout, IJobCode} from "../../jobcode/Jobcode"
-import {IKeyword} from "../../keyword/Keyword"
 
 @Component({
   selector: "app-richskill",
@@ -81,7 +80,7 @@ export class RichSkillComponent implements OnInit {
       .join(delimeter)
   }
 
-  private joinGenericKeywords(delimeter: string, keywords: IKeyword[]): string {
+  private joinGenericKeywords(delimeter: string, keywords: INamedReference[]): string {
     const filteredList: string[] = keywords
       .map(keyword => keyword.name)
       .filter(name => name)

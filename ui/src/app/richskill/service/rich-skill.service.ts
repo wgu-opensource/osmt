@@ -4,7 +4,7 @@ import {Observable} from "rxjs"
 import {IRichSkillResponse, RichSkill} from "../RichSkill"
 import {map} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
-import {IRichSkillUpdate, RichSkillUpdate} from "../RichSkillUpdate";
+import {IRichSkillUpdate, ApiSkillUpdate} from "../ApiSkillUpdate";
 
 
 @Injectable({
@@ -35,16 +35,16 @@ export class RichSkillService extends AbstractService {
       .pipe(map(({body}) => new RichSkill(this.safeUnwrapBody(body, errorMsg))))
   }
 
-  createSkill(updateObject: RichSkillUpdate): Observable<RichSkill> {
+  createSkill(updateObject: ApiSkillUpdate): Observable<RichSkill> {
     const errorMsg = `Error creating skill`
     return this.post<IRichSkillResponse>({
       path: this.serviceUrl,
-      body: updateObject
+      body: [updateObject]
     })
       .pipe(map(({body}) => new RichSkill(this.safeUnwrapBody(body, errorMsg))))
   }
 
-  updateSkill(uuid: string, updateObject: RichSkillUpdate): Observable<RichSkill> {
+  updateSkill(uuid: string, updateObject: ApiSkillUpdate): Observable<RichSkill> {
     const errorMsg = `Could not find skill by uuid [${uuid}]`
     return this.post<IRichSkillResponse>({
       path: `${this.serviceUrl}/${uuid}/update`,

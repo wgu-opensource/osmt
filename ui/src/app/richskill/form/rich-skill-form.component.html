@@ -47,6 +47,13 @@
       helpMessage="Add topic terms separated by semicolon"
     ></app-formfield-textarea>
 
+    <app-formfield-textarea
+      [control]="skillForm.controls.standards"
+      label="Standards"
+      placeholder="Health Education Standards"
+      helpMessage="Often sourced from research and Subject Matter Experts"
+    ></app-formfield-textarea>
+
     <p>valid: {{skillForm.valid}}</p>
     <p>dirty: {{skillForm.dirty}}</p>
 

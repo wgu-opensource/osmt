@@ -20,9 +20,14 @@ export interface IReferenceListUpdate {
   remove?: INamedReference[]
 }
 
-export interface ApiReferenceListUpdate {
+export class ApiReferenceListUpdate {
   add?: ApiNamedReference[]
   remove?: ApiNamedReference[]
+
+  constructor(add?: ApiNamedReference[], remove?: ApiNamedReference[]) {
+    this.add = add
+    this.remove = remove
+  }
 }
 
 

@@ -2,20 +2,16 @@ import {NgModule} from "@angular/core"
 import {Routes, RouterModule} from "@angular/router"
 import {RichSkillComponent} from "./richskill/detail/rich-skill.component"
 import {RichSkillsComponent} from "./richskill/detail/rich-skills.component"
+import {RichSkillFormComponent} from "./richskill/form/rich-skill-form.component";
 
 const routes: Routes = [
-  {
-    path: "skills/:uuid",
-    component: RichSkillComponent
-  },
-  {
-    path: "api/skills/:uuid",
-    component: RichSkillComponent
-  },
-  {
-    path: "skills",
-    component: RichSkillsComponent
-  }
+  {path: "api/skills/:uuid", component: RichSkillComponent},
+
+  {path: "skills/create", component: RichSkillFormComponent},  // create skill
+  {path: "skills/:uuid", component: RichSkillComponent},  // public skill view
+  {path: "skills/:uuid/edit", component: RichSkillFormComponent},  // edit skill
+
+  {path: "skills", component: RichSkillsComponent},  // skills library
 ]
 
 @NgModule({

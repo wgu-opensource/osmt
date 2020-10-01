@@ -1,0 +1,2 @@
+<div *ngIf="isProcessing()" class="lds-dual-ring">Loading...</div>
+<input *ngIf="!isProcessing()" [disabled]="isDisabled()" type="submit" [value]="label"/>

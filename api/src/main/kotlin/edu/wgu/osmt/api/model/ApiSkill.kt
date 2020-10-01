@@ -38,8 +38,8 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val baseUrl: String
         get() = rsd.statement
 
     @get:JsonProperty
-    val keywords: List<ApiNamedReference>
-        get() = rsd.searchingKeywords.map { ApiNamedReference.fromKeyword(it) }
+    val keywords: List<String>
+        get() = rsd.searchingKeywords.mapNotNull { it.value }
 
     @get:JsonProperty
     val category: String?

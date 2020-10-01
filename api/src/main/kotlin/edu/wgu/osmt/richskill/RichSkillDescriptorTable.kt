@@ -80,7 +80,7 @@ object RichSkillJobCodes : Table("RichSkillJobCodes") {
     override val primaryKey = PrimaryKey(richSkillId, jobCodeId, name = "PK_RichSkillJobCodes_rs_jc")
 
     fun create(richSkillId: Long, jobCodeId: Long) {
-        insert {
+        insertIgnore {
             it[this.richSkillId] = EntityID(richSkillId, RichSkillDescriptorTable)
             it[this.jobCodeId] = EntityID(jobCodeId, JobCodeTable)
         }
@@ -109,7 +109,7 @@ object RichSkillKeywords : Table("RichSkillKeywords") {
     override val primaryKey = PrimaryKey(richSkillId, keywordId, name = "PK_RichSkillKeywords_rs_kw")
 
     fun create(richSkillId: Long, keywordId: Long) {
-        insert {
+        insertIgnore {
             it[this.richSkillId] = EntityID(richSkillId, RichSkillDescriptorTable)
             it[this.keywordId] = EntityID(keywordId, KeywordTable)
         }

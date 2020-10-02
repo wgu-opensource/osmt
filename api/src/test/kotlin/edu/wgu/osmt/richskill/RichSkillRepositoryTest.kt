@@ -6,6 +6,7 @@ import edu.wgu.osmt.api.model.ApiReferenceListUpdate
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.db.ListFieldUpdate
+import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
@@ -267,5 +268,39 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
         val skill = updated!!.toModel()
         assertThat(skill.searchingKeywords.size).isEqualTo(1)
         assertThat(skill.searchingKeywords[0].value == keywordName)
+    }
+
+    @Test
+    fun `should be able to set an existing category to null on a skill via the API`() {
+        val name = UUID.randomUUID().toString()
+        val statement = UUID.randomUUID().toString()
+        val categoryName = UUID.randomUUID().toString()
+        val category = keywordRepository.findOrCreate(KeywordTypeEnum.Category, categoryName)!!
+
+        val createObject = RsdUpdateObject(
+            name = name,
+            statement = statement,
+            category = NullableFieldUpdate(category)
+        )
+        val created = richSkillRepository.create(createObject, userString)?.toModel()
+        assertThat(created).isNotNull
+        assertThat(created?.category?.value).isEqualTo(categoryName)
+
+        // doesnt clear category if not specified in update object
+        val newName = UUID.randomUUID().toString()
+        val apiUpdate = ApiSkillUpdate(
+            skillName=newName
+        )
+        var apiUpdated = richSkillRepository.updateFromApi(created!!.id!!, apiUpdate, userString)?.toModel()
+        assertThat(apiUpdated).isNotNull
+        assertThat(apiUpdated?.category?.value).isEqualTo(categoryName)
+
+        // pass category as empty string to nullify it
+        val apiUpdateBlank = ApiSkillUpdate(
+            category=""
+        )
+        apiUpdated = richSkillRepository.updateFromApi(created!!.id!!, apiUpdateBlank, userString)?.toModel()
+        assertThat(apiUpdated).isNotNull
+        assertThat(apiUpdated?.category).isNull()
     }
 }

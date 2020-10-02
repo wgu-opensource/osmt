@@ -65,7 +65,6 @@ export class RichSkillFormComponent implements OnInit {
       .filter(it => it).map(it => it as INamedReference)
     const adding = [...provided].filter(x => !existing.has(x)).map(it => this.namedReferenceForString(it))
       .filter(it => it).map(it => it as INamedReference)
-    console.log("diffReferenceList", existing, provided, removing, adding)
     return (removing.length > 0 || adding.length > 0) ? new ApiReferenceListUpdate(adding, removing) : undefined
 
   }
@@ -88,10 +87,10 @@ export class RichSkillFormComponent implements OnInit {
     }
   }
 
-  nonEmptyOrNull(s?: string): string | null {
+  nonEmptyOrNull(s?: string): string | undefined {
     const val: string | undefined = s?.trim()
-    if (val === undefined) { return null }
-    return val?.length > 0 ? val : null
+    if (val === undefined) { return undefined }
+    return val?.length > 0 ? val : undefined
   }
 
   updateObject(): ApiSkillUpdate {
@@ -115,8 +114,7 @@ export class RichSkillFormComponent implements OnInit {
 
     const inputCategory = this.nonEmptyOrNull(formValue.category)
     if (this.existingSkill?.category !== inputCategory) {
-      console.log("inputCategory CHANGED", inputCategory)
-      update.category = inputCategory
+      update.category = inputCategory ?? ""
     }
 
     const keywordDiff = this.diffStringList(this.splitTextarea(formValue.keywords), this.existingSkill?.keywords)
@@ -159,7 +157,7 @@ export class RichSkillFormComponent implements OnInit {
 
   onSubmit(): void {
     const updateObject = this.updateObject()
-    console.log("do the submit", this.skillForm.value, Object.keys(updateObject))
+    console.log("do the submit", this.skillForm.value, updateObject)
 
     if (Object.keys(updateObject).length < 1) {
       console.log("no changes to submit")
@@ -167,10 +165,8 @@ export class RichSkillFormComponent implements OnInit {
     }
 
     if (this.skillUuid) {
-      console.log("Updating record", updateObject)
       this.skillSaved = this.richSkillService.updateSkill(this.skillUuid, updateObject)
     } else {
-      console.log("creating record", updateObject)
       this.skillSaved = this.richSkillService.createSkill(updateObject)
     }
   }
@@ -195,7 +191,6 @@ export class RichSkillFormComponent implements OnInit {
   }
 
   setSkill(skill: ApiSkill): void {
-    console.log("retrieved skill", skill)
     this.existingSkill = skill
 
     const firstAlignment: INamedReference | undefined = skill.alignments?.find(it => true)

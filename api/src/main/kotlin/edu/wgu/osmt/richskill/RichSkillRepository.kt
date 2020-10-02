@@ -282,7 +282,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
             statement = skillUpdate.skillStatement,
             publishStatus = skillUpdate.publishStatus,
             author = authorKeyword?.let { NullableFieldUpdate(it) },
-            category = categoryKeyword?.let { NullableFieldUpdate(it) },
+            category = if(skillUpdate.category != null || skillUpdate.category?.isBlank() == true) NullableFieldUpdate(categoryKeyword) else null,
             keywords = allKeywordsUpdate,
             jobCodes = jobCodesUpdate
         )

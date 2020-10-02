@@ -12,6 +12,7 @@ import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
+import edu.wgu.osmt.collection.Collection
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -76,6 +77,10 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
         val occupations = ApiStringListUpdate(
             add=(1..occupationCount).toList().map { UUID.randomUUID().toString() }
         )
+        val collectionCount = 3
+        val collections = ApiStringListUpdate(
+            add=(1..collectionCount).toList().map { UUID.randomUUID().toString() }
+        )
 
         return ApiSkillUpdate(
             skillName=name,
@@ -88,7 +93,8 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
             standards=standards,
             alignments=alignments,
             employers=employers,
-            occupations=occupations
+            occupations=occupations,
+            collections=collections
         )
     }
 
@@ -107,6 +113,15 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
         stringList.remove?.forEach { str ->
             val found = keywords.find { it.value == str }
             assertThat(found).isNull()
+        }
+    }
+
+    fun assertThatCollectionsMatchStringList(collections: List<Collection>, stringList: ApiStringListUpdate) {
+        stringList.add?.forEach { str ->
+            assertThat(collections.find { it.name == str }).isNotNull
+        }
+        stringList.remove?.forEach { str ->
+            assertThat(collections.find { it.name == str }).isNull()
         }
     }
 
@@ -154,6 +169,8 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
 
         assertThatJobCodesMatchStringList(skill.jobCodes, apiObj.occupations!!)
 
+        assertThatCollectionsMatchStringList(skill.collections, apiObj.collections!!)
+
         assertThat(skill.publishStatus()).isEqualTo(apiObj.publishStatus)
     }
 
@@ -162,14 +179,15 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
         val originalSkillUpdate = random_skill_update()
         val originalSkillDao = richSkillRepository.createFromApi(listOf(originalSkillUpdate), userString).first()
 
-        val newSkillUpdate = random_skill_update()
-        newSkillUpdate.copy(
+        var newSkillUpdate = random_skill_update()
+        newSkillUpdate = newSkillUpdate.copy(
             keywords=newSkillUpdate.keywords?.copy(remove=originalSkillUpdate.keywords?.add),
             certifications=newSkillUpdate.certifications?.copy(remove=originalSkillUpdate.certifications?.add),
             standards=newSkillUpdate.standards?.copy(remove=originalSkillUpdate.standards?.add),
             alignments=newSkillUpdate.alignments?.copy(remove=originalSkillUpdate.alignments?.add),
             employers=newSkillUpdate.employers?.copy(remove=originalSkillUpdate.employers?.add),
-            occupations=newSkillUpdate.occupations?.copy(remove=originalSkillUpdate.occupations?.add)
+            occupations=newSkillUpdate.occupations?.copy(remove=originalSkillUpdate.occupations?.add),
+            collections=newSkillUpdate.collections?.copy(remove=originalSkillUpdate.collections?.add)
         )
 
         val updatedDao = richSkillRepository.updateFromApi(originalSkillDao.id.value, newSkillUpdate, userString)

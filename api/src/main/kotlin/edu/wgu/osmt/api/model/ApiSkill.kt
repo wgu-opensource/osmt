@@ -74,6 +74,10 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val baseUrl: String
     @get:JsonProperty
     val employers: List<ApiNamedReference>
         get() = rsd.employers.map { ApiNamedReference.fromKeyword(it) }
+
+    @get:JsonProperty
+    val collections: List<String>
+        get() = rsd.collections.map { it.name }
 }
 
 

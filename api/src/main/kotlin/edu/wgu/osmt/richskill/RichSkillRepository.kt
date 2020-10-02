@@ -7,6 +7,8 @@ import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
+import edu.wgu.osmt.collection.CollectionDao
+import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
@@ -45,7 +47,8 @@ interface RichSkillRepository {
 class RichSkillRepositoryImpl @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
     val jobCodeRepository: JobCodeRepository,
-    val keywordRepository: KeywordRepository
+    val keywordRepository: KeywordRepository,
+    val collectionRepository: CollectionRepository
 ) :
     RichSkillRepository {
     override val dao = RichSkillDescriptorDao.Companion
@@ -210,10 +213,27 @@ class RichSkillRepositoryImpl @Autowired constructor(
             keywordRepository.findOrCreate(KeywordTypeEnum.Category, value=it)
         }
 
+
+        val addingCollections = mutableListOf<CollectionDao>()
+        val removingCollections = mutableListOf<CollectionDao>()
         val addingKeywords = mutableListOf<KeywordDao>()
         val removingKeywords = mutableListOf<KeywordDao>()
         val jobsToAdd = mutableListOf<JobCodeDao>()
         val jobsToRemove = mutableListOf<JobCodeDao>()
+
+        skillUpdate.collections?.let {slu ->
+            slu.add?.map {
+                collectionRepository.findByName(it) ?: collectionRepository.create(it)
+            }?.let {
+                addingCollections.addAll(it)
+            }
+
+            slu.remove?.map {
+                collectionRepository.findByName(it) ?: collectionRepository.create(it)
+            }?.let {
+                removingCollections.addAll(it)
+            }
+        }
 
         fun lookup_references(lud: ApiReferenceListUpdate, keywordType: KeywordTypeEnum) {
             lud.add?.map {
@@ -277,6 +297,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
             null
         }
 
+
         return RsdUpdateObject(
             name = skillUpdate.skillName,
             statement = skillUpdate.skillStatement,
@@ -284,7 +305,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
             author = authorKeyword?.let { NullableFieldUpdate(it) },
             category = if(skillUpdate.category != null || skillUpdate.category?.isBlank() == true) NullableFieldUpdate(categoryKeyword) else null,
             keywords = allKeywordsUpdate,
-            jobCodes = jobCodesUpdate
+            jobCodes = jobCodesUpdate,
+            collections = if (addingCollections.size + removingCollections.size > 0) ListFieldUpdate(addingCollections, removingCollections) else null
         )
     }
 

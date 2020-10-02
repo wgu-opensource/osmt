@@ -37,22 +37,57 @@
       [control]="skillForm.controls.category"
       label="Category"
       placeholder="Health Education"
-      helpMessage="A term that can be used to group multiple skills"
+      helpMessage="A term that can be used to group multiple skills."
     ></app-formfield-text>
 
     <app-formfield-textarea
       [control]="skillForm.controls.keywords"
       label="Keywords"
       placeholder="Health Education; Education Program Development; Heath Instruction; Health Outcome Improvement; Health Education Design"
-      helpMessage="Add topic terms separated by semicolon"
+      helpMessage="Add topic terms separated by semicolon."
     ></app-formfield-textarea>
 
     <app-formfield-textarea
       [control]="skillForm.controls.standards"
       label="Standards"
       placeholder="Health Education Standards"
-      helpMessage="Often sourced from research and Subject Matter Experts"
+      helpMessage="Often sourced from research and Subject Matter Experts."
     ></app-formfield-textarea>
+
+    <app-formfield-textarea
+      [control]="skillForm.controls.certifications"
+      label="Certifications"
+      placeholder="Health Education Specialist (Society for Public Health Education)"
+      helpMessage="Often sourced from research and Subject Matter Experts."
+    ></app-formfield-textarea>
+
+    <app-formfield-textarea
+      [control]="skillForm.controls.occupations"
+      label="Occupations"
+      placeholder="29-1071; 11-9111; 25-1072; 29-1141; 29-1171"
+      helpMessage="Numeric job codes from BLS or O*NET separated by a semicolon."
+    ></app-formfield-textarea>
+
+    <app-formfield-text
+      [control]="skillForm.controls.employers"
+      label="Employers"
+      placeholder="Sample Company; Test Company"
+      helpMessage="Often sourced from research and Subject Matter Experts."
+    ></app-formfield-text>
+
+    <app-formfield-text
+      [control]="skillForm.controls.alignmentText"
+      label="Alignment Text"
+      placeholder="Health Education"
+      helpMessage="Often sourced from research and Subject Matter Experts."
+    ></app-formfield-text>
+
+    <app-formfield-text
+      [control]="skillForm.controls.alignmentUrl"
+      label="Alignment URL"
+      placeholder="https://skills.emsidata.com/skills/KS124MT6ZDZLF0M8JM6X"
+      helpMessage="A URI, often sourced from research and Subject Matter Experts."
+    ></app-formfield-text>
 
     <p>valid: {{skillForm.valid}}</p>
     <p>dirty: {{skillForm.dirty}}</p>

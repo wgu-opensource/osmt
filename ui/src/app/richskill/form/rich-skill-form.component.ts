@@ -5,6 +5,7 @@ import {RichSkillService} from "../service/rich-skill.service";
 import {Observable} from "rxjs";
 import {ApiNamedReference, INamedReference, ApiSkill} from "../ApiSkill";
 import {ApiStringListUpdate, IStringListUpdate, ApiSkillUpdate, ApiReferenceListUpdate} from "../ApiSkillUpdate";
+import {IJobCode} from "../../jobcode/Jobcode";
 
 
 @Component({
@@ -19,6 +20,11 @@ export class RichSkillFormComponent implements OnInit {
     category: new FormControl(""),
     keywords: new FormControl(""),
     standards: new FormControl(""),
+    certifications: new FormControl(""),
+    occupations: new FormControl(""),
+    employers: new FormControl(""),
+    alignmentText: new FormControl(""),
+    alignmentUrl: new FormControl(""),
   })
   skillUuid: string | null = null
   existingSkill: ApiSkill | null = null
@@ -82,34 +88,71 @@ export class RichSkillFormComponent implements OnInit {
     }
   }
 
+  nonEmptyOrNull(s?: string): string | null {
+    const val: string | undefined = s?.trim()
+    if (val === undefined) { return null }
+    return val?.length > 0 ? val : null
+  }
+
   updateObject(): ApiSkillUpdate {
     const update = new ApiSkillUpdate()
     const formValue = this.skillForm.value
 
-    if (!this.existingSkill || this.existingSkill.skillName !== formValue.skillName) {
-      update.skillName = formValue.skillName
+    const inputName = this.nonEmptyOrNull(formValue.skillName)
+    if (inputName && this.existingSkill?.skillName !== inputName) {
+      update.skillName = inputName
     }
 
-    if (!this.existingSkill || this.existingSkill.skillStatement !== formValue.skillStatement) {
-      update.skillStatement = formValue.skillStatement
+    const inputStatement = this.nonEmptyOrNull(formValue.skillStatement)
+    if (inputStatement && this.existingSkill?.skillStatement !== inputStatement) {
+      update.skillStatement = inputStatement
     }
 
     const author = this.parseAuthor(formValue.author)
-    if (author) {
-      if (!this.existingSkill || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
+    if (!this.existingSkill || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
         update.author = author
-      }
     }
 
-    if (!this.existingSkill || this.existingSkill.category !== formValue.category) {
-      update.category = formValue.category
+    const inputCategory = this.nonEmptyOrNull(formValue.category)
+    if (this.existingSkill?.category !== inputCategory) {
+      console.log("inputCategory CHANGED", inputCategory)
+      update.category = inputCategory
     }
 
     const keywordDiff = this.diffStringList(this.splitTextarea(formValue.keywords), this.existingSkill?.keywords)
     if (keywordDiff) { update.keywords = keywordDiff }
 
-    const standardsDiff = this.diffReferenceList(this.splitTextarea(formValue.standards), this.existingSkill?.standards)
-    if (standardsDiff) { update.standards = standardsDiff }
+    const occupationsDiff = this.diffStringList(
+      this.splitTextarea(formValue.occupations),
+      this.existingSkill?.occupations?.map(it => this.stringFromJobCode(it))
+    )
+    if (occupationsDiff) { update.occupations = occupationsDiff }
+
+    // tslint:disable-next-line:variable-name
+    const _handle_ref_list = (formFieldValue: string, fieldName: string, existing?: INamedReference[]) => {
+      const diff = this.diffReferenceList(this.splitTextarea(formFieldValue), existing)
+      if (diff) { // @ts-ignore
+        update[fieldName] = diff
+      }
+    }
+    _handle_ref_list(formValue.standards, "standards", this.existingSkill?.standards)
+    _handle_ref_list(formValue.certifications, "certifications", this.existingSkill?.certifications)
+    _handle_ref_list(formValue.employers, "employers", this.existingSkill?.employers)
+
+
+    // handle a single alignment with title and url only
+    const firstAlignment: INamedReference | undefined = this.existingSkill?.alignments?.find(it => true)
+    const inputAlignment = new ApiNamedReference({
+      id: this.nonEmptyOrNull(formValue.alignmentUrl),
+      name: this.nonEmptyOrNull(formValue.alignmentText)
+    })
+    if ((inputAlignment.id || inputAlignment.name) && firstAlignment !== inputAlignment) {
+      update.alignments = new ApiReferenceListUpdate(
+        [inputAlignment],
+        firstAlignment !== undefined ? [firstAlignment as INamedReference] : []
+      )
+    }
+
 
     return update
   }
@@ -144,19 +187,31 @@ export class RichSkillFormComponent implements OnInit {
   }
 
   stringFromNamedReference(ref?: INamedReference): string {
-    return (ref?.name ? ref?.name : ref?.id ? ref?.id : "")
+    return ref?.name ?? ref?.id ?? ""
+  }
+
+  stringFromJobCode(jobcode?: IJobCode): string {
+    return jobcode?.name ?? jobcode?.code ?? ""
   }
 
   setSkill(skill: ApiSkill): void {
     console.log("retrieved skill", skill)
     this.existingSkill = skill
+
+    const firstAlignment: INamedReference | undefined = skill.alignments?.find(it => true)
+
     this.skillForm.setValue({
       skillName: skill.skillName,
       author: this.stringFromNamedReference(skill.author),
       skillStatement: skill.skillStatement,
       category: skill.category ?? "",
       keywords: skill.keywords?.join("; ") ?? "",
-      standards: skill.standards?.map(it => this.stringFromNamedReference(it)).join("; ") ?? ""
+      standards: skill.standards?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
+      certifications: skill.certifications?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
+      occupations: skill.occupations?.map(it => this.stringFromJobCode(it)).join("; ") ?? "",
+      employers: skill.employers?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
+      alignmentText: firstAlignment?.name ?? "",
+      alignmentUrl: firstAlignment?.id ?? "",
     })
   }
 

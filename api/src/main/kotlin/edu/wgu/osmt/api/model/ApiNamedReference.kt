@@ -1,8 +1,11 @@
 package edu.wgu.osmt.api.model
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class ApiNamedReference(
     val id: String? = null,
     val name: String? = null
@@ -24,3 +27,17 @@ data class ApiStringListUpdate(
     val remove: List<String>? = null
 )
 
+
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+data class ApiJobCode(
+    val code: String,
+    val id: String? = null,
+    val name: String? = null,
+    val framework: String? = null
+) {
+    companion object factory {
+        fun fromJobCode(jobCode: JobCode): ApiJobCode {
+            return ApiJobCode(code=jobCode.code, name=jobCode.name, id=jobCode.url, framework=jobCode.framework)
+        }
+    }
+}

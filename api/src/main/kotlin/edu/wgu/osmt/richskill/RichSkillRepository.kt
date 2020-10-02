@@ -218,7 +218,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         fun lookup_references(lud: ApiReferenceListUpdate, keywordType: KeywordTypeEnum) {
             lud.add?.map {
                 keywordRepository.findOrCreate(keywordType, value=it.name, uri=it.id)
-            }?.let {
+            }?.filterNotNull()?.let {
                 addingKeywords.addAll(it)
             }
 
@@ -232,7 +232,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         fun lookup_keywords(slud: ApiStringListUpdate, keywordType: KeywordTypeEnum) {
             slud.add?.map {
                 keywordRepository.findOrCreate(keywordType, value=it)
-            }?.let {
+            }?.filterNotNull()?.let {
                 addingKeywords.addAll(it)
             }
 

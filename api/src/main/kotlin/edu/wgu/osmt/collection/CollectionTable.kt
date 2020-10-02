@@ -58,7 +58,7 @@ object CollectionSkills : Table("CollectionSkills") {
     override val primaryKey = PrimaryKey(collectionId, skillId, name = "PK_CollectionSkills_c_rs")
 
     fun create(collectionId: Long, skillId: Long) {
-        insert {
+        insertIgnore {
             it[this.collectionId] = EntityID(collectionId, CollectionTable)
             it[this.skillId] = EntityID(skillId, RichSkillDescriptorTable)
         }

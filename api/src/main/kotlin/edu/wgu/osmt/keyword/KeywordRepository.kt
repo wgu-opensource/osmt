@@ -27,13 +27,13 @@ interface KeywordRepository {
         type: KeywordTypeEnum,
         value: String? = null,
         uri: String? = null
-    ): KeywordDao
+    ): KeywordDao?
 
     fun create(
         type: KeywordTypeEnum,
         value: String? = null,
         uri: String? = null
-    ): KeywordDao
+    ): KeywordDao?
 
     fun getDefaultAuthor(): KeywordDao
 }
@@ -55,10 +55,10 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
 
     override fun getDefaultAuthor(): KeywordDao {
         val authorUri:String? = if (appConfig.defaultAuthorUri.isBlank()) null else appConfig.defaultAuthorUri
-        return findOrCreate(KeywordTypeEnum.Author, appConfig.defaultAuthorName, authorUri)
+        return findOrCreate(KeywordTypeEnum.Author, appConfig.defaultAuthorName, authorUri)!!
     }
 
-    override fun findOrCreate(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao {
+    override fun findOrCreate(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao? {
         val existing = findByValueOrUri(type, value, uri)
         return existing ?: create(type, value, uri)
     }
@@ -78,13 +78,15 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
         return query?.let { dao.wrapRow(it) }
     }
 
-    override fun create(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao {
-        return dao.new {
-                updateDate = LocalDateTime.now(ZoneOffset.UTC)
-                creationDate = LocalDateTime.now(ZoneOffset.UTC)
-                this.type = type
-                this.value = value
-                this.uri = uri
-            }
+    override fun create(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao? {
+        val strippedValue = value?.strip()
+        val strippedUri = uri?.strip()
+        return if (!strippedValue.isNullOrBlank() || !strippedUri.isNullOrBlank()) dao.new {
+            updateDate = LocalDateTime.now(ZoneOffset.UTC)
+            creationDate = LocalDateTime.now(ZoneOffset.UTC)
+            this.type = type
+            this.value = value
+            this.uri = uri
+        } else null
     }
 }

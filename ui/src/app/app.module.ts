@@ -9,12 +9,15 @@ import {RichSkillsCsvExportComponent} from "./richskill/task/rich-skills-csv-exp
 import {AppConfig} from "./app.config"
 import { RichSkillFormComponent } from "./richskill/form/rich-skill-form.component"
 import {ReactiveFormsModule} from "@angular/forms"
-import {FormField} from "./form/form-field.component";
-import {FormFieldText} from "./form/form-field-text.component";
-import {FormFieldTextArea} from "./form/form-field-textarea.component";
-import {LoadingObservablesDirective} from "./loading/loading-observables.directive";
-import {LoadingComponent} from "./loading/loading.component";
-import {FormFieldSubmit} from "./form/form-field-submit.component";
+import {FormField} from "./form/form-field.component"
+import {FormFieldText} from "./form/form-field-text.component"
+import {FormFieldTextArea} from "./form/form-field-textarea.component"
+import {LoadingObservablesDirective} from "./loading/loading-observables.directive"
+import {LoadingComponent} from "./loading/loading.component"
+import {FormFieldSubmit} from "./form/form-field-submit.component"
+import { CommoncontrolsComponent } from "./commoncontrols/commoncontrols.component"
+import { AppHeaderComponent } from "./app-header/app-header.component"
+import { AppFooterComponent } from "./app-footer/app-footer.component"
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -33,6 +36,9 @@ export function initializeApp(appConfig: AppConfig): () => void {
     FormFieldTextArea,
     LoadingComponent,
     LoadingObservablesDirective,
+    CommoncontrolsComponent,
+    AppHeaderComponent,
+    AppFooterComponent,
   ],
   imports: [
     BrowserModule,

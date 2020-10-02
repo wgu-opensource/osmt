@@ -16,22 +16,52 @@ import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
+import org.elasticsearch.common.Nullable
+import org.springframework.data.annotation.Id
+import org.springframework.data.elasticsearch.annotations.DateFormat
+import org.springframework.data.elasticsearch.annotations.Field
+import org.springframework.data.elasticsearch.annotations.FieldType
 import org.valiktor.functions.isNotEqualTo
 
-@Document(indexName = "richskillrepository", createIndex = true)
+@Document(indexName = "richskill", createIndex = true)
 data class RichSkillDescriptor(
+
+    @Field(name = "db_id")
+    @Nullable
     override val id: Long?,
+
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     override val creationDate: LocalDateTime,
+
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     override val updateDate: LocalDateTime,
+
+    @Id
     val uuid: UUID,
+
     val name: String,
+
     val statement: String,
+
+    @Field(type = FieldType.Nested)
     val jobCodes: List<JobCode> = listOf(),
+
     private val keywords: List<Keyword> = listOf(),
+
+    @Nullable
     val category: Keyword? = null,
+
+    @Nullable
     val author: Keyword? = null,
+
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    @Nullable
     override val archiveDate: LocalDateTime? = null,
+
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    @Nullable
     override val publishDate: LocalDateTime? = null
+
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
 
     var collections: List<Collection> = listOf()
@@ -133,7 +163,8 @@ data class RsdUpdateObject(
 
     fun compareKeywords(that: RichSkillDescriptorDao): JSONObject? {
         val added = keywords?.add?.map { mutableMapOf("id" to it.id.value, "value" to it.value, "type" to it.type) }
-        val removed = keywords?.remove?.map { mutableMapOf("id" to it.id.value, "value" to it.value, "type" to it.type) }
+        val removed =
+            keywords?.remove?.map { mutableMapOf("id" to it.id.value, "value" to it.value, "type" to it.type) }
         val addedPair = added?.let { "added" to it }
         val removedPair = removed?.let { "removed" to it }
         val operationsList = listOfNotNull(addedPair, removedPair).toTypedArray()

@@ -11,6 +11,7 @@ import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordDao
@@ -45,7 +46,8 @@ interface RichSkillRepository {
 class RichSkillRepositoryImpl @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
     val jobCodeRepository: JobCodeRepository,
-    val keywordRepository: KeywordRepository
+    val keywordRepository: KeywordRepository,
+    val elasticSearchRepository: EsRichSkillRepository
 ) :
     RichSkillRepository {
     override val dao = RichSkillDescriptorDao.Companion
@@ -120,7 +122,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
                     richSkillCollectionTable.delete(collectionId = collection.id.value!!, skillId = updateObject.id)
                 }
             }
-
+            elasticSearchRepository.save(rsdDao.toModel())
             rsdDao
         }
     }

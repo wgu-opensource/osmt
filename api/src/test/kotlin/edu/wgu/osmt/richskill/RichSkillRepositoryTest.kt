@@ -1,6 +1,7 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiReferenceListUpdate
 import edu.wgu.osmt.api.model.ApiSkillUpdate
@@ -10,22 +11,12 @@ import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
-@SpringBootTest
-@ActiveProfiles("test,apiserver")
-@ConfigurationPropertiesScan("edu.wgu.osmt.config")
-@ContextConfiguration
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
-class RichSkillRepositoryTest: BaseDockerizedTest() {
+class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
 
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository

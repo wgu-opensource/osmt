@@ -6,15 +6,31 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.`java-time`.datetime
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import org.springframework.data.elasticsearch.annotations.DateFormat
+import org.springframework.data.elasticsearch.annotations.Document
+import org.springframework.data.elasticsearch.annotations.Field
+import org.springframework.data.elasticsearch.annotations.FieldType
 import java.time.LocalDateTime
+import org.elasticsearch.common.Nullable
 
+@Document(indexName = "keyword", createIndex = true)
 data class Keyword(
+    @Field(name = "db_id")
+    @Nullable
     override val id: Long?,
+
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     override val creationDate: LocalDateTime,
+
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     override val updateDate: LocalDateTime,
 
     val type: KeywordTypeEnum,
+
+    @Nullable
     val value: String? = null,
+
+    @Nullable
     val uri: String? = null
 ) : DatabaseData, HasUpdateDate {
 }

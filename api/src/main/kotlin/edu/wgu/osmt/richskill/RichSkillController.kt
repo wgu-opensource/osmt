@@ -63,7 +63,9 @@ class RichSkillController @Autowired constructor(
     @GetMapping("/{uuid}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun byUUID(@PathVariable uuid: String): ApiSkill? {
-        return richSkillRepository.findByUUID(uuid)?.let { ApiSkill(it.toModel(), appConfig.baseUrl) }
+        return richSkillRepository.findByUUID(uuid)?.let {
+            ApiSkill(it.toModel(), appConfig.baseUrl)
+        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
     @RequestMapping("/{uuid}", produces = [MediaType.TEXT_HTML_VALUE])

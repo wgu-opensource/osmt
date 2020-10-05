@@ -71,6 +71,17 @@ class RichSkillController @Autowired constructor(
         return "forward:/skills/$uuid"
     }
 
+    @RequestMapping("/{uuid}", produces = ["text/csv"])
+    fun byUUIDCsvView(@PathVariable uuid: String): HttpEntity<*> {
+        return richSkillRepository.findByUUID(uuid)?.let {
+            val skill = it.toModel()
+            val result = RichSkillCsvExport(appConfig).toCsv(listOf(skill))
+            val responseHeaders = HttpHeaders()
+            responseHeaders.add("Content-Type", "text/csv")
+            return ResponseEntity.ok().headers(responseHeaders).body(result)
+        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    }
+
     @PostMapping("/{uuid}/update", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateSkill(@PathVariable uuid: String,

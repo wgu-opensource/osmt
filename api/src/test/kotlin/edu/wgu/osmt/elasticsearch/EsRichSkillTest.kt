@@ -49,7 +49,7 @@ class EsRichSkillTest : SpringTest(), HasDatabaseReset {
 
         val allKeywords = keywords + employers
 
-        val allKeywordDao = allKeywords.map{ keywordRepository.create(it.type,it.value) }
+        val allKeywordDao = allKeywords.mapNotNull{ keywordRepository.create(it.type,it.value) }
 
         val rsd = richSkillRepository.create(RsdUpdateObject(
             name = name,
@@ -74,7 +74,7 @@ class EsRichSkillTest : SpringTest(), HasDatabaseReset {
 
         val allKeywords = keywords + employers
 
-        val allKeywordDao = allKeywords.map{ keywordRepository.create(it.type,it.value) }
+        val allKeywordDao = allKeywords.mapNotNull{ keywordRepository.create(it.type,it.value) }
 
         val rsd = richSkillRepository.create(RsdUpdateObject(
             name = name,
@@ -89,7 +89,7 @@ class EsRichSkillTest : SpringTest(), HasDatabaseReset {
         val keywordToAdd = keywordGenerator(1, KeywordTypeEnum.Keyword)[0]
         val keywordToAddDao = keywordRepository.create(keywordToAdd.type, keywordToAdd.value)
 
-        val updateObject = RsdUpdateObject(id = rsd.id, name = newName, statement = newStatement, keywords = ListFieldUpdate(add = listOf(keywordToAddDao), remove = listOf(keywordToRemove)))
+        val updateObject = RsdUpdateObject(id = rsd.id, name = newName, statement = newStatement, keywords = ListFieldUpdate(add = listOf(keywordToAddDao!!), remove = listOf(keywordToRemove)))
         val updateResult = richSkillRepository.update(updateObject, "test-user")
 
         val elasticModel = esRichSkillRepository.findByUUID(updateResult?.uuid.toString(), Pageable.unpaged())

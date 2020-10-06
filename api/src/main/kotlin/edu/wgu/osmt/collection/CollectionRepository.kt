@@ -1,12 +1,15 @@
 package edu.wgu.osmt.collection
 
+import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.db.updateFromObject
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
-import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.EsCollectionRepository
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
+import edu.wgu.osmt.richskill.RichSkillDescriptorDao
+import edu.wgu.osmt.richskill.RsdUpdateObject
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
@@ -65,27 +68,26 @@ class CollectionRepositoryImpl @Autowired constructor(
         }
     }
 
-    fun applyUpdate(collDao: CollectionDao, updateObject: CollectionUpdateObject): Unit {
-        collDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
+    fun applyUpdate(collectionDao: CollectionDao, updateObject: CollectionUpdateObject): Unit {
+        collectionDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
 
         when (updateObject.publishStatus) {
-            PublishStatus.Archived -> collDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-            PublishStatus.Published -> collDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Archived -> collectionDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Published -> collectionDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
             PublishStatus.Unpublished -> {
             } // non-op
         }
 
+        updateObject.name?.let { collectionDao.name = it }
+
         updateObject.author?.let {
             if (it.t != null) {
-                collDao.author = it.t
+                collectionDao.author = it.t
             } else {
-                collDao.author = null
+                collectionDao.author = null
             }
         }
 
-        updateObject.name?.let { collDao.name = it }
-
-        // update skills
         updateObject.skills?.let {
             it.add?.forEach { skill ->
                 CollectionSkills.create(collectionId = updateObject.id, skillId = skill.id.value)

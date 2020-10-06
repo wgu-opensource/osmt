@@ -6,9 +6,12 @@ import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiReferenceListUpdate
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.api.model.ApiStringListUpdate
+import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
+import edu.wgu.osmt.keyword.KeywordRepository
+import edu.wgu.osmt.keyword.KeywordTypeEnum
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +23,9 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
 
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository
+
+    @Autowired
+    lateinit var keywordRepository: KeywordRepository
 
     val userString = "unittestuser"
 
@@ -225,5 +231,32 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
         assertThat(created.id.value).isEqualTo(retrieved?.id?.value)
         assertThat(retrieved?.name).isEqualTo(name)
         assertThat(retrieved?.statement).isEqualTo(statement)
+    }
+
+    @Test
+    fun `should not error, or create a duplicate when adding an existing keyword`() {
+        val name = UUID.randomUUID().toString()
+        val statement = UUID.randomUUID().toString()
+        val keywordName = UUID.randomUUID().toString()
+        val keyword = keywordRepository.findOrCreate(KeywordTypeEnum.Keyword, value=keywordName)!!
+        val otherKeyword = keywordRepository.findOrCreate(KeywordTypeEnum.Keyword, value=UUID.randomUUID().toString())!!
+        val createObject = RsdUpdateObject(
+            name = name,
+            statement = statement,
+            keywords = ListFieldUpdate(add=listOf(keyword))
+        )
+
+        val created = richSkillRepository.create(createObject, userString)
+        assertThat(created).isNotNull
+
+        val updateObject = RsdUpdateObject(
+            id = created?.id?.value,
+            keywords = ListFieldUpdate(add=listOf(keyword), remove=listOf(otherKeyword))
+        )
+        val updated = richSkillRepository.update(updateObject, userString)
+        assertThat(updated).isNotNull
+        val skill = updated!!.toModel()
+        assertThat(skill.searchingKeywords.size).isEqualTo(1)
+        assertThat(skill.searchingKeywords[0].value == keywordName)
     }
 }

@@ -46,7 +46,8 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              { "glob": "**/*", "input": "node_modules/wgu-design-system-patternlibrary/dist", "output": "/" }
             ],
             "styles": [
               "src/styles.css",

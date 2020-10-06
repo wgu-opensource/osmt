@@ -7,12 +7,6 @@ import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptor
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import net.minidev.json.JSONObject
-import org.elasticsearch.common.Nullable
-import org.springframework.data.annotation.Id
-import org.springframework.data.elasticsearch.annotations.DateFormat
-import org.springframework.data.elasticsearch.annotations.Document
-import org.springframework.data.elasticsearch.annotations.Field
-import org.springframework.data.elasticsearch.annotations.FieldType
 import org.valiktor.functions.isEqualTo
 import org.valiktor.functions.isNotEqualTo
 import org.valiktor.functions.validate
@@ -59,7 +53,7 @@ data class CollectionUpdateObject(
 
     fun compareAuthor(that: CollectionDao): JSONObject? {
         return author?.let {
-            if (that.author?.let { id } != it.t?.id?.value) {
+            if (that.author?.value?.let { id } != it.t?.id?.value) {
                 jsonUpdateStatement(that::author.name, that.author?.let { it.value }, it.t?.value)
             } else null
         }

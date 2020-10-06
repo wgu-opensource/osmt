@@ -123,7 +123,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
                 keywordRepository.findOrCreate(keywordType, uri = it)
             else
                 keywordRepository.findOrCreate(keywordType, value = it)
-        }
+        }?.filterNotNull()
     }
 
     fun parse_jobcodes(rowValue: String?): List<JobCodeDao>? {
@@ -171,7 +171,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
             collections = parse_collections(row.collections)
 
             if (row.alignmentTitle != null || row.alignmentUri != null) {
-                alignments = listOf( keywordRepository.findOrCreate(KeywordTypeEnum.Alignment, value = row.alignmentTitle, uri = row.alignmentUri) )
+                alignments = listOf( keywordRepository.findOrCreate(KeywordTypeEnum.Alignment, value = row.alignmentTitle, uri = row.alignmentUri) ).filterNotNull()
             }
 
             val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)

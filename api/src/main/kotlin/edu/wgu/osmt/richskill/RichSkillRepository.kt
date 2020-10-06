@@ -212,8 +212,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         fun lookup_references(lud: ApiReferenceListUpdate, keywordType: KeywordTypeEnum) {
             lud.add?.map {
-                keywordRepository.findOrCreate(keywordType, value = it.name, uri = it.id)
-            }?.let {
+                keywordRepository.findOrCreate(keywordType, value=it.name, uri=it.id)
+            }?.filterNotNull()?.let {
                 addingKeywords.addAll(it)
             }
 
@@ -226,13 +226,13 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         fun lookup_keywords(slud: ApiStringListUpdate, keywordType: KeywordTypeEnum) {
             slud.add?.map {
-                keywordRepository.findOrCreate(keywordType, value = it)
-            }?.let {
+                keywordRepository.findOrCreate(keywordType, value=it)
+            }?.filterNotNull()?.let {
                 addingKeywords.addAll(it)
             }
 
             slud.remove?.map {
-                keywordRepository.findByValueOrUri(keywordType, value = it)
+                keywordRepository.findByValueOrUri(keywordType, value=it)
             }?.let {
                 removingKeywords.addAll(it.filterNotNull())
             }
@@ -240,7 +240,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         skillUpdate.occupations?.let {
             it.add?.map {
-                jobCodeRepository.findByCodeOrCreate(code = it)
+                jobCodeRepository.findByCodeOrCreate(code=it)
             }?.let { jobsToAdd.addAll(it) }
 
             it.remove?.map {
@@ -256,8 +256,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         val allKeywordsUpdate = if (addingKeywords.size > 0 || removingKeywords.size > 0) {
             ListFieldUpdate<KeywordDao>(
-                add = if (addingKeywords.size > 0) addingKeywords else listOf(),
-                remove = if (removingKeywords.size > 0) removingKeywords else listOf()
+                add=if (addingKeywords.size > 0) addingKeywords else listOf(),
+                remove=if (removingKeywords.size > 0) removingKeywords else listOf()
             )
         } else {
             null
@@ -265,8 +265,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         val jobCodesUpdate = if (jobsToAdd.size > 0 || jobsToRemove.size > 0) {
             ListFieldUpdate<JobCodeDao>(
-                add = if (jobsToAdd.size > 0) jobsToAdd else listOf(),
-                remove = if (jobsToRemove.size > 0) jobsToRemove else listOf()
+                add=if (jobsToAdd.size > 0) jobsToAdd else listOf(),
+                remove=if (jobsToRemove.size > 0) jobsToRemove else listOf()
             )
         } else {
             null

@@ -13,6 +13,7 @@ export class FormField implements OnInit {
   @Input() placeholder: string = ""
   @Input() errorMessage: string = ""
   @Input() helpMessage: string = ""
+  @Input() required: boolean = false
 
   constructor() {
   }

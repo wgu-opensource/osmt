@@ -1,6 +1,7 @@
 <div class="t-verticalSpacing-medium">
   <div class="t-verticalSpacing-extraSmall">
-    <label class="t-type-smallBold">{{label}}</label>
+    <label class="t-type-smallBold">{{label}} <span *ngIf="required" class="t-type-attention">*</span></label>
+
     <div *ngIf="helpMessage" class="t-type-small">{{helpMessage}}</div>
   </div>
 

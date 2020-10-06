@@ -1,5 +1,6 @@
 import {Component, OnInit} from "@angular/core"
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {Location} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
 import {RichSkillService} from "../service/rich-skill.service";
 import {Observable} from "rxjs";
@@ -35,7 +36,9 @@ export class RichSkillFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private richSkillService: RichSkillService) { }
+    private richSkillService: RichSkillService,
+    private location: Location
+  ) { }
 
   ngOnInit(): void {
     this.skillUuid = this.route.snapshot.paramMap.get("uuid")
@@ -212,5 +215,10 @@ export class RichSkillFormComponent implements OnInit {
 
   handleFormErrors(errors: unknown): void {
     console.log("component got errors", errors)
+  }
+
+  handleClickCancel(): boolean {
+    this.location.back()
+    return false
   }
 }

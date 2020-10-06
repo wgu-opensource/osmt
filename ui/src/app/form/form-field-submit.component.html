@@ -1,2 +1,4 @@
 <div *ngIf="isProcessing()" class="lds-dual-ring">Loading...</div>
-<input *ngIf="!isProcessing()" [disabled]="isDisabled()" type="submit" [value]="label"/>
+<button *ngIf="!isProcessing()" class="m-button" [disabled]="isDisabled()" type="submit">
+  <span class="button-x-text">{{label}}</span>
+</button>

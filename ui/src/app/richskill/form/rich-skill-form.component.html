@@ -1,7 +1,8 @@
 <ng-template [appLoadingObservables]="[skillLoaded]">
+<form [formGroup]="skillForm" (ngSubmit)="onSubmit()">
 
+<div class="l-stickyBar">
 <div class="l-stickySidebar l-container">
-  <form [formGroup]="skillForm" (ngSubmit)="onSubmit()">
 
 
   <div class="l-stickySidebar-x-content t-verticalSpacing-medium-top-padding">
@@ -126,7 +127,8 @@
   </div>
 
 
-  </form>
+</div>
 </div>
 
+</form>
 </ng-template>

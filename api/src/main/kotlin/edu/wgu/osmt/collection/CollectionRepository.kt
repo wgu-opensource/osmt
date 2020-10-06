@@ -1,8 +1,11 @@
 package edu.wgu.osmt.collection
 
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.db.updateFromObject
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
+import edu.wgu.osmt.richskill.RichSkillDescriptorDao
+import edu.wgu.osmt.richskill.RsdUpdateObject
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -60,21 +63,41 @@ class CollectionRepositoryImpl @Autowired constructor(val keywordRepository: Key
        }
     }
 
-    override fun update(updateObject: CollectionUpdateObject, user: OAuth2User?): CollectionDao? {
-        val original = dao.findById(updateObject.id)
-        val changes = original?.let { updateObject.diff(it) }
-        table.updateFromObject(updateObject)
+    fun applyUpdate(updateObject: CollectionUpdateObject): CollectionDao? {
+        return dao.findById(updateObject.id!!)?.let { collectionDao ->
+            collectionDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
 
-        // update skills
-        updateObject.skills?.let {
-            it.add?.forEach { skill ->
-                CollectionSkills.create(collectionId = updateObject.id, skillId = skill.id!!)
+            when (updateObject.publishStatus) {
+                PublishStatus.Archived -> collectionDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+                PublishStatus.Published -> collectionDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+                PublishStatus.Unpublished -> {
+                } // non-op
             }
-            it.remove?.forEach { skill ->
-                CollectionSkills.delete(collectionId = updateObject.id, skillId = skill.id!!)
+
+            updateObject.name?.let { collectionDao.name = it }
+
+            updateObject.author?.let {
+                if (it.t != null) {
+                    collectionDao.author = it.t
+                } else {
+                    collectionDao.author = null
+                }
             }
+
+            updateObject.skills?.let {
+                it.add?.forEach { skill ->
+                    CollectionSkills.create(collectionId = updateObject.id, skillId = skill.id.value)
+                }
+                it.remove?.forEach { skill ->
+                    CollectionSkills.delete(collectionId = updateObject.id, skillId = skill.id.value)
+                }
+            }
+
+            collectionDao
         }
+    }
 
-        return  dao.findById(updateObject.id)
+    override fun update(updateObject: CollectionUpdateObject, user: OAuth2User?): CollectionDao? {
+        return applyUpdate(updateObject)
     }
 }

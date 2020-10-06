@@ -1,5 +1,8 @@
 package edu.wgu.osmt.collection
 
+import edu.wgu.osmt.auditlog.AuditLog
+import edu.wgu.osmt.auditlog.AuditLogRepository
+import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.db.updateFromObject
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
@@ -24,13 +27,14 @@ interface CollectionRepository {
     fun findByUUID(uuid: String): CollectionDao?
     fun findByName(name: String): CollectionDao?
     fun create(name: String, author: KeywordDao? = null): CollectionDao
-    fun update(updateObject: CollectionUpdateObject, user: OAuth2User? = null): CollectionDao?
+    fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao?
 }
 
 
 @Repository
 @Transactional
-class CollectionRepositoryImpl @Autowired constructor(val keywordRepository: KeywordRepository): CollectionRepository {
+class CollectionRepositoryImpl @Autowired constructor(val keywordRepository: KeywordRepository, val auditLogRepository: AuditLogRepository
+): CollectionRepository {
     override val table = CollectionTable
     override val dao = CollectionDao.Companion
 
@@ -60,7 +64,7 @@ class CollectionRepositoryImpl @Autowired constructor(val keywordRepository: Key
        }
     }
 
-    override fun update(updateObject: CollectionUpdateObject, user: OAuth2User?): CollectionDao? {
+    override fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao? {
         val original = dao.findById(updateObject.id)
         val changes = original?.let { updateObject.diff(it) }
         table.updateFromObject(updateObject)
@@ -68,11 +72,24 @@ class CollectionRepositoryImpl @Autowired constructor(val keywordRepository: Key
         // update skills
         updateObject.skills?.let {
             it.add?.forEach { skill ->
-                CollectionSkills.create(collectionId = updateObject.id, skillId = skill.id!!)
+                CollectionSkills.create(collectionId = updateObject.id, skillId = skill.id.value)
             }
             it.remove?.forEach { skill ->
-                CollectionSkills.delete(collectionId = updateObject.id, skillId = skill.id!!)
+                CollectionSkills.delete(collectionId = updateObject.id, skillId = skill.id.value)
             }
+        }
+
+        changes?.let { it ->
+            if (it.isNotEmpty())
+                auditLogRepository.insert(
+                    AuditLog.fromAtomicOp(
+                        table,
+                        updateObject.id,
+                        it.toString(),
+                        user,
+                        AuditOperationType.Update
+                    )
+                )
         }
 
         return  dao.findById(updateObject.id)

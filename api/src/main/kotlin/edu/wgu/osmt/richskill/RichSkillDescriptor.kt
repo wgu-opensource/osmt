@@ -13,7 +13,6 @@ import java.time.ZoneOffset
 import org.valiktor.functions.validate
 import java.util.*
 import edu.wgu.osmt.collection.Collection
-import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
 import org.elasticsearch.common.Nullable
@@ -37,7 +36,7 @@ data class RichSkillDescriptor(
     override val updateDate: LocalDateTime,
 
     @Id
-    val uuid: UUID,
+    val uuid: String,
 
     val name: String,
 
@@ -46,7 +45,7 @@ data class RichSkillDescriptor(
     @Field(type = FieldType.Nested)
     val jobCodes: List<JobCode> = listOf(),
 
-    private val keywords: List<Keyword> = listOf(),
+    val keywords: List<Keyword> = listOf(),
 
     @Nullable
     val category: Keyword? = null,
@@ -89,7 +88,7 @@ data class RichSkillDescriptor(
             val now = LocalDateTime.now(ZoneOffset.UTC)
             return RichSkillDescriptor(
                 id = null,
-                uuid = UUID.randomUUID(),
+                uuid = UUID.randomUUID().toString(),
                 name = name,
                 statement = statement,
                 creationDate = now,
@@ -107,7 +106,6 @@ data class RsdUpdateObject(
     val category: NullableFieldUpdate<KeywordDao>? = null,
     val keywords: ListFieldUpdate<KeywordDao>? = null,
     val jobCodes: ListFieldUpdate<JobCodeDao>? = null,
-    val collections: ListFieldUpdate<CollectionDao>? = null,
     override val publishStatus: PublishStatus? = null
 ) : UpdateObject<RichSkillDescriptorDao>, HasPublishStatus {
 
@@ -176,20 +174,6 @@ data class RsdUpdateObject(
         }
     }
 
-    fun compareCollections(that: RichSkillDescriptorDao): JSONObject? {
-        val added = collections?.add?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
-        val removed = collections?.remove?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
-        val addedPair = added?.let { "added" to it }
-        val removedPair = removed?.let { "removed" to it }
-        val operationsList = listOfNotNull(addedPair, removedPair).toTypedArray()
-
-        return if (added?.isNotEmpty() == true or (removed?.isNotEmpty() == true)) {
-            JSONObject(mutableMapOf(that::collections.name to mutableMapOf(*operationsList)))
-        } else {
-            null
-        }
-    }
-
     override val comparisonList: List<(t: RichSkillDescriptorDao) -> JSONObject?> =
         listOf(
             ::compareName,
@@ -197,8 +181,7 @@ data class RsdUpdateObject(
             ::compareCategory,
             ::compareAuthor,
             ::comparePublishStatus,
-            ::compareKeywords,
-            ::compareCollections
+            ::compareKeywords
         )
 }
 

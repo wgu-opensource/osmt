@@ -4,13 +4,11 @@ import edu.wgu.osmt.db.OutputsModel
 import edu.wgu.osmt.db.PublishStatusDetails
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
-import edu.wgu.osmt.richskill.RichSkillDescriptorTable
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import java.time.LocalDateTime
 import java.util.*
-
 
 class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collection>, PublishStatusDetails {
     companion object: LongEntityClass<CollectionDao>(CollectionTable)
@@ -31,7 +29,7 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             id = id.value,
             creationDate = creationDate,
             updateDate = updateDate,
-            uuid = UUID.fromString(uuid),
+            uuid = uuid,
             name = name,
             author = author?.toModel(),
             archiveDate = archiveDate,

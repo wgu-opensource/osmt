@@ -12,10 +12,11 @@ import org.springframework.data.elasticsearch.annotations.Field
 import org.springframework.data.elasticsearch.annotations.FieldType
 import java.time.LocalDateTime
 import org.elasticsearch.common.Nullable
+import org.springframework.data.annotation.Id
 
 @Document(indexName = "keyword", createIndex = true)
 data class Keyword(
-    @Field(name = "db_id")
+    @Id
     @Nullable
     override val id: Long?,
 
@@ -25,6 +26,7 @@ data class Keyword(
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     override val updateDate: LocalDateTime,
 
+    @Field(type = FieldType.Text)
     val type: KeywordTypeEnum,
 
     @Nullable

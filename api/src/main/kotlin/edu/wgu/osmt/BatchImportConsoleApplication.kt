@@ -11,6 +11,7 @@ import edu.wgu.osmt.richskill.RsdUpdateObject
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.collection.CollectionSkills
+import edu.wgu.osmt.collection.CollectionUpdateObject
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
@@ -171,14 +172,19 @@ class BatchImportConsoleApplication : CommandLineRunner {
             val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
 
             if (row.skillName != null && row.skillStatement != null) {
-                richSkillRepository.create(RsdUpdateObject(
+                val skill = richSkillRepository.create(RsdUpdateObject(
                     name = row.skillName!!,
                     statement = row.skillStatement!!,
                     category = NullableFieldUpdate(category),
                     keywords = all_keywords?.let { ListFieldUpdate(add = it) },
-                    jobCodes = occupations?.let { ListFieldUpdate(add = it) },
-                    collections = collections?.let {ListFieldUpdate(add = it)}
+                    jobCodes = occupations?.let { ListFieldUpdate(add = it) }
                 ), user)
+                collections?.map{ c ->
+                    skill?.let{
+                        collectionRepository.update(CollectionUpdateObject(c.id.value, skills = ListFieldUpdate(add = listOf(it))), user)
+                    }
+
+                }
                 LOG.info("created skill '${row.skillName!!}'")
             }
         }
@@ -210,7 +216,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
     override fun run(vararg args: String?) {
         // --csv=path/to/csv
         val arguments = args.filterNotNull().flatMap { it.split(",") }
-
+        println(arguments)
         val csvPath = arguments.find { it.contains("--csv") }?.split("=")?.last()
         if (csvPath != null) {
             processCsv(csvPath)

@@ -45,11 +45,15 @@ interface RichSkillRepository {
 @Transactional
 class RichSkillRepositoryImpl @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
-    val jobCodeRepository: JobCodeRepository,
-    val keywordRepository: KeywordRepository,
-    val elasticSearchRepository: EsRichSkillRepository
-) :
-    RichSkillRepository {
+    val jobCodeRepository: JobCodeRepository
+) : RichSkillRepository {
+
+    @Autowired
+    lateinit var keywordRepository: KeywordRepository
+
+    @Autowired
+    lateinit var elasticSearchRepository: EsRichSkillRepository
+
     override val dao = RichSkillDescriptorDao.Companion
     override val table = RichSkillDescriptorTable
 
@@ -110,18 +114,6 @@ class RichSkillRepositoryImpl @Autowired constructor(
                 }
             }
 
-            // update collections
-            updateObject.collections?.let {
-                it.add?.forEach { collection ->
-                    richSkillCollectionTable.create(
-                        collectionId = collection.id.value!!,
-                        skillId = updateObject.id
-                    )
-                }
-                it.remove?.forEach { collection ->
-                    richSkillCollectionTable.delete(collectionId = collection.id.value!!, skillId = updateObject.id)
-                }
-            }
             elasticSearchRepository.save(rsdDao.toModel())
             rsdDao
         }

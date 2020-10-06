@@ -2,8 +2,10 @@ package edu.wgu.osmt.collection
 
 import edu.wgu.osmt.db.*
 import edu.wgu.osmt.keyword.Keyword
+import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptor
+import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import net.minidev.json.JSONObject
 import org.valiktor.functions.isEqualTo
 import org.valiktor.functions.isNotEqualTo
@@ -17,7 +19,7 @@ data class Collection(
     override val id: Long?,
     override val creationDate: LocalDateTime,
     override val updateDate: LocalDateTime,
-    val uuid: UUID,
+    val uuid: String,
     val name: String,
     val author: Keyword? = null,
     val skills: List<RichSkillDescriptor> = listOf(),
@@ -30,15 +32,15 @@ data class Collection(
 data class CollectionUpdateObject(
     override val id: Long,
     val name: String? = null,
-    val author: NullableFieldUpdate<Keyword>? = null,
-    val skills: ListFieldUpdate<RichSkillDescriptor>? = null,
-    override val publishStatus: PublishStatus?
+    val author: NullableFieldUpdate<KeywordDao>? = null,
+    val skills: ListFieldUpdate<RichSkillDescriptorDao>? = null,
+    override val publishStatus: PublishStatus? = null
 ) : UpdateObject<CollectionDao>, HasPublishStatus {
     init {
         validate(this) {
             validate(CollectionUpdateObject::author).validate {
-                validate(NullableFieldUpdate<Keyword>::t).validate {
-                    validate(Keyword::type).isEqualTo(KeywordTypeEnum.Author)
+                validate(NullableFieldUpdate<KeywordDao>::t).validate {
+                    validate(KeywordDao::type).isEqualTo(KeywordTypeEnum.Author)
                 }
             }
             validate(CollectionUpdateObject::publishStatus).isNotEqualTo(PublishStatus.Unpublished)
@@ -52,8 +54,8 @@ data class CollectionUpdateObject(
 
     fun compareAuthor(that: CollectionDao): JSONObject? {
         return author?.let {
-            if (that.author?.let { id } != it.t?.id) {
-                jsonUpdateStatement(that.name, that.author?.let { it.value }, it.t?.value)
+            if (that.author?.let { id } != it.t?.id?.value) {
+                jsonUpdateStatement(that::author.name, that.author?.let { it.value }, it.t?.value)
             } else null
         }
     }
@@ -64,7 +66,21 @@ data class CollectionUpdateObject(
         }
     }
 
+    fun compareSkills(that: CollectionDao): JSONObject? {
+        val added = skills?.add?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
+        val removed = skills?.remove?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
+        val addedPair = added?.let { "added" to it }
+        val removedPair = removed?.let { "removed" to it }
+        val operationsList = listOfNotNull(addedPair, removedPair).toTypedArray()
+
+        return if (added?.isNotEmpty() == true or (removed?.isNotEmpty() == true)) {
+            JSONObject(mutableMapOf(that::skills.name to mutableMapOf(*operationsList)))
+        } else {
+            null
+        }
+    }
+
     override val comparisonList: List<(t: CollectionDao) -> JSONObject?> =
-        listOf(::compareName, ::compareAuthor, ::comparePublishStatus)
+        listOf(::compareName, ::compareAuthor, ::comparePublishStatus, ::compareSkills)
 }
 

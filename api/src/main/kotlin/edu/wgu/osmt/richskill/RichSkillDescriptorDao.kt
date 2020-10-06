@@ -40,7 +40,7 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
             id = id.value,
             creationDate = creationDate,
             updateDate = updateDate,
-            uuid = UUID.fromString(uuid),
+            uuid = uuid,
             name = name,
             statement = statement,
             jobCodes = jobCodes.map { it.toModel() },

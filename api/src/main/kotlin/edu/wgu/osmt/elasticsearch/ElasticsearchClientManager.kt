@@ -39,7 +39,11 @@ class ElasticsearchClientManager {
     @Bean
     @Override
     fun elasticSearchCustomConversions(): ElasticsearchCustomConversions{
-        return ElasticsearchCustomConversions(listOf(LocalDateTimeToString(), StringToLocalDatetime()))
+        return ElasticsearchCustomConversions(
+            listOf(LocalDateTimeToString(), StringToLocalDatetime(),
+                UuidToString(), StringToUuid()
+            )
+        )
     }
 
     @WritingConverter
@@ -53,6 +57,20 @@ class ElasticsearchClientManager {
     internal class StringToLocalDatetime: Converter<String, LocalDateTime>{
         override fun convert(source: String): LocalDateTime {
             return LocalDateTime.parse(source, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        }
+    }
+
+    @WritingConverter
+    internal class UuidToString : Converter<UUID, String> {
+        override fun convert(source: UUID): String {
+            return source.toString()
+        }
+    }
+
+    @ReadingConverter
+    internal class StringToUuid: Converter<String, UUID>{
+        override fun convert(source: String): UUID {
+            return UUID.fromString(source)
         }
     }
 }

@@ -34,7 +34,7 @@ object CollectionTable: TableWithUpdate<CollectionUpdateObject>, PublishStatusUp
         updateObject.name?.let { updateBuilder[name] = it }
         updateObject.author?.let {
             if (it.t != null) {
-                updateBuilder[author] = EntityID<Long>(it.t.id!!, KeywordTable)
+                updateBuilder[author] = EntityID<Long>(it.t.id.value!!, KeywordTable)
             } else {
                 updateBuilder[author] = null
             }

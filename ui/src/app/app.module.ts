@@ -18,6 +18,7 @@ import {FormFieldSubmit} from "./form/form-field-submit.component"
 import { CommoncontrolsComponent } from "./commoncontrols/commoncontrols.component"
 import { AppHeaderComponent } from "./app-header/app-header.component"
 import { AppFooterComponent } from "./app-footer/app-footer.component"
+import {CommoncontrolsMobileComponent} from "./commoncontrols/commoncontrols-mobile.component";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -37,6 +38,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     LoadingComponent,
     LoadingObservablesDirective,
     CommoncontrolsComponent,
+    CommoncontrolsMobileComponent,
     AppHeaderComponent,
     AppFooterComponent,
   ],

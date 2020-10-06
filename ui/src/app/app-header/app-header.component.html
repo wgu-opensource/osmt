@@ -1,6 +1,6 @@
 
-
-<nav class="m-navbar">
+<header>
+  <nav class="m-navbar">
     <div class="m-navbar-x-container">
       <a class="m-navbar-x-brand" href="#">
         <svg class="t-icon m-sitelogo">
@@ -31,10 +31,15 @@
           <use xlink:href="images/svg-defs.svg#icon-dismiss"></use>
         </svg>
       </button>
+
       <div class="m-navbar-x-collapse t-hidden-mindesktop" id="navbarSupportedContent">
-       common controls go here?
+        <app-commoncontrols-mobile></app-commoncontrols-mobile>
       </div>
+
     </div>
   </nav>
-  
-  
+
+  <div class="t-hidden-maxdesktop">
+    <app-commoncontrols></app-commoncontrols>
+  </div>
+</header>

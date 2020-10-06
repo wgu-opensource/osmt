@@ -24,7 +24,7 @@
       >
       </app-formfield-text>
 
-      <app-formfield-text
+      <app-formfield-text *ngIf="showAuthor()"
         [control]="skillForm.controls.author"
         label="Author (Required)"
         required="true"

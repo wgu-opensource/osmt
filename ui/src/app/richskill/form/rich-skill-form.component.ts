@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core"
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
 import {RichSkillService} from "../service/rich-skill.service";
@@ -7,6 +7,7 @@ import {Observable} from "rxjs";
 import {ApiNamedReference, INamedReference, ApiSkill} from "../ApiSkill";
 import {ApiStringListUpdate, IStringListUpdate, ApiSkillUpdate, ApiReferenceListUpdate} from "../ApiSkillUpdate";
 import {IJobCode} from "../../jobcode/Jobcode";
+import {AppConfig} from "../../app.config";
 
 
 @Component({
@@ -14,19 +15,7 @@ import {IJobCode} from "../../jobcode/Jobcode";
   templateUrl: "./rich-skill-form.component.html"
 })
 export class RichSkillFormComponent implements OnInit {
-  skillForm = new FormGroup({
-    skillName: new FormControl("", Validators.required),
-    author: new FormControl("", Validators.required),
-    skillStatement: new FormControl("", Validators.required),
-    category: new FormControl(""),
-    keywords: new FormControl(""),
-    standards: new FormControl(""),
-    certifications: new FormControl(""),
-    occupations: new FormControl(""),
-    employers: new FormControl(""),
-    alignmentText: new FormControl(""),
-    alignmentUrl: new FormControl(""),
-  })
+  skillForm = new FormGroup(this.getFormDefinitions())
   skillUuid: string | null = null
   existingSkill: ApiSkill | null = null
 
@@ -51,6 +40,26 @@ export class RichSkillFormComponent implements OnInit {
 
   pageTitle(): string {
     return `${this.existingSkill != null ? "Edit" : "Create"} Rich Skill Descriptor`
+  }
+
+  getFormDefinitions(): {[key: string]: AbstractControl} {
+    const fields = {
+      skillName: new FormControl("", Validators.required),
+      skillStatement: new FormControl("", Validators.required),
+      category: new FormControl(""),
+      keywords: new FormControl(""),
+      standards: new FormControl(""),
+      certifications: new FormControl(""),
+      occupations: new FormControl(""),
+      employers: new FormControl(""),
+      alignmentText: new FormControl(""),
+      alignmentUrl: new FormControl(""),
+    }
+    if (AppConfig.settings.editableAuthor) {
+      // @ts-ignore
+      fields.author = new FormControl(AppConfig.settings.defaultAuthorValue, Validators.required)
+    }
+    return fields
   }
 
   diffStringList(words: string[], keywords?: string[]): ApiStringListUpdate | undefined {
@@ -110,9 +119,11 @@ export class RichSkillFormComponent implements OnInit {
       update.skillStatement = inputStatement
     }
 
-    const author = this.parseAuthor(formValue.author)
-    if (!this.existingSkill || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
-        update.author = author
+    if (AppConfig.settings.editableAuthor) {
+      const author = this.parseAuthor(formValue.author)
+      if (!this.existingSkill || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
+          update.author = author
+      }
     }
 
     const inputCategory = this.nonEmptyOrNull(formValue.category)
@@ -198,9 +209,8 @@ export class RichSkillFormComponent implements OnInit {
 
     const firstAlignment: INamedReference | undefined = skill.alignments?.find(it => true)
 
-    this.skillForm.setValue({
+    const fields = {
       skillName: skill.skillName,
-      author: this.stringFromNamedReference(skill.author),
       skillStatement: skill.skillStatement,
       category: skill.category ?? "",
       keywords: skill.keywords?.join("; ") ?? "",
@@ -210,7 +220,12 @@ export class RichSkillFormComponent implements OnInit {
       employers: skill.employers?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
       alignmentText: firstAlignment?.name ?? "",
       alignmentUrl: firstAlignment?.id ?? "",
-    })
+    }
+    if (AppConfig.settings.editableAuthor) {
+      // @ts-ignore
+      fields.author = this.stringFromNamedReference(skill.author)
+    }
+    this.skillForm.setValue(fields)
   }
 
   handleFormErrors(errors: unknown): void {
@@ -220,5 +235,9 @@ export class RichSkillFormComponent implements OnInit {
   handleClickCancel(): boolean {
     this.location.back()
     return false
+  }
+
+  showAuthor(): boolean {
+    return AppConfig.settings.editableAuthor
   }
 }

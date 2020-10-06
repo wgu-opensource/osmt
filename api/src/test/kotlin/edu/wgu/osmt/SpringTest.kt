@@ -1,6 +1,7 @@
 package edu.wgu.osmt
 
 import edu.wgu.osmt.auditlog.AuditLogTable
+import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.collection.CollectionTable
 import edu.wgu.osmt.keyword.KeywordTable
 import edu.wgu.osmt.richskill.RichSkillDescriptorTable
@@ -40,6 +41,7 @@ interface HasDatabaseReset {
     fun resetDb(): Unit {
         RichSkillJobCodes.deleteAll()
         RichSkillKeywords.deleteAll()
+        CollectionSkills.deleteAll()
         RichSkillDescriptorTable.deleteAll()
         KeywordTable.deleteAll()
         CollectionTable.deleteAll()

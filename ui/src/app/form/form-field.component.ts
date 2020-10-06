@@ -19,4 +19,8 @@ export class FormField implements OnInit {
 
   ngOnInit(): void {
   }
+
+  isError(): boolean {
+    return (this.control.dirty || this.control.touched) && this.control.invalid
+  }
 }

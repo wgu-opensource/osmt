@@ -11,7 +11,7 @@ class UiAppConfig : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/**")
                 .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
-                .addResourceLocations("classpath:/ui/", "classpath:/ui/images/")
+                .addResourceLocations("classpath:/ui/")
     }
 
     // TODO (julian) Temporarily had to be removed to stop redirecting away from assets

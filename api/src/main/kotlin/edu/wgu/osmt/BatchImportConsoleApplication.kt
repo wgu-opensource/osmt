@@ -13,8 +13,10 @@ import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.collection.CollectionUpdateObject
 import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
+import edu.wgu.osmt.richskill.RichSkillDoc
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -104,6 +106,9 @@ class BatchImportConsoleApplication : CommandLineRunner {
 
     @Autowired
     private lateinit var collectionRepository: CollectionRepository;
+
+    @Autowired
+    private lateinit var elasticSearchRepository: EsRichSkillRepository
 
     val collectionSkillsTable = CollectionSkills
 

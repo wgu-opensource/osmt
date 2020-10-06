@@ -42,7 +42,6 @@ class TaskQueueHandler {
             richSkillRepository.dao.all().with(RichSkillDescriptorDao::collections)
                 .map { rsdao ->
                     val rs = rsdao.toModel()
-                    rs.collections = rsdao.collections.map{it.toModel()}
                     rs
                 }
 

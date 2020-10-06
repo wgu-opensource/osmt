@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collection>, PublishStatusDetails {
-    companion object: LongEntityClass<CollectionDao>(CollectionTable)
+    companion object : LongEntityClass<CollectionDao>(CollectionTable)
 
     var creationDate by CollectionTable.creationDate
     var updateDate: LocalDateTime by CollectionTable.updateDate
@@ -33,7 +33,9 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             name = name,
             author = author?.toModel(),
             archiveDate = archiveDate,
-            publishDate = publishDate
+            publishDate = publishDate,
+            skillUuids = skills.toList().map { it.uuid },
+            skillIds = skills.toList().map { it.id.value }
         )
     }
 }

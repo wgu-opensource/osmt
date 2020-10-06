@@ -57,7 +57,7 @@ class EsRichSkillTest : SpringTest(), HasDatabaseReset {
             keywords = ListFieldUpdate(add = allKeywordDao)
         ), BatchImportConsoleApplication.user)?.toModel()!!
 
-        val elasticModel = esRichSkillRepository.findByUUID(rsd.uuid.toString(), Pageable.unpaged())
+        val elasticModel = esRichSkillRepository.findByUUID(rsd.uuid, Pageable.unpaged())
         val esRetrieved = elasticModel.content.first()
 
         assertThat(esRetrieved.uuid).isEqualTo(rsd.uuid)
@@ -96,10 +96,9 @@ class EsRichSkillTest : SpringTest(), HasDatabaseReset {
         val esRetrieved = elasticModel.content.first()
 
         assertThat(esRetrieved.uuid).isEqualTo(rsd.uuid)
-        assertThat(esRetrieved.keywords).contains(keywordToAdd)
-        assertThat(esRetrieved.keywords).doesNotContain(keywordToRemove.toModel())
+        assertThat(esRetrieved.searchingKeywords).contains(keywordToAdd.value)
+        assertThat(esRetrieved.searchingKeywords).doesNotContain(keywordToRemove.toModel().value)
         assertThat(esRetrieved.name).isEqualTo(newName)
         assertThat(esRetrieved.statement).isEqualTo(newStatement)
-        assertThat(esRetrieved.updateDate).isAfter(esRetrieved.creationDate)
     }
 }

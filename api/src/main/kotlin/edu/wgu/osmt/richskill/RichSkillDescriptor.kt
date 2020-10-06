@@ -5,7 +5,6 @@ import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import net.minidev.json.JSONObject
-import org.springframework.data.elasticsearch.annotations.Document
 import org.valiktor.functions.isEqualTo
 import org.valiktor.validate
 import java.time.LocalDateTime
@@ -15,52 +14,21 @@ import java.util.*
 import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
-import org.elasticsearch.common.Nullable
-import org.springframework.data.annotation.Id
-import org.springframework.data.elasticsearch.annotations.DateFormat
-import org.springframework.data.elasticsearch.annotations.Field
-import org.springframework.data.elasticsearch.annotations.FieldType
 import org.valiktor.functions.isNotEqualTo
 
-@Document(indexName = "richskill", createIndex = true)
 data class RichSkillDescriptor(
-
-    @Field(name = "db_id")
-    @Nullable
     override val id: Long?,
-
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     override val creationDate: LocalDateTime,
-
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     override val updateDate: LocalDateTime,
-
-    @Id
     val uuid: String,
-
     val name: String,
-
     val statement: String,
-
-    @Field(type = FieldType.Nested)
     val jobCodes: List<JobCode> = listOf(),
-
     val keywords: List<Keyword> = listOf(),
-
-    @Nullable
     val category: Keyword? = null,
-
-    @Nullable
     val author: Keyword? = null,
-
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
-    @Nullable
     override val archiveDate: LocalDateTime? = null,
-
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
-    @Nullable
     override val publishDate: LocalDateTime? = null
-
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
 
     var collections: List<Collection> = listOf()

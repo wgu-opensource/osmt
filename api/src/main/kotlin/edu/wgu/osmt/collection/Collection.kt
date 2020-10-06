@@ -7,13 +7,18 @@ import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptor
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import net.minidev.json.JSONObject
+import org.elasticsearch.common.Nullable
+import org.springframework.data.annotation.Id
+import org.springframework.data.elasticsearch.annotations.DateFormat
+import org.springframework.data.elasticsearch.annotations.Document
+import org.springframework.data.elasticsearch.annotations.Field
+import org.springframework.data.elasticsearch.annotations.FieldType
 import org.valiktor.functions.isEqualTo
 import org.valiktor.functions.isNotEqualTo
 import org.valiktor.functions.validate
 import org.valiktor.validate
 import java.time.LocalDateTime
 import java.util.*
-
 
 data class Collection(
     override val id: Long?,
@@ -22,11 +27,11 @@ data class Collection(
     val uuid: String,
     val name: String,
     val author: Keyword? = null,
-    val skills: List<RichSkillDescriptor> = listOf(),
+    val skillIds: List<Long> = listOf(),
+    val skillUuids: List<String> = listOf(),
     override val archiveDate: LocalDateTime? = null,
     override val publishDate: LocalDateTime? = null
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
-
 }
 
 data class CollectionUpdateObject(

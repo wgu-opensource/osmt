@@ -3,15 +3,13 @@ package edu.wgu.osmt.collection
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
-import edu.wgu.osmt.db.updateFromObject
+import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.elasticsearch.EsCollectionRepository
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -33,8 +31,11 @@ interface CollectionRepository {
 
 @Repository
 @Transactional
-class CollectionRepositoryImpl @Autowired constructor(val keywordRepository: KeywordRepository, val auditLogRepository: AuditLogRepository
-): CollectionRepository {
+class CollectionRepositoryImpl @Autowired constructor(
+    val keywordRepository: KeywordRepository,
+    val auditLogRepository: AuditLogRepository,
+    val esCollectionRepository: EsCollectionRepository
+) : CollectionRepository {
     override val table = CollectionTable
     override val dao = CollectionDao.Companion
 
@@ -47,27 +48,42 @@ class CollectionRepositoryImpl @Autowired constructor(val keywordRepository: Key
         return query?.let { dao.wrapRow(it) }
     }
 
-   override fun findByName(name: String): CollectionDao? {
+    override fun findByName(name: String): CollectionDao? {
         val query = table.select { table.name eq name }.singleOrNull()
         return query?.let { dao.wrapRow(it) }
     }
 
     override fun create(name: String, author: KeywordDao?): CollectionDao {
-       val authorKeyword: KeywordDao? = author ?: keywordRepository.getDefaultAuthor()
-       return dao.new {
-           this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
-           this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
-           this.updateDate = this.creationDate
-           this.uuid = UUID.randomUUID().toString()
-           this.name = name
-           this.author = authorKeyword
-       }
+        val authorKeyword: KeywordDao? = author ?: keywordRepository.getDefaultAuthor()
+        return dao.new {
+            this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
+            this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
+            this.updateDate = this.creationDate
+            this.uuid = UUID.randomUUID().toString()
+            this.name = name
+            this.author = authorKeyword
+        }
     }
 
-    override fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao? {
-        val original = dao.findById(updateObject.id)
-        val changes = original?.let { updateObject.diff(it) }
-        table.updateFromObject(updateObject)
+    fun applyUpdate(collDao: CollectionDao, updateObject: CollectionUpdateObject): Unit {
+        collDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
+
+        when (updateObject.publishStatus) {
+            PublishStatus.Archived -> collDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Published -> collDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Unpublished -> {
+            } // non-op
+        }
+
+        updateObject.author?.let {
+            if (it.t != null) {
+                collDao.author = it.t
+            } else {
+                collDao.author = null
+            }
+        }
+
+        updateObject.name?.let { collDao.name = it }
 
         // update skills
         updateObject.skills?.let {
@@ -78,6 +94,13 @@ class CollectionRepositoryImpl @Autowired constructor(val keywordRepository: Key
                 CollectionSkills.delete(collectionId = updateObject.id, skillId = skill.id.value)
             }
         }
+    }
+
+    override fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao? {
+        val daoObject = dao.findById(updateObject.id)
+        val changes = daoObject?.let { updateObject.diff(it) }
+
+        daoObject?.let { applyUpdate(it, updateObject) }
 
         changes?.let { it ->
             if (it.isNotEmpty())
@@ -91,7 +114,7 @@ class CollectionRepositoryImpl @Autowired constructor(val keywordRepository: Key
                     )
                 )
         }
-
-        return  dao.findById(updateObject.id)
+        daoObject?.let { esCollectionRepository.save(CollectionDoc.fromCollection(it.toModel())) }
+        return daoObject
     }
 }

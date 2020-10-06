@@ -52,7 +52,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
     lateinit var keywordRepository: KeywordRepository
 
     @Autowired
-    lateinit var elasticSearchRepository: EsRichSkillRepository
+    lateinit var esRichSkillRepository: EsRichSkillRepository
 
     override val dao = RichSkillDescriptorDao.Companion
     override val table = RichSkillDescriptorTable
@@ -66,62 +66,59 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
     override fun findById(id: Long) = dao.findById(id)
 
-    fun applyUpdate(updateObject: RsdUpdateObject): RichSkillDescriptorDao? {
-        return dao.findById(updateObject.id!!)?.let { rsdDao ->
-            rsdDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
-            when (updateObject.publishStatus) {
-                PublishStatus.Archived -> rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-                PublishStatus.Published -> rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
-                PublishStatus.Unpublished -> {
-                } // non-op
+    fun applyUpdate(rsdDao: RichSkillDescriptorDao, updateObject: RsdUpdateObject): Unit {
+        rsdDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
+        when (updateObject.publishStatus) {
+            PublishStatus.Archived -> rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Published -> rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Unpublished -> {
+            } // non-op
+        }
+        updateObject.name?.let { rsdDao.name = it }
+        updateObject.statement?.let { rsdDao.statement = it }
+        updateObject.category?.let {
+            if (it.t != null) {
+                rsdDao.category = it.t
+            } else {
+                rsdDao.category = null
             }
-            updateObject.name?.let { rsdDao.name = it }
-            updateObject.statement?.let { rsdDao.statement = it }
-            updateObject.category?.let {
-                if (it.t != null) {
-                    rsdDao.category = it.t
-                } else {
-                    rsdDao.category = null
-                }
+        }
+        updateObject.author?.let {
+            if (it.t != null) {
+                rsdDao.author = it.t
+            } else {
+                rsdDao.author = null
             }
-            updateObject.author?.let {
-                if (it.t != null) {
-                    rsdDao.author = it.t
-                } else {
-                    rsdDao.author = null
-                }
-            }
+        }
 
-            // update keywords
-            updateObject.keywords?.let {
+        // update keywords
+        updateObject.keywords?.let {
 
-                it.add?.forEach { keyword ->
-                    richSkillKeywordTable.create(richSkillId = updateObject.id, keywordId = keyword.id.value!!)
-                }
-
-                it.remove?.forEach { keyword ->
-                    richSkillKeywordTable.delete(richSkillId = updateObject.id, keywordId = keyword.id.value!!)
-                }
+            it.add?.forEach { keyword ->
+                richSkillKeywordTable.create(richSkillId = updateObject.id!!, keywordId = keyword.id.value!!)
             }
 
-            // update jobcodes
-            updateObject.jobCodes?.let {
-                it.add?.forEach { jobCode ->
-                    richSkillJobCodeTable.create(richSkillId = updateObject.id, jobCodeId = jobCode.id.value!!)
-                }
-                it.remove?.forEach { jobCode ->
-                    richSkillJobCodeTable.delete(richSkillId = updateObject.id, jobCodeId = jobCode.id.value!!)
-                }
+            it.remove?.forEach { keyword ->
+                richSkillKeywordTable.delete(richSkillId = updateObject.id!!, keywordId = keyword.id.value!!)
             }
+        }
 
-            elasticSearchRepository.save(rsdDao.toModel())
-            rsdDao
+        // update jobcodes
+        updateObject.jobCodes?.let {
+            it.add?.forEach { jobCode ->
+                richSkillJobCodeTable.create(richSkillId = updateObject.id!!, jobCodeId = jobCode.id.value!!)
+            }
+            it.remove?.forEach { jobCode ->
+                richSkillJobCodeTable.delete(richSkillId = updateObject.id!!, jobCodeId = jobCode.id.value!!)
+            }
         }
     }
 
     override fun update(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao? {
-        val original = dao.findById(updateObject.id!!)
-        val changes = original?.let { updateObject.diff(it) }
+        val daoObject = dao.findById(updateObject.id!!)
+        val changes = daoObject?.let { updateObject.diff(it) }
+
+        daoObject?.let { applyUpdate(it, updateObject) }
 
         changes?.let { it ->
             if (it.isNotEmpty())
@@ -135,8 +132,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
                     )
                 )
         }
-
-        return applyUpdate(updateObject)
+        daoObject?.let { esRichSkillRepository.save(RichSkillDoc.fromRsd(it.toModel())) }
+        return daoObject
     }
 
     override fun findByUUID(uuid: String): RichSkillDescriptorDao? {
@@ -158,8 +155,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
         }
 
         val updateWithIdAndAuthor = updateObject.copy(
-            id=newRsd.id.value,
-            author=updateObject.author ?: NullableFieldUpdate(keywordRepository.getDefaultAuthor())
+            id = newRsd.id.value,
+            author = updateObject.author ?: NullableFieldUpdate(keywordRepository.getDefaultAuthor())
         )
 
         return update(updateWithIdAndAuthor, user)
@@ -182,7 +179,11 @@ class RichSkillRepositoryImpl @Autowired constructor(
         return newSkills.filterNotNull()
     }
 
-    override fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String): RichSkillDescriptorDao? {
+    override fun updateFromApi(
+        existingSkillId: Long,
+        skillUpdate: ApiSkillUpdate,
+        user: String
+    ): RichSkillDescriptorDao? {
         val errors = skillUpdate.validate(0)
         if (errors?.isNotEmpty() == true) {
             throw FormValidationException("Invalid SkillUpdateDescriptor", errors)
@@ -197,11 +198,11 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
     override fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate): RsdUpdateObject {
         val authorKeyword = skillUpdate.author?.let {
-            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value=it.name, uri=it.id)
+            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it.name, uri = it.id)
         }
 
         val categoryKeyword = skillUpdate.category?.let {
-            keywordRepository.findOrCreate(KeywordTypeEnum.Category, value=it)
+            keywordRepository.findOrCreate(KeywordTypeEnum.Category, value = it)
         }
 
         val addingKeywords = mutableListOf<KeywordDao>()
@@ -211,13 +212,13 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         fun lookup_references(lud: ApiReferenceListUpdate, keywordType: KeywordTypeEnum) {
             lud.add?.map {
-                keywordRepository.findOrCreate(keywordType, value=it.name, uri=it.id)
+                keywordRepository.findOrCreate(keywordType, value = it.name, uri = it.id)
             }?.let {
                 addingKeywords.addAll(it)
             }
 
             lud.remove?.map {
-                keywordRepository.findByValueOrUri(keywordType, value=it.name, uri=it.id)
+                keywordRepository.findByValueOrUri(keywordType, value = it.name, uri = it.id)
             }?.let {
                 removingKeywords.addAll(it.filterNotNull())
             }
@@ -225,13 +226,13 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         fun lookup_keywords(slud: ApiStringListUpdate, keywordType: KeywordTypeEnum) {
             slud.add?.map {
-                keywordRepository.findOrCreate(keywordType, value=it)
+                keywordRepository.findOrCreate(keywordType, value = it)
             }?.let {
                 addingKeywords.addAll(it)
             }
 
             slud.remove?.map {
-                keywordRepository.findByValueOrUri(keywordType, value=it)
+                keywordRepository.findByValueOrUri(keywordType, value = it)
             }?.let {
                 removingKeywords.addAll(it.filterNotNull())
             }
@@ -239,7 +240,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         skillUpdate.occupations?.let {
             it.add?.map {
-                jobCodeRepository.findByCodeOrCreate(code=it)
+                jobCodeRepository.findByCodeOrCreate(code = it)
             }?.let { jobsToAdd.addAll(it) }
 
             it.remove?.map {
@@ -255,8 +256,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         val allKeywordsUpdate = if (addingKeywords.size > 0 || removingKeywords.size > 0) {
             ListFieldUpdate<KeywordDao>(
-                add=if (addingKeywords.size > 0) addingKeywords else listOf(),
-                remove=if (removingKeywords.size > 0) removingKeywords else listOf()
+                add = if (addingKeywords.size > 0) addingKeywords else listOf(),
+                remove = if (removingKeywords.size > 0) removingKeywords else listOf()
             )
         } else {
             null
@@ -264,8 +265,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         val jobCodesUpdate = if (jobsToAdd.size > 0 || jobsToRemove.size > 0) {
             ListFieldUpdate<JobCodeDao>(
-                add=if (jobsToAdd.size > 0) jobsToAdd else listOf(),
-                remove=if (jobsToRemove.size > 0) jobsToRemove else listOf()
+                add = if (jobsToAdd.size > 0) jobsToAdd else listOf(),
+                remove = if (jobsToRemove.size > 0) jobsToRemove else listOf()
             )
         } else {
             null

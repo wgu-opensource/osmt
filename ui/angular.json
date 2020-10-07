@@ -50,7 +50,7 @@
               {
                 "glob": "**/*",
                 "input": "./node_modules/wgu-design-system-patternlibrary/dist",
-                "output": "./src/assets"
+                "output": "./assets"
               }
             ],
             "styles": [

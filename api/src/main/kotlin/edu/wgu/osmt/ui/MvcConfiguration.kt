@@ -9,17 +9,21 @@ import java.util.concurrent.TimeUnit
 @Configuration
 class UiAppConfig : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
-        registry.addResourceHandler("/**")
+        registry.addResourceHandler("/*")
                 .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
                 .addResourceLocations("classpath:/ui/")
+        registry.addResourceHandler("/assets/**")
+            .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+            .addResourceLocations("classpath:/ui/assets/")
     }
 
-    // TODO (julian) Temporarily had to be removed to stop redirecting away from assets
-    // The right move here seems to be to set this up to redirect against all non-asset paths only
-//    @Override
-//    override fun addViewControllers(registry: ViewControllerRegistry) {
-//        registry.addViewController("/{notApi:(?!api)[^\\.]*(?!\\.\\w+)}/**").setViewName("forward:/")
-//    }
+    /**
+     * Redirect all sub-paths that are not api or static asset related back to the the root
+     */
+    @Override
+    override fun addViewControllers(registry: ViewControllerRegistry) {
+        registry.addViewController("/{notApiOrAssetPaths:(?!api|assets)[^\\.]*(?!\\.\\w+)}/**").setViewName("forward:/")
+    }
 
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")

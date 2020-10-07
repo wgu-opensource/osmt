@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core"
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {RichSkillService} from "../service/rich-skill.service";
 import {Observable} from "rxjs";
 import {ApiNamedReference, INamedReference, ApiSkill} from "../ApiSkill";
@@ -26,7 +26,8 @@ export class RichSkillFormComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private richSkillService: RichSkillService,
-    private location: Location
+    private location: Location,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -182,6 +183,12 @@ export class RichSkillFormComponent implements OnInit {
       this.skillSaved = this.richSkillService.updateSkill(this.skillUuid, updateObject)
     } else {
       this.skillSaved = this.richSkillService.createSkill(updateObject)
+    }
+
+    if (this.skillSaved) {
+      this.skillSaved.subscribe(() => {
+        this.router.navigate(["/skills", this.skillUuid])
+      })
     }
   }
 

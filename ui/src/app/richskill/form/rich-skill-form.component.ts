@@ -258,10 +258,16 @@ export class RichSkillFormComponent implements OnInit {
     for (const fieldName of fieldOrder) {
       const control = this.skillForm.controls[fieldName]
       if (control && !control.valid) {
-        const elementId = `formfield-${fieldName}`
-        const el = document.getElementById(elementId)
+        const containerId = `formfield-container-${fieldName}`
+        const el = document.getElementById(containerId)
         if (el) {
           el.scrollIntoView()
+
+          const fieldId = `formfield-${fieldName}`
+          const field = document.getElementById(fieldId)
+          if (field) {
+            field.focus()
+          }
           return false
         }
       }

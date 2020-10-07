@@ -6,7 +6,7 @@ export function urlValidator(control: AbstractControl): ValidationErrors | null 
   try {
     const v = new URL(control.value)
     return null
-  } catch (e: TypeError) { }
+  } catch (e) { }
 
   return {invalidUrl: {value: control.value}}
 }

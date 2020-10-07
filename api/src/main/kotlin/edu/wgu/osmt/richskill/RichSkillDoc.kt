@@ -1,9 +1,9 @@
 package edu.wgu.osmt.richskill
 
+import edu.wgu.osmt.collection.CollectionDoc
 import org.elasticsearch.common.Nullable
 import org.springframework.data.elasticsearch.annotations.Document
 import org.springframework.data.elasticsearch.annotations.Field
-import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.db.PublishStatus
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.FieldType
@@ -48,25 +48,23 @@ data class RichSkillDoc(
     val employers: List<String> = listOf(),
 
     @Field
-    val alignments: List<String> = listOf()
+    val alignments: List<String> = listOf(),
+
+    @Field(type = FieldType.Nested)
+    val collections: List<CollectionDoc>
 ) {
     companion object {
-        fun fromRsd(rs: RichSkillDescriptor): RichSkillDoc {
-            return RichSkillDoc(
-                id = rs.id!!,
-                uuid = rs.uuid,
-                name = rs.name,
-                statement = rs.statement,
-                category = rs.category?.value,
-                author = rs.author?.value,
-                publishStatus = rs.publishStatus(),
-                searchingKeywords = rs.searchingKeywords.mapNotNull{it.value},
-                jobCodes = rs.jobCodes.map{it.code},
-                standards = rs.standards.mapNotNull{it.value},
-                certifications = rs.certifications.mapNotNull { it.value },
-                employers = rs.employers.mapNotNull{it.value},
-                alignments = rs.alignments.mapNotNull { it.value }
-                )
-        }
+
+        val defaultSearchFields = setOf(
+            RichSkillDoc::name.name,
+            RichSkillDoc::statement.name,
+            RichSkillDoc::category.name,
+            RichSkillDoc::searchingKeywords.name,
+            RichSkillDoc::jobCodes.name,
+            RichSkillDoc::standards.name,
+            RichSkillDoc::certifications.name,
+            RichSkillDoc::employers.name,
+            RichSkillDoc::alignments.name
+        )
     }
 }

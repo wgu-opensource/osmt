@@ -1,15 +1,12 @@
 package edu.wgu.osmt.collection
 
 import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.db.updateFromObject
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
-import edu.wgu.osmt.elasticsearch.EsCollectionRepository
+import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
-import edu.wgu.osmt.richskill.RichSkillDescriptorDao
-import edu.wgu.osmt.richskill.RsdUpdateObject
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
@@ -37,7 +34,7 @@ interface CollectionRepository {
 class CollectionRepositoryImpl @Autowired constructor(
     val keywordRepository: KeywordRepository,
     val auditLogRepository: AuditLogRepository,
-    val esCollectionRepository: EsCollectionRepository
+    val esRichSkillRepository: EsRichSkillRepository
 ) : CollectionRepository {
     override val table = CollectionTable
     override val dao = CollectionDao.Companion
@@ -102,7 +99,12 @@ class CollectionRepositoryImpl @Autowired constructor(
         val daoObject = dao.findById(updateObject.id)
         val changes = daoObject?.let { updateObject.diff(it) }
 
-        daoObject?.let { applyUpdate(it, updateObject) }
+        daoObject?.let {
+            applyUpdate(it, updateObject)
+
+            // reindex elastic search skills documents
+            esRichSkillRepository.saveAll(it.skills.map { skill -> skill.toDoc() })
+        }
 
         changes?.let { it ->
             if (it.isNotEmpty())
@@ -116,7 +118,6 @@ class CollectionRepositoryImpl @Autowired constructor(
                     )
                 )
         }
-        daoObject?.let { esCollectionRepository.save(CollectionDoc.fromCollection(it.toModel())) }
         return daoObject
     }
 }

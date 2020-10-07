@@ -32,7 +32,7 @@ class ElasticsearchClientManager {
     }
 
     @Bean
-    fun elasticsearchTemplate(): ElasticsearchOperations? {
+    fun elasticsearchTemplate(): ElasticsearchOperations {
         return ElasticsearchRestTemplate(elasticSearchClient())
     }
 

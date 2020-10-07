@@ -38,4 +38,8 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             skillIds = skills.toList().map { it.id.value }
         )
     }
+
+    fun toDoc(): CollectionDoc {
+        return CollectionDoc(id.value, uuid, name, publishStatus())
+    }
 }

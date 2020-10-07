@@ -132,7 +132,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
                     )
                 )
         }
-        daoObject?.let { esRichSkillRepository.save(RichSkillDoc.fromRsd(it.toModel())) }
+        daoObject?.let { esRichSkillRepository.save(daoObject.toDoc()) }
         return daoObject
     }
 

@@ -26,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional
 abstract class SpringTest: BaseDockerizedTest {
     val logger: Logger = LoggerFactory.getLogger(SpringTest::class.java)
 
+    val testUser = "test-user"
+
     init {
         logger.info("Mysql port ${Containers.mysqlContainer.getMappedPort(3306)}")
         logger.info("Redis port ${Containers.redisContainer.getMappedPort(6379)}")

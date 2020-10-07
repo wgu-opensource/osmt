@@ -8,6 +8,7 @@ import {ApiNamedReference, INamedReference, ApiSkill} from "../ApiSkill";
 import {ApiStringListUpdate, IStringListUpdate, ApiSkillUpdate, ApiReferenceListUpdate} from "../ApiSkillUpdate";
 import {IJobCode} from "../../jobcode/Jobcode";
 import {AppConfig} from "../../app.config";
+import {urlValidator} from "../../validators/url.validator";
 
 
 @Component({
@@ -54,7 +55,7 @@ export class RichSkillFormComponent implements OnInit {
       occupations: new FormControl(""),
       employers: new FormControl(""),
       alignmentText: new FormControl(""),
-      alignmentUrl: new FormControl(""),
+      alignmentUrl: new FormControl("", urlValidator),
     }
     if (AppConfig.settings.editableAuthor) {
       // @ts-ignore

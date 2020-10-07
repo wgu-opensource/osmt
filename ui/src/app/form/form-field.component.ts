@@ -14,6 +14,7 @@ export class FormField implements OnInit {
   @Input() errorMessage: string = ""
   @Input() helpMessage: string = ""
   @Input() required: boolean = false
+  @Input() name: string = ""
 
   constructor() {
   }

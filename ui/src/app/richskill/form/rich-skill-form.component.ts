@@ -240,4 +240,32 @@ export class RichSkillFormComponent implements OnInit {
   showAuthor(): boolean {
     return AppConfig.settings.editableAuthor
   }
+
+  handleClickMissingFields(): boolean {
+    const fieldOrder = [
+      "skillName",
+      "author",
+      "skillStatement",
+      "category",
+      "keywords",
+      "standards",
+      "certifications",
+      "occupations",
+      "employers",
+      "alignmentText",
+      "alignmentUrl"
+    ]
+    for (const fieldName of fieldOrder) {
+      const control = this.skillForm.controls[fieldName]
+      if (control && !control.valid) {
+        const elementId = `formfield-${fieldName}`
+        const el = document.getElementById(elementId)
+        if (el) {
+          el.scrollIntoView()
+          return false
+        }
+      }
+    }
+    return false
+  }
 }

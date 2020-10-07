@@ -19,6 +19,7 @@
 
       <app-formfield-text
         [control]="skillForm.controls.skillName"
+        name="skillName"
         label="Skill Name (Required)"
         placeholder="Health Education Development"
         required="true"
@@ -27,6 +28,7 @@
 
       <app-formfield-text *ngIf="showAuthor()"
         [control]="skillForm.controls.author"
+        name="author"
         label="Author (Required)"
         required="true"
       ></app-formfield-text>
@@ -34,6 +36,7 @@
       <app-formfield-textarea
         [control]="skillForm.controls.skillStatement"
         required="true"
+        name="skillStatement"
         label="Skill Statement (Required)"
         placeholder="Develop education programs to improve health outcomes for patient populations."
         helpMessage="A skill statement is a string that expresses information about who the skill applies to, the nature of the skill itself, and the context in which it is applied."
@@ -42,6 +45,7 @@
       <app-formfield-text
         [control]="skillForm.controls.category"
         label="Category"
+        name="category"
         placeholder="Health Education"
         helpMessage="A term that can be used to group multiple skills."
       ></app-formfield-text>
@@ -49,6 +53,7 @@
       <app-formfield-textarea
         [control]="skillForm.controls.keywords"
         label="Keywords"
+        name="keywords"
         placeholder="Health Education; Education Program Development; Heath Instruction; Health Outcome Improvement; Health Education Design"
         helpMessage="Add topic terms separated by semicolon."
       ></app-formfield-textarea>
@@ -56,6 +61,7 @@
       <app-formfield-textarea
         [control]="skillForm.controls.standards"
         label="Standards"
+        name="standards"
         placeholder="Health Education Standards"
         helpMessage="Often sourced from research and Subject Matter Experts."
       ></app-formfield-textarea>
@@ -63,6 +69,7 @@
       <app-formfield-textarea
         [control]="skillForm.controls.certifications"
         label="Certifications"
+        name="certifications"
         placeholder="Health Education Specialist (Society for Public Health Education)"
         helpMessage="Often sourced from research and Subject Matter Experts."
       ></app-formfield-textarea>
@@ -70,6 +77,7 @@
       <app-formfield-textarea
         [control]="skillForm.controls.occupations"
         label="Occupations"
+        name="occupations"
         placeholder="29-1071; 11-9111; 25-1072; 29-1141; 29-1171"
         helpMessage="Numeric job codes from BLS or O*NET separated by a semicolon."
       ></app-formfield-textarea>
@@ -77,6 +85,7 @@
       <app-formfield-text
         [control]="skillForm.controls.employers"
         label="Employers"
+        name="employers"
         placeholder="Sample Company; Test Company"
         helpMessage="Often sourced from research and Subject Matter Experts."
       ></app-formfield-text>
@@ -84,6 +93,7 @@
       <app-formfield-text
         [control]="skillForm.controls.alignmentText"
         label="Alignment Text"
+        name="alignmentText"
         placeholder="Health Education"
         helpMessage="Often sourced from research and Subject Matter Experts."
       ></app-formfield-text>
@@ -91,6 +101,7 @@
       <app-formfield-text
         [control]="skillForm.controls.alignmentUrl"
         label="Alignment URL"
+        name="alignmentUrl"
         placeholder="https://skills.emsidata.com/skills/KS124MT6ZDZLF0M8JM6X"
         helpMessage="A URI, often sourced from research and Subject Matter Experts."
       ></app-formfield-text>
@@ -120,7 +131,7 @@
 
         </div>
 
-        <p *ngIf="!skillForm.valid">You need to enter additional information. Go to <a href="">first required missing field</a>.</p>
+        <p *ngIf="!skillForm.valid">You need to enter additional information. Go to <a (click)="handleClickMissingFields()">first required missing field</a>.</p>
 
       </div>
     </div>

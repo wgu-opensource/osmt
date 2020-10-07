@@ -1,7 +1,7 @@
-import {Component, OnInit} from "@angular/core"
+import {Component, Injectable, OnInit} from "@angular/core"
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, ActivatedRouteSnapshot, CanDeactivate, Router, RouterStateSnapshot} from "@angular/router";
 import {RichSkillService} from "../service/rich-skill.service";
 import {Observable} from "rxjs";
 import {ApiNamedReference, INamedReference, ApiSkill} from "../ApiSkill";
@@ -280,5 +280,24 @@ export class RichSkillFormComponent implements OnInit {
       }
     }
     return false
+  }
+}
+
+
+@Injectable()
+export class SkillFormDirtyGuard implements CanDeactivate<RichSkillFormComponent> {
+
+  canDeactivate(
+    component: RichSkillFormComponent,
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean> | boolean {
+    if (!component.skillForm.pristine) {
+      return new Observable((observer) => {
+        observer.next(confirm("You have unsaved changes"))
+        observer.complete()
+      })
+    }
+    return true
   }
 }

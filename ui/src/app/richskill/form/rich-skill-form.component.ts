@@ -263,6 +263,7 @@ export class RichSkillFormComponent implements OnInit {
       "alignmentText",
       "alignmentUrl"
     ]
+    this.skillForm.markAllAsTouched()
     for (const fieldName of fieldOrder) {
       const control = this.skillForm.controls[fieldName]
       if (control && !control.valid) {

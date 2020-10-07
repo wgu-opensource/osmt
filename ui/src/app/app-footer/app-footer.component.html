@@ -8,15 +8,14 @@
         <div class="l-flex-desktop l-flex-justifySpaceBetween">
           <div class="t-verticalSpacing-small">
             <div class="l-flex-tablet">
-              <p class="t-type-small t-color-text3 t-horizontalSpacing-extraSmall">© 2020 Western Governors University - WGU.</p>
-              <p class="t-type-small t-color-text3">All Rights Reserved.</p>
+              <p class="t-type-small t-color-text3 t-horizontalSpacing-extraSmall">{{whitelabel.licensePrimary}}</p>
+              <p class="t-type-small t-color-text3">{{whitelabel.licenseSecondary}}</p>
             </div>
           </div>
           <div class="t-verticalSpacing-small">
-            <p class="t-type-small t-color-text3">Powered by the <a class="t-link t-type-smallLink" href="">Open Skills Network</a>.</p>
+            <p class="t-type-small t-color-text3">{{whitelabel.poweredBy}} <a class="t-link t-type-smallLink" [href]="whitelabel.poweredByUrl">{{whitelabel.poweredByLabel}}</a>.</p>
           </div>
         </div>
       </div>
     </div>
   </footer>
-  

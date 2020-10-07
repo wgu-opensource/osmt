@@ -187,8 +187,9 @@ export class RichSkillFormComponent implements OnInit {
     }
 
     if (this.skillSaved) {
-      this.skillSaved.subscribe(() => {
-        this.router.navigate(["/skills", this.skillUuid])
+      this.skillSaved.subscribe((result) => {
+        this.skillForm.markAsPristine()
+        this.router.navigate(["/skills", result.uuid])
       })
     }
   }

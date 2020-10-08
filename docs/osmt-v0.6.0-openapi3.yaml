@@ -128,6 +128,12 @@ paths:
               schema:
                 type: string
                 example: A human readable description of the skill
+            text/csv:
+              schema:
+                type: string
+                example: >-
+                  id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
+                  https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac,RichSkillDescriptor,"https://osmt.example.com/organization","Document Saving","The learner copies and saves documents to their local machine.","https://skillsource.example.com/base-skills/simple-compuhacking","documents, file operations, computer basics","Productivity Software","13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
     delete:
       tags:
         - Skills

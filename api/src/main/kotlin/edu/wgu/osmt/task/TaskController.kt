@@ -8,21 +8,18 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 
-interface TaskApi {
-    fun queueCsvJob(): HttpEntity<TaskResult>
-    fun checkTaskOrResult(uuid: String): HttpEntity<*>
-}
-
 @Controller
-class TaskApiImpl @Autowired constructor(
+@RequestMapping("/api/tasks")
+class TaskController @Autowired constructor(
     val taskMessageService: TaskMessageService
-) : TaskApi {
+) {
 
-    @GetMapping("/api/tasks/{uuid}")
+    @GetMapping("/{uuid}")
     @ResponseBody
-    override fun checkTaskOrResult(@PathVariable uuid: String): HttpEntity<*> {
+    fun checkTaskOrResult(@PathVariable uuid: String): HttpEntity<*> {
         val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
 
         return when (task?.status) {
@@ -39,15 +36,4 @@ class TaskApiImpl @Autowired constructor(
         }
     }
 
-    @GetMapping("/api/skills", produces = ["text/csv"])
-    @ResponseBody
-    override fun queueCsvJob(): HttpEntity<TaskResult> {
-        val task = CsvTask()
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        taskMessageService.enqueueJob(TaskMessageService.allSkillsCsv, task)
-        
-        val tr = TaskResult.fromTask(task)
-        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
-    }
 }

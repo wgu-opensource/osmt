@@ -51,6 +51,7 @@ export class RichSkillFormComponent implements OnInit {
       category: new FormControl(""),
       keywords: new FormControl(""),
       standards: new FormControl(""),
+      collections: new FormControl(""),
       certifications: new FormControl(""),
       occupations: new FormControl(""),
       employers: new FormControl(""),
@@ -132,6 +133,9 @@ export class RichSkillFormComponent implements OnInit {
     if (this.existingSkill?.category !== inputCategory) {
       update.category = inputCategory ?? ""
     }
+
+    const collectionsDiff = this.diffStringList(formValue.collections, this.existingSkill?.collections)
+    if (collectionsDiff) { update.collections = collectionsDiff }
 
     const keywordDiff = this.diffStringList(this.splitTextarea(formValue.keywords), this.existingSkill?.keywords)
     if (keywordDiff) { update.keywords = keywordDiff }
@@ -224,6 +228,7 @@ export class RichSkillFormComponent implements OnInit {
       category: skill.category ?? "",
       keywords: skill.keywords?.join("; ") ?? "",
       standards: skill.standards?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
+      collections: skill.collections?.slice() ?? [],
       certifications: skill.certifications?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
       occupations: skill.occupations?.map(it => this.stringFromJobCode(it)).join("; ") ?? "",
       employers: skill.employers?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",

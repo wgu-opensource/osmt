@@ -58,6 +58,15 @@
         helpMessage="Add topic terms separated by semicolon."
       ></app-formfield-textarea>
 
+      <app-skill-collections-display
+        *ngIf="this.skillUuid"
+        [control]="skillForm.controls.collections"
+        label="Collections"
+        name="collections"
+      ></app-skill-collections-display>
+
+
+
       <app-formfield-textarea
         [control]="skillForm.controls.standards"
         label="Standards"

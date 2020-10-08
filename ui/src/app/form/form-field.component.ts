@@ -23,6 +23,6 @@ export class FormField implements OnInit {
   }
 
   isError(): boolean {
-    return (this.control.dirty || this.control.touched) && this.control.invalid
+    return this.control && (this.control.dirty || this.control.touched) && this.control.invalid
   }
 }

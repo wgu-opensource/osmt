@@ -19,6 +19,7 @@ import { CommoncontrolsComponent } from "./commoncontrols/commoncontrols.compone
 import { AppHeaderComponent } from "./app-header/app-header.component"
 import { AppFooterComponent } from "./app-footer/app-footer.component"
 import {CommoncontrolsMobileComponent} from "./commoncontrols/commoncontrols-mobile.component";
+import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -41,6 +42,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CommoncontrolsMobileComponent,
     AppHeaderComponent,
     AppFooterComponent,
+    SkillCollectionsDisplayComponent,
   ],
   imports: [
     BrowserModule,

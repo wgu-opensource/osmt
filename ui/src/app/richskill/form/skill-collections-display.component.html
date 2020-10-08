@@ -1,0 +1,20 @@
+
+  <app-formfield
+    [label]="label"
+    [placeholder]="placeholder"
+    [errorMessage]="errorMessage"
+    [helpMessage]="helpMessage"
+    [required]="required"
+    [name]="name"
+  >
+    <div class="PUI">
+    <ul>
+      <li *ngFor="let collection of control.value">
+        <span>{{collection}}</span>
+        <button style="float: right" (click)="handleClickRemove(collection)">x Remove</button>
+      </li>
+      <li *ngIf="control.value.length < 1">Not part of any collections.</li>
+    </ul>
+    </div>
+  </app-formfield>
+

@@ -20,6 +20,8 @@ import { AppHeaderComponent } from "./app-header/app-header.component"
 import { AppFooterComponent } from "./app-footer/app-footer.component"
 import {CommoncontrolsMobileComponent} from "./commoncontrols/commoncontrols-mobile.component";
 import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component";
+import {ToastComponent} from "./toast/toast.component";
+import {ToastService} from "./toast/toast.service";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -43,6 +45,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AppHeaderComponent,
     AppFooterComponent,
     SkillCollectionsDisplayComponent,
+    ToastComponent,
   ],
   imports: [
     BrowserModule,

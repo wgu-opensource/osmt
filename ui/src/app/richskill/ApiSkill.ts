@@ -1,4 +1,4 @@
-import {IJobCode} from "../jobcode/Jobcode"
+import {IJobCode} from "../job-codes/Jobcode"
 import {PublishStatus} from "../PublishStatus"
 
 

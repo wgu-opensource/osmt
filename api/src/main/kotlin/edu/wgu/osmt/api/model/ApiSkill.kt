@@ -2,12 +2,13 @@ package edu.wgu.osmt.api.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.richskill.RichSkillDescriptor
 import net.minidev.json.JSONObject
 import java.time.LocalDateTime
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
-class ApiSkill(private val rsd: RichSkillDescriptor, private val baseUrl: String) {
+class ApiSkill(private val rsd: RichSkillDescriptor, private val appConfig: AppConfig) {
 
     // TODO include view of collection
 
@@ -16,6 +17,10 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val baseUrl: String
 
     @JsonProperty
     val `type` = "RichSkillDescriptor"
+
+    @get:JsonProperty
+    val creator: String
+        get() = appConfig.defaultCreatorUri
 
     @get:JsonProperty
     val author: ApiNamedReference?
@@ -47,7 +52,7 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val baseUrl: String
 
     @get:JsonProperty
     val id: String
-        get() = rsd.canonicalUrl(baseUrl)
+        get() = rsd.canonicalUrl(appConfig.baseUrl)
 
     @get:JsonProperty
     val uuid: String

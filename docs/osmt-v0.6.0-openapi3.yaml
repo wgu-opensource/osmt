@@ -583,6 +583,10 @@ components:
           type: string
           format: uuid
           readOnly: true
+        creator:
+          type: string
+          format: uri
+          readOnly: true
         status:
           type: string
           enum: ["draft","published","archived"]

@@ -8,13 +8,16 @@
     [name]="name"
   >
     <div class="PUI">
-    <ul>
-      <li *ngFor="let collection of control.value">
-        <span>{{collection}}</span>
-        <button style="float: right" (click)="handleClickRemove(collection)">x Remove</button>
-      </li>
-      <li *ngIf="control.value.length < 1">Not part of any collections.</li>
-    </ul>
+      <style> .strikeout { text-decoration: line-through; } </style>
+
+      <ul>
+        <li *ngFor="let collection of this.allCollections">
+          <span [class.strikeout]="toRemove.indexOf(collection) !== -1">{{collection}}</span>
+          <button *ngIf="toRemove.indexOf(collection) === -1" style="float: right" (click)="handleClickRemove(collection)">x Remove</button>
+          <button *ngIf="toRemove.indexOf(collection) !== -1" style="float: right" (click)="handleClickUndo(collection)">Undo</button>
+        </li>
+        <li *ngIf="this.allCollections.length < 1">Not part of any collections.</li>
+      </ul>
     </div>
   </app-formfield>
 

@@ -1,32 +1,29 @@
 <nav class="m-actionBarVertical">
-    <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onCopyURL()">
-        <button class="m-buttonText m-buttonText-icon">
-            <svg class="button-x-icon t-icon">
-                <use xlink:href="assets/images/svg-defs.svg#icon-duplicate"></use>
-            </svg>
-            <span class="button-x-text">
-                Copy URL
-            </span>
-        </button>
-    </div>
-    <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onDownloadCsv()">
-        <button class="m-buttonText m-buttonText-icon">
-            <svg class="button-x-icon t-icon">
-                <use xlink:href="assets/images/svg-defs.svg#icon-download"></use>
-            </svg>
-            <span class="button-x-text">
-                Download CSV
-            </span>
-        </button>
-    </div>
-    <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onCopyJSON()">
-        <button class="m-buttonText m-buttonText-icon">
-            <svg class="button-x-icon t-icon">
-                <use xlink:href="assets/images/svg-defs.svg#icon-duplicate"></use>
-            </svg>
-            <span class="button-x-text">
-                Copy JSON
-            </span>
-        </button>
-    </div>
-  </nav>
+  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onCopyURL(fullPath)">
+    <button class="m-buttonText m-buttonText-icon">
+      <svg class="button-x-icon t-icon">
+        <use xlink:href="assets/images/svg-defs.svg#icon-duplicate"></use>
+      </svg>
+      <span class="button-x-text">Copy URL</span>
+      <label>
+        <textarea class="t-visuallyhidden" #fullPath>{{href}}</textarea>
+      </label>
+    </button>
+  </div>
+  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onDownloadCsv()">
+    <button class="m-buttonText m-buttonText-icon">
+      <svg class="button-x-icon t-icon">
+        <use xlink:href="assets/images/svg-defs.svg#icon-download"></use>
+      </svg>
+      <span class="button-x-text">Download CSV</span>
+    </button>
+  </div>
+  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onCopyJSON()">
+    <button class="m-buttonText m-buttonText-icon">
+      <svg class="button-x-icon t-icon">
+        <use xlink:href="assets/images/svg-defs.svg#icon-duplicate"></use>
+      </svg>
+      <span class="button-x-text">Copy JSON</span>
+    </button>
+  </div>
+</nav>

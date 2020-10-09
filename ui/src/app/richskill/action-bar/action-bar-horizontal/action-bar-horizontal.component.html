@@ -1,35 +1,38 @@
 <nav class="l-flex l-flex-alignCenter t-elevation-large">
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" href="#" (click)="onCopyURL()">
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyURL(fullPath)">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use xlink:href="assets/images/svg-defs.svg#icon-dismiss"></use>
     </svg>
     <span class="m-actionBarItemHorizontal-x-label m-buttonText">
         <span class="button-x-text">
-          Copy URL
+            Copy URL
         </span>
-      </span>
+        <label class="t-visuallyhidden">
+          <textarea #fullPath>{{href}}</textarea>
+        </label>
+        </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
   </div>
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" href="#" (click)="onDownloadCsv()">
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onDownloadCsv()">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use xlink:href="assets/images/svg-defs.svg#icon-download"></use>
     </svg>
     <span class="m-actionBarItemHorizontal-x-label m-buttonText">
-        <span class="button-x-text">
-          Download CSV
+          <span class="button-x-text">
+            Download CSV
+          </span>
         </span>
-      </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
   </div>
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" href="#" (click)="onCopyJSON()">
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyJSON()">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use xlink:href="assets/images/svg-defs.svg#icon-duplicate"></use>
     </svg>
     <span class="m-actionBarItemHorizontal-x-label m-buttonText">
-        <span class="button-x-text">
-          Copy JSON
+          <span class="button-x-text">
+            Copy JSON
+          </span>
         </span>
-      </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
   </div>
 </nav>

@@ -76,6 +76,10 @@
             <version>${exposed.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.okta.spring</groupId>
+            <artifactId>okta-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.jetbrains.exposed</groupId>
             <artifactId>exposed-java-time</artifactId>
             <version>${exposed.version}</version>

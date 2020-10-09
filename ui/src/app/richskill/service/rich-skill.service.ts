@@ -37,11 +37,11 @@ export class RichSkillService extends AbstractService {
 
   createSkill(updateObject: ApiSkillUpdate): Observable<ApiSkill> {
     const errorMsg = `Error creating skill`
-    return this.post<ISkill>({
+    return this.post<ISkill[]>({
       path: this.serviceUrl,
       body: [updateObject]
     })
-      .pipe(map(({body}) => new ApiSkill(this.safeUnwrapBody(body, errorMsg))))
+      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiSkill(s))[0]))
   }
 
   updateSkill(uuid: string, updateObject: ApiSkillUpdate): Observable<ApiSkill> {

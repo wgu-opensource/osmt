@@ -13,10 +13,16 @@ export class FormField implements OnInit {
   @Input() placeholder: string = ""
   @Input() errorMessage: string = ""
   @Input() helpMessage: string = ""
+  @Input() required: boolean = false
+  @Input() name: string = ""
 
   constructor() {
   }
 
   ngOnInit(): void {
+  }
+
+  isError(): boolean {
+    return this.control && (this.control.dirty || this.control.touched) && this.control.invalid
   }
 }

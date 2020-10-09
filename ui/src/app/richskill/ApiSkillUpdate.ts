@@ -37,6 +37,7 @@ export interface IRichSkillUpdate {
   status?: PublishStatus
   category?: string
   keywords?: IStringListUpdate
+  collections?: ApiStringListUpdate
   alignments?: IReferenceListUpdate
   certifications?: IReferenceListUpdate
   standards?: IReferenceListUpdate
@@ -45,12 +46,13 @@ export interface IRichSkillUpdate {
   author?: INamedReference
 }
 
-export class ApiSkillUpdate {
+export class ApiSkillUpdate implements IRichSkillUpdate {
   skillName?: string
   skillStatement?: string
   status?: PublishStatus
   category?: string
   keywords?: ApiStringListUpdate
+  collections?: ApiStringListUpdate
   alignments?: ApiReferenceListUpdate
   certifications?: ApiReferenceListUpdate
   standards?: ApiReferenceListUpdate

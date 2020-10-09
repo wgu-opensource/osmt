@@ -1,14 +1,15 @@
-<div class="t-verticalSpacing-medium">
+<div class="t-verticalSpacing-medium" id="formfield-container-{{name}}">
   <div class="t-verticalSpacing-extraSmall">
-    <label class="t-type-smallBold">{{label}}</label>
+    <label class="t-type-smallBold">{{label}} <span *ngIf="required" class="t-type-attention">*</span></label>
+
     <div *ngIf="helpMessage" class="t-type-small">{{helpMessage}}</div>
   </div>
 
   <div class="t-verticalSpacing-extraSmall">
-    <div class="m-formInput" [class.m-formInput-is-error]="control.errors">
+    <div class="m-formInput" [class.m-formInput-is-error]="isError()">
       <ng-content></ng-content>
     </div>
   </div>
 
-  <div *ngIf="errorMessage && control.errors" class="t-type-small t-type-attention">{{errorMessage}}</div>
+  <div *ngIf="errorMessage && isError()" class="t-type-small t-type-attention">{{errorMessage}}</div>
 </div>

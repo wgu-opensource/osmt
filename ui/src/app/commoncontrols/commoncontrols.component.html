@@ -5,7 +5,7 @@
       <div class="t-verticalSpacing-small">
           <!-- search bar -->
         <div class="m-formInput m-formInput-buttonBar m-formInput-icon">
-            <input type="search" placeholder="Placeholder Text" />
+            <input type="search" placeholder="Search Skills or Collections" />
             <svg class="t-icon">
                 <use xlink:href="assets/images/svg-defs.svg#icon-search"></use>
             </svg>
@@ -24,12 +24,14 @@
       <nav class="l-flex l-flex-alignCenter l-flex-justifySpaceBetween t-color-dark">
         <ul class="l-flex">
           <li class="t-horizontalSpacing-extraSmall">
-            <button class="m-button m-button-icon">
-              <svg class="button-x-icon t-icon">
-                <use xlink:href="assets/images/svg-defs.svg#icon-doc"></use>
-              </svg>
-              <span class="button-x-text">Create Skill</span>
-            </button>
+            <a routerLink="/skills/create">
+              <button class="m-button m-button-icon">
+                <svg class="button-x-icon t-icon">
+                  <use xlink:href="assets/images/svg-defs.svg#icon-doc"></use>
+                </svg>
+                <span class="button-x-text">Create Skill</span>
+              </button>
+            </a>
           </li>
           <li class="t-horizontalSpacing-extraSmall">
             <button class="m-button m-button-icon">
@@ -54,4 +56,3 @@
       </nav>
     </div>
   </div>
-  

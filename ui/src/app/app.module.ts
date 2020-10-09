@@ -7,7 +7,7 @@ import {RichSkillsComponent} from "./richskill/detail/rich-skills.component"
 import {RichSkillComponent} from "./richskill/detail/rich-skill.component"
 import {RichSkillsCsvExportComponent} from "./richskill/task/rich-skills-csv-export.component"
 import {AppConfig} from "./app.config"
-import { RichSkillFormComponent } from "./richskill/form/rich-skill-form.component"
+import {RichSkillFormComponent, SkillFormDirtyGuard} from "./richskill/form/rich-skill-form.component"
 import {ReactiveFormsModule} from "@angular/forms"
 import {FormField} from "./form/form-field.component"
 import {FormFieldText} from "./form/form-field-text.component"
@@ -19,6 +19,9 @@ import { CommoncontrolsComponent } from "./commoncontrols/commoncontrols.compone
 import { AppHeaderComponent } from "./app-header/app-header.component"
 import { AppFooterComponent } from "./app-footer/app-footer.component"
 import {CommoncontrolsMobileComponent} from "./commoncontrols/commoncontrols-mobile.component";
+import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component";
+import {ToastComponent} from "./toast/toast.component";
+import {ToastService} from "./toast/toast.service";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -41,16 +44,19 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CommoncontrolsMobileComponent,
     AppHeaderComponent,
     AppFooterComponent,
+    SkillCollectionsDisplayComponent,
+    ToastComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [
     Title,
     AppConfig,
+    SkillFormDirtyGuard,
     { provide: APP_INITIALIZER,
       useFactory: initializeApp,
       deps: [AppConfig], multi: true }

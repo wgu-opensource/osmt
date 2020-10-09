@@ -14,6 +14,8 @@ export class FormFieldTextArea implements OnInit {
   @Input() placeholder: string = ""
   @Input() errorMessage: string = ""
   @Input() helpMessage: string = ""
+  @Input() required: boolean = false
+  @Input() name: string = ""
 
   constructor() {
   }

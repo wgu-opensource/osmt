@@ -4,6 +4,8 @@
   [placeholder]="placeholder"
   [errorMessage]="errorMessage"
   [helpMessage]="helpMessage"
+  [required]="required"
+  [name]="name"
 >
-  <input [formControl]="control" type="text" [placeholder]="placeholder">
+  <input [formControl]="control" type="text" [placeholder]="placeholder" id="formfield-{{name}}">
 </app-formfield>

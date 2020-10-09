@@ -36,11 +36,16 @@ class KeywordRepositoryTest: BaseDockerizedTest() {
     fun `should findOrCreate keywords by uri or value`() {
         val keywordName = UUID.randomUUID().toString()
         val keywordUri = UUID.randomUUID().toString()
+
+        val byNameAndUri = keywordRepository.findOrCreate(KeywordTypeEnum.Standard, value=keywordName, uri=keywordUri)?.toModel()
+        assertThat(byNameAndUri).isNotNull
+
         val byNameDao = keywordRepository.findOrCreate(KeywordTypeEnum.Standard, value=keywordName)
         assertThat(byNameDao).isNotNull
 
         val byName = keywordRepository.findById(byNameDao!!.id.value)?.toModel()
         assertThat(byName).isNotNull
+        assertThat(byName?.id).isNotEqualTo(byNameAndUri?.id)
         assertThat(byName?.value).isEqualTo(keywordName)
         assertThat(byName?.uri).isNull()
 
@@ -52,8 +57,11 @@ class KeywordRepositoryTest: BaseDockerizedTest() {
         assertThat(byUriDao).isNotNull
         val byUri = keywordRepository.findById(byUriDao!!.id.value)?.toModel()
         assertThat(byUri).isNotNull
+        assertThat(byUri?.id).isNotEqualTo(byNameAndUri?.id)
         assertThat(byUri?.value).isNull()
         assertThat(byUri?.uri).isEqualTo(keywordUri)
+
     }
+
 }
 

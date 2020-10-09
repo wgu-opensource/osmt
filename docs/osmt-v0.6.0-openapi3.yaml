@@ -443,6 +443,10 @@ components:
           type: string
         category:
           type: string
+        collections:
+          type: array
+          items:
+            type: string
         keywords:
           type: array
           items: 
@@ -518,9 +522,6 @@ components:
     SkillUpdate:
       type: object
       properties:
-        skillUuid:  
-          type: string
-          format: uuid
         skillName:
           type: string
         skillStatement:
@@ -530,6 +531,8 @@ components:
           enum: ["draft","published","archived"]
         category:
           type: string
+        collections:
+          $ref: '#/components/schemas/StringListUpdate'
         keywords:
           $ref: '#/components/schemas/StringListUpdate'
         alignments:
@@ -555,14 +558,16 @@ components:
 
     Collection:
       type: object
-      properties:      
-        name: 
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
           type: string
         description: 
           type: string
-        skillCount:
-          type: number
-        skills: 
+        skills:
           type: array
           items:
             type: string

@@ -64,17 +64,8 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
     }
 
     override fun findByValueOrUri(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao? {
-        val condition = when {
-            value != null && uri != null ->
-                (table.keyword_type_enum eq type) and (table.value eq value) and (table.uri eq uri)
-            value != null ->
-                (table.keyword_type_enum eq type) and (table.value eq value)
-            uri != null ->
-                (table.keyword_type_enum eq type) and (table.uri eq uri)
-            else -> null
-        }
-
-        val query = condition?.let { table.select(it).singleOrNull() }
+        val condition = (table.keyword_type_enum eq type) and (table.value eq value) and (table.uri eq uri)
+        val query = table.select(condition).singleOrNull()
         return query?.let { dao.wrapRow(it) }
     }
 

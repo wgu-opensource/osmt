@@ -1,6 +1,5 @@
 <nav class="m-actionBarVertical">
-    <hr class="m-rule" />
-    <div class="m-actionBarVertical-x-item">
+    <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onCopyURL()">
         <button class="m-buttonText m-buttonText-icon">
             <svg class="button-x-icon t-icon">
                 <use xlink:href="assets/images/svg-defs.svg#icon-duplicate"></use>
@@ -10,8 +9,7 @@
             </span>
         </button>
     </div>
-    <hr class="m-rule" />
-    <div class="m-actionBarVertical-x-item">
+    <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onDownloadCsv()">
         <button class="m-buttonText m-buttonText-icon">
             <svg class="button-x-icon t-icon">
                 <use xlink:href="assets/images/svg-defs.svg#icon-download"></use>
@@ -21,14 +19,13 @@
             </span>
         </button>
     </div>
-    <hr class="m-rule" />
-    <div class="m-actionBarVertical-x-item">
+    <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onCopyJSON()">
         <button class="m-buttonText m-buttonText-icon">
             <svg class="button-x-icon t-icon">
-                <use xlink:href="assets/images/svg-defs.svg#icon-download"></use>
+                <use xlink:href="assets/images/svg-defs.svg#icon-duplicate"></use>
             </svg>
             <span class="button-x-text">
-                Download JSON
+                Copy JSON
             </span>
         </button>
     </div>

@@ -11,4 +11,16 @@ export class ActionBarComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onCopyURL(): void {
+    console.log("You just clicked Copy URL")
+  }
+
+  onDownloadCsv(): void {
+    console.log("You just clicked Download CSV")
+  }
+
+  onCopyJSON(): void {
+    console.log("You just clicked Copy JSON")
+  }
+
 }

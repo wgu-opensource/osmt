@@ -22,9 +22,10 @@ import {CommoncontrolsMobileComponent} from "./commoncontrols/commoncontrols-mob
 import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component"
 import {ToastComponent} from "./toast/toast.component"
 import {ToastService} from "./toast/toast.service"
-import { ActionBarComponent } from "./action-bar/action-bar.component"
+import { ActionBarComponent } from "./richskill/action-bar/action-bar.component"
 import { DetailCardComponent } from "./detail-card/detail-card.component"
 import { DetailCardSectionComponent } from "./detail-card/section/section.component"
+import { ActionBarHorizontalComponent } from "./richskill/action-bar/action-bar-horizontal/action-bar-horizontal.component"
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -52,6 +53,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     ActionBarComponent,
     DetailCardComponent,
     DetailCardSectionComponent,
+    ActionBarHorizontalComponent,
   ],
   imports: [
     BrowserModule,

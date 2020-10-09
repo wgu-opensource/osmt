@@ -1,5 +1,4 @@
-<div class="PUI">
-  <div class="l-stickyBar" *ngIf="richSkill; else noSkill">
+<div class="l-stickyBar" *ngIf="richSkill; else noSkill">
   <div class="l-stickySidebar l-container">
     <div class="l-stickySidebar-x-content t-verticalSpacing-medium-top-padding">
       <app-detail-card
@@ -11,15 +10,15 @@
       [publishedDate]="getPublishedDate()"
       ></app-detail-card>
     </div>
-
+    
     <div class="l-stickySidebar-x-sidebar">
       <div class="l-stickySidebar-x-sidebarContent t-verticalSpacing-medium-top-padding">
         <app-action-bar></app-action-bar>
       </div>
     </div>
-
+    
   </div>
-
+  
   <div class="l-stickyBar-x-bar t-hidden-mindesktop t-verticalSpacing-medium-top-padding">
     <div class="l-flex l-flex-alignCenter t-elevation-large t-hidden-mindesktop">
       <!--
@@ -28,7 +27,7 @@
       -->
     </div>
   </div>
-
+  
 </div>
 <ng-template #noSkill>
   <div *ngIf="loading; else noData" class="lds-dual-ring">Loading...</div>
@@ -36,4 +35,3 @@
     No data to load.
   </ng-template>
 </ng-template>
-</div>

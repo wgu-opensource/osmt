@@ -21,8 +21,6 @@ export class RichSkillComponent implements OnInit {
     private route: ActivatedRoute,
     @Inject(LOCALE_ID) public locale: string
     ) {
-      this.route.params.subscribe(params => console.log(params))
-      console.log(this.route.snapshot.paramMap.get("uuid"))
       this.uuidParam = this.route.snapshot.paramMap.get("uuid")
     }
 

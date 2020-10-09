@@ -12,12 +12,8 @@ export class JobCodeBreakout {
   
   constructor(code: string) {
     this.code = code
-    this.check()
   }
-  
-  check(): void {
-    console.log(`raw=[${this.code}] reconstructed=[${this.majorPart()}-${this.minorPart()}${(this.broadPart())}${(this.detailedPart())}.${(this.jobRolePart())}]`)
-  }
+
   
   private majorPart(): string {
     return this.code.substring(0, 2)

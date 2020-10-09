@@ -18,11 +18,10 @@ import {FormFieldSubmit} from "./form/form-field-submit.component"
 import { CommoncontrolsComponent } from "./commoncontrols/commoncontrols.component"
 import { AppHeaderComponent } from "./app-header/app-header.component"
 import { AppFooterComponent } from "./app-footer/app-footer.component"
-import {CommoncontrolsMobileComponent} from "./commoncontrols/commoncontrols-mobile.component";
-import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component";
-import {ToastComponent} from "./toast/toast.component";
-import {ToastService} from "./toast/toast.service";
 import {CommoncontrolsMobileComponent} from "./commoncontrols/commoncontrols-mobile.component"
+import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component"
+import {ToastComponent} from "./toast/toast.component"
+import {ToastService} from "./toast/toast.service"
 import { ActionBarComponent } from "./action-bar/action-bar.component"
 import { DetailCardComponent } from "./detail-card/detail-card.component"
 import { DetailCardSectionComponent } from "./detail-card/section/section.component"

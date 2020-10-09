@@ -34,7 +34,18 @@ describe("AppConfig", () => {
     it("should load app config from environment", () => {
       const expectedApiUrl = "https://unit-test.osmt.dev"
       const dummyConfig: IAppConfig = {
-        baseApiUrl: expectedApiUrl
+        baseApiUrl: expectedApiUrl,
+        defaultAuthorValue: "",
+        editableAuthor: false,
+        licensePrimary: "",
+        licenseSecondary: "",
+        poweredBy: "",
+        poweredByLabel: "",
+        poweredByUrl: "",
+        publicCollectionTitle: "",
+        publicSkillTitle: "",
+        toolName: "",
+        toolNameLong: ""
       }
 
       environment.baseApiUrl = expectedApiUrl

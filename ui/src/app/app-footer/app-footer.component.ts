@@ -1,14 +1,19 @@
 import { Component, OnInit } from "@angular/core"
+import {Whitelabelled} from "../../whitelabel";
 
 @Component({
   selector: "app-app-footer",
   templateUrl: "./app-footer.component.html"
 })
-export class AppFooterComponent implements OnInit {
+export class AppFooterComponent extends Whitelabelled implements OnInit {
 
-  constructor() { }
+  constructor() {
+    super();
+  }
 
   ngOnInit(): void {
   }
+
+
 
 }

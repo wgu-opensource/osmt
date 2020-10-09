@@ -128,6 +128,12 @@ paths:
               schema:
                 type: string
                 example: A human readable description of the skill
+            text/csv:
+              schema:
+                type: string
+                example: >-
+                  id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
+                  https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac,RichSkillDescriptor,"https://osmt.example.com/organization","Document Saving","The learner copies and saves documents to their local machine.","https://skillsource.example.com/base-skills/simple-compuhacking","documents, file operations, computer basics","Productivity Software","13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
     delete:
       tags:
         - Skills
@@ -437,6 +443,10 @@ components:
           type: string
         category:
           type: string
+        collections:
+          type: array
+          items:
+            type: string
         keywords:
           type: array
           items: 
@@ -512,9 +522,6 @@ components:
     SkillUpdate:
       type: object
       properties:
-        skillUuid:  
-          type: string
-          format: uuid
         skillName:
           type: string
         skillStatement:
@@ -524,6 +531,8 @@ components:
           enum: ["draft","published","archived"]
         category:
           type: string
+        collections:
+          $ref: '#/components/schemas/StringListUpdate'
         keywords:
           $ref: '#/components/schemas/StringListUpdate'
         alignments:
@@ -549,14 +558,16 @@ components:
 
     Collection:
       type: object
-      properties:      
-        name: 
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
           type: string
         description: 
           type: string
-        skillCount:
-          type: number
-        skills: 
+        skills:
           type: array
           items:
             type: string

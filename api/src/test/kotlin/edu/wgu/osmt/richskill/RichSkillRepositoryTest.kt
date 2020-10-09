@@ -7,11 +7,13 @@ import edu.wgu.osmt.api.model.ApiReferenceListUpdate
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.db.ListFieldUpdate
+import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
+import edu.wgu.osmt.collection.Collection
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -66,6 +68,10 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
         val occupations = ApiStringListUpdate(
             add=(1..occupationCount).toList().map { UUID.randomUUID().toString() }
         )
+        val collectionCount = 3
+        val collections = ApiStringListUpdate(
+            add=(1..collectionCount).toList().map { UUID.randomUUID().toString() }
+        )
 
         return ApiSkillUpdate(
             skillName=name,
@@ -78,7 +84,8 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
             standards=standards,
             alignments=alignments,
             employers=employers,
-            occupations=occupations
+            occupations=occupations,
+            collections=collections
         )
     }
 
@@ -97,6 +104,15 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
         stringList.remove?.forEach { str ->
             val found = keywords.find { it.value == str }
             assertThat(found).isNull()
+        }
+    }
+
+    fun assertThatCollectionsMatchStringList(collections: List<Collection>, stringList: ApiStringListUpdate) {
+        stringList.add?.forEach { str ->
+            assertThat(collections.find { it.name == str }).isNotNull
+        }
+        stringList.remove?.forEach { str ->
+            assertThat(collections.find { it.name == str }).isNull()
         }
     }
 
@@ -144,6 +160,8 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
 
         assertThatJobCodesMatchStringList(skill.jobCodes, apiObj.occupations!!)
 
+        assertThatCollectionsMatchStringList(skill.collections, apiObj.collections!!)
+
         assertThat(skill.publishStatus()).isEqualTo(apiObj.publishStatus)
     }
 
@@ -152,14 +170,15 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
         val originalSkillUpdate = random_skill_update()
         val originalSkillDao = richSkillRepository.createFromApi(listOf(originalSkillUpdate), userString).first()
 
-        val newSkillUpdate = random_skill_update()
-        newSkillUpdate.copy(
+        var newSkillUpdate = random_skill_update()
+        newSkillUpdate = newSkillUpdate.copy(
             keywords=newSkillUpdate.keywords?.copy(remove=originalSkillUpdate.keywords?.add),
             certifications=newSkillUpdate.certifications?.copy(remove=originalSkillUpdate.certifications?.add),
             standards=newSkillUpdate.standards?.copy(remove=originalSkillUpdate.standards?.add),
             alignments=newSkillUpdate.alignments?.copy(remove=originalSkillUpdate.alignments?.add),
             employers=newSkillUpdate.employers?.copy(remove=originalSkillUpdate.employers?.add),
-            occupations=newSkillUpdate.occupations?.copy(remove=originalSkillUpdate.occupations?.add)
+            occupations=newSkillUpdate.occupations?.copy(remove=originalSkillUpdate.occupations?.add),
+            collections=newSkillUpdate.collections?.copy(remove=originalSkillUpdate.collections?.add)
         )
 
         val updatedDao = richSkillRepository.updateFromApi(originalSkillDao.id.value, newSkillUpdate, userString)
@@ -258,5 +277,39 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
         val skill = updated!!.toModel()
         assertThat(skill.searchingKeywords.size).isEqualTo(1)
         assertThat(skill.searchingKeywords[0].value == keywordName)
+    }
+
+    @Test
+    fun `should be able to set an existing category to null on a skill via the API`() {
+        val name = UUID.randomUUID().toString()
+        val statement = UUID.randomUUID().toString()
+        val categoryName = UUID.randomUUID().toString()
+        val category = keywordRepository.findOrCreate(KeywordTypeEnum.Category, categoryName)!!
+
+        val createObject = RsdUpdateObject(
+            name = name,
+            statement = statement,
+            category = NullableFieldUpdate(category)
+        )
+        val created = richSkillRepository.create(createObject, userString)?.toModel()
+        assertThat(created).isNotNull
+        assertThat(created?.category?.value).isEqualTo(categoryName)
+
+        // doesnt clear category if not specified in update object
+        val newName = UUID.randomUUID().toString()
+        val apiUpdate = ApiSkillUpdate(
+            skillName=newName
+        )
+        var apiUpdated = richSkillRepository.updateFromApi(created!!.id!!, apiUpdate, userString)?.toModel()
+        assertThat(apiUpdated).isNotNull
+        assertThat(apiUpdated?.category?.value).isEqualTo(categoryName)
+
+        // pass category as empty string to nullify it
+        val apiUpdateBlank = ApiSkillUpdate(
+            category=""
+        )
+        apiUpdated = richSkillRepository.updateFromApi(created!!.id!!, apiUpdateBlank, userString)?.toModel()
+        assertThat(apiUpdated).isNotNull
+        assertThat(apiUpdated?.category).isNull()
     }
 }

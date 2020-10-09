@@ -5,9 +5,11 @@ import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
+import edu.wgu.osmt.task.CsvTask
+import edu.wgu.osmt.task.TaskMessageService
+import edu.wgu.osmt.task.TaskResult
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
+import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Controller
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletRequest
 @Transactional
 class RichSkillController @Autowired constructor(
     val richSkillRepository: RichSkillRepository,
+    val taskMessageService: TaskMessageService,
     val appConfig: AppConfig
     //val esRichSkillRepository: EsRichSkillRepository,
 ) {
@@ -33,6 +36,18 @@ class RichSkillController @Autowired constructor(
         return richSkillRepository.findAll().map {
             ApiSkill(it.toModel(), appConfig.baseUrl)
         }
+    }
+
+    @GetMapping(produces = ["text/csv"])
+    @ResponseBody
+    fun allSkillsCsv(): HttpEntity<TaskResult> {
+        val task = CsvTask()
+        val responseHeaders = HttpHeaders()
+        responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        taskMessageService.enqueueJob(TaskMessageService.allSkillsCsv, task)
+
+        val tr = TaskResult.fromTask(task)
+        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
     }
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -48,7 +63,25 @@ class RichSkillController @Autowired constructor(
     @GetMapping("/{uuid}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun byUUID(@PathVariable uuid: String): ApiSkill? {
-        return richSkillRepository.findByUUID(uuid)?.let { ApiSkill(it.toModel(), appConfig.baseUrl) }
+        return richSkillRepository.findByUUID(uuid)?.let {
+            ApiSkill(it.toModel(), appConfig.baseUrl)
+        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    }
+
+    @RequestMapping("/{uuid}", produces = [MediaType.TEXT_HTML_VALUE])
+    fun byUUIDHtmlView(@PathVariable uuid: String): String {
+        return "forward:/skills/$uuid"
+    }
+
+    @RequestMapping("/{uuid}", produces = ["text/csv"])
+    fun byUUIDCsvView(@PathVariable uuid: String): HttpEntity<*> {
+        return richSkillRepository.findByUUID(uuid)?.let {
+            val skill = it.toModel()
+            val result = RichSkillCsvExport(appConfig).toCsv(listOf(skill))
+            val responseHeaders = HttpHeaders()
+            responseHeaders.add("Content-Type", "text/csv")
+            return ResponseEntity.ok().headers(responseHeaders).body(result)
+        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
     @PostMapping("/{uuid}/update", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -66,10 +99,6 @@ class RichSkillController @Autowired constructor(
         return ApiSkill(updatedSkill.toModel(), appConfig.baseUrl)
     }
 
-    @RequestMapping("/{uuid}", produces = [MediaType.TEXT_HTML_VALUE])
-    fun byUUIDHtmlView(@PathVariable uuid: String): String {
-        return "forward:/skills/$uuid"
-    }
 
 
 }

@@ -29,6 +29,7 @@ export interface ISkill {
   skillName: string
   skillStatement: string
   category?: string
+  collections: string[]
   keywords: string[]
   alignments: INamedReference[]
   standards: INamedReference[]
@@ -48,6 +49,7 @@ export class ApiSkill {
   skillName: string
   skillStatement: string
   category?: string
+  collections: string[]
   keywords: string[]
   alignments: INamedReference[]
   standards: INamedReference[]
@@ -69,6 +71,7 @@ export class ApiSkill {
     this.skillStatement = iRichSkill.skillStatement
     this.author = iRichSkill.author
     this.keywords = iRichSkill.keywords
+    this.collections = iRichSkill.collections
     this.status = iRichSkill.status
     this.category = iRichSkill.category
     this.certifications = iRichSkill.certifications

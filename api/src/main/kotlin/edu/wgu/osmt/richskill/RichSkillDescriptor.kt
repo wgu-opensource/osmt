@@ -12,6 +12,7 @@ import java.time.ZoneOffset
 import org.valiktor.functions.validate
 import java.util.*
 import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
 import org.valiktor.functions.isNotEqualTo
@@ -74,6 +75,7 @@ data class RsdUpdateObject(
     val category: NullableFieldUpdate<KeywordDao>? = null,
     val keywords: ListFieldUpdate<KeywordDao>? = null,
     val jobCodes: ListFieldUpdate<JobCodeDao>? = null,
+    val collections: ListFieldUpdate<CollectionDao>? = null,
     override val publishStatus: PublishStatus? = null
 ) : UpdateObject<RichSkillDescriptorDao>, HasPublishStatus {
 
@@ -129,14 +131,27 @@ data class RsdUpdateObject(
 
     fun compareKeywords(that: RichSkillDescriptorDao): JSONObject? {
         val added = keywords?.add?.map { mutableMapOf("id" to it.id.value, "value" to it.value, "type" to it.type) }
-        val removed =
-            keywords?.remove?.map { mutableMapOf("id" to it.id.value, "value" to it.value, "type" to it.type) }
+        val removed = keywords?.remove?.map { mutableMapOf("id" to it.id.value, "value" to it.value, "type" to it.type) }
         val addedPair = added?.let { "added" to it }
         val removedPair = removed?.let { "removed" to it }
         val operationsList = listOfNotNull(addedPair, removedPair).toTypedArray()
 
         return if (added?.isNotEmpty() == true or (removed?.isNotEmpty() == true)) {
             JSONObject(mutableMapOf(that::keywords.name to mutableMapOf(*operationsList)))
+        } else {
+            null
+        }
+    }
+
+    fun compareCollections(that: RichSkillDescriptorDao): JSONObject? {
+        val added = collections?.add?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
+        val removed = collections?.remove?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
+        val addedPair = added?.let { "added" to it }
+        val removedPair = removed?.let { "removed" to it }
+        val operationsList = listOfNotNull(addedPair, removedPair).toTypedArray()
+
+        return if (added?.isNotEmpty() == true or (removed?.isNotEmpty() == true)) {
+            JSONObject(mutableMapOf(that::collections.name to mutableMapOf(*operationsList)))
         } else {
             null
         }
@@ -149,7 +164,8 @@ data class RsdUpdateObject(
             ::compareCategory,
             ::compareAuthor,
             ::comparePublishStatus,
-            ::compareKeywords
+            ::compareKeywords,
+            ::compareCollections
         )
 }
 

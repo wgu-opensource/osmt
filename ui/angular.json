@@ -47,7 +47,11 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              { "glob": "**/*", "input": "node_modules/wgu-design-system-patternlibrary/dist", "output": "/" }
+              {
+                "glob": "**/*",
+                "input": "./node_modules/wgu-design-system-patternlibrary/dist",
+                "output": "./assets"
+              }
             ],
             "styles": [
               "src/styles.css",

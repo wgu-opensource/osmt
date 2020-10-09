@@ -6,7 +6,7 @@ import edu.wgu.osmt.richskill.RichSkillDescriptor
 import net.minidev.json.JSONObject
 import java.time.LocalDateTime
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.ALWAYS)
 class ApiSkill(private val rsd: RichSkillDescriptor, private val baseUrl: String) {
 
     // TODO include view of collection
@@ -66,21 +66,18 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val baseUrl: String
         get() = rsd.alignments.map { ApiNamedReference.fromKeyword(it) }
 
     @get:JsonProperty
-    val occupations: List<JSONObject>
+    val occupations: List<ApiJobCode>
         get() = rsd.jobCodes.map { jobCode ->
-            JSONObject(
-                mutableMapOf(
-                    "code" to jobCode.code,
-                    "id" to jobCode.url,
-                    "name" to jobCode.name,
-                    "framework" to jobCode.framework
-                )
-            )
+            ApiJobCode.fromJobCode(jobCode)
         }
 
     @get:JsonProperty
     val employers: List<ApiNamedReference>
         get() = rsd.employers.map { ApiNamedReference.fromKeyword(it) }
+
+    @get:JsonProperty
+    val collections: List<String>
+        get() = rsd.collections.map { it.name }
 }
 
 

@@ -4,6 +4,8 @@
   [placeholder]="placeholder"
   [errorMessage]="errorMessage"
   [helpMessage]="helpMessage"
+  [required]="required"
+  [name]="name"
 >
-  <textarea [formControl]="control" [placeholder]="placeholder"></textarea>
+  <textarea [formControl]="control" [placeholder]="placeholder" id="formfield-{{name}}"></textarea>
 </app-formfield>

@@ -39,7 +39,8 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
         )
     }
 
-    fun toDoc(): CollectionDoc {
-        return CollectionDoc(id.value, uuid, name, publishStatus())
+    fun toDoc(embedded: Boolean = false): CollectionDoc {
+        val skillIds = if (embedded) listOf() else skills.map { it.uuid }
+        return CollectionDoc(id.value, uuid, name, publishStatus(), skillIds, skills.count().toInt())
     }
 }

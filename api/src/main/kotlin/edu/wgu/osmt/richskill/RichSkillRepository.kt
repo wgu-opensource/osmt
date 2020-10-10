@@ -13,6 +13,7 @@ import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.elasticsearch.EsCollectionRepository
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.jobcode.JobCodeRepository
@@ -50,7 +51,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
     val jobCodeRepository: JobCodeRepository,
     val keywordRepository: KeywordRepository,
     val collectionRepository: CollectionRepository,
-    val esRichSkillRepository: EsRichSkillRepository
+    val esRichSkillRepository: EsRichSkillRepository,
+    val esCollectionRepository: EsCollectionRepository
 ) :
     RichSkillRepository {
     override val dao = RichSkillDescriptorDao.Companion
@@ -58,7 +60,6 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
     val richSkillKeywordTable = RichSkillKeywords
     val richSkillJobCodeTable = RichSkillJobCodes
-    val richSkillCollectionTable = CollectionSkills
 
 
     override fun findAll() = dao.all()
@@ -131,7 +132,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
                     )
                 )
         }
-        daoObject?.let { esRichSkillRepository.save(daoObject.toDoc()) }
+        daoObject?.let { esRichSkillRepository.save(it.toDoc()) }
+        daoObject?.let { esCollectionRepository.saveAll(it.collections.map{it.toDoc()})}
         return daoObject
     }
 

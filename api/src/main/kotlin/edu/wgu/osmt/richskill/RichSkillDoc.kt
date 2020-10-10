@@ -2,11 +2,10 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.collection.CollectionDoc
 import org.elasticsearch.common.Nullable
-import org.springframework.data.elasticsearch.annotations.Document
-import org.springframework.data.elasticsearch.annotations.Field
 import edu.wgu.osmt.db.PublishStatus
 import org.springframework.data.annotation.Id
-import org.springframework.data.elasticsearch.annotations.FieldType
+import org.springframework.data.elasticsearch.annotations.*
+import org.springframework.data.elasticsearch.annotations.FieldType.*
 
 @Document(indexName = "richskill", createIndex = true)
 data class RichSkillDoc(
@@ -15,56 +14,53 @@ data class RichSkillDoc(
     val id: Long?,
 
     @Id
+    @Field(type = Text)
     val uuid: String,
 
-    @Field
+    @MultiField(
+        mainField = Field(type = Text),
+        otherFields = [InnerField(suffix = "keyword", type = Keyword)]
+    )
     val name: String,
 
     @Field
     val statement: String,
 
     @Nullable
+    @MultiField(
+        mainField = Field(type = Text),
+        otherFields = [InnerField(suffix = "keyword", type = Keyword)]
+    )
     val category: String? = null,
 
     @Nullable
+    @MultiField(
+        mainField = Field(type = Text),
+        otherFields = [InnerField(suffix = "keyword", type = Keyword)]
+    )
     val author: String? = null,
 
-    @Field
+    @Field(type = Keyword)
     val publishStatus: PublishStatus,
 
-    @Field
+    @Field(type = Text)
     val searchingKeywords: List<String>,
 
-    @Field
+    @Field(type = Text)
     val jobCodes: List<String> = listOf(),
 
-    @Field
+    @Field(type = Text)
     val standards: List<String> = listOf(),
 
-    @Field
+    @Field(type = Text)
     val certifications: List<String> = listOf(),
 
-    @Field
+    @Field(type = Text)
     val employers: List<String> = listOf(),
 
-    @Field
+    @Field(type = Text)
     val alignments: List<String> = listOf(),
 
-    @Field(type = FieldType.Nested)
+    @Field(type = Object)
     val collections: List<CollectionDoc>
-) {
-    companion object {
-
-        val defaultSearchFields = setOf(
-            RichSkillDoc::name.name,
-            RichSkillDoc::statement.name,
-            RichSkillDoc::category.name,
-            RichSkillDoc::searchingKeywords.name,
-            RichSkillDoc::jobCodes.name,
-            RichSkillDoc::standards.name,
-            RichSkillDoc::certifications.name,
-            RichSkillDoc::employers.name,
-            RichSkillDoc::alignments.name
-        )
-    }
-}
+)

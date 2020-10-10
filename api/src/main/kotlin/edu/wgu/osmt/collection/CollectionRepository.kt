@@ -4,6 +4,7 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
+import edu.wgu.osmt.elasticsearch.EsCollectionRepository
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
@@ -34,7 +35,8 @@ interface CollectionRepository {
 class CollectionRepositoryImpl @Autowired constructor(
     val keywordRepository: KeywordRepository,
     val auditLogRepository: AuditLogRepository,
-    val esRichSkillRepository: EsRichSkillRepository
+    val esRichSkillRepository: EsRichSkillRepository,
+    val esCollectionRepository: EsCollectionRepository
 ) : CollectionRepository {
     override val table = CollectionTable
     override val dao = CollectionDao.Companion
@@ -102,7 +104,8 @@ class CollectionRepositoryImpl @Autowired constructor(
         daoObject?.let {
             applyUpdate(it, updateObject)
 
-            // reindex elastic search skills documents
+            // reindex elastic search documents
+            esCollectionRepository.save(it.toDoc())
             esRichSkillRepository.saveAll(it.skills.map { skill -> skill.toDoc() })
         }
 

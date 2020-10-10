@@ -55,7 +55,7 @@ class EsCrudTests : SpringTest(), HasDatabaseReset {
             ), BatchImportConsoleApplication.user
         )?.toModel()!!
 
-        val elasticModel = esRichSkillRepository.findByUUID(rsd.uuid, Pageable.unpaged())
+        val elasticModel = esRichSkillRepository.findByUuid(rsd.uuid, Pageable.unpaged())
         val esRetrieved = elasticModel.content.first()
 
         assertThat(esRetrieved.uuid).isEqualTo(rsd.uuid)
@@ -96,7 +96,7 @@ class EsCrudTests : SpringTest(), HasDatabaseReset {
         )
         val updateResult = richSkillRepository.update(updateObject, "test-user")
 
-        val elasticModel = esRichSkillRepository.findByUUID(updateResult?.uuid.toString(), Pageable.unpaged())
+        val elasticModel = esRichSkillRepository.findByUuid(updateResult?.uuid.toString(), Pageable.unpaged())
         val esRetrieved = elasticModel.content.first()
 
         assertThat(esRetrieved.uuid).isEqualTo(rsd.uuid)
@@ -130,8 +130,8 @@ class EsCrudTests : SpringTest(), HasDatabaseReset {
             testUser
         )
 
-        val searchByAKeyword = esRichSkillRepository.findQueryByMultipleFields(keywords.get(0).value!!)
-        val searchByACategory = esRichSkillRepository.findQueryByMultipleFields(category.value!!)
+        val searchByAKeyword = esRichSkillRepository.searchByCollectionNameOrSkillProperties(keywords.get(0).value!!)
+        val searchByACategory = esRichSkillRepository.searchByCollectionNameOrSkillProperties(category.value!!)
 
         if (rsd1 != null) {
             assertThat(searchByAKeyword.content.get(0).uuid).isEqualTo(rsd1.uuid)
@@ -139,5 +139,6 @@ class EsCrudTests : SpringTest(), HasDatabaseReset {
         } else {
             Assertions.fail("failed to creat a rich skill")
         }
+        assert(true)
     }
 }

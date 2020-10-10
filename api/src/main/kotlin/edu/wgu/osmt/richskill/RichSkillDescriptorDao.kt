@@ -71,7 +71,7 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
             certifications = keywords.filter { it.type == KeywordTypeEnum.Certification }.mapNotNull { it.value },
             employers = keywords.filter { it.type == KeywordTypeEnum.Employer }.mapNotNull { it.value },
             alignments = keywords.filter { it.type == KeywordTypeEnum.Alignment }.mapNotNull { it.value },
-            collections = collections.map { it.toDoc() }
+            collections = collections.map { it.toDoc(embedded = true) }
         )
     }
 }

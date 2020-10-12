@@ -9,7 +9,7 @@ import {AuthGuard} from "./auth/auth.guard";
 import {LoginComponent} from "./auth/login.component";
 
 const routes: Routes = [
-  // {path: "api/skills/:uuid", component: RichSkillComponent},
+  { path: "", redirectTo: "/skills", pathMatch: "full" },
 
   // create skill
   {path: "skills/create",
@@ -34,9 +34,9 @@ const routes: Routes = [
   {path: "skills/:uuid", component: RichSkillComponent},
 
   // authentication redirects
-  {path: "login", component: LoginComponent},  // redirect to login
-  {path: "logout", component: LogoutComponent},  // post-login redirect destination
-  {path: "login/success", component: LoginSuccessComponent},  // login redirect destination
+  {path: "login", component: LoginComponent},  // redirect to oauth login
+  {path: "logout", component: LogoutComponent},  // app logout
+  {path: "login/success", component: LoginSuccessComponent},  // post-login redirect destination
 ]
 
 @NgModule({

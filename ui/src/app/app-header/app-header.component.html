@@ -8,25 +8,22 @@
         </svg>
       </a>
       <div class="m-navbar-x-tagline">{{whitelabel.toolNameLong}}</div>
-      <ul class="m-navbar-x-nav t-hidden-maxdesktop">
-        <li *ngIf="isAuthenticated()" class="m-navbar-x-navItem">
+      <ul *ngIf="isAuthenticated()" class="m-navbar-x-nav t-hidden-maxdesktop">
+        <li class="m-navbar-x-navItem">
           <a class="m-navItem m-navItem-is-active" aria-current="page" routerLink="/skills">Skills Library</a>
         </li>
-        <li *ngIf="isAuthenticated()" class="m-navbar-x-navItem">
+        <li class="m-navbar-x-navItem">
           <a class="m-navItem" href="#">Collections</a>
         </li>
         <li class="m-navbar-x-navItem">
-          <button *ngIf="isAuthenticated()" routerLink="/logout" class="m-button m-button-elevation0 m-button-small m-button-iconSmall" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Logout">
+          <button routerLink="/logout" class="m-button m-button-elevation0 m-button-small m-button-iconSmall" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Logout">
             <svg class="t-icon">
               <use xlink:href="assets/images/svg-defs.svg#icon-logout"></use>
             </svg>
           </button>
-          <button *ngIf="!isAuthenticated()" routerLink="/login" class="m-button m-button-elevation0 m-button-small " type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Login">
-            <span class="button-x-text">Login</span>
-          </button>
         </li>
       </ul>
-      <button class="m-navbar-x-toggle m-button m-button-elevation0 m-button-small m-button-iconSmall" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button *ngIf="isAuthenticated()" class="m-navbar-x-toggle m-button m-button-elevation0 m-button-small m-button-iconSmall" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <svg class="t-icon t-icon-menu">
           <use xlink:href="assets/images/svg-defs.svg#icon-menu"></use>
         </svg>

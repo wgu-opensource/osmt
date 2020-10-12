@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
     const loginUrl = AppConfig.settings.loginUrl
 
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(["skills"])
+      this.router.navigate([""])
       return
     }
 

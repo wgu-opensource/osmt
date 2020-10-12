@@ -4,7 +4,7 @@ import {AuthService} from "./auth-service"
 
 @Component({
   selector: "app-logout",
-  template: "",
+  templateUrl: "./logout.component.html"
 })
 export class LogoutComponent implements OnInit {
   constructor(private router: Router,
@@ -14,6 +14,5 @@ export class LogoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.authService.logout()
-    this.router.navigate([""])
   }
 }

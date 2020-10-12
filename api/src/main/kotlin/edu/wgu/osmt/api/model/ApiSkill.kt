@@ -35,6 +35,14 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val appConfig: AppC
         get() = rsd.updateDate
 
     @get:JsonProperty
+    val publishDate: LocalDateTime?
+        get() = rsd.publishDate
+
+    @get:JsonProperty
+    val archiveDate: LocalDateTime?
+        get() = rsd.archiveDate
+
+    @get:JsonProperty
     val skillName: String
         get() = rsd.name
 

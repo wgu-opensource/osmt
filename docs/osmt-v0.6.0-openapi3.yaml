@@ -627,6 +627,18 @@ components:
             $ref: '#/components/schemas/NamedReference'
         author:
           $ref: '#/components/schemas/NamedReference'
+        creationDate:
+          type: string
+          format: date-time
+        updateDate:
+          type: string
+          format: date-time
+        publishDate:
+          type: string
+          format: date-time
+        archiveDate:
+          type: string
+          format: date-time
       example:
         id: https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac
         type: RichSkillDescriptor

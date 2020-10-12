@@ -3,9 +3,12 @@ package edu.wgu.osmt.api.model
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.richskill.RichSkillDescriptor
 import net.minidev.json.JSONObject
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 class ApiSkill(private val rsd: RichSkillDescriptor, private val appConfig: AppConfig) {
@@ -27,20 +30,24 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val appConfig: AppC
         get() = rsd.author?.let { ApiNamedReference.fromKeyword(it) }
 
     @get:JsonProperty
-    val creationDate: LocalDateTime
-        get() = rsd.creationDate
+    val status: PublishStatus
+        get() = rsd.publishStatus()
 
     @get:JsonProperty
-    val updateDate: LocalDateTime
-        get() = rsd.updateDate
+    val creationDate: ZonedDateTime
+        get() = rsd.creationDate.atZone(ZoneId.of("UTC"))
 
     @get:JsonProperty
-    val publishDate: LocalDateTime?
-        get() = rsd.publishDate
+    val updateDate: ZonedDateTime
+        get() = rsd.updateDate.atZone(ZoneId.of("UTC"))
 
     @get:JsonProperty
-    val archiveDate: LocalDateTime?
-        get() = rsd.archiveDate
+    val publishDate: ZonedDateTime?
+        get() = rsd.publishDate?.atZone(ZoneId.of("UTC"))
+
+    @get:JsonProperty
+    val archiveDate: ZonedDateTime?
+        get() = rsd.archiveDate?.atZone(ZoneId.of("UTC"))
 
     @get:JsonProperty
     val skillName: String

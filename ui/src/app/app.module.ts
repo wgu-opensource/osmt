@@ -15,13 +15,12 @@ import {FormFieldTextArea} from "./form/form-field-textarea.component"
 import {LoadingObservablesDirective} from "./loading/loading-observables.directive"
 import {LoadingComponent} from "./loading/loading.component"
 import {FormFieldSubmit} from "./form/form-field-submit.component"
-import { CommoncontrolsComponent } from "./commoncontrols/commoncontrols.component"
-import { AppHeaderComponent } from "./app-header/app-header.component"
-import { AppFooterComponent } from "./app-footer/app-footer.component"
-import {CommoncontrolsMobileComponent} from "./commoncontrols/commoncontrols-mobile.component";
+import {CommoncontrolsComponent} from "./navigation/commoncontrols.component"
+import {HeaderComponent} from "./navigation/header.component"
+import {FooterComponent} from "./navigation/footer.component"
+import {CommoncontrolsMobileComponent} from "./navigation/commoncontrols-mobile.component";
 import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component";
 import {ToastComponent} from "./toast/toast.component";
-import {ToastService} from "./toast/toast.service";
 import {AuthService} from "./auth/auth-service";
 import {AuthGuard} from "./auth/auth.guard";
 
@@ -44,8 +43,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     LoadingObservablesDirective,
     CommoncontrolsComponent,
     CommoncontrolsMobileComponent,
-    AppHeaderComponent,
-    AppFooterComponent,
+    HeaderComponent,
+    FooterComponent,
     SkillCollectionsDisplayComponent,
     ToastComponent,
   ],

@@ -5,10 +5,10 @@ import {Router} from "@angular/router";
 import {AppConfig} from "../app.config";
 
 @Component({
-  selector: "app-app-header",
-  templateUrl: "./app-header.component.html",
+  selector: "app-header",
+  templateUrl: "./header.component.html",
 })
-export class AppHeaderComponent extends Whitelabelled implements OnInit {
+export class HeaderComponent extends Whitelabelled implements OnInit {
 
   constructor(private authService: AuthService, private router: Router) {
     super()

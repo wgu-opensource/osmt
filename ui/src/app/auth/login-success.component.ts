@@ -17,6 +17,7 @@ export class LoginSuccessComponent implements OnInit {
       const token = params.token
       this.authService.storeToken(token)
     })
-    this.router.navigate([""])
+    const returnRoute = this.authService.popReturn()
+    this.router.navigate([returnRoute ?? ""])
   }
 }

@@ -15,6 +15,18 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     const loginUrl = AppConfig.settings.loginUrl
-    window.location.href = loginUrl
+
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(["skills"])
+      return
+    }
+
+    this.route.queryParams.subscribe(params => {
+      const returnRoute = params.return
+      if (returnRoute) {
+        this.authService.storeReturn(returnRoute)
+      }
+      window.location.href = loginUrl
+    })
   }
 }

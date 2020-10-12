@@ -22,6 +22,7 @@ import {CommoncontrolsMobileComponent} from "./commoncontrols/commoncontrols-mob
 import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component";
 import {ToastComponent} from "./toast/toast.component";
 import {ToastService} from "./toast/toast.service";
+import {AuthService} from "./auth/auth-service";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -57,6 +58,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     Title,
     AppConfig,
     SkillFormDirtyGuard,
+    AuthService,
     { provide: APP_INITIALIZER,
       useFactory: initializeApp,
       deps: [AppConfig], multi: true }

@@ -16,10 +16,13 @@
           <a class="m-navItem" href="#">Collections</a>
         </li>
         <li class="m-navbar-x-navItem">
-          <button class="m-button m-button-elevation0 m-button-small m-button-iconSmall" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <button *ngIf="isAuthenticated()" (click)="clickLogout()" class="m-button m-button-elevation0 m-button-small m-button-iconSmall" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Logout">
             <svg class="t-icon">
               <use xlink:href="assets/images/svg-defs.svg#icon-logout"></use>
             </svg>
+          </button>
+          <button *ngIf="!isAuthenticated()" (click)="clickLogin()" class="m-button m-button-elevation0 m-button-small " type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Login">
+            <span class="button-x-text">Login</span>
           </button>
         </li>
       </ul>

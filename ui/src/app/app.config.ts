@@ -16,6 +16,7 @@ export class AppConfig {
     return new Promise<void>( (resolve) => {
       AppConfig.settings = new DefaultAppConfig()
       AppConfig.settings.baseApiUrl = environment.baseApiUrl
+      AppConfig.settings.loginUrl = environment.loginUrl
       resolve()
     })
 

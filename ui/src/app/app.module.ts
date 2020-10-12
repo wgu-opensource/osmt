@@ -23,6 +23,7 @@ import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collectio
 import {ToastComponent} from "./toast/toast.component";
 import {ToastService} from "./toast/toast.service";
 import {AuthService} from "./auth/auth-service";
+import {AuthGuard} from "./auth/auth.guard";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -59,6 +60,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AppConfig,
     SkillFormDirtyGuard,
     AuthService,
+    AuthGuard,
     { provide: APP_INITIALIZER,
       useFactory: initializeApp,
       deps: [AppConfig], multi: true }

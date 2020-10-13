@@ -1,6 +1,6 @@
 import {Component, Inject, Input, LOCALE_ID} from "@angular/core"
 import {Router} from "@angular/router"
-import {RichSkillActionBar} from "../RichSkillActionBar";
+import {RichSkillActionBarComponent} from "../rich-skill-action-bar.component";
 import {RichSkillService} from "../../service/rich-skill.service";
 import {ToastService} from "../../../toast/toast.service";
 
@@ -8,7 +8,7 @@ import {ToastService} from "../../../toast/toast.service";
   selector: "app-action-bar-horizontal",
   templateUrl: "./action-bar-horizontal.component.html"
 })
-export class ActionBarHorizontalComponent extends RichSkillActionBar {
+export class ActionBarHorizontalComponent extends RichSkillActionBarComponent {
 
   @Input() skillUuid = ""
   @Input() skillName = ""
@@ -21,7 +21,7 @@ export class ActionBarHorizontalComponent extends RichSkillActionBar {
     router: Router,
     richSkillService: RichSkillService,
     toastService: ToastService,
-    @Inject(LOCALE_ID) locale: string,
+    @Inject(LOCALE_ID) locale: string
   ) {
     super(router, richSkillService, toastService, locale)
   }

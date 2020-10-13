@@ -2,10 +2,11 @@ import {Router} from "@angular/router"
 import {RichSkillService} from "../service/rich-skill.service"
 import {ToastService} from "../../toast/toast.service"
 import {formatDate} from "@angular/common"
-import {OnInit} from "@angular/core"
+import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
 import {AppConfig} from "../../app.config"
 
-export abstract class RichSkillActionBar implements OnInit {
+@Component({template: ""})
+export abstract class RichSkillActionBarComponent implements OnInit {
 
   abstract skillUuid: string
   abstract skillName: string
@@ -18,7 +19,7 @@ export abstract class RichSkillActionBar implements OnInit {
     protected router: Router,
     protected richSkillService: RichSkillService,
     protected toastService: ToastService,
-    protected locale: string
+    @Inject(LOCALE_ID) private locale: string
   ) {
   }
 

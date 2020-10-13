@@ -1,34 +1,28 @@
-import { Component, OnInit } from "@angular/core"
+import {Component, Inject, Input, LOCALE_ID} from "@angular/core"
 import {Router} from "@angular/router"
-import {AppConfig} from "../../../app.config"
+import {RichSkillActionBar} from "../RichSkillActionBar";
+import {RichSkillService} from "../../service/rich-skill.service";
+import {ToastService} from "../../../toast/toast.service";
 
 @Component({
   selector: "app-action-bar-horizontal",
   templateUrl: "./action-bar-horizontal.component.html"
 })
-export class ActionBarHorizontalComponent implements OnInit {
+export class ActionBarHorizontalComponent extends RichSkillActionBar {
 
-  constructor(private router: Router) { }
+  @Input() skillUuid = ""
+  @Input() skillName = ""
 
   // This gets mapped to a visually hidden textarea so that javascript has a node to copy from
   href = ""
+  jsonClipboard = ""
 
-  ngOnInit(): void {
-    this.href = `${AppConfig.settings.baseApiUrl}${this.router.url}`
-  }
-
-  onCopyURL(fullPath: HTMLTextAreaElement): void {
-    console.log(`copying ${fullPath.textContent}`)
-    fullPath.select()
-    document.execCommand("copy")
-    fullPath.setSelectionRange(0, 0)
-  }
-
-  onDownloadCsv(): void {
-    console.log("You just clicked Download CSV")
-  }
-
-  onCopyJSON(): void {
-    console.log("You just clicked Copy JSON")
+  constructor(
+    router: Router,
+    richSkillService: RichSkillService,
+    toastService: ToastService,
+    @Inject(LOCALE_ID) locale: string,
+  ) {
+    super(router, richSkillService, toastService, locale)
   }
 }

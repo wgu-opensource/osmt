@@ -24,14 +24,17 @@
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
   </div>
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyJSON()">
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyJSON(skillJson)">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use xlink:href="assets/images/svg-defs.svg#icon-duplicate"></use>
     </svg>
     <span class="m-actionBarItemHorizontal-x-label m-buttonText">
-          <span class="button-x-text">
-            Copy JSON
-          </span>
+      <span class="button-x-text">
+        Copy JSON
+      </span>
+      <label>
+        <textarea class="t-visuallyhidden" #skillJson>{{jsonClipboard}}</textarea>
+      </label>
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
   </div>

@@ -7,7 +7,6 @@ import edu.wgu.osmt.TestObjectHelpers
 import edu.wgu.osmt.TestObjectHelpers.keywordGenerator
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
-import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.*
@@ -15,13 +14,9 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.util.*
-import kotlin.streams.asSequence
 
 @Transactional
 class EsCrudTests : SpringTest(), HasDatabaseReset {
@@ -130,8 +125,8 @@ class EsCrudTests : SpringTest(), HasDatabaseReset {
             testUser
         )
 
-        val searchByAKeyword = esRichSkillRepository.searchByCollectionNameOrSkillProperties(keywords.get(0).value!!)
-        val searchByACategory = esRichSkillRepository.searchByCollectionNameOrSkillProperties(category.value!!)
+        val searchByAKeyword = esRichSkillRepository.searchBySkillProperties(keywords.get(0).value!!)
+        val searchByACategory = esRichSkillRepository.searchBySkillProperties(category.value!!)
 
         if (rsd1 != null) {
             assertThat(searchByAKeyword.content.get(0).uuid).isEqualTo(rsd1.uuid)

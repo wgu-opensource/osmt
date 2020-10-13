@@ -1,6 +1,7 @@
 package edu.wgu.osmt.elasticsearch
 
 import edu.wgu.osmt.collection.CollectionDoc
+import edu.wgu.osmt.elasticsearch.SearchService.Companion.pageSize
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDoc
@@ -14,7 +15,7 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 interface EsRichSkillRepository : ElasticsearchRepository<RichSkillDoc, Int> {
     fun findByUuid(
         uuid: String,
-        pageable: Pageable = PageRequest.of(0, Queries.pageSize, Sort.by("name.keyword").descending())
+        pageable: Pageable = PageRequest.of(0, pageSize, Sort.by("name.keyword").descending())
     ): Page<RichSkillDoc>
 
     @Query(
@@ -22,7 +23,6 @@ interface EsRichSkillRepository : ElasticsearchRepository<RichSkillDoc, Int> {
         {"multi_match": {
             "query": "?0",
             "fields": [
-                "collections.name",
                 "author",
                 "name",
                 "category",
@@ -36,9 +36,9 @@ interface EsRichSkillRepository : ElasticsearchRepository<RichSkillDoc, Int> {
         }}
     """
     )
-    fun searchByCollectionNameOrSkillProperties(
+    fun searchBySkillProperties(
         q: String,
-        pageable: Pageable = PageRequest.of(0, Queries.pageSize, Sort.by("name.keyword").descending())
+        pageable: Pageable = PageRequest.of(0, pageSize, Sort.by("name.keyword").descending())
     ): Page<RichSkillDoc>
 }
 
@@ -52,14 +52,9 @@ interface EsCollectionRepository : ElasticsearchRepository<CollectionDoc, Int> {
 
     fun findAllByUuidIn(
         uuids: List<String>,
-        pageable: Pageable = PageRequest.of(0, Queries.pageSize, Sort.by("name.keyword").descending())
+        pageable: Pageable = PageRequest.of(0, pageSize, Sort.by("name.keyword").descending())
     ): Page<CollectionDoc>
 
-    fun findByName(q: String, pageable: Pageable = PageRequest.of(0, Queries.pageSize)): Page<CollectionDoc>
-}
-
-object Queries {
-    // TODO configurable?
-    const val pageSize: Int = 50
+    fun findByName(q: String, pageable: Pageable = PageRequest.of(0, pageSize)): Page<CollectionDoc>
 }
 

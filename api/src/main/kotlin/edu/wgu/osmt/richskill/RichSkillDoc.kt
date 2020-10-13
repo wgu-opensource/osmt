@@ -3,6 +3,8 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.collection.CollectionDoc
 import org.elasticsearch.common.Nullable
 import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.jobcode.JobCode
+import edu.wgu.osmt.jobcode.JobCodeDoc
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.*
 import org.springframework.data.elasticsearch.annotations.FieldType.*
@@ -46,8 +48,8 @@ data class RichSkillDoc(
     @Field(type = Text)
     val searchingKeywords: List<String>,
 
-    @Field(type = Text)
-    val jobCodes: List<String> = listOf(),
+    @Field(type = Object)
+    val jobCodes: List<JobCodeDoc> = listOf(),
 
     @Field(type = Text)
     val standards: List<String> = listOf(),

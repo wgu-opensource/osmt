@@ -60,6 +60,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
     val richSkillKeywordTable = RichSkillKeywords
     val richSkillJobCodeTable = RichSkillJobCodes
+    val richSkillCollectionTable = CollectionSkills
 
 
     override fun findAll() = dao.all()
@@ -110,6 +111,19 @@ class RichSkillRepositoryImpl @Autowired constructor(
             }
             it.remove?.forEach { jobCode ->
                 richSkillJobCodeTable.delete(richSkillId = updateObject.id!!, jobCodeId = jobCode.id.value!!)
+            }
+        }
+
+        // update collections
+        updateObject.collections?.let {
+            it.add?.forEach { collection ->
+                richSkillCollectionTable.create(
+                    collectionId = collection.id.value!!,
+                    skillId = updateObject.id!!
+                )
+            }
+            it.remove?.forEach { collection ->
+                richSkillCollectionTable.delete(collectionId = collection.id.value!!, skillId = updateObject.id!!)
             }
         }
     }

@@ -22,8 +22,10 @@ export class ApiNamedReference {
 export interface ISkill {
   id: string
   uuid: string
-  creationDate?: string
-  updateDate?: string
+  creationDate: string
+  updateDate: string
+  archiveDate?: string
+  publishDate?: string
   type: string
   status: PublishStatus
   skillName: string

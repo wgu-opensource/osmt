@@ -1,6 +1,7 @@
-import { Component, OnInit } from "@angular/core"
-import { Router } from "@angular/router"
+import {Component, Input, OnInit} from "@angular/core"
+import {Router} from "@angular/router"
 import {AppConfig} from "../../app.config"
+import {RichSkillService} from "../service/rich-skill.service"
 
 @Component({
   selector: "app-action-bar",
@@ -8,7 +9,10 @@ import {AppConfig} from "../../app.config"
 })
 export class ActionBarComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  @Input() skillUuid = ""
+  @Input() skillName = ""
+
+  constructor(private router: Router, private richSkillService: RichSkillService) { }
 
   // This gets mapped to a visually hidden textarea so that javascript has a node to copy from
   href = ""
@@ -25,7 +29,12 @@ export class ActionBarComponent implements OnInit {
   }
 
   onDownloadCsv(): void {
-    console.log("You just clicked Download CSV")
+    const exportFileName = this.skillName ? this.skillName : "OSMT Skill"
+    this.richSkillService.getSkillCsvByUuid(this.skillUuid)
+      .subscribe((csv: string) => {
+        const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"})
+        saveAs(blob, `${exportFileName} - ${new Date().toDateString()}.csv`)
+      })
   }
 
   onCopyJSON(): void {

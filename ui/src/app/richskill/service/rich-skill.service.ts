@@ -1,10 +1,11 @@
 import {Injectable} from "@angular/core"
 import {HttpClient} from "@angular/common/http"
 import {Observable} from "rxjs"
-import {ISkill, ApiSkill} from "../ApiSkill"
+import {ApiSkill, ISkill} from "../ApiSkill"
 import {map} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
-import {IRichSkillUpdate, ApiSkillUpdate} from "../ApiSkillUpdate";
+import {ApiSkillUpdate} from "../ApiSkillUpdate"
+import RuntimeError = WebAssembly.RuntimeError
 
 
 @Injectable({
@@ -33,6 +34,23 @@ export class RichSkillService extends AbstractService {
       path: `${this.serviceUrl}/${uuid}`
     })
       .pipe(map(({body}) => new ApiSkill(this.safeUnwrapBody(body, errorMsg))))
+  }
+
+  getSkillCsvByUuid(uuid: string): Observable<string> {
+    if (!uuid) {
+      throw new Error("No uuid provided for single skill csv export")
+    }
+    const errorMsg = `Could not find skill by uuid [${uuid}]`
+
+    return this.httpClient
+      .get(`${this.serviceUrl}/${uuid}`, {
+        headers: {
+          Accept: "text/csv"
+        },
+        responseType: "text",
+        observe: "response"
+      })
+      .pipe(map((response) => this.safeUnwrapBody(response.body, errorMsg)))
   }
 
   createSkill(updateObject: ApiSkillUpdate): Observable<ApiSkill> {

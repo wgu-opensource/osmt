@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core"
 import { TaskService } from "../../task/task-service"
 import { ITaskResponse } from "../../task/TaskInProgress"
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver"
 
 
 @Component({

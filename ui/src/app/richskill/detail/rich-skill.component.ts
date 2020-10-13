@@ -47,6 +47,10 @@ export class RichSkillComponent implements OnInit {
         return this.richSkill?.author?.name ?? ""
       }
 
+      getSkillUuid(): string {
+        return this.richSkill?.uuid ?? ""
+      }
+
       getSkillName(): string {
         return this.richSkill?.skillName ?? ""
       }

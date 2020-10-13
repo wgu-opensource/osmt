@@ -1,9 +1,9 @@
-import {Component, Input, OnInit} from "@angular/core"
+import {Component, Inject, Input, LOCALE_ID, OnInit} from "@angular/core"
 import {Router} from "@angular/router"
 import {AppConfig} from "../../app.config"
 import {RichSkillService} from "../service/rich-skill.service"
-import * as moment from "moment"
 import {ToastService} from "../../toast/toast.service";
+import {formatDate} from "@angular/common";
 
 @Component({
   selector: "app-action-bar",
@@ -14,7 +14,12 @@ export class ActionBarComponent implements OnInit {
   @Input() skillUuid = ""
   @Input() skillName = ""
 
-  constructor(private router: Router, private richSkillService: RichSkillService, private toastService: ToastService) {
+  constructor(
+    private router: Router,
+    private richSkillService: RichSkillService,
+    private toastService: ToastService,
+    @Inject(LOCALE_ID) public locale: string
+  ) {
   }
 
   // This gets mapped to a visually hidden textarea so that javascript has a node to copy from
@@ -39,7 +44,7 @@ export class ActionBarComponent implements OnInit {
     this.richSkillService.getSkillCsvByUuid(this.skillUuid)
       .subscribe((csv: string) => {
         const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"})
-        const date = moment().format("yyyy-mm-DD")
+        const date = formatDate(new Date(), "yyyy-mm-dd", this.locale)
         saveAs(blob, `RSD Collection - ${skillExportName} ${date}.csv`)
       })
   }

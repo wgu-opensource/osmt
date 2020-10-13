@@ -24,7 +24,6 @@
     "@angular/router": "~10.0.9",
     "@types/file-saver": "^2.0.1",
     "file-saver": "^2.0.2",
-    "moment": "^2.29.1",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "wgu-design-system-patternlibrary": "2.2.0",

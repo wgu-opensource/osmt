@@ -25,13 +25,16 @@
                             Archived {{archivedDate}}
                         </span>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
     </div>
     <div *ngFor="let section of sections">
-        <app-detail-card-section [data]="section" ></app-detail-card-section>
+        <app-detail-card-section
+          [data]="section"
+          *ngIf="section.bodyHtml || showEmpty"
+        ></app-detail-card-section>
     </div>
 </div>
 

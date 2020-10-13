@@ -8,6 +8,7 @@ import { IDetailCardSectionData } from "./section/section.component"
 })
 export class DetailCardComponent implements OnInit {
 
+  @Input() showEmpty = false
   @Input() sections: IDetailCardSectionData[] = []
   @Input() title = ""
   @Input() titleLabel = ""

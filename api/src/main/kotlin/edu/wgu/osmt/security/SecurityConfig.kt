@@ -1,5 +1,8 @@
 package edu.wgu.osmt.security
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import edu.wgu.osmt.api.model.ApiError
+import edu.wgu.osmt.api.model.ApiFieldError
 import edu.wgu.osmt.config.AppConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
@@ -73,7 +76,14 @@ class RedirectToFrontend : AuthenticationSuccessHandler {
 @Component
 class ReturnUnauthorized : AuthenticationEntryPoint {
     override fun commence(request: HttpServletRequest?, response: HttpServletResponse?, authentication: AuthenticationException?) {
-        response?.sendError(HttpServletResponse.SC_UNAUTHORIZED)
+        response?.let {
+            it.contentType = "application/json"
+            it.characterEncoding = "UTF-8"
+            val apiError = ApiError("Unauthorized")
+            val mapper = ObjectMapper()
+            mapper.writeValue(it.writer, apiError)
+            it.flushBuffer()
+        }
     }
 
 }

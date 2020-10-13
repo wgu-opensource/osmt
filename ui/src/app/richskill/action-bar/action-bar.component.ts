@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from "@angular/core"
 import {Router} from "@angular/router"
 import {AppConfig} from "../../app.config"
 import {RichSkillService} from "../service/rich-skill.service"
+import * as moment from "moment"
 
 @Component({
   selector: "app-action-bar",
@@ -29,11 +30,12 @@ export class ActionBarComponent implements OnInit {
   }
 
   onDownloadCsv(): void {
-    const exportFileName = this.skillName ? this.skillName : "OSMT Skill"
+    const skillExportName = this.skillName ? this.skillName : "OSMT Skill"
     this.richSkillService.getSkillCsvByUuid(this.skillUuid)
       .subscribe((csv: string) => {
         const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"})
-        saveAs(blob, `${exportFileName} - ${new Date().toDateString()}.csv`)
+        const date = moment().format("yyyy-mm-DD")
+        saveAs(blob, `RSD Collection - ${skillExportName} ${date}.csv`)
       })
   }
 

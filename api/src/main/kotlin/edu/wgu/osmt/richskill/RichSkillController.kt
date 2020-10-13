@@ -34,7 +34,7 @@ class RichSkillController @Autowired constructor(
     @ResponseBody
     fun allSkills(request: HttpServletRequest): List<ApiSkill>  {
         return richSkillRepository.findAll().map {
-            ApiSkill(it.toModel(), appConfig.baseUrl)
+            ApiSkill(it.toModel(), appConfig)
         }
     }
 
@@ -56,7 +56,7 @@ class RichSkillController @Autowired constructor(
                      @AuthenticationPrincipal user: OAuth2User?): List<ApiSkill>
     {
         return richSkillRepository.createFromApi(apiSkillUpdates, readableUsername(user)).map {
-            ApiSkill(it.toModel(), appConfig.baseUrl)
+            ApiSkill(it.toModel(), appConfig)
         }
     }
 
@@ -64,7 +64,7 @@ class RichSkillController @Autowired constructor(
     @ResponseBody
     fun byUUID(@PathVariable uuid: String): ApiSkill? {
         return richSkillRepository.findByUUID(uuid)?.let {
-            ApiSkill(it.toModel(), appConfig.baseUrl)
+            ApiSkill(it.toModel(), appConfig)
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
@@ -96,7 +96,7 @@ class RichSkillController @Autowired constructor(
         val updatedSkill = richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, readableUsername(user))
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
-        return ApiSkill(updatedSkill.toModel(), appConfig.baseUrl)
+        return ApiSkill(updatedSkill.toModel(), appConfig)
     }
 
 

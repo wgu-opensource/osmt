@@ -23,6 +23,9 @@ class AppConfig {
     @Value("\${app.defaultAuthorUri}")
     lateinit var defaultAuthorUri: String
 
+    @Value("\${app.defaultCreatorUri}")
+    lateinit var defaultCreatorUri: String
+
     @Autowired
     lateinit var environment: Environment
 

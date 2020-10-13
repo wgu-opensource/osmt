@@ -5,6 +5,7 @@ import {ISkill, ApiSkill} from "../ApiSkill"
 import {map} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {IRichSkillUpdate, ApiSkillUpdate} from "../ApiSkillUpdate";
+import {AuthService} from "../../auth/auth-service";
 
 
 @Injectable({
@@ -12,8 +13,8 @@ import {IRichSkillUpdate, ApiSkillUpdate} from "../ApiSkillUpdate";
 })
 export class RichSkillService extends AbstractService {
 
-  constructor(httpClient: HttpClient) {
-    super(httpClient)
+  constructor(httpClient: HttpClient, authService: AuthService) {
+    super(httpClient, authService)
   }
 
   private serviceUrl = "api/skills"

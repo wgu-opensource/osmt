@@ -21,8 +21,6 @@ data class Collection(
     val uuid: String,
     val name: String,
     val author: Keyword? = null,
-    val skillIds: List<Long> = listOf(),
-    val skillUuids: List<String> = listOf(),
     override val archiveDate: LocalDateTime? = null,
     override val publishDate: LocalDateTime? = null
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {

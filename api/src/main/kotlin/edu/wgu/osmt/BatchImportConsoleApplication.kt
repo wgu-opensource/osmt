@@ -11,12 +11,9 @@ import edu.wgu.osmt.richskill.RsdUpdateObject
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.collection.CollectionSkills
-import edu.wgu.osmt.collection.CollectionUpdateObject
 import edu.wgu.osmt.db.NullableFieldUpdate
-import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
-import edu.wgu.osmt.richskill.RichSkillDoc
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -105,12 +102,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
     private lateinit var jobCodeRepository: JobCodeRepository
 
     @Autowired
-    private lateinit var collectionRepository: CollectionRepository;
-
-    @Autowired
-    private lateinit var elasticSearchRepository: EsRichSkillRepository
-
-    val collectionSkillsTable = CollectionSkills
+    private lateinit var collectionRepository: CollectionRepository
 
     fun split_field(value: String?, delimiters: String = ";"): List<String>? {
         val strings = value?.let { it.split(delimiters).map { it.trim() } }?.distinct()
@@ -177,19 +169,14 @@ class BatchImportConsoleApplication : CommandLineRunner {
             val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
 
             if (row.skillName != null && row.skillStatement != null) {
-                val skill = richSkillRepository.create(RsdUpdateObject(
+                richSkillRepository.create(RsdUpdateObject(
                     name = row.skillName!!,
                     statement = row.skillStatement!!,
                     category = NullableFieldUpdate(category),
                     keywords = all_keywords?.let { ListFieldUpdate(add = it) },
+                    collections = collections?.let {ListFieldUpdate(add = it)},
                     jobCodes = occupations?.let { ListFieldUpdate(add = it) }
                 ), user)
-                collections?.map{ c ->
-                    skill?.let{
-                        collectionRepository.update(CollectionUpdateObject(c.id.value, skills = ListFieldUpdate(add = listOf(it))), user)
-                    }
-
-                }
                 LOG.info("created skill '${row.skillName!!}'")
             }
         }
@@ -221,7 +208,6 @@ class BatchImportConsoleApplication : CommandLineRunner {
     override fun run(vararg args: String?) {
         // --csv=path/to/csv
         val arguments = args.filterNotNull().flatMap { it.split(",") }
-        println(arguments)
         val csvPath = arguments.find { it.contains("--csv") }?.split("=")?.last()
         if (csvPath != null) {
             processCsv(csvPath)

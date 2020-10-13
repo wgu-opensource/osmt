@@ -50,9 +50,9 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
             category = category?.toModel(),
             author = author?.toModel(),
             archiveDate = archiveDate,
-            publishDate = publishDate
+            publishDate = publishDate,
+            collectionIds = collections.map { it.id.value }.toSet()
         )
-        rsd.collections = collections.map { it.toModel() }
         return rsd
     }
 

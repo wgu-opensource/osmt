@@ -29,10 +29,9 @@ data class RichSkillDescriptor(
     val category: Keyword? = null,
     val author: Keyword? = null,
     override val archiveDate: LocalDateTime? = null,
-    override val publishDate: LocalDateTime? = null
+    override val publishDate: LocalDateTime? = null,
+    val collectionIds: Set<Long> = setOf()
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
-
-    var collections: List<Collection> = listOf()
 
     // Keyword collections
     val certifications: List<Keyword>

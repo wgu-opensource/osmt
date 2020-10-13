@@ -33,9 +33,7 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             name = name,
             author = author?.toModel(),
             archiveDate = archiveDate,
-            publishDate = publishDate,
-            skillUuids = skills.toList().map { it.uuid },
-            skillIds = skills.toList().map { it.id.value }
+            publishDate = publishDate
         )
     }
 

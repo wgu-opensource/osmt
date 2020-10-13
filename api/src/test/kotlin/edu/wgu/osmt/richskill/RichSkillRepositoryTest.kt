@@ -107,7 +107,7 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
         }
     }
 
-    fun assertThatCollectionsMatchStringList(collections: List<Collection>, stringList: ApiStringListUpdate) {
+    fun assertThatCollectionsMatchStringList(collections: Set<Collection>, stringList: ApiStringListUpdate) {
         stringList.add?.forEach { str ->
             assertThat(collections.find { it.name == str }).isNotNull
         }
@@ -141,7 +141,9 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
         }
     }
 
-    fun assertThatRichSkillMatchesApiSkillUpdate(skill: RichSkillDescriptor, apiObj: ApiSkillUpdate) {
+    fun assertThatRichSkillMatchesApiSkillUpdate(rsc: RichSkillAndCollections, apiObj: ApiSkillUpdate) {
+        val skill = rsc.rs
+
         assertThat(skill.name).isEqualTo(apiObj.skillName)
         assertThat(skill.statement).isEqualTo(apiObj.skillStatement)
 
@@ -160,7 +162,7 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
 
         assertThatJobCodesMatchStringList(skill.jobCodes, apiObj.occupations!!)
 
-        assertThatCollectionsMatchStringList(skill.collections, apiObj.collections!!)
+        assertThatCollectionsMatchStringList(rsc.collections, apiObj.collections!!)
 
         assertThat(skill.publishStatus()).isEqualTo(apiObj.publishStatus)
     }
@@ -183,8 +185,7 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
 
         val updatedDao = richSkillRepository.updateFromApi(originalSkillDao.id.value, newSkillUpdate, userString)
         assertThat(updatedDao).isNotNull
-        val updated = updatedDao!!.toModel()
-        assertThatRichSkillMatchesApiSkillUpdate(updated, newSkillUpdate)
+        assertThatRichSkillMatchesApiSkillUpdate(RichSkillAndCollections.fromDao(updatedDao!!), newSkillUpdate)
     }
 
     @Test
@@ -195,9 +196,9 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
         val results: List<RichSkillDescriptorDao> = richSkillRepository.createFromApi(skillUpdates, userString)
 
         results.forEachIndexed { i, skillDao ->
-            val skill = skillDao.toModel()
+            val skillAndCollections = RichSkillAndCollections.fromDao(skillDao)
             val apiObj = skillUpdates[i]
-            assertThatRichSkillMatchesApiSkillUpdate(skill, apiObj)
+            assertThatRichSkillMatchesApiSkillUpdate(skillAndCollections, apiObj)
         }
     }
 

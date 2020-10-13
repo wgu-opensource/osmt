@@ -3,6 +3,7 @@ import {Router} from "@angular/router"
 import {AppConfig} from "../../app.config"
 import {RichSkillService} from "../service/rich-skill.service"
 import * as moment from "moment"
+import {ToastService} from "../../toast/toast.service";
 
 @Component({
   selector: "app-action-bar",
@@ -13,13 +14,17 @@ export class ActionBarComponent implements OnInit {
   @Input() skillUuid = ""
   @Input() skillName = ""
 
-  constructor(private router: Router, private richSkillService: RichSkillService) { }
+  constructor(private router: Router, private richSkillService: RichSkillService, private toastService: ToastService) {
+  }
 
   // This gets mapped to a visually hidden textarea so that javascript has a node to copy from
   href = ""
+  jsonClipboard = ""
 
   ngOnInit(): void {
     this.href = `${AppConfig.settings.baseApiUrl}${this.router.url}`
+    this.richSkillService.getSkillJsonByUuid(this.skillUuid)
+      .subscribe( (json: string) => this.jsonClipboard = json)
   }
 
   onCopyURL(fullPath: HTMLTextAreaElement): void {
@@ -39,8 +44,15 @@ export class ActionBarComponent implements OnInit {
       })
   }
 
-  onCopyJSON(): void {
-    console.log("You just clicked Copy JSON")
+  onCopyJSON(skillJson: HTMLTextAreaElement): void {
+    this.richSkillService.getSkillJsonByUuid(this.skillUuid)
+      .subscribe((json: string) => {
+        this.jsonClipboard = json
+        console.log(`copying ${skillJson.textContent}`)
+        skillJson.select()
+        document.execCommand("copy")
+        skillJson.setSelectionRange(0, 0)
+        this.toastService.showToast("Copied", "JSON was successfully copied to the clipboard")
+      })
   }
-
 }

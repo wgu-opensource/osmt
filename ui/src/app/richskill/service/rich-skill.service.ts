@@ -36,6 +36,8 @@ export class RichSkillService extends AbstractService {
       .pipe(map(({body}) => new ApiSkill(this.safeUnwrapBody(body, errorMsg))))
   }
 
+  // These two nearly identical getSkill functions can probably be joined.  the angular httpclient is weird though
+  // and overloads it's functions many times which makes any kind of abstraction seeking to broaden flexibility incompatible
   getSkillCsvByUuid(uuid: string): Observable<string> {
     if (!uuid) {
       throw new Error("No uuid provided for single skill csv export")
@@ -46,6 +48,23 @@ export class RichSkillService extends AbstractService {
       .get(`${this.serviceUrl}/${uuid}`, {
         headers: {
           Accept: "text/csv"
+        },
+        responseType: "text",
+        observe: "response"
+      })
+      .pipe(map((response) => this.safeUnwrapBody(response.body, errorMsg)))
+  }
+
+  getSkillJsonByUuid(uuid: string): Observable<string> {
+    if (!uuid) {
+      throw new Error("No uuid provided for single skill csv export")
+    }
+    const errorMsg = `Could not find skill by uuid [${uuid}]`
+
+    return this.httpClient
+      .get(`${this.serviceUrl}/${uuid}`, {
+        headers: {
+          Accept: "application/json"
         },
         responseType: "text",
         observe: "response"

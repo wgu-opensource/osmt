@@ -56,11 +56,11 @@ export class RichSkillComponent implements OnInit {
       }
 
       getPublishedDate(): string {
-        return this.getDateFormat(this.richSkill?.creationDate)
+        return this.getDateFormat(this.richSkill?.publishDate)
       }
 
       getArchivedDate(): string {
-        return this.getDateFormat(this.richSkill?.updateDate)
+        return this.getDateFormat(this.richSkill?.archiveDate)
       }
 
       getDateFormat(date?: Date): string {

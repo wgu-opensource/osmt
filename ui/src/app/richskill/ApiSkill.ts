@@ -46,6 +46,8 @@ export class ApiSkill {
   uuid: string
   creationDate?: Date = undefined
   updateDate?: Date = undefined
+  publishDate?: Date = undefined
+  archiveDate?: Date = undefined
   type: string
   status: PublishStatus
   skillName: string
@@ -68,6 +70,12 @@ export class ApiSkill {
     }
     if (iRichSkill.updateDate) {
       this.updateDate = new Date(iRichSkill.updateDate)
+    }
+    if (iRichSkill.publishDate) {
+      this.publishDate = new Date(iRichSkill.publishDate)
+    }
+    if (iRichSkill.archiveDate) {
+      this.archiveDate = new Date(iRichSkill.archiveDate)
     }
     this.skillName = iRichSkill.skillName
     this.skillStatement = iRichSkill.skillStatement

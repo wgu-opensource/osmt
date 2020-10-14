@@ -18,10 +18,14 @@ import {FormFieldSubmit} from "./form/form-field-submit.component"
 import { CommoncontrolsComponent } from "./commoncontrols/commoncontrols.component"
 import { AppHeaderComponent } from "./app-header/app-header.component"
 import { AppFooterComponent } from "./app-footer/app-footer.component"
-import {CommoncontrolsMobileComponent} from "./commoncontrols/commoncontrols-mobile.component";
-import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component";
-import {ToastComponent} from "./toast/toast.component";
-import {ToastService} from "./toast/toast.service";
+import {CommoncontrolsMobileComponent} from "./commoncontrols/commoncontrols-mobile.component"
+import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component"
+import {ToastComponent} from "./toast/toast.component"
+import {ToastService} from "./toast/toast.service"
+import { ActionBarVerticalComponent } from "./richskill/action-bar/action-bar-vertical/action-bar-vertical.component"
+import { DetailCardComponent } from "./detail-card/detail-card.component"
+import { DetailCardSectionComponent } from "./detail-card/section/section.component"
+import { ActionBarHorizontalComponent } from "./richskill/action-bar/action-bar-horizontal/action-bar-horizontal.component"
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -46,6 +50,10 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AppFooterComponent,
     SkillCollectionsDisplayComponent,
     ToastComponent,
+    ActionBarVerticalComponent,
+    DetailCardComponent,
+    DetailCardSectionComponent,
+    ActionBarHorizontalComponent,
   ],
   imports: [
     BrowserModule,

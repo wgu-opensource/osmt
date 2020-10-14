@@ -1,0 +1,57 @@
+<nav class="l-flex l-flex-alignCenter t-elevation-large">
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onEdit()">
+    <svg class="m-actionBarItemHorizontal-x-icon t-icon">
+      <use [attr.xlink:href]="editIcon"></use>
+    </svg>
+    <span class="m-actionBarItemHorizontal-x-label m-buttonText">
+          <span class="button-x-text">
+            Edit
+          </span>
+        </span>
+    <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
+  </div>
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onDuplicate()">
+    <svg class="m-actionBarItemHorizontal-x-icon t-icon">
+      <use [attr.xlink:href]="duplicateIcon"></use>
+    </svg>
+    <span class="m-actionBarItemHorizontal-x-label m-buttonText">
+          <span class="button-x-text">
+            Duplicate
+          </span>
+        </span>
+    <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
+  </div>
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onPublish()">
+    <svg class="m-actionBarItemHorizontal-x-icon t-icon">
+      <use [attr.xlink:href]="publishIcon"></use>
+    </svg>
+    <span class="m-actionBarItemHorizontal-x-label m-buttonText">
+          <span class="button-x-text">
+            Publish
+          </span>
+        </span>
+    <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
+  </div>
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onArchive()">
+    <svg class="m-actionBarItemHorizontal-x-icon t-icon">
+      <use [attr.xlink:href]="archiveIcon"></use>
+    </svg>
+    <span class="m-actionBarItemHorizontal-x-label m-buttonText">
+          <span class="button-x-text">
+            Archive
+          </span>
+        </span>
+    <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
+  </div>
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal" (click)="onAddToCollection()">
+    <svg class="m-actionBarItemHorizontal-x-icon t-icon">
+      <use [attr.xlink:href]="dismissIcon"></use>
+    </svg>
+    <span class="m-actionBarItemHorizontal-x-label m-buttonText">
+          <span class="button-x-text">
+            Add
+          </span>
+        </span>
+    <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
+  </div>
+</nav>

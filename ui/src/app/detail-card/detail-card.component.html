@@ -10,16 +10,16 @@
     <div class="t-verticalSpacing-medium">
         <div class="t-verticalSpacing-medium">
             <div class="l-flex l-flex-wrap t-spacing-extraSmall-negative">
-                <div class="t-spacing-extraSmall">
+                <div *ngIf="publishedDate" class="t-spacing-extraSmall">
                     <div class="m-status">
                         <div class="m-status-x-marker" aria-hidden="true"></div>
                         <div class="m-status-x-label">Published {{publishedDate}}</div>
                     </div>
                 </div>
-                <div class="t-spacing-extraSmall">
+                <div *ngIf="archivedDate" class="t-spacing-extraSmall">
                     <div class="l-flex l-flex-alignCenter">
                         <svg class="t-icon t-horizontalSpacing-extraSmall">
-                            <use xlink:href="/images/svg-defs.svg#icon-archive"></use>
+                            <use xlink:href="assets/images/svg-defs.svg#icon-archive"></use>
                         </svg>
                         <span class="t-type-body">
                             Archived {{archivedDate}}

@@ -41,8 +41,8 @@ export abstract class RichSkillActionBarComponent implements OnInit {
     this.richSkillService.getSkillCsvByUuid(this.skillUuid)
       .subscribe((csv: string) => {
         const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"})
-        const date = formatDate(new Date(), "yyyy-mm-dd", this.locale)
-        saveAs(blob, `RSD Collection - ${skillExportName} ${date}.csv`)
+        const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
+        saveAs(blob, `RSD Skill - ${skillExportName} ${date}.csv`)
       })
   }
 

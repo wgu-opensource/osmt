@@ -99,11 +99,21 @@ export class RichSkillComponent implements OnInit {
             bodyHtml: this.richSkill?.employers?.map(employer => employer.name)?.join("; ") ?? ""
           }, {
             label: "Alignment",
-            bodyHtml: this.richSkill?.alignments?.map(alignment => alignment.name)?.join("; ") ?? ""
+            bodyHtml:
+                this.richSkill?.alignments?.map(alignment => this.prepareAlignmentLink(alignment))?.join("; ") ?? ""
           }
         ]
       }
+    private prepareAlignmentLink({name, id}: INamedReference): string {
+        const displayText = name ? name : (id ? id : "") // prefer name, but use url if necessary
 
+
+        if (id) {
+            return `<a target="_blank" href=${id}>${displayText}</a>`
+        } else {
+            return displayText
+        }
+    }
       joinKeywords(): string {
         const keywords = this.richSkill?.keywords || []
         return this.joinList("; ", keywords)

@@ -83,20 +83,23 @@ export class RichSkillComponent implements OnInit {
             label: "Keywords",
             bodyHtml: this.richSkill?.keywords?.join("; ") ?? ""
           }, {
+            label: "Associated Collections",
+            bodyHtml: this.richSkill?.collections?.join("; ") ?? ""
+          }, {
             label: "Standards",
-            bodyHtml: this.richSkill?.standards?.join("; ") ?? ""
+            bodyHtml: this.richSkill?.standards?.map(standard => standard.name)?.join("; ") ?? ""
           }, {
             label: "Certifications",
-            bodyHtml: this.richSkill?.certifications?.join("; ") ?? ""
+            bodyHtml: this.richSkill?.certifications?.map(cert => cert.name)?.join("; ") ?? ""
           }, {
             label: "Occupations",
             bodyHtml: new OccupationsFormatter(this.richSkill?.occupations ?? []).html()
           }, {
-            label: "Alignment",
-            bodyHtml: this.richSkill?.alignments?.map(alignment => alignment.name)?.join("; ") ?? ""
-          }, {
             label: "Employers",
             bodyHtml: this.richSkill?.employers?.map(employer => employer.name)?.join("; ") ?? ""
+          }, {
+            label: "Alignment",
+            bodyHtml: this.richSkill?.alignments?.map(alignment => alignment.name)?.join("; ") ?? ""
           }
         ]
       }

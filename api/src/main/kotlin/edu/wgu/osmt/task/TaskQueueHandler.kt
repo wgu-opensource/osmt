@@ -2,17 +2,14 @@ package edu.wgu.osmt.task
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.richskill.RichSkillCsvExport
-import edu.wgu.osmt.richskill.RichSkillDescriptorDao
-import edu.wgu.osmt.richskill.RichSkillRepository
 import org.jetbrains.exposed.dao.with
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import edu.wgu.osmt.richskill.*
 
 @Component
 @Profile("apiserver")
@@ -40,11 +37,7 @@ class TaskQueueHandler {
 
         val allSkills =
             richSkillRepository.dao.all().with(RichSkillDescriptorDao::collections)
-                .map { rsdao ->
-                    val rs = rsdao.toModel()
-                    rs.collections = rsdao.collections.map{it.toModel()}
-                    rs
-                }
+                .map { RichSkillAndCollections.fromDao(it) }
 
         val csvString = RichSkillCsvExport(appConfig).toCsv(allSkills)
 

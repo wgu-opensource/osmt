@@ -1,0 +1,41 @@
+<nav class="m-actionBarVertical">
+
+  <div class="t-verticalSpacing-small t-hidden-maxdesktop">
+    <button class="m-button t-width-100" (click)="onAddToCollection()">
+      <span class="button-x-text">Add to Collection</span>
+    </button>
+  </div>
+  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onEdit()">
+    <button class="m-buttonText m-buttonText-icon">
+      <svg class="button-x-icon t-icon">
+        <use [attr.xlink:href]="editIcon"></use>
+      </svg>
+      <span class="button-x-text">Edit</span>
+    </button>
+  </div>
+  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onDuplicate()">
+    <button class="m-buttonText m-buttonText-icon">
+      <svg class="button-x-icon t-icon">
+        <use [attr.xlink:href]="duplicateIcon"></use>
+      </svg>
+      <span class="button-x-text">Duplicate</span>
+    </button>
+  </div>
+  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onPublish()">
+    <button class="m-buttonText m-buttonText-icon">
+      <svg class="button-x-icon t-icon">
+        <use [attr.xlink:href]="publishIcon"></use>
+      </svg>
+      <span class="button-x-text">Publish</span>
+    </button>
+  </div>
+  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onArchive()">
+    <button class="m-buttonText m-buttonText-icon">
+      <svg class="button-x-icon t-icon">
+        <use [attr.xlink:href]="archiveIcon"></use>
+      </svg>
+      <span class="button-x-text">Archive</span>
+    </button>
+  </div>
+
+</nav>

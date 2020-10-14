@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core"
 import {HttpClient, HttpResponse} from "@angular/common/http"
 import { Observable } from "rxjs"
 import { ITaskResponse, TaskInProgress } from "./TaskInProgress"
-import { map } from "rxjs/operators"
+import {map, share} from "rxjs/operators"
 import {AbstractService} from "../abstract.service"
 
 @Injectable({
@@ -24,7 +24,9 @@ export class TaskService extends AbstractService {
       headers: {
         Accept: "text/csv"
       }
-    }).pipe(map(({body}) => new TaskInProgress(this.safeUnwrapBody(body, failureMessage))))
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new TaskInProgress(this.safeUnwrapBody(body, failureMessage))))
   }
 
   // this call is a bit different since it's returning a csv for immediate download, so use httpClient's get() method
@@ -35,5 +37,6 @@ export class TaskService extends AbstractService {
         responseType: "text",
         observe: "response"
       })
+      .pipe(share())
   }
 }

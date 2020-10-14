@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core"
 import {HttpClient} from "@angular/common/http"
 import {Observable} from "rxjs"
 import {ApiSkill, ISkill} from "../ApiSkill"
-import {map} from "rxjs/operators"
+import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate"
 import RuntimeError = WebAssembly.RuntimeError
@@ -23,6 +23,7 @@ export class RichSkillService extends AbstractService {
     return this.get<ISkill[]>({
       path: this.serviceUrl
     })
+      .pipe(share())
       .pipe(map(({body}) => {
         return body?.map(skill => new ApiSkill(skill)) || []
       }))
@@ -33,6 +34,7 @@ export class RichSkillService extends AbstractService {
     return this.get<ISkill>({
       path: `${this.serviceUrl}/${uuid}`
     })
+      .pipe(share())
       .pipe(map(({body}) => new ApiSkill(this.safeUnwrapBody(body, errorMsg))))
   }
 
@@ -78,6 +80,7 @@ export class RichSkillService extends AbstractService {
       path: this.serviceUrl,
       body: [updateObject]
     })
+      .pipe(share())
       .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiSkill(s))[0]))
   }
 
@@ -87,6 +90,7 @@ export class RichSkillService extends AbstractService {
       path: `${this.serviceUrl}/${uuid}/update`,
       body: updateObject
     })
+      .pipe(share())
       .pipe(map(({body}) => new ApiSkill(this.safeUnwrapBody(body, errorMsg))))
   }
 }

@@ -9,11 +9,11 @@ import net.minidev.json.JSONObject
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
-class ApiSkill(private val rsd: RichSkillDescriptor, private val appConfig: AppConfig) {
-
-    // TODO include view of collection
+class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collection>, private val appConfig: AppConfig) {
 
     @JsonProperty("@context")
     val context = "https://rsd.osmt.dev/context-v1.json"
@@ -97,7 +97,13 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val appConfig: AppC
 
     @get:JsonProperty
     val collections: List<String>
-        get() = rsd.collections.map { it.name }
+        get() = cs.map { it.name }
+
+    companion object {
+        fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkill{
+            return ApiSkill(rsdDao.toModel(), rsdDao.collections.map{ it.toModel() }.toSet(), appConfig)
+        }
+    }
 }
 
 

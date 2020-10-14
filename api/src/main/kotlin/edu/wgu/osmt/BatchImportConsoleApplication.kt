@@ -102,9 +102,7 @@ class BatchImportConsoleApplication : CommandLineRunner {
     private lateinit var jobCodeRepository: JobCodeRepository
 
     @Autowired
-    private lateinit var collectionRepository: CollectionRepository;
-
-    val collectionSkillsTable = CollectionSkills
+    private lateinit var collectionRepository: CollectionRepository
 
     fun split_field(value: String?, delimiters: String = ";"): List<String>? {
         val strings = value?.let { it.split(delimiters).map { it.trim() } }?.distinct()
@@ -176,8 +174,8 @@ class BatchImportConsoleApplication : CommandLineRunner {
                     statement = row.skillStatement!!,
                     category = NullableFieldUpdate(category),
                     keywords = all_keywords?.let { ListFieldUpdate(add = it) },
-                    jobCodes = occupations?.let { ListFieldUpdate(add = it) },
-                    collections = collections?.let {ListFieldUpdate(add = it)}
+                    collections = collections?.let {ListFieldUpdate(add = it)},
+                    jobCodes = occupations?.let { ListFieldUpdate(add = it) }
                 ), user)
                 LOG.info("created skill '${row.skillName!!}'")
             }
@@ -210,7 +208,6 @@ class BatchImportConsoleApplication : CommandLineRunner {
     override fun run(vararg args: String?) {
         // --csv=path/to/csv
         val arguments = args.filterNotNull().flatMap { it.split(",") }
-
         val csvPath = arguments.find { it.contains("--csv") }?.split("=")?.last()
         if (csvPath != null) {
             processCsv(csvPath)

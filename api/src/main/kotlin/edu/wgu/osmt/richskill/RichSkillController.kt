@@ -25,7 +25,6 @@ class RichSkillController @Autowired constructor(
     val richSkillRepository: RichSkillRepository,
     val taskMessageService: TaskMessageService,
     val appConfig: AppConfig
-    //val esRichSkillRepository: EsRichSkillRepository,
 ) {
     val keywordDao = KeywordDao.Companion
 
@@ -34,7 +33,7 @@ class RichSkillController @Autowired constructor(
     @ResponseBody
     fun allSkills(request: HttpServletRequest): List<ApiSkill>  {
         return richSkillRepository.findAll().map {
-            ApiSkill(it.toModel(), appConfig)
+            ApiSkill.fromDao(it, appConfig)
         }
     }
 
@@ -56,7 +55,7 @@ class RichSkillController @Autowired constructor(
                      @AuthenticationPrincipal user: OAuth2User?): List<ApiSkill>
     {
         return richSkillRepository.createFromApi(apiSkillUpdates, readableUsername(user)).map {
-            ApiSkill(it.toModel(), appConfig)
+            ApiSkill.fromDao(it, appConfig)
         }
     }
 
@@ -64,7 +63,7 @@ class RichSkillController @Autowired constructor(
     @ResponseBody
     fun byUUID(@PathVariable uuid: String): ApiSkill? {
         return richSkillRepository.findByUUID(uuid)?.let {
-            ApiSkill(it.toModel(), appConfig)
+            ApiSkill.fromDao(it, appConfig)
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
@@ -77,7 +76,8 @@ class RichSkillController @Autowired constructor(
     fun byUUIDCsvView(@PathVariable uuid: String): HttpEntity<*> {
         return richSkillRepository.findByUUID(uuid)?.let {
             val skill = it.toModel()
-            val result = RichSkillCsvExport(appConfig).toCsv(listOf(skill))
+            val collections = it.collections.map{ it.toModel() }.toSet()
+            val result = RichSkillCsvExport(appConfig).toCsv(listOf(RichSkillAndCollections(skill,collections)))
             val responseHeaders = HttpHeaders()
             responseHeaders.add("Content-Type", "text/csv")
             return ResponseEntity.ok().headers(responseHeaders).body(result)
@@ -96,9 +96,6 @@ class RichSkillController @Autowired constructor(
         val updatedSkill = richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, readableUsername(user))
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
-        return ApiSkill(updatedSkill.toModel(), appConfig)
+        return ApiSkill.fromDao(updatedSkill, appConfig)
     }
-
-
-
 }

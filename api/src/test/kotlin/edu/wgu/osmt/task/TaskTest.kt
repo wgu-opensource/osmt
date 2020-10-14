@@ -1,6 +1,7 @@
 package edu.wgu.osmt.task
 
 import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.SpringTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -10,12 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
-@SpringBootTest
-@ActiveProfiles("test,apiserver")
-@ConfigurationPropertiesScan("edu.wgu.osmt.config")
-@ContextConfiguration
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class TaskTest : BaseDockerizedTest() {
+class TaskTest : SpringTest(), BaseDockerizedTest {
 
     @Autowired
     lateinit var tms: TaskMessageService

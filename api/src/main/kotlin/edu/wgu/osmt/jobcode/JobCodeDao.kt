@@ -38,4 +38,7 @@ class JobCodeDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<JobCode> {
             url = url
         )
 
+    fun toDoc(): JobCodeDoc = JobCodeDoc(
+        major = major, minor = minor, broad = broad, detailed = detailed, code = code, name = name
+    )
 }

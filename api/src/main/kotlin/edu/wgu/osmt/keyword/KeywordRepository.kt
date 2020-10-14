@@ -1,6 +1,7 @@
 package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.elasticsearch.EsKeywordRespository
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
@@ -42,6 +43,10 @@ interface KeywordRepository {
 @Repository
 @Transactional
 class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : KeywordRepository {
+
+    @Autowired
+    lateinit var esKeywordRepository: EsKeywordRespository
+
     override val dao = KeywordDao.Companion
     override val table = KeywordTable
 
@@ -78,6 +83,6 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
             this.type = type
             this.value = value
             this.uri = uri
-        } else null
+        }.apply{esKeywordRepository.save(this.toModel())} else null
     }
 }

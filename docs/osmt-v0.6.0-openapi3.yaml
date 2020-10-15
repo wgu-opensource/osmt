@@ -574,15 +574,12 @@ components:
         id:
           type: string
           format: uri
-          readOnly: true
         uuid:
           type: string
           format: uuid
-          readOnly: true
         creator:
           type: string
           format: uri
-          readOnly: true
         status:
           $ref: '#/components/schemas/PublishStatus'
         skillName:
@@ -741,35 +738,64 @@ components:
     Collection:
       type: object
       properties:
+        id:
+          type: string
+          format: uri
         uuid:
           type: string
           format: uuid
-          readOnly: true
+        creator:
+          type: string
+          format: uri
+        status:
+          $ref: '#/components/schemas/PublishStatus'
+        creationDate:
+          type: string
+          format: date-time
+        updateDate:
+          type: string
+          format: date-time
+        publishDate:
+          type: string
+          format: date-time
+        archiveDate:
+          type: string
+          format: date-time
         name:
           type: string
-        description: 
-          type: string
+        author:
+          $ref: '#/components/schemas/NamedReference'
         skills:
           type: array
           items:
-            type: string
-            format: uri
+            $ref: '#/components/schemas/SkillSummary'
+
     CollectionSummary:
       type: object
       properties:
+        id:
+          type: string
+          format: uri
+        uuid:
+          type: string
+          format: uuid
         name:
           type: string
         skillCount:
           type: number
+        status:
+          $ref: '#/components/schemas/PublishStatus'
+
     CollectionUpdate:
       type: object
       properties:
         name: 
           type: string
-        description: 
-          type: string
+        status:
+          $ref: '#/components/schemas/PublishStatus'
         skills:
-          $ref: '#/components/schemas/ReferenceListUpdate'
+          $ref: '#/components/schemas/StringListUpdate'
+
 
     NamedReference:
       type: object
@@ -875,7 +901,6 @@ components:
         uuid:
           type: string
           format: uuid
-          readOnly: true
         content-type:
           type: string
         status:

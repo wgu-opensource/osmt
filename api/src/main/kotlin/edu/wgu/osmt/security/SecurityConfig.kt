@@ -2,17 +2,16 @@ package edu.wgu.osmt.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import edu.wgu.osmt.api.model.ApiError
-import edu.wgu.osmt.api.model.ApiFieldError
 import edu.wgu.osmt.config.AppConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
 import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.DefaultRedirectStrategy
@@ -23,6 +22,7 @@ import javax.servlet.http.HttpServletResponse
 
 @Configuration
 @EnableWebSecurity
+@Profile("oauth2")
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
@@ -44,21 +44,16 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers(HttpMethod.GET,  "/api/tasks/*").authenticated()
             .antMatchers(HttpMethod.GET,  "/api/skills/*").permitAll()
             .antMatchers("/**").permitAll()
-            .and().oauth2Login().successHandler(redirectToFrontend)
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
+            .and().oauth2Login().successHandler(redirectToFrontend)
             .and().oauth2ResourceServer().jwt()
     }
-
 }
-
 
 @Component
 class RedirectToFrontend : AuthenticationSuccessHandler {
     @Autowired
     lateinit var appConfig: AppConfig
-
-    @Autowired
-    lateinit var clientService: OAuth2AuthorizedClientService
 
     override fun onAuthenticationSuccess(request: HttpServletRequest?, response: HttpServletResponse?, authentication: Authentication?) {
         val redirectStrategy: DefaultRedirectStrategy = DefaultRedirectStrategy()

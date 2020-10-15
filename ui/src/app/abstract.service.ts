@@ -1,12 +1,11 @@
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http"
 import {AppConfig} from "./app.config"
 import {Observable} from "rxjs"
+import {AuthService} from "./auth/auth-service";
 
 interface ApiGetParams {
   path: string,
-  headers?: HttpHeaders | {
-    [header: string]: string | string[];
-  },
+  headers?: HttpHeaders,
   params?: HttpParams | {
     [param: string]: string | string[];
   },
@@ -15,7 +14,7 @@ interface ApiGetParams {
 
 export abstract class AbstractService {
 
-  constructor(protected httpClient: HttpClient) {
+  constructor(protected httpClient: HttpClient, protected authService: AuthService) {
   }
 
   /**
@@ -29,10 +28,16 @@ export abstract class AbstractService {
    * @param params Json blob defining path params
    */
   get<T>({path, headers, params}: ApiGetParams): Observable<HttpResponse<T>> {
-    return this.httpClient.get<T>(this.buildUrl(path), { headers, params, observe: "response"})
+    return this.httpClient.get<T>(this.buildUrl(path), {
+      headers: this.wrapHeaders(headers),
+      params,
+      observe: "response"})
   }
   post<T>({path, headers, params, body}: ApiGetParams): Observable<HttpResponse<T>> {
-    return this.httpClient.post<T>(this.buildUrl(path), body, { headers, params, observe: "response"})
+    return this.httpClient.post<T>(this.buildUrl(path), body, {
+      headers: this.wrapHeaders(headers),
+      params,
+      observe: "response"})
   }
 
   protected safeUnwrapBody<T>(body: T | null, failureMessage: string): T {
@@ -51,5 +56,16 @@ export abstract class AbstractService {
     } else {
       return baseUrl + path
     }
+  }
+
+  wrapHeaders(headers?: HttpHeaders): HttpHeaders | undefined {
+    const token = this.authService.currentAuthToken()
+    if (token !== undefined) {
+      if (headers === undefined) {
+        headers = new HttpHeaders()
+      }
+      headers = headers.set("Authorization", `Bearer ${token}`)
+    }
+    return headers
   }
 }

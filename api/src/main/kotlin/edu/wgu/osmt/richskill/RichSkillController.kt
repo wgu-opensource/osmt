@@ -11,7 +11,7 @@ import edu.wgu.osmt.task.TaskResult
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.core.user.OAuth2User
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -52,7 +52,7 @@ class RichSkillController @Autowired constructor(
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createSkills(@RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
-                     @AuthenticationPrincipal user: OAuth2User?): List<ApiSkill>
+                     @AuthenticationPrincipal user: Jwt?): List<ApiSkill>
     {
         return richSkillRepository.createFromApi(apiSkillUpdates, readableUsername(user)).map {
             ApiSkill.fromDao(it, appConfig)
@@ -88,7 +88,7 @@ class RichSkillController @Autowired constructor(
     @ResponseBody
     fun updateSkill(@PathVariable uuid: String,
                     @RequestBody skillUpdate: ApiSkillUpdate,
-                    @AuthenticationPrincipal user: OAuth2User?): ApiSkill
+                    @AuthenticationPrincipal user: Jwt?): ApiSkill
     {
         val existingSkill = richSkillRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)

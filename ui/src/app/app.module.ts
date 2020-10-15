@@ -15,17 +15,18 @@ import {FormFieldTextArea} from "./form/form-field-textarea.component"
 import {LoadingObservablesDirective} from "./loading/loading-observables.directive"
 import {LoadingComponent} from "./loading/loading.component"
 import {FormFieldSubmit} from "./form/form-field-submit.component"
-import { CommoncontrolsComponent } from "./commoncontrols/commoncontrols.component"
-import { AppHeaderComponent } from "./app-header/app-header.component"
-import { AppFooterComponent } from "./app-footer/app-footer.component"
-import {CommoncontrolsMobileComponent} from "./commoncontrols/commoncontrols-mobile.component"
-import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component"
-import {ToastComponent} from "./toast/toast.component"
-import {ToastService} from "./toast/toast.service"
-import { ActionBarVerticalComponent } from "./richskill/action-bar/action-bar-vertical/action-bar-vertical.component"
-import { DetailCardComponent } from "./detail-card/detail-card.component"
-import { DetailCardSectionComponent } from "./detail-card/section/section.component"
-import { ActionBarHorizontalComponent } from "./richskill/action-bar/action-bar-horizontal/action-bar-horizontal.component"
+import {HeaderComponent} from "./navigation/header.component"
+import {FooterComponent} from "./navigation/footer.component"
+import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component";
+import {ToastComponent} from "./toast/toast.component";
+import {AuthService} from "./auth/auth-service";
+import {AuthGuard} from "./auth/auth.guard";
+import {CommoncontrolsComponent} from "./navigation/commoncontrols.component"
+import {CommoncontrolsMobileComponent} from "./navigation/commoncontrols-mobile.component"
+import {ActionBarVerticalComponent} from "./richskill/action-bar/action-bar-vertical/action-bar-vertical.component"
+import {DetailCardComponent} from "./detail-card/detail-card.component"
+import {DetailCardSectionComponent} from "./detail-card/section/section.component"
+import {ActionBarHorizontalComponent} from "./richskill/action-bar/action-bar-horizontal/action-bar-horizontal.component"
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -46,8 +47,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     LoadingObservablesDirective,
     CommoncontrolsComponent,
     CommoncontrolsMobileComponent,
-    AppHeaderComponent,
-    AppFooterComponent,
+    HeaderComponent,
+    FooterComponent,
     SkillCollectionsDisplayComponent,
     ToastComponent,
     ActionBarVerticalComponent,
@@ -65,6 +66,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     Title,
     AppConfig,
     SkillFormDirtyGuard,
+    AuthService,
+    AuthGuard,
     { provide: APP_INITIALIZER,
       useFactory: initializeApp,
       deps: [AppConfig], multi: true }

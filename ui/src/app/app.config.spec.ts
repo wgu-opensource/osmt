@@ -45,7 +45,8 @@ describe("AppConfig", () => {
         publicCollectionTitle: "",
         publicSkillTitle: "",
         toolName: "",
-        toolNameLong: ""
+        toolNameLong: "",
+        loginUrl: ""
       }
 
       environment.baseApiUrl = expectedApiUrl

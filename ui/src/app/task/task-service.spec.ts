@@ -1,6 +1,7 @@
 import {TestBed} from "@angular/core/testing"
 import {TaskService} from "./task-service"
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
+import {AuthService} from "../auth/auth-service";
 
 
 describe("TaskService", () => {
@@ -9,7 +10,8 @@ describe("TaskService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule],
+      providers: [AuthService]
     })
     service = TestBed.inject(TaskService)
     httpMock = TestBed.inject(HttpTestingController)

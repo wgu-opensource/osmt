@@ -32,9 +32,18 @@ This project makes use of configuring Spring boot via property files. These are 
 | ---                       | ---                                                     |
 | import                    | runs the batch import process, expects `--csv=` argument | 
 | apiserver                 | runs the api server                                     |
+| oauth2                    | includes required configuration for oauth2 oidc with okta|
 
 For example to run the import component with a dev configuration, set active profiles by passing a JVM argument like so:
 `-Dspring-boot.run.profiles=dev,import`
+
+### OAuth2 Okta configuration
+To use okta as your OAuth2 provider you will need to provide the following properties when running the application. These can be found in your okta server configuration.
+ * okta.oauth2.clientId      
+ * okta.oauth2.clientSecret
+ * okta.oauth2.audience
+ * okta.oauth2.issuer
+
   
 ## Database migrations
 This project uses [FlywayDb](https://flywaydb.org/). SQL Migrations can be placed in `./api/src/main/resources/db/migration/`.

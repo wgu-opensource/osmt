@@ -4,8 +4,8 @@ import {Observable} from "rxjs"
 import {ApiSkill, ISkill} from "../ApiSkill"
 import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
-import {ApiSkillUpdate} from "../ApiSkillUpdate"
-import RuntimeError = WebAssembly.RuntimeError
+import {ApiSkillUpdate} from "../ApiSkillUpdate";
+import {AuthService} from "../../auth/auth-service";
 
 
 @Injectable({
@@ -13,8 +13,8 @@ import RuntimeError = WebAssembly.RuntimeError
 })
 export class RichSkillService extends AbstractService {
 
-  constructor(httpClient: HttpClient) {
-    super(httpClient)
+  constructor(httpClient: HttpClient, authService: AuthService) {
+    super(httpClient, authService)
   }
 
   private serviceUrl = "api/skills"

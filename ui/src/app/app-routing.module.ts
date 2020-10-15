@@ -1,7 +1,7 @@
 import {NgModule} from "@angular/core"
 import {Routes, RouterModule} from "@angular/router"
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
-import {RichSkillsComponent} from "./richskill/list/rich-skills.component"
+import {RichSkillsComponent} from "./richskill/library/rich-skills.component"
 import {RichSkillFormComponent, SkillFormDirtyGuard} from "./richskill/form/rich-skill-form.component"
 import {LoginSuccessComponent} from "./auth/login-success.component"
 import {LogoutComponent} from "./auth/logout.component"

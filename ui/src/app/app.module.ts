@@ -27,6 +27,9 @@ import {ActionBarVerticalComponent} from "./richskill/action-bar/action-bar-vert
 import {DetailCardComponent} from "./detail-card/detail-card.component"
 import {DetailCardSectionComponent} from "./detail-card/section/section.component"
 import {ActionBarHorizontalComponent} from "./richskill/action-bar/action-bar-horizontal/action-bar-horizontal.component"
+import {ServerErrorComponent} from "./loading/server-error.component";
+import { CommonModule } from '@angular/common';
+
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -45,6 +48,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     FormFieldTextArea,
     LoadingComponent,
     LoadingObservablesDirective,
+    ServerErrorComponent,
     CommoncontrolsComponent,
     CommoncontrolsMobileComponent,
     HeaderComponent,
@@ -61,6 +65,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
+    CommonModule
   ],
   providers: [
     Title,

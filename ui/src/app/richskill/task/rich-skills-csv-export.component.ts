@@ -1,13 +1,12 @@
 import { Component, OnInit } from "@angular/core"
 import { TaskService } from "../../task/task-service"
 import { ITaskResponse } from "../../task/TaskInProgress"
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver"
 
 
 @Component({
   selector: "app-richskills-csv-export",
-  templateUrl: "./rich-skills-csv-export.component.html",
-  styleUrls: ["./rich-skills-csv-export.component.css"]
+  templateUrl: "./rich-skills-csv-export.component.html"
 })
 export class RichSkillsCsvExportComponent implements OnInit {
 

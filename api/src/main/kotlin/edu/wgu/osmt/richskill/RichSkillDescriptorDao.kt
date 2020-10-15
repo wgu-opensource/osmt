@@ -1,11 +1,13 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.collection.CollectionDao
+import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.db.OutputsModel
 import edu.wgu.osmt.db.PublishStatusDetails
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
+import edu.wgu.osmt.keyword.KeywordTypeEnum
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -40,7 +42,7 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
             id = id.value,
             creationDate = creationDate,
             updateDate = updateDate,
-            uuid = UUID.fromString(uuid),
+            uuid = uuid,
             name = name,
             statement = statement,
             jobCodes = jobCodes.map { it.toModel() },
@@ -48,9 +50,28 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
             category = category?.toModel(),
             author = author?.toModel(),
             archiveDate = archiveDate,
-            publishDate = publishDate
+            publishDate = publishDate,
+            collectionIds = collections.map { it.id.value }.toSet()
         )
-        rsd.collections = collections.map{it.toModel()}
         return rsd
+    }
+
+    fun toDoc(): RichSkillDoc {
+        return RichSkillDoc(
+            id = id.value,
+            uuid = uuid,
+            name = name,
+            statement = statement,
+            category = category?.value,
+            author = author?.value,
+            publishStatus = publishStatus(),
+            searchingKeywords = keywords.filter { it.type == KeywordTypeEnum.Keyword }.mapNotNull { it.value },
+            jobCodes = jobCodes.map { it.toDoc() },
+            standards = keywords.filter { it.type == KeywordTypeEnum.Standard }.mapNotNull { it.value },
+            certifications = keywords.filter { it.type == KeywordTypeEnum.Certification }.mapNotNull { it.value },
+            employers = keywords.filter { it.type == KeywordTypeEnum.Employer }.mapNotNull { it.value },
+            alignments = keywords.filter { it.type == KeywordTypeEnum.Alignment }.mapNotNull { it.value },
+            collections = collections.map { it.toDoc(embedded = true) }
+        )
     }
 }

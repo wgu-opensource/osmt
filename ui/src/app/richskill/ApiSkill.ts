@@ -1,4 +1,4 @@
-import {IJobCode} from "../jobcode/Jobcode"
+import {IJobCode} from "../job-codes/Jobcode"
 import {PublishStatus} from "../PublishStatus"
 
 
@@ -22,8 +22,10 @@ export class ApiNamedReference {
 export interface ISkill {
   id: string
   uuid: string
-  creationDate?: string
-  updateDate?: string
+  creationDate: string
+  updateDate: string
+  archiveDate?: string
+  publishDate?: string
   type: string
   status: PublishStatus
   skillName: string
@@ -44,6 +46,8 @@ export class ApiSkill {
   uuid: string
   creationDate?: Date = undefined
   updateDate?: Date = undefined
+  publishDate?: Date = undefined
+  archiveDate?: Date = undefined
   type: string
   status: PublishStatus
   skillName: string
@@ -66,6 +70,12 @@ export class ApiSkill {
     }
     if (iRichSkill.updateDate) {
       this.updateDate = new Date(iRichSkill.updateDate)
+    }
+    if (iRichSkill.publishDate) {
+      this.publishDate = new Date(iRichSkill.publishDate)
+    }
+    if (iRichSkill.archiveDate) {
+      this.archiveDate = new Date(iRichSkill.archiveDate)
     }
     this.skillName = iRichSkill.skillName
     this.skillStatement = iRichSkill.skillStatement

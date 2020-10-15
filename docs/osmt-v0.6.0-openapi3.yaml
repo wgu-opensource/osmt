@@ -30,12 +30,11 @@ paths:
           name: status
           schema:
             default:
-              - draft
-              - published
+              - Unpublished
+              - Published
             type: array
             items:
-              type: string
-              enum: ["draft","published","archived"]
+              $ref: '#/components/schemas/PublishStatus'
         - in: query
           name: sort
           schema:
@@ -94,12 +93,11 @@ paths:
           name: status
           schema:
             default:
-              - draft
-              - published
+              - Unpublished
+              - Published
             type: array
             items:
-              type: string
-              enum: ["draft","published","archived"]
+              $ref: '#/components/schemas/PublishStatus'
         - in: query
           name: sort
           schema:
@@ -283,12 +281,11 @@ paths:
           name: status
           schema:
             default:
-              - draft
-              - published
+              - Unpublished
+              - Published
             type: array
             items:
-              type: string
-              enum: ["draft","published","archived"]
+              $ref: '#/components/schemas/PublishStatus'
         - in: query
           name: sort
           schema:
@@ -349,12 +346,11 @@ paths:
           name: status
           schema:
             default:
-              - draft
-              - published
+              - Unpublished
+              - Published
             type: array
             items:
-              type: string
-              enum: ["draft","published","archived"]
+              $ref: '#/components/schemas/PublishStatus'
         - in: query
           name: sort
           schema:
@@ -588,10 +584,8 @@ components:
           format: uri
           readOnly: true
         status:
-          type: string
-          enum: ["draft","published","archived"]
-          default: draft
-        skillName: 
+          $ref: '#/components/schemas/PublishStatus'
+        skillName:
           type: string
         skillStatement:
           type: string
@@ -627,6 +621,18 @@ components:
             $ref: '#/components/schemas/NamedReference'
         author:
           $ref: '#/components/schemas/NamedReference'
+        creationDate:
+          type: string
+          format: date-time
+        updateDate:
+          type: string
+          format: date-time
+        publishDate:
+          type: string
+          format: date-time
+        archiveDate:
+          type: string
+          format: date-time
       example:
         id: https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac
         type: RichSkillDescriptor
@@ -681,9 +687,7 @@ components:
           type: string
           format: uuid
         status:
-          type: string
-          enum: ["draft","published","archived"]
-          default: draft
+          $ref: '#/components/schemas/PublishStatus'
         skillName:
           type: string
         skillStatement:
@@ -706,8 +710,7 @@ components:
         skillStatement:
           type: string
         status:
-          type: string
-          enum: ["draft","published","archived"]
+          $ref: '#/components/schemas/PublishStatus'
         category:
           type: string
         collections:
@@ -854,6 +857,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NamedReference'
+
+    PublishStatus:
+      type: string
+      enum:
+        - Unpublished
+        - Published
+        - Archived
 
 
     TaskResult:

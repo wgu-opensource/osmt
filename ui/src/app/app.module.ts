@@ -15,14 +15,18 @@ import {FormFieldTextArea} from "./form/form-field-textarea.component"
 import {LoadingObservablesDirective} from "./loading/loading-observables.directive"
 import {LoadingComponent} from "./loading/loading.component"
 import {FormFieldSubmit} from "./form/form-field-submit.component"
-import {CommoncontrolsComponent} from "./navigation/commoncontrols.component"
 import {HeaderComponent} from "./navigation/header.component"
 import {FooterComponent} from "./navigation/footer.component"
-import {CommoncontrolsMobileComponent} from "./navigation/commoncontrols-mobile.component";
 import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component";
 import {ToastComponent} from "./toast/toast.component";
 import {AuthService} from "./auth/auth-service";
 import {AuthGuard} from "./auth/auth.guard";
+import {CommoncontrolsComponent} from "./navigation/commoncontrols.component"
+import {CommoncontrolsMobileComponent} from "./navigation/commoncontrols-mobile.component"
+import {ActionBarVerticalComponent} from "./richskill/action-bar/action-bar-vertical/action-bar-vertical.component"
+import {DetailCardComponent} from "./detail-card/detail-card.component"
+import {DetailCardSectionComponent} from "./detail-card/section/section.component"
+import {ActionBarHorizontalComponent} from "./richskill/action-bar/action-bar-horizontal/action-bar-horizontal.component"
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -47,6 +51,10 @@ export function initializeApp(appConfig: AppConfig): () => void {
     FooterComponent,
     SkillCollectionsDisplayComponent,
     ToastComponent,
+    ActionBarVerticalComponent,
+    DetailCardComponent,
+    DetailCardSectionComponent,
+    ActionBarHorizontalComponent,
   ],
   imports: [
     BrowserModule,

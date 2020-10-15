@@ -14,19 +14,16 @@ import org.valiktor.validate
 import java.time.LocalDateTime
 import java.util.*
 
-
 data class Collection(
     override val id: Long?,
     override val creationDate: LocalDateTime,
     override val updateDate: LocalDateTime,
-    val uuid: UUID,
+    val uuid: String,
     val name: String,
     val author: Keyword? = null,
-    val skills: List<RichSkillDescriptor> = listOf(),
     override val archiveDate: LocalDateTime? = null,
     override val publishDate: LocalDateTime? = null
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
-
 }
 
 data class CollectionUpdateObject(
@@ -34,7 +31,7 @@ data class CollectionUpdateObject(
     val name: String? = null,
     val author: NullableFieldUpdate<KeywordDao>? = null,
     val skills: ListFieldUpdate<RichSkillDescriptorDao>? = null,
-    override val publishStatus: PublishStatus?
+    override val publishStatus: PublishStatus? = null
 ) : UpdateObject<CollectionDao>, HasPublishStatus {
     init {
         validate(this) {
@@ -55,7 +52,7 @@ data class CollectionUpdateObject(
     fun compareAuthor(that: CollectionDao): JSONObject? {
         return author?.let {
             if (that.author?.value?.let { id } != it.t?.id?.value) {
-                jsonUpdateStatement(that.name, that.author?.let { it.value }, it.t?.value)
+                jsonUpdateStatement(that::author.name, that.author?.let { it.value }, it.t?.value)
             } else null
         }
     }
@@ -66,7 +63,21 @@ data class CollectionUpdateObject(
         }
     }
 
+    fun compareSkills(that: CollectionDao): JSONObject? {
+        val added = skills?.add?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
+        val removed = skills?.remove?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
+        val addedPair = added?.let { "added" to it }
+        val removedPair = removed?.let { "removed" to it }
+        val operationsList = listOfNotNull(addedPair, removedPair).toTypedArray()
+
+        return if (added?.isNotEmpty() == true or (removed?.isNotEmpty() == true)) {
+            JSONObject(mutableMapOf(that::skills.name to mutableMapOf(*operationsList)))
+        } else {
+            null
+        }
+    }
+
     override val comparisonList: List<(t: CollectionDao) -> JSONObject?> =
-        listOf(::compareName, ::compareAuthor, ::comparePublishStatus)
+        listOf(::compareName, ::compareAuthor, ::comparePublishStatus, ::compareSkills)
 }
 

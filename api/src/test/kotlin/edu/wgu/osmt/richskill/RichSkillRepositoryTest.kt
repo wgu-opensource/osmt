@@ -1,6 +1,7 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiReferenceListUpdate
 import edu.wgu.osmt.api.model.ApiSkillUpdate
@@ -15,22 +16,12 @@ import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.collection.Collection
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
-@SpringBootTest
-@ActiveProfiles("test,apiserver")
-@ConfigurationPropertiesScan("edu.wgu.osmt.config")
-@ContextConfiguration
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
-class RichSkillRepositoryTest: BaseDockerizedTest() {
+class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
 
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository
@@ -116,7 +107,7 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
         }
     }
 
-    fun assertThatCollectionsMatchStringList(collections: List<Collection>, stringList: ApiStringListUpdate) {
+    fun assertThatCollectionsMatchStringList(collections: Set<Collection>, stringList: ApiStringListUpdate) {
         stringList.add?.forEach { str ->
             assertThat(collections.find { it.name == str }).isNotNull
         }
@@ -150,7 +141,9 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
         }
     }
 
-    fun assertThatRichSkillMatchesApiSkillUpdate(skill: RichSkillDescriptor, apiObj: ApiSkillUpdate) {
+    fun assertThatRichSkillMatchesApiSkillUpdate(rsc: RichSkillAndCollections, apiObj: ApiSkillUpdate) {
+        val skill = rsc.rs
+
         assertThat(skill.name).isEqualTo(apiObj.skillName)
         assertThat(skill.statement).isEqualTo(apiObj.skillStatement)
 
@@ -169,7 +162,7 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
 
         assertThatJobCodesMatchStringList(skill.jobCodes, apiObj.occupations!!)
 
-        assertThatCollectionsMatchStringList(skill.collections, apiObj.collections!!)
+        assertThatCollectionsMatchStringList(rsc.collections, apiObj.collections!!)
 
         assertThat(skill.publishStatus()).isEqualTo(apiObj.publishStatus)
     }
@@ -192,8 +185,7 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
 
         val updatedDao = richSkillRepository.updateFromApi(originalSkillDao.id.value, newSkillUpdate, userString)
         assertThat(updatedDao).isNotNull
-        val updated = updatedDao!!.toModel()
-        assertThatRichSkillMatchesApiSkillUpdate(updated, newSkillUpdate)
+        assertThatRichSkillMatchesApiSkillUpdate(RichSkillAndCollections.fromDao(updatedDao!!), newSkillUpdate)
     }
 
     @Test
@@ -204,9 +196,9 @@ class RichSkillRepositoryTest: BaseDockerizedTest() {
         val results: List<RichSkillDescriptorDao> = richSkillRepository.createFromApi(skillUpdates, userString)
 
         results.forEachIndexed { i, skillDao ->
-            val skill = skillDao.toModel()
+            val skillAndCollections = RichSkillAndCollections.fromDao(skillDao)
             val apiObj = skillUpdates[i]
-            assertThatRichSkillMatchesApiSkillUpdate(skill, apiObj)
+            assertThatRichSkillMatchesApiSkillUpdate(skillAndCollections, apiObj)
         }
     }
 

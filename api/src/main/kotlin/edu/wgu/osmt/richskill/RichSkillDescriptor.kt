@@ -5,7 +5,6 @@ import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import net.minidev.json.JSONObject
-import org.springframework.data.elasticsearch.annotations.Document
 import org.valiktor.functions.isEqualTo
 import org.valiktor.validate
 import java.time.LocalDateTime
@@ -18,23 +17,21 @@ import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
 import org.valiktor.functions.isNotEqualTo
 
-@Document(indexName = "richskillrepository", createIndex = true)
 data class RichSkillDescriptor(
     override val id: Long?,
     override val creationDate: LocalDateTime,
     override val updateDate: LocalDateTime,
-    val uuid: UUID,
+    val uuid: String,
     val name: String,
     val statement: String,
     val jobCodes: List<JobCode> = listOf(),
-    private val keywords: List<Keyword> = listOf(),
+    val keywords: List<Keyword> = listOf(),
     val category: Keyword? = null,
     val author: Keyword? = null,
     override val archiveDate: LocalDateTime? = null,
-    override val publishDate: LocalDateTime? = null
+    override val publishDate: LocalDateTime? = null,
+    val collectionIds: Set<Long> = setOf()
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
-
-    var collections: List<Collection> = listOf()
 
     // Keyword collections
     val certifications: List<Keyword>
@@ -59,7 +56,7 @@ data class RichSkillDescriptor(
             val now = LocalDateTime.now(ZoneOffset.UTC)
             return RichSkillDescriptor(
                 id = null,
-                uuid = UUID.randomUUID(),
+                uuid = UUID.randomUUID().toString(),
                 name = name,
                 statement = statement,
                 creationDate = now,

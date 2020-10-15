@@ -4,8 +4,7 @@ import {ApiSkill} from "../ApiSkill"
 
 @Component({
   selector: "app-rich-skills",
-  templateUrl: "./rich-skills.component.html",
-  styleUrls: ["./rich-skills.component.css"]
+  templateUrl: "./rich-skills.component.html"
 })
 export class RichSkillsComponent implements OnInit {
 

@@ -3,14 +3,17 @@ package edu.wgu.osmt.api.model
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.richskill.RichSkillDescriptor
 import net.minidev.json.JSONObject
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
-class ApiSkill(private val rsd: RichSkillDescriptor, private val appConfig: AppConfig) {
-
-    // TODO include view of collection
+class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collection>, private val appConfig: AppConfig) {
 
     @JsonProperty("@context")
     val context = "https://rsd.osmt.dev/context-v1.json"
@@ -27,12 +30,24 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val appConfig: AppC
         get() = rsd.author?.let { ApiNamedReference.fromKeyword(it) }
 
     @get:JsonProperty
-    val creationDate: LocalDateTime
-        get() = rsd.creationDate
+    val status: PublishStatus
+        get() = rsd.publishStatus()
 
     @get:JsonProperty
-    val updateDate: LocalDateTime
-        get() = rsd.updateDate
+    val creationDate: ZonedDateTime
+        get() = rsd.creationDate.atZone(ZoneId.of("UTC"))
+
+    @get:JsonProperty
+    val updateDate: ZonedDateTime
+        get() = rsd.updateDate.atZone(ZoneId.of("UTC"))
+
+    @get:JsonProperty
+    val publishDate: ZonedDateTime?
+        get() = rsd.publishDate?.atZone(ZoneId.of("UTC"))
+
+    @get:JsonProperty
+    val archiveDate: ZonedDateTime?
+        get() = rsd.archiveDate?.atZone(ZoneId.of("UTC"))
 
     @get:JsonProperty
     val skillName: String
@@ -82,7 +97,13 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val appConfig: AppC
 
     @get:JsonProperty
     val collections: List<String>
-        get() = rsd.collections.map { it.name }
+        get() = cs.map { it.name }
+
+    companion object {
+        fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkill{
+            return ApiSkill(rsdDao.toModel(), rsdDao.collections.map{ it.toModel() }.toSet(), appConfig)
+        }
+    }
 }
 
 

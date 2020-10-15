@@ -1,16 +1,12 @@
 package edu.wgu.osmt.jobcode
 
 import edu.wgu.osmt.db.DatabaseData
-import edu.wgu.osmt.db.HasUpdateDate
-import edu.wgu.osmt.db.NullableFieldUpdate
-import edu.wgu.osmt.db.UpdateObject
-import net.minidev.json.JSONObject
 import org.springframework.data.elasticsearch.annotations.Document
+import org.springframework.data.elasticsearch.annotations.Field
+import org.springframework.data.elasticsearch.annotations.FieldType
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-
-@Document(indexName = "jobCode", createIndex = true)
 data class JobCode(
     override val id: Long?,
     override val creationDate: LocalDateTime,

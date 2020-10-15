@@ -10,7 +10,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
+import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 
 class FormValidationException(override val message: String, val errors:List<ApiFieldError>): Exception(message)
@@ -35,9 +38,21 @@ class ApiErrorHandler : ResponseEntityExceptionHandler() {
         return ResponseEntity(apiError, status)
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(FormValidationException::class)
     fun handleFormValidationException(ex: FormValidationException): ResponseEntity<Any> {
         val apiError = ApiError(ex.message, ex.errors)
         return ResponseEntity(apiError, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(ResponseStatusException::class)
+    fun handleResponseStatus(ex: ResponseStatusException): ResponseEntity<Any> {
+        val apiError = ApiError(ex.status.toString())
+        return ResponseEntity(apiError, ex.status)
+    }
+
+    @ExceptionHandler(Exception::class)
+    fun handleResponseStatus(ex: Exception, request: HttpServletRequest?, response: HttpServletResponse?): ResponseEntity<Any> {
+        val apiError = ApiError(ex.message ?: "500 INTERNAL_SERVER_ERROR")
+        return ResponseEntity(apiError, HttpStatus.INTERNAL_SERVER_ERROR)
     }
 }

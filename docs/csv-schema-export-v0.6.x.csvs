@@ -1,0 +1,24 @@
+version 1.1
+
+@totalColumns 11
+@ignoreColumnNameCase
+
+Canonical URL:          notEmpty
+Skill Name:             notEmpty
+Skill Statement:        notEmpty
+Skill Category:         @optional
+Author:                 @optional
+Collections:            @optional   // multiple items can be separated by ";"
+Keywords:               @optional   // multiple items can be separated by ";"
+Major Occupations:      @optional   // multiple items can be separated by ";"
+Minor Occupations:      @optional   // multiple items can be separated by ";"
+Broad Occupations:      @optional   // multiple items can be separated by ";"
+Detailed Occupations:   @optional   // multiple items can be separated by ";"
+Job Roles:              @optional   // multiple items can be separated by ";"
+Standards:              @optional   // multiple items can be separated by ";"
+Certifications:         @optional   // multiple items can be separated by ";"
+Employers:              @optional   // multiple items can be separated by ";"
+Alignment Title:        @optional
+Alignment:              regex("^http") @optional
+
+

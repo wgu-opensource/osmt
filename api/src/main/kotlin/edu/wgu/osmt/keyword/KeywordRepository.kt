@@ -1,7 +1,7 @@
 package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.elasticsearch.EsKeywordRespository
+import edu.wgu.osmt.elasticsearch.EsKeywordRepository
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
@@ -24,6 +24,7 @@ interface KeywordRepository {
         value: String? = null,
         uri: String? = null
     ): KeywordDao?
+
     fun findOrCreate(
         type: KeywordTypeEnum,
         value: String? = null,
@@ -45,12 +46,12 @@ interface KeywordRepository {
 class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : KeywordRepository {
 
     @Autowired
-    lateinit var esKeywordRepository: EsKeywordRespository
+    lateinit var esKeywordRepository: EsKeywordRepository
 
     override val dao = KeywordDao.Companion
     override val table = KeywordTable
 
-    override fun findAll()  = dao.all()
+    override fun findAll() = dao.all()
 
     override fun findById(id: Long) = dao.findById(id)
 
@@ -59,7 +60,7 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
     }
 
     override fun getDefaultAuthor(): KeywordDao {
-        val authorUri:String? = if (appConfig.defaultAuthorUri.isBlank()) null else appConfig.defaultAuthorUri
+        val authorUri: String? = if (appConfig.defaultAuthorUri.isBlank()) null else appConfig.defaultAuthorUri
         return findOrCreate(KeywordTypeEnum.Author, appConfig.defaultAuthorName, authorUri)!!
     }
 
@@ -83,6 +84,6 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
             this.type = type
             this.value = value
             this.uri = uri
-        }.apply{esKeywordRepository.save(this.toModel())} else null
+        }.also { esKeywordRepository.save(it.toModel()) } else null
     }
 }

@@ -1,6 +1,8 @@
 package edu.wgu.osmt.collection
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import edu.wgu.osmt.db.PublishStatus
+import org.elasticsearch.common.Nullable
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.Document
 import org.springframework.data.elasticsearch.annotations.Field
@@ -8,7 +10,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType.*
 import org.springframework.data.elasticsearch.annotations.InnerField
 import org.springframework.data.elasticsearch.annotations.MultiField
 
-
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 @Document(indexName = "collection", createIndex = true)
 data class CollectionDoc(
     @Field(name = "db_id")
@@ -28,8 +30,14 @@ data class CollectionDoc(
     val publishStatus: PublishStatus,
 
     @Field(type = Keyword)
-    val skillIds: List<String>,
+    @Nullable
+    val skillIds: List<String>?,
 
     @Field
-    val skillCount: Int
+    @Nullable
+    val skillCount: Int?,
+
+    @Field
+    @Nullable
+    val author: String?
 )

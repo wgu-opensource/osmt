@@ -1,8 +1,10 @@
 package edu.wgu.osmt.jobcode
 
+import edu.wgu.osmt.elasticsearch.EsJobCodeRepository
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -19,11 +21,12 @@ interface JobCodeRepository {
 
 @Repository
 @Transactional
-class JobCodeRepositoryImpl : JobCodeRepository {
+class JobCodeRepositoryImpl @Autowired constructor(val esJobCodeRepository: EsJobCodeRepository) : JobCodeRepository {
     val dao = JobCodeDao.Companion
     override val table = JobCodeTable
 
-    override fun findAll() = dao.all().map { it.toModel()
+    override fun findAll() = dao.all().map {
+        it.toModel()
     }
 
     override fun findById(id: Long): JobCodeDao? = dao.findById(id)
@@ -42,6 +45,6 @@ class JobCodeRepositoryImpl : JobCodeRepository {
             creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.code = code
             this.framework = framework
-        }
+        }.also { esJobCodeRepository.save(it.toDoc()) }
     }
 }

@@ -1,11 +1,16 @@
 package edu.wgu.osmt.jobcode
 
+import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.Document
 import org.springframework.data.elasticsearch.annotations.Field
 import org.springframework.data.elasticsearch.annotations.FieldType
 
-@Document(indexName = "jobCode", createIndex = true)
+@Document(indexName = "jobcode", createIndex = true)
 data class JobCodeDoc(
+    @Field
+    @Id
+    val id: Long,
+
     @Field(type = FieldType.Keyword)
     val major: String? = null,             // bls major category name
 

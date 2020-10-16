@@ -146,8 +146,10 @@ class RichSkillRepositoryImpl @Autowired constructor(
                     )
                 )
         }
-        daoObject?.let { esRichSkillRepository.save(it.toDoc()) }
-        daoObject?.let { esCollectionRepository.saveAll(it.collections.map{it.toDoc()})}
+        daoObject?.let {
+            esCollectionRepository.saveAll(it.collections.map{it.toDoc()})
+            esRichSkillRepository.save(it.toDoc())
+        }
         return daoObject
     }
 

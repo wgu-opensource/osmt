@@ -3,7 +3,6 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.collection.CollectionDoc
 import org.elasticsearch.common.Nullable
 import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeDoc
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.*
@@ -13,7 +12,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType.*
 data class RichSkillDoc(
     @Field(name = "db_id")
     @Nullable
-    val id: Long?,
+    val id: Long,
 
     @Id
     @Field(type = Text)
@@ -46,7 +45,7 @@ data class RichSkillDoc(
     val publishStatus: PublishStatus,
 
     @Field(type = Text)
-    val searchingKeywords: List<String>,
+    val searchingKeywords: List<String> = listOf(),
 
     @Field(type = Object)
     val jobCodes: List<JobCodeDoc> = listOf(),
@@ -63,6 +62,6 @@ data class RichSkillDoc(
     @Field(type = Text)
     val alignments: List<String> = listOf(),
 
-    @Field(type = Object)
-    val collections: List<CollectionDoc>
+    @Field(type = Nested)
+    val collections: List<CollectionDoc> = listOf()
 )

@@ -15,6 +15,11 @@
             <url>https://repo.spring.io/release</url>
         </repository>
         <repository>
+            <id>spring-repo-milestone</id>
+            <name>Spring Repository Milestone</name>
+            <url>https://repo.spring.io/milestone</url>
+        </repository>
+        <repository>
             <id>jcenter</id>
             <name>jcenter</name>
             <url>https://jcenter.bintray.com</url>
@@ -67,8 +72,16 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-elasticsearch</artifactId>
+            <version>4.1.0-RC2</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>transport</artifactId>
+                    <groupId>org.elasticsearch.client</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.exposed</groupId>

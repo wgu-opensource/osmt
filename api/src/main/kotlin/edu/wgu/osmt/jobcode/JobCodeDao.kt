@@ -39,6 +39,7 @@ class JobCodeDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<JobCode> {
         )
 
     fun toDoc(): JobCodeDoc = JobCodeDoc(
+        id = id.value,
         major = major, minor = minor, broad = broad, detailed = detailed, code = code, name = name
     )
 }

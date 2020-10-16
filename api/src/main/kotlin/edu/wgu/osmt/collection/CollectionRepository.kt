@@ -64,7 +64,7 @@ class CollectionRepositoryImpl @Autowired constructor(
             this.uuid = UUID.randomUUID().toString()
             this.name = name
             this.author = authorKeyword
-        }
+        }.also { esCollectionRepository.save(it.toDoc()) }
     }
 
     fun applyUpdate(collectionDao: CollectionDao, updateObject: CollectionUpdateObject): Unit {

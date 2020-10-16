@@ -1,5 +1,6 @@
 package edu.wgu.osmt.collection
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import edu.wgu.osmt.db.PublishStatus
 import org.elasticsearch.common.Nullable
@@ -11,13 +12,15 @@ import org.springframework.data.elasticsearch.annotations.InnerField
 import org.springframework.data.elasticsearch.annotations.MultiField
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
-@Document(indexName = "collection", createIndex = true)
+@Document(indexName = "collection_v1", createIndex = true)
 data class CollectionDoc(
     @Field(name = "db_id")
+    @get:JsonIgnore
     val id: Long,
 
     @Id
     @Field(type = Keyword)
+    @get:JsonIgnore
     val uuid: String,
 
     @MultiField(
@@ -31,6 +34,7 @@ data class CollectionDoc(
 
     @Field(type = Keyword)
     @Nullable
+    @get:JsonIgnore
     val skillIds: List<String>?,
 
     @Field
@@ -39,5 +43,6 @@ data class CollectionDoc(
 
     @Field
     @Nullable
+    @get:JsonIgnore
     val author: String?
 )

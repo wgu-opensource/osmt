@@ -41,6 +41,7 @@
         <kotlin.code.style>official</kotlin.code.style>
         <start-class>edu.wgu.osmt.ApplicationKt</start-class>
         <testcontainers.version>1.15.0-rc2</testcontainers.version>
+        <spring-data-elasticsearch.version>4.1.0-RC2</spring-data-elasticsearch.version>
     </properties>
 
     <dependencies>
@@ -74,14 +75,8 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-elasticsearch</artifactId>
-            <version>4.1.0-RC2</version>
+            <version>${spring-data-elasticsearch.version}</version>
             <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>transport</artifactId>
-                    <groupId>org.elasticsearch.client</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.exposed</groupId>

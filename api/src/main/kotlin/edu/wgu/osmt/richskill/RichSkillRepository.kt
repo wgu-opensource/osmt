@@ -10,6 +10,7 @@ import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.collection.CollectionSkills
+import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.PublishStatus
@@ -52,7 +53,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
     val keywordRepository: KeywordRepository,
     val collectionRepository: CollectionRepository,
     val esRichSkillRepository: EsRichSkillRepository,
-    val esCollectionRepository: EsCollectionRepository
+    val esCollectionRepository: EsCollectionRepository,
+    val appConfig: AppConfig
 ) :
     RichSkillRepository {
     override val dao = RichSkillDescriptorDao.Companion
@@ -96,18 +98,18 @@ class RichSkillRepositoryImpl @Autowired constructor(
         updateObject.keywords?.let {
 
             it.add?.forEach { keyword ->
-                richSkillKeywordTable.create(richSkillId = updateObject.id!!, keywordId = keyword.id.value!!)
+                richSkillKeywordTable.create(richSkillId = updateObject.id!!, keywordId = keyword.id.value)
             }
 
             it.remove?.forEach { keyword ->
-                richSkillKeywordTable.delete(richSkillId = updateObject.id!!, keywordId = keyword.id.value!!)
+                richSkillKeywordTable.delete(richSkillId = updateObject.id!!, keywordId = keyword.id.value)
             }
         }
 
         // update jobcodes
         updateObject.jobCodes?.let {
             it.add?.forEach { jobCode ->
-                richSkillJobCodeTable.create(richSkillId = updateObject.id!!, jobCodeId = jobCode.id.value!!)
+                richSkillJobCodeTable.create(richSkillId = updateObject.id!!, jobCodeId = jobCode.id.value)
             }
             it.remove?.forEach { jobCode ->
                 richSkillJobCodeTable.delete(richSkillId = updateObject.id!!, jobCodeId = jobCode.id.value!!)
@@ -148,7 +150,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         }
         daoObject?.let {
             esCollectionRepository.saveAll(it.collections.map{it.toDoc()})
-            esRichSkillRepository.save(it.toDoc())
+            esRichSkillRepository.save(RichSkillDoc.fromDao(it, appConfig))
         }
         return daoObject
     }

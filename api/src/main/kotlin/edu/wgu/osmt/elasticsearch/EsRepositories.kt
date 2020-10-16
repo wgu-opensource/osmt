@@ -2,7 +2,7 @@ package edu.wgu.osmt.elasticsearch
 
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.elasticsearch.SearchService.Companion.DEFAULT_PAGESIZE
-import edu.wgu.osmt.jobcode.JobCodeDoc
+import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDoc
@@ -19,7 +19,7 @@ interface EsRichSkillRepository : ElasticsearchRepository<RichSkillDoc, Int> {
     ): Page<RichSkillDoc>
 }
 
-interface EsJobCodeRepository : ElasticsearchRepository<JobCodeDoc, Int>
+interface EsJobCodeRepository : ElasticsearchRepository<JobCode, Int>
 
 interface EsKeywordRepository : ElasticsearchRepository<Keyword, Int> {
     fun findByValueAndType(value: String, type: KeywordTypeEnum): Keyword

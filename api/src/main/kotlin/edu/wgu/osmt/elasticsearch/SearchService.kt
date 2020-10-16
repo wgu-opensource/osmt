@@ -48,7 +48,7 @@ class SearchService @Autowired constructor(
             RichSkillDoc::category.name,
             RichSkillDoc::statement.name,
             RichSkillDoc::searchingKeywords.name,
-            "${RichSkillDoc::jobCodes.name}.${JobCodeDoc::code.name}",
+            "${RichSkillDoc::jobCodes.name}.${JobCode::code.name}",
             RichSkillDoc::standards.name,
             RichSkillDoc::certifications.name,
             RichSkillDoc::employers.name,
@@ -190,7 +190,7 @@ class SearchService @Autowired constructor(
         return elasticsearchRestTemplate.search(
             NativeSearchQueryBuilder().withQuery(
                 termsQuery(
-                    CollectionDoc::uuid.name,
+                    "_id",
                     (innerHitCollectionUuids + collectionMultiPropertyResults).distinct()
                 )
             ).withFilter(filter).withPageable(pageable).build(), CollectionDoc::class.java

@@ -3,7 +3,6 @@ package edu.wgu.osmt.jobcode
 import edu.wgu.osmt.elasticsearch.EsJobCodeRepository
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -45,6 +44,6 @@ class JobCodeRepositoryImpl @Autowired constructor(val esJobCodeRepository: EsJo
             creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.code = code
             this.framework = framework
-        }.also { esJobCodeRepository.save(it.toDoc()) }
+        }.also { esJobCodeRepository.save(it.toModel()) }
     }
 }

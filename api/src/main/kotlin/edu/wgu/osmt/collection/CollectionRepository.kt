@@ -4,10 +4,12 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
+import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.elasticsearch.EsCollectionRepository
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
+import edu.wgu.osmt.richskill.RichSkillDoc
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,7 +38,8 @@ class CollectionRepositoryImpl @Autowired constructor(
     val keywordRepository: KeywordRepository,
     val auditLogRepository: AuditLogRepository,
     val esRichSkillRepository: EsRichSkillRepository,
-    val esCollectionRepository: EsCollectionRepository
+    val esCollectionRepository: EsCollectionRepository,
+    val appConfig: AppConfig
 ) : CollectionRepository {
     override val table = CollectionTable
     override val dao = CollectionDao.Companion
@@ -106,7 +109,7 @@ class CollectionRepositoryImpl @Autowired constructor(
 
             // reindex elastic search documents
             esCollectionRepository.save(it.toDoc())
-            esRichSkillRepository.saveAll(it.skills.map { skill -> skill.toDoc() })
+            esRichSkillRepository.saveAll(it.skills.map { skill -> RichSkillDoc.fromDao(skill, appConfig) })
         }
 
         changes?.let { it ->

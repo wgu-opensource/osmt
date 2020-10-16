@@ -793,6 +793,8 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/PublishStatus'
+        author:
+          $ref: '#/components/schemas/NamedReference'
         skills:
           $ref: '#/components/schemas/StringListUpdate'
 

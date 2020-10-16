@@ -28,7 +28,7 @@ data class Collection(
 }
 
 data class CollectionUpdateObject(
-    override val id: Long,
+    override val id: Long? = null,
     val name: String? = null,
     val author: NullableFieldUpdate<KeywordDao>? = null,
     val skills: ListFieldUpdate<RichSkillDescriptorDao>? = null,

@@ -5,15 +5,15 @@
       <span class="button-x-text">Add to Collection</span>
     </button>
   </div>
-  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onEdit()">
-    <button class="m-buttonText m-buttonText-icon">
+  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop">
+    <button class="m-buttonText m-buttonText-icon" routerLink="../edit">
       <svg class="button-x-icon t-icon">
         <use [attr.xlink:href]="editIcon"></use>
       </svg>
       <span class="button-x-text">Edit</span>
     </button>
   </div>
-  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onDuplicate()">
+  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop">
     <button class="m-buttonText m-buttonText-icon">
       <svg class="button-x-icon t-icon">
         <use [attr.xlink:href]="duplicateIcon"></use>
@@ -21,15 +21,15 @@
       <span class="button-x-text">Duplicate</span>
     </button>
   </div>
-  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onPublish()">
-    <button class="m-buttonText m-buttonText-icon">
+  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop">
+    <button class="m-buttonText m-buttonText-icon" [routerLink]="publishLinkDestination()">
       <svg class="button-x-icon t-icon">
         <use [attr.xlink:href]="publishIcon"></use>
       </svg>
-      <span class="button-x-text">Publish</span>
+      <span class="button-x-text">{{publishLinkText()}}</span>
     </button>
   </div>
-  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop" (click)="onArchive()">
+  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop">
     <button class="m-buttonText m-buttonText-icon">
       <svg class="button-x-icon t-icon">
         <use [attr.xlink:href]="archiveIcon"></use>

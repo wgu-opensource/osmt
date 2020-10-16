@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core"
-import {Whitelabelled} from "../../whitelabel";
-import {AuthService} from "../auth/auth-service";
-import {Router} from "@angular/router";
-import {AppConfig} from "../app.config";
+import {Whitelabelled} from "../../whitelabel"
+import {AuthService} from "../auth/auth-service"
+import {Router} from "@angular/router"
+import {AppConfig} from "../app.config"
 
 @Component({
   selector: "app-header",

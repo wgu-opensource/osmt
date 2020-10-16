@@ -12,6 +12,8 @@ export class ManageSkillActionBarHorizontalComponent extends ManageRichSkillActi
 
   @Input() skillUuid = ""
   @Input() skillName = ""
+  @Input() archived = undefined
+  @Input() published = undefined
 
   // This gets mapped to a visually hidden textarea so that javascript has a node to copy from
   href = ""

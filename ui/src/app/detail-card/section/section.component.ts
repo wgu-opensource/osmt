@@ -1,8 +1,9 @@
-import { Component, Input, OnInit, ViewEncapsulation } from "@angular/core"
+import { Component, Input, OnInit } from "@angular/core"
 
 export interface IDetailCardSectionData {
   label: string
   bodyHtml: string
+  showIfEmpty: boolean
 }
 
 @Component({
@@ -22,7 +23,8 @@ export class DetailCardSectionComponent implements OnInit {
 
   @Input() data: IDetailCardSectionData = {
     label: "",
-    bodyHtml: ""
+    bodyHtml: "",
+    showIfEmpty: false
   }
 
   constructor() {}

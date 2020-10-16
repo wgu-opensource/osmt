@@ -3,13 +3,15 @@ import {RichSkillService} from "../../../service/rich-skill.service"
 import {ToastService} from "../../../../toast/toast.service"
 import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
 import {AppConfig} from "../../../../app.config"
-import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper";
+import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 
 @Component({template: ""})
 export abstract class ManageRichSkillActionBarComponent implements OnInit {
 
   abstract skillUuid: string
   abstract skillName: string
+  abstract archived: string | undefined
+  abstract published: string | undefined
 
   // Used in invisible labels to house the data to be added to clipboard
   abstract href: string
@@ -21,7 +23,6 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   publishIcon: string = SvgHelper.path(SvgIcon.PUBLISH)
   archiveIcon: string = SvgHelper.path(SvgIcon.ARCHIVE)
   dismissIcon: string = SvgHelper.path(SvgIcon.DISMISS)
-
 
   constructor(
     protected router: Router,
@@ -41,19 +42,15 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
 
   }
 
-  onEdit(): void {
-
+  publishLinkText(): string {
+    return this.isPublished() ? "View Published Skill" : "Publish"
   }
 
-  onDuplicate(): void {
-
+  publishLinkDestination(): string {
+    return this.isPublished() ? "../" : "" // TODO Implement
   }
 
-  onPublish(): void {
-
-  }
-
-  onArchive(): void {
-
-  }
+   private isPublished(): boolean {
+    return !!this.published
+   }
 }

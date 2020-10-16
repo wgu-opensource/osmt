@@ -1,5 +1,5 @@
 <nav class="l-flex l-flex-alignCenter t-elevation-large">
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onEdit()">
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" routerLink="../edit">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="editIcon"></use>
     </svg>
@@ -10,7 +10,7 @@
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
   </div>
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onDuplicate()">
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="duplicateIcon"></use>
     </svg>
@@ -21,7 +21,7 @@
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
   </div>
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onPublish()">
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="publishIcon"></use>
     </svg>
@@ -32,7 +32,7 @@
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
   </div>
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onArchive()">
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="archiveIcon"></use>
     </svg>
@@ -43,7 +43,7 @@
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
   </div>
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal" (click)="onAddToCollection()">
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="dismissIcon"></use>
     </svg>

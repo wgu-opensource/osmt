@@ -14,6 +14,8 @@ export class ManageSkillActionBarVerticalComponent extends ManageRichSkillAction
 
   @Input() skillUuid = ""
   @Input() skillName = ""
+  @Input() archived = undefined
+  @Input() published = undefined
 
   href = ""
   jsonClipboard = ""

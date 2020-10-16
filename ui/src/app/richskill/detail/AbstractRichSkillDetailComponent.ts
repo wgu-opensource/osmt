@@ -40,6 +40,8 @@ export abstract class AbstractRichSkillDetailComponent implements OnInit {
     )
   }
 
+  abstract getCardFormat(): IDetailCardSectionData[]
+
   getAuthor(): string {
     return this.richSkill?.author?.name ?? ""
   }
@@ -52,12 +54,16 @@ export abstract class AbstractRichSkillDetailComponent implements OnInit {
     return this.richSkill?.skillName ?? ""
   }
 
-  getPublishedDate(): string {
-    return this.getDateFormat(this.richSkill?.publishDate)
+  getPublishedDate(): string | undefined {
+    return this.richSkill?.publishDate
+      ? this.getDateFormat(this.richSkill?.publishDate)
+      : this.getDateFormat(new Date())
   }
 
-  getArchivedDate(): string {
-    return this.getDateFormat(this.richSkill?.archiveDate)
+  getArchivedDate(): string | undefined {
+    return this.richSkill?.archiveDate
+      ? this.getDateFormat(this.richSkill?.archiveDate)
+      : this.getDateFormat(new Date())
   }
 
   getDateFormat(date?: Date): string {
@@ -66,36 +72,6 @@ export abstract class AbstractRichSkillDetailComponent implements OnInit {
     } else {
       return ""
     }
-  }
-
-  getCardFormat(): IDetailCardSectionData[] {
-    return [
-      {
-        label: "Skill Statement",
-        bodyHtml: this.richSkill?.skillStatement ?? ""
-      }, {
-        label: "Category",
-        bodyHtml: this.richSkill?.category ?? ""
-      }, {
-        label: "Keywords",
-        bodyHtml: this.richSkill?.keywords?.join("; ") ?? ""
-      }, {
-        label: "Standards",
-        bodyHtml: this.richSkill?.standards?.join("; ") ?? ""
-      }, {
-        label: "Certifications",
-        bodyHtml: this.richSkill?.certifications?.join("; ") ?? ""
-      }, {
-        label: "Occupations",
-        bodyHtml: new OccupationsFormatter(this.richSkill?.occupations ?? []).html()
-      }, {
-        label: "Alignment",
-        bodyHtml: this.richSkill?.alignments?.map(alignment => alignment.name)?.join("; ") ?? ""
-      }, {
-        label: "Employers",
-        bodyHtml: this.richSkill?.employers?.map(employer => employer.name)?.join("; ") ?? ""
-      }
-    ]
   }
 
   joinKeywords(): string {
@@ -119,5 +95,13 @@ export abstract class AbstractRichSkillDetailComponent implements OnInit {
       .map(keyword => (keyword.name ? keyword.name : keyword.id) as string)
 
     return this.joinList(delimeter, filteredList)
+  }
+
+  protected formatAssociatedCollections(): string {
+    return this.richSkill?.collections
+      ?.map(standard => `<div>${standard}</div>`)
+      ?.join("<br>")
+      ?? ""
+
   }
 }

@@ -91,11 +91,10 @@ class CollectionRepositoryImpl @Autowired constructor(
         }
 
         val newCollection = dao.new {
-            this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
             this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.updateDate = this.creationDate
             this.uuid = UUID.randomUUID().toString()
-            this.name = name
+            this.name = updateObject.name
         }
 
         val updateWithIdAndAuthor = updateObject.copy(
@@ -211,7 +210,7 @@ class CollectionRepositoryImpl @Autowired constructor(
                 adding.addAll(it)
             }
 
-            slu.add?.mapNotNull {
+            slu.remove?.mapNotNull {
                 richSkillRepository.findByUUID(it)
             }?.let {
                 removing.addAll(it)

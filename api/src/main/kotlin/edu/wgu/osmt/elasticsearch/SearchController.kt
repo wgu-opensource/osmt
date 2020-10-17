@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.util.UriComponentsBuilder
 
 @Controller
 @Transactional
@@ -22,8 +23,8 @@ class SearchController @Autowired constructor(
 ) {
 
     @PostMapping(COLLECTIONS_SEARCH_PATH)
-    @ResponseBody()
-    fun searchCollections(
+    @ResponseBody
+    fun searchCollections(uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
         @RequestParam(
@@ -43,12 +44,18 @@ class SearchController @Autowired constructor(
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", searchHits.totalHits.toString())
 
+        // build up current uri with path and params
+        uriComponentsBuilder
+            .path(COLLECTIONS_SEARCH_PATH)
+            .queryParam(QueryParams.FROM, from)
+            .queryParam(QueryParams.SIZE, size)
+            .queryParam(QueryParams.SORT, sort)
+            .queryParam(QueryParams.STATUS, status.joinToString(",").toLowerCase())
+
         PaginatedLinks(
             pageable,
-            sort.toLowerCase(),
-            status.joinToString(",").toLowerCase(),
             searchHits.totalHits.toInt(),
-            COLLECTIONS_SEARCH_PATH
+            uriComponentsBuilder
         ).addToHeaders(responseHeaders)
 
         return ResponseEntity.status(200).headers(responseHeaders).body(searchHits.map { it.content }.toList())
@@ -56,7 +63,7 @@ class SearchController @Autowired constructor(
 
     @PostMapping(SKILL_SEARCH_PATH)
     @ResponseBody
-    fun searchSkills(
+    fun searchSkills(uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
         @RequestParam(
@@ -76,21 +83,25 @@ class SearchController @Autowired constructor(
             pageable
         )
 
+        // build up current uri with path and params
+        uriComponentsBuilder
+            .path(SKILL_SEARCH_PATH)
+            .queryParam(QueryParams.FROM, from)
+            .queryParam(QueryParams.SIZE, size)
+            .queryParam(QueryParams.SORT, sort)
+            .queryParam(QueryParams.STATUS, status.joinToString(",").toLowerCase())
 
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", searchHits.totalHits.toString())
 
-        val links = PaginatedLinks(
+        PaginatedLinks(
             pageable,
-            sort.toLowerCase(),
-            status.joinToString(",").toLowerCase(),
             searchHits.totalHits.toInt(),
-            SKILL_SEARCH_PATH
-        )
-        links.addToHeaders(responseHeaders)
+            uriComponentsBuilder
+        ).addToHeaders(responseHeaders)
 
-
-        return ResponseEntity.status(200).headers(responseHeaders).body(searchHits.map { it.content }.toList())
+        return ResponseEntity.status(200).headers(responseHeaders)
+            .body(searchHits.map { it.content }.toList())
     }
 
     companion object {
@@ -109,11 +120,9 @@ class SearchController @Autowired constructor(
 
 
 class PaginatedLinks(
-    val pageable: OffsetPageable,
-    val apiSort: String,
-    val apiPublishStatus: String,
-    val total: Int,
-    val basePath: String
+    pageable: OffsetPageable,
+    total: Int,
+    uriComponentsBuilder: UriComponentsBuilder
 ) {
     val QP = SearchController.Companion.QueryParams
     val hasPrevious = pageable.hasPrevious()
@@ -127,14 +136,14 @@ class PaginatedLinks(
         }
 
     val nextLink =
-        if (hasNext) "<${basePath}?${QP.FROM}=${pageable.offset + pageable.limit}&${QP.SIZE}=${pageable.limit}&${QP.STATUS}=${apiPublishStatus}&${QP.SORT}=${apiSort}>; rel=\"next\"" else null
+        if (hasNext) "<${uriComponentsBuilder.replaceQueryParam(QP.FROM, (pageable.offset + pageable.limit)).toUriString()}>; rel=\"next\"" else null
 
     val prevLink =
-        if (hasPrevious) "<${basePath}?${QP.FROM}=${previousOrLastOffset}&${QP.SIZE}=${pageable.limit}&${QP.STATUS}=${apiPublishStatus}&${QP.SORT}=${apiSort}>; rel=\"prev\"" else null
+        if (hasPrevious) "<${uriComponentsBuilder.replaceQueryParam(QP.FROM, previousOrLastOffset).toUriString()}>; rel=\"prev\"" else null
 
     fun addToHeaders(headers: HttpHeaders) {
-        val links = listOfNotNull(nextLink,prevLink)
-        if (links.isNotEmpty()){
+        val links = listOfNotNull(nextLink, prevLink)
+        if (links.isNotEmpty()) {
             headers.add("Link", links.joinToString(","))
         }
     }

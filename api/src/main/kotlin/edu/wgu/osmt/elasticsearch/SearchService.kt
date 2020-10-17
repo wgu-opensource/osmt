@@ -5,7 +5,6 @@ import edu.wgu.osmt.api.model.ApiSearchQuery
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
-import edu.wgu.osmt.jobcode.JobCodeDoc
 import edu.wgu.osmt.richskill.RichSkillDoc
 import org.apache.lucene.search.join.ScoreMode
 import org.elasticsearch.index.query.BoolQueryBuilder

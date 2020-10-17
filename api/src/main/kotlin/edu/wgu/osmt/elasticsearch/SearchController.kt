@@ -20,7 +20,8 @@ class SearchController @Autowired constructor(
     val elasticsearchService: SearchService,
     val appConfig: AppConfig
 ) {
-    @PostMapping("/api/collections/search")
+
+    @PostMapping(COLLECTIONS_SEARCH_PATH)
     @ResponseBody()
     fun searchCollections(
         @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,
@@ -42,10 +43,18 @@ class SearchController @Autowired constructor(
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", searchHits.totalHits.toString())
 
+        PaginatedLinks(
+            pageable,
+            sort.toLowerCase(),
+            status.joinToString(",").toLowerCase(),
+            searchHits.totalHits.toInt(),
+            COLLECTIONS_SEARCH_PATH
+        ).addToHeaders(responseHeaders)
+
         return ResponseEntity.status(200).headers(responseHeaders).body(searchHits.map { it.content }.toList())
     }
 
-    @PostMapping("/api/skills/search")
+    @PostMapping(SKILL_SEARCH_PATH)
     @ResponseBody
     fun searchSkills(
         @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,
@@ -59,7 +68,7 @@ class SearchController @Autowired constructor(
     ): HttpEntity<List<RichSkillDoc>> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val sortEnum = SortEnum.forApiValue(sort)
-        val pageable = OffsetPageable(from, size, sortEnum.sort)
+        val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum.sort)
 
         val searchHits = elasticsearchService.searchRichSkillsByApiSearchQuery(
             apiSearchQuery,
@@ -67,9 +76,66 @@ class SearchController @Autowired constructor(
             pageable
         )
 
+
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", searchHits.totalHits.toString())
 
+        val links = PaginatedLinks(
+            pageable,
+            sort.toLowerCase(),
+            status.joinToString(",").toLowerCase(),
+            searchHits.totalHits.toInt(),
+            SKILL_SEARCH_PATH
+        )
+        links.addToHeaders(responseHeaders)
+
+
         return ResponseEntity.status(200).headers(responseHeaders).body(searchHits.map { it.content }.toList())
+    }
+
+    companion object {
+        const val SKILL_SEARCH_PATH = "/api/skills/search"
+        const val COLLECTIONS_SEARCH_PATH = "/api/collections/search"
+
+        object QueryParams {
+            const val FROM = "from"
+            const val SIZE = "size"
+            const val STATUS = "status"
+            const val SORT = "sort"
+        }
+
+    }
+}
+
+
+class PaginatedLinks(
+    val pageable: OffsetPageable,
+    val apiSort: String,
+    val apiPublishStatus: String,
+    val total: Int,
+    val basePath: String
+) {
+    val QP = SearchController.Companion.QueryParams
+    val hasPrevious = pageable.hasPrevious()
+    val hasNext = total > pageable.offset + pageable.limit
+    val previousOrLastOffset: Int =
+        if (pageable.offset > total) {
+            val mod = (total % pageable.limit)
+            if (mod == 0) total - pageable.limit else total - mod
+        } else {
+            pageable.offset - pageable.limit
+        }
+
+    val nextLink =
+        if (hasNext) "<${basePath}?${QP.FROM}=${pageable.offset + pageable.limit}&${QP.SIZE}=${pageable.limit}&${QP.STATUS}=${apiPublishStatus}&${QP.SORT}=${apiSort}>; rel=\"next\"" else null
+
+    val prevLink =
+        if (hasPrevious) "<${basePath}?${QP.FROM}=${previousOrLastOffset}&${QP.SIZE}=${pageable.limit}&${QP.STATUS}=${apiPublishStatus}&${QP.SORT}=${apiSort}>; rel=\"prev\"" else null
+
+    fun addToHeaders(headers: HttpHeaders) {
+        val links = listOfNotNull(nextLink,prevLink)
+        if (links.isNotEmpty()){
+            headers.add("Link", links.joinToString(","))
+        }
     }
 }

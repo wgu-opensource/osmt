@@ -41,7 +41,7 @@ interface RichSkillRepository {
 
     fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao>
     fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String): RichSkillDescriptorDao?
-    fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate): RsdUpdateObject
+    fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject
 
 }
 
@@ -192,7 +192,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         // create records
         val newSkills = skillUpdates.map { update ->
-            val rsdUpdateObject = rsdUpdateFromApi(update)
+            val rsdUpdateObject = rsdUpdateFromApi(update, user)
             create(rsdUpdateObject, user)
         }
         return newSkills.filterNotNull()
@@ -208,14 +208,14 @@ class RichSkillRepositoryImpl @Autowired constructor(
             throw FormValidationException("Invalid SkillUpdateDescriptor", errors)
         }
 
-        val rsdUpdateObject = rsdUpdateFromApi(skillUpdate)
+        val rsdUpdateObject = rsdUpdateFromApi(skillUpdate, user)
         val updateObjectWithId = rsdUpdateObject.copy(
             id = existingSkillId
         )
         return update(updateObjectWithId, user)
     }
 
-    override fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate): RsdUpdateObject {
+    override fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject {
         val authorKeyword = skillUpdate.author?.let {
             keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it.name, uri = it.id)
         }
@@ -233,14 +233,14 @@ class RichSkillRepositoryImpl @Autowired constructor(
         val jobsToRemove = mutableListOf<JobCodeDao>()
 
         skillUpdate.collections?.let {slu ->
-            slu.add?.map {
-                collectionRepository.findByName(it) ?: collectionRepository.create(it)
+            slu.add?.mapNotNull {
+                collectionRepository.findByName(it) ?: collectionRepository.create(it, user)
             }?.let {
                 addingCollections.addAll(it)
             }
 
-            slu.remove?.map {
-                collectionRepository.findByName(it) ?: collectionRepository.create(it)
+            slu.remove?.mapNotNull {
+                collectionRepository.findByName(it) ?: collectionRepository.create(it, user)
             }?.let {
                 removingCollections.addAll(it)
             }

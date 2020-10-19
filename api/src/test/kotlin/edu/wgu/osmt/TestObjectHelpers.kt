@@ -1,10 +1,12 @@
 package edu.wgu.osmt
 
+import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordTypeEnum
+import org.assertj.core.api.Assertions.assertThat
 import edu.wgu.osmt.richskill.RichSkillDoc
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -95,5 +97,16 @@ object TestObjectHelpers {
         }
         return keywords
     }
-}
 
+    fun namedReferenceGenerator(includeName: Boolean = true, includeUri: Boolean = true): ApiNamedReference {
+        val name = if (includeName) UUID.randomUUID().toString() else null
+        val uri = if (includeUri) UUID.randomUUID().toString() else null
+        return ApiNamedReference(id=uri, name=name)
+    }
+
+    fun assertThatKeywordMatchesNamedReference(keyword: Keyword?, namedReference: ApiNamedReference?) {
+        assertThat(keyword).isNotNull
+        assertThat(keyword?.uri).isEqualTo(namedReference?.id)
+        assertThat(keyword?.value).isEqualTo(namedReference?.name)
+    }
+}

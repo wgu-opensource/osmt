@@ -3,6 +3,7 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.api.model.ApiSkill
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
 import edu.wgu.osmt.task.CsvTask
@@ -11,7 +12,7 @@ import edu.wgu.osmt.task.TaskResult
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.core.user.OAuth2User
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -52,7 +53,7 @@ class RichSkillController @Autowired constructor(
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createSkills(@RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
-                     @AuthenticationPrincipal user: OAuth2User?): List<ApiSkill>
+                     @AuthenticationPrincipal user: Jwt?): List<ApiSkill>
     {
         return richSkillRepository.createFromApi(apiSkillUpdates, readableUsername(user)).map {
             ApiSkill.fromDao(it, appConfig)
@@ -61,20 +62,37 @@ class RichSkillController @Autowired constructor(
 
     @GetMapping("/{uuid}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun byUUID(@PathVariable uuid: String): ApiSkill? {
+    fun byUUID(@PathVariable uuid: String,
+               @AuthenticationPrincipal user: Jwt?): ApiSkill? {
         return richSkillRepository.findByUUID(uuid)?.let {
+            if (user == null && it.publishStatus() == PublishStatus.Unpublished) {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND)
+            }
+
             ApiSkill.fromDao(it, appConfig)
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
     @RequestMapping("/{uuid}", produces = [MediaType.TEXT_HTML_VALUE])
-    fun byUUIDHtmlView(@PathVariable uuid: String): String {
-        return "forward:/skills/$uuid"
+    fun byUUIDHtmlView(@PathVariable uuid: String,
+                       @AuthenticationPrincipal user: Jwt?): String {
+        return richSkillRepository.findByUUID(uuid)?.let {
+            if (user == null && it.publishStatus() == PublishStatus.Unpublished) {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND)
+            }
+
+            "forward:/skills/$uuid"
+        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
     @RequestMapping("/{uuid}", produces = ["text/csv"])
-    fun byUUIDCsvView(@PathVariable uuid: String): HttpEntity<*> {
+    fun byUUIDCsvView(@PathVariable uuid: String,
+                      @AuthenticationPrincipal user: Jwt?): HttpEntity<*> {
         return richSkillRepository.findByUUID(uuid)?.let {
+            if (user == null && it.publishStatus() == PublishStatus.Unpublished) {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND)
+            }
+
             val skill = it.toModel()
             val collections = it.collections.map{ it.toModel() }.toSet()
             val result = RichSkillCsvExport(appConfig).toCsv(listOf(RichSkillAndCollections(skill,collections)))
@@ -88,7 +106,7 @@ class RichSkillController @Autowired constructor(
     @ResponseBody
     fun updateSkill(@PathVariable uuid: String,
                     @RequestBody skillUpdate: ApiSkillUpdate,
-                    @AuthenticationPrincipal user: OAuth2User?): ApiSkill
+                    @AuthenticationPrincipal user: Jwt?): ApiSkill
     {
         val existingSkill = richSkillRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)

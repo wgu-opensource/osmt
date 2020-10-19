@@ -1,13 +1,14 @@
-import { Component, OnInit } from "@angular/core"
+import { Component, Inject, InjectionToken, LOCALE_ID, OnInit } from "@angular/core"
 import {ApiNamedReference, INamedReference, ApiSkill} from "../ApiSkill"
 import { RichSkillService } from "../service/rich-skill.service"
 import { ActivatedRoute } from "@angular/router"
-import {JobCodeBreakout, IJobCode} from "../../jobcode/Jobcode"
+import {JobCodeBreakout, IJobCode, OccupationsFormatter} from "../../job-codes/Jobcode"
+import { IDetailCardSectionData } from "src/app/detail-card/section/section.component"
+import { formatDate } from "@angular/common"
 
 @Component({
   selector: "app-richskill",
-  templateUrl: "./rich-skill.component.html",
-  styleUrls: ["./rich-skill.component.css"]
+  templateUrl: "./rich-skill.component.html"
 })
 export class RichSkillComponent implements OnInit {
 
@@ -15,106 +16,124 @@ export class RichSkillComponent implements OnInit {
   richSkill: ApiSkill | null = null
   loading = true
 
-  majorCodes = ""
-  minorCodes = ""
-  broadCodes = ""
-  detailedCodes = ""
-  jobRoleCodes = ""
-
-
-  constructor(private richSkillService: RichSkillService, private route: ActivatedRoute) {
-    this.route.params.subscribe(params => console.log(params))
-    console.log(this.route.snapshot.paramMap.get("uuid"))
-    this.uuidParam = this.route.snapshot.paramMap.get("uuid")
-  }
-
-  ngOnInit(): void {
-    if (this.uuidParam !== null) {
-      this.getSkill(this.uuidParam)
+  constructor(
+    private richSkillService: RichSkillService,
+    private route: ActivatedRoute,
+    @Inject(LOCALE_ID) public locale: string
+    ) {
+      this.uuidParam = this.route.snapshot.paramMap.get("uuid")
     }
-  }
 
-  getSkill(uuid: string): void {
-    this.richSkillService.getSkillByUUID(uuid).subscribe(
-      skill => {
-        this.richSkill = skill
-        this.inferCodes()
-        this.loading = false
-      },
-      (error) => {
-        console.log(`Error loading skill: ${error}`)
-        this.loading = false
+    ngOnInit(): void {
+      if (this.uuidParam !== null) {
+        this.getSkill(this.uuidParam)
+      }
+    }
+
+    getSkill(uuid: string): void {
+      this.richSkillService.getSkillByUUID(uuid).subscribe(
+        skill => {
+          this.richSkill = skill
+          this.loading = false
+        },
+        (error) => {
+          console.log(`Error loading skill: ${error}`)
+          this.loading = false
+        }
+        )
       }
 
-    )  }
+      getAuthor(): string {
+        return this.richSkill?.author?.name ?? ""
+      }
 
-  inferCodes(): void {
-    const occupations = this.richSkill?.occupations
+      getSkillUuid(): string {
+        return this.richSkill?.uuid ?? ""
+      }
 
-    if (occupations) {
+      getSkillName(): string {
+        return this.richSkill?.skillName ?? ""
+      }
 
-      const codeBreakouts: JobCodeBreakout[] = occupations
-        .map((code: IJobCode) => new JobCodeBreakout(code.code))
+      getPublishedDate(): string {
+        return this.getDateFormat(this.richSkill?.publishDate)
+      }
 
-      this.majorCodes = this.inferMajorCodes(codeBreakouts)
-      this.minorCodes = this.inferMinorCodes(codeBreakouts)
-      this.broadCodes = this.inferBroadCodes(codeBreakouts)
-      this.detailedCodes = this.inferDetailedCodes(codeBreakouts)
-      this.jobRoleCodes = this.inferJobRoleCodes(codeBreakouts)
+      getArchivedDate(): string {
+        return this.getDateFormat(this.richSkill?.archiveDate)
+      }
+
+      getDateFormat(date?: Date): string {
+        if (date) {
+          return formatDate(date, "MMM dd yyyy", this.locale)
+        } else {
+          return ""
+        }
+      }
+
+      getCardFormat(): IDetailCardSectionData[] {
+        return [
+          {
+            label: "Skill Statement",
+            bodyHtml: this.richSkill?.skillStatement ?? ""
+          }, {
+            label: "Category",
+            bodyHtml: this.richSkill?.category ?? ""
+          }, {
+            label: "Keywords",
+            bodyHtml: this.richSkill?.keywords?.join("; ") ?? ""
+          }, {
+            label: "Associated Collections",
+            bodyHtml: this.richSkill?.collections?.join("; ") ?? ""
+          }, {
+            label: "Standards",
+            bodyHtml: this.richSkill?.standards?.map(standard => standard.name)?.join("; ") ?? ""
+          }, {
+            label: "Certifications",
+            bodyHtml: this.richSkill?.certifications?.map(cert => cert.name)?.join("; ") ?? ""
+          }, {
+            label: "Occupations",
+            bodyHtml: new OccupationsFormatter(this.richSkill?.occupations ?? []).html()
+          }, {
+            label: "Employers",
+            bodyHtml: this.richSkill?.employers?.map(employer => employer.name)?.join("; ") ?? ""
+          }, {
+            label: "Alignment",
+            bodyHtml:
+                this.richSkill?.alignments?.map(alignment => this.prepareAlignmentLink(alignment))?.join("; ") ?? ""
+          }
+        ]
+      }
+    private prepareAlignmentLink({name, id}: INamedReference): string {
+        const displayText = name ? name : (id ? id : "") // prefer name, but use url if necessary
+
+
+        if (id) {
+            return `<a target="_blank" href=${id}>${displayText}</a>`
+        } else {
+            return displayText
+        }
     }
-  }
+      joinKeywords(): string {
+        const keywords = this.richSkill?.keywords || []
+        return this.joinList("; ", keywords)
+      }
 
-  joinKeywords(): string {
-    const keywords = this.richSkill?.keywords || []
-    return this.joinList("; ", keywords)
-  }
+      joinEmployers(): string {
+        const employers = this.richSkill?.employers || []
+        return this.joinGenericKeywords("; ", employers)
+      }
 
-  joinEmployers(): string {
-    const employers = this.richSkill?.employers || []
-    return this.joinGenericKeywords("; ", employers)
-  }
+      private joinList(delimeter: string, list: string[]): string {
+        return list
+        .filter(item => item)
+        .join(delimeter)
+      }
 
-  private joinList(delimeter: string, list: string[]): string {
-    return list
-      .filter(item => item)
-      .join(delimeter)
-  }
+      private joinGenericKeywords(delimeter: string, keywords: INamedReference[]): string {
+        const filteredList: string[] = keywords
+        .map(keyword => (keyword.name ? keyword.name : keyword.id) as string)
 
-  private joinGenericKeywords(delimeter: string, keywords: INamedReference[]): string {
-    const filteredList: string[] = keywords
-      .map(keyword => (keyword.name ? keyword.name : keyword.id) as string)
-
-    return this.joinList(delimeter, filteredList)
-  }
-
-  private inferMajorCodes(codeBreakouts: JobCodeBreakout[]): string {
-    const codes = codeBreakouts.flatMap(code => !!code?.majorCode() ? [code.majorCode() as string] : [])
-    return this.dedupeCodes(codes)?.join("; ") || ""
-  }
-
-  private inferMinorCodes(codeBreakouts: JobCodeBreakout[]): string {
-    const codes = codeBreakouts.flatMap(code => !!code?.minorCode() ? [code.minorCode() as string] : [])
-    return this.joinList("; ", this.dedupeCodes(codes)  || [])
-  }
-
-  private inferBroadCodes(codeBreakouts: JobCodeBreakout[]): string {
-    const codes = codeBreakouts.flatMap(code => !!code?.broadCode() ? [code.broadCode() as string] : [])
-    return this.joinList("; ", this.dedupeCodes(codes)  || [])
-  }
-
-  private inferDetailedCodes(codeBreakouts: JobCodeBreakout[]): string {
-    const codes = codeBreakouts.flatMap(code => !!code?.detailedCode() ? [code.detailedCode() as string] : [])
-    return this.joinList("; ", this.dedupeCodes(codes)  || [])
-  }
-
-  private inferJobRoleCodes(codeBreakouts: JobCodeBreakout[]): string {
-    const codes = codeBreakouts.flatMap(code => !!code?.jobRoleCode() ? [code.jobRoleCode() as string] : [])
-    return this.joinList("; ", this.dedupeCodes(codes)  || [])
-  }
-
-  private dedupeCodes(codes: string[]): string[] | null {
-    const withoutDupes = [...new Set(codes)]
-    return withoutDupes.length > 0 ? withoutDupes : null
-  }
-}
-
+        return this.joinList(delimeter, filteredList)
+      }
+    }

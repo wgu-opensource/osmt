@@ -8,7 +8,7 @@
         </svg>
       </a>
       <div class="m-navbar-x-tagline">{{whitelabel.toolNameLong}}</div>
-      <ul class="m-navbar-x-nav t-hidden-maxdesktop">
+      <ul *ngIf="isAuthenticated()" class="m-navbar-x-nav t-hidden-maxdesktop">
         <li class="m-navbar-x-navItem">
           <a class="m-navItem m-navItem-is-active" aria-current="page" routerLink="/skills">Skills Library</a>
         </li>
@@ -16,14 +16,14 @@
           <a class="m-navItem" href="#">Collections</a>
         </li>
         <li class="m-navbar-x-navItem">
-          <button class="m-button m-button-elevation0 m-button-small m-button-iconSmall" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <button routerLink="/logout" class="m-button m-button-elevation0 m-button-small m-button-iconSmall" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Logout">
             <svg class="t-icon">
               <use xlink:href="assets/images/svg-defs.svg#icon-logout"></use>
             </svg>
           </button>
         </li>
       </ul>
-      <button class="m-navbar-x-toggle m-button m-button-elevation0 m-button-small m-button-iconSmall" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button *ngIf="isAuthenticated()" class="m-navbar-x-toggle m-button m-button-elevation0 m-button-small m-button-iconSmall" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <svg class="t-icon t-icon-menu">
           <use xlink:href="assets/images/svg-defs.svg#icon-menu"></use>
         </svg>
@@ -32,14 +32,14 @@
         </svg>
       </button>
 
-      <div class="m-navbar-x-collapse t-hidden-mindesktop" id="navbarSupportedContent">
+      <div *ngIf="isAuthenticated()" class="m-navbar-x-collapse t-hidden-mindesktop" id="navbarSupportedContent">
         <app-commoncontrols-mobile></app-commoncontrols-mobile>
       </div>
 
     </div>
   </nav>
 
-  <div class="t-hidden-maxdesktop">
+  <div *ngIf="isAuthenticated()" class="t-hidden-maxdesktop">
     <app-commoncontrols></app-commoncontrols>
   </div>
 </header>

@@ -1,10 +1,11 @@
 import {Injectable} from "@angular/core"
 import {HttpClient} from "@angular/common/http"
 import {Observable} from "rxjs"
-import {ISkill, ApiSkill} from "../ApiSkill"
+import {ApiSkill, ISkill} from "../ApiSkill"
 import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
-import {IRichSkillUpdate, ApiSkillUpdate} from "../ApiSkillUpdate";
+import {ApiSkillUpdate} from "../ApiSkillUpdate";
+import {AuthService} from "../../auth/auth-service";
 
 
 @Injectable({
@@ -12,8 +13,8 @@ import {IRichSkillUpdate, ApiSkillUpdate} from "../ApiSkillUpdate";
 })
 export class RichSkillService extends AbstractService {
 
-  constructor(httpClient: HttpClient) {
-    super(httpClient)
+  constructor(httpClient: HttpClient, authService: AuthService) {
+    super(httpClient, authService)
   }
 
   private serviceUrl = "api/skills"
@@ -35,6 +36,42 @@ export class RichSkillService extends AbstractService {
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiSkill(this.safeUnwrapBody(body, errorMsg))))
+  }
+
+  // These two nearly identical getSkill functions can probably be joined.  the angular httpclient is weird though
+  // and overloads it's functions many times which makes any kind of abstraction seeking to broaden flexibility incompatible
+  getSkillCsvByUuid(uuid: string): Observable<string> {
+    if (!uuid) {
+      throw new Error("No uuid provided for single skill csv export")
+    }
+    const errorMsg = `Could not find skill by uuid [${uuid}]`
+
+    return this.httpClient
+      .get(`${this.serviceUrl}/${uuid}`, {
+        headers: {
+          Accept: "text/csv"
+        },
+        responseType: "text",
+        observe: "response"
+      })
+      .pipe(map((response) => this.safeUnwrapBody(response.body, errorMsg)))
+  }
+
+  getSkillJsonByUuid(uuid: string): Observable<string> {
+    if (!uuid) {
+      throw new Error("No uuid provided for single skill csv export")
+    }
+    const errorMsg = `Could not find skill by uuid [${uuid}]`
+
+    return this.httpClient
+      .get(`${this.serviceUrl}/${uuid}`, {
+        headers: {
+          Accept: "application/json"
+        },
+        responseType: "text",
+        observe: "response"
+      })
+      .pipe(map((response) => this.safeUnwrapBody(response.body, errorMsg)))
   }
 
   createSkill(updateObject: ApiSkillUpdate): Observable<ApiSkill> {

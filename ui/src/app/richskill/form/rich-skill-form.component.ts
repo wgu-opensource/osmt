@@ -6,9 +6,9 @@ import {RichSkillService} from "../service/rich-skill.service";
 import {Observable} from "rxjs";
 import {ApiNamedReference, INamedReference, ApiSkill} from "../ApiSkill";
 import {ApiStringListUpdate, IStringListUpdate, ApiSkillUpdate, ApiReferenceListUpdate} from "../ApiSkillUpdate";
-import {IJobCode} from "../../jobcode/Jobcode";
 import {AppConfig} from "../../app.config";
 import {urlValidator} from "../../validators/url.validator";
+import { IJobCode } from 'src/app/job-codes/Jobcode';
 
 
 @Component({

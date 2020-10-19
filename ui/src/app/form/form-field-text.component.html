@@ -7,7 +7,7 @@
   [required]="required"
   [name]="name"
 >
-  <div class="m-text" [class.m-formInput-is-error]="isError()">
+  <div class="m-text" [class.m-text-is-error]="isError()">
     <input [formControl]="control" type="text" [placeholder]="placeholder" id="formfield-{{name}}">
   </div>
 </app-formfield>

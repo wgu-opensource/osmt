@@ -7,14 +7,19 @@
     <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
       <!-- @formcard -->
       <div class="m-skillBackground">
-        <h2 class="t-type-heading2 t-verticalSpacing-medium">
-          <div class="l-flex l-flex-alignCenter">
-            <svg class="t-icon t-horizontalSpacing-extraSmall">
-              <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
-            </svg>
-            <span>{{pageTitle()}}</span>
-          </div>
-        </h2>
+
+        <div class="t-margin-medium t-margin-bottom">
+          <!-- {{render '@m-icontitle'}} -->
+          <h3 class="m-iconTitle">
+            <div class="m-iconTitle-x-icon">
+              <svg class="t-icon" aria-hidden="true">
+                <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
+              </svg>
+            </div>
+            <div class="m-iconTitle-x-label">{{pageTitle()}}</div>
+          </h3>
+        </div>
+
 
         <app-formfield-text
           [control]="skillForm.controls.skillName"

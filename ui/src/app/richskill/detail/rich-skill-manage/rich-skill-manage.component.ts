@@ -43,7 +43,7 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
         showIfEmpty: true
       }, {
         label: "Certifications",
-        bodyHtml: this.richSkill?.certifications?.join("; ") ?? "",
+        bodyHtml: this.richSkill?.certifications?.map(alignment => alignment.name)?.join("; ") ?? "",
         showIfEmpty: true
       }, {
         label: "Occupations",
@@ -51,7 +51,9 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
         showIfEmpty: true
       }, {
         label: "Alignment",
-        bodyHtml: this.richSkill?.alignments?.map(alignment => alignment.name)?.join("; ") ?? "",
+        bodyHtml: this.richSkill?.alignments
+          ?.map(alignment => `<a class="t-link" href="${alignment.id}">${alignment.name}</a>`)
+          ?.join("") ?? "",
         showIfEmpty: true
       }, {
         label: "Employers",

@@ -54,16 +54,16 @@ export abstract class AbstractRichSkillDetailComponent implements OnInit {
     return this.richSkill?.skillName ?? ""
   }
 
-  getPublishedDate(): string | undefined {
+  getPublishedDate(): string {
     return this.richSkill?.publishDate
       ? this.getDateFormat(this.richSkill?.publishDate)
-      : this.getDateFormat(new Date())
+      : ""
   }
 
-  getArchivedDate(): string | undefined {
+  getArchivedDate(): string {
     return this.richSkill?.archiveDate
       ? this.getDateFormat(this.richSkill?.archiveDate)
-      : this.getDateFormat(new Date())
+      : ""
   }
 
   getDateFormat(date?: Date): string {

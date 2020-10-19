@@ -7,7 +7,7 @@ import {FormField} from "./form-field.component";
   selector: "app-formfield-textarea",
   templateUrl: "./form-field-textarea.component.html"
 })
-export class FormFieldTextArea implements OnInit {
+export class FormFieldTextArea extends FormField implements OnInit {
 
   @Input() control: FormControl = new FormControl("")
   @Input() label: string = ""
@@ -18,6 +18,7 @@ export class FormFieldTextArea implements OnInit {
   @Input() name: string = ""
 
   constructor() {
+    super()
   }
 
   ngOnInit(): void {

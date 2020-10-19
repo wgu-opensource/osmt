@@ -18,6 +18,7 @@ export abstract class PublicRichSkillActionBarComponent implements OnInit {
 
   duplicateIcon = SvgHelper.path(SvgIcon.DUPLICATE)
   downloadIcon = SvgHelper.path(SvgIcon.DOWNLOAD)
+  dismissIcon = SvgHelper.path(SvgIcon.DISMISS)
 
   constructor(
     protected router: Router,

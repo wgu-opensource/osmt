@@ -2,7 +2,7 @@
 
   <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyURL(fullPath)">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
-      <use xlink:href="assets/images/svg-defs.svg#icon-dismiss"></use>
+      <use [attr.xlink:href]="duplicateIcon"></use>
     </svg>
     <span class="m-actionBarItemHorizontal-x-label m-buttonText">
         <span class="button-x-text">
@@ -17,7 +17,7 @@
 
   <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onDownloadCsv()">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
-      <use xlink:href="assets/images/svg-defs.svg#icon-download"></use>
+      <use [attr.xlink:href]="downloadIcon"></use>
     </svg>
     <span class="m-actionBarItemHorizontal-x-label m-buttonText">
           <span class="button-x-text">
@@ -29,7 +29,7 @@
 
   <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyJSON(skillJson)">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
-      <use xlink:href="assets/images/svg-defs.svg#icon-duplicate"></use>
+      <use [attr.xlink:href]="duplicateIcon"></use>
     </svg>
     <span class="m-actionBarItemHorizontal-x-label m-buttonText">
       <span class="button-x-text">

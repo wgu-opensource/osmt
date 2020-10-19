@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core"
+import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
 
 @Component({
   selector: "app-detail-card-status-bar",
@@ -8,6 +9,9 @@ export class DetailCardStatusBarComponent implements OnInit {
 
   @Input() published = ""
   @Input() archived = ""
+
+  iconUp = SvgHelper.path(SvgIcon.ICON_UP)
+  archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)
 
   constructor() { }
 

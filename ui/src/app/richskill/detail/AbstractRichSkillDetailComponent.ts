@@ -3,8 +3,8 @@ import {RichSkillService} from "../service/rich-skill.service"
 import {ActivatedRoute} from "@angular/router"
 import {ApiSkill, INamedReference} from "../ApiSkill"
 import {IDetailCardSectionData} from "../../detail-card/section/section.component"
-import {OccupationsFormatter} from "../../job-codes/Jobcode"
 import {formatDate} from "@angular/common"
+import {Observable} from "rxjs"
 
 @Component({template: ""})
 export abstract class AbstractRichSkillDetailComponent implements OnInit {
@@ -12,6 +12,8 @@ export abstract class AbstractRichSkillDetailComponent implements OnInit {
   uuidParam: string | null
   richSkill: ApiSkill | null = null
   loading = true
+
+  skillLoaded: Observable<ApiSkill> | null = null
 
   constructor(
     protected richSkillService: RichSkillService,
@@ -22,22 +24,8 @@ export abstract class AbstractRichSkillDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.uuidParam !== null) {
-      this.getSkill(this.uuidParam)
-    }
-  }
-
-  getSkill(uuid: string): void {
-    this.richSkillService.getSkillByUUID(uuid).subscribe(
-      skill => {
-        this.richSkill = skill
-        this.loading = false
-      },
-      (error) => {
-        console.log(`Error loading skill: ${error}`)
-        this.loading = false
-      }
-    )
+    this.skillLoaded = this.richSkillService.getSkillByUUID(this.uuidParam ?? "")
+    this.skillLoaded.subscribe(skill => { this.richSkill = skill })
   }
 
   abstract getCardFormat(): IDetailCardSectionData[]

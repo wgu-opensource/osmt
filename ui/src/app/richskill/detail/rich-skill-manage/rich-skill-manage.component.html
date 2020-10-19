@@ -1,4 +1,5 @@
-<div class="l-stickyBar" *ngIf="richSkill; else noSkill">
+<ng-template [appLoadingObservables]="[skillLoaded]">
+  <div class="l-stickyBar" *ngIf="richSkill; else noSkill">
 
   <div class="l-stickySidebar l-container">
 

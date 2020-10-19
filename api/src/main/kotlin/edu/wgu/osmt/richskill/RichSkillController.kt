@@ -3,6 +3,7 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.api.model.ApiSkill
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
 import edu.wgu.osmt.task.CsvTask
@@ -61,20 +62,37 @@ class RichSkillController @Autowired constructor(
 
     @GetMapping("/{uuid}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun byUUID(@PathVariable uuid: String): ApiSkill? {
+    fun byUUID(@PathVariable uuid: String,
+               @AuthenticationPrincipal user: Jwt?): ApiSkill? {
         return richSkillRepository.findByUUID(uuid)?.let {
+            if (user == null && it.publishStatus() == PublishStatus.Unpublished) {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND)
+            }
+
             ApiSkill.fromDao(it, appConfig)
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
     @RequestMapping("/{uuid}", produces = [MediaType.TEXT_HTML_VALUE])
-    fun byUUIDHtmlView(@PathVariable uuid: String): String {
-        return "forward:/skills/$uuid"
+    fun byUUIDHtmlView(@PathVariable uuid: String,
+                       @AuthenticationPrincipal user: Jwt?): String {
+        return richSkillRepository.findByUUID(uuid)?.let {
+            if (user == null && it.publishStatus() == PublishStatus.Unpublished) {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND)
+            }
+
+            "forward:/skills/$uuid"
+        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
     @RequestMapping("/{uuid}", produces = ["text/csv"])
-    fun byUUIDCsvView(@PathVariable uuid: String): HttpEntity<*> {
+    fun byUUIDCsvView(@PathVariable uuid: String,
+                      @AuthenticationPrincipal user: Jwt?): HttpEntity<*> {
         return richSkillRepository.findByUUID(uuid)?.let {
+            if (user == null && it.publishStatus() == PublishStatus.Unpublished) {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND)
+            }
+
             val skill = it.toModel()
             val collections = it.collections.map{ it.toModel() }.toSet()
             val result = RichSkillCsvExport(appConfig).toCsv(listOf(RichSkillAndCollections(skill,collections)))

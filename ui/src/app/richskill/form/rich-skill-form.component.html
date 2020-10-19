@@ -26,6 +26,7 @@
           name="skillName"
           label="Skill Name"
           placeholder="Health Education Development"
+          [includePlaceholder]="!this.skillUuid"
           required="true"
         >
         </app-formfield-text>
@@ -43,6 +44,7 @@
           name="skillStatement"
           label="Skill Statement"
           placeholder="Develop education programs to improve health outcomes for patient populations."
+          [includePlaceholder]="!this.skillUuid"
           helpMessage="A skill statement is a string that expresses information about who the skill applies to, the nature of the skill itself, and the context in which it is applied."
         ></app-formfield-textarea>
 
@@ -51,6 +53,7 @@
           label="Category"
           name="category"
           placeholder="Health Education"
+          [includePlaceholder]="!this.skillUuid"
           helpMessage="A term that can be used to group multiple skills."
         ></app-formfield-text>
 
@@ -59,6 +62,7 @@
           label="Keywords"
           name="keywords"
           placeholder="Health Education; Education Program Development; Heath Instruction; Health Outcome Improvement; Health Education Design"
+          [includePlaceholder]="!this.skillUuid"
           helpMessage="Add topic terms separated by semicolon."
         ></app-formfield-textarea>
 
@@ -76,6 +80,7 @@
           label="Standards"
           name="standards"
           placeholder="Health Education Standards"
+          [includePlaceholder]="!this.skillUuid"
           helpMessage="Often sourced from research and Subject Matter Experts."
         ></app-formfield-textarea>
 
@@ -84,6 +89,7 @@
           label="Certifications"
           name="certifications"
           placeholder="Health Education Specialist (Society for Public Health Education)"
+          [includePlaceholder]="!this.skillUuid"
           helpMessage="Often sourced from research and Subject Matter Experts."
         ></app-formfield-textarea>
 
@@ -92,6 +98,7 @@
           label="Occupations"
           name="occupations"
           placeholder="29-1071; 11-9111; 25-1072; 29-1141; 29-1171"
+          [includePlaceholder]="!this.skillUuid"
           helpMessage="Numeric job codes from BLS or O*NET separated by a semicolon."
         ></app-formfield-textarea>
 
@@ -100,6 +107,7 @@
           label="Employers"
           name="employers"
           placeholder="Sample Company; Test Company"
+          [includePlaceholder]="!this.skillUuid"
           helpMessage="Often sourced from research and Subject Matter Experts."
         ></app-formfield-text>
 
@@ -108,6 +116,7 @@
           label="Alignment Text"
           name="alignmentText"
           placeholder="Health Education"
+          [includePlaceholder]="!this.skillUuid"
           helpMessage="Often sourced from research and Subject Matter Experts."
         ></app-formfield-text>
 
@@ -116,6 +125,7 @@
           label="Alignment URL"
           name="alignmentUrl"
           placeholder="https://skills.emsidata.com/skills/KS124MT6ZDZLF0M8JM6X"
+          [includePlaceholder]="!this.skillUuid"
           helpMessage="A URI, often sourced from research and Subject Matter Experts."
           errorMessage="Please provide a valid URL."
         ></app-formfield-text>

@@ -1,7 +1,8 @@
 <div class="l-stickyBar" *ngIf="richSkill; else noSkill">
-  <a name="top"></a>
+
   <div class="l-stickySidebar l-container">
-    <div class="l-stickySidebar-x-content t-verticalSpacing-medium-top-padding">
+
+    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
       <app-detail-card
         [sections]="getCardFormat()"
         [title]="getSkillName()"
@@ -9,11 +10,10 @@
         [author]="getAuthor()"
         [archivedDate]="getArchivedDate()"
         [publishedDate]="getPublishedDate()"
-      ></app-detail-card>
-    </div>
+      ></app-detail-card>    </div>
 
     <div class="l-stickySidebar-x-sidebar">
-      <div class="l-stickySidebar-x-sidebarContent t-verticalSpacing-medium-top-padding">
+      <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
         <app-manage-skill-action-bar-vertical
           [skillUuid]="getSkillUuid()"
           [skillName]="getSkillName()"
@@ -25,16 +25,15 @@
 
   </div>
 
-  <div class="l-stickyBar-x-bar t-hidden-mindesktop t-verticalSpacing-medium-top-padding">
-    <div class="l-flex l-flex-alignCenter t-elevation-large t-hidden-mindesktop">
-      <app-manage-skill-action-bar-horizontal
-        [skillUuid]="getSkillUuid()"
-        [skillName]="getSkillName()"
-        [archived]="getArchivedDate()"
-        [published]="getPublishedDate()"
-      ></app-manage-skill-action-bar-horizontal>
-    </div>
+  <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
+    <app-manage-skill-action-bar-horizontal
+      [skillUuid]="getSkillUuid()"
+      [skillName]="getSkillName()"
+      [archived]="getArchivedDate()"
+      [published]="getPublishedDate()"
+    ></app-manage-skill-action-bar-horizontal>
   </div>
+
 </div>
 <ng-template #noSkill>
   <div *ngIf="loading; else noData" class="lds-dual-ring">Loading...</div>

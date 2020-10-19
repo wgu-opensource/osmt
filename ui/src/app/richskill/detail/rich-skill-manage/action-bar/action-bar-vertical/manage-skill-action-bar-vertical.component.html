@@ -1,41 +1,45 @@
-<nav class="m-actionBarVertical">
+<div class="l-actionBarVertical">
 
-  <div class="t-verticalSpacing-small t-hidden-maxdesktop">
-    <button class="m-button t-width-100" (click)="onAddToCollection()">
-      <span class="button-x-text">Add to Collection</span>
-    </button>
-  </div>
-  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop">
-    <button class="m-buttonText m-buttonText-icon" routerLink="../edit">
-      <svg class="button-x-icon t-icon">
-        <use [attr.xlink:href]="editIcon"></use>
-      </svg>
-      <span class="button-x-text">Edit</span>
-    </button>
-  </div>
-  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop">
-    <button class="m-buttonText m-buttonText-icon">
-      <svg class="button-x-icon t-icon">
-        <use [attr.xlink:href]="duplicateIcon"></use>
-      </svg>
-      <span class="button-x-text">Duplicate</span>
-    </button>
-  </div>
-  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop">
-    <button class="m-buttonText m-buttonText-icon" [routerLink]="publishLinkDestination()">
-      <svg class="button-x-icon t-icon">
-        <use [attr.xlink:href]="publishIcon"></use>
-      </svg>
-      <span class="button-x-text">{{publishLinkText()}}</span>
-    </button>
-  </div>
-  <div class="m-actionBarVertical-x-item t-verticalSpacing-small t-hidden-maxdesktop">
-    <button class="m-buttonText m-buttonText-icon">
-      <svg class="button-x-icon t-icon">
-        <use [attr.xlink:href]="archiveIcon"></use>
-      </svg>
-      <span class="button-x-text">Archive</span>
+  <div class="l-actionBarVertical-x-action">
+    <button class="m-button" (click)="onAddToCollection()">
+      <span class="m-button-x-text">Add to Collection</span>
     </button>
   </div>
 
-</nav>
+  <a class="m-actionBarItem" routerLink="../edit">
+	<span class="m-actionBarItem-x-icon">
+		<svg class="t-icon" aria-hidden="true">
+			<use [attr.xlink:href]="editIcon"></use>
+		</svg>
+	</span>
+    <span class="m-actionBarItem-x-text">Edit</span>
+  </a>
+
+  <a class="m-actionBarItem" routerLink="../duplicate">
+	<span class="m-actionBarItem-x-icon">
+		<svg class="t-icon" aria-hidden="true">
+			<use [attr.xlink:href]="duplicateIcon"></use>
+		</svg>
+	</span>
+    <span class="m-actionBarItem-x-text">Duplicate</span>
+  </a>
+
+  <a class="m-actionBarItem" [routerLink]="publishLinkDestination()">
+	<span class="m-actionBarItem-x-icon">
+		<svg class="t-icon" aria-hidden="true">
+			<use [attr.xlink:href]="publishIcon"></use>
+		</svg>
+	</span>
+    <span class="m-actionBarItem-x-text">{{publishLinkText()}}</span>
+  </a>
+
+  <a class="m-actionBarItem" routerLink="../archive">
+	<span class="m-actionBarItem-x-icon">
+		<svg class="t-icon" aria-hidden="true">
+			<use [attr.xlink:href]="archiveIcon"></use>
+		</svg>
+	</span>
+    <span class="m-actionBarItem-x-text">Archive</span>
+  </a>
+
+</div>

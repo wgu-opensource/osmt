@@ -4,6 +4,7 @@ import {ToastService} from "../../../../toast/toast.service"
 import {formatDate} from "@angular/common"
 import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
 import {AppConfig} from "../../../../app.config"
+import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper";
 
 @Component({template: ""})
 export abstract class PublicRichSkillActionBarComponent implements OnInit {
@@ -14,6 +15,9 @@ export abstract class PublicRichSkillActionBarComponent implements OnInit {
   // Used in invisible labels to house the data to be added to clipboard
   abstract href: string
   abstract jsonClipboard: string
+
+  duplicateIcon = SvgHelper.path(SvgIcon.DUPLICATE)
+  downloadIcon = SvgHelper.path(SvgIcon.DOWNLOAD)
 
   constructor(
     protected router: Router,

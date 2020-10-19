@@ -1,4 +1,5 @@
-<nav class="l-flex l-flex-alignCenter t-elevation-large">
+<nav class="l-flex l-flex-alignCenter l-flex-0 t-elevation-large">
+
   <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyURL(fullPath)">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use xlink:href="assets/images/svg-defs.svg#icon-dismiss"></use>
@@ -7,12 +8,13 @@
         <span class="button-x-text">
             Copy URL
         </span>
-        <label class="t-visuallyhidden">
-          <textarea #fullPath>{{href}}</textarea>
+        <label>
+          <textarea class="t-visuallyHidden" #fullPath>{{href}}</textarea>
         </label>
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
   </div>
+
   <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onDownloadCsv()">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use xlink:href="assets/images/svg-defs.svg#icon-download"></use>
@@ -24,6 +26,7 @@
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
   </div>
+
   <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyJSON(skillJson)">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use xlink:href="assets/images/svg-defs.svg#icon-duplicate"></use>
@@ -33,9 +36,10 @@
         Copy JSON
       </span>
       <label>
-        <textarea class="t-visuallyhidden" #skillJson>{{jsonClipboard}}</textarea>
+        <textarea class="t-visuallyHidden" #skillJson>{{jsonClipboard}}</textarea>
       </label>
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
   </div>
+
 </nav>

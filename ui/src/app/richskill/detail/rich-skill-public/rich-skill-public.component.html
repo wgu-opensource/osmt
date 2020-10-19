@@ -1,30 +1,28 @@
 <div class="l-stickyBar" *ngIf="richSkill; else noSkill">
-  <div class="l-stickySidebar l-container">
-    <div class="l-stickySidebar-x-content t-verticalSpacing-medium-top-padding">
-      <app-detail-card
-        [sections]="getCardFormat()"
-        [title]="getSkillName()"
-        titleLabel="Rich Skill Descriptor"
-        [author]="getAuthor()"
-        [archivedDate]="getArchivedDate()"
-        [publishedDate]="getPublishedDate()"
-      ></app-detail-card>
-    </div>
+    <div class="l-stickySidebar l-container">
 
-    <div class="l-stickySidebar-x-sidebar">
-      <div class="l-stickySidebar-x-sidebarContent t-verticalSpacing-medium-top-padding">
-        <app-public-skill-action-bar-vertical [skillUuid]="getSkillUuid()" [skillName]="getSkillName()"></app-public-skill-action-bar-vertical>
+      <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
+        <app-detail-card
+          [sections]="getCardFormat()"
+          [title]="getSkillName()"
+          titleLabel="Rich Skill Descriptor"
+          [author]="getAuthor()"
+          [archivedDate]="getArchivedDate()"
+          [publishedDate]="getPublishedDate()"
+        ></app-detail-card>
       </div>
+
+      <div class="l-stickySidebar-x-sidebar">
+        <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
+          <app-public-skill-action-bar-vertical [skillUuid]="getSkillUuid()" [skillName]="getSkillName()"></app-public-skill-action-bar-vertical>
+        </div>
+      </div>
+
     </div>
 
-  </div>
-
-  <div class="l-stickyBar-x-bar t-hidden-mindesktop t-verticalSpacing-medium-top-padding">
-    <div class="l-flex l-flex-alignCenter t-elevation-large t-hidden-mindesktop">
+    <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
       <app-public-skill-action-bar-horizontal [skillUuid]="getSkillUuid()" [skillName]="getSkillName()"></app-public-skill-action-bar-horizontal>
     </div>
-  </div>
-
 </div>
 <ng-template #noSkill>
   <div *ngIf="loading; else noData" class="lds-dual-ring">Loading...</div>
@@ -32,3 +30,4 @@
     No data to load.
   </ng-template>
 </ng-template>
+

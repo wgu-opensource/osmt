@@ -21,13 +21,13 @@
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
   </div>
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary">
+  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" [routerLink]="publishLinkDestination()">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="publishIcon"></use>
     </svg>
     <span class="m-actionBarItemHorizontal-x-label m-buttonText">
           <span class="button-x-text">
-            Publish
+            {{publishLinkText()}}
           </span>
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>

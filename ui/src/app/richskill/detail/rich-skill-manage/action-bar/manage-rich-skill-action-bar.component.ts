@@ -35,7 +35,10 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   ngOnInit(): void {
     this.href = `${AppConfig.settings.baseApiUrl}${this.router.url}`
     this.richSkillService.getSkillJsonByUuid(this.skillUuid)
-      .subscribe( (json: string) => this.jsonClipboard = json)
+      .subscribe( (json: string) => {
+        console.log("got response: " + json )
+        this.jsonClipboard = json
+      })
   }
 
   onAddToCollection(): void {

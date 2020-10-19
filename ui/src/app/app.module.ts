@@ -32,6 +32,8 @@ import {ManageSkillActionBarVerticalComponent} from "./richskill/detail/rich-ski
 import {ManageSkillActionBarHorizontalComponent} from "./richskill/detail/rich-skill-manage/action-bar/action-bar-horizontal/manage-skill-action-bar-horizontal.component"
 import {ServerErrorComponent} from "./loading/server-error.component"
 import { CommonModule } from "@angular/common"
+import {DetailCardStatusBarComponent} from "./detail-card/status-bar/detail-card-status-bar.component";
+import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -74,6 +76,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
 
     DetailCardComponent,
     DetailCardSectionComponent,
+    DetailCardStatusBarComponent,
+    CardDetailTitleComponent,
   ],
   imports: [
     BrowserModule,

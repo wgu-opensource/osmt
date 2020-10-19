@@ -3,7 +3,7 @@
   <h1 class="t-visuallyHidden" id="header-header">Site Header</h1>
 
   <!-- {{render '@m-navbar'}} -->
-  <nav class="m-navBar" id="navBar" aria-labelledby="header-navigation">
+  <nav class="m-navBar" id="navBar" aria-labelledby="header-navigation" [class.m-navBar-is-active]="menuExpanded">
     <h2 class="t-visuallyHidden">Site Navigation</h2>
 
     <div class="m-navBar-x-container">
@@ -33,7 +33,8 @@
         </li>
       </ul>
 
-      <button *ngIf="isAuthenticated()" class="m-navBar-x-toggle m-iconInteractive m-iconInteractive-alt" type="button" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" data-nav-bar="navBar">
+      <button *ngIf="isAuthenticated()" (click)="handleClickMenu()" [attr.aria-expanded]="menuExpanded" class="m-navBar-x-toggle m-iconInteractive m-iconInteractive-alt" type="button" aria-controls="navbarSupportedContent" data-nav-bar="navBar">
+
         <span class="t-visuallyHidden">Toggle Navigation</span>
         <div class="m-iconInteractive-x-icon">
           <div class="l-iconTransition">

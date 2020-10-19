@@ -126,9 +126,9 @@ class BatchImportConsoleApplication : CommandLineRunner {
     }
 
     fun parse_collections(rowValue: String?): List<CollectionDao>? {
-        return split_field(rowValue)?.filter { it.isNotBlank() }?.map { collectionName ->
+        return split_field(rowValue)?.filter { it.isNotBlank() }?.mapNotNull { collectionName ->
             val collection = collectionRepository.findByName(collectionName)
-            collection ?:  collectionRepository.create(collectionName)
+            collection ?:  collectionRepository.create(collectionName, user)
         }
     }
 

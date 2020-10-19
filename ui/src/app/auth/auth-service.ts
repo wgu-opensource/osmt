@@ -1,10 +1,13 @@
+import {HttpErrorResponse} from "@angular/common/http";
+
 export const STORAGE_KEY_TOKEN = "OSMT.AuthService.accessToken"
 export const STORAGE_KEY_RETURN = "OSMT.AuthService.return"
 
 export class AuthService {
+  serverIsDown = false
+
   constructor() {
   }
-
 
   storeToken(accessToken: string): void {
     localStorage.setItem(STORAGE_KEY_TOKEN, accessToken)
@@ -29,6 +32,10 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return this.currentAuthToken() !== null
+    return !this.serverIsDown && this.currentAuthToken() !== null
+  }
+
+  setServerIsDown(isDown: boolean): void {
+    this.serverIsDown = isDown
   }
 }

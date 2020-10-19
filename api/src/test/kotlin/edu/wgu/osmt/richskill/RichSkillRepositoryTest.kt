@@ -2,7 +2,8 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.BaseDockerizedTest
 import edu.wgu.osmt.SpringTest
-import edu.wgu.osmt.api.model.ApiNamedReference
+import edu.wgu.osmt.TestObjectHelpers.assertThatKeywordMatchesNamedReference
+import edu.wgu.osmt.TestObjectHelpers.namedReferenceGenerator
 import edu.wgu.osmt.api.model.ApiReferenceListUpdate
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.api.model.ApiStringListUpdate
@@ -31,18 +32,12 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
 
     val userString = "unittestuser"
 
-    fun random_reference(includeName: Boolean = true, includeUri: Boolean = true): ApiNamedReference {
-        val name = if (includeName) UUID.randomUUID().toString() else null
-        val uri = if (includeUri) UUID.randomUUID().toString() else null
-        return ApiNamedReference(id=uri, name=name)
-    }
-
     fun random_skill_update(): ApiSkillUpdate {
         val name = UUID.randomUUID().toString()
         val statement = UUID.randomUUID().toString()
         val status = PublishStatus.Published
         val categoryName = UUID.randomUUID().toString()
-        val author = random_reference(includeName=true, includeUri=false)
+        val author = namedReferenceGenerator(includeName=true, includeUri=false)
 
         val keywordCount = 3
         val keywords = ApiStringListUpdate(
@@ -50,19 +45,19 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
         )
         val certificationCount = 3
         val certifications = ApiReferenceListUpdate(
-            add=(1..certificationCount).toList().map { random_reference(includeName = false, includeUri = true) }
+            add=(1..certificationCount).toList().map { namedReferenceGenerator(includeName = false, includeUri = true) }
         )
         val standardCount = 3
         val standards = ApiReferenceListUpdate(
-            add=(1..standardCount).toList().map { random_reference(includeName = true, includeUri = true) }
+            add=(1..standardCount).toList().map { namedReferenceGenerator(includeName = true, includeUri = true) }
         )
         val alignmentCount = 3
         val alignments = ApiReferenceListUpdate(
-            add=(1..alignmentCount).toList().map { random_reference(includeName = false, includeUri = true) }
+            add=(1..alignmentCount).toList().map { namedReferenceGenerator(includeName = false, includeUri = true) }
         )
         val employerCount = 3
         val employers = ApiReferenceListUpdate(
-            add=(1..employerCount).toList().map { random_reference(includeName = true, includeUri = false) }
+            add=(1..employerCount).toList().map { namedReferenceGenerator(includeName = true, includeUri = false) }
         )
         val occupationCount = 3
         val occupations = ApiStringListUpdate(
@@ -89,11 +84,6 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
         )
     }
 
-    fun assertThatKeywordMatchesNamedReference(keyword: Keyword?, namedReference: ApiNamedReference?) {
-        assertThat(keyword).isNotNull
-        assertThat(keyword?.uri).isEqualTo(namedReference?.id)
-        assertThat(keyword?.value).isEqualTo(namedReference?.name)
-    }
 
     fun assertThatKeywordsMatchStringList(keywords: List<Keyword>, stringList: ApiStringListUpdate) {
         stringList.add?.forEach { str ->

@@ -60,7 +60,7 @@ export abstract class AbstractService {
 
   wrapHeaders(headers?: HttpHeaders): HttpHeaders | undefined {
     const token = this.authService.currentAuthToken()
-    if (token !== undefined) {
+    if (token) {
       if (headers === undefined) {
         headers = new HttpHeaders()
       }

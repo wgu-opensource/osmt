@@ -4,7 +4,6 @@ import edu.wgu.osmt.db.*
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.richskill.RichSkillDescriptor
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import net.minidev.json.JSONObject
 import org.valiktor.functions.isEqualTo
@@ -12,7 +11,6 @@ import org.valiktor.functions.isNotEqualTo
 import org.valiktor.functions.validate
 import org.valiktor.validate
 import java.time.LocalDateTime
-import java.util.*
 
 data class Collection(
     override val id: Long?,
@@ -24,10 +22,13 @@ data class Collection(
     override val archiveDate: LocalDateTime? = null,
     override val publishDate: LocalDateTime? = null
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
+
+    fun canonicalUrl(baseUrl: String): String = "$baseUrl/api/collections/${uuid}"
+
 }
 
 data class CollectionUpdateObject(
-    override val id: Long,
+    override val id: Long? = null,
     val name: String? = null,
     val author: NullableFieldUpdate<KeywordDao>? = null,
     val skills: ListFieldUpdate<RichSkillDescriptorDao>? = null,

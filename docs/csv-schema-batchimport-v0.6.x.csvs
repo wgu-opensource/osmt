@@ -1,0 +1,23 @@
+version 1.1
+
+@totalColumns 11
+@ignoreColumnNameCase
+
+Collection:                     @optional   // multiple items can be separated by ";"
+Skill Name:                     notEmpty
+Skill Category:                 @optional
+Contextualized Skill Statement: notEmpty
+Keywords:                       @optional   // multiple items can be separated by ";"
+Professional Standards:         @optional   // multiple items can be separated by ";"
+Certifications:                 @optional   // multiple items can be separated by ";"
+BLS Major Group:                @optional   // multiple items can be separated by ";"
+BLS Minor Group:                @optional   // multiple items can be separated by ";"
+BLS Broad Occupation:           @optional   // multiple items can be separated by ";"
+BLS Detailed Occupation:        @optional   // multiple items can be separated by ";"
+O*Net Job Role:                 @optional   // multiple items can be separated by ";"
+Author:                         @optional
+Employer:                       @optional
+Alignment Title:                @optional
+Alignment:                      regex("^http") @optional
+
+

@@ -1,15 +1,16 @@
-<div class="t-verticalSpacing-medium" id="formfield-container-{{name}}">
-  <div class="t-verticalSpacing-extraSmall">
-    <label class="t-type-smallBold">{{label}} <span *ngIf="required" class="t-type-attention">*</span></label>
+<div class="t-margin-medium t-margin-bottom">
 
-    <div *ngIf="helpMessage" class="t-type-small">{{helpMessage}}</div>
-  </div>
+  <div class="m-field" id="formfield-container-{{name}}">
+    <label *ngIf="required" for="formfield-{{name}}">{{label}} (Required)</label>
+    <label *ngIf="!required" for="formfield-{{name}}">{{label}}</label>
 
-  <div class="t-verticalSpacing-extraSmall">
-    <div class="m-formInput" [class.m-formInput-is-error]="isError()">
+    <p *ngIf="helpMessage" class="m-field-x-note">{{helpMessage}}</p>
+
+    <div class="m-field-x-input">
       <ng-content></ng-content>
     </div>
+
+    <p *ngIf="errorMessage && isError()" class="m-field-x-error">{{errorMessage}}</p>
   </div>
 
-  <div *ngIf="errorMessage && isError()" class="t-type-small t-type-attention">{{errorMessage}}</div>
 </div>

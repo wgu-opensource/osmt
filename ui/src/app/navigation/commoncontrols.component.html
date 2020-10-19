@@ -2,57 +2,79 @@
 
 <div class="m-commonControls">
     <div class="l-container">
-      <div class="t-verticalSpacing-small">
-          <!-- search bar -->
-        <div class="m-formInput m-formInput-buttonBar m-formInput-icon">
-            <input type="search" placeholder="Search Skills or Collections" />
-            <svg class="t-icon">
-                <use xlink:href="assets/images/svg-defs.svg#icon-search"></use>
+      <!-- {{render '@m-search--with-buttontextbar'}} -->
+      <div class="m-search">
+        <svg class="m-search-x-icon t-icon">
+          <use xlink:href="/assets/images/svg-defs.svg#icon-search"></use>
+        </svg>
+        <input class="m-search-x-input" type="text" required>
+        <div class="m-search-x-controls">
+          <div class="m-search-x-clear">
+            <button class="m-iconInteractive" type="button">
+
+              <span class="t-visuallyHidden">Clear Search</span>
+
+              <div class="m-iconInteractive-x-icon">
+                <svg class="t-icon" aria-hidden="true">
+                  <use xlink:href="/images/svg-defs.svg#icon-dismiss"></use>
+                </svg>
+              </div>
+
+            </button>
+          </div>
+          <div class="l-buttonTextBar">
+
+            <a class="m-buttonText" href="#">
+              <span class="m-buttonText-x-text">Skills</span>
+            </a>
+
+            <div class="m-divider"></div>
+
+            <a class="m-buttonText" href="#">
+              <span class="m-buttonText-x-text">Collections</span>
+            </a>
+
+          </div>
+        </div>
+
+
+      </div>
+
+      <div class="m-commonControls-x-controls">
+        <div>
+
+          <a class="m-button" routerLink="/skills/create">
+            <svg class="m-button-x-icon t-icon">
+              <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
             </svg>
-            <div class="m-buttonBar">
-                <button class="m-buttonText t-horizontalSpacing-extraSmall">
-                    <span class="button-x-text">Skills</span>
-                </button>
-                <div class="m-divider t-horizontalSpacing-extraSmall"></div>
-                <button class="m-buttonText">
-                    <span class="button-x-text">Collections</span>
-                </button>
-            </div>
+            <span class="m-button-x-text">Create Skill</span>
+          </a>
+
+          <a class="m-button" href="#">
+            <svg class="m-button-x-icon t-icon">
+              <use xlink:href="/assets/images/svg-defs.svg#icon-collection"></use>
+            </svg>
+            <span class="m-button-x-text">Create Collection</span>
+          </a>
+
+          <a class="m-button" href="#">
+            <svg class="m-button-x-icon t-icon">
+              <use xlink:href="/assets/images/svg-defs.svg#icon-upload"></use>
+            </svg>
+            <span class="m-button-x-text">Batch Import Skills</span>
+          </a>
+
+        </div>
+
+        <div>
+          <a class="m-buttonText m-buttonText-alt" href="#">
+            <span class="m-buttonText-x-text">Advanced Search</span>
+          </a>
         </div>
 
       </div>
-      <nav class="l-flex l-flex-alignCenter l-flex-justifySpaceBetween t-color-dark">
-        <ul class="l-flex">
-          <li class="t-horizontalSpacing-extraSmall">
-            <a routerLink="/skills/create">
-              <button class="m-button m-button-icon">
-                <svg class="button-x-icon t-icon">
-                  <use xlink:href="assets/images/svg-defs.svg#icon-doc"></use>
-                </svg>
-                <span class="button-x-text">Create Skill</span>
-              </button>
-            </a>
-          </li>
-          <li class="t-horizontalSpacing-extraSmall">
-            <button class="m-button m-button-icon">
-              <svg class="button-x-icon t-icon">
-                <use xlink:href="assets/images/svg-defs.svg#icon-collection"></use>
-              </svg>
-              <span class="button-x-text">Create Collection</span>
-            </button>
-          </li>
-          <li class="t-horizontalSpacing-extraSmall">
-            <button class="m-button m-button-icon">
-              <svg class="button-x-icon t-icon">
-                <use xlink:href="assets/images/svg-defs.svg#icon-upload"></use>
-              </svg>
-              <span class="button-x-text">Batch Import Skills</span>
-            </button>
-          </li>
-        </ul>
-        <button class="m-buttonText">
-          <span class="button-x-text">Advanced Search</span>
-        </button>
-      </nav>
+
+
+
     </div>
   </div>

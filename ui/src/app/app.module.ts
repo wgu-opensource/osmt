@@ -30,9 +30,8 @@ import {PublicSkillActionBarHorizontalComponent} from "./richskill/detail/rich-s
 import {RichSkillManageComponent} from "./richskill/detail/rich-skill-manage/rich-skill-manage.component"
 import {ManageSkillActionBarVerticalComponent} from "./richskill/detail/rich-skill-manage/action-bar/action-bar-vertical/manage-skill-action-bar-vertical.component"
 import {ManageSkillActionBarHorizontalComponent} from "./richskill/detail/rich-skill-manage/action-bar/action-bar-horizontal/manage-skill-action-bar-horizontal.component"
-import {ActionBarHorizontalComponent} from "./richskill/action-bar/action-bar-horizontal/action-bar-horizontal.component"
-import {ServerErrorComponent} from "./loading/server-error.component";
-import { CommonModule } from '@angular/common';
+import {ServerErrorComponent} from "./loading/server-error.component"
+import { CommonModule } from "@angular/common"
 
 
 export function initializeApp(appConfig: AppConfig): () => void {

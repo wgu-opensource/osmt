@@ -1,45 +1,60 @@
 
-<header>
-  <nav class="m-navbar">
-    <div class="m-navbar-x-container">
-      <a class="m-navbar-x-brand" href="#">
-        <svg class="t-icon m-sitelogo">
-            <use xlink:href="assets/images/svg-defs.svg#logo"></use>
-        </svg>
+<header aria-labelledby="header-header">
+  <h1 class="t-visuallyHidden" id="header-header">Site Header</h1>
+
+  <!-- {{render '@m-navbar'}} -->
+  <nav class="m-navBar" id="navBar" aria-labelledby="header-navigation">
+    <h2 class="t-visuallyHidden">Site Navigation</h2>
+
+    <div class="m-navBar-x-container">
+      <a class="m-navBar-x-brand" href="#">
+        <span class="t-visuallyHidden">Homepage</span>
+        <img src="/assets/images/logo-dark.svg" alt="Site logo" aria-hidden="true" width="110" height="24">
       </a>
-      <div class="m-navbar-x-tagline">{{whitelabel.toolNameLong}}</div>
-      <ul *ngIf="isAuthenticated()" class="m-navbar-x-nav t-hidden-maxdesktop">
-        <li class="m-navbar-x-navItem">
+
+      <div class="m-navBar-x-tagline">{{whitelabel.toolNameLong}}</div>
+
+      <ul *ngIf="isAuthenticated()" class="m-navBar-x-desktopNav">
+        <li>
           <a class="m-navItem m-navItem-is-active" aria-current="page" routerLink="/skills">Skills Library</a>
         </li>
-        <li class="m-navbar-x-navItem">
+        <li>
           <a class="m-navItem" href="#">Collections</a>
         </li>
-        <li class="m-navbar-x-navItem">
-          <button routerLink="/logout" class="m-button m-button-elevation0 m-button-small m-button-iconSmall" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Logout">
-            <svg class="t-icon">
-              <use xlink:href="assets/images/svg-defs.svg#icon-logout"></use>
-            </svg>
-          </button>
+        <li>
+          <a class="m-iconInteractive m-iconInteractive-alt" routerLink="/logout">
+            <span class="t-visuallyHidden">Icon Interactive</span>
+            <span class="m-iconInteractive-x-icon">
+              <svg class="t-icon" aria-hidden="true">
+                <use xlink:href="/assets/images/svg-defs.svg#icon-logout"></use>
+              </svg>
+            </span>
+          </a>
         </li>
       </ul>
-      <button *ngIf="isAuthenticated()" class="m-navbar-x-toggle m-button m-button-elevation0 m-button-small m-button-iconSmall" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <svg class="t-icon t-icon-menu">
-          <use xlink:href="assets/images/svg-defs.svg#icon-menu"></use>
-        </svg>
-        <svg class="t-icon t-icon-dismiss">
-          <use xlink:href="assets/images/svg-defs.svg#icon-dismiss"></use>
-        </svg>
+
+      <button *ngIf="isAuthenticated()" class="m-navBar-x-toggle m-iconInteractive m-iconInteractive-alt" type="button" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" data-nav-bar="navBar">
+        <span class="t-visuallyHidden">Toggle Navigation</span>
+        <div class="m-iconInteractive-x-icon">
+          <div class="l-iconTransition">
+            <svg class="l-iconTransition-x-icon t-icon">
+              <use xlink:href="/assets/images/svg-defs.svg#icon-menu"></use>
+            </svg>
+            <svg class="l-iconTransition-x-replace t-icon">
+              <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
+            </svg>
+          </div>
+        </div>
       </button>
 
-      <div *ngIf="isAuthenticated()" class="m-navbar-x-collapse t-hidden-mindesktop" id="navbarSupportedContent">
-        <app-commoncontrols-mobile></app-commoncontrols-mobile>
-      </div>
+    </div>
 
+    <div *ngIf="isAuthenticated()" class="m-navBar-x-collapse" id="navbarSupportedContent">
+      <app-commoncontrols-mobile></app-commoncontrols-mobile>
     </div>
   </nav>
 
-  <div *ngIf="isAuthenticated()" class="t-hidden-maxdesktop">
+  <div *ngIf="isAuthenticated()" class="t-hidden-desktopMax">
     <app-commoncontrols></app-commoncontrols>
   </div>
 </header>

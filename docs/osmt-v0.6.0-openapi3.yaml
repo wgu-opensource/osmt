@@ -7,10 +7,10 @@ security:
   - bearerAuth: []
 
 paths:
-  /api/skills/search:
+  /api/search/skills:
     post:
       tags:
-        - Skills
+        - Search
       summary: Search for skills
       description: Return summaries for skills that match the provided query
       parameters:
@@ -295,10 +295,10 @@ paths:
                 $ref: '#/components/schemas/TaskResult'
 
 
-  /api/collections/search:
+  /api/search/collections:
     post:
       tags:
-        - Collections
+        - Search
       summary: Search for collections
       description: Return summaries of Collections that match the provided query
       parameters:

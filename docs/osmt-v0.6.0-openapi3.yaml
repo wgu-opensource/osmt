@@ -533,6 +533,32 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Skill'
+    post:
+      tags:
+        - Collections
+      summary: Add skills to a collection
+      description: Batch add skills to an existing collection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/SkillListUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchResult'
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
 
 
   /api/tasks/{uuid}:
@@ -840,6 +866,14 @@ components:
           type: array
           items:
             type: string
+
+    SkillListUpdate:
+      type: object
+      properties:
+        add:
+          $ref: '#/components/schemas/Search'
+        remove:
+          $ref: '#/components/schemas/Search'
 
     JobCode:
       type: object

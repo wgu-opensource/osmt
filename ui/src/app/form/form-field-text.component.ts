@@ -16,6 +16,7 @@ export class FormFieldText extends FormField implements OnInit {
   @Input() helpMessage: string = ""
   @Input() required: boolean = false
   @Input() name: string = ""
+  @Input() includePlaceholder: boolean = true
 
   constructor() {
     super()

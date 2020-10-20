@@ -48,7 +48,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/SearchQuery'
+                $ref: '#/components/schemas/Search'
       responses:
         '200':
           description: OK
@@ -257,12 +257,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
 
-  /api/skills/manage:
+  /api/skills/publish:
     post:
       tags:
         - Skills
-      summary: Manage multiple skills
-      description: Publish, or Archive multiple skills
+      summary: Publish or Archive multiple skills
+      description: Publish or Archive multiple skills
       parameters:
         - in: query
           name: status
@@ -279,7 +279,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/SearchQuery'
+                $ref: '#/components/schemas/Search'
       responses:
         '200':
           description: OK
@@ -856,12 +856,21 @@ components:
       required:
         - code
 
-
-    SearchQuery:
+    Search:
       type: object
       properties:
         query:
           type: string
+        advanced:
+          $ref: '#/components/schemas/AdvancedSearch'
+        uuids:
+          type: array
+          items:
+            type: string
+
+    AdvancedSearch:
+      type: object
+      properties:
         skillName:
           type: string
         collectionName:
@@ -894,10 +903,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NamedReference'
-        uuids:
-          type: array
-          items:
-            type: string
 
     PublishStatus:
       type: string

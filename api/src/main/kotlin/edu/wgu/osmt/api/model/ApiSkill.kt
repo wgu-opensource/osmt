@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.richskill.RichSkillDescriptor
-import net.minidev.json.JSONObject
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import edu.wgu.osmt.collection.Collection

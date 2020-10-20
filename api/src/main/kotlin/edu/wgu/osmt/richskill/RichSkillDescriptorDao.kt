@@ -55,23 +55,4 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
         )
         return rsd
     }
-
-    fun toDoc(): RichSkillDoc {
-        return RichSkillDoc(
-            id = id.value,
-            uuid = uuid,
-            name = name,
-            statement = statement,
-            category = category?.value,
-            author = author?.value,
-            publishStatus = publishStatus(),
-            searchingKeywords = keywords.filter { it.type == KeywordTypeEnum.Keyword }.mapNotNull { it.value },
-            jobCodes = jobCodes.map { it.toDoc() },
-            standards = keywords.filter { it.type == KeywordTypeEnum.Standard }.mapNotNull { it.value },
-            certifications = keywords.filter { it.type == KeywordTypeEnum.Certification }.mapNotNull { it.value },
-            employers = keywords.filter { it.type == KeywordTypeEnum.Employer }.mapNotNull { it.value },
-            alignments = keywords.filter { it.type == KeywordTypeEnum.Alignment }.mapNotNull { it.value },
-            collections = collections.map { it.toDoc(embedded = true) }
-        )
-    }
 }

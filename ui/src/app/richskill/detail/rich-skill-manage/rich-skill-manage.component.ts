@@ -49,17 +49,19 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
         label: "Occupations",
         bodyHtml: new OccupationsFormatter(this.richSkill?.occupations ?? []).html(),
         showIfEmpty: true
-      }, {
-        label: "Alignment",
-        bodyHtml: this.richSkill?.alignments
-          ?.map(alignment => `<a class="t-link" href="${alignment.id}">${alignment.name}</a>`)
-          ?.join("") ?? "",
-        showIfEmpty: true
-      }, {
+      },
+      {
         label: "Employers",
         bodyHtml: this.richSkill?.employers?.map(employer => employer.name)?.join("; ") ?? "",
         showIfEmpty: true
-      }
+      },
+      {
+        label: "Alignment",
+        bodyHtml: this.richSkill?.alignments
+          ?.map(alignment => `<a class="t-link" target="_blank" href="${alignment.id}">${alignment.name}</a>`)
+          ?.join("") ?? "",
+        showIfEmpty: true
+      },
     ]
   }
 }

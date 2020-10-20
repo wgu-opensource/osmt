@@ -1,17 +1,19 @@
 import {Component, Inject, Input, LOCALE_ID} from "@angular/core"
 import {Router} from "@angular/router"
-import {RichSkillActionBarComponent} from "../rich-skill-action-bar.component";
-import {RichSkillService} from "../../service/rich-skill.service";
-import {ToastService} from "../../../toast/toast.service";
+import {ManageRichSkillActionBarComponent} from "../manage-rich-skill-action-bar.component";
+import {RichSkillService} from "../../../../service/rich-skill.service";
+import {ToastService} from "../../../../../toast/toast.service";
 
 @Component({
-  selector: "app-action-bar-horizontal",
-  templateUrl: "./action-bar-horizontal.component.html"
+  selector: "app-manage-skill-action-bar-horizontal",
+  templateUrl: "./manage-skill-action-bar-horizontal.component.html"
 })
-export class ActionBarHorizontalComponent extends RichSkillActionBarComponent {
+export class ManageSkillActionBarHorizontalComponent extends ManageRichSkillActionBarComponent {
 
   @Input() skillUuid = ""
   @Input() skillName = ""
+  @Input() archived = undefined
+  @Input() published = undefined
 
   // This gets mapped to a visually hidden textarea so that javascript has a node to copy from
   href = ""

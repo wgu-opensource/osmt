@@ -1,12 +1,13 @@
 import {Router} from "@angular/router"
-import {RichSkillService} from "../service/rich-skill.service"
-import {ToastService} from "../../toast/toast.service"
+import {RichSkillService} from "../../../service/rich-skill.service"
+import {ToastService} from "../../../../toast/toast.service"
 import {formatDate} from "@angular/common"
 import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
-import {AppConfig} from "../../app.config"
+import {AppConfig} from "../../../../app.config"
+import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper";
 
 @Component({template: ""})
-export abstract class RichSkillActionBarComponent implements OnInit {
+export abstract class PublicRichSkillActionBarComponent implements OnInit {
 
   abstract skillUuid: string
   abstract skillName: string
@@ -14,6 +15,10 @@ export abstract class RichSkillActionBarComponent implements OnInit {
   // Used in invisible labels to house the data to be added to clipboard
   abstract href: string
   abstract jsonClipboard: string
+
+  duplicateIcon = SvgHelper.path(SvgIcon.DUPLICATE)
+  downloadIcon = SvgHelper.path(SvgIcon.DOWNLOAD)
+  dismissIcon = SvgHelper.path(SvgIcon.DISMISS)
 
   constructor(
     protected router: Router,

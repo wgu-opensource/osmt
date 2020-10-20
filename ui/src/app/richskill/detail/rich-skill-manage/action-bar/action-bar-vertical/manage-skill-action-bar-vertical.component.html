@@ -1,0 +1,45 @@
+<div class="l-actionBarVertical">
+
+  <div class="l-actionBarVertical-x-action">
+    <button class="m-button" (click)="onAddToCollection()">
+      <span class="m-button-x-text">Add to Collection</span>
+    </button>
+  </div>
+
+  <a class="m-actionBarItem" routerLink="../edit">
+	<span class="m-actionBarItem-x-icon">
+		<svg class="t-icon" aria-hidden="true">
+			<use [attr.xlink:href]="editIcon"></use>
+		</svg>
+	</span>
+    <span class="m-actionBarItem-x-text">Edit</span>
+  </a>
+
+  <a class="m-actionBarItem" routerLink="../duplicate">
+	<span class="m-actionBarItem-x-icon">
+		<svg class="t-icon" aria-hidden="true">
+			<use [attr.xlink:href]="duplicateIcon"></use>
+		</svg>
+	</span>
+    <span class="m-actionBarItem-x-text">Duplicate</span>
+  </a>
+
+  <a class="m-actionBarItem" [routerLink]="publishLinkDestination()">
+	<span class="m-actionBarItem-x-icon">
+		<svg class="t-icon" aria-hidden="true">
+			<use [attr.xlink:href]="publishIcon"></use>
+		</svg>
+	</span>
+    <span class="m-actionBarItem-x-text">{{publishLinkText()}}</span>
+  </a>
+
+  <a class="m-actionBarItem" routerLink="../archive">
+	<span class="m-actionBarItem-x-icon">
+		<svg class="t-icon" aria-hidden="true">
+			<use [attr.xlink:href]="archiveIcon"></use>
+		</svg>
+	</span>
+    <span class="m-actionBarItem-x-text">Archive</span>
+  </a>
+
+</div>

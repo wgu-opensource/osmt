@@ -1,40 +1,14 @@
 <div class="m-skillBackground m-skillBackground-detail">
-    <div aria-hidden="true" class="skillBackground-x-corner"></div>
-    <div class="t-verticalSpacing-extraSmall">
-        <div class="m-sectionLabel">{{titleLabel}}</div>
-    </div>
-    <h2 class="t-type-heading1 t-verticalSpacing-extraSmall">{{title}}</h2>
-    <div class="t-verticalSpacing-medium">
-        <p class="t-type-body">Author: {{author}}</p>
-    </div>
-    <div class="t-verticalSpacing-medium">
-        <div class="t-verticalSpacing-medium">
-            <div class="l-flex l-flex-wrap t-spacing-extraSmall-negative">
-                <div *ngIf="publishedDate" class="t-spacing-extraSmall">
-                    <div class="m-status">
-                        <div class="m-status-x-marker" aria-hidden="true"></div>
-                        <div class="m-status-x-label">Published {{publishedDate}}</div>
-                    </div>
-                </div>
-                <div *ngIf="archivedDate" class="t-spacing-extraSmall">
-                    <div class="l-flex l-flex-alignCenter">
-                        <svg class="t-icon t-horizontalSpacing-extraSmall">
-                            <use xlink:href="assets/images/svg-defs.svg#icon-archive"></use>
-                        </svg>
-                        <span class="t-type-body">
-                            Archived {{archivedDate}}
-                        </span>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <div *ngFor="let section of sections">
-        <app-detail-card-section
-          [data]="section"
-          *ngIf="section.bodyHtml || showEmpty"
-        ></app-detail-card-section>
-    </div>
-</div>
-
+  <app-card-detail-title
+    [title]="title"
+    [published]="publishedDate"
+    [archived]="archivedDate"
+    [cardType]="titleLabel"
+    [author]="author">
+  </app-card-detail-title>
+  <div class="t-margin-medium t-margin-bottom" *ngFor="let section of sections">
+    <app-detail-card-section
+      [data]="section"
+      *ngIf="section.bodyHtml || section.showIfEmpty"
+    ></app-detail-card-section>
+  </div>

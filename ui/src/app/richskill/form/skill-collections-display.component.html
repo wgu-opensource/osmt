@@ -10,14 +10,20 @@
     <div class="PUI">
       <style> .strikeout { text-decoration: line-through; } </style>
 
-      <ul>
-        <li *ngFor="let collection of this.allCollections">
-          <span [class.strikeout]="toRemove.indexOf(collection) !== -1">{{collection}}</span>
-          <button *ngIf="toRemove.indexOf(collection) === -1" style="float: right" (click)="handleClickRemove(collection)">x Remove</button>
-          <button *ngIf="toRemove.indexOf(collection) !== -1" style="float: right" (click)="handleClickUndo(collection)">Undo</button>
-        </li>
-        <li *ngIf="this.allCollections.length < 1">Not part of any collections.</li>
-      </ul>
+      <div *ngFor="let collection of this.allCollections" class="m-link">
+        <a [class.strikeout]="removingCollection(collection)" class="m-link-x-link" href="#">{{collection}}</a>
+        <div class="m-link-x-button">
+          <button *ngIf="!this.removingCollection(collection)" class="m-button m-button-form" (click)="handleClickRemove(collection)">
+            <svg class="m-button-x-icon t-icon"> <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use> </svg>
+            <span class="m-button-x-text t-visuallyHidden">{{collection}}</span>
+          </button>
+          <button *ngIf="this.removingCollection(collection)" class="m-button m-button-form" (click)="handleClickUndo(collection)">
+            <svg class="m-button-x-icon t-icon"> <use xlink:href="/assets/images/svg-defs.svg#icon-back"></use> </svg>
+            <span class="strikeout m-button-x-text t-visuallyHidden">{{collection}}</span>
+          </button>
+        </div>
+      </div>
+
     </div>
   </app-formfield>
 

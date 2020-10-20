@@ -53,4 +53,8 @@ export class SkillCollectionsDisplayComponent implements OnInit {
 
     return false
   }
+
+  removingCollection(collection: string): boolean {
+    return this.toRemove.indexOf(collection) !== -1
+  }
 }

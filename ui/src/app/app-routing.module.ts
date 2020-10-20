@@ -1,12 +1,13 @@
 import {NgModule} from "@angular/core"
 import {Routes, RouterModule} from "@angular/router"
-import {RichSkillComponent} from "./richskill/detail/rich-skill.component"
-import {RichSkillsComponent} from "./richskill/detail/rich-skills.component"
-import {RichSkillFormComponent, SkillFormDirtyGuard} from "./richskill/form/rich-skill-form.component";
-import {LoginSuccessComponent} from "./auth/login-success.component";
-import {LogoutComponent} from "./auth/logout.component";
-import {AuthGuard} from "./auth/auth.guard";
-import {LoginComponent} from "./auth/login.component";
+import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
+import {RichSkillsComponent} from "./richskill/library/rich-skills.component"
+import {RichSkillFormComponent, SkillFormDirtyGuard} from "./richskill/form/rich-skill-form.component"
+import {LoginSuccessComponent} from "./auth/login-success.component"
+import {LogoutComponent} from "./auth/logout.component"
+import {AuthGuard} from "./auth/auth.guard"
+import {LoginComponent} from "./auth/login.component"
+import {RichSkillManageComponent} from "./richskill/detail/rich-skill-manage/rich-skill-manage.component"
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -31,7 +32,10 @@ const routes: Routes = [
   },
 
   // public views
-  {path: "skills/:uuid", component: RichSkillComponent},
+  {path: "skills/:uuid", component: RichSkillPublicComponent},
+
+  // Authed views
+  {path: "skills/:uuid/manage", component: RichSkillManageComponent},
 
   // authentication redirects
   {path: "login", component: LoginComponent},  // redirect to oauth login

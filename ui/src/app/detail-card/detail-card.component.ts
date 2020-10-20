@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from "@angular/core"
-import { ApiSkill } from "../richskill/ApiSkill"
 import { IDetailCardSectionData } from "./section/section.component"
 
 @Component({
@@ -8,7 +7,6 @@ import { IDetailCardSectionData } from "./section/section.component"
 })
 export class DetailCardComponent implements OnInit {
 
-  @Input() showEmpty = false
   @Input() sections: IDetailCardSectionData[] = []
   @Input() title = ""
   @Input() titleLabel = ""

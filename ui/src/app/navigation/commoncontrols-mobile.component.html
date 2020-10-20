@@ -1,62 +1,98 @@
-<ul class="m-navbar-x-nav">
-  <li class="m-navbar-x-navItem">
-    <a class="m-buttonText" href="#">
-      <span class="button-x-text">Skills Library</span>
-    </a>
+<ul class="m-navBar-x-nav">
+  <li>
+    <button class="m-buttonText m-buttonText-alt" routerLink="/skills">
+      <span class="m-buttonText-x-text">Skills Library</span>
+    </button>
   </li>
-  <li class="m-navbar-x-navItem">
-    <a class="m-buttonText" href="#">
-      <span class="button-x-text">Collections Library</span>
-    </a>
+
+  <li>
+    <button class="m-buttonText m-buttonText-alt">
+      <span class="m-buttonText-x-text">Collections Library</span>
+    </button>
   </li>
 </ul>
-<div class="t-verticalSpacing-medium">
-  <div class="m-formInput m-formInput-buttonBar m-formInput-icon">
-    <input type="search" placeholder="Search Skills or Collections" />
-    <svg class="t-icon">
-      <use xlink:href="assets/images/svg-defs.svg#icon-search"></use>
+
+<div>
+  <!--{{render '@m-search'}}-->
+  <div class="m-search">
+    <svg class="m-search-x-icon t-icon">
+      <use xlink:href="/assets/images/svg-defs.svg#icon-search"></use>
     </svg>
-    <div class="m-buttonBar">
-      <button class="m-buttonText t-horizontalSpacing-extraSmall">
-        <span class="button-x-text">Skills</span>
-      </button>
-      <div class="m-divider t-horizontalSpacing-extraSmall"></div>
-      <button class="m-buttonText">
-        <span class="button-x-text">Collections</span>
-      </button>
+    <input class="m-search-x-input" type="text" required>
+    <div class="m-search-x-controls">
+      <div class="m-search-x-clear">
+        <button class="m-iconInteractive" type="button">
+
+          <span class="t-visuallyHidden">Clear Search</span>
+
+          <div class="m-iconInteractive-x-icon">
+            <svg class="t-icon" aria-hidden="true">
+              <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
+            </svg>
+          </div>
+
+        </button>
+      </div>
+      <div class="l-buttonTextBar">
+
+        <a class="m-buttonText" href="#">
+          <span class="m-buttonText-x-text">Skills</span>
+        </a>
+
+        <div class="m-divider"></div>
+
+        <a class="m-buttonText" href="#">
+          <span class="m-buttonText-x-text">Collections</span>
+        </a>
+
+      </div>
     </div>
   </div>
 </div>
-<ul class="m-navbar-x-nav">
-  <li class="m-navbar-x-navItem">
-    <a class="m-buttonText m-buttonText-icon" href="#">
-      <svg class="button-x-icon t-icon">
-        <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
-      </svg>
-      <span class="button-x-text">Create Skill</span>
-    </a>
+
+<ul class="m-navBar-x-nav">
+
+  <li>
+    <button class="m-buttonText m-buttonText-alt" routerLink="/skills/create">
+      <span class="m-buttonText-x-icon">
+        <svg class="t-icon" aria-hidden="true">
+          <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
+        </svg>
+      </span>
+      <span class="m-buttonText-x-text">Create Skill</span>
+    </button>
   </li>
-  <li class="m-navbar-x-navItem">
-    <a class="m-buttonText m-buttonText-icon" href="#">
-      <svg class="button-x-icon t-icon">
-        <use xlink:href="/assets/images/svg-defs.svg#icon-collection"></use>
-      </svg>
-      <span class="button-x-text">Create Collection</span>
-    </a>
+
+  <li>
+    <button class="m-buttonText m-buttonText-alt">
+      <span class="m-buttonText-x-icon">
+        <svg class="t-icon" aria-hidden="true">
+          <use xlink:href="/assets/images/svg-defs.svg#icon-collection"></use>
+        </svg>
+      </span>
+      <span class="m-buttonText-x-text">Create Collection</span>
+    </button>
   </li>
-  <li class="m-navbar-x-navItem">
-    <a class="m-buttonText m-buttonText-icon" href="#">
-      <svg class="button-x-icon t-icon">
-        <use xlink:href="/assets/images/svg-defs.svg#icon-upload"></use>
-      </svg>
-      <span class="button-x-text">Batch Import Skills</span>
-    </a>
+
+  <li>
+    <button class="m-buttonText m-buttonText-alt">
+      <span class="m-buttonText-x-icon">
+        <svg class="t-icon" aria-hidden="true">
+          <use xlink:href="/assets/images/svg-defs.svg#icon-upload"></use>
+        </svg>
+      </span>
+      <span class="m-buttonText-x-text">Batch Import Skills</span>
+    </button>
+  </li>
+
+</ul>
+
+<ul class="m-navBar-x-nav">
+  <li>
+    <button class="m-buttonText m-buttonText-alt" routerLink="/logout">
+      <span class="m-buttonText-x-text">Logout</span>
+    </button>
   </li>
 </ul>
-<ul class="m-navbar-x-nav">
-  <li class="m-navbar-x-navItem">
-    <a class="m-buttonText" href="#">
-      <span class="button-x-text">Log Out</span>
-    </a>
-  </li>
-</ul>
+
+

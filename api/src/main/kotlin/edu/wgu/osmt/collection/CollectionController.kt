@@ -1,6 +1,7 @@
 package edu.wgu.osmt.collection
 
 import edu.wgu.osmt.HasAllPaginated
+import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiCollection
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
 import edu.wgu.osmt.config.AppConfig
@@ -27,9 +28,9 @@ class CollectionController @Autowired constructor(
     val appConfig: AppConfig
 ): HasAllPaginated<CollectionDoc> {
 
-    override val allPaginatedPath: String = COLLECTIONS_PATH
+    override val allPaginatedPath: String = RoutePaths.COLLECTIONS_PATH
 
-    @GetMapping(COLLECTIONS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.COLLECTIONS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     override fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -41,7 +42,7 @@ class CollectionController @Autowired constructor(
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort)
     }
 
-    @GetMapping(DETAIL_COLLECTION_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.COLLECTION_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun byUUID(@PathVariable uuid: String): ApiCollection? {
         return collectionRepository.findByUUID(uuid)?.let {
@@ -49,12 +50,12 @@ class CollectionController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @RequestMapping(DETAIL_COLLECTION_PATH, produces = [MediaType.TEXT_HTML_VALUE])
+    @RequestMapping(RoutePaths.COLLECTION_DETAIL, produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(@PathVariable uuid: String): String {
         return "forward:/collections/$uuid"
     }
 
-    @PostMapping(COLLECTIONS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.COLLECTIONS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createCollections(
         @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
@@ -70,7 +71,7 @@ class CollectionController @Autowired constructor(
 
     }
 
-    @PostMapping(DETAIL_COLLECTION_UPDATE_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.COLLECTION_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateCollection(
         @PathVariable uuid: String,
@@ -92,8 +93,5 @@ class CollectionController @Autowired constructor(
     }
 
     companion object {
-        const val COLLECTIONS_PATH = "/api/collections"
-        const val DETAIL_COLLECTION_PATH = "${COLLECTIONS_PATH}/{uuid}"
-        const val DETAIL_COLLECTION_UPDATE_PATH = "${DETAIL_COLLECTION_PATH}/update"
     }
 }

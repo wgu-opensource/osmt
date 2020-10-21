@@ -1,6 +1,7 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.HasAllPaginated
+import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiSkill
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.config.AppConfig
@@ -31,9 +32,9 @@ class RichSkillController @Autowired constructor(
 ): HasAllPaginated<RichSkillDoc> {
     val keywordDao = KeywordDao.Companion
 
-    override val allPaginatedPath: String = SKILLS_PATH
+    override val allPaginatedPath: String = RoutePaths.SKILLS_PATH
 
-    @GetMapping(SKILLS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.SKILLS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     override fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -45,7 +46,7 @@ class RichSkillController @Autowired constructor(
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort)
     }
 
-    @GetMapping(SKILLS_PATH, produces = ["text/csv"])
+    @GetMapping(RoutePaths.SKILLS_PATH, produces = ["text/csv"])
     @ResponseBody
     fun allSkillsCsv(): HttpEntity<TaskResult> {
         val task = CsvTask()
@@ -57,7 +58,7 @@ class RichSkillController @Autowired constructor(
         return ResponseEntity.status(202).headers(responseHeaders).body(tr)
     }
 
-    @PostMapping(SKILLS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.SKILLS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createSkills(
         @RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
@@ -68,7 +69,7 @@ class RichSkillController @Autowired constructor(
         }
     }
 
-    @GetMapping(DETAIL_SKILL_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.SKILL_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun byUUID(
         @PathVariable uuid: String,
@@ -83,7 +84,7 @@ class RichSkillController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @RequestMapping(DETAIL_SKILL_PATH, produces = [MediaType.TEXT_HTML_VALUE])
+    @RequestMapping(RoutePaths.SKILL_DETAIL, produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(
         @PathVariable uuid: String,
         @AuthenticationPrincipal user: Jwt?
@@ -97,7 +98,7 @@ class RichSkillController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @RequestMapping(DETAIL_SKILL_PATH, produces = ["text/csv"])
+    @RequestMapping(RoutePaths.SKILL_DETAIL, produces = ["text/csv"])
     fun byUUIDCsvView(
         @PathVariable uuid: String,
         @AuthenticationPrincipal user: Jwt?
@@ -116,7 +117,7 @@ class RichSkillController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @PostMapping(DETAIL_SKILL_UPDATE_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.SKILL_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateSkill(
         @PathVariable uuid: String,
@@ -133,9 +134,4 @@ class RichSkillController @Autowired constructor(
         return ApiSkill.fromDao(updatedSkill, appConfig)
     }
 
-    companion object {
-        const val SKILLS_PATH = "/api/skills"
-        const val DETAIL_SKILL_PATH = "$SKILLS_PATH/{uuid}"
-        const val DETAIL_SKILL_UPDATE_PATH = "$DETAIL_SKILL_PATH/update"
-    }
 }

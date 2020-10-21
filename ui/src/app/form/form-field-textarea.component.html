@@ -7,5 +7,7 @@
   [required]="required"
   [name]="name"
 >
-  <textarea [formControl]="control" [placeholder]="placeholder" id="formfield-{{name}}"></textarea>
+  <div class="m-text" [class.m-text-is-error]="isError()">
+    <textarea [formControl]="control" [attr.placeholder]="includePlaceholder ? placeholder : null" id="formfield-{{name}}"></textarea>
+  </div>
 </app-formfield>

@@ -1,13 +1,22 @@
 package edu.wgu.osmt.collection
 
+import edu.wgu.osmt.api.FormValidationException
+import edu.wgu.osmt.api.model.ApiCollectionUpdate
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
+import edu.wgu.osmt.db.ListFieldUpdate
+import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.elasticsearch.EsCollectionRepository
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
+import edu.wgu.osmt.keyword.KeywordTypeEnum
+import edu.wgu.osmt.richskill.RichSkillDescriptorDao
+import edu.wgu.osmt.richskill.RichSkillRepository
+import edu.wgu.osmt.richskill.RichSkillDoc
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,8 +34,27 @@ interface CollectionRepository {
     fun findById(id: Long): CollectionDao?
     fun findByUUID(uuid: String): CollectionDao?
     fun findByName(name: String): CollectionDao?
-    fun create(name: String, author: KeywordDao? = null): CollectionDao
+    fun create(name: String, user: String): CollectionDao?
+    fun create(updateObject: CollectionUpdateObject, user: String): CollectionDao?
     fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao?
+
+    fun createFromApi(
+        apiUpdates: List<ApiCollectionUpdate>,
+        richSkillRepository: RichSkillRepository,
+        user: String
+    ): List<CollectionDao>
+
+    fun collectionUpdateObjectFromApi(
+        collectionUpdate: ApiCollectionUpdate,
+        richSkillRepository: RichSkillRepository
+    ): CollectionUpdateObject
+
+    fun updateFromApi(
+        existingCollectionId: Long,
+        collectionUpdate: ApiCollectionUpdate,
+        richSkillRepository: RichSkillRepository,
+        user: String
+    ): CollectionDao?
 }
 
 
@@ -36,7 +64,8 @@ class CollectionRepositoryImpl @Autowired constructor(
     val keywordRepository: KeywordRepository,
     val auditLogRepository: AuditLogRepository,
     val esRichSkillRepository: EsRichSkillRepository,
-    val esCollectionRepository: EsCollectionRepository
+    val esCollectionRepository: EsCollectionRepository,
+    val appConfig: AppConfig
 ) : CollectionRepository {
     override val table = CollectionTable
     override val dao = CollectionDao.Companion
@@ -55,16 +84,27 @@ class CollectionRepositoryImpl @Autowired constructor(
         return query?.let { dao.wrapRow(it) }
     }
 
-    override fun create(name: String, author: KeywordDao?): CollectionDao {
-        val authorKeyword: KeywordDao? = author ?: keywordRepository.getDefaultAuthor()
-        return dao.new {
-            this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
+    override fun create(name: String, user: String): CollectionDao? {
+        return create(CollectionUpdateObject(name=name), user)
+    }
+
+    override fun create(updateObject: CollectionUpdateObject, user: String): CollectionDao? {
+        if (updateObject.name.isNullOrBlank()) {
+            return null
+        }
+
+        val newCollection = dao.new {
             this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.updateDate = this.creationDate
             this.uuid = UUID.randomUUID().toString()
-            this.name = name
-            this.author = authorKeyword
+            this.name = updateObject.name
         }
+
+        val updateWithIdAndAuthor = updateObject.copy(
+            id = newCollection.id.value,
+            author = updateObject.author ?: NullableFieldUpdate(keywordRepository.getDefaultAuthor())
+        )
+        return update(updateWithIdAndAuthor, user)
     }
 
     fun applyUpdate(collectionDao: CollectionDao, updateObject: CollectionUpdateObject): Unit {
@@ -89,16 +129,16 @@ class CollectionRepositoryImpl @Autowired constructor(
 
         updateObject.skills?.let {
             it.add?.forEach { skill ->
-                CollectionSkills.create(collectionId = updateObject.id, skillId = skill.id.value)
+                CollectionSkills.create(collectionId = updateObject.id!!, skillId = skill.id.value)
             }
             it.remove?.forEach { skill ->
-                CollectionSkills.delete(collectionId = updateObject.id, skillId = skill.id.value)
+                CollectionSkills.delete(collectionId = updateObject.id!!, skillId = skill.id.value)
             }
         }
     }
 
     override fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao? {
-        val daoObject = dao.findById(updateObject.id)
+        val daoObject = dao.findById(updateObject.id!!)
         val changes = daoObject?.let { updateObject.diff(it) }
 
         daoObject?.let {
@@ -106,7 +146,7 @@ class CollectionRepositoryImpl @Autowired constructor(
 
             // reindex elastic search documents
             esCollectionRepository.save(it.toDoc())
-            esRichSkillRepository.saveAll(it.skills.map { skill -> skill.toDoc() })
+            esRichSkillRepository.saveAll(it.skills.map { skill -> RichSkillDoc.fromDao(skill, appConfig) })
         }
 
         changes?.let { it ->
@@ -122,5 +162,69 @@ class CollectionRepositoryImpl @Autowired constructor(
                 )
         }
         return daoObject
+    }
+
+    override fun createFromApi(apiUpdates: List<ApiCollectionUpdate>, richSkillRepository: RichSkillRepository, user: String): List<CollectionDao> {
+        // pre validate all rows
+        val allErrors = apiUpdates.mapIndexed { i, updateDto ->
+            updateDto.validateForCreation(i)
+        }.filterNotNull().flatten()
+        if (allErrors.isNotEmpty()) {
+            throw FormValidationException("Invalid SkillUpdateDescriptor", allErrors)
+        }
+
+        // create records
+        val newSkills = apiUpdates.map { update ->
+            val updateObject = collectionUpdateObjectFromApi(update, richSkillRepository)
+            create(updateObject, user)
+        }
+        return newSkills.filterNotNull()
+    }
+
+    override fun updateFromApi(
+        existingCollectionId: Long,
+        collectionUpdate: ApiCollectionUpdate,
+        richSkillRepository: RichSkillRepository,
+        user: String
+    ): CollectionDao? {
+        val errors = collectionUpdate.validate(0)
+        if (errors?.isNotEmpty() == true) {
+            throw FormValidationException("Invalid SkillUpdateDescriptor", errors)
+        }
+
+        val collectionUpdateObject = collectionUpdateObjectFromApi(collectionUpdate, richSkillRepository)
+        val updateObjectWithId = collectionUpdateObject.copy(
+            id = existingCollectionId
+        )
+        return update(updateObjectWithId, user)
+    }
+
+    override fun collectionUpdateObjectFromApi(collectionUpdate: ApiCollectionUpdate, richSkillRepository: RichSkillRepository): CollectionUpdateObject {
+        val authorKeyword = collectionUpdate.author?.let {
+            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it.name, uri = it.id)
+        }
+
+        val adding = mutableListOf<RichSkillDescriptorDao>()
+        val removing = mutableListOf<RichSkillDescriptorDao>()
+        collectionUpdate.skills?.let {slu ->
+            slu.add?.mapNotNull {
+                richSkillRepository.findByUUID(it)
+            }?.let {
+                adding.addAll(it)
+            }
+
+            slu.remove?.mapNotNull {
+                richSkillRepository.findByUUID(it)
+            }?.let {
+                removing.addAll(it)
+            }
+        }
+
+        return CollectionUpdateObject(
+            name = collectionUpdate.name,
+            publishStatus = collectionUpdate.publishStatus,
+            author = authorKeyword?.let { NullableFieldUpdate(it) },
+            skills = if (adding.size + removing.size > 0) ListFieldUpdate(adding, removing) else null
+        )
     }
 }

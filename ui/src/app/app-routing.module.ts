@@ -1,17 +1,46 @@
 import {NgModule} from "@angular/core"
 import {Routes, RouterModule} from "@angular/router"
-import {RichSkillComponent} from "./richskill/detail/rich-skill.component"
-import {RichSkillsComponent} from "./richskill/detail/rich-skills.component"
-import {RichSkillFormComponent, SkillFormDirtyGuard} from "./richskill/form/rich-skill-form.component";
+import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
+import {RichSkillsComponent} from "./richskill/library/rich-skills.component"
+import {RichSkillFormComponent, SkillFormDirtyGuard} from "./richskill/form/rich-skill-form.component"
+import {LoginSuccessComponent} from "./auth/login-success.component"
+import {LogoutComponent} from "./auth/logout.component"
+import {AuthGuard} from "./auth/auth.guard"
+import {LoginComponent} from "./auth/login.component"
+import {RichSkillManageComponent} from "./richskill/detail/rich-skill-manage/rich-skill-manage.component"
 
 const routes: Routes = [
-  {path: "api/skills/:uuid", component: RichSkillComponent},
+  { path: "", redirectTo: "/skills", pathMatch: "full" },
 
-  {path: "skills/create", component: RichSkillFormComponent, canDeactivate: [SkillFormDirtyGuard]},  // create skill
-  {path: "skills/:uuid", component: RichSkillComponent},  // public skill view
-  {path: "skills/:uuid/edit", component: RichSkillFormComponent, canDeactivate: [SkillFormDirtyGuard]},  // edit skill
+  // create skill
+  {path: "skills/create",
+    component: RichSkillFormComponent,
+    canActivate: [AuthGuard],
+    canDeactivate: [SkillFormDirtyGuard]},
 
-  {path: "skills", component: RichSkillsComponent},  // skills library
+  // edit skill
+  {path: "skills/:uuid/edit",
+    component: RichSkillFormComponent,
+    canActivate: [AuthGuard],
+    canDeactivate: [SkillFormDirtyGuard]
+  },
+
+  // skills library
+  {path: "skills",
+    component: RichSkillsComponent,
+    canActivate: [AuthGuard],
+  },
+
+  // public views
+  {path: "skills/:uuid", component: RichSkillPublicComponent},
+
+  // Authed views
+  {path: "skills/:uuid/manage", component: RichSkillManageComponent},
+
+  // authentication redirects
+  {path: "login", component: LoginComponent},  // redirect to oauth login
+  {path: "logout", component: LogoutComponent},  // app logout
+  {path: "login/success", component: LoginSuccessComponent},  // post-login redirect destination
 ]
 
 @NgModule({

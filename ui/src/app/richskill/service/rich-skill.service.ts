@@ -1,11 +1,11 @@
 import {Injectable} from "@angular/core"
-import {HttpClient} from "@angular/common/http"
+import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {Observable} from "rxjs"
 import {ApiSkill, ISkill} from "../ApiSkill"
 import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
-import {ApiSkillUpdate} from "../ApiSkillUpdate"
-import RuntimeError = WebAssembly.RuntimeError
+import {ApiSkillUpdate} from "../ApiSkillUpdate";
+import {AuthService} from "../../auth/auth-service";
 
 
 @Injectable({
@@ -13,8 +13,8 @@ import RuntimeError = WebAssembly.RuntimeError
 })
 export class RichSkillService extends AbstractService {
 
-  constructor(httpClient: HttpClient) {
-    super(httpClient)
+  constructor(httpClient: HttpClient, authService: AuthService) {
+    super(httpClient, authService)
   }
 
   private serviceUrl = "api/skills"
@@ -48,9 +48,10 @@ export class RichSkillService extends AbstractService {
 
     return this.httpClient
       .get(`${this.serviceUrl}/${uuid}`, {
-        headers: {
-          Accept: "text/csv"
-        },
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "text/csv"
+          }
+        )),
         responseType: "text",
         observe: "response"
       })
@@ -64,10 +65,12 @@ export class RichSkillService extends AbstractService {
     const errorMsg = `Could not find skill by uuid [${uuid}]`
 
     return this.httpClient
-      .get(`${this.serviceUrl}/${uuid}`, {
-        headers: {
-          Accept: "application/json"
-        },
+      .get(this.buildUrl(`${this.serviceUrl}/${uuid}`), {
+        headers: this.wrapHeaders(new HttpHeaders(
+          {
+            Accept: "application/json"
+          }
+        )),
         responseType: "text",
         observe: "response"
       })

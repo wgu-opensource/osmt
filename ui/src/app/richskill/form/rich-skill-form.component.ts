@@ -193,7 +193,7 @@ export class RichSkillFormComponent implements OnInit {
     if (this.skillSaved) {
       this.skillSaved.subscribe((result) => {
         this.skillForm.markAsPristine()
-        this.router.navigate(["/skills", result.uuid])
+        this.router.navigate([`/skills/${result.uuid}/manage`])
       })
     }
   }
@@ -273,20 +273,32 @@ export class RichSkillFormComponent implements OnInit {
     for (const fieldName of fieldOrder) {
       const control = this.skillForm.controls[fieldName]
       if (control && !control.valid) {
-        const containerId = `formfield-container-${fieldName}`
-        const el = document.getElementById(containerId)
-        if (el) {
-          el.scrollIntoView()
-
-          const fieldId = `formfield-${fieldName}`
-          const field = document.getElementById(fieldId)
-          if (field) {
-            field.focus()
-          }
+        if (this.focusFormField(fieldName)) {
           return false
         }
       }
     }
+    return false
+  }
+
+  focusFormField(fieldName: string): boolean {
+    const containerId = `formfield-container-${fieldName}`
+    const el = document.getElementById(containerId)
+    if (el) {
+      el.scrollIntoView()
+
+      const fieldId = `formfield-${fieldName}`
+      const field = document.getElementById(fieldId)
+      if (field) {
+        field.focus()
+      }
+      return true
+    }
+    return false
+  }
+
+  scrollToTop(): boolean {
+    this.focusFormField("skillName")
     return false
   }
 }

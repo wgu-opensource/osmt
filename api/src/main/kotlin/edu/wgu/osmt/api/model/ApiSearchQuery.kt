@@ -8,35 +8,35 @@ import edu.wgu.osmt.db.PublishStatus
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class ApiSearchQuery(
     @JsonProperty("query")
-    val query: String?,
+    val query: String? = null,
 
     @JsonProperty("skillName")
-    val skillName: String?,
+    val skillName: String? = null,
 
     @JsonProperty("collectionName")
-    val collectionName: String?,
+    val collectionName: String? = null,
 
     @JsonProperty("category")
-    val category: String?,
+    val category: String? = null,
 
     @JsonProperty("skillStatement")
-    val skillStatement: String?,
+    val skillStatement: String? = null,
 
     @JsonProperty("keywords")
-    val keywords: List<String>?,
+    val keywords: List<String>? = null,
 
     @JsonProperty("occupations")
-    val occupations: List<ApiNamedReference>?,
+    val occupations: List<ApiNamedReference>? = null,
 
     @JsonProperty("standards")
-    val standards: List<ApiNamedReference>?,
+    val standards: List<ApiNamedReference>? = null,
 
     @JsonProperty("certifications")
-    val certifications: List<ApiNamedReference>?,
+    val certifications: List<ApiNamedReference>? = null,
 
     @JsonProperty("employers")
-    val employers: List<ApiNamedReference>?,
+    val employers: List<ApiNamedReference>? = null,
 
     @JsonProperty("alignments")
-    val alignments: List<ApiNamedReference>?
+    val alignments: List<ApiNamedReference>? = null
 )

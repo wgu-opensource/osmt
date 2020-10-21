@@ -1,5 +1,6 @@
 export interface IAppConfig {
   baseApiUrl: string,
+  loginUrl: string,
   editableAuthor: boolean,
   defaultAuthorValue: string,
   toolName: string,
@@ -16,6 +17,7 @@ export interface IAppConfig {
 // Default configuration
 export class DefaultAppConfig implements IAppConfig {
   baseApiUrl = ""
+  loginUrl = ""
   editableAuthor = true
   defaultAuthorValue = ""
   toolName = "OSMT"

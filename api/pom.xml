@@ -15,6 +15,11 @@
             <url>https://repo.spring.io/release</url>
         </repository>
         <repository>
+            <id>spring-repo-milestone</id>
+            <name>Spring Repository Milestone</name>
+            <url>https://repo.spring.io/milestone</url>
+        </repository>
+        <repository>
             <id>jcenter</id>
             <name>jcenter</name>
             <url>https://jcenter.bintray.com</url>
@@ -36,6 +41,7 @@
         <kotlin.code.style>official</kotlin.code.style>
         <start-class>edu.wgu.osmt.ApplicationKt</start-class>
         <testcontainers.version>1.15.0-rc2</testcontainers.version>
+        <spring-data-elasticsearch.version>4.1.0-RC2</spring-data-elasticsearch.version>
     </properties>
 
     <dependencies>
@@ -67,13 +73,19 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-elasticsearch</artifactId>
+            <version>${spring-data-elasticsearch.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.exposed</groupId>
             <artifactId>exposed-spring-boot-starter</artifactId>
             <version>${exposed.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.okta.spring</groupId>
+            <artifactId>okta-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.exposed</groupId>

@@ -24,7 +24,7 @@ class OffsetPageable(offset: Int, limit: Int, private val sort: Sort?) : Pageabl
     }
 
     override fun hasPrevious(): Boolean {
-        return offset > limit
+        return offset >= limit
     }
 
     override fun getSort(): Sort {

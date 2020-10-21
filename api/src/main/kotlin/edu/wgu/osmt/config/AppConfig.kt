@@ -26,6 +26,12 @@ class AppConfig {
     @Value("\${app.defaultCreatorUri}")
     lateinit var defaultCreatorUri: String
 
+    @Value("\${app.frontendUrl}")
+    lateinit var frontendUrl: String
+
+    @Value("\${app.loginSuccessRedirectUrl}")
+    lateinit var loginSuccessRedirectUrl: String
+
     @Autowired
     lateinit var environment: Environment
 

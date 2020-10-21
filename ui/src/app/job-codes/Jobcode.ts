@@ -118,48 +118,23 @@ export class OccupationsFormatter {
     let html = ""
 
     if (majorCodes) {
-      html += `
-        <div>
-            <span class="t-type-bodyBold">Major codes</span><br>
-            ${majorCodes}<br>
-        </div>
-      `
+      html += `<h4 class="t-type-bodyBold">Major Groups</h4><p>${majorCodes}</p>`
     }
 
     if (minorCodes) {
-      html += `
-        <div>
-            <span class="t-type-bodyBold">Minor codes</span><br>
-            ${minorCodes}<br>
-        </div>
-      `
+      html += `<h4 class="t-type-bodyBold">Minor Groups</h4><p>${minorCodes}</p>`
     }
 
     if (broadCodes) {
-      html += `
-        <div>
-            <span class="t-type-bodyBold">Broad codes</span><br>
-            ${broadCodes}<br>
-        </div>
-      `
+      html += `<h4 class="t-type-bodyBold">Broad Occupations</h4><p>${broadCodes}</p>`
     }
 
     if (detailedCodes) {
-      html += `
-        <div>
-            <span class="t-type-bodyBold">Detailed codes</span><br>
-            ${detailedCodes}<br>
-        </div>
-      `
+      html += `<h4 class="t-type-bodyBold">Detailed Occupations</h4><p>${detailedCodes}</p>`
     }
 
     if (jobRoleCodes) {
-      html += `
-        <div>
-            <span class="t-type-bodyBold">O*NET Job Roles</span><br>
-            ${jobRoleCodes}
-        </div>
-      `
+      html += `<h4 class="t-type-bodyBold">O*NET Job Roles</h4><p>${jobRoleCodes}</p>`
     }
 
     return html

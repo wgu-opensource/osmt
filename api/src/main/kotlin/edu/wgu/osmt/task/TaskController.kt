@@ -1,5 +1,6 @@
 package edu.wgu.osmt.task
 
+import edu.wgu.osmt.RoutePaths
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -8,16 +9,14 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 
 @Controller
-@RequestMapping("/api/tasks")
 class TaskController @Autowired constructor(
     val taskMessageService: TaskMessageService
 ) {
 
-    @GetMapping("/{uuid}")
+    @GetMapping(RoutePaths.TASK_DETAIL)
     @ResponseBody
     fun checkTaskOrResult(@PathVariable uuid: String): HttpEntity<*> {
         val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)

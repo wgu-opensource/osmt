@@ -46,10 +46,10 @@ interface HasAllPaginated<T> {
         // build up current uri with path and params
         uriComponentsBuilder
             .path(allPaginatedPath)
-            .queryParam(SearchController.Companion.QueryParams.FROM, from)
-            .queryParam(SearchController.Companion.QueryParams.SIZE, size)
-            .queryParam(SearchController.Companion.QueryParams.SORT, sort)
-            .queryParam(SearchController.Companion.QueryParams.STATUS, status.joinToString(",").toLowerCase())
+            .queryParam(RoutePaths.QueryParams.FROM, from)
+            .queryParam(RoutePaths.QueryParams.SIZE, size)
+            .queryParam(RoutePaths.QueryParams.SORT, sort)
+            .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
 
         PaginatedLinks(
             pageable,

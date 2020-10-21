@@ -2,14 +2,21 @@ package edu.wgu.osmt.api.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import edu.wgu.osmt.api.model.ApiNamedReference
-import edu.wgu.osmt.db.PublishStatus
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
-data class ApiSearchQuery(
+data class ApiSearch(
     @JsonProperty("query")
     val query: String? = null,
 
+    @JsonProperty("query")
+    val advanced: ApiAdvancedSearch? = null,
+
+    @JsonProperty("uuids")
+    val uuids: List<String>? = null
+)
+
+@JsonInclude(JsonInclude.Include.ALWAYS)
+data class ApiAdvancedSearch(
     @JsonProperty("skillName")
     val skillName: String? = null,
 

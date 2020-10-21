@@ -1,7 +1,7 @@
 package edu.wgu.osmt.elasticsearch
 
 import edu.wgu.osmt.RoutePaths
-import edu.wgu.osmt.api.model.ApiSearchQuery
+import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSortEnum
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.config.AppConfig
@@ -34,14 +34,14 @@ class SearchController @Autowired constructor(
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
         @RequestParam(required = false, defaultValue = "category.asc") sort: String,
-        @RequestBody apiSearchQuery: ApiSearchQuery
+        @RequestBody apiSearch: ApiSearch
     ): HttpEntity<List<CollectionDoc>> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val sortEnum = ApiSortEnum.forApiValue(sort)
         val pageable = OffsetPageable(from, size, sortEnum.esSort)
 
         val searchHits =
-            elasticsearchService.searchCollectionsByApiSearchQuery(apiSearchQuery, publishStatuses, pageable)
+            elasticsearchService.searchCollectionsByApiSearch(apiSearch, publishStatuses, pageable)
 
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", searchHits.totalHits.toString())
@@ -73,14 +73,14 @@ class SearchController @Autowired constructor(
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
         @RequestParam(required = false, defaultValue = "category.asc") sort: String,
-        @RequestBody apiSearchQuery: ApiSearchQuery
+        @RequestBody apiSearch: ApiSearch
     ): HttpEntity<List<RichSkillDoc>> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val sortEnum = ApiSortEnum.forApiValue(sort)
         val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum.esSort)
 
-        val searchHits = elasticsearchService.searchRichSkillsByApiSearchQuery(
-            apiSearchQuery,
+        val searchHits = elasticsearchService.searchRichSkillsByApiSearch(
+            apiSearch,
             publishStatuses,
             pageable
         )

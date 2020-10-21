@@ -1,7 +1,8 @@
 package edu.wgu.osmt.elasticsearch
 
 import edu.wgu.osmt.api.model.ApiNamedReference
-import edu.wgu.osmt.api.model.ApiSearchQuery
+import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
@@ -65,8 +66,8 @@ class SearchService @Autowired constructor(
     }
 
     // Query clauses for Rich Skill properties
-    fun generateBoolQueriesFromApiSearchQuery(bq: BoolQueryBuilder, apiSearchQuery: ApiSearchQuery) {
-        with(apiSearchQuery) {
+    fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch) {
+        with(advancedQuery) {
             // boolQuery.must for logical AND
             // boolQuery.should for logical OR
 
@@ -120,8 +121,8 @@ class SearchService @Autowired constructor(
         }
     }
 
-    fun searchCollectionsByApiSearchQuery(
-        apiSearchQuery: ApiSearchQuery,
+    fun searchCollectionsByApiSearch(
+        apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
         pageable: Pageable = PageRequest.of(
             0,
@@ -138,9 +139,9 @@ class SearchService @Autowired constructor(
         var collectionMultiPropertyResults: List<String> = listOf()
 
         // treat the presence of query property to mean multi field search with that term
-        if (apiSearchQuery.query != null) {
+        if (apiSearch.query != null) {
             // Search against rich skill properties
-            bq.must(richSkillPropertiesMultiMatch(apiSearchQuery.query))
+            bq.must(richSkillPropertiesMultiMatch(apiSearch.query))
 
             // always include inner collection object with rich skill search hits
             bq.must(
@@ -154,18 +155,18 @@ class SearchService @Autowired constructor(
             // search on collection specific properties
             collectionMultiPropertyResults = elasticsearchRestTemplate.search(
                 NativeSearchQueryBuilder().withQuery(
-                    boolQuery().should(collectionPropertiesMultiMatch(apiSearchQuery.query))
+                    boolQuery().should(collectionPropertiesMultiMatch(apiSearch.query))
                 ).withPageable(Pageable.unpaged()).withFilter(filter).build(), CollectionDoc::class.java
             ).searchHits.map { it.content.uuid }
 
-        } else {
-            generateBoolQueriesFromApiSearchQuery(bq, apiSearchQuery)
+        } else if (apiSearch.advanced != null){
+            generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)
 
-            if (apiSearchQuery.collectionName != null) {
+            if (apiSearch.advanced.collectionName != null) {
                 bq.must(
                     nestedQuery(
                         RichSkillDoc::collections.name,
-                        boolQuery().must(matchQuery("collections.name", apiSearchQuery.collectionName)),
+                        boolQuery().must(matchQuery("collections.name", apiSearch.advanced.collectionName)),
                         ScoreMode.Avg
                     ).innerHit(InnerHitBuilder())
                 )
@@ -196,8 +197,8 @@ class SearchService @Autowired constructor(
         )
     }
 
-    fun searchRichSkillsByApiSearchQuery(
-        apiSearchQuery: ApiSearchQuery,
+    fun searchRichSkillsByApiSearch(
+        apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
         pageable: Pageable = Pageable.unpaged()
     ): SearchHits<RichSkillDoc> {
@@ -209,20 +210,20 @@ class SearchService @Autowired constructor(
         nsq.withFilter(filter)
 
         // treat the presence of query property to mean multi field search with that term
-        if (apiSearchQuery.query != null) {
-            bq.should(richSkillPropertiesMultiMatch(apiSearchQuery.query))
+        if (apiSearch.query != null) {
+            bq.should(richSkillPropertiesMultiMatch(apiSearch.query))
 
             bq.should(
                 nestedQuery(
                     RichSkillDoc::collections.name,
-                    matchQuery("collections.name", apiSearchQuery.query),
+                    matchQuery("collections.name", apiSearch.query),
                     ScoreMode.Avg
                 )
             )
-        } else {
-            generateBoolQueriesFromApiSearchQuery(bq, apiSearchQuery)
+        } else if (apiSearch.advanced != null) {
+            generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)
 
-            apiSearchQuery.collectionName?.let {
+            apiSearch.advanced.collectionName?.let {
                 bq.must(
                     nestedQuery(
                         RichSkillDoc::collections.name,

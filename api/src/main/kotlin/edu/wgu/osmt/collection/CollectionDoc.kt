@@ -11,6 +11,10 @@ import org.springframework.data.elasticsearch.annotations.FieldType.*
 import org.springframework.data.elasticsearch.annotations.InnerField
 import org.springframework.data.elasticsearch.annotations.MultiField
 
+/**
+ * Elasticsearch representation of a Collection.
+ * Also corresponds to `CollectionSummary` API response object
+ */
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @Document(indexName = "collection_v1", createIndex = true)
 data class CollectionDoc(

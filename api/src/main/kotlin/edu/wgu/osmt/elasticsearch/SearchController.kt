@@ -1,6 +1,7 @@
 package edu.wgu.osmt.elasticsearch
 
 import edu.wgu.osmt.api.model.ApiSearchQuery
+import edu.wgu.osmt.api.model.ApiSortEnum
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
@@ -35,8 +36,8 @@ class SearchController @Autowired constructor(
         @RequestBody apiSearchQuery: ApiSearchQuery
     ): HttpEntity<List<CollectionDoc>> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val sortEnum = SortEnum.forApiValue(sort)
-        val pageable = OffsetPageable(from, size, sortEnum.sort)
+        val sortEnum = ApiSortEnum.forApiValue(sort)
+        val pageable = OffsetPageable(from, size, sortEnum.esSort)
 
         val searchHits =
             elasticsearchService.searchCollectionsByApiSearchQuery(apiSearchQuery, publishStatuses, pageable)
@@ -74,8 +75,8 @@ class SearchController @Autowired constructor(
         @RequestBody apiSearchQuery: ApiSearchQuery
     ): HttpEntity<List<RichSkillDoc>> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val sortEnum = SortEnum.forApiValue(sort)
-        val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum.sort)
+        val sortEnum = ApiSortEnum.forApiValue(sort)
+        val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum.esSort)
 
         val searchHits = elasticsearchService.searchRichSkillsByApiSearchQuery(
             apiSearchQuery,

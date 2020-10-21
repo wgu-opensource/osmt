@@ -265,13 +265,22 @@ paths:
       description: Publish or Archive multiple skills
       parameters:
         - in: query
-          name: status
+          name: newStatus
           schema:
             type: string
             default: Published
             enum:
               - Published
               - Archived
+        - in: query
+          name: filterByStatus
+          schema:
+            default:
+              - Unpublished
+              - Published
+            type: array
+            items:
+              $ref: '#/components/schemas/PublishStatus'
       requestBody:
         required: true
         content:
@@ -1002,6 +1011,8 @@ components:
         message:
           type: string
         modifiedCount:
+          type: number
+        totalCount:
           type: number
 
     ErrorResult:

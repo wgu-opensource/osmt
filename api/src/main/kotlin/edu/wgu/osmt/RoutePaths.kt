@@ -8,6 +8,7 @@ class RoutePaths {
 
         const val SKILLS_PATH = "/api/skills"
         const val SKILL_LIST = SKILLS_PATH
+        const val SKILL_PUBLISH = "$SKILLS_PATH/publish"
         const val SKILL_DETAIL = "$SKILLS_PATH/{uuid}"
         const val SKILL_UPDATE = "$SKILL_DETAIL/update"
 

@@ -2,6 +2,7 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
+import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSkill
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.config.AppConfig
@@ -10,6 +11,7 @@ import edu.wgu.osmt.elasticsearch.*
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
 import edu.wgu.osmt.task.CsvTask
+import edu.wgu.osmt.task.PublishSkillsTask
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskResult
 import org.springframework.beans.factory.annotation.Autowired
@@ -134,4 +136,28 @@ class RichSkillController @Autowired constructor(
         return ApiSkill.fromDao(updatedSkill, appConfig)
     }
 
+    @PostMapping(RoutePaths.SKILL_PUBLISH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun publishSkills(
+        @RequestBody search: ApiSearch,
+        @RequestParam(
+            required = false,
+            defaultValue = "Published"
+        ) newStatus: String,
+        @RequestParam(
+            required = false,
+            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+        ) filterByStatus: List<String>,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
+        val filterStatuses = filterByStatus.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
+        val publishStatus = PublishStatus.forApiValue(newStatus) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        val task = PublishSkillsTask(search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = readableUsername(user))
+        taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
+
+        val responseHeaders = HttpHeaders()
+        responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        val tr = TaskResult.fromTask(task)
+        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
+    }
 }

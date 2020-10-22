@@ -1,6 +1,6 @@
 <ng-template [appLoadingObservables]="[skillLoaded]">
   <div class="l-stickyBar" *ngIf="richSkill; else noSkill">
-    <div class="l-stickySidebar l-container">
+    <div class="l-stickySidebar l-container t-margin-medium t-margin-bottom">
 
       <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
         <app-detail-card
@@ -13,7 +13,7 @@
         ></app-detail-card>
       </div>
 
-      <div class="l-stickySidebar-x-sidebar">
+      <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
         <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
           <app-public-skill-action-bar-vertical [skillUuid]="getSkillUuid()" [skillName]="getSkillName()"></app-public-skill-action-bar-vertical>
         </div>

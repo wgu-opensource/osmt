@@ -1,0 +1,19 @@
+<ng-template [appLoadingObservables]="[skills]">
+  <div class="l-container">
+    <app-richskills-csv-export></app-richskills-csv-export>
+    <table class="l-table">
+      <thead>
+        <app-table-header
+          [columns]="tableColumns"
+          (columnClicked)="headerColumnSortPerformed($event)"
+        ></app-table-header>
+      </thead>
+      <tbody>
+      <app-table
+        [skills]="skills"
+        (selectedRowEmitter)="tableSelectionPerformed($event)"
+      ></app-table>
+      </tbody>
+    </table>
+  </div>
+</ng-template>

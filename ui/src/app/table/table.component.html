@@ -1,0 +1,6 @@
+<ng-template [appLoadingObservables]="[skills]" *ngFor="let skill of preparedSkills">
+    <app-table-row
+      [skill]="skill"
+      (selected)="onRowToggle($event)"
+    ></app-table-row>
+</ng-template>

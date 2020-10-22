@@ -226,7 +226,7 @@ export class RichSkillFormComponent implements OnInit {
       skillName: skill.skillName,
       skillStatement: skill.skillStatement,
       category: skill.category ?? "",
-      keywords: skill.keywords?.join("; ") ?? "",
+      keywords: skill.formattedKeywords() ?? "",
       standards: skill.standards?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
       collections: skill.collections?.slice() ?? [],
       certifications: skill.certifications?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",

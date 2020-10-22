@@ -1,7 +1,7 @@
 import {NgModule} from "@angular/core"
 import {Routes, RouterModule} from "@angular/router"
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
-import {RichSkillsComponent} from "./richskill/library/rich-skills.component"
+import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-library.component"
 import {RichSkillFormComponent, SkillFormDirtyGuard} from "./richskill/form/rich-skill-form.component"
 import {LoginSuccessComponent} from "./auth/login-success.component"
 import {LogoutComponent} from "./auth/logout.component"
@@ -27,7 +27,7 @@ const routes: Routes = [
 
   // skills library
   {path: "skills",
-    component: RichSkillsComponent,
+    component: RichSkillsLibraryComponent,
     canActivate: [AuthGuard],
   },
 

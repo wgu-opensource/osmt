@@ -3,7 +3,7 @@ import {APP_INITIALIZER, NgModule} from "@angular/core"
 import {AppRoutingModule} from "./app-routing.module"
 import {AppComponent} from "./app.component"
 import {HttpClientModule} from "@angular/common/http"
-import {RichSkillsComponent} from "./richskill/library/rich-skills.component"
+import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-library.component"
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
 import {RichSkillsCsvExportComponent} from "./richskill/task/rich-skills-csv-export.component"
 import {AppConfig} from "./app.config"
@@ -32,8 +32,14 @@ import {ManageSkillActionBarVerticalComponent} from "./richskill/detail/rich-ski
 import {ManageSkillActionBarHorizontalComponent} from "./richskill/detail/rich-skill-manage/action-bar/action-bar-horizontal/manage-skill-action-bar-horizontal.component"
 import {ServerErrorComponent} from "./loading/server-error.component"
 import { CommonModule } from "@angular/common"
-import {DetailCardStatusBarComponent} from "./detail-card/status-bar/detail-card-status-bar.component";
-import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component";
+import {DetailCardStatusBarComponent} from "./detail-card/status-bar/detail-card-status-bar.component"
+import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component"
+import { AccordianComponent } from "./table/accordian/accordian.component"
+import { TableComponent } from "./table/table.component"
+import { TableRowComponent } from "./table/table-row/table-row.component"
+import { TableHeaderComponent } from "./table-header/table-header.component"
+import { TableLabelComponent } from "./table/table-label/table-label.component"
+import { LabelSelectSmallComponent } from "./table-header/label-select-small/label-select-small.component"
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -61,7 +67,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     FormFieldTextArea,
 
     // Rich skills
-    RichSkillsComponent,
+    RichSkillsLibraryComponent,
     RichSkillsCsvExportComponent,
     SkillCollectionsDisplayComponent,
 
@@ -78,6 +84,12 @@ export function initializeApp(appConfig: AppConfig): () => void {
     DetailCardSectionComponent,
     DetailCardStatusBarComponent,
     CardDetailTitleComponent,
+    AccordianComponent,
+    TableComponent,
+    TableRowComponent,
+    TableHeaderComponent,
+    TableLabelComponent,
+    LabelSelectSmallComponent,
   ],
   imports: [
     BrowserModule,

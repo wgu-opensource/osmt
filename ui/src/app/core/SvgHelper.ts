@@ -1,11 +1,15 @@
 export enum SvgIcon {
-  DOWNLOAD = "icon-download",
+  ADD = "icon-add",
+  ARCHIVE = "icon-archive",
+  CHECK = "icon-check",
+  CHEVRON = "icon-chevron",
   DISMISS = "icon-dismiss",
+  DOWNLOAD = "icon-download",
   DUPLICATE = "icon-duplicate",
   EDIT = "icon-edit",
-  PUBLISH = "icon-publish",
-  ARCHIVE = "icon-archive",
-  ICON_UP = "icon-up"
+  ICON_UP = "icon-up",
+  MORE = "icon-more",
+  PUBLISH = "icon-publish"
 }
 
 export class SvgHelper {

@@ -1,0 +1,99 @@
+<tr
+  *ngIf="!!skill"
+  [ngClass]="{
+    'm-tableRow': true,
+    'm-tableRow-is-selected': isSelected
+  }"
+  id="tableRow">
+
+  <th class="m-tableRow-x-header" scope="row" id="tableRow-header">
+
+    <div class="t-hidden-tabletMax">{{skill.skill.category}}</div>
+
+    <div class="l-flex l-flex-gapp5x t-hidden-tabletMin">
+      <h5 class="t-type-smallBold">Category:</h5>
+      <p class="t-type-small">{{skill.skill.category}}</p>
+    </div>
+
+  </th>
+
+  <td class="m-tableRow-x-body">
+
+    <h4 class="t-margin-extraSmall t-margin-bottom">
+      <a class="t-type-bodyLink" href="#">{{skill.skill.skillName}}</a>
+    </h4>
+
+    <p class="t-margin-small t-margin-bottom">{{skill.skill.skillName}}</p>
+
+    <div class="t-margin-small t-margin-bottom">
+      <app-detail-card-status-bar
+        [published]=""
+        [archived]=""
+      ></app-detail-card-status-bar>
+    </div>
+
+    <app-accordian
+      [keywords]="skill.skill.formattedKeywords()"
+      [detailedOccupations]="skill.skill.formatOccupations().detailedGroups()"
+      [buttonText]=""
+    ></app-accordian>
+
+  </td>
+
+  <td class="m-tableRow-x-actions">
+
+    <div>
+      <div class="m-checkbox">
+
+        <label class="t-visuallyHidden" for="tableRow-toggle" aria-labelledby="tableRow-header">Select</label>
+
+        <input type="checkbox" ns modifiename="tableRow-toggle" data-table-row="tableRow" (click)="onSelect($event)">
+
+        <div class="m-checkbox-x-icon">
+          <svg class="t-icon" aria-hidden="true">
+            <use [attr.xlink:href]="checkIcon"></use>
+          </svg>
+        </div>
+
+      </div>
+    </div>
+
+    <button class="m-iconInteractive" type="button" data-select-menu="selectmenu" aria-haspopup="true" aria-expanded="false" aria-labelledby="tableRow-header">
+
+      <span class="t-visuallyHidden">More</span>
+
+      <span class="m-iconInteractive-x-icon">
+						<svg class="t-icon" aria-hidden="true">
+							<use [attr.xlink:href]="moreIcon"></use>
+						</svg>
+					</span>
+
+    </button>
+
+    <div class="m-selectMenu" id="selectmenu" role="menu">
+      <div class="m-selectMenu-x-content">
+
+        <h6 class="t-type-small">Actions</h6>
+
+        <button class="m-buttonText" type="button" role="menuitem">
+          <span class="m-buttonText-x-text">Action 1</span>
+        </button>
+
+        <button class="m-buttonText" type="button" role="menuitem">
+          <span class="m-buttonText-x-text">Action 2</span>
+        </button>
+
+        <button class="m-buttonText" type="button" role="menuitem">
+          <span class="m-buttonText-x-text">Action 3</span>
+        </button>
+
+        <button class="m-buttonText" type="button" role="menuitem">
+          <span class="m-buttonText-x-text">Action 4</span>
+        </button>
+
+      </div>
+    </div>
+
+  </td>
+
+</tr>

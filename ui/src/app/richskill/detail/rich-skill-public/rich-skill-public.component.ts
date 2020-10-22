@@ -30,7 +30,7 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
         showIfEmpty: false
       }, {
         label: "Keywords",
-        bodyHtml: this.richSkill?.keywords?.join("; ") ?? "",
+        bodyHtml: this.richSkill?.formattedKeywords() ?? "",
         showIfEmpty: false
       }, {
         label: "Associated Collections",
@@ -38,11 +38,11 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
         showIfEmpty: false
       }, {
         label: "Standards",
-        bodyHtml: this.richSkill?.standards?.map(standard => standard.name)?.join("\n") ?? "",
+        bodyHtml: this.richSkill?.standards?.map(({name}) => name)?.join("\n") ?? "",
         showIfEmpty: false
       }, {
         label: "Certifications",
-        bodyHtml: this.richSkill?.certifications?.map(alignment => alignment.name)?.join("\n") ?? "",
+        bodyHtml: this.richSkill?.certifications?.map(({name}) => name)?.join("\n") ?? "",
         showIfEmpty: false
       }, {
         label: "Occupations",

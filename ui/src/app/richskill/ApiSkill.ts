@@ -1,4 +1,4 @@
-import {IJobCode} from "../job-codes/Jobcode"
+import {IJobCode, JobCodeBreakout, OccupationsFormatter} from "../job-codes/Jobcode"
 import {PublishStatus} from "../PublishStatus"
 
 
@@ -90,5 +90,13 @@ export class ApiSkill {
     this.type = iRichSkill.type
     this.employers = iRichSkill.employers
     this.occupations = iRichSkill.occupations
+  }
+
+  formattedKeywords(delimiter: string = "; "): string {
+    return this.keywords.join(delimiter)
+  }
+
+  formatOccupations(): OccupationsFormatter {
+    return new OccupationsFormatter(this.occupations)
   }
 }

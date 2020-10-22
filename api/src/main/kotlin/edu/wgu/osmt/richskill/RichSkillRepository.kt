@@ -80,8 +80,18 @@ class RichSkillRepositoryImpl @Autowired constructor(
     fun applyUpdate(rsdDao: RichSkillDescriptorDao, updateObject: RsdUpdateObject): Unit {
         rsdDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
         when (updateObject.publishStatus) {
-            PublishStatus.Archived -> rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-            PublishStatus.Published -> rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Archived -> {
+                if (rsdDao.publishDate != null) {
+                    rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+                }
+            }
+            PublishStatus.Published -> {
+                if (rsdDao.archiveDate != null) {
+                    rsdDao.archiveDate = null // unarchive
+                } else {
+                    rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+                }
+            }
             PublishStatus.Unpublished -> {
             } // non-op
         }
@@ -349,12 +359,14 @@ class RichSkillRepositoryImpl @Autowired constructor(
         var totalCount = 0
 
         val publish_skill = {skillDao: RichSkillDescriptorDao, task: PublishSkillsTask ->
-            if (skillDao.publishStatus() != task.publishStatus) {
-                val updateObj = RsdUpdateObject(publishStatus = task.publishStatus)
-                this.update(updateObj, task.userString)
-                true
-            }
-            false
+            val oldStatus = skillDao.publishStatus()
+            if (oldStatus != task.publishStatus) {
+                val updateObj = RsdUpdateObject(id = skillDao.id.value, publishStatus = task.publishStatus)
+                val updatedDao = this.update(updateObj, task.userString)
+                val newStatus = updatedDao?.publishStatus()
+                (newStatus != oldStatus)
+            } else false
+
         }
 
         val handle_skill_dao = {skillDao: RichSkillDescriptorDao? ->

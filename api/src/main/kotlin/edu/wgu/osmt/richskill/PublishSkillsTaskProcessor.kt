@@ -34,10 +34,10 @@ class PublishSkillsTaskProcessor {
     fun publishSkills(publishSkillsTask: PublishSkillsTask) {
         logger.info("Started processing publish skills task id: ${publishSkillsTask.uuid}")
 
-        val result = richSkillRepository.changeStatusesForTask(publishSkillsTask)
+        val batchResult = richSkillRepository.changeStatusesForTask(publishSkillsTask)
 
         taskMessageService.publishResult(
-            publishSkillsTask.copy(result=result, status=TaskStatus.Ready)
+            publishSkillsTask.copy(result=batchResult, status=TaskStatus.Ready)
         )
 
         logger.info("Task ${publishSkillsTask.uuid} completed")

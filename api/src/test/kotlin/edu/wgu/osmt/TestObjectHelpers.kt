@@ -1,6 +1,9 @@
 package edu.wgu.osmt
 
 import edu.wgu.osmt.api.model.ApiNamedReference
+import edu.wgu.osmt.api.model.ApiReferenceListUpdate
+import edu.wgu.osmt.api.model.ApiSkillUpdate
+import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
@@ -102,6 +105,59 @@ object TestObjectHelpers {
         val name = if (includeName) UUID.randomUUID().toString() else null
         val uri = if (includeUri) UUID.randomUUID().toString() else null
         return ApiNamedReference(id=uri, name=name)
+    }
+
+    fun apiSkillUpdateGenerator(name: String? = null,
+                                statement: String? = null,
+                                publishStatus: PublishStatus = PublishStatus.Unpublished,
+                                keywordCount: Int = 3,
+                                certificationCount: Int = 3,
+                                standardCount: Int = 3,
+                                alignmentCount: Int = 3,
+                                employerCount: Int = 3,
+                                occupationCount: Int = 3,
+                                collectionCount: Int = 3): ApiSkillUpdate {
+        val skillName = name ?: UUID.randomUUID().toString()
+        val skillStatement = statement ?: UUID.randomUUID().toString()
+        val categoryName = UUID.randomUUID().toString()
+        val author = namedReferenceGenerator(includeName=true, includeUri=false)
+
+        val keywords = ApiStringListUpdate(
+            add=(1..keywordCount).toList().map { UUID.randomUUID().toString() }
+        )
+        val certifications = ApiReferenceListUpdate(
+            add=(1..certificationCount).toList().map { namedReferenceGenerator(includeName = false, includeUri = true) }
+        )
+        val standards = ApiReferenceListUpdate(
+            add=(1..standardCount).toList().map { namedReferenceGenerator(includeName = true, includeUri = true) }
+        )
+        val alignments = ApiReferenceListUpdate(
+            add=(1..alignmentCount).toList().map { namedReferenceGenerator(includeName = false, includeUri = true) }
+        )
+        val employers = ApiReferenceListUpdate(
+            add=(1..employerCount).toList().map { namedReferenceGenerator(includeName = true, includeUri = false) }
+        )
+        val occupations = ApiStringListUpdate(
+            add=(1..occupationCount).toList().map { UUID.randomUUID().toString() }
+        )
+        val collections = ApiStringListUpdate(
+            add=(1..collectionCount).toList().map { UUID.randomUUID().toString() }
+        )
+
+        return ApiSkillUpdate(
+            skillName=skillName,
+            skillStatement=skillStatement,
+            publishStatus=publishStatus,
+            category=categoryName,
+            author=author,
+            keywords=keywords,
+            certifications=certifications,
+            standards=standards,
+            alignments=alignments,
+            employers=employers,
+            occupations=occupations,
+            collections=collections
+        )
     }
 
     fun assertThatKeywordMatchesNamedReference(keyword: Keyword?, namedReference: ApiNamedReference?) {

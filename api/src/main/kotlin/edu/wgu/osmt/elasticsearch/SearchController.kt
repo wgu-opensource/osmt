@@ -1,6 +1,7 @@
 package edu.wgu.osmt.elasticsearch
 
-import edu.wgu.osmt.api.model.ApiSearchQuery
+import edu.wgu.osmt.RoutePaths
+import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSortEnum
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.config.AppConfig
@@ -23,7 +24,7 @@ class SearchController @Autowired constructor(
     val appConfig: AppConfig
 ) {
 
-    @PostMapping(COLLECTIONS_SEARCH_PATH)
+    @PostMapping(RoutePaths.SEARCH_COLLECTIONS)
     @ResponseBody
     fun searchCollections(uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,
@@ -33,25 +34,25 @@ class SearchController @Autowired constructor(
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
         @RequestParam(required = false, defaultValue = "category.asc") sort: String,
-        @RequestBody apiSearchQuery: ApiSearchQuery
+        @RequestBody apiSearch: ApiSearch
     ): HttpEntity<List<CollectionDoc>> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val sortEnum = ApiSortEnum.forApiValue(sort)
         val pageable = OffsetPageable(from, size, sortEnum.esSort)
 
         val searchHits =
-            elasticsearchService.searchCollectionsByApiSearchQuery(apiSearchQuery, publishStatuses, pageable)
+            elasticsearchService.searchCollectionsByApiSearch(apiSearch, publishStatuses, pageable)
 
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", searchHits.totalHits.toString())
 
         // build up current uri with path and params
         uriComponentsBuilder
-            .path(COLLECTIONS_SEARCH_PATH)
-            .queryParam(QueryParams.FROM, from)
-            .queryParam(QueryParams.SIZE, size)
-            .queryParam(QueryParams.SORT, sort)
-            .queryParam(QueryParams.STATUS, status.joinToString(",").toLowerCase())
+            .path(RoutePaths.SEARCH_COLLECTIONS)
+            .queryParam(RoutePaths.QueryParams.FROM, from)
+            .queryParam(RoutePaths.QueryParams.SIZE, size)
+            .queryParam(RoutePaths.QueryParams.SORT, sort)
+            .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
 
         PaginatedLinks(
             pageable,
@@ -62,7 +63,7 @@ class SearchController @Autowired constructor(
         return ResponseEntity.status(200).headers(responseHeaders).body(searchHits.map { it.content }.toList())
     }
 
-    @PostMapping(SKILL_SEARCH_PATH)
+    @PostMapping(RoutePaths.SEARCH_SKILLS)
     @ResponseBody
     fun searchSkills(uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,
@@ -72,25 +73,25 @@ class SearchController @Autowired constructor(
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
         @RequestParam(required = false, defaultValue = "category.asc") sort: String,
-        @RequestBody apiSearchQuery: ApiSearchQuery
+        @RequestBody apiSearch: ApiSearch
     ): HttpEntity<List<RichSkillDoc>> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val sortEnum = ApiSortEnum.forApiValue(sort)
         val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum.esSort)
 
-        val searchHits = elasticsearchService.searchRichSkillsByApiSearchQuery(
-            apiSearchQuery,
+        val searchHits = elasticsearchService.searchRichSkillsByApiSearch(
+            apiSearch,
             publishStatuses,
             pageable
         )
 
         // build up current uri with path and params
         uriComponentsBuilder
-            .path(SKILL_SEARCH_PATH)
-            .queryParam(QueryParams.FROM, from)
-            .queryParam(QueryParams.SIZE, size)
-            .queryParam(QueryParams.SORT, sort)
-            .queryParam(QueryParams.STATUS, status.joinToString(",").toLowerCase())
+            .path(RoutePaths.SEARCH_SKILLS)
+            .queryParam(RoutePaths.QueryParams.FROM, from)
+            .queryParam(RoutePaths.QueryParams.SIZE, size)
+            .queryParam(RoutePaths.QueryParams.SORT, sort)
+            .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
 
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", searchHits.totalHits.toString())
@@ -104,19 +105,6 @@ class SearchController @Autowired constructor(
         return ResponseEntity.status(200).headers(responseHeaders)
             .body(searchHits.map { it.content }.toList())
     }
-
-    companion object {
-        const val SKILL_SEARCH_PATH = "/api/skills/search"
-        const val COLLECTIONS_SEARCH_PATH = "/api/collections/search"
-
-        object QueryParams {
-            const val FROM = "from"
-            const val SIZE = "size"
-            const val STATUS = "status"
-            const val SORT = "sort"
-        }
-
-    }
 }
 
 
@@ -125,7 +113,7 @@ class PaginatedLinks(
     total: Int,
     uriComponentsBuilder: UriComponentsBuilder
 ) {
-    val QP = SearchController.Companion.QueryParams
+    val QP = RoutePaths.QueryParams
     val hasPrevious = pageable.hasPrevious()
     val hasNext = total > pageable.offset + pageable.limit
     val previousOrLastOffset: Int =

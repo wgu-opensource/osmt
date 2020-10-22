@@ -7,10 +7,10 @@ security:
   - bearerAuth: []
 
 paths:
-  /api/skills/search:
+  /api/search/skills:
     post:
       tags:
-        - Skills
+        - Search
       summary: Search for skills
       description: Return summaries for skills that match the provided query
       parameters:
@@ -48,7 +48,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/SearchQuery'
+                $ref: '#/components/schemas/Search'
       responses:
         '200':
           description: OK
@@ -70,7 +70,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SkillSummary'
-
 
   /api/skills:
     get:
@@ -224,6 +223,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+
   /api/skills/{uuid}/update:
     parameters:
       - name: uuid
@@ -257,11 +257,57 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
 
-
-  /api/collections/search:
+  /api/skills/publish:
     post:
       tags:
-        - Collections
+        - Skills
+      summary: Publish or Archive multiple skills
+      description: Publish or Archive multiple skills
+      parameters:
+        - in: query
+          name: newStatus
+          schema:
+            type: string
+            default: Published
+            enum:
+              - Published
+              - Archived
+        - in: query
+          name: filterByStatus
+          schema:
+            default:
+              - Unpublished
+              - Published
+            type: array
+            items:
+              $ref: '#/components/schemas/PublishStatus'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Search'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchResult'
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+
+
+  /api/search/collections:
+    post:
+      tags:
+        - Search
       summary: Search for collections
       description: Return summaries of Collections that match the provided query
       parameters:
@@ -496,6 +542,32 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Skill'
+    post:
+      tags:
+        - Collections
+      summary: Add skills to a collection
+      description: Batch add skills to an existing collection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/SkillListUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchResult'
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
 
 
   /api/tasks/{uuid}:
@@ -832,6 +904,17 @@ components:
           items:
             type: string
 
+    SkillListUpdate:
+      type: object
+      properties:
+        add:
+          $ref: '#/components/schemas/Search'
+        remove:
+          type: array
+          items:
+            type: string
+            format: uuid
+
     JobCode:
       type: object
       properties:
@@ -847,12 +930,21 @@ components:
       required:
         - code
 
-
-    SearchQuery:
+    Search:
       type: object
       properties:
         query:
           type: string
+        advanced:
+          $ref: '#/components/schemas/AdvancedSearch'
+        uuids:
+          type: array
+          items:
+            type: string
+
+    AdvancedSearch:
+      type: object
+      properties:
         skillName:
           type: string
         collectionName:
@@ -913,6 +1005,18 @@ components:
         uuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         content-type: "text/csv"
         status: "Processing"
+
+    BatchResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        modifiedCount:
+          type: number
+        totalCount:
+          type: number
 
     ErrorResult:
       type: object

@@ -90,7 +90,6 @@ data class RsdUpdateObject(
                     validate(KeywordDao::type).isEqualTo(KeywordTypeEnum.Author)
                 }
             }
-            validate(RsdUpdateObject::publishStatus).isNotEqualTo(PublishStatus.Unpublished)
         }
     }
 

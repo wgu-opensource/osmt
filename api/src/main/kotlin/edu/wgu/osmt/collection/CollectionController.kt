@@ -1,13 +1,20 @@
 package edu.wgu.osmt.collection
 
 import edu.wgu.osmt.HasAllPaginated
+import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiCollection
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
+import edu.wgu.osmt.api.model.ApiSkillListUpdate
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.*
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.security.OAuth2Helper
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
+import edu.wgu.osmt.task.Task
+import edu.wgu.osmt.task.TaskMessageService
+import edu.wgu.osmt.task.TaskResult
+import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -23,13 +30,14 @@ import org.springframework.web.util.UriComponentsBuilder
 class CollectionController @Autowired constructor(
     val collectionRepository: CollectionRepository,
     val richSkillRepository: RichSkillRepository,
+    val taskMessageService: TaskMessageService,
     override val elasticRepository: EsCollectionRepository,
     val appConfig: AppConfig
 ): HasAllPaginated<CollectionDoc> {
 
-    override val allPaginatedPath: String = COLLECTIONS_PATH
+    override val allPaginatedPath: String = RoutePaths.COLLECTIONS_PATH
 
-    @GetMapping(COLLECTIONS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.COLLECTIONS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     override fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -41,7 +49,7 @@ class CollectionController @Autowired constructor(
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort)
     }
 
-    @GetMapping(DETAIL_COLLECTION_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.COLLECTION_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun byUUID(@PathVariable uuid: String): ApiCollection? {
         return collectionRepository.findByUUID(uuid)?.let {
@@ -49,12 +57,12 @@ class CollectionController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @RequestMapping(DETAIL_COLLECTION_PATH, produces = [MediaType.TEXT_HTML_VALUE])
+    @RequestMapping(RoutePaths.COLLECTION_DETAIL, produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(@PathVariable uuid: String): String {
         return "forward:/collections/$uuid"
     }
 
-    @PostMapping(COLLECTIONS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.COLLECTIONS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createCollections(
         @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
@@ -70,7 +78,7 @@ class CollectionController @Autowired constructor(
 
     }
 
-    @PostMapping(DETAIL_COLLECTION_UPDATE_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.COLLECTION_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateCollection(
         @PathVariable uuid: String,
@@ -91,9 +99,25 @@ class CollectionController @Autowired constructor(
         return ApiCollection.fromDao(updated, appConfig)
     }
 
-    companion object {
-        const val COLLECTIONS_PATH = "/api/collections"
-        const val DETAIL_COLLECTION_PATH = "${COLLECTIONS_PATH}/{uuid}"
-        const val DETAIL_COLLECTION_UPDATE_PATH = "${DETAIL_COLLECTION_PATH}/update"
+
+    @PostMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun manageSkills(
+        @PathVariable uuid: String,
+        @RequestBody skillListUpdate: ApiSkillListUpdate,
+        @RequestParam(
+            required = false,
+            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+        ) status: List<String>,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
+        val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
+        val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = readableUsername(user))
+        taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
+
+        val responseHeaders = HttpHeaders()
+        responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        val tr = TaskResult.fromTask(task)
+        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
     }
 }

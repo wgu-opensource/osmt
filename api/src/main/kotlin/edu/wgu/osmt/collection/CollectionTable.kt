@@ -63,8 +63,8 @@ object CollectionSkills : Table("CollectionSkills") {
             it[this.skillId] = EntityID(skillId, RichSkillDescriptorTable)
         }
     }
-    fun delete(collectionId: Long, skillId: Long) {
-        deleteWhere {
+    fun delete(collectionId: Long, skillId: Long): Int {
+        return deleteWhere {
             (CollectionSkills.collectionId eq collectionId) and
             (CollectionSkills.skillId eq skillId)
         }

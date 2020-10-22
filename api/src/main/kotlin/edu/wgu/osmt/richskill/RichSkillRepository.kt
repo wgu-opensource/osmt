@@ -1,6 +1,7 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.api.FormValidationException
+import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiReferenceListUpdate
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.api.model.ApiStringListUpdate
@@ -14,20 +15,20 @@ import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.*
 import edu.wgu.osmt.elasticsearch.EsCollectionRepository
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
+import edu.wgu.osmt.elasticsearch.SearchService
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import org.jetbrains.exposed.dao.LongEntity
-import org.jetbrains.exposed.sql.*
+import edu.wgu.osmt.task.PublishSkillsTask
+import org.jetbrains.exposed.sql.Query
+import org.jetbrains.exposed.sql.SizedIterable
+import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
-import org.springframework.data.util.Streamable
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
-import java.lang.Error
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
@@ -47,6 +48,8 @@ interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
     fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject
 
     fun paginateAll(publishStatuses: Set<PublishStatus>, pageable: Pageable): PaginatedResults<RichSkillDescriptorDao>
+
+    fun changeStatusesForTask(task: PublishSkillsTask): ApiBatchResult
 }
 
 @Repository
@@ -58,6 +61,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
     val collectionRepository: CollectionRepository,
     val esRichSkillRepository: EsRichSkillRepository,
     val esCollectionRepository: EsCollectionRepository,
+    val searchService: SearchService,
     val appConfig: AppConfig
 ) :
     RichSkillRepository {
@@ -76,8 +80,18 @@ class RichSkillRepositoryImpl @Autowired constructor(
     fun applyUpdate(rsdDao: RichSkillDescriptorDao, updateObject: RsdUpdateObject): Unit {
         rsdDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
         when (updateObject.publishStatus) {
-            PublishStatus.Archived -> rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-            PublishStatus.Published -> rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Archived -> {
+                if (rsdDao.publishDate != null) {
+                    rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+                }
+            }
+            PublishStatus.Published -> {
+                if (rsdDao.archiveDate != null) {
+                    rsdDao.archiveDate = null // unarchive
+                } else {
+                    rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+                }
+            }
             PublishStatus.Unpublished -> {
             } // non-op
         }
@@ -338,6 +352,53 @@ class RichSkillRepositoryImpl @Autowired constructor(
         val total = query.count()
         val results =  dao.wrapRows(query.limit(pageable.pageSize, offset = pageable.offset)).toList()
         return PaginatedResults(total.toInt(), results)
+    }
+
+    override fun changeStatusesForTask(publishSkillsTask: PublishSkillsTask): ApiBatchResult {
+        var modifiedCount = 0
+        var totalCount = 0
+
+        val publish_skill = {skillDao: RichSkillDescriptorDao, task: PublishSkillsTask ->
+            val oldStatus = skillDao.publishStatus()
+            if (oldStatus != task.publishStatus) {
+                val updateObj = RsdUpdateObject(id = skillDao.id.value, publishStatus = task.publishStatus)
+                val updatedDao = this.update(updateObj, task.userString)
+                val newStatus = updatedDao?.publishStatus()
+                (newStatus != oldStatus)
+            } else false
+
+        }
+
+        val handle_skill_dao = {skillDao: RichSkillDescriptorDao? ->
+            skillDao?.let {
+                if (publish_skill(it, publishSkillsTask)) {
+                    modifiedCount += 1
+                }
+            }
+        }
+
+        if (!publishSkillsTask.search.uuids.isNullOrEmpty()) {
+            totalCount = publishSkillsTask.search.uuids.size
+            publishSkillsTask.search.uuids.forEach { uuid ->
+                handle_skill_dao(this.findByUUID(uuid))
+            }
+        } else {
+            val searchHits = searchService.searchRichSkillsByApiSearch(
+                publishSkillsTask.search,
+                publishSkillsTask.filterByStatus,
+                Pageable.unpaged()
+            )
+            totalCount = searchHits.totalHits.toInt()
+            searchHits.forEach { hit ->
+                handle_skill_dao(this.findById(hit.content.id))
+            }
+        }
+
+        return ApiBatchResult(
+            success = true,
+            modifiedCount = modifiedCount,
+            totalCount = totalCount
+        )
     }
 
 }

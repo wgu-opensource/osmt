@@ -13,6 +13,6 @@ enum class PublishStatus(val apiValue: String) {
         const val DEFAULT_API_PUBLISH_STATUS_SET = "${UNPUBLISHED},${PUBLISHED}"
         val publishStatusSet = values().toSet()
 
-        fun forApiValue(apiValue: String) = values().find { it.apiValue == apiValue.toLowerCase() }
+        fun forApiValue(apiValue: String) = values().find { it.apiValue.toLowerCase() == apiValue.toLowerCase() }
     }
 }

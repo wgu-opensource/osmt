@@ -19,9 +19,9 @@ export class RichSkillService extends AbstractService {
 
   private serviceUrl = "api/skills"
 
-  getSkills(): Observable<ApiSkill[]> {
+  getSkills(size: number = 50): Observable<ApiSkill[]> {
     return this.get<ISkill[]>({
-      path: this.serviceUrl
+      path: `${this.serviceUrl}?size=${size}`
     })
       .pipe(share())
       .pipe(map(({body}) => {

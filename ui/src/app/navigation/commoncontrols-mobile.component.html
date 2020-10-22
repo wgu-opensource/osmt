@@ -14,14 +14,15 @@
 
 <div>
   <!--{{render '@m-search'}}-->
-  <div class="m-search">
+  <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
+    <div class="m-search">
     <svg class="m-search-x-icon t-icon">
       <use xlink:href="/assets/images/svg-defs.svg#icon-search"></use>
     </svg>
-    <input class="m-search-x-input" type="text" required>
-    <div class="m-search-x-controls">
+    <input class="m-search-x-input" type="text" required [formControl]="searchForm.controls.search">
+      <div class="m-search-x-controls">
       <div class="m-search-x-clear">
-        <button class="m-iconInteractive" type="button">
+        <button class="m-iconInteractive" type="button" (click)="clearSearch()">
 
           <span class="t-visuallyHidden">Clear Search</span>
 
@@ -35,19 +36,20 @@
       </div>
       <div class="l-buttonTextBar">
 
-        <a class="m-buttonText" href="#">
+        <a class="m-buttonText" (click)="submitSkillSearch()">
           <span class="m-buttonText-x-text">Skills</span>
         </a>
 
         <div class="m-divider"></div>
 
-        <a class="m-buttonText" href="#">
+        <a class="m-buttonText" (click)="submitCollectionSearch()">
           <span class="m-buttonText-x-text">Collections</span>
         </a>
 
       </div>
     </div>
   </div>
+  </form>
 </div>
 
 <ul class="m-navBar-x-nav">

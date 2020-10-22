@@ -256,6 +256,42 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
     }
 
     @Test
+    fun `should be able to bulk publish all pages of search results`() {
+        val totalSkillCount = 10
+        val toPublishCount = 7
+        val searchQuery = "known prefix"
+        val skillUpdates = (1..totalSkillCount-toPublishCount).toList().map { apiSkillUpdateGenerator() }
+        val knownUpdates = (1..toPublishCount).toList().map { apiSkillUpdateGenerator(
+            name="${searchQuery} ${UUID.randomUUID()}"
+        )}
+
+        val skillDaos = richSkillRepository.createFromApi(skillUpdates, userString)
+        val knownDaos = richSkillRepository.createFromApi(knownUpdates, userString)
+        assertThat(skillDaos.size + knownDaos.size).isEqualTo(totalSkillCount)
+
+        val batchResult = richSkillRepository.changeStatusesForTask(PublishSkillsTask(
+            search=ApiSearch(query=searchQuery),
+            publishStatus=PublishStatus.Published,
+            userString=userString
+        ))
+
+        assertThat(batchResult.totalCount).isEqualTo(toPublishCount)
+        assertThat(batchResult.modifiedCount).isEqualTo(toPublishCount)
+        knownDaos.forEach { oldDao ->
+            val newDao = richSkillRepository.findById(oldDao.id.value)
+            val skill = newDao!!.toModel()
+            assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Published)
+            assertThat(skill.publishDate).isNotNull()
+            assertThat(skill.archiveDate).isNull()
+        }
+        skillDaos.forEach { oldDao ->
+            val newDao = richSkillRepository.findById(oldDao.id.value)
+            val skill = newDao!!.toModel()
+            assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Unpublished)
+        }
+    }
+
+    @Test
     fun `should be able to bulk publish or archive skills based on uuids`() {
         val totalSkillCount = 10
         val skillUpdates = (1..totalSkillCount).toList().map { apiSkillUpdateGenerator() }

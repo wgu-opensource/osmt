@@ -3,7 +3,7 @@
   <h1 class="t-visuallyHidden" id="header-header">Site Header</h1>
 
   <!-- {{render '@m-navbar'}} -->
-  <nav class="m-navBar" id="navBar" aria-labelledby="header-navigation" [class.m-navBar-is-active]="menuExpanded">
+  <nav class="m-navBar" id="navBar" aria-labelledby="header-navigation" [class.m-navBar-is-active]="menuExpanded" [class.m-navBar-public]="!isAuthenticated()">
     <h2 class="t-visuallyHidden">Site Navigation</h2>
 
     <div class="m-navBar-x-container">

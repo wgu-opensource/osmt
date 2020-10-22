@@ -7,23 +7,47 @@
     [required]="required"
     [name]="name"
   >
-    <div class="PUI">
-      <style> .strikeout { text-decoration: line-through; } </style>
 
-      <div *ngFor="let collection of this.allCollections" class="m-link">
-        <a [class.strikeout]="removingCollection(collection)" class="m-link-x-link" href="#">{{collection}}</a>
-        <div class="m-link-x-button">
-          <button *ngIf="!this.removingCollection(collection)" class="m-button m-button-form" (click)="handleClickRemove(collection)">
-            <svg class="m-button-x-icon t-icon"> <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use> </svg>
-            <span class="m-button-x-text t-visuallyHidden">{{collection}}</span>
-          </button>
-          <button *ngIf="this.removingCollection(collection)" class="m-button m-button-form" (click)="handleClickUndo(collection)">
-            <svg class="m-button-x-icon t-icon"> <use xlink:href="/assets/images/svg-defs.svg#icon-back"></use> </svg>
-            <span class="strikeout m-button-x-text t-visuallyHidden">{{collection}}</span>
-          </button>
+    <div *ngFor="let collection of this.allCollections" class="m-link" [class.m-link-strikethrough]="removingCollection(collection)">
+      <a class="m-link-x-link" href="#">{{collection}}</a>
+
+      <div class="m-link-x-button">
+        <button class="m-button m-button-form" (click)="handleClickIcon(collection)">
+          <div class="m-button-x-icon">
+            <div class="l-iconTransition" [class.l-iconTransition-is-toggled]="removingCollection(collection)">
+              <svg class="l-iconTransition-x-icon t-icon">
+                <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
+              </svg>
+
+              <svg class="l-iconTransition-x-replace t-icon">
+                <use xlink:href="/assets/images/svg-defs.svg#icon-add"></use>
+              </svg>
+            </div>
+          </div>
+          <span class="m-button-x-text t-visuallyHidden">{{collection}}</span>
+        </button>
+
+      </div>
+    </div>
+
+
+    <div *ngIf="allCollections.length < 1" class="m-emptyMessage m-emptyMessage-form">
+      <div class="m-emptyMessage-x-icon">
+        <div class="m-counterIcon">
+          <div class="m-iconWithFrame">
+            <svg class="t-icon" aria-hidden="true">
+              <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
+            </svg>
+          </div>
+          <div class="m-counterIcon-x-counter">
+            <div class="m-counter">
+              <span>0</span>
+            </div>
+          </div>
         </div>
       </div>
-
+      <p class="m-emptyMessage-x-message">No associated collections.</p>
     </div>
+
   </app-formfield>
 

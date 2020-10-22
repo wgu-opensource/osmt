@@ -19,7 +19,7 @@ export class RichSkillsComponent implements OnInit {
   }
 
   getSkills(): void {
-    this.richSkillService.getSkills()
+    this.richSkillService.getSkills(999)
       .subscribe(
         skills => {
           this.skills = skills

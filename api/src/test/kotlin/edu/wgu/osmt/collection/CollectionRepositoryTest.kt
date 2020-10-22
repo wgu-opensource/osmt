@@ -1,6 +1,7 @@
 package edu.wgu.osmt.collection
 
 import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers
 import edu.wgu.osmt.TestObjectHelpers.assertThatKeywordMatchesNamedReference
@@ -22,7 +23,7 @@ import org.assertj.core.api.Assertions.assertThat
 import java.util.*
 
 @Transactional
-class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest {
+class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseReset {
 
     @Autowired
     lateinit var collectionRepository: CollectionRepository

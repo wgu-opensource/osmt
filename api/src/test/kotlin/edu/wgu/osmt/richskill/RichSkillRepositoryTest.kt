@@ -1,6 +1,7 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers.apiSkillUpdateGenerator
 import edu.wgu.osmt.TestObjectHelpers.assertThatKeywordMatchesNamedReference
@@ -25,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Transactional
-class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
+class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseReset  {
 
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository
@@ -259,7 +260,7 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
     fun `should be able to bulk publish all pages of search results`() {
         val totalSkillCount = 10
         val toPublishCount = 7
-        val searchQuery = "known prefix"
+        val searchQuery = "a different thing"
         val skillUpdates = (1..totalSkillCount-toPublishCount).toList().map { apiSkillUpdateGenerator() }
         val knownUpdates = (1..toPublishCount).toList().map { apiSkillUpdateGenerator(
             name="${searchQuery} ${UUID.randomUUID()}"

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.ApiSkillListUpdate
 import edu.wgu.osmt.db.PublishStatus
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -31,6 +32,13 @@ interface Task {
      * Define the response to generate for the task type
      */
     fun toResultResponse(): HttpEntity<*>
+    companion object {
+        fun resultResponse(task: Task): HttpEntity<*> {
+            val responseHeaders = HttpHeaders()
+            responseHeaders.add("Content-Type", task.contentType)
+            return ResponseEntity.ok().headers(responseHeaders).body(task.result)
+        }
+    }
 }
 
 data class CsvTask(
@@ -42,9 +50,7 @@ data class CsvTask(
     override val contentType = "text/csv"
 
     override fun toResultResponse(): HttpEntity<*> {
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("Content-Type", contentType)
-        return ResponseEntity.ok().headers(responseHeaders).body(result)
+        return Task.resultResponse(this)
     }
 }
 
@@ -60,11 +66,24 @@ data class PublishSkillsTask(
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
+    override fun toResultResponse(): HttpEntity<*> {
+        return Task.resultResponse(this)
+    }
+}
 
-    override fun toResultResponse(): HttpEntity<ApiBatchResult> {
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("Content-Type", contentType)
-        return ResponseEntity.ok().headers(responseHeaders).body(result)
+data class UpdateCollectionSkillsTask(
+    val collectionUuid: String,
+    val skillListUpdate: ApiSkillListUpdate,
+    val publishStatuses: Set<PublishStatus> = setOf(PublishStatus.Unpublished),
+    val userString: String,
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: ApiBatchResult? = null,
+    override val status: TaskStatus = TaskStatus.Processing
+) : Task {
+    override val contentType = MediaType.APPLICATION_JSON_VALUE
+    override fun toResultResponse(): HttpEntity<*> {
+        return Task.resultResponse(this)
     }
 }
 

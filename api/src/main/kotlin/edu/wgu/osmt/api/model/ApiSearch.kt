@@ -47,3 +47,11 @@ data class ApiAdvancedSearch(
     @JsonProperty("alignments")
     val alignments: List<ApiNamedReference>? = null
 )
+
+data class ApiSkillListUpdate(
+    @JsonProperty("add")
+    val add: ApiSearch? = null,
+
+    @JsonProperty("remove")
+    val remove: List<String>? = null
+)

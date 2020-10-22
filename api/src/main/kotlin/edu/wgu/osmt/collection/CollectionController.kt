@@ -4,11 +4,17 @@ import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiCollection
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
+import edu.wgu.osmt.api.model.ApiSkillListUpdate
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.*
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.security.OAuth2Helper
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
+import edu.wgu.osmt.task.Task
+import edu.wgu.osmt.task.TaskMessageService
+import edu.wgu.osmt.task.TaskResult
+import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -24,6 +30,7 @@ import org.springframework.web.util.UriComponentsBuilder
 class CollectionController @Autowired constructor(
     val collectionRepository: CollectionRepository,
     val richSkillRepository: RichSkillRepository,
+    val taskMessageService: TaskMessageService,
     override val elasticRepository: EsCollectionRepository,
     val appConfig: AppConfig
 ): HasAllPaginated<CollectionDoc> {
@@ -92,6 +99,25 @@ class CollectionController @Autowired constructor(
         return ApiCollection.fromDao(updated, appConfig)
     }
 
-    companion object {
+
+    @PostMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun manageSkills(
+        @PathVariable uuid: String,
+        @RequestBody skillListUpdate: ApiSkillListUpdate,
+        @RequestParam(
+            required = false,
+            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+        ) status: List<String>,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
+        val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
+        val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = readableUsername(user))
+        taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
+
+        val responseHeaders = HttpHeaders()
+        responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        val tr = TaskResult.fromTask(task)
+        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
     }
 }

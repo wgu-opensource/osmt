@@ -40,5 +40,6 @@ class TaskMessageService {
         const val deadLetters = "dead-letters"
 
         const val publishSkills = "batch-publish-skills"
+        const val updateCollectionSkills = "update-collection-skills"
     }
 }

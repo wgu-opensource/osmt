@@ -910,7 +910,10 @@ components:
         add:
           $ref: '#/components/schemas/Search'
         remove:
-          $ref: '#/components/schemas/Search'
+          type: array
+          items:
+            type: string
+            format: uuid
 
     JobCode:
       type: object

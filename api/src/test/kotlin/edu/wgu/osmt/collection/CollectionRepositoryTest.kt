@@ -2,15 +2,19 @@ package edu.wgu.osmt.collection
 
 import edu.wgu.osmt.BaseDockerizedTest
 import edu.wgu.osmt.SpringTest
+import edu.wgu.osmt.TestObjectHelpers
 import edu.wgu.osmt.TestObjectHelpers.assertThatKeywordMatchesNamedReference
 import edu.wgu.osmt.TestObjectHelpers.namedReferenceGenerator
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
+import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.ApiSkillListUpdate
 import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.richskill.CollectionAndRichSkills
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RsdUpdateObject
+import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
@@ -95,5 +99,41 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest {
         val updatedDao = collectionRepository.updateFromApi(originalDao.id.value, newUpdate, richSkillRepository, userString)
         assertThat(updatedDao).isNotNull
         assertThatCollectionMatchesApiCollectionUpdate(CollectionAndRichSkills.fromDao(updatedDao!!), newUpdate)
+    }
+
+    @Test
+    fun `should add all skills from all pages of a search result to a collection`() {
+        val totalSkillCount = 10
+        val toAddCount = 7
+        val searchQuery = "known prefix"
+        val skillUpdates = (1..totalSkillCount-toAddCount).toList().map { TestObjectHelpers.apiSkillUpdateGenerator() }
+        val knownUpdates = (1..toAddCount).toList().map {
+            TestObjectHelpers.apiSkillUpdateGenerator(
+                name = "${searchQuery} ${UUID.randomUUID()}"
+            )
+        }
+
+        val collectionDao = collectionRepository.create(UUID.randomUUID().toString(), userString)
+        val collection = collectionDao!!.toModel()
+
+        val skillDaos = richSkillRepository.createFromApi(skillUpdates, userString)
+        val knownDaos = richSkillRepository.createFromApi(knownUpdates, userString)
+        assertThat(skillDaos.size + knownDaos.size).isEqualTo(totalSkillCount)
+
+        val task = UpdateCollectionSkillsTask(
+            collection.uuid,
+            skillListUpdate = ApiSkillListUpdate(add= ApiSearch(query=searchQuery)),
+            userString=userString
+        )
+        val batchResult = collectionRepository.updateSkillsForTask(collection.uuid, task, richSkillRepository)
+
+        assertThat(batchResult.totalCount).isEqualTo(toAddCount)
+        assertThat(batchResult.modifiedCount).isEqualTo(toAddCount)
+
+        val newCollectionDao = collectionRepository.findById(collection.id!!)!!
+        val skillUuids = newCollectionDao.skills.map { it.toModel().uuid }
+        knownDaos.forEach { knownDao ->
+            assertThat(skillUuids).contains(knownDao.uuid)
+        }
     }
 }

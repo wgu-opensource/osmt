@@ -33,6 +33,7 @@ This project makes use of configuring Spring boot via property files. These are 
 | import                    | runs the batch import process, expects `--csv=` argument | 
 | apiserver                 | runs the api server                                     |
 | oauth2                    | includes required configuration for oauth2 oidc with okta|
+| reindex                   | runs the Elasticsearch re-index process |
 
 For example to run the import component with a dev configuration, set active profiles by passing a JVM argument like so:
 `-Dspring-boot.run.profiles=dev,import`
@@ -60,9 +61,22 @@ To automatically apply the official Kotlin code style, Install the IntelliJ plug
 ```mvn -Dspring-boot.run.profiles=dev,apiserver spring-boot:run```
 
 #### Running the web service from the jar:
-```java -Dspring.profiles.active=dev,apiserver -jar api/target/osmt-api-0.0.1-SNAPSHOT.jar```
+```java -Dspring.profiles.active=dev,apiserver -jar api/target/osmt-api-<version>.jar```
 
 #### Running batch import from the jar:
 ```
-java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-0.0.1-SNAPSHOT.jar --csv=path/to/csv    
+java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar --csv=path/to/csv    
+```
+
+#### Elasticsearch indexing
+After the initial import, it is necessary to run spring boot with the `reindex` profile to generate Elasticsearch documents. Where `<environment profile>` in the following examples can be `dev`,`review` or ommited for production. 
+
+Via the compiled jar:
+```
+java -Dspring.profiles.active=<environment profile>,reindex -jar api/target/osmt-api-<version>.jar 
+``` 
+
+Via mvn:
+```
+mvn -DSpring.profiles.active=<environment profile>,reindex
 ```

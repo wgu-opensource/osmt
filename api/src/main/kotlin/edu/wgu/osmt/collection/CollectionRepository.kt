@@ -1,6 +1,7 @@
 package edu.wgu.osmt.collection
 
 import edu.wgu.osmt.api.FormValidationException
+import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.auditlog.AuditLog
@@ -11,15 +12,18 @@ import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.elasticsearch.EsCollectionRepository
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
+import edu.wgu.osmt.elasticsearch.SearchService
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RichSkillDoc
+import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -55,6 +59,12 @@ interface CollectionRepository {
         richSkillRepository: RichSkillRepository,
         user: String
     ): CollectionDao?
+
+    fun updateSkillsForTask(
+        collectionUuid: String,
+        task: UpdateCollectionSkillsTask,
+        richSkillRepository: RichSkillRepository
+    ): ApiBatchResult
 }
 
 
@@ -65,6 +75,7 @@ class CollectionRepositoryImpl @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
     val esRichSkillRepository: EsRichSkillRepository,
     val esCollectionRepository: EsCollectionRepository,
+    val searchService: SearchService,
     val appConfig: AppConfig
 ) : CollectionRepository {
     override val table = CollectionTable
@@ -197,6 +208,56 @@ class CollectionRepositoryImpl @Autowired constructor(
             id = existingCollectionId
         )
         return update(updateObjectWithId, user)
+    }
+
+    override fun updateSkillsForTask(
+        collectionUuid: String,
+        task: UpdateCollectionSkillsTask,
+        richSkillRepository: RichSkillRepository
+    ): ApiBatchResult {
+        var modifiedCount = 0
+        var totalCount = 0
+
+        val collectionId = this.findByUUID(collectionUuid)!!.id.value
+
+        task.skillListUpdate.remove?.forEach{ skillUuid ->
+            val skillId = richSkillRepository.findByUUID(skillUuid)?.id?.value
+            skillId?.let {
+                modifiedCount += CollectionSkills.delete(collectionId, it)
+            }
+            totalCount += 1
+        }
+
+        val add_skill_dao = {skillDao: RichSkillDescriptorDao? ->
+            skillDao?.let {
+                CollectionSkills.create(collectionId, skillDao.id.value)
+                modifiedCount += 1
+            }
+        }
+
+        if (!task.skillListUpdate.add?.uuids.isNullOrEmpty()) {
+            task.skillListUpdate.add?.uuids?.forEach { uuid ->
+                val skillDao = richSkillRepository.findByUUID(uuid)
+                add_skill_dao(skillDao)
+            }
+            totalCount += task.skillListUpdate.add?.uuids?.size ?: 0
+        } else if (task.skillListUpdate.add != null) {
+            val searchHits = searchService.searchRichSkillsByApiSearch(
+                task.skillListUpdate.add,
+                task.publishStatuses,
+                Pageable.unpaged()
+            )
+            searchHits.forEach { hit ->
+                add_skill_dao(richSkillRepository.findById(hit.content.id))
+            }
+            totalCount += searchHits.totalHits.toInt()
+        }
+
+        return ApiBatchResult(
+            success = true,
+            modifiedCount = modifiedCount,
+            totalCount = totalCount
+        )
     }
 
     override fun collectionUpdateObjectFromApi(collectionUpdate: ApiCollectionUpdate, richSkillRepository: RichSkillRepository): CollectionUpdateObject {

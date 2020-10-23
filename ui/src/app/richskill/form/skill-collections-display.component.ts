@@ -25,6 +25,14 @@ export class SkillCollectionsDisplayComponent implements OnInit {
     this.allCollections = this.control.value.slice()
   }
 
+  handleClickIcon(collection: string): boolean {
+    if (this.removingCollection(collection)) {
+      return this.handleClickUndo(collection)
+    } else {
+      return this.handleClickRemove(collection)
+    }
+  }
+
   handleClickUndo(collection: string): boolean {
     const idx = this.toRemove.indexOf(collection)
     if (idx !== -1) {

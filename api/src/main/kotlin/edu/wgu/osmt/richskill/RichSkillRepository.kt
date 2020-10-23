@@ -1,6 +1,7 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.api.FormValidationException
+import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiReferenceListUpdate
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.api.model.ApiStringListUpdate
@@ -11,28 +12,31 @@ import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.db.ListFieldUpdate
-import edu.wgu.osmt.db.NullableFieldUpdate
-import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.db.*
 import edu.wgu.osmt.elasticsearch.EsCollectionRepository
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
+import edu.wgu.osmt.elasticsearch.SearchService
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
+import edu.wgu.osmt.task.PublishSkillsTask
+import org.jetbrains.exposed.sql.Query
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
 
-interface RichSkillRepository {
-    val table: RichSkillDescriptorTable
+interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
+    override val table: RichSkillDescriptorTable
     val dao: RichSkillDescriptorDao.Companion
+
     fun update(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao?
     fun findAll(): SizedIterable<RichSkillDescriptorDao>
     fun findById(id: Long): RichSkillDescriptorDao?
@@ -43,6 +47,9 @@ interface RichSkillRepository {
     fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String): RichSkillDescriptorDao?
     fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject
 
+    fun paginateAll(publishStatuses: Set<PublishStatus>, pageable: Pageable): PaginatedResults<RichSkillDescriptorDao>
+
+    fun changeStatusesForTask(task: PublishSkillsTask): ApiBatchResult
 }
 
 @Repository
@@ -54,6 +61,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
     val collectionRepository: CollectionRepository,
     val esRichSkillRepository: EsRichSkillRepository,
     val esCollectionRepository: EsCollectionRepository,
+    val searchService: SearchService,
     val appConfig: AppConfig
 ) :
     RichSkillRepository {
@@ -72,8 +80,18 @@ class RichSkillRepositoryImpl @Autowired constructor(
     fun applyUpdate(rsdDao: RichSkillDescriptorDao, updateObject: RsdUpdateObject): Unit {
         rsdDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
         when (updateObject.publishStatus) {
-            PublishStatus.Archived -> rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-            PublishStatus.Published -> rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Archived -> {
+                if (rsdDao.publishDate != null) {
+                    rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+                }
+            }
+            PublishStatus.Published -> {
+                if (rsdDao.archiveDate != null) {
+                    rsdDao.archiveDate = null // unarchive
+                } else {
+                    rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+                }
+            }
             PublishStatus.Unpublished -> {
             } // non-op
         }
@@ -149,7 +167,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
                 )
         }
         daoObject?.let {
-            esCollectionRepository.saveAll(it.collections.map{it.toDoc()})
+            esCollectionRepository.saveAll(it.collections.map { it.toDoc() })
             esRichSkillRepository.save(RichSkillDoc.fromDao(it, appConfig))
         }
         return daoObject
@@ -232,7 +250,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         val jobsToAdd = mutableListOf<JobCodeDao>()
         val jobsToRemove = mutableListOf<JobCodeDao>()
 
-        skillUpdate.collections?.let {slu ->
+        skillUpdate.collections?.let { slu ->
             slu.add?.mapNotNull {
                 collectionRepository.findByName(it) ?: collectionRepository.create(it, user)
             }?.let {
@@ -248,7 +266,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         fun lookup_references(lud: ApiReferenceListUpdate, keywordType: KeywordTypeEnum) {
             lud.add?.map {
-                keywordRepository.findOrCreate(keywordType, value=it.name, uri=it.id)
+                keywordRepository.findOrCreate(keywordType, value = it.name, uri = it.id)
             }?.filterNotNull()?.let {
                 addingKeywords.addAll(it)
             }
@@ -262,13 +280,13 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         fun lookup_keywords(slud: ApiStringListUpdate, keywordType: KeywordTypeEnum) {
             slud.add?.map {
-                keywordRepository.findOrCreate(keywordType, value=it)
+                keywordRepository.findOrCreate(keywordType, value = it)
             }?.filterNotNull()?.let {
                 addingKeywords.addAll(it)
             }
 
             slud.remove?.map {
-                keywordRepository.findByValueOrUri(keywordType, value=it)
+                keywordRepository.findByValueOrUri(keywordType, value = it)
             }?.let {
                 removingKeywords.addAll(it.filterNotNull())
             }
@@ -276,7 +294,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         skillUpdate.occupations?.let {
             it.add?.map {
-                jobCodeRepository.findByCodeOrCreate(code=it)
+                jobCodeRepository.findByCodeOrCreate(code = it)
             }?.let { jobsToAdd.addAll(it) }
 
             it.remove?.map {
@@ -292,8 +310,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         val allKeywordsUpdate = if (addingKeywords.size > 0 || removingKeywords.size > 0) {
             ListFieldUpdate<KeywordDao>(
-                add=if (addingKeywords.size > 0) addingKeywords else listOf(),
-                remove=if (removingKeywords.size > 0) removingKeywords else listOf()
+                add = if (addingKeywords.size > 0) addingKeywords else listOf(),
+                remove = if (removingKeywords.size > 0) removingKeywords else listOf()
             )
         } else {
             null
@@ -301,8 +319,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         val jobCodesUpdate = if (jobsToAdd.size > 0 || jobsToRemove.size > 0) {
             ListFieldUpdate<JobCodeDao>(
-                add=if (jobsToAdd.size > 0) jobsToAdd else listOf(),
-                remove=if (jobsToRemove.size > 0) jobsToRemove else listOf()
+                add = if (jobsToAdd.size > 0) jobsToAdd else listOf(),
+                remove = if (jobsToRemove.size > 0) jobsToRemove else listOf()
             )
         } else {
             null
@@ -314,11 +332,74 @@ class RichSkillRepositoryImpl @Autowired constructor(
             statement = skillUpdate.skillStatement,
             publishStatus = skillUpdate.publishStatus,
             author = authorKeyword?.let { NullableFieldUpdate(it) },
-            category = if(skillUpdate.category != null || skillUpdate.category?.isBlank() == true) NullableFieldUpdate(categoryKeyword) else null,
+            category = if (skillUpdate.category != null || skillUpdate.category?.isBlank() == true) NullableFieldUpdate(
+                categoryKeyword
+            ) else null,
             keywords = allKeywordsUpdate,
             jobCodes = jobCodesUpdate,
-            collections = if (addingCollections.size + removingCollections.size > 0) ListFieldUpdate(addingCollections, removingCollections) else null
+            collections = if (addingCollections.size + removingCollections.size > 0) ListFieldUpdate(
+                addingCollections,
+                removingCollections
+            ) else null
+        )
+    }
+
+    override fun paginateAll(publishStatuses: Set<PublishStatus>, pageable: Pageable): PaginatedResults<RichSkillDescriptorDao> {
+        var query: Query = publishStatusSetToQuery(publishStatuses)
+
+        query = query.orderBy(*sortToQueryOrder(pageable.sort, query).toList().toTypedArray())
+
+        val total = query.count()
+        val results =  dao.wrapRows(query.limit(pageable.pageSize, offset = pageable.offset)).toList()
+        return PaginatedResults(total.toInt(), results)
+    }
+
+    override fun changeStatusesForTask(publishSkillsTask: PublishSkillsTask): ApiBatchResult {
+        var modifiedCount = 0
+        var totalCount = 0
+
+        val publish_skill = {skillDao: RichSkillDescriptorDao, task: PublishSkillsTask ->
+            val oldStatus = skillDao.publishStatus()
+            if (oldStatus != task.publishStatus) {
+                val updateObj = RsdUpdateObject(id = skillDao.id.value, publishStatus = task.publishStatus)
+                val updatedDao = this.update(updateObj, task.userString)
+                val newStatus = updatedDao?.publishStatus()
+                (newStatus != oldStatus)
+            } else false
+
+        }
+
+        val handle_skill_dao = {skillDao: RichSkillDescriptorDao? ->
+            skillDao?.let {
+                if (publish_skill(it, publishSkillsTask)) {
+                    modifiedCount += 1
+                }
+            }
+        }
+
+        if (!publishSkillsTask.search.uuids.isNullOrEmpty()) {
+            totalCount = publishSkillsTask.search.uuids.size
+            publishSkillsTask.search.uuids.forEach { uuid ->
+                handle_skill_dao(this.findByUUID(uuid))
+            }
+        } else {
+            val searchHits = searchService.searchRichSkillsByApiSearch(
+                publishSkillsTask.search,
+                publishSkillsTask.filterByStatus,
+                Pageable.unpaged()
+            )
+            totalCount = searchHits.totalHits.toInt()
+            searchHits.forEach { hit ->
+                handle_skill_dao(this.findById(hit.content.id))
+            }
+        }
+
+        return ApiBatchResult(
+            success = true,
+            modifiedCount = modifiedCount,
+            totalCount = totalCount
         )
     }
 
 }
+

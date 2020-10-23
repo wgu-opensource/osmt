@@ -5,7 +5,7 @@ import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers
 import edu.wgu.osmt.TestObjectHelpers.keywordGenerator
-import edu.wgu.osmt.api.model.ApiSearchQuery
+import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.keyword.KeywordRepository
@@ -106,11 +106,11 @@ class SearchServiceTest : SpringTest(), HasDatabaseReset {
 
 
     fun queryCollectionHits(query: String): List<CollectionDoc> {
-        return searchService.searchCollectionsByApiSearchQuery(ApiSearchQuery(query)).searchHits.map { it.content }
+        return searchService.searchCollectionsByApiSearch(ApiSearch(query)).searchHits.map { it.content }
     }
 
     fun queryRichSkillHits(query: String): List<RichSkillDoc> {
-        return searchService.searchRichSkillsByApiSearchQuery(ApiSearchQuery(query)).searchHits.map { it.content }
+        return searchService.searchRichSkillsByApiSearch(ApiSearch(query)).searchHits.map { it.content }
     }
 
     @Test
@@ -140,10 +140,10 @@ class SearchServiceTest : SpringTest(), HasDatabaseReset {
         }
 
         val searchByCollectionName =
-            searchService.searchCollectionsByApiSearchQuery(ApiSearchQuery(query = "orange")).searchHits.map { it.content }
+            searchService.searchCollectionsByApiSearch(ApiSearch(query = "orange")).searchHits.map { it.content }
 
         val searchByCollectionAuthor =
-            searchService.searchCollectionsByApiSearchQuery(ApiSearchQuery(query = "purple")).searchHits.map { it.content }
+            searchService.searchCollectionsByApiSearch(ApiSearch(query = "purple")).searchHits.map { it.content }
 
         assertThat(searchByCollectionName[0].uuid).isEqualTo(collectionDoc.uuid)
         assertThat(searchByCollectionAuthor[0].uuid).isEqualTo(collectionDoc.uuid)
@@ -193,8 +193,8 @@ class SearchServiceTest : SpringTest(), HasDatabaseReset {
         assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.certifications[richSkillDoc.certifications.indices.random()]))
         assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.employers[richSkillDoc.employers.indices.random()]))
 
-        val searchByCollectionName = searchService.searchRichSkillsByApiSearchQuery(
-            ApiSearchQuery(query = richSkillDoc.collections[0].name)
+        val searchByCollectionName = searchService.searchRichSkillsByApiSearch(
+            ApiSearch(query = richSkillDoc.collections[0].name)
         ).searchHits.map { it.content }
 
         assertThat(searchByCollectionName[0].uuid).isEqualTo(richSkillDoc.uuid)

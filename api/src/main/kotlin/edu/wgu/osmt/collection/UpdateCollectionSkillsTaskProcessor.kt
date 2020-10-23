@@ -1,0 +1,45 @@
+package edu.wgu.osmt.collection
+
+import com.github.sonus21.rqueue.annotation.RqueueListener
+import edu.wgu.osmt.richskill.RichSkillRepository
+import edu.wgu.osmt.task.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Profile
+import org.springframework.stereotype.Component
+import javax.transaction.Transactional
+
+@Component
+@Profile("apiserver")
+@Transactional
+class UpdateCollectionSkillsTaskProcessor {
+    val logger: Logger = LoggerFactory.getLogger(TaskQueueHandler::class.java)
+
+    @Autowired
+    lateinit var taskMessageService: TaskMessageService
+
+    @Autowired
+    lateinit var richSkillRepository: RichSkillRepository
+
+    @Autowired
+    lateinit var collectionRepository: CollectionRepository
+
+    @RqueueListener(
+        value = [TaskMessageService.updateCollectionSkills],
+        deadLetterQueueListenerEnabled = "true",
+        deadLetterQueue = TaskMessageService.deadLetters,
+        concurrency = "1"
+    )
+    fun updateCollectionSkills(task: UpdateCollectionSkillsTask) {
+        logger.info("Started processing update collection skills task id: ${task.uuid}")
+
+        val batchResult = collectionRepository.updateSkillsForTask(task.collectionUuid, task, richSkillRepository)
+
+        taskMessageService.publishResult(
+            task.copy(result=batchResult, status= TaskStatus.Ready)
+        )
+
+        logger.info("Task ${task.uuid} completed")
+    }
+}

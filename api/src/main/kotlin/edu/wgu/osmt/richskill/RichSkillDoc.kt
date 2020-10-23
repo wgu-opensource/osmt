@@ -18,7 +18,6 @@ import org.springframework.data.elasticsearch.annotations.FieldType.*
 /**
  * Elasticsearch representation of a Rich Skill.
  * Also corresponds to `SkillSummary` API response object
- *
  */
 @Document(indexName = "richskill_v1", createIndex = true, versionType = VersionType.EXTERNAL)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)

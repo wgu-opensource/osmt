@@ -41,11 +41,10 @@ class TaskQueueHandler {
 
         val csvString = RichSkillCsvExport(appConfig).toCsv(allSkills)
 
-        taskMessageService.opsForHash.put(
-            TaskMessageService.taskHashTable,
-            csvTask.uuid,
+        taskMessageService.publishResult(
             csvTask.copy(result = csvString, status = TaskStatus.Ready)
         )
+
         logger.info("Task ${csvTask.uuid} completed")
     }
 

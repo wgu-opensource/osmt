@@ -9,6 +9,7 @@ import {ApiStringListUpdate, IStringListUpdate, ApiSkillUpdate, ApiReferenceList
 import {AppConfig} from "../../app.config";
 import {urlValidator} from "../../validators/url.validator";
 import { IJobCode } from 'src/app/job-codes/Jobcode';
+import {ToastService} from "../../toast/toast.service";
 
 
 @Component({
@@ -28,7 +29,8 @@ export class RichSkillFormComponent implements OnInit {
     private route: ActivatedRoute,
     private richSkillService: RichSkillService,
     private location: Location,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) { }
 
   ngOnInit(): void {
@@ -193,6 +195,14 @@ export class RichSkillFormComponent implements OnInit {
     if (this.skillSaved) {
       this.skillSaved.subscribe((result) => {
         this.skillForm.markAsPristine()
+        const collectionCount = updateObject.collections?.add?.length ?? 0
+        if (collectionCount > 0) {
+          const collectionWord = collectionCount > 1 ? "collections" : "collection"
+          this.toastService.showToast(
+            `Removed from ${collectionWord}.`,
+            `This skill was removed from ${collectionCount} ${collectionWord}.`
+          )
+        }
         this.router.navigate([`/skills/${result.uuid}/manage`])
       })
     }

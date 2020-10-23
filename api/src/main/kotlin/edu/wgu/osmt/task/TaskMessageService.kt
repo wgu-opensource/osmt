@@ -30,9 +30,16 @@ class TaskMessageService {
         }
     }
 
+    fun publishResult(result: Task) {
+        this.opsForHash.put(taskHashTable, result.uuid, result)
+    }
+
     companion object {
         const val taskHashTable = "tasks"
         const val allSkillsCsv = "all-skills-csv-process"
         const val deadLetters = "dead-letters"
+
+        const val publishSkills = "batch-publish-skills"
+        const val updateCollectionSkills = "update-collection-skills"
     }
 }

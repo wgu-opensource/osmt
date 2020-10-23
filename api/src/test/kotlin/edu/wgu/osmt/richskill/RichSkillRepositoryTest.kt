@@ -1,10 +1,13 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.SpringTest
+import edu.wgu.osmt.TestObjectHelpers.apiSkillUpdateGenerator
 import edu.wgu.osmt.TestObjectHelpers.assertThatKeywordMatchesNamedReference
 import edu.wgu.osmt.TestObjectHelpers.namedReferenceGenerator
 import edu.wgu.osmt.api.model.ApiReferenceListUpdate
+import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.db.ListFieldUpdate
@@ -15,6 +18,7 @@ import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.task.PublishSkillsTask
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Transactional
-class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
+class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseReset  {
 
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository
@@ -31,58 +35,6 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
     lateinit var keywordRepository: KeywordRepository
 
     val userString = "unittestuser"
-
-    fun random_skill_update(): ApiSkillUpdate {
-        val name = UUID.randomUUID().toString()
-        val statement = UUID.randomUUID().toString()
-        val status = PublishStatus.Published
-        val categoryName = UUID.randomUUID().toString()
-        val author = namedReferenceGenerator(includeName=true, includeUri=false)
-
-        val keywordCount = 3
-        val keywords = ApiStringListUpdate(
-            add=(1..keywordCount).toList().map { UUID.randomUUID().toString() }
-        )
-        val certificationCount = 3
-        val certifications = ApiReferenceListUpdate(
-            add=(1..certificationCount).toList().map { namedReferenceGenerator(includeName = false, includeUri = true) }
-        )
-        val standardCount = 3
-        val standards = ApiReferenceListUpdate(
-            add=(1..standardCount).toList().map { namedReferenceGenerator(includeName = true, includeUri = true) }
-        )
-        val alignmentCount = 3
-        val alignments = ApiReferenceListUpdate(
-            add=(1..alignmentCount).toList().map { namedReferenceGenerator(includeName = false, includeUri = true) }
-        )
-        val employerCount = 3
-        val employers = ApiReferenceListUpdate(
-            add=(1..employerCount).toList().map { namedReferenceGenerator(includeName = true, includeUri = false) }
-        )
-        val occupationCount = 3
-        val occupations = ApiStringListUpdate(
-            add=(1..occupationCount).toList().map { UUID.randomUUID().toString() }
-        )
-        val collectionCount = 3
-        val collections = ApiStringListUpdate(
-            add=(1..collectionCount).toList().map { UUID.randomUUID().toString() }
-        )
-
-        return ApiSkillUpdate(
-            skillName=name,
-            skillStatement=statement,
-            publishStatus=status,
-            category=categoryName,
-            author=author,
-            keywords=keywords,
-            certifications=certifications,
-            standards=standards,
-            alignments=alignments,
-            employers=employers,
-            occupations=occupations,
-            collections=collections
-        )
-    }
 
 
     fun assertThatKeywordsMatchStringList(keywords: List<Keyword>, stringList: ApiStringListUpdate) {
@@ -159,10 +111,10 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
 
     @Test
     fun `should update an existing skill from an ApiSkillUpdate object`() {
-        val originalSkillUpdate = random_skill_update()
+        val originalSkillUpdate = apiSkillUpdateGenerator()
         val originalSkillDao = richSkillRepository.createFromApi(listOf(originalSkillUpdate), userString).first()
 
-        var newSkillUpdate = random_skill_update()
+        var newSkillUpdate = apiSkillUpdateGenerator()
         newSkillUpdate = newSkillUpdate.copy(
             keywords=newSkillUpdate.keywords?.copy(remove=originalSkillUpdate.keywords?.add),
             certifications=newSkillUpdate.certifications?.copy(remove=originalSkillUpdate.certifications?.add),
@@ -181,7 +133,7 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
     @Test
     fun `should create skills from ApiSkillUpdate objects`() {
         val skillCount = 1
-        val skillUpdates = (1..skillCount).toList().map { random_skill_update() }
+        val skillUpdates = (1..skillCount).toList().map { apiSkillUpdateGenerator() }
 
         val results: List<RichSkillDescriptorDao> = richSkillRepository.createFromApi(skillUpdates, userString)
 
@@ -299,8 +251,95 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest {
         val apiUpdateBlank = ApiSkillUpdate(
             category=""
         )
-        apiUpdated = richSkillRepository.updateFromApi(created!!.id!!, apiUpdateBlank, userString)?.toModel()
+        apiUpdated = richSkillRepository.updateFromApi(created.id!!, apiUpdateBlank, userString)?.toModel()
         assertThat(apiUpdated).isNotNull
         assertThat(apiUpdated?.category).isNull()
+    }
+
+    @Test
+    fun `should be able to bulk publish all pages of search results`() {
+        val totalSkillCount = 10
+        val toPublishCount = 7
+        val searchQuery = "a different thing"
+        val skillUpdates = (1..totalSkillCount-toPublishCount).toList().map { apiSkillUpdateGenerator() }
+        val knownUpdates = (1..toPublishCount).toList().map { apiSkillUpdateGenerator(
+            name="${searchQuery} ${UUID.randomUUID()}"
+        )}
+
+        val skillDaos = richSkillRepository.createFromApi(skillUpdates, userString)
+        val knownDaos = richSkillRepository.createFromApi(knownUpdates, userString)
+        assertThat(skillDaos.size + knownDaos.size).isEqualTo(totalSkillCount)
+
+        val batchResult = richSkillRepository.changeStatusesForTask(PublishSkillsTask(
+            search=ApiSearch(query=searchQuery),
+            publishStatus=PublishStatus.Published,
+            userString=userString
+        ))
+
+        assertThat(batchResult.totalCount).isEqualTo(toPublishCount)
+        assertThat(batchResult.modifiedCount).isEqualTo(toPublishCount)
+        knownDaos.forEach { oldDao ->
+            val newDao = richSkillRepository.findById(oldDao.id.value)
+            val skill = newDao!!.toModel()
+            assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Published)
+            assertThat(skill.publishDate).isNotNull()
+            assertThat(skill.archiveDate).isNull()
+        }
+        skillDaos.forEach { oldDao ->
+            val newDao = richSkillRepository.findById(oldDao.id.value)
+            val skill = newDao!!.toModel()
+            assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Unpublished)
+        }
+    }
+
+    @Test
+    fun `should be able to bulk publish or archive skills based on uuids`() {
+        val totalSkillCount = 10
+        val skillUpdates = (1..totalSkillCount).toList().map { apiSkillUpdateGenerator() }
+        val skillDaos = richSkillRepository.createFromApi(skillUpdates, userString)
+        assertThat(skillDaos.size).isEqualTo(totalSkillCount)
+
+        val toPublishCount = 3
+        val skillDaosToPublish = skillDaos.subList(0, toPublishCount)
+
+        val batchResult = richSkillRepository.changeStatusesForTask(PublishSkillsTask(
+            search=ApiSearch(uuids=skillDaosToPublish.map { it.uuid }),
+            publishStatus=PublishStatus.Published,
+            userString=userString
+        ))
+
+        assertThat(batchResult.totalCount).isEqualTo(toPublishCount)
+        assertThat(batchResult.modifiedCount).isEqualTo(toPublishCount)
+        skillDaosToPublish.forEach { oldDao ->
+            val newDao = richSkillRepository.findById(oldDao.id.value)
+            val skill = newDao!!.toModel()
+            assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Published)
+            assertThat(skill.publishDate).isNotNull()
+            assertThat(skill.archiveDate).isNull()
+        }
+
+        // attempt to archive all the skills, only published ones should get archived
+        val archiveResult = richSkillRepository.changeStatusesForTask(PublishSkillsTask(
+            search=ApiSearch(uuids=skillDaos.map { it.uuid }),
+            publishStatus=PublishStatus.Archived,
+            userString=userString
+        ))
+
+        assertThat(archiveResult.totalCount).isEqualTo(totalSkillCount)
+        assertThat(archiveResult.modifiedCount).isEqualTo(toPublishCount)
+        skillDaos.forEach { oldDao ->
+            val newDao = richSkillRepository.findById(oldDao.id.value)
+            val skill = newDao!!.toModel()
+            if (skillDaosToPublish.contains(oldDao)) {
+                assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Archived)
+                assertThat(skill.publishDate).isNotNull()
+                assertThat(skill.archiveDate).isNotNull()
+            } else {
+                assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Unpublished)
+                assertThat(skill.publishDate).isNull()
+                assertThat(skill.archiveDate).isNull()
+            }
+
+        }
     }
 }

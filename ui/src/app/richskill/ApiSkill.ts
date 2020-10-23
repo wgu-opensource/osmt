@@ -91,12 +91,4 @@ export class ApiSkill {
     this.employers = iRichSkill.employers
     this.occupations = iRichSkill.occupations
   }
-
-  formattedKeywords(delimiter: string = "; "): string {
-    return this.keywords.join(delimiter)
-  }
-
-  formatOccupations(): OccupationsFormatter {
-    return new OccupationsFormatter(this.occupations)
-  }
 }

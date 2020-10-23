@@ -8,11 +8,11 @@
 
   <th class="m-tableRow-x-header" scope="row" id="tableRow-header">
 
-    <div class="t-hidden-tabletMax">{{skill.skill.category}}</div>
+    <div class="t-hidden-tabletMax">{{skill.category}}</div>
 
     <div class="l-flex l-flex-gapp5x t-hidden-tabletMin">
       <h5 class="t-type-smallBold">Category:</h5>
-      <p class="t-type-small">{{skill.skill.category}}</p>
+      <p class="t-type-small">{{skill.category}}</p>
     </div>
 
   </th>
@@ -20,10 +20,10 @@
   <td class="m-tableRow-x-body">
 
     <h4 class="t-margin-extraSmall t-margin-bottom">
-      <a class="t-type-bodyLink" href="#">{{skill.skill.skillName}}</a>
+      <a class="t-type-bodyLink" href="#">{{skill.skillName}}</a>
     </h4>
 
-    <p class="t-margin-small t-margin-bottom">{{skill.skill.skillName}}</p>
+    <p class="t-margin-small t-margin-bottom">{{skill.skillName}}</p>
 
     <div class="t-margin-small t-margin-bottom">
       <app-detail-card-status-bar
@@ -33,8 +33,8 @@
     </div>
 
     <app-accordian
-      [keywords]="skill.skill.formattedKeywords()"
-      [detailedOccupations]="skill.skill.formatOccupations().detailedGroups()"
+      [keywords]="getFormattedKeywords()"
+      [detailedOccupations]="getFormattedOccupations()"
       [buttonText]=""
     ></app-accordian>
 
@@ -47,7 +47,7 @@
 
         <label class="t-visuallyHidden" for="tableRow-toggle" aria-labelledby="tableRow-header">Select</label>
 
-        <input type="checkbox" ns modifiename="tableRow-toggle" data-table-row="tableRow" (click)="onSelect($event)">
+        <input type="checkbox" ns modifiename="tableRow-toggle" data-table-row="tableRow" [checked]="isSelected" (click)="onSelect()">
 
         <div class="m-checkbox-x-icon">
           <svg class="t-icon" aria-hidden="true">

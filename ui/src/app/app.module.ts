@@ -34,12 +34,12 @@ import {ServerErrorComponent} from "./loading/server-error.component"
 import { CommonModule } from "@angular/common"
 import {DetailCardStatusBarComponent} from "./detail-card/status-bar/detail-card-status-bar.component"
 import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component"
-import { AccordianComponent } from "./table/accordian/accordian.component"
 import { TableComponent } from "./table/table.component"
 import { TableRowComponent } from "./table/table-row/table-row.component"
-import { TableHeaderComponent } from "./table-header/table-header.component"
+import { TableHeaderComponent } from "./table/table-header/table-header.component"
 import { TableLabelComponent } from "./table/table-label/table-label.component"
-import { LabelSelectSmallComponent } from "./table-header/label-select-small/label-select-small.component"
+import { LabelWithFilterComponent } from "./table/table-header/label-with-filter/label-with-filter.component"
+import {AccordianComponent} from "./table/table-row/accordian/accordian.component"
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -89,7 +89,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     TableRowComponent,
     TableHeaderComponent,
     TableLabelComponent,
-    LabelSelectSmallComponent,
+    LabelWithFilterComponent,
   ],
   imports: [
     BrowserModule,

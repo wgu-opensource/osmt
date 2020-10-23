@@ -1,6 +1,20 @@
-<ng-template [appLoadingObservables]="[skills]" *ngFor="let skill of preparedSkills">
+<table class="l-table">
+  <thead>
+  <app-table-header
+    [columns]="tableColumns"
+    [numberSelected]="numberOfSelected()"
+    (columnClicked)="headerColumnSortPerformed($event)"
+    (selectAllEmitter)="selectAll($event)"
+  ></app-table-header>
+  </thead>
+  <tbody>
+  <ng-template [appLoadingObservables]="[skills]">
     <app-table-row
-      [skill]="skill"
+      [skill]="skill.skill"
+      [isSelected]="skill.selected"
       (selected)="onRowToggle($event)"
+      *ngFor="let skill of preparedSkills"
     ></app-table-row>
-</ng-template>
+  </ng-template>
+  </tbody>
+</table>

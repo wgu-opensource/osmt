@@ -2,8 +2,8 @@ import { Component, Inject, LOCALE_ID } from "@angular/core"
 import { RichSkillService } from "../../service/rich-skill.service"
 import { ActivatedRoute } from "@angular/router"
 import {AbstractRichSkillDetailComponent} from "../AbstractRichSkillDetailComponent"
-import {OccupationsFormatter} from "../../../job-codes/Jobcode";
-import {IDetailCardSectionData} from "../../../detail-card/section/section.component";
+import {OccupationsFormatter} from "../../../job-codes/Jobcode"
+import {IDetailCardSectionData} from "../../../detail-card/section/section.component"
 
 @Component({
   selector: "app-rich-skill-public",
@@ -30,7 +30,7 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
         showIfEmpty: false
       }, {
         label: "Keywords",
-        bodyHtml: this.richSkill?.formattedKeywords() ?? "",
+        bodyHtml: this.richSkill?.keywords?.join("; ") ?? "",
         showIfEmpty: false
       }, {
         label: "Associated Collections",

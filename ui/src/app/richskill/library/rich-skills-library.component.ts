@@ -1,9 +1,7 @@
 import {Component, OnInit} from "@angular/core"
-import {RichSkillService} from "../service/rich-skill.service"
 import {ApiSkill} from "../ApiSkill"
 import {Observable} from "rxjs"
-import {ColumnDetails} from "../../table/table-header/table-header.component";
-import {SkillWithSelection} from "../../table/table-row/table-row.component";
+import {ApiSearch, RichSkillSearchService} from "../service/rich-skill-search.service"
 
 @Component({
   selector: "app-rich-skills-library",
@@ -18,15 +16,22 @@ export class RichSkillsLibraryComponent implements OnInit {
   private selectAllTemplate = "Select All (%s)"
   tableColumns: string[] = ["Category", "Skill", "Select All ()"]
 
-  constructor(private richSkillService: RichSkillService) {
+  constructor(private richSkillSearchService: RichSkillSearchService) {
   }
 
   ngOnInit(): void {
     this.getSkills()
   }
 
-  getSkills(): void {
-    this.skills = this.richSkillService.getSkills()
+  getSkills(
+    size: number = 50,
+    from: number = 0,
+    status: string[] = [],
+    sort: string = "category.asc",
+  ): void {
+    const searchBody: Partial<ApiSearch> = {}
+    console.log(searchBody.query)
+    this.skills = this.richSkillSearchService.searchSkills(size, from, status, sort, searchBody)
   }
 
   filterPerformed(type: string): void {

@@ -8,7 +8,7 @@ data class ApiSearch(
     @JsonProperty("query")
     val query: String? = null,
 
-    @JsonProperty("query")
+    @JsonProperty("advanced")
     val advanced: ApiAdvancedSearch? = null,
 
     @JsonProperty("uuids")

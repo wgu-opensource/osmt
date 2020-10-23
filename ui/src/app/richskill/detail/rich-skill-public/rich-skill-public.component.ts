@@ -32,11 +32,8 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
         label: "Keywords",
         bodyHtml: this.richSkill?.keywords?.join("; ") ?? "",
         showIfEmpty: false
-      }, {
-        label: "Associated Collections",
-        bodyHtml: this.formatAssociatedCollections(),
-        showIfEmpty: false
-      }, {
+      },
+      {
         label: "Standards",
         bodyHtml: this.richSkill?.standards?.map(standard => standard.name)?.join("\n") ?? "",
         showIfEmpty: false
@@ -54,11 +51,17 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
           ?.map(alignment => `<a class="t-link" target="_blank" href="${alignment.id}">${alignment.name}</a>`)
           ?.join("") ?? "",
         showIfEmpty: false
-      }, {
-        label: "Employers",
-        bodyHtml: this.richSkill?.employers?.map(employer => employer.name)?.join("; ") ?? "",
+      },
+      // {
+      //   label: "Employers",
+      //   bodyHtml: this.richSkill?.employers?.map(employer => employer.name)?.join("; ") ?? "",
+      //   showIfEmpty: false
+      // },
+      {
+        label: "Collections With This RSD",
+        bodyHtml: this.formatAssociatedCollections(),
         showIfEmpty: false
-      }
+      },
     ]
   }
 }

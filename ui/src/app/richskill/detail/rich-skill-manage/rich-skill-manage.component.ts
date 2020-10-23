@@ -33,11 +33,8 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
         label: "Keywords",
         bodyHtml: this.richSkill?.keywords?.join("; ") ?? "",
         showIfEmpty: true
-      }, {
-        label: "Associated Collections",
-        bodyHtml: this.formatAssociatedCollections(),
-        showIfEmpty: false
-      }, {
+      },
+      {
         label: "Standards",
         bodyHtml: this.richSkill?.standards?.map(standard => standard.name)?.join("\n") ?? "",
         showIfEmpty: true
@@ -61,6 +58,11 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
           ?.map(alignment => `<a class="t-link" target="_blank" href="${alignment.id}">${alignment.name}</a>`)
           ?.join("") ?? "",
         showIfEmpty: true
+      },
+      {
+        label: "Collections With This RSD",
+        bodyHtml: this.formatAssociatedCollections(),
+        showIfEmpty: false
       },
     ]
   }

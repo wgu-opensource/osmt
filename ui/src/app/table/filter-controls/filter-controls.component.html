@@ -1,0 +1,15 @@
+<div class="l-filterControls">
+  <app-filter-choice
+    [label]="getDraftLabel()"
+    (changeEmitter)="onFilterChange('draft', $event)"
+  ></app-filter-choice>
+  <app-filter-choice
+    [label]="getPublishedLabel()"
+    (changeEmitter)="onFilterChange('published', $event)"
+  ></app-filter-choice>
+  <app-filter-choice
+    [label]="getArchivedLabel()"
+    (changeEmitter)="onFilterChange('archived', $event)"
+  ></app-filter-choice>
+</div>
+

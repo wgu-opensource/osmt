@@ -2,11 +2,6 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
 import {SortDirections} from "./label-with-filter/label-with-filter.component";
 
-export interface ColumnDetails {
-  name: string
-  onFilter: (name: string) => void
-}
-
 @Component({
   selector: "app-table-header",
   templateUrl: "./table-header.component.html"

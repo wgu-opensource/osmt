@@ -1,11 +1,17 @@
+<app-table-header
+  [columns]="tableColumns"
+  [numberSelected]="numberOfSelected()"
+  (columnClicked)="headerColumnSortPerformed($event)"
+  (selectAllEmitter)="selectAll($event)"
+></app-table-header>
+
 <table class="l-table">
-  <thead>
-  <app-table-header
-    [columns]="tableColumns"
-    [numberSelected]="numberOfSelected()"
-    (columnClicked)="headerColumnSortPerformed($event)"
-    (selectAllEmitter)="selectAll($event)"
-  ></app-table-header>
+  <thead class="t-visuallyHidden">
+  <tr>
+    <th scope="col">Category</th>
+    <th scope="col">Skill</th>
+    <th scope="col">Actions</th>
+  </tr>
   </thead>
   <tbody>
   <ng-template [appLoadingObservables]="[skills]">

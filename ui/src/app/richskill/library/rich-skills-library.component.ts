@@ -2,6 +2,7 @@ import {Component, OnInit} from "@angular/core"
 import {ApiSkill} from "../ApiSkill"
 import {Observable} from "rxjs"
 import {ApiSearch, RichSkillSearchService} from "../service/rich-skill-search.service"
+import {RichSkillService} from "../service/rich-skill.service";
 
 @Component({
   selector: "app-rich-skills-library",
@@ -16,7 +17,10 @@ export class RichSkillsLibraryComponent implements OnInit {
   private selectAllTemplate = "Select All (%s)"
   tableColumns: string[] = ["Category", "Skill", "Select All ()"]
 
-  constructor(private richSkillSearchService: RichSkillSearchService) {
+  constructor(
+    private richSkillSearchService: RichSkillSearchService,
+    private richSkillService: RichSkillService
+  ) {
   }
 
   ngOnInit(): void {
@@ -31,7 +35,8 @@ export class RichSkillsLibraryComponent implements OnInit {
   ): void {
     const searchBody: Partial<ApiSearch> = {}
     console.log(searchBody.query)
-    this.skills = this.richSkillSearchService.searchSkills(size, from, status, sort, searchBody)
+    this.skills = this.richSkillService.getSkills()
+    // this.skills = this.richSkillSearchService.searchSkills(size, from, status, sort, searchBody)
   }
 
   filterPerformed(type: string): void {
@@ -45,5 +50,9 @@ export class RichSkillsLibraryComponent implements OnInit {
 
   // propogate the header component's column sort event upward
   headerColumnSortPerformed(columnName: string): void {
+  }
+
+  filterControlsChanged(name: string, isChecked: boolean): void {
+
   }
 }

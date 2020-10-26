@@ -10,12 +10,13 @@ import {RichSkillService} from "../service/rich-skill.service";
 })
 export class RichSkillsLibraryComponent implements OnInit {
 
-  skills: Observable<ApiSkill[]> | null = null
+  skillsLoaded: Observable<ApiSkill[]> | null = null
   loading = true
   selectedSkills: ApiSkill[] = []
 
   private selectAllTemplate = "Select All (%s)"
   tableColumns: string[] = ["Category", "Skill", "Select All ()"]
+  private skills: ApiSkill[] | undefined;
 
   constructor(
     private richSkillSearchService: RichSkillSearchService,
@@ -35,7 +36,10 @@ export class RichSkillsLibraryComponent implements OnInit {
   ): void {
     const searchBody: Partial<ApiSearch> = {}
     console.log(searchBody.query)
-    this.skills = this.richSkillService.getSkills()
+    this.skillsLoaded = this.richSkillService.getSkills()
+    this.skillsLoaded.subscribe(skills => {
+      this.skills = skills
+    })
     // this.skills = this.richSkillSearchService.searchSkills(size, from, status, sort, searchBody)
   }
 

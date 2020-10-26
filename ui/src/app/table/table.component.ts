@@ -12,7 +12,7 @@ import {SkillWithSelection} from "./table-row/table-row.component"
 })
 export class TableComponent implements OnInit {
 
-  @Input() skills: Observable<ApiSkill[]> | null = null
+  @Input() skills: ApiSkill[] | null = null
 
   @Output() columnSortEmitter = new EventEmitter<string>()
 
@@ -27,9 +27,7 @@ export class TableComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.skills?.subscribe(skills => {
-      this.preparedSkills = skills.map<SkillWithSelection>(skill => ({skill, selected: false}))
-    })
+    this.preparedSkills = this.skills?.map<SkillWithSelection>(skill => ({skill, selected: false})) ?? []
   }
 
   numberOfSelected(): number {

@@ -2,8 +2,10 @@ import {Component, OnInit} from "@angular/core";
 import {SearchService} from "./search.service";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {Observable} from "rxjs";
-import {ApiSkill} from "../richskill/ApiSkill";
 import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
+import {ApiSkill} from "../richskill/ApiSkill";
+import {TableActionDefinition} from "../table/table-action-bar.component";
+import {PublishStatus} from "../PublishStatus";
 
 
 @Component({
@@ -18,6 +20,7 @@ export class RichSkillSearchResultsComponent implements OnInit {
 
   private from: number = 0
   private size: number = 50
+  private selectedSkills?: ApiSkill[]
 
   constructor(private searchService: SearchService, private richSkillService: RichSkillService) {
     searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
@@ -71,6 +74,86 @@ export class RichSkillSearchResultsComponent implements OnInit {
     return Math.ceil(this.totalCount / this.size)
   }
   private get currentPageNo(): number {
-    return Math.floor(this.from / this.size)+1
+    return Math.floor(this.from / this.size) + 1
+  }
+
+  handleNewSelection(selectedSkills: ApiSkill[]): void {
+    this.selectedSkills = selectedSkills
+    console.log("got new selection", selectedSkills)
+  }
+
+
+  publishVisible(): boolean {
+    const unpublishedSkills = this.selectedSkills?.filter(s => s.status !== PublishStatus.Published)
+    return (unpublishedSkills?.length ?? 0) > 0
+  }
+  archiveVisible(): boolean {
+    const unarchivedSkills = this.selectedSkills?.filter(s => s.status !== PublishStatus.Archived)
+    return (unarchivedSkills?.length ?? 0) > 0
+  }
+  unarchiveVisible(): boolean {
+    const archivedSkills = this.selectedSkills?.filter(s => s.status === PublishStatus.Archived)
+    return (archivedSkills?.length ?? 0) > 0
+  }
+
+  tableActions(): TableActionDefinition[] {
+    return [
+      new TableActionDefinition({
+        label: "Back to Top",
+        icon: "up",
+        offset: true,
+        callback: () => this.handleClickBackToTop(),
+      }),
+
+      new TableActionDefinition({
+        label: "Publish",
+        icon: "publish",
+        callback: () => this.handleClickPublish(),
+        visible: () => this.publishVisible()
+      }),
+
+      new TableActionDefinition({
+        label: "Archive",
+        icon: "archive",
+        callback: () => this.handleClickArchive(),
+        visible: () => this.archiveVisible()
+      }),
+
+      new TableActionDefinition({
+        label: "Unarchive",
+        icon: "unarchive",
+        callback: () => this.handleClickUnarchive(),
+        visible: () => this.unarchiveVisible()
+      }),
+
+      new TableActionDefinition({
+        label: "Add to Collection",
+        icon: "collection",
+        primary: true,
+        callback: () => this.handleClickAddCollection()
+      }),
+    ]
+
+  }
+
+  private handleClickBackToTop(): boolean {
+    return false
+  }
+
+  private handleClickAddCollection(): boolean {
+    return false
+  }
+
+  private handleClickUnarchive(): boolean {
+    return false
+  }
+
+  private handleClickArchive(): boolean {
+    return false
+  }
+
+  handleClickPublish(): boolean  {
+    console.log("PUBLISH CLICKED")
+    return false
   }
 }

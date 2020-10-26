@@ -1,0 +1,17 @@
+<div class="m-tableActionBar">
+
+  <ng-template ngFor let-action [ngForOf]="visibleActions()">
+    <div *ngIf="action.offset" class="m-tableActionBar-x-offsetAction">
+      <app-action-bar-item [action]="action"></app-action-bar-item>
+    </div>
+
+    <div *ngIf="action.primary" class="m-tableActions-x-mainAction">
+      <app-action-bar-item [action]="action"></app-action-bar-item>
+    </div>
+
+    <div *ngIf="!(action.offset || action.primary)">
+      <app-action-bar-item [action]="action"></app-action-bar-item>
+    </div>
+  </ng-template>
+
+</div>

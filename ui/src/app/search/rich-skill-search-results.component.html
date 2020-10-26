@@ -7,7 +7,7 @@
       <div class="l-container l-container-mobile">
         <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Search Results</h2>
         <p class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">
-          {{curPageCount}} of {{totalCount}} skills matching <span class="t-type-bodyLargeBold t-color-text1">{{queryString}}</span>.
+          {{curPageCount}} of {{totalCount}} skills matching <span class="t-type-bodyLargeBold t-color-text1">{{apiSearch?.query}}</span>.
           Viewing results {{firstRecordNo}}-{{lastRecordNo}}
         </p>
 
@@ -18,10 +18,10 @@
 <!--        ></app-filter-controls>-->
       </div>
 
-
       <div class="t-margin-medium t-margin-bottom">
         <app-table
           [skills]="results.skills"
+          (selectedRowEmitter)="handleNewSelection($event)"
         ></app-table>
       </div>
 
@@ -31,7 +31,7 @@
 
     <div class="l-stickyBar-x-bar t-padding-medium t-padding-top">
       <div class="l-container l-container-tablet">
-        <!--      {{render '@m-tableactionbar'}}-->
+        <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
       </div>
     </div>
 

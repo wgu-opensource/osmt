@@ -6,8 +6,13 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 })
 export class FilterControlsComponent implements OnInit {
 
+  @Input() draftSelected = false
   @Input() draftCount = 0
+
+  @Input() publishSelected = false
   @Input() publishedCount = 0
+
+  @Input() archivedSelected = false
   @Input() archivedCount = 0
 
   @Output() draftFilterEmitter: EventEmitter<boolean> = new EventEmitter<boolean>()

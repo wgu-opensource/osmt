@@ -10,7 +10,7 @@ import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
       </div>
       <div class="m-choice-x-input">
         <div class="m-checkbox">
-          <input type="checkbox" id="checkbox" name="checkbox" (change)="onChange($event)">
+          <input type="checkbox" id="checkbox" name="checkbox" [checked]="isChecked" (change)="onChange($event)">
           <div class="m-checkbox-x-icon">
             <svg class="t-icon" aria-hidden="true">
               <use [attr.xlink:href]="checkIcon"></use>
@@ -23,6 +23,7 @@ import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
 export class FilterChoiceComponent implements OnInit {
 
   @Input() label = ""
+  @Input() isChecked = false
 
   @Output() changeEmitter: EventEmitter<boolean> = new EventEmitter<boolean>()
 

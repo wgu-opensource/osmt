@@ -22,9 +22,9 @@ export class RichSkillsLibraryComponent implements OnInit {
   publishedCount = 0
   archivedCount = 0
 
-  // filters
-  draftApplied = false
-  publishedApplied = false
+  // filters with defaults
+  draftApplied = true
+  publishedApplied = true
   archivedApplied = false
 
   totalSkills = this.draftCount + this.publishedCount + this.archivedCount

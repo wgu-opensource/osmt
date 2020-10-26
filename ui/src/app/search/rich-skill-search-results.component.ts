@@ -55,4 +55,11 @@ export class RichSkillSearchResultsComponent implements OnInit {
   private get lastRecordNo(): number {
     return this.from + this.curPageCount
   }
+
+  private get totalPageCount(): number {
+    return Math.ceil(this.totalCount / this.size)
+  }
+  private get currentPageNo(): number {
+    return Math.floor(this.from / this.size)+1
+  }
 }

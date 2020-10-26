@@ -18,13 +18,14 @@
 <!--        ></app-filter-controls>-->
       </div>
 
+
       <div class="t-margin-medium t-margin-bottom">
         <app-table
           [skills]="results.skills"
         ></app-table>
       </div>
 
-      <!--    {{render '@pagingnavigation'}}-->
+      <app-pagination [currentPage]="currentPageNo" [totalPages]="totalPageCount"></app-pagination>
 
     </div>
 

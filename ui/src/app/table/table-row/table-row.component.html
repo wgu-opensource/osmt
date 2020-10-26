@@ -1,9 +1,7 @@
 <tr
   *ngIf="!!skill"
-  [ngClass]="{
-    'm-tableRow': true,
-    'm-tableRow-is-selected': isSelected
-  }"
+  class="m-tableRow"
+  [class.m-tableRow-is-selected]="isSelected"
   id="tableRow">
 
   <th class="m-tableRow-x-header" scope="row" id="tableRow-header">

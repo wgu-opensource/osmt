@@ -6,7 +6,7 @@ import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate";
 import {AuthService} from "../../auth/auth-service";
-import {ApiSearch} from "./rich-skill-search.service";
+import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service";
 
 
 @Injectable({
@@ -105,7 +105,7 @@ export class RichSkillService extends AbstractService {
     from: number | undefined = undefined,
     status: string[] = ["unpublished", "published"],
     sort: string = "category.asc",
-  ): Observable<ApiSkill[]> {
+  ): Observable<PaginatedSkills> {
     const errorMsg = `Failed to unwrap response for skill search`
 
     const params:any = {
@@ -118,11 +118,13 @@ export class RichSkillService extends AbstractService {
     return this.post<ISkill[]>({
       path: "api/search/skills",
       params,
-      body: apiSearch
+      body: apiSearch,
     })
       .pipe(share())
-      .pipe(map(({body}) => {
-        return body?.map(skill => new ApiSkill(skill)) || []
+      .pipe(map((response) => {
+        const totalCount = Number(response.headers.get("X-Total-Count"))
+        const skills = response.body?.map(skill => new ApiSkill(skill)) || []
+        return new PaginatedSkills(skills, !isNaN(totalCount) ? totalCount : skills.length)
       }))
   }
 }

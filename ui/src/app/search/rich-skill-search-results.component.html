@@ -1,7 +1,40 @@
 <ng-template [appLoadingObservables]="[resultsLoaded]">
-  <div class="PUI">
-    search results...
-    {{results}}
+
+  <div *ngIf="!emptyResults" class="l-stickyBar">
+
+    <div class="l-container t-padding-large t-padding-top">
+
+      <div class="l-container l-container-mobile">
+        <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Search Results</h2>
+        <p class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">
+          {{curPageCount}} of {{totalCount}} skills matching <span class="t-type-bodyLargeBold t-color-text1">{{queryString}}</span>.
+          Viewing results {{firstRecordNo}}-{{lastRecordNo}}
+        </p>
+
+<!--        <app-filter-controls-->
+<!--          (archivedFilterEmitter)="filterControlsChanged('archived', $event)"-->
+<!--          (draftFilterEmitter)="filterControlsChanged('draft', $event)"-->
+<!--          (publishedFilterEmitter)="filterControlsChanged('published', $event)"-->
+<!--        ></app-filter-controls>-->
+      </div>
+
+      <div class="t-margin-medium t-margin-bottom">
+        <app-table
+          [skills]="this.resultsLoaded"
+        ></app-table>
+      </div>
+
+      <!--    {{render '@pagingnavigation'}}-->
+
+    </div>
+
+    <div class="l-stickyBar-x-bar t-padding-medium t-padding-top">
+      <div class="l-container l-container-tablet">
+        <!--      {{render '@m-tableactionbar'}}-->
+      </div>
+    </div>
+
   </div>
+
 </ng-template>
 

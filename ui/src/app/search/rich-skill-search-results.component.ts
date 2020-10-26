@@ -3,7 +3,7 @@ import {SearchService} from "./search.service";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {Observable} from "rxjs";
 import {ApiSkill} from "../richskill/ApiSkill";
-import {ApiSearch} from "../richskill/service/rich-skill-search.service";
+import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
 
 
 @Component({
@@ -11,9 +11,13 @@ import {ApiSearch} from "../richskill/service/rich-skill-search.service";
   templateUrl: "./rich-skill-search-results.component.html"
 })
 export class RichSkillSearchResultsComponent implements OnInit {
-  resultsLoaded: Observable<ApiSkill[]> | undefined
+  resultsLoaded: Observable<PaginatedSkills> | undefined
 
-  private results: ApiSkill[] | undefined
+  private results: PaginatedSkills | undefined
+  private queryString: string | undefined
+
+  private from: number = 0
+  private size: number = 50
 
   constructor(private searchService: SearchService, private richSkillService: RichSkillService) {
     searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
@@ -23,11 +27,32 @@ export class RichSkillSearchResultsComponent implements OnInit {
   }
 
   private handleNewSearch(apiSearch: ApiSearch): void {
-    this.resultsLoaded = this.richSkillService.searchSkills(apiSearch)
+    this.queryString = apiSearch.query
+
+    this.resultsLoaded = this.richSkillService.searchSkills(apiSearch, this.size, this.from)
     this.resultsLoaded.subscribe(results => this.setResults(results))
   }
 
-  private setResults(results: ApiSkill[]): void {
+  private setResults(results: PaginatedSkills): void {
     this.results = results
+  }
+
+  private get totalCount(): number {
+    return this.results?.totalCount ?? 0
+  }
+
+  private get curPageCount(): number {
+    return this.results?.skills.length ?? 0
+  }
+
+  private get emptyResults(): boolean {
+    return this.curPageCount < 1
+  }
+
+  private get firstRecordNo(): number {
+    return this.from + 1
+  }
+  private get lastRecordNo(): number {
+    return this.from + this.curPageCount
   }
 }

@@ -53,6 +53,15 @@ export class ApiAdvancedSearch {
 }
 
 
+export class PaginatedSkills {
+  totalCount: number = 0
+  skills: ApiSkill[] = []
+  constructor(skills: ApiSkill[], totalCount: number) {
+    this.skills = skills
+    this.totalCount = totalCount
+  }
+}
+
 @Injectable({
   providedIn: "root"
 })

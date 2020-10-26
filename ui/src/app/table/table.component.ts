@@ -38,9 +38,10 @@ export class TableComponent implements OnInit {
   onRowToggle(skill: ApiSkill): void {
     const maybeFound = this.preparedSkills.find(s => s.skill === skill)
     if (maybeFound) {
-      const newStatus = !maybeFound.selected
-      maybeFound.selected = newStatus
+      maybeFound.selected = !maybeFound.selected
     }
+    this.selectedRowEmitter.emit(this.preparedSkills.filter(row => row.selected).map(row => row.skill))
+
   }
 
   // propogate the header component's column sort event upward

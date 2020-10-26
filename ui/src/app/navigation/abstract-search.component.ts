@@ -1,12 +1,13 @@
 import {OnInit} from "@angular/core";
 import {FormControl, FormGroup} from "@angular/forms";
+import {SearchService} from "../search/search.service";
 
 export class AbstractSearchComponent {
   searchForm = new FormGroup({
     search: new FormControl("")
   })
 
-  constructor() {
+  constructor(protected searchService: SearchService) {
 
   }
 
@@ -24,7 +25,7 @@ export class AbstractSearchComponent {
   }
 
   submitSkillSearch(): boolean {
-    console.log("Search Skills", this.searchQuery)
+    this.searchService.simpleSkillSearch(this.searchQuery)
     return false
   }
 

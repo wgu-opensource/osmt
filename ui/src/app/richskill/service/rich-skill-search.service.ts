@@ -6,13 +6,13 @@ import {Observable} from "rxjs"
 import {ApiSkill, ISkill} from "../ApiSkill"
 import {map} from "rxjs/operators"
 
-export interface ApiSearch {
+export interface ISearch {
   query: string | undefined
-  advanced: Partial<ApiAdvancedSearch>
+  advanced: ApiAdvancedSearch | undefined
   uuids: [] | undefined
 }
 
-export interface ApiAdvancedSearch {
+export interface IAdvancedSearch {
   skillName: string | undefined
   collectionName: string | undefined
   category: string | undefined
@@ -24,6 +24,34 @@ export interface ApiAdvancedSearch {
   employers: [] | undefined
   alignments: [] | undefined
 }
+
+export class ApiSearch {
+  query: string | undefined
+  advanced: ApiAdvancedSearch | undefined
+  uuids: [] | undefined
+
+  static factory(options: object): ApiSearch {
+    return Object.assign(new ApiSearch(), options)
+  }
+}
+
+export class ApiAdvancedSearch {
+  skillName: string | undefined
+  collectionName: string | undefined
+  category: string | undefined
+  skillStatement: string | undefined
+  keywords: [] | undefined
+  occupations: [] | undefined
+  standards: []| undefined
+  certifications: [] | undefined
+  employers: [] | undefined
+  alignments: [] | undefined
+
+  static factory(options: object): ApiSearch {
+    return Object.assign(new ApiSearch(), options)
+  }
+}
+
 
 @Injectable({
   providedIn: "root"

@@ -9,6 +9,9 @@
       </p>
 
       <app-filter-controls
+        [archivedCount]="archivedCount"
+        [draftCount]="draftCount"
+        [publishedCount]="publishedCount"
         (archivedFilterEmitter)="filterControlsChanged('archived', $event)"
         (draftFilterEmitter)="filterControlsChanged('draft', $event)"
         (publishedFilterEmitter)="filterControlsChanged('published', $event)"

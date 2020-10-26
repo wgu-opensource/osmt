@@ -1,14 +1,14 @@
 <div class="l-filterControls">
   <app-filter-choice
-    [label]="getDraftLabel()"
+    label="Draft ({{draftCount}})"
     (changeEmitter)="onFilterChange('draft', $event)"
   ></app-filter-choice>
   <app-filter-choice
-    [label]="getPublishedLabel()"
+    label="Published ({{publishedCount}})"
     (changeEmitter)="onFilterChange('published', $event)"
   ></app-filter-choice>
   <app-filter-choice
-    [label]="getArchivedLabel()"
+    label="Archived ({{archivedCount}})"
     (changeEmitter)="onFilterChange('archived', $event)"
   ></app-filter-choice>
 </div>

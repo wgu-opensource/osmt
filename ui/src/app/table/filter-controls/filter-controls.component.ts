@@ -1,10 +1,14 @@
-import {Component, EventEmitter, OnInit, Output} from "@angular/core"
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 
 @Component({
   selector: "app-filter-controls",
   templateUrl: "./filter-controls.component.html"
 })
 export class FilterControlsComponent implements OnInit {
+
+  @Input() draftCount = 0
+  @Input() publishedCount = 0
+  @Input() archivedCount = 0
 
   @Output() draftFilterEmitter: EventEmitter<boolean> = new EventEmitter<boolean>()
   @Output() publishedFilterEmitter: EventEmitter<boolean> = new EventEmitter<boolean>()
@@ -13,19 +17,6 @@ export class FilterControlsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-  }
-
-  getDraftLabel(): string {
-    return "Draft (-1)"
-  }
-
-
-  getPublishedLabel(): string {
-    return "Published (-1)"
-  }
-
-  getArchivedLabel(): string {
-    return "Archived (-1)"
   }
 
   onFilterChange(filterName: string, isChecked: boolean): void {

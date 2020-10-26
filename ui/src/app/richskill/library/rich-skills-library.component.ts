@@ -68,9 +68,18 @@ export class RichSkillsLibraryComponent implements OnInit {
   filterControlsChanged(name: string, isChecked: boolean): void {
     console.log(`${name} ${isChecked}`)
     switch (name) {
-      case "draft": this.draftApplied = isChecked; break
-      case "published": this.publishedApplied = isChecked; break
-      case "archived": this.archivedApplied = isChecked; break
+      case "draft": {
+        this.draftApplied = isChecked
+        break
+      }
+      case "published": {
+        this.publishedApplied = isChecked
+        break
+      }
+      case "archived": {
+        this.archivedApplied = isChecked
+        break
+      }
     }
   }
 }

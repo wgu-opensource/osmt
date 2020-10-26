@@ -1,6 +1,6 @@
-<div class="m-pagination">
+<div class="m-pagination" *ngIf="this.totalPages > 1">
 
-  <button class="m-buttonIcon" type="button" [attr.disabled]="hasPrev()">
+  <button class="m-buttonIcon" type="button" [attr.disabled]="isPrevDisabled()" (click)="handleClickPrev()">
     <span class="m-buttonIcon-x-icon">
       <svg class="t-icon" aria-hidden="true">
         <use xlink:href="/assets/images/svg-defs.svg#icon-prev"></use>
@@ -19,7 +19,7 @@
 
   </div>
 
-  <button class="m-buttonIcon" type="button" [attr.disabled]="hasNext()">
+  <button class="m-buttonIcon" type="button" [attr.disabled]="isNextDisabled()" (click)="handleClickNext()">
     <span class="m-buttonIcon-x-icon">
       <svg class="t-icon" aria-hidden="true">
         <use xlink:href="/assets/images/svg-defs.svg#icon-next"></use>

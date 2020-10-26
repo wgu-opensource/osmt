@@ -17,7 +17,7 @@ export class RichSkillSearchResultsComponent implements OnInit {
   private apiSearch: ApiSearch | undefined
 
   private from: number = 0
-  private size: number = 2
+  private size: number = 50
 
   constructor(private searchService: SearchService, private richSkillService: RichSkillService) {
     searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )

@@ -15,21 +15,26 @@ export class PaginationComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  pageNumbers(leadingCount = 3, trailingCount = 3): number[] {
-    const ret: Set<number> = new Set()
-    for (let i = 1; i <= leadingCount; i++) {
-      if (i <= this.totalPages) { ret.add(i) }
+  pageNumbers(leadingCount = 2, trailingCount = 2): number[] {
+    const ret: number[] = []
+    const start = this.currentPage - leadingCount
+    const end = this.currentPage + trailingCount
+
+    ret.push(1)
+
+    if (start > 2) { ret.push(NaN) }
+
+    for (let i = start; i <= end; i++) {
+      if (i > 1 && i < this.totalPages) {
+        ret.push(i)
+      }
     }
 
-    if (this.totalPages > leadingCount + trailingCount) {
-      ret.add(NaN)
-    }
+    if (end < this.totalPages - 1) { ret.push(NaN) }
 
-    for (let i = this.totalPages - trailingCount + 1; i > 0 && i <= this.totalPages; i++) {
-      if (i <= this.totalPages) { ret.add(i) }
-    }
+    ret.push(this.totalPages)
 
-    return Array.from(ret)
+    return ret
   }
 
   isEllipsis(pageNo: number): boolean {
@@ -42,13 +47,24 @@ export class PaginationComponent implements OnInit {
   hasPrev(): boolean {
     return this.currentPage > 1
   }
+  isNextDisabled(): string | null { return !this.hasNext() ? "" : null }
+  isPrevDisabled(): string | null { return !this.hasPrev() ? "" : null }
 
   isCurrentPage(pageNo: number): boolean {
     return pageNo === this.currentPage
   }
 
   handleClick(pageNo: number): boolean {
-    this.searchService.setCurrentPage(pageNo)
+    if (pageNo !== this.currentPage) {
+      this.searchService.setCurrentPage(pageNo)
+    }
     return false
+  }
+
+  handleClickPrev(): boolean {
+    return this.handleClick(this.currentPage - 1)
+  }
+  handleClickNext(): boolean {
+    return this.handleClick(this.currentPage + 1)
   }
 }

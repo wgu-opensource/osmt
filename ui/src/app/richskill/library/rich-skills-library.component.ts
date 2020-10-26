@@ -17,6 +17,18 @@ export class RichSkillsLibraryComponent implements OnInit {
   defaultSortDirection = false
   currentSort: CurrentSort | undefined = undefined
 
+  // Total counts (not paginated)
+  draftCount = 0
+  publishedCount = 0
+  archivedCount = 0
+
+  // filters
+  draftApplied = false
+  publishedApplied = false
+  archivedApplied = false
+
+  totalSkills = this.draftCount + this.publishedCount + this.archivedCount
+
   constructor(
     private richSkillService: RichSkillService
   ) {
@@ -24,6 +36,12 @@ export class RichSkillsLibraryComponent implements OnInit {
 
   ngOnInit(): void {
     this.getSkills()
+  }
+
+  currentlyViewing(): number {
+    return (this.draftApplied ? this.draftCount : 0)
+      + (this.publishedApplied ? this.publishedCount : 0)
+      + (this.archivedApplied ? this.archivedCount : 0)
   }
 
   getSkills(
@@ -48,6 +66,11 @@ export class RichSkillsLibraryComponent implements OnInit {
   }
 
   filterControlsChanged(name: string, isChecked: boolean): void {
-
+    console.log(`${name} ${isChecked}`)
+    switch (name) {
+      case "draft": this.draftApplied = isChecked; break
+      case "published": this.publishedApplied = isChecked; break
+      case "archived": this.archivedApplied = isChecked; break
+    }
   }
 }

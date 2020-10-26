@@ -2,16 +2,16 @@
   <th class="m-tableHeader-x-header" scope="col">
     <app-label-with-filter
       label="Category"
-      [sortDirection]="categorySorted"
-      (emitSort)="sortColumn('category', $event)"
+      [sortAscending]="getCategorySort()"
+      (emitSortAscending)="sortColumn('category', $event)"
     ></app-label-with-filter>
   </th>
 
   <th class="m-tableHeader-x-body" scope="col">
     <app-label-with-filter
       label="Skill"
-      [sortDirection]="skillSorted"
-      (emitSort)="sortColumn('skill', $event)"
+      [sortAscending]="getSkillSort()"
+      (emitSortAscending)="sortColumn('skill', $event)"
     ></app-label-with-filter>
   </th>
 

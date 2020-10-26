@@ -1,8 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
 
-export enum SortDirections {UP = "up", DOWN = "down"
-}
 
 @Component({
   selector: "app-label-with-filter",
@@ -22,9 +20,9 @@ export enum SortDirections {UP = "up", DOWN = "down"
 export class LabelWithFilterComponent implements OnInit {
 
   @Input() label = ""
-  @Input() sortDirection: SortDirections | undefined = undefined
+  @Input() sortAscending: boolean | undefined = undefined
 
-  @Output() emitSort: EventEmitter<SortDirections> = new EventEmitter<SortDirections>()
+  @Output() emitSortAscending: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   chevronIcon = SvgHelper.path(SvgIcon.CHEVRON)
 
@@ -34,18 +32,18 @@ export class LabelWithFilterComponent implements OnInit {
   }
 
   isSortAscending(): boolean {
-    return this.sortDirection === SortDirections.UP
+    return this.sortAscending === true
   }
 
   onClick(): void {
-    if (!this.sortDirection || this.sortDirection === SortDirections.UP) {
-      this.emitSort.emit(SortDirections.DOWN)
-      console.log("sorted " + SortDirections.DOWN)
-    } else if (this.sortDirection === SortDirections.DOWN) {
-      this.emitSort.emit(SortDirections.UP)
-      console.log("sorted " + SortDirections.UP)
+    if (this.sortAscending === undefined || this.sortAscending) {
+      this.emitSortAscending.emit(false)
+      console.log("sorted " + false)
+    } else if (!this.sortAscending) {
+      this.emitSortAscending.emit(true)
+      console.log("sorted " + true)
     }
-    console.log("previously " + this.sortDirection)
+    console.log("previously " + this.sortAscending)
   }
 
 }

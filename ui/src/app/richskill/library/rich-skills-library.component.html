@@ -19,6 +19,7 @@
       <app-table
         [skills]="skills"
         (selectedRowEmitter)="onRowToggle($event)"
+        (columnSortEmitter)="onHeaderColumnSort($event)"
       ></app-table>
     </div>
 

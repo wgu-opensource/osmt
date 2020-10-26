@@ -1,8 +1,8 @@
 import {Component, OnInit} from "@angular/core"
 import {ApiSkill} from "../ApiSkill"
 import {Observable} from "rxjs"
-import {ApiSearch, RichSkillSearchService} from "../service/rich-skill-search.service"
-import {RichSkillService} from "../service/rich-skill.service";
+import {RichSkillService} from "../service/rich-skill.service"
+import {CurrentSort} from "../../table/table-header/table-header.component"
 
 @Component({
   selector: "app-rich-skills-library",
@@ -14,11 +14,10 @@ export class RichSkillsLibraryComponent implements OnInit {
   loading = true
   selectedSkills: ApiSkill[] = []
 
-  private selectAllTemplate = "Select All (%s)"
-  tableColumns: string[] = ["Category", "Skill", "Select All ()"]
+  defaultSortDirection = false
+  currentSort: CurrentSort | undefined = undefined
 
   constructor(
-    private richSkillSearchService: RichSkillSearchService,
     private richSkillService: RichSkillService
   ) {
   }
@@ -29,18 +28,13 @@ export class RichSkillsLibraryComponent implements OnInit {
 
   getSkills(
     size: number = 50,
-    from: number = 0,
-    status: string[] = [],
-    sort: string = "category.asc",
+    sort: string | undefined = this.formatCurrentSort()
   ): void {
-    const searchBody: Partial<ApiSearch> = {}
-    console.log(searchBody.query)
-    this.skills = this.richSkillService.getSkills()
-    // this.skills = this.richSkillSearchService.searchSkills(size, from, status, sort, searchBody)
+    this.skills = this.richSkillService.getSkills(size, sort)
   }
 
-  filterPerformed(type: string): void {
-
+  formatCurrentSort(): string | undefined {
+    return this.currentSort ? `${this.currentSort.column}.${this.currentSort.ascending ? "asc" : "desc"}` : undefined
   }
 
   // Every time a row is toggled, emit the current list of all selected rows
@@ -48,8 +42,9 @@ export class RichSkillsLibraryComponent implements OnInit {
     this.selectedSkills = selectedSkills
   }
 
-  // propogate the header component's column sort event upward
-  headerColumnSortPerformed(columnName: string): void {
+  onHeaderColumnSort(sort: CurrentSort): void {
+    this.currentSort = sort
+    this.getSkills()
   }
 
   filterControlsChanged(name: string, isChecked: boolean): void {

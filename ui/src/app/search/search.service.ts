@@ -8,9 +8,13 @@ import {Subject} from "rxjs";
 })
 export class SearchService {
   latestSearch?: ApiSearch
+  currentPage = 1
 
   private searchQuerySource: Subject<ApiSearch> = new Subject()
   searchQuery$ = this.searchQuerySource.asObservable()
+
+  private pageNavigationSource: Subject<number> = new Subject()
+  pageNavigation$ = this.pageNavigationSource.asObservable()
 
   constructor(private router: Router) {
   }
@@ -18,6 +22,11 @@ export class SearchService {
   simpleSkillSearch(query: string): void {
     this.setLatestSearch(ApiSearch.factory({query}))
     this.router.navigate(["/search/skills"])
+  }
+
+  setCurrentPage(newPageNo: number): void {
+    this.currentPage = newPageNo
+    this.pageNavigationSource.next(newPageNo)
   }
 
   protected setLatestSearch(apiSearch?: ApiSearch): void {

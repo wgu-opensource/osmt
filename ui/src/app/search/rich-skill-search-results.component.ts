@@ -14,23 +14,34 @@ export class RichSkillSearchResultsComponent implements OnInit {
   resultsLoaded: Observable<PaginatedSkills> | undefined
 
   private results: PaginatedSkills | undefined
-  private queryString: string | undefined
+  private apiSearch: ApiSearch | undefined
 
   private from: number = 0
-  private size: number = 50
+  private size: number = 2
 
   constructor(private searchService: SearchService, private richSkillService: RichSkillService) {
     searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
+    searchService.pageNavigation$.subscribe(newPageNo => this.navigateToPage(newPageNo) )
   }
 
   ngOnInit(): void {
   }
 
   private handleNewSearch(apiSearch: ApiSearch): void {
-    this.queryString = apiSearch.query
+    this.apiSearch = apiSearch
+    this.loadNextPage()
+  }
 
-    this.resultsLoaded = this.richSkillService.searchSkills(apiSearch, this.size, this.from)
-    this.resultsLoaded.subscribe(results => this.setResults(results))
+  private navigateToPage(newPageNo: number): void {
+    this.from = (newPageNo - 1) * this.size
+    this.loadNextPage()
+  }
+
+  private loadNextPage(): void {
+    if (this.apiSearch !== undefined) {
+      this.resultsLoaded = this.richSkillService.searchSkills(this.apiSearch, this.size, this.from)
+      this.resultsLoaded.subscribe(results => this.setResults(results))
+    }
   }
 
   private setResults(results: PaginatedSkills): void {

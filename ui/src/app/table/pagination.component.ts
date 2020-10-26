@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
+import {SearchService} from "../search/search.service";
 
 @Component({
   selector: "app-pagination",
@@ -8,7 +9,7 @@ export class PaginationComponent implements OnInit {
   @Input() currentPage = 1
   @Input() totalPages = 1
 
-  constructor() {
+  constructor(protected searchService: SearchService) {
   }
 
   ngOnInit(): void {
@@ -44,5 +45,10 @@ export class PaginationComponent implements OnInit {
 
   isCurrentPage(pageNo: number): boolean {
     return pageNo === this.currentPage
+  }
+
+  handleClick(pageNo: number): boolean {
+    this.searchService.setCurrentPage(pageNo)
+    return false
   }
 }

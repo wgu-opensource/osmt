@@ -13,7 +13,7 @@
 
   <div class="m-pagination-x-pages">
     <ng-template ngFor let-pageNo [ngForOf]="pageNumbers()">
-      <button *ngIf="!isEllipsis(pageNo)" class="m-buttonSmall m-buttonSmall-secondary" [class.m-buttonSmall-is-active]="isCurrentPage(pageNo)" type="button"><span>{{pageNo}}</span></button>
+      <button *ngIf="!isEllipsis(pageNo)" class="m-buttonSmall m-buttonSmall-secondary" [class.m-buttonSmall-is-active]="isCurrentPage(pageNo)" type="button" (click)="handleClick(pageNo)"><span>{{pageNo}}</span></button>
       <p *ngIf="isEllipsis(pageNo)" class="m-pagination-x-gap">&hellip;</p>
     </ng-template>
 

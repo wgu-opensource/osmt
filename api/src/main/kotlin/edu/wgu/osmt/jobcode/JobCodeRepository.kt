@@ -1,6 +1,7 @@
 package edu.wgu.osmt.jobcode
 
 import edu.wgu.osmt.elasticsearch.EsJobCodeRepository
+import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,7 +12,7 @@ import java.time.ZoneOffset
 
 interface JobCodeRepository {
     val table: Table
-    fun findAll(): List<JobCode>
+    fun findAll(): SizedIterable<JobCodeDao>
     fun findById(id: Long): JobCodeDao?
     fun findByCode(code: String): JobCodeDao?
     fun findByCodeOrCreate(code: String, framework: String? = null): JobCodeDao
@@ -24,9 +25,7 @@ class JobCodeRepositoryImpl @Autowired constructor(val esJobCodeRepository: EsJo
     val dao = JobCodeDao.Companion
     override val table = JobCodeTable
 
-    override fun findAll() = dao.all().map {
-        it.toModel()
-    }
+    override fun findAll() = dao.all()
 
     override fun findById(id: Long): JobCodeDao? = dao.findById(id)
 

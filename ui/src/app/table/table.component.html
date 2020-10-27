@@ -13,13 +13,11 @@
   </tr>
   </thead>
   <tbody>
-  <ng-template [appLoadingObservables]="[skills]">
     <app-table-row
       [skill]="skill.skill"
       [isSelected]="skill.selected"
       (selected)="onRowToggle($event)"
       *ngFor="let skill of preparedSkills"
     ></app-table-row>
-  </ng-template>
   </tbody>
 </table>

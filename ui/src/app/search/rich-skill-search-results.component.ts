@@ -6,6 +6,7 @@ import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search
 import {ApiSkill} from "../richskill/ApiSkill";
 import {TableActionDefinition} from "../table/table-action-bar.component";
 import {PublishStatus} from "../PublishStatus";
+import {ActivatedRoute} from "@angular/router";
 
 
 @Component({
@@ -15,25 +16,33 @@ import {PublishStatus} from "../PublishStatus";
 export class RichSkillSearchResultsComponent implements OnInit {
   resultsLoaded: Observable<PaginatedSkills> | undefined
 
-  private results: PaginatedSkills | undefined
-  private apiSearch: ApiSearch | undefined
+  results: PaginatedSkills | undefined
+  apiSearch: ApiSearch | undefined
 
-  private from: number = 0
-  private size: number = 2
-  private selectedSkills?: ApiSkill[]
+  from: number = 0
+  size: number = 2
+  selectedSkills?: ApiSkill[]
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
   get skillCountLabel(): string {
-    if (this.totalCount > 1)  {
+    if (this.totalCount > 0)  {
       return `${this.curPageCount} of ${this.totalCount} skill${this.curPageCount > 1 ? "s" : ""}`
     }
     return `0 skills`
   }
 
-  constructor(private searchService: SearchService, private richSkillService: RichSkillService) {
+  constructor(private searchService: SearchService,
+              private richSkillService: RichSkillService,
+              private route: ActivatedRoute) {
     searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      const query = params.q
+      if (query && query.length > 0) {
+        this.handleNewSearch(ApiSearch.factory({query}))
+      }
+    })
   }
 
   private handleNewSearch(apiSearch: ApiSearch): void {
@@ -57,29 +66,29 @@ export class RichSkillSearchResultsComponent implements OnInit {
     this.results = results
   }
 
-  private get totalCount(): number {
+  get totalCount(): number {
     return this.results?.totalCount ?? 0
   }
 
-  private get curPageCount(): number {
+  get curPageCount(): number {
     return this.results?.skills.length ?? 0
   }
 
-  private get emptyResults(): boolean {
+  get emptyResults(): boolean {
     return this.curPageCount < 1
   }
 
-  private get firstRecordNo(): number {
+  get firstRecordNo(): number {
     return this.from + 1
   }
-  private get lastRecordNo(): number {
+  get lastRecordNo(): number {
     return this.from + this.curPageCount
   }
 
-  private get totalPageCount(): number {
+  get totalPageCount(): number {
     return Math.ceil(this.totalCount / this.size)
   }
-  private get currentPageNo(): number {
+  get currentPageNo(): number {
     return Math.floor(this.from / this.size) + 1
   }
 
@@ -93,16 +102,16 @@ export class RichSkillSearchResultsComponent implements OnInit {
     return (this.selectedSkills?.length ?? 0) > 0
   }
   publishVisible(): boolean {
-    const unpublishedSkills = this.selectedSkills?.filter(s => s.status !== PublishStatus.Published)
-    return (unpublishedSkills?.length ?? 0) > 0
+    const unpublishedSkill = this.selectedSkills?.find(s => s.status === PublishStatus.Unpublished)
+    return unpublishedSkill !== undefined
   }
   archiveVisible(): boolean {
-    const unarchivedSkills = this.selectedSkills?.filter(s => s.status !== PublishStatus.Archived)
-    return (unarchivedSkills?.length ?? 0) > 0
+    const unarchivedSkills = this.selectedSkills?.find(s => s.status === PublishStatus.Published)
+    return unarchivedSkills !== undefined
   }
   unarchiveVisible(): boolean {
-    const archivedSkills = this.selectedSkills?.filter(s => s.status === PublishStatus.Archived)
-    return (archivedSkills?.length ?? 0) > 0
+    const archivedSkill = this.selectedSkills?.find(s => s.status === PublishStatus.Archived)
+    return archivedSkill !== undefined
   }
 
   tableActions(): TableActionDefinition[] {

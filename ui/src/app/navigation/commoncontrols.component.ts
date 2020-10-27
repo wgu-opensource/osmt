@@ -1,7 +1,7 @@
-import { Component, OnInit } from "@angular/core"
-import {FormControl, FormGroup} from "@angular/forms";
+import {Component, OnInit} from "@angular/core"
 import {AbstractSearchComponent} from "./abstract-search.component";
 import {SearchService} from "../search/search.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: "app-commoncontrols",
@@ -9,8 +9,8 @@ import {SearchService} from "../search/search.service";
 })
 export class CommoncontrolsComponent extends AbstractSearchComponent implements OnInit {
 
-  constructor(protected searchService: SearchService) {
-    super(searchService)
+  constructor(protected searchService: SearchService, protected route: ActivatedRoute) {
+    super(searchService, route)
   }
 
   ngOnInit(): void {

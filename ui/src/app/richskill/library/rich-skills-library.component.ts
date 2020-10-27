@@ -1,9 +1,9 @@
 import {Component, OnInit} from "@angular/core"
-import {ApiSkill} from "../ApiSkill"
+import {ApiSkill, SkillsWithCount} from "../ApiSkill"
 import {Observable} from "rxjs"
 import {RichSkillService} from "../service/rich-skill.service"
 import {CurrentSort} from "../../table/table-header/table-header.component"
-import {PublishStatus} from "../../PublishStatus";
+import {PublishStatus} from "../../PublishStatus"
 
 @Component({
   selector: "app-rich-skills-library",
@@ -11,7 +11,7 @@ import {PublishStatus} from "../../PublishStatus";
 })
 export class RichSkillsLibraryComponent implements OnInit {
 
-  skillsLoaded: Observable<ApiSkill[]> | null = null
+  skillsLoaded: Observable<SkillsWithCount> | null = null
   skills: ApiSkill[] = []
   loading = true
   selectedSkills: ApiSkill[] = []
@@ -24,8 +24,7 @@ export class RichSkillsLibraryComponent implements OnInit {
   publishedApplied = true
   archivedApplied = false
 
-  currentlyLoadedSkills = 0
-  totalSkills = this.draftCount + this.publishedCount + this.archivedCount
+  totalSkills = 0
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
 
   constructor(
@@ -42,9 +41,9 @@ export class RichSkillsLibraryComponent implements OnInit {
     sort: string | undefined = this.formatCurrentSort()
   ): void {
     this.skillsLoaded = this.richSkillService.getSkills(size, sort)
-    this.skillsLoaded.subscribe(skills => {
+    this.skillsLoaded.subscribe(({skills, total}) => {
       this.skills = skills
-      this.currentlyLoadedSkills = skills.length
+      this.totalSkills = total
     })
   }
 

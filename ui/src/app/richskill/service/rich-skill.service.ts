@@ -1,13 +1,13 @@
 import {Injectable} from "@angular/core"
 import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {Observable} from "rxjs"
-import {ApiSkill, ISkill} from "../ApiSkill"
+import {ApiSkill, ISkill, SkillsWithCount} from "../ApiSkill"
 import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate"
 import {AuthService} from "../../auth/auth-service"
-import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service";
-import {PublishStatus} from "../../PublishStatus";
+import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service"
+import {PublishStatus} from "../../PublishStatus"
 
 
 @Injectable({
@@ -24,7 +24,7 @@ export class RichSkillService extends AbstractService {
   getSkills(
     size: number = 50,
     sort: string | undefined,
-  ): Observable<ApiSkill[]> {
+  ): Observable<SkillsWithCount> {
     if (sort && !["category.asc", "category.desc", "skill.asc", "skill.desc"].includes(sort)) {
       throw Error() // todo improve handling
     }
@@ -38,7 +38,10 @@ export class RichSkillService extends AbstractService {
     })
       .pipe(share())
       .pipe(map(({body, headers}) => {
-        return body?.map(skill => new ApiSkill(skill)) || []
+        return {
+          skills: body?.map(skill => new ApiSkill(skill)) || [],
+          total: +(headers.get("X-Total-Count") ?? "0")
+        }
       }))
   }
 

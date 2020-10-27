@@ -92,3 +92,8 @@ export class ApiSkill {
     this.occupations = iRichSkill.occupations
   }
 }
+
+export interface SkillsWithCount {
+  skills: ApiSkill[]
+  total: number
+}

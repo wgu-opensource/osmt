@@ -21,6 +21,13 @@ export class RichSkillSearchResultsComponent implements OnInit {
   private from: number = 0
   private size: number = 50
   private selectedSkills?: ApiSkill[]
+  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
+  get skillCountLabel(): string {
+    if (this.totalCount > 1)  {
+      return `${this.curPageCount} of ${this.totalCount} skill${this.curPageCount > 1 ? "s" : ""}`
+    }
+    return `0 skills`
+  }
 
   constructor(private searchService: SearchService, private richSkillService: RichSkillService) {
     searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
@@ -42,7 +49,7 @@ export class RichSkillSearchResultsComponent implements OnInit {
 
   private loadNextPage(): void {
     if (this.apiSearch !== undefined) {
-      this.resultsLoaded = this.richSkillService.searchSkills(this.apiSearch, this.size, this.from)
+      this.resultsLoaded = this.richSkillService.searchSkills(this.apiSearch, this.size, this.from, this.selectedFilters)
       this.resultsLoaded.subscribe(results => this.setResults(results))
     }
   }
@@ -155,5 +162,10 @@ export class RichSkillSearchResultsComponent implements OnInit {
   handleClickPublish(): boolean  {
     console.log("PUBLISH CLICKED")
     return false
+  }
+
+  handleFiltersChanged(newFilters: Set<PublishStatus>): void {
+    this.selectedFilters = newFilters
+    this.loadNextPage()
   }
 }

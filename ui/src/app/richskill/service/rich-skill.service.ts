@@ -7,6 +7,7 @@ import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate";
 import {AuthService} from "../../auth/auth-service";
 import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service";
+import {PublishStatus} from "../../PublishStatus";
 
 
 @Injectable({
@@ -103,14 +104,16 @@ export class RichSkillService extends AbstractService {
     apiSearch: ApiSearch,
     size: number | undefined,
     from: number | undefined,
-    status: string[] = ["unpublished", "published"],
+    filterByStatuses?: Set<PublishStatus>,
     sort: string = "category.asc",
   ): Observable<PaginatedSkills> {
     const errorMsg = `Failed to unwrap response for skill search`
 
     const params:any = {
-      status,
       sort
+    }
+    if (filterByStatuses !== undefined) {
+      params.status = Array.from(filterByStatuses).map(s => s.toString())
     }
     if (size !== undefined) { params.size = size }
     if (from !== undefined) { params.from = from }

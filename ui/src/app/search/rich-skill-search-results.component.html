@@ -1,21 +1,22 @@
 <ng-template [appLoadingObservables]="[resultsLoaded]">
 
-  <div *ngIf="!emptyResults" class="l-stickyBar">
+  <div class="l-stickyBar">
 
     <div class="l-container t-padding-large t-padding-top">
 
       <div class="l-container l-container-mobile">
         <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Search Results</h2>
         <p class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">
-          {{curPageCount}} of {{totalCount}} skills matching <span class="t-type-bodyLargeBold t-color-text1">{{apiSearch?.query}}</span>.
-          Viewing results {{firstRecordNo}}-{{lastRecordNo}}
+          {{skillCountLabel}} matching <span class="t-type-bodyLargeBold t-color-text1">{{apiSearch?.query}}</span>.
+          <ng-template [ngIf]="totalCount > 0">
+            Viewing results {{firstRecordNo}}-{{lastRecordNo}}
+          </ng-template>
         </p>
 
-<!--        <app-filter-controls-->
-<!--          (archivedFilterEmitter)="filterControlsChanged('archived', $event)"-->
-<!--          (draftFilterEmitter)="filterControlsChanged('draft', $event)"-->
-<!--          (publishedFilterEmitter)="filterControlsChanged('published', $event)"-->
-<!--        ></app-filter-controls>-->
+        <app-filter-controls
+          [selectedFilters]="selectedFilters"
+          (filtersChanged)="handleFiltersChanged($event)"
+        ></app-filter-controls>
       </div>
 
       <div class="t-margin-medium t-margin-bottom">

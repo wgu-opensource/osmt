@@ -1,22 +1,26 @@
-<tr class="m-tableHeader">
-  <th class="m-tableHeader-x-header" scope="col">
+<div class="m-tableHeader t-hidden-tabletMin">
+<!--  {{render '@m-tablelabel&#45;&#45;with-selectsmall'}}-->
+</div>
+
+<div class="m-tableHeader t-hidden-tabletMax">
+
+  <div class="m-tableHeader-x-header">
     <app-label-with-filter
       label="Category"
-      [sortDirection]="categorySorted"
-      (emitSort)="sortColumn('category', $event)"
+      [sortAscending]="getCategorySort()"
+      (emitSortAscending)="sortColumn('category', $event)"
     ></app-label-with-filter>
-  </th>
+  </div>
 
-  <th class="m-tableHeader-x-body" scope="col">
+  <div class="m-tableHeader-x-body">
     <app-label-with-filter
       label="Skill"
-      [sortDirection]="skillSorted"
-      (emitSort)="sortColumn('skill', $event)"
+      [sortAscending]="getSkillSort()"
+      (emitSortAscending)="sortColumn('skill', $event)"
     ></app-label-with-filter>
-  </th>
+  </div>
 
-  <th class="m-tableHeader-x-actions" scope="col">
-
+  <div class="m-tableHeader-x-actions">
     <div class="m-tableLabel">
       <label class="m-tableLabel-x-text" for="checkbox">Select All ({{numberSelected}})</label>
 
@@ -33,5 +37,7 @@
         </div>
       </div>
     </div>
-  </th>
-</tr>
+  </div>
+
+</div>
+

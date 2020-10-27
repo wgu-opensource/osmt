@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {ApiSkill} from "../richskill/ApiSkill"
 import {Observable} from "rxjs"
 import {SkillWithSelection} from "./table-row/table-row.component"
+import {CurrentSort} from "./table-header/table-header.component";
 
 /**
  * Implement row components to hold datasets and figure out how to dynamically pass and use them
@@ -14,15 +15,12 @@ export class TableComponent implements OnInit {
 
   @Input() skills: ApiSkill[] | null = null
 
-  @Output() columnSortEmitter = new EventEmitter<string>()
-
-  private selectAllTemplate = "Select All (%s)"
-  tableColumns: string[] = ["Category", "Skill", "Select All ()"]
+  @Output() columnSortEmitter = new EventEmitter<CurrentSort>()
+  @Output() selectedRowEmitter: EventEmitter<ApiSkill[]> = new EventEmitter<ApiSkill[]>()
 
   // can I change this type?  Just pass along the same observable to all components that need it.
   preparedSkills: SkillWithSelection[] = [] // skillwithselection not necessary, the presence of a skill in an event is proof
 
-  @Output() selectedRowEmitter: EventEmitter<ApiSkill[]> = new EventEmitter<ApiSkill[]>()
 
   constructor() { }
 
@@ -38,13 +36,14 @@ export class TableComponent implements OnInit {
   onRowToggle(skill: ApiSkill): void {
     const maybeFound = this.preparedSkills.find(s => s.skill === skill)
     if (maybeFound) {
-      const newStatus = !maybeFound.selected
-      maybeFound.selected = newStatus
+      maybeFound.selected = !maybeFound.selected
     }
+    this.selectedRowEmitter.emit(this.preparedSkills.filter(row => row.selected).map(row => row.skill))
+
   }
 
   // propogate the header component's column sort event upward
-  headerColumnSortPerformed(columnName: string): void {
+  headerColumnSortPerformed(columnName: CurrentSort): void {
     this.columnSortEmitter.emit(columnName)
   }
 

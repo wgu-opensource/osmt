@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
-import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
-import {SortDirections} from "./label-with-filter/label-with-filter.component";
+import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
+
+export interface CurrentSort { column: string, ascending: boolean }
 
 @Component({
   selector: "app-table-header",
@@ -8,14 +9,15 @@ import {SortDirections} from "./label-with-filter/label-with-filter.component";
 })
 export class TableHeaderComponent implements OnInit {
 
-  @Input() columns: string[] = []
   @Input() numberSelected = 0
 
-  @Output() columnClicked: EventEmitter<string> = new EventEmitter<string>()
+  @Output() columnClicked: EventEmitter<CurrentSort> = new EventEmitter<CurrentSort>()
   @Output() selectAllEmitter: EventEmitter<boolean> = new EventEmitter<boolean>()
 
-  categorySorted: SortDirections | undefined = undefined
-  skillSorted: SortDirections | undefined = undefined
+  // categorySortAscending: boolean | undefined = undefined
+  // skillSortAscending: boolean | undefined = undefined
+
+  currentSort: CurrentSort | undefined = undefined
 
   chevronIcon = SvgHelper.path(SvgIcon.CHEVRON)
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
@@ -26,18 +28,26 @@ export class TableHeaderComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  sortColumn(name: string, direction: SortDirections): void {
-    if (name.toLowerCase() === "category") {
-      this.categorySorted = direction
-      this.skillSorted = undefined
-    } else if (name.toLowerCase() === "skill") {
-      this.skillSorted = direction
-      this.categorySorted = undefined
+  getCategorySort(): boolean | undefined {
+    if (this.currentSort) {
+      return this.currentSort.column.toLowerCase() === "category" ? this.currentSort.ascending : undefined
+    } else {
+      return undefined
     }
   }
 
-  emitColumnClick(name: string): void {
-    this.columnClicked.emit(name)
+  getSkillSort(): boolean | undefined {
+    if (this.currentSort) {
+      return this.currentSort.column.toLowerCase() === "skill" ? this.currentSort.ascending : undefined
+    } else {
+      return undefined
+    }
+  }
+
+  sortColumn(column: string, ascending: boolean): void {
+    console.log("header got it" + ` ${column} ${ascending}`)
+    this.currentSort = {column, ascending}
+    this.columnClicked.emit(this.currentSort)
   }
 
   emitSelectAll(event: Event): void {

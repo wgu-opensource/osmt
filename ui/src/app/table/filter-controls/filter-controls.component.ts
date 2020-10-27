@@ -1,0 +1,42 @@
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {PublishStatus} from "../../PublishStatus";
+
+@Component({
+  selector: "app-filter-controls",
+  templateUrl: "./filter-controls.component.html"
+})
+export class FilterControlsComponent implements OnInit {
+  @Input() selectedFilters: Set<PublishStatus> = new Set()
+  @Output() filtersChanged: EventEmitter<Set<PublishStatus>> = new EventEmitter<Set<PublishStatus>>()
+
+  constructor() {
+  }
+
+  ngOnInit(): void {
+  }
+
+  onFilterChange(status: PublishStatus, isChecked: boolean): void {
+    if (isChecked) {
+      this.selectedFilters.add(status)
+    } else {
+      this.selectedFilters.delete(status)
+    }
+    this.filtersChanged.emit(this.selectedFilters)
+  }
+  onFilterChangeUnpublished(isChecked: boolean): void {
+    return this.onFilterChange(PublishStatus.Unpublished, isChecked)
+  }
+  onFilterChangePublished(isChecked: boolean): void {
+    return this.onFilterChange(PublishStatus.Published, isChecked)
+  }
+  onFilterChangeArchived(isChecked: boolean): void {
+    return this.onFilterChange(PublishStatus.Archived, isChecked)
+  }
+
+  get isDraftChecked(): boolean | undefined { return this.isStatusChecked(PublishStatus.Unpublished) }
+  get isPublishedChecked(): boolean | undefined { return this.isStatusChecked(PublishStatus.Published) }
+  get isArchivedChecked(): boolean | undefined { return this.isStatusChecked(PublishStatus.Archived) }
+  isStatusChecked(status: PublishStatus): boolean | undefined {
+    return this.selectedFilters.has(status) ? true : undefined
+  }
+}

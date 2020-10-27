@@ -11,6 +11,7 @@ import edu.wgu.osmt.richskill.RichSkillDoc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
@@ -24,7 +25,7 @@ class SearchController @Autowired constructor(
     val appConfig: AppConfig
 ) {
 
-    @PostMapping(RoutePaths.SEARCH_COLLECTIONS)
+    @PostMapping(RoutePaths.SEARCH_COLLECTIONS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCollections(uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,
@@ -63,7 +64,7 @@ class SearchController @Autowired constructor(
         return ResponseEntity.status(200).headers(responseHeaders).body(searchHits.map { it.content }.toList())
     }
 
-    @PostMapping(RoutePaths.SEARCH_SKILLS)
+    @PostMapping(RoutePaths.SEARCH_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSkills(uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,

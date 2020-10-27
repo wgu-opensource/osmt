@@ -1,13 +1,14 @@
 import {NgModule} from "@angular/core"
 import {Routes, RouterModule} from "@angular/router"
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
-import {RichSkillsComponent} from "./richskill/library/rich-skills.component"
+import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-library.component"
 import {RichSkillFormComponent, SkillFormDirtyGuard} from "./richskill/form/rich-skill-form.component"
 import {LoginSuccessComponent} from "./auth/login-success.component"
 import {LogoutComponent} from "./auth/logout.component"
 import {AuthGuard} from "./auth/auth.guard"
 import {LoginComponent} from "./auth/login.component"
 import {RichSkillManageComponent} from "./richskill/detail/rich-skill-manage/rich-skill-manage.component"
+import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -27,7 +28,7 @@ const routes: Routes = [
 
   // skills library
   {path: "skills",
-    component: RichSkillsComponent,
+    component: RichSkillsLibraryComponent,
     canActivate: [AuthGuard],
   },
 
@@ -36,6 +37,9 @@ const routes: Routes = [
 
   // Authed views
   {path: "skills/:uuid/manage", component: RichSkillManageComponent},
+
+  // search
+  {path: "search/skills", component: RichSkillSearchResultsComponent},
 
   // authentication redirects
   {path: "login", component: LoginComponent},  // redirect to oauth login

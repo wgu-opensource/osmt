@@ -3,7 +3,7 @@ import {APP_INITIALIZER, NgModule} from "@angular/core"
 import {AppRoutingModule} from "./app-routing.module"
 import {AppComponent} from "./app.component"
 import {HttpClientModule} from "@angular/common/http"
-import {RichSkillsComponent} from "./richskill/library/rich-skills.component"
+import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-library.component"
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
 import {RichSkillsCsvExportComponent} from "./richskill/task/rich-skills-csv-export.component"
 import {AppConfig} from "./app.config"
@@ -32,8 +32,20 @@ import {ManageSkillActionBarVerticalComponent} from "./richskill/detail/rich-ski
 import {ManageSkillActionBarHorizontalComponent} from "./richskill/detail/rich-skill-manage/action-bar/action-bar-horizontal/manage-skill-action-bar-horizontal.component"
 import {ServerErrorComponent} from "./loading/server-error.component"
 import { CommonModule } from "@angular/common"
-import {DetailCardStatusBarComponent} from "./detail-card/status-bar/detail-card-status-bar.component";
-import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component";
+import {DetailCardStatusBarComponent} from "./detail-card/status-bar/detail-card-status-bar.component"
+import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component"
+import { TableComponent } from "./table/table.component"
+import { TableRowComponent } from "./table/table-row/table-row.component"
+import { TableHeaderComponent } from "./table/table-header/table-header.component"
+import { TableLabelComponent } from "./table/table-label/table-label.component"
+import { LabelWithFilterComponent } from "./table/table-header/label-with-filter/label-with-filter.component"
+import {AccordianComponent} from "./table/table-row/accordian/accordian.component"
+import { FilterControlsComponent } from "./table/filter-controls/filter-controls.component"
+import { FilterChoiceComponent } from "./table/filter-controls/filter-choice/filter-choice.component"
+import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
+import {PaginationComponent} from "./table/pagination.component";
+import {ActionBarItemComponent} from "./table/action-bar-item.component";
+import {TableActionBarComponent} from "./table/table-action-bar.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -61,7 +73,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     FormFieldTextArea,
 
     // Rich skills
-    RichSkillsComponent,
+    RichSkillsLibraryComponent,
     RichSkillsCsvExportComponent,
     SkillCollectionsDisplayComponent,
 
@@ -74,10 +86,23 @@ export function initializeApp(appConfig: AppConfig): () => void {
     ManageSkillActionBarVerticalComponent,
     ManageSkillActionBarHorizontalComponent,
 
+    RichSkillSearchResultsComponent,
+
     DetailCardComponent,
     DetailCardSectionComponent,
     DetailCardStatusBarComponent,
     CardDetailTitleComponent,
+    AccordianComponent,
+    TableComponent,
+    TableRowComponent,
+    TableHeaderComponent,
+    TableLabelComponent,
+    TableActionBarComponent,
+    ActionBarItemComponent,
+    LabelWithFilterComponent,
+    FilterControlsComponent,
+    FilterChoiceComponent,
+    PaginationComponent
   ],
   imports: [
     BrowserModule,

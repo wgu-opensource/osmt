@@ -107,13 +107,13 @@ export class OccupationsFormatter {
   }
 
   html(): string {
-    const codeBreakouts: JobCodeBreakout[] = this.codes.map((code: IJobCode) => new JobCodeBreakout(code.code))
+    const codeBreakouts: JobCodeBreakout[] = this.getBreakouts()
 
-    const majorCodes = this.inferMajorCodes(codeBreakouts)
-    const minorCodes = this.inferMinorCodes(codeBreakouts)
-    const broadCodes = this.inferBroadCodes(codeBreakouts)
-    const detailedCodes = this.inferDetailedCodes(codeBreakouts)
-    const jobRoleCodes = this.inferJobRoleCodes(codeBreakouts)
+    const majorCodes = this.majorGroups(codeBreakouts)
+    const minorCodes = this.minorGroups(codeBreakouts)
+    const broadCodes = this.broadGroups(codeBreakouts)
+    const detailedCodes = this.detailedGroups(codeBreakouts)
+    const jobRoleCodes = this.oNetJobRoles(codeBreakouts)
 
     let html = ""
 
@@ -140,27 +140,31 @@ export class OccupationsFormatter {
     return html
   }
 
-  private inferMajorCodes(codeBreakouts: JobCodeBreakout[]): string {
+  private getBreakouts(): JobCodeBreakout[] {
+    return this.codes.map((code: IJobCode) => new JobCodeBreakout(code.code))
+  }
+
+  majorGroups(codeBreakouts: JobCodeBreakout[] = this.getBreakouts()): string {
     const codes = codeBreakouts.flatMap(code => !!code?.majorCode() ? [code.majorCode() as string] : [])
     return OccupationsFormatter.dedupeCodes(codes)?.join("; ") || ""
   }
 
-  private inferMinorCodes(codeBreakouts: JobCodeBreakout[]): string {
+  minorGroups(codeBreakouts: JobCodeBreakout[] = this.getBreakouts()): string {
     const codes = codeBreakouts.flatMap(code => !!code?.minorCode() ? [code.minorCode() as string] : [])
     return OccupationsFormatter.joinList("; ", OccupationsFormatter.dedupeCodes(codes)  || [])
   }
 
-  private inferBroadCodes(codeBreakouts: JobCodeBreakout[]): string {
+  broadGroups(codeBreakouts: JobCodeBreakout[] = this.getBreakouts()): string {
     const codes = codeBreakouts.flatMap(code => !!code?.broadCode() ? [code.broadCode() as string] : [])
     return OccupationsFormatter.joinList("; ", OccupationsFormatter.dedupeCodes(codes)  || [])
   }
 
-  private inferDetailedCodes(codeBreakouts: JobCodeBreakout[]): string {
+  detailedGroups(codeBreakouts: JobCodeBreakout[] = this.getBreakouts()): string {
     const codes = codeBreakouts.flatMap(code => !!code?.detailedCode() ? [code.detailedCode() as string] : [])
     return OccupationsFormatter.joinList("; ", OccupationsFormatter.dedupeCodes(codes)  || [])
   }
 
-  private inferJobRoleCodes(codeBreakouts: JobCodeBreakout[]): string {
+  oNetJobRoles(codeBreakouts: JobCodeBreakout[] = this.getBreakouts()): string {
     const codes = codeBreakouts.flatMap(code => !!code?.jobRoleCode() ? [code.jobRoleCode() as string] : [])
     return OccupationsFormatter.joinList("; ", OccupationsFormatter.dedupeCodes(codes)  || [])
   }

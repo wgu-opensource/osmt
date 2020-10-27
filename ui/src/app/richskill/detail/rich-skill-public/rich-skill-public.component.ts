@@ -2,8 +2,8 @@ import { Component, Inject, LOCALE_ID } from "@angular/core"
 import { RichSkillService } from "../../service/rich-skill.service"
 import { ActivatedRoute } from "@angular/router"
 import {AbstractRichSkillDetailComponent} from "../AbstractRichSkillDetailComponent"
-import {OccupationsFormatter} from "../../../job-codes/Jobcode";
-import {IDetailCardSectionData} from "../../../detail-card/section/section.component";
+import {OccupationsFormatter} from "../../../job-codes/Jobcode"
+import {IDetailCardSectionData} from "../../../detail-card/section/section.component"
 
 @Component({
   selector: "app-rich-skill-public",
@@ -35,11 +35,11 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
       },
       {
         label: "Standards",
-        bodyHtml: this.richSkill?.standards?.map(standard => standard.name)?.join("\n") ?? "",
+        bodyHtml: this.richSkill?.standards?.map(({name}) => name)?.join("\n") ?? "",
         showIfEmpty: false
       }, {
         label: "Certifications",
-        bodyHtml: this.richSkill?.certifications?.map(alignment => alignment.name)?.join("\n") ?? "",
+        bodyHtml: this.richSkill?.certifications?.map(({name}) => name)?.join("\n") ?? "",
         showIfEmpty: false
       }, {
         label: "Occupations",

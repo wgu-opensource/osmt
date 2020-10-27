@@ -4,8 +4,10 @@ import {Observable} from "rxjs"
 import {ApiSkill, ISkill} from "../ApiSkill"
 import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
-import {ApiSkillUpdate} from "../ApiSkillUpdate";
-import {AuthService} from "../../auth/auth-service";
+import {ApiSkillUpdate} from "../ApiSkillUpdate"
+import {AuthService} from "../../auth/auth-service"
+import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service";
+import {PublishStatus} from "../../PublishStatus";
 
 
 @Injectable({
@@ -19,9 +21,20 @@ export class RichSkillService extends AbstractService {
 
   private serviceUrl = "api/skills"
 
-  getSkills(size: number = 50): Observable<ApiSkill[]> {
+  getSkills(
+    size: number = 50,
+    sort: string | undefined,
+  ): Observable<ApiSkill[]> {
+    if (sort && !["category.asc", "category.desc", "skill.asc", "skill.desc"].includes(sort)) {
+      throw Error() // todo improve handling
+    }
+
     return this.get<ISkill[]>({
-      path: `${this.serviceUrl}?size=${size}`
+      path: `${this.serviceUrl}`,
+      params: {
+        size: size.toString(),
+        ...sort && {sort}
+      }
     })
       .pipe(share())
       .pipe(map(({body}) => {
@@ -55,6 +68,7 @@ export class RichSkillService extends AbstractService {
         responseType: "text",
         observe: "response"
       })
+      .pipe(share())
       .pipe(map((response) => this.safeUnwrapBody(response.body, errorMsg)))
   }
 
@@ -74,6 +88,7 @@ export class RichSkillService extends AbstractService {
         responseType: "text",
         observe: "response"
       })
+      .pipe(share())
       .pipe(map((response) => this.safeUnwrapBody(response.body, errorMsg)))
   }
 
@@ -95,5 +110,37 @@ export class RichSkillService extends AbstractService {
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiSkill(this.safeUnwrapBody(body, errorMsg))))
+  }
+
+
+  searchSkills(
+    apiSearch: ApiSearch,
+    size: number | undefined,
+    from: number | undefined,
+    filterByStatuses?: Set<PublishStatus>,
+    sort: string = "category.asc",
+  ): Observable<PaginatedSkills> {
+    const errorMsg = `Failed to unwrap response for skill search`
+
+    const params:any = {
+      sort
+    }
+    if (filterByStatuses !== undefined) {
+      params.status = Array.from(filterByStatuses).map(s => s.toString())
+    }
+    if (size !== undefined) { params.size = size }
+    if (from !== undefined) { params.from = from }
+
+    return this.post<ISkill[]>({
+      path: "api/search/skills",
+      params,
+      body: apiSearch,
+    })
+      .pipe(share())
+      .pipe(map((response) => {
+        const totalCount = Number(response.headers.get("X-Total-Count"))
+        const skills = response.body?.map(skill => new ApiSkill(skill)) || []
+        return new PaginatedSkills(skills, !isNaN(totalCount) ? totalCount : skills.length)
+      }))
   }
 }

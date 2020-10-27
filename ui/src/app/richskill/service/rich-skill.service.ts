@@ -35,7 +35,7 @@ export class RichSkillService extends AbstractService {
       }
     })
       .pipe(share())
-      .pipe(map(({body}) => {
+      .pipe(map(({body, headers}) => {
         return body?.map(skill => new ApiSkill(skill)) || []
       }))
   }

@@ -17,17 +17,13 @@ export class RichSkillsLibraryComponent implements OnInit {
   defaultSortDirection = false
   currentSort: CurrentSort | undefined = undefined
 
-  // Total counts (not paginated)
-  draftCount = 0
-  publishedCount = 0
-  archivedCount = 0
-
   // filters with defaults
   draftApplied = true
   publishedApplied = true
   archivedApplied = false
 
-  totalSkills = this.draftCount + this.publishedCount + this.archivedCount
+  currentlyLoadedSkills = 0
+  totalSkills = 0
 
   constructor(
     private richSkillService: RichSkillService
@@ -38,17 +34,12 @@ export class RichSkillsLibraryComponent implements OnInit {
     this.getSkills()
   }
 
-  currentlyViewing(): number {
-    return (this.draftApplied ? this.draftCount : 0)
-      + (this.publishedApplied ? this.publishedCount : 0)
-      + (this.archivedApplied ? this.archivedCount : 0)
-  }
-
   getSkills(
     size: number = 50,
     sort: string | undefined = this.formatCurrentSort()
   ): void {
     this.skills = this.richSkillService.getSkills(size, sort)
+    this.skills?.subscribe(skills => this.currentlyLoadedSkills = skills.length)
   }
 
   formatCurrentSort(): string | undefined {

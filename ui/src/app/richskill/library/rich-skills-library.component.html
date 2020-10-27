@@ -5,16 +5,13 @@
     <div class="l-container l-container-mobile">
       <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Skills Library</h2>
       <p class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">
-        Viewing ({{currentlyViewing()}}) of ({{totalSkills}}) skills in the library
+        Viewing ({{currentlyLoadedSkills}}) of ({{totalSkills}}) skills in the library
       </p>
 
       <app-filter-controls
         [archivedSelected]="archivedApplied"
-        [archivedCount]="archivedCount"
         [draftSelected]="draftApplied"
-        [draftCount]="draftCount"
         [publishSelected]="publishedApplied"
-        [publishedCount]="publishedCount"
         (archivedFilterEmitter)="filterControlsChanged('archived', $event)"
         (draftFilterEmitter)="filterControlsChanged('draft', $event)"
         (publishedFilterEmitter)="filterControlsChanged('published', $event)"

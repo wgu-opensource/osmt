@@ -1,16 +1,16 @@
 <div class="l-filterControls">
   <app-filter-choice
-    label="Draft ({{draftCount}})"
+    label="Draft"
     [isChecked]="draftSelected"
     (changeEmitter)="onFilterChange('draft', $event)"
   ></app-filter-choice>
   <app-filter-choice
-    label="Published ({{publishedCount}})"
+    label="Published"
     [isChecked]="publishSelected"
     (changeEmitter)="onFilterChange('published', $event)"
   ></app-filter-choice>
   <app-filter-choice
-    label="Archived ({{archivedCount}})"
+    label="Archived"
     [isChecked]="archivedSelected"
     (changeEmitter)="onFilterChange('archived', $event)"
   ></app-filter-choice>

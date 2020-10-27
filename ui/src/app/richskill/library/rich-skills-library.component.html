@@ -11,15 +11,8 @@
       </p>
 
       <app-filter-controls
-        [archivedSelected]="archivedApplied"
-        [archivedCount]="archivedCount"
-        [draftSelected]="draftApplied"
-        [draftCount]="draftCount"
-        [publishSelected]="publishedApplied"
-        [publishedCount]="publishedCount"
-        (archivedFilterEmitter)="filterControlsChanged('archived', $event)"
-        (draftFilterEmitter)="filterControlsChanged('draft', $event)"
-        (publishedFilterEmitter)="filterControlsChanged('published', $event)"
+        [selectedFilters]="selectedFilters"
+        (filtersChanged)="handleFiltersChanged($event)"
       ></app-filter-controls>
     </div>
 

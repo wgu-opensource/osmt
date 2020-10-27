@@ -6,11 +6,11 @@ import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
   template: `
     <div class="m-choice">
       <div class="m-choice-x-body">
-        <label for="checkbox">{{label}}</label>
+        <label [for]="inputId">{{label}}</label>
       </div>
       <div class="m-choice-x-input">
         <div class="m-checkbox">
-          <input type="checkbox" id="checkbox" name="checkbox" (change)="onChange($event)" [attr.checked]="checked ? true : null">
+          <input type="checkbox" [id]="inputId" name="checkbox" (change)="onChange($event)" [attr.checked]="checked ? true : null">
           <div class="m-checkbox-x-icon">
             <svg class="t-icon" aria-hidden="true">
               <use [attr.xlink:href]="checkIcon"></use>
@@ -28,6 +28,8 @@ export class FilterChoiceComponent implements OnInit {
 
   @Output() changeEmitter: EventEmitter<boolean> = new EventEmitter<boolean>()
 
+  @Input() id?: string
+
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
 
   constructor() { }
@@ -38,5 +40,10 @@ export class FilterChoiceComponent implements OnInit {
   onChange(event: Event): void {
     const checkbox = event.target as HTMLInputElement
     this.changeEmitter.emit(checkbox.checked)
+  }
+
+  get inputId(): string {
+    const scrubbed = this.label.toLowerCase()
+    return (this.id) ? this.id : `checkbox-${scrubbed}`
   }
 }

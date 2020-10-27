@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core"
 import { TaskService } from "../../task/task-service"
-import { ITaskResponse } from "../../task/TaskInProgress"
+import { ITaskResult } from "../../task/ApiTaskResult"
 import { saveAs } from "file-saver"
 
 
@@ -43,7 +43,7 @@ export class RichSkillsCsvExportComponent implements OnInit {
   startDownloadTask(): void {
     this.csvExport = undefined
 
-    this.taskService.startAllSkillsCsvTask().subscribe((taskStarted: ITaskResponse) => {
+    this.taskService.startAllSkillsCsvTask().subscribe((taskStarted: ITaskResult) => {
       this.taskUuidInProgress = taskStarted.uuid
       this.intervalHandle = setInterval(() => this.pollCsv(), 1000)
     })

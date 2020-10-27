@@ -17,4 +17,12 @@ export class ActionBarItemComponent implements OnInit {
   iconPath(): string {
     return `/assets/images/svg-defs.svg#icon-${this.action?.icon}`
   }
+
+  handleClick($event: MouseEvent): boolean {
+    const cb = this.action?.callback
+    if (cb !== undefined && this.action !== undefined) {
+      cb(this.action)
+    }
+    return false
+  }
 }

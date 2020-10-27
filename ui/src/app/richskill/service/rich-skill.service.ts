@@ -8,6 +8,8 @@ import {ApiSkillUpdate} from "../ApiSkillUpdate"
 import {AuthService} from "../../auth/auth-service"
 import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service";
 import {PublishStatus} from "../../PublishStatus";
+import {ApiBatchResult} from "../ApiBatchResult";
+import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult";
 
 
 @Injectable({
@@ -122,7 +124,7 @@ export class RichSkillService extends AbstractService {
   ): Observable<PaginatedSkills> {
     const errorMsg = `Failed to unwrap response for skill search`
 
-    const params:any = {
+    const params: any = {
       sort
     }
     if (filterByStatuses !== undefined) {
@@ -142,5 +144,43 @@ export class RichSkillService extends AbstractService {
         const skills = response.body?.map(skill => new ApiSkill(skill)) || []
         return new PaginatedSkills(skills, !isNaN(totalCount) ? totalCount : skills.length)
       }))
+  }
+
+  publishSkills(
+    apiSearch: ApiSearch,
+    newStatus: PublishStatus = PublishStatus.Published,
+    filterByStatuses?: Set<PublishStatus>,
+  ): Observable<ApiTaskResult> {
+    const params: any = {
+      newStatus: newStatus.toString(),
+    }
+    if (filterByStatuses !== undefined) {
+      params.filterByStatus = Array.from(filterByStatuses).map(s => s.toString())
+    }
+    return this.post<ITaskResult>({
+      path: "api/skills/publish",
+      params,
+      body: apiSearch
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
+  }
+
+  publishSkillsWithResult(
+    apiSearch: ApiSearch,
+    newStatus: PublishStatus = PublishStatus.Published,
+    filterByStatuses?: Set<PublishStatus>,
+    pollIntervalMs: number = 1000,
+  ): Observable<ApiBatchResult> {
+    return new Observable((observer) => {
+      this.publishSkills(apiSearch, newStatus, filterByStatuses).subscribe(task => {
+        this.observableForTaskResult<ApiBatchResult>(task, pollIntervalMs).subscribe(result => {
+          observer.next(result)
+          if (result) {
+            observer.complete()
+          }
+        })
+      })
+    })
   }
 }

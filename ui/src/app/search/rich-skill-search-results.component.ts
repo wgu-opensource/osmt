@@ -7,6 +7,8 @@ import {ApiSkill} from "../richskill/ApiSkill";
 import {TableActionDefinition} from "../table/table-action-bar.component";
 import {PublishStatus} from "../PublishStatus";
 import {ActivatedRoute} from "@angular/router";
+import {ApiTaskResult} from "../task/ApiTaskResult";
+import {ApiBatchResult} from "../richskill/ApiBatchResult";
 
 
 @Component({
@@ -20,9 +22,11 @@ export class RichSkillSearchResultsComponent implements OnInit {
   apiSearch: ApiSearch | undefined
 
   from: number = 0
-  size: number = 2
+  size: number = 50
   selectedSkills?: ApiSkill[]
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
+  skillsSaved?: Observable<ApiBatchResult>
+
   get skillCountLabel(): string {
     if (this.totalCount > 0)  {
       return `${this.curPageCount} of ${this.totalCount} skill${this.curPageCount > 1 ? "s" : ""}`
@@ -171,7 +175,23 @@ export class RichSkillSearchResultsComponent implements OnInit {
   }
 
   handleClickPublish(): boolean  {
-    console.log("PUBLISH CLICKED")
+    const selectedUuids = this.selectedSkills?.map(s => s.uuid)
+    if (selectedUuids === undefined) {
+      return false
+    }
+
+    console.log("PROCESSING PUBLISH", selectedUuids)
+
+    const apiSearch = ApiSearch.factory({uuids: selectedUuids})
+    this.skillsSaved = this.richSkillService.publishSkillsWithResult(apiSearch)
+    this.skillsSaved.subscribe((result) => {
+      if (result !== undefined) {
+        this.loadNextPage()
+      }
+      else {
+        console.log("tick")
+      }
+    })
     return false
   }
 

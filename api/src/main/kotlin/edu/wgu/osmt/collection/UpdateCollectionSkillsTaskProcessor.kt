@@ -14,7 +14,7 @@ import javax.transaction.Transactional
 @Profile("apiserver")
 @Transactional
 class UpdateCollectionSkillsTaskProcessor {
-    val logger: Logger = LoggerFactory.getLogger(TaskQueueHandler::class.java)
+    val logger: Logger = LoggerFactory.getLogger(UpdateCollectionSkillsTaskProcessor::class.java)
 
     @Autowired
     lateinit var taskMessageService: TaskMessageService

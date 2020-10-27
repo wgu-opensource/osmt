@@ -89,6 +89,9 @@ export class RichSkillSearchResultsComponent implements OnInit {
   }
 
 
+  actionsVisible(): boolean {
+    return (this.selectedSkills?.length ?? 0) > 0
+  }
   publishVisible(): boolean {
     const unpublishedSkills = this.selectedSkills?.filter(s => s.status !== PublishStatus.Published)
     return (unpublishedSkills?.length ?? 0) > 0
@@ -171,4 +174,5 @@ export class RichSkillSearchResultsComponent implements OnInit {
   handlePageClicked(newPageNo: number): void {
     this.navigateToPage(newPageNo)
   }
+
 }

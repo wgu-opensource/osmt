@@ -1,18 +1,18 @@
 <div class="l-filterControls">
   <app-filter-choice
     label="Draft"
-    [isChecked]="draftSelected"
-    (changeEmitter)="onFilterChange('draft', $event)"
+    [checked]="isDraftChecked"
+    (changeEmitter)="onFilterChangeUnpublished($event)"
   ></app-filter-choice>
   <app-filter-choice
     label="Published"
-    [isChecked]="publishSelected"
-    (changeEmitter)="onFilterChange('published', $event)"
+    [checked]="isPublishedChecked"
+    (changeEmitter)="onFilterChangePublished($event)"
   ></app-filter-choice>
   <app-filter-choice
     label="Archived"
-    [isChecked]="archivedSelected"
-    (changeEmitter)="onFilterChange('archived', $event)"
+    [checked]="isArchivedChecked"
+    (changeEmitter)="onFilterChangeArchived($event)"
   ></app-filter-choice>
 </div>
 

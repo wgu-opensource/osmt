@@ -42,6 +42,10 @@ import { LabelWithFilterComponent } from "./table/table-header/label-with-filter
 import {AccordianComponent} from "./table/table-row/accordian/accordian.component"
 import { FilterControlsComponent } from "./table/filter-controls/filter-controls.component"
 import { FilterChoiceComponent } from "./table/filter-controls/filter-choice/filter-choice.component"
+import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
+import {PaginationComponent} from "./table/pagination.component";
+import {ActionBarItemComponent} from "./table/action-bar-item.component";
+import {TableActionBarComponent} from "./table/table-action-bar.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -82,6 +86,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     ManageSkillActionBarVerticalComponent,
     ManageSkillActionBarHorizontalComponent,
 
+    RichSkillSearchResultsComponent,
+
     DetailCardComponent,
     DetailCardSectionComponent,
     DetailCardStatusBarComponent,
@@ -91,9 +97,12 @@ export function initializeApp(appConfig: AppConfig): () => void {
     TableRowComponent,
     TableHeaderComponent,
     TableLabelComponent,
+    TableActionBarComponent,
+    ActionBarItemComponent,
     LabelWithFilterComponent,
     FilterControlsComponent,
     FilterChoiceComponent,
+    PaginationComponent
   ],
   imports: [
     BrowserModule,

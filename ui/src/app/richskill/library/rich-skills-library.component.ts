@@ -3,6 +3,7 @@ import {ApiSkill} from "../ApiSkill"
 import {Observable} from "rxjs"
 import {RichSkillService} from "../service/rich-skill.service"
 import {CurrentSort} from "../../table/table-header/table-header.component"
+import {PublishStatus} from "../../PublishStatus";
 
 @Component({
   selector: "app-rich-skills-library",
@@ -10,7 +11,8 @@ import {CurrentSort} from "../../table/table-header/table-header.component"
 })
 export class RichSkillsLibraryComponent implements OnInit {
 
-  skills: Observable<ApiSkill[]> | null = null
+  skillsLoaded: Observable<ApiSkill[]> | null = null
+  skills: ApiSkill[] = []
   loading = true
   selectedSkills: ApiSkill[] = []
 
@@ -23,7 +25,8 @@ export class RichSkillsLibraryComponent implements OnInit {
   archivedApplied = false
 
   currentlyLoadedSkills = 0
-  totalSkills = 0
+  totalSkills = this.draftCount + this.publishedCount + this.archivedCount
+  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
 
   constructor(
     private richSkillService: RichSkillService
@@ -38,8 +41,11 @@ export class RichSkillsLibraryComponent implements OnInit {
     size: number = 50,
     sort: string | undefined = this.formatCurrentSort()
   ): void {
-    this.skills = this.richSkillService.getSkills(size, sort)
-    this.skills?.subscribe(skills => this.currentlyLoadedSkills = skills.length)
+    this.skillsLoaded = this.richSkillService.getSkills(size, sort)
+    this.skillsLoaded.subscribe(skills => {
+      this.skills = skills
+      this.currentlyLoadedSkills = skills.length
+    })
   }
 
   formatCurrentSort(): string | undefined {
@@ -71,5 +77,9 @@ export class RichSkillsLibraryComponent implements OnInit {
         break
       }
     }
+  }
+
+  handleFiltersChanged(newFilters: Set<PublishStatus>): void {
+    this.selectedFilters = newFilters
   }
 }

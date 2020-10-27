@@ -68,7 +68,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         configuration.allowCredentials = true
         // setAllowedHeaders is important! Without it, OPTIONS preflight request
         // will fail with 403 Invalid CORS request
-        configuration.setAllowedHeaders(listOf("Authorization", "Cache-Control", "Content-Type"))
+        configuration.allowedHeaders = listOf("Authorization", "Cache-Control", "Content-Type")
+        configuration.exposedHeaders = listOf("X-Total-Count")
         val  source: UrlBasedCorsConfigurationSource = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source

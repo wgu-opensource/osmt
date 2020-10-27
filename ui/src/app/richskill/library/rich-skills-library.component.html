@@ -1,3 +1,5 @@
+<ng-template [appLoadingObservables]="[skillsLoaded]">
+
 <div class="l-stickyBar">
 
   <div class="l-container t-padding-large t-padding-top">
@@ -9,12 +11,8 @@
       </p>
 
       <app-filter-controls
-        [archivedSelected]="archivedApplied"
-        [draftSelected]="draftApplied"
-        [publishSelected]="publishedApplied"
-        (archivedFilterEmitter)="filterControlsChanged('archived', $event)"
-        (draftFilterEmitter)="filterControlsChanged('draft', $event)"
-        (publishedFilterEmitter)="filterControlsChanged('published', $event)"
+        [selectedFilters]="selectedFilters"
+        (filtersChanged)="handleFiltersChanged($event)"
       ></app-filter-controls>
     </div>
 
@@ -38,3 +36,4 @@
 
 </div>
 
+</ng-template>

@@ -19,7 +19,7 @@ export class RichSkillSearchResultsComponent implements OnInit {
   private apiSearch: ApiSearch | undefined
 
   private from: number = 0
-  private size: number = 50
+  private size: number = 2
   private selectedSkills?: ApiSkill[]
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
   get skillCountLabel(): string {
@@ -31,7 +31,6 @@ export class RichSkillSearchResultsComponent implements OnInit {
 
   constructor(private searchService: SearchService, private richSkillService: RichSkillService) {
     searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
-    searchService.pageNavigation$.subscribe(newPageNo => this.navigateToPage(newPageNo) )
   }
 
   ngOnInit(): void {
@@ -167,5 +166,9 @@ export class RichSkillSearchResultsComponent implements OnInit {
   handleFiltersChanged(newFilters: Set<PublishStatus>): void {
     this.selectedFilters = newFilters
     this.loadNextPage()
+  }
+
+  handlePageClicked(newPageNo: number): void {
+    this.navigateToPage(newPageNo)
   }
 }

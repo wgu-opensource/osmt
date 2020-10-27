@@ -26,7 +26,11 @@
         ></app-table>
       </div>
 
-      <app-pagination [currentPage]="currentPageNo" [totalPages]="totalPageCount"></app-pagination>
+      <app-pagination
+        [currentPage]="currentPageNo"
+        [totalPages]="totalPageCount"
+        (pageClicked)="handlePageClicked($event)"
+      ></app-pagination>
 
     </div>
 

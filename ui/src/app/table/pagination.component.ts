@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {SearchService} from "../search/search.service";
 
 @Component({
@@ -8,6 +8,7 @@ import {SearchService} from "../search/search.service";
 export class PaginationComponent implements OnInit {
   @Input() currentPage = 1
   @Input() totalPages = 1
+  @Output() pageClicked: EventEmitter<number> = new EventEmitter<number>()
 
   constructor(protected searchService: SearchService) {
   }
@@ -56,7 +57,7 @@ export class PaginationComponent implements OnInit {
 
   handleClick(pageNo: number): boolean {
     if (pageNo !== this.currentPage) {
-      this.searchService.setCurrentPage(pageNo)
+      this.pageClicked.emit(pageNo)
     }
     return false
   }

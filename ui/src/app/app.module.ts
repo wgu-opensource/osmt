@@ -46,6 +46,7 @@ import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-result
 import {PaginationComponent} from "./table/pagination.component";
 import {ActionBarItemComponent} from "./table/action-bar-item.component";
 import {TableActionBarComponent} from "./table/table-action-bar.component";
+import {EmptyMessageComponent} from "./table/empty-message.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -102,7 +103,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     LabelWithFilterComponent,
     FilterControlsComponent,
     FilterChoiceComponent,
-    PaginationComponent
+    PaginationComponent,
+    EmptyMessageComponent
   ],
   imports: [
     BrowserModule,

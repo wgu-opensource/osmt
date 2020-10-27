@@ -27,8 +27,8 @@
 
     <div class="t-margin-small t-margin-bottom">
       <app-detail-card-status-bar
-        [published]=""
-        [archived]=""
+        [published]="skill.status === 'Published'"
+        [archived]="skill.status === 'Archived'"
       ></app-detail-card-status-bar>
     </div>
 

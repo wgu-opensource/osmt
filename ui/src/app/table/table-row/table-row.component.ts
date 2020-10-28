@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {ApiSkill} from "../../richskill/ApiSkill"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {OccupationsFormatter} from "../../job-codes/Jobcode";
+import {TableActionDefinition} from "../has-action-definitions";
 
 export interface SkillWithSelection {
   skill: ApiSkill,
@@ -17,6 +18,7 @@ export class TableRowComponent implements OnInit {
   @Input() skill: ApiSkill | null = null
   @Input() isSelected = false
   @Output() selected: EventEmitter<ApiSkill> = new EventEmitter<ApiSkill>()
+  @Input() id = "table-row"
 
 
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
@@ -43,4 +45,16 @@ export class TableRowComponent implements OnInit {
     }
   }
 
+  getRowActions(): TableActionDefinition[] {
+    return [
+      new TableActionDefinition({
+        label: "First",
+        callback: () => { console.log("clicked first") }
+      }),
+      new TableActionDefinition({
+        label: "Second",
+        callback: () => { console.log("clicked second") }
+      })
+    ]
+  }
 }

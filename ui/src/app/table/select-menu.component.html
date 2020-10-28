@@ -1,0 +1,11 @@
+<div (click)="handleClickTrigger()">
+  <ng-content></ng-content>
+</div>
+<div class="m-selectMenu" role="menu">
+  <div class="m-selectMenu-x-content">
+    <h6 *ngIf="title !== undefined" class="t-type-small">{{title}}</h6>
+    <button *ngFor="let action of visibleActions()" class="m-buttonText" type="button" role="menuitem" (click)="clickAction(action)">
+      <span class="m-buttonText-x-text">{{action.label}}</span>
+    </button>
+  </div>
+</div>

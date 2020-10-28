@@ -22,7 +22,7 @@
       <div class="t-margin-medium t-margin-bottom">
         <app-table
           [skills]="results.skills"
-          (selectedRowEmitter)="handleNewSelection($event)"
+          (rowSelected)="handleNewSelection($event)"
         ></app-table>
       </div>
 

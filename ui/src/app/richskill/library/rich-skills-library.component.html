@@ -1,39 +1,39 @@
 <ng-template [appLoadingObservables]="[skillsLoaded]">
 
-<div class="l-stickyBar">
+  <div class="l-stickyBar">
 
-  <div class="l-container t-padding-large t-padding-top">
+    <div class="l-container t-padding-large t-padding-top">
 
-    <div class="l-container l-container-mobile">
-      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Skills Library</h2>
-      <p class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">
-        Viewing ({{skills.length}}) of ({{totalSkills}}) skills in the library
-      </p>
+      <div class="l-container l-container-mobile">
+        <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Skills Library</h2>
+        <p class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">
+          Viewing ({{skills.length}}) of ({{totalSkills}}) skills in the library
+        </p>
 
-      <app-filter-controls
-        [selectedFilters]="selectedFilters"
-        (filtersChanged)="handleFiltersChanged($event)"
-      ></app-filter-controls>
+        <app-filter-controls
+          [selectedFilters]="selectedFilters"
+          (filtersChanged)="handleFiltersChanged($event)"
+        ></app-filter-controls>
+      </div>
+
+      <div class="t-margin-medium t-margin-bottom">
+        <app-table
+          [skills]="skills"
+          [currentlySortedColumn]="currentSort"
+          (columnSorted)="onHeaderColumnSort($event)"
+          (rowSelected)="rowSelected($event)"
+        ></app-table>
+      </div>
+
+      <!--    {{render '@pagingnavigation'}}-->
+
     </div>
 
-    <div class="t-margin-medium t-margin-bottom">
-      <app-table
-        [skills]="skills"
-        (selectedRowEmitter)="onRowToggle($event)"
-        (columnSortEmitter)="onHeaderColumnSort($event)"
-      ></app-table>
+    <div class="l-stickyBar-x-bar t-padding-medium t-padding-top">
+      <div class="l-container l-container-tablet">
+        <!--      {{render '@m-tableactionbar'}}-->
+      </div>
     </div>
-
-<!--    {{render '@pagingnavigation'}}-->
-
   </div>
-
-  <div class="l-stickyBar-x-bar t-padding-medium t-padding-top">
-    <div class="l-container l-container-tablet">
-<!--      {{render '@m-tableactionbar'}}-->
-    </div>
-  </div>
-
-</div>
 
 </ng-template>

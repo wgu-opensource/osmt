@@ -10,7 +10,13 @@ import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
       </div>
       <div class="m-choice-x-input">
         <div class="m-checkbox">
-          <input type="checkbox" id="checkbox" name="checkbox" (change)="onChange($event)" [attr.checked]="checked ? true : null">
+          <input
+            type="checkbox"
+            id="checkbox"
+            name="checkbox"
+            (change)="change($event)"
+            [attr.checked]="isChecked ? true : null"
+          >
           <div class="m-checkbox-x-icon">
             <svg class="t-icon" aria-hidden="true">
               <use [attr.xlink:href]="checkIcon"></use>
@@ -24,9 +30,9 @@ export class FilterChoiceComponent implements OnInit {
 
   @Input() label = ""
 
-  @Input() checked = false
+  @Input() isChecked = false
 
-  @Output() changeEmitter: EventEmitter<boolean> = new EventEmitter<boolean>()
+  @Output() filterChanged: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
 
@@ -35,8 +41,8 @@ export class FilterChoiceComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onChange(event: Event): void {
+  change(event: Event): void {
     const checkbox = event.target as HTMLInputElement
-    this.changeEmitter.emit(checkbox.checked)
+    this.filterChanged.emit(checkbox.checked)
   }
 }

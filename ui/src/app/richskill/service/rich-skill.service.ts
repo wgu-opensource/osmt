@@ -1,13 +1,14 @@
 import {Injectable} from "@angular/core"
 import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {Observable} from "rxjs"
-import {ApiSkill, ISkill, SkillsWithCount} from "../ApiSkill"
+import {ApiSkill, ApiSkillSortOrder, ISkill} from "../ApiSkill"
 import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate"
 import {AuthService} from "../../auth/auth-service"
 import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service"
 import {PublishStatus} from "../../PublishStatus"
+import {ApiSkillSummary, IApiSkillSummary} from "../ApiSkillSummary"
 
 
 @Injectable({
@@ -23,13 +24,9 @@ export class RichSkillService extends AbstractService {
 
   getSkills(
     size: number = 50,
-    sort: string | undefined,
-  ): Observable<SkillsWithCount> {
-    if (sort && !["category.asc", "category.desc", "skill.asc", "skill.desc"].includes(sort)) {
-      throw Error() // todo improve handling
-    }
-
-    return this.get<ISkill[]>({
+    sort: ApiSkillSortOrder | undefined,
+  ): Observable<PaginatedSkills> {
+    return this.get<IApiSkillSummary[]>({
       path: `${this.serviceUrl}`,
       params: {
         size: size.toString(),
@@ -38,10 +35,10 @@ export class RichSkillService extends AbstractService {
     })
       .pipe(share())
       .pipe(map(({body, headers}) => {
-        return {
-          skills: body?.map(skill => new ApiSkill(skill)) || [],
-          total: +(headers.get("X-Total-Count") ?? "0")
-        }
+        return new PaginatedSkills(
+          body?.map(skill => new ApiSkillSummary(skill)) || [],
+          Number(headers.get("X-Total-Count"))
+      )
       }))
   }
 
@@ -125,7 +122,7 @@ export class RichSkillService extends AbstractService {
   ): Observable<PaginatedSkills> {
     const errorMsg = `Failed to unwrap response for skill search`
 
-    const params:any = {
+    const params: any = {
       sort
     }
     if (filterByStatuses !== undefined) {
@@ -134,15 +131,15 @@ export class RichSkillService extends AbstractService {
     if (size !== undefined) { params.size = size }
     if (from !== undefined) { params.from = from }
 
-    return this.post<ISkill[]>({
+    return this.post<IApiSkillSummary[]>({
       path: "api/search/skills",
       params,
       body: apiSearch,
     })
       .pipe(share())
-      .pipe(map((response) => {
-        const totalCount = Number(response.headers.get("X-Total-Count"))
-        const skills = response.body?.map(skill => new ApiSkill(skill)) || []
+      .pipe(map(({body, headers}) => {
+        const totalCount = Number(headers.get("X-Total-Count"))
+        const skills = body?.map(skill => new ApiSkillSummary(skill)) || []
         return new PaginatedSkills(skills, !isNaN(totalCount) ? totalCount : skills.length)
       }))
   }

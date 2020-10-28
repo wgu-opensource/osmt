@@ -93,7 +93,10 @@ export class ApiSkill {
   }
 }
 
-export interface SkillsWithCount {
-  skills: ApiSkill[]
-  total: number
+export enum ApiSkillSortOrder {
+  CategoryAsc = "category.asc",
+  CategoryDesc = "category.desc",
+  NameAsc = "name.asc",
+  NameDesc = "name.desc"
 }
+

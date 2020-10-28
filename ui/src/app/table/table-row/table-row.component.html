@@ -2,15 +2,17 @@
   *ngIf="!!skill"
   class="m-tableRow"
   [class.m-tableRow-is-selected]="isSelected"
-  id="tableRow">
+  [id]="id">
 
-  <th class="m-tableRow-x-header" scope="row" id="tableRow-header">
+  <th class="m-tableRow-x-header" scope="row" id="{{id}}-header">
 
     <div class="t-hidden-tabletMax">{{skill.category}}</div>
 
-    <div class="l-flex l-flex-gapp5x t-hidden-tabletMin">
-      <h5 class="t-type-smallBold">Category:</h5>
-      <p class="t-type-small">{{skill.category}}</p>
+    <div class="t-hidden-tabletMin">
+      <div class="m-inlineHeading">
+        <h5 class="m-inlineHeading-x-heading">Category:</h5>
+        <p class="m-inlineHeading-x-text">{{skill.category}}</p>
+      </div>
     </div>
 
   </th>
@@ -18,34 +20,55 @@
   <td class="m-tableRow-x-body">
 
     <h4 class="t-margin-extraSmall t-margin-bottom">
-      <a class="t-type-bodyLink" href="/skills/{{skill.uuid}}/manage">{{skill.skillName}}</a>
+      <a class="t-focus t-type-bodyLink" href="/skills/{{skill.uuid}}/manage">{{skill.skillName}}</a>
     </h4>
 
-    <p class="t-margin-small t-margin-bottom">{{skill.skillName}}</p>
-
-    <div class="t-margin-small t-margin-bottom">
-      <app-detail-card-status-bar
-        [published]=""
-        [archived]=""
-      ></app-detail-card-status-bar>
+    <div class="m-quickLinks">
+      <a href="#">Next skill</a>
     </div>
 
-    <app-accordian
-      [keywords]="getFormattedKeywords()"
-      [detailedOccupations]="getFormattedOccupations()"
-      [buttonText]=""
-    ></app-accordian>
+    <p class="t-margin-small t-margin-bottom">{{skill.skillStatement}}</p>
+
+    <!-- Status icon -->
+    <div class="t-margin-small t-margin-bottom">
+      <div class="m-status" [class.m-status-published]="isPublished()">
+        <div class="m-status-x-icon">
+          <svg *ngIf="isPublished()" class="t-icon" aria-hidden="true">
+            <use [attr.xlink:href]="upIcon"></use>
+          </svg>
+        </div>
+        <div class="m-status-x-label">{{isPublished() ? "Published" : "Draft"}}</div>
+      </div>
+    </div>
+
+    <div class="t-margin-small t-margin-bottom">
+      <div class="m-inlineHeading">
+        <h5 class="m-inlineHeading-x-heading">Keywords:</h5>
+        <p class="m-inlineHeading-x-text">{{getFormattedKeywords()}}</p>
+      </div>
+
+
+    </div>
+
+    <div class="t-margin-small t-margin-bottom">
+      <div class="m-inlineHeading">
+        <h5 class="m-inlineHeading-x-heading">Detailed Occupations:</h5>
+        <p class="m-inlineHeading-x-text">{{getFormattedOccupations()}}</p>
+      </div>
+    </div>
 
   </td>
 
   <td class="m-tableRow-x-actions">
 
+    <!-- Items must be grouped-->
     <div>
+
       <div class="m-checkbox">
 
-        <label class="t-visuallyHidden" for="tableRow-toggle" aria-labelledby="tableRow-header">Select</label>
+        <label class="t-visuallyHidden" for="{{id}}-toggle" aria-labelledby="{{id}}-header">Select</label>
 
-        <input type="checkbox" ns modifiename="tableRow-toggle" data-table-row="tableRow" [checked]="isSelected" (click)="onSelect()">
+        <input type="checkbox" id="{{id}}-toggle" name="{{id}}-toggle" data-table-row="{{id}}" [checked]="isSelected" (click)="selected()">
 
         <div class="m-checkbox-x-icon">
           <svg class="t-icon" aria-hidden="true">
@@ -54,44 +77,55 @@
         </div>
 
       </div>
+
+      <div class="m-quickLinks">
+        <a href="#">Jump to actions</a>
+      </div>
+
     </div>
 
-    <button class="m-iconInteractive" type="button" data-select-menu="selectmenu" aria-haspopup="true" aria-expanded="false" aria-labelledby="tableRow-header">
+    <!-- Items must be grouped-->
+    <div>
 
-      <span class="t-visuallyHidden">More</span>
+      <button class="m-iconInteractive" type="button" data-select-menu="{{id}}-selectmenu" aria-haspopup="true" aria-expanded="false" aria-labelledby="{{id}}-header">
 
-      <span class="m-iconInteractive-x-icon">
-						<svg class="t-icon" aria-hidden="true">
-							<use [attr.xlink:href]="moreIcon"></use>
-						</svg>
-					</span>
+        <span class="t-visuallyHidden">Actions</span>
 
-    </button>
+        <span class="m-iconInteractive-x-icon">
+					<svg class="t-icon" aria-hidden="true">
+						<use [attr.xlink:href]="moreIcon"></use>
+					</svg>
+				</span>
 
-    <div class="m-selectMenu" id="selectmenu" role="menu">
-      <div class="m-selectMenu-x-content">
+      </button>
 
-        <h6 class="t-type-small">Actions</h6>
+      <div class="m-selectMenu" id="{{id}}-selectmenu" role="menu">
+        <div class="m-selectMenu-x-content">
 
-        <button class="m-buttonText" type="button" role="menuitem">
-          <span class="m-buttonText-x-text">Action 1</span>
-        </button>
+          <h6 class="t-type-small">Actions</h6>
 
-        <button class="m-buttonText" type="button" role="menuitem">
-          <span class="m-buttonText-x-text">Action 2</span>
-        </button>
+          <button class="m-buttonText" type="button" role="menuitem">
+            <span class="m-buttonText-x-text">Action 1</span>
+          </button>
 
-        <button class="m-buttonText" type="button" role="menuitem">
-          <span class="m-buttonText-x-text">Action 3</span>
-        </button>
+          <button class="m-buttonText" type="button" role="menuitem">
+            <span class="m-buttonText-x-text">Action 2</span>
+          </button>
 
-        <button class="m-buttonText" type="button" role="menuitem">
-          <span class="m-buttonText-x-text">Action 4</span>
-        </button>
+          <button class="m-buttonText" type="button" role="menuitem">
+            <span class="m-buttonText-x-text">Action 3</span>
+          </button>
 
+          <button class="m-buttonText" type="button" role="menuitem">
+            <span class="m-buttonText-x-text">Action 4</span>
+          </button>
+
+        </div>
       </div>
+
     </div>
 
   </td>
 
 </tr>
+

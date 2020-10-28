@@ -6,6 +6,7 @@ import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search
 import {ApiSkill} from "../richskill/ApiSkill";
 import {TableActionDefinition} from "../table/table-action-bar.component";
 import {PublishStatus} from "../PublishStatus";
+import {IApiSkillSummary} from "../richskill/ApiSkillSummary";
 
 
 @Component({
@@ -20,7 +21,7 @@ export class RichSkillSearchResultsComponent implements OnInit {
 
   private from: number = 0
   private size: number = 2
-  private selectedSkills?: ApiSkill[]
+  private selectedSkills?: IApiSkillSummary[]
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
   get skillCountLabel(): string {
     if (this.totalCount > 1)  {
@@ -83,7 +84,7 @@ export class RichSkillSearchResultsComponent implements OnInit {
     return Math.floor(this.from / this.size) + 1
   }
 
-  handleNewSelection(selectedSkills: ApiSkill[]): void {
+  handleNewSelection(selectedSkills: IApiSkillSummary[]): void {
     this.selectedSkills = selectedSkills
     console.log("got new selection", selectedSkills)
   }

@@ -19,7 +19,7 @@ import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 export class TableLabelComponent implements OnInit {
 
   @Input() text = ""
-  @Output() sortChangeFilter: EventEmitter<boolean> = new EventEmitter<boolean>()
+  @Output() sortChanged: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   ascending = true
 
@@ -32,7 +32,7 @@ export class TableLabelComponent implements OnInit {
 
   onClick(): void {
     this.ascending = !this.ascending
-    this.sortChangeFilter.emit(this.ascending)
+    this.sortChanged.emit(this.ascending)
   }
 
 }

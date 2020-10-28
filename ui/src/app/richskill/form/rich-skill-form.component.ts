@@ -324,7 +324,7 @@ export class SkillFormDirtyGuard implements CanDeactivate<RichSkillFormComponent
   ): Observable<boolean> | boolean {
     if (!component.skillForm.pristine) {
       return new Observable((observer) => {
-        observer.next(confirm("Whoa, there! You have unsaved changes.\nIf you leave this page without saving, you'll lose your edits."))
+        observer.next(confirm("Whoa, there! You have unsaved changes.\nIf you leave this page without saving, you'll lose your edits. Are you sure you want to leave?"))
         observer.complete()
       })
     }

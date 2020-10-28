@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {TableActionDefinition} from "./table-action-bar.component";
+import {TableActionDefinition} from "./has-action-definitions";
 
 @Component({
   selector: "app-action-bar-item",
@@ -19,10 +19,7 @@ export class ActionBarItemComponent implements OnInit {
   }
 
   handleClick($event: MouseEvent): boolean {
-    const cb = this.action?.callback
-    if (cb !== undefined && this.action !== undefined) {
-      cb(this.action)
-    }
+    this.action?.fire()
     return false
   }
 }

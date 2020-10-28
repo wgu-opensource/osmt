@@ -4,11 +4,11 @@ import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {Observable} from "rxjs";
 import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
 import {ApiSkill} from "../richskill/ApiSkill";
-import {TableActionDefinition} from "../table/table-action-bar.component";
 import {PublishStatus} from "../PublishStatus";
 import {ActivatedRoute} from "@angular/router";
 import {ApiTaskResult} from "../task/ApiTaskResult";
 import {ApiBatchResult} from "../richskill/ApiBatchResult";
+import {TableActionDefinition} from "../table/has-action-definitions";
 
 
 @Component({

@@ -5,7 +5,6 @@ import {RichSkillService} from "../service/rich-skill.service"
 import {PublishStatus} from "../../PublishStatus"
 import {PaginatedSkills} from "../service/rich-skill-search.service"
 import {IApiSkillSummary} from "../ApiSkillSummary"
-import {SkillActions} from "../../table/table-row/ellipses-menu/ellipses-menu.component"
 
 @Component({
   selector: "app-rich-skills-library",
@@ -42,34 +41,14 @@ export class RichSkillsLibraryComponent implements OnInit {
     size: number = 50,
     sort: ApiSkillSortOrder | undefined = this.currentSort
   ): void {
-    this.skillsLoaded = this.richSkillService.getSkills(size, sort)
+    this.skillsLoaded = this.richSkillService.getSkills(size, [...this.selectedFilters], sort)
     this.skillsLoaded.subscribe(({skills, totalCount}) => {
       this.skills = skills
       this.totalSkills = totalCount
     })
   }
 
-  getActionsForOneSkill(): SkillActions {
-    return {
-      handleAddToCollection: skill => {
-        // Do something then load skills
-        console.log("added to collection!")
-      },
-      handleUnarchive: skill => {
-        console.log("Unarchived!")
-
-      },
-      handleArchive: skill => {
-        console.log("Archived!")
-
-      },
-      handlePublish: skill => {
-        console.log("Published!")
-      }
-    }
-  }
-
-  onHeaderColumnSort(sort: ApiSkillSortOrder): void {
+  handleHeaderColumnSort(sort: ApiSkillSortOrder): void {
     console.log("library got sort: " + sort)
     this.currentSort = sort
     this.getSkills()
@@ -95,9 +74,14 @@ export class RichSkillsLibraryComponent implements OnInit {
 
   handleFiltersChanged(newFilters: Set<PublishStatus>): void {
     this.selectedFilters = newFilters
+    this.getSkills()
   }
 
-  rowSelected(uuids: IApiSkillSummary[]): void {
+  handleSelectedRows(uuids: IApiSkillSummary[]): void {
     this.selectedSkills = uuids
+  }
+
+  handleSelectAll(isChecked: boolean): void {
+    console.log(`Select all ${isChecked ? "checked" : "unchecked"}`)
   }
 }

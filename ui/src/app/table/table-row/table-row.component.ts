@@ -3,7 +3,6 @@ import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {OccupationsFormatter} from "../../job-codes/Jobcode"
 import {IApiSkillSummary} from "../../richskill/ApiSkillSummary"
 import {PublishStatus} from "../../PublishStatus"
-import {SkillActions} from "./ellipses-menu/ellipses-menu.component"
 
 export interface SkillWithMetadata {
   skill: IApiSkillSummary,
@@ -19,10 +18,8 @@ export class TableRowComponent implements OnInit {
   @Input() skill: IApiSkillSummary | null = null
   @Input() isSelected = false
   @Input() id = ""
-  @Input() actions: SkillActions | null = null
 
   @Output() rowSelected = new EventEmitter<IApiSkillSummary>()
-  @Output() skillActionSelected = new EventEmitter<SkillActions>()
 
 
   upIcon = SvgHelper.path(SvgIcon.ICON_UP)
@@ -53,9 +50,6 @@ export class TableRowComponent implements OnInit {
   }
 
   isStatus(status: PublishStatus): boolean {
-    if (this.skill?.uuid === "e63fe15a-4864-4164-8885-d2bd2c29a882") {
-      console.log(`got a status ${this.skill.status}`)
-    }
     if (this.skill) {
       return this.skill.status === status
     }
@@ -63,7 +57,7 @@ export class TableRowComponent implements OnInit {
   }
 
   isPublished(): boolean {
-    return this.isStatus(PublishStatus.Published)
+    return this.isStatus(PublishStatus.Published) || this.isArchived()
   }
 
   isArchived(): boolean {

@@ -20,9 +20,9 @@
         <app-table
           [skills]="skills"
           [currentlySortedColumn]="currentSort"
-          [actions]="getActionsForOneSkill()"
-          (columnSorted)="onHeaderColumnSort($event)"
-          (rowSelected)="rowSelected($event)"
+          (columnSorted)="handleHeaderColumnSort($event)"
+          (rowSelected)="handleSelectedRows($event)"
+          (selectAllSelected)="handleSelectAll($event)"
         ></app-table>
       </div>
 

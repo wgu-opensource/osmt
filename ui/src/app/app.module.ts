@@ -46,7 +46,6 @@ import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-result
 import {PaginationComponent} from "./table/pagination.component"
 import {ActionBarItemComponent} from "./table/action-bar-item.component"
 import {TableActionBarComponent} from "./table/table-action-bar.component"
-import { EllipsesMenuComponent } from "./table/table-row/ellipses-menu/ellipses-menu.component"
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -103,8 +102,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     LabelWithFilterComponent,
     FilterControlsComponent,
     FilterChoiceComponent,
-    PaginationComponent,
-    EllipsesMenuComponent
+    PaginationComponent
   ],
   imports: [
     BrowserModule,

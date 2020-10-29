@@ -3,13 +3,12 @@ import {SearchService} from "./search.service";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {Observable} from "rxjs";
 import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {ApiSkill} from "../richskill/ApiSkill";
 import {PublishStatus} from "../PublishStatus";
 import {ActivatedRoute} from "@angular/router";
-import {ApiTaskResult} from "../task/ApiTaskResult";
 import {ApiBatchResult} from "../richskill/ApiBatchResult";
 import {TableActionDefinition} from "../table/has-action-definitions";
 import {ToastService} from "../toast/toast.service";
+import {IApiSkillSummary} from "../richskill/ApiSkillSummary";
 
 
 @Component({
@@ -22,9 +21,9 @@ export class RichSkillSearchResultsComponent implements OnInit {
   results: PaginatedSkills | undefined
   apiSearch: ApiSearch | undefined
 
-  from: number = 0
-  size: number = 50
-  selectedSkills?: ApiSkill[]
+  private from: number = 0
+  private size: number = 50
+  private selectedSkills?: IApiSkillSummary[]
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
   skillsSaved?: Observable<ApiBatchResult>
 
@@ -99,7 +98,7 @@ export class RichSkillSearchResultsComponent implements OnInit {
     return Math.floor(this.from / this.size) + 1
   }
 
-  handleNewSelection(selectedSkills: ApiSkill[]): void {
+  handleNewSelection(selectedSkills: IApiSkillSummary[]): void {
     this.selectedSkills = selectedSkills
     console.log("got new selection", selectedSkills)
   }

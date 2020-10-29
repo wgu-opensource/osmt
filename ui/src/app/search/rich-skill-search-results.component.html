@@ -23,7 +23,7 @@
           <app-table
             *ngIf="!emptyResults"
             [skills]="results.skills"
-            (selectedRowEmitter)="handleNewSelection($event)"
+            (rowSelected)="handleNewSelection($event)"
           ></app-table>
 
           <app-empty-message *ngIf="emptyResults">

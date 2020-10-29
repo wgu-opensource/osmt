@@ -1,9 +1,4 @@
-
-
-<div [ngClass]="{
-  'l-accordian': true,
-  'l-accordian-is-open': isExpanded
-}">
+<div [class.a-accordian-is-open]="isExpanded" class="l-accordian">
 
   <button
     class="l-accordion-x-trigger m-buttonText"
@@ -15,10 +10,7 @@
 
 		<span class="m-buttonText-x-icon">
 
-			<div [ngClass]="{
-			  'l-iconTransition': true,
-        'l-iconTransition-is-toggled': isExpanded
-			}" >
+			<div class="l-iconTransition" [class.l-iconTransition-is-toggled]="isExpanded">
 
 				<svg class="l-iconTransition-x-icon t-icon">
 					<use [attr.xlink:href]="addIcon"></use>

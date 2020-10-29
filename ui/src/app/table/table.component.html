@@ -1,7 +1,8 @@
 <app-table-header
   [numberSelected]="numberOfSelected()"
-  (columnClicked)="headerColumnSortPerformed($event)"
-  (selectAllEmitter)="selectAll($event)"
+  [currentSort]="currentlySortedColumn"
+  (columnChanged)="headerColumnSortPerformed($event)"
+  (selectAllChanged)="handleSelectAll($event)"
 ></app-table-header>
 
 <table class="l-table">
@@ -14,10 +15,12 @@
   </thead>
   <tbody>
     <app-table-row
+      *ngFor="let skill of preparedSkills; let i=index"
       [skill]="skill.skill"
       [isSelected]="skill.selected"
-      (selected)="onRowToggle($event)"
-      *ngFor="let skill of preparedSkills"
+      [actions]="actions"
+      (rowSelected)="onRowToggle($event)"
+      id="table-row-{{i}}"
     ></app-table-row>
   </tbody>
 </table>

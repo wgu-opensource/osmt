@@ -1,11 +1,12 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
-import {ApiSkill} from "../../richskill/ApiSkill"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
-import {OccupationsFormatter} from "../../job-codes/Jobcode";
+import {OccupationsFormatter} from "../../job-codes/Jobcode"
+import {IApiSkillSummary} from "../../richskill/ApiSkillSummary"
+import {PublishStatus} from "../../PublishStatus"
 import {TableActionDefinition} from "../has-action-definitions";
 
-export interface SkillWithSelection {
-  skill: ApiSkill,
+export interface SkillWithMetadata {
+  skill: IApiSkillSummary,
   selected: boolean
 }
 
@@ -15,18 +16,23 @@ export interface SkillWithSelection {
 })
 export class TableRowComponent implements OnInit {
 
-  @Input() skill: ApiSkill | null = null
+  @Input() skill: IApiSkillSummary | null = null
   @Input() isSelected = false
-  @Output() selected: EventEmitter<ApiSkill> = new EventEmitter<ApiSkill>()
-  @Input() id = "table-row"
+  @Input() id = ""
+
+  @Output() rowSelected = new EventEmitter<IApiSkillSummary>()
 
 
+  upIcon = SvgHelper.path(SvgIcon.ICON_UP)
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
   moreIcon = SvgHelper.path(SvgIcon.MORE)
 
   constructor() { }
 
   ngOnInit(): void {
+    if (!this.id) {
+      throw Error()
+    }
   }
 
   getFormattedKeywords(): string {
@@ -37,12 +43,27 @@ export class TableRowComponent implements OnInit {
     return new OccupationsFormatter(this.skill?.occupations ?? []).detailedGroups()
   }
 
-  onSelect(): void {
+  selected(): void {
     if (!this.skill) {
       throw Error() // stub for now
     } else {
-      this.selected.emit(this.skill)
+      this.rowSelected.emit(this.skill)
     }
+  }
+
+  isStatus(status: PublishStatus): boolean {
+    if (this.skill) {
+      return this.skill.status === status
+    }
+    return false
+  }
+
+  isPublished(): boolean {
+    return this.isStatus(PublishStatus.Published) || this.isArchived()
+  }
+
+  isArchived(): boolean {
+    return this.isStatus(PublishStatus.Archived)
   }
 
   getRowActions(): TableActionDefinition[] {

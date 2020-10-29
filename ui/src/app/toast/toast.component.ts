@@ -7,17 +7,21 @@ import {ToastMessage, ToastService} from "./toast.service";
 })
 export class ToastComponent implements OnInit {
   message?: ToastMessage
+  loaderVisible: boolean = false
 
   constructor(toastService: ToastService) {
     toastService.subject.subscribe((msg) => {
       this.message = msg
+    })
+    toastService.loaderSubject.subscribe((isLoaderOpen) => {
+      this.loaderVisible = isLoaderOpen
     })
   }
 
   ngOnInit(): void {
   }
 
-  isVisible(): boolean {
+  isToastVisible(): boolean {
     return this.message !== undefined
   }
   dismiss(): void {

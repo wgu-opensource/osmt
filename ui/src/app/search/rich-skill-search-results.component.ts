@@ -9,6 +9,7 @@ import {ActivatedRoute} from "@angular/router";
 import {ApiTaskResult} from "../task/ApiTaskResult";
 import {ApiBatchResult} from "../richskill/ApiBatchResult";
 import {TableActionDefinition} from "../table/has-action-definitions";
+import {ToastService} from "../toast/toast.service";
 
 
 @Component({
@@ -36,7 +37,9 @@ export class RichSkillSearchResultsComponent implements OnInit {
 
   constructor(private searchService: SearchService,
               private richSkillService: RichSkillService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private toastService: ToastService
+              ) {
     searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
   }
 
@@ -182,10 +185,13 @@ export class RichSkillSearchResultsComponent implements OnInit {
 
     console.log("PROCESSING PUBLISH", selectedUuids)
 
+    this.toastService.showBlockingLoader()
+
     const apiSearch = ApiSearch.factory({uuids: selectedUuids})
     this.skillsSaved = this.richSkillService.publishSkillsWithResult(apiSearch)
     this.skillsSaved.subscribe((result) => {
       if (result !== undefined) {
+        this.toastService.hideBlockingLoader()
         this.loadNextPage()
       }
       else {

@@ -17,6 +17,11 @@ interface JobCodeRepository {
     fun findByCode(code: String): JobCodeDao?
     fun findByCodeOrCreate(code: String, framework: String? = null): JobCodeDao
     fun create(code: String, framework: String? = null): JobCodeDao
+
+    companion object{
+        const val BLS_FRAMEWORK = "bls"
+        const val `O*NET_FRAMEWORK` = "o*net"
+    }
 }
 
 @Repository

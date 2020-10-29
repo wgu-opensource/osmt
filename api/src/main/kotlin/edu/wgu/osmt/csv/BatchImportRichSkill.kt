@@ -1,7 +1,6 @@
-package edu.wgu.osmt
+package edu.wgu.osmt.csv
 
 import com.opencsv.bean.CsvBindByName
-import com.opencsv.bean.CsvToBeanBuilder
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordRepository
@@ -10,26 +9,18 @@ import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RsdUpdateObject
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionRepository
-import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.jobcode.JobCodeBreakout
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.CommandLineRunner
-import org.springframework.boot.SpringApplication
-import org.springframework.context.ApplicationContext
-import org.springframework.context.ConfigurableApplicationContext
-import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
-import java.io.BufferedReader
-import java.io.FileNotFoundException
-import java.io.FileReader
 
 
-class RichSkillRow {
+class RichSkillRow: CsvRow {
     @CsvBindByName(column = "Collection")
     var collections: String? = null
 
@@ -80,17 +71,15 @@ class RichSkillRow {
 }
 
 @Component
-@Profile("import")
-class BatchImportConsoleApplication : CommandLineRunner {
+class BatchImportRichSkill: CsvImport<RichSkillRow> {
 
     companion object {
         const val user = "Batch Import"
     }
 
-    val LOG: Logger = LoggerFactory.getLogger(BatchImportConsoleApplication::class.java)
+    override val csvRowClass: Class<RichSkillRow> = RichSkillRow::class.java
 
-    @Autowired
-    private lateinit var applicationContext: ApplicationContext
+    override val log: Logger = LoggerFactory.getLogger(BatchImportRichSkill::class.java)
 
     @Autowired
     private lateinit var richSkillRepository: RichSkillRepository
@@ -120,8 +109,9 @@ class BatchImportConsoleApplication : CommandLineRunner {
 
     fun parse_jobcodes(rowValue: String?): List<JobCodeDao>? {
         return split_field(rowValue)?.map { code ->
+            val sanitizedCode = JobCodeBreakout.jobRoleCode(code)
             val jobCode = jobCodeRepository.findByCode(code)
-            jobCode ?: jobCodeRepository.create(code)
+            jobCode ?: jobCodeRepository.create(sanitizedCode!!)
         }
     }
 
@@ -140,8 +130,8 @@ class BatchImportConsoleApplication : CommandLineRunner {
         }
     }
 
-    fun handleRows(rows: List<RichSkillRow>) {
-        LOG.info("Processing ${rows.size} rows...")
+    override fun handleRows(rows: List<RichSkillRow>) {
+        log.info("Processing ${rows.size} rows...")
 
         for (row in rows) transaction {
             var category: KeywordDao? = null
@@ -177,47 +167,9 @@ class BatchImportConsoleApplication : CommandLineRunner {
                     collections = collections?.let {ListFieldUpdate(add = it)},
                     jobCodes = occupations?.let { ListFieldUpdate(add = it) }
                 ), user)
-                LOG.info("created skill '${row.skillName!!}'")
+                log.info("created skill '${row.skillName!!}'")
             }
         }
 
     }
-
-    fun processCsv(csv_path: String) {
-        LOG.info("Starting to process csv: ${csv_path}")
-
-        var fileReader: BufferedReader? = null
-
-        try {
-            fileReader = BufferedReader(FileReader(csv_path))
-            val csvToBean = CsvToBeanBuilder<RichSkillRow>(fileReader)
-                .withType(RichSkillRow::class.java)
-                .withIgnoreLeadingWhiteSpace(true)
-                .build()
-
-            val rows = csvToBean.parse()
-            handleRows(rows)
-        } catch (e: FileNotFoundException) {
-            LOG.error("Could not find file: ${csv_path}")
-        } finally {
-            fileReader?.close()
-        }
-
-    }
-
-    override fun run(vararg args: String?) {
-        // --csv=path/to/csv
-        val arguments = args.filterNotNull().flatMap { it.split(",") }
-        val csvPath = arguments.find { it.contains("--csv") }?.split("=")?.last()
-        if (csvPath != null) {
-            processCsv(csvPath)
-        } else {
-            LOG.error("Missing --csv=path/to/csv argument")
-        }
-        (applicationContext as ConfigurableApplicationContext).close()
-    }
-}
-
-fun main(args: Array<String>) {
-    SpringApplication.run(BatchImportConsoleApplication::class.java, *args)
 }

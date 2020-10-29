@@ -2,9 +2,10 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {OccupationsFormatter} from "../../job-codes/Jobcode"
 import {IApiSkillSummary} from "../../richskill/ApiSkillSummary"
-import {PublishStatus} from "../../PublishStatus";
+import {PublishStatus} from "../../PublishStatus"
+import {SkillActions} from "./ellipses-menu/ellipses-menu.component"
 
-export interface SkillWithSelection {
+export interface SkillWithMetadata {
   skill: IApiSkillSummary,
   selected: boolean
 }
@@ -18,12 +19,14 @@ export class TableRowComponent implements OnInit {
   @Input() skill: IApiSkillSummary | null = null
   @Input() isSelected = false
   @Input() id = ""
+  @Input() actions: SkillActions | null = null
+
   @Output() rowSelected = new EventEmitter<IApiSkillSummary>()
+  @Output() skillActionSelected = new EventEmitter<SkillActions>()
 
 
   upIcon = SvgHelper.path(SvgIcon.ICON_UP)
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
-  moreIcon = SvgHelper.path(SvgIcon.MORE)
 
   constructor() { }
 
@@ -65,5 +68,9 @@ export class TableRowComponent implements OnInit {
 
   isArchived(): boolean {
     return this.isStatus(PublishStatus.Archived)
+  }
+
+  handleActionMenuSelection(): void {
+    console.log("This was clicked!")
   }
 }

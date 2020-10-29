@@ -1,0 +1,42 @@
+<button
+  [id]="prependId(clickHandle)"
+  class="m-iconInteractive"
+  type="button"
+  [attr.data-select-menu]="prependId('selectmenu')"
+  aria-haspopup="true"
+  [attr.aria-expanded]="isOpen"
+  [attr.aria-labelledby]="prependId('header')"
+  (click)="handleClick()"
+>
+  <span class="t-visuallyHidden">Actions</span>
+  <span class="m-iconInteractive-x-icon">
+    <svg class="t-icon" aria-hidden="true">
+      <use [attr.xlink:href]="moreIcon"></use>
+    </svg>
+  </span>
+</button>
+
+<div class="m-selectMenu" [class.m-selectMenu-is-active]="isOpen" [id]="prependId('selectmenu')" role="menu">
+  <div class="m-selectMenu-x-content" [id]="prependId(clickHandle)">
+
+    <h6 class="t-type-small">Actions</h6>
+
+    <button class="m-buttonText" type="button" role="menuitem" (click)="actions.handleAddToCollection(skill)">
+      <span class="m-buttonText-x-text">Add to Collection</span>
+    </button>
+
+    <button *ngIf="!isPublished()" class="m-buttonText" type="button" role="menuitem" (click)="actions.handlePublish(skill)">
+      <span class="m-buttonText-x-text">Publish</span>
+    </button>
+
+    <button *ngIf="!isArchived(); else archived" class="m-buttonText" type="button" role="menuitem" (click)="actions.handleArchive(skill)">
+      <span class="m-buttonText-x-text">Archive</span>
+    </button>
+
+    <ng-template #archived>
+      <button class="m-buttonText" type="button" role="menuitem" (click)="actions.handleUnarchive(skill)">
+        <span class="m-buttonText-x-text">Unarchive</span>
+      </button>
+    </ng-template>
+  </div>
+</div>

@@ -20,6 +20,7 @@
         <app-table
           [skills]="skills"
           [currentlySortedColumn]="currentSort"
+          [actions]="getActionsForOneSkill()"
           (columnSorted)="onHeaderColumnSort($event)"
           (rowSelected)="rowSelected($event)"
         ></app-table>

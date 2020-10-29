@@ -4,7 +4,8 @@ import {Observable} from "rxjs"
 import {RichSkillService} from "../service/rich-skill.service"
 import {PublishStatus} from "../../PublishStatus"
 import {PaginatedSkills} from "../service/rich-skill-search.service"
-import {IApiSkillSummary} from "../ApiSkillSummary";
+import {IApiSkillSummary} from "../ApiSkillSummary"
+import {SkillActions} from "../../table/table-row/ellipses-menu/ellipses-menu.component"
 
 @Component({
   selector: "app-rich-skills-library",
@@ -46,6 +47,26 @@ export class RichSkillsLibraryComponent implements OnInit {
       this.skills = skills
       this.totalSkills = totalCount
     })
+  }
+
+  getActionsForOneSkill(): SkillActions {
+    return {
+      handleAddToCollection: skill => {
+        // Do something then load skills
+        console.log("added to collection!")
+      },
+      handleUnarchive: skill => {
+        console.log("Unarchived!")
+
+      },
+      handleArchive: skill => {
+        console.log("Archived!")
+
+      },
+      handlePublish: skill => {
+        console.log("Published!")
+      }
+    }
   }
 
   onHeaderColumnSort(sort: ApiSkillSortOrder): void {

@@ -86,43 +86,11 @@
 
     <!-- Items must be grouped-->
     <div>
-
-      <button class="m-iconInteractive" type="button" data-select-menu="{{id}}-selectmenu" aria-haspopup="true" aria-expanded="false" aria-labelledby="{{id}}-header">
-
-        <span class="t-visuallyHidden">Actions</span>
-
-        <span class="m-iconInteractive-x-icon">
-					<svg class="t-icon" aria-hidden="true">
-						<use [attr.xlink:href]="moreIcon"></use>
-					</svg>
-				</span>
-
-      </button>
-
-      <div class="m-selectMenu" id="{{id}}-selectmenu" role="menu">
-        <div class="m-selectMenu-x-content">
-
-          <h6 class="t-type-small">Actions</h6>
-
-          <button class="m-buttonText" type="button" role="menuitem">
-            <span class="m-buttonText-x-text">Action 1</span>
-          </button>
-
-          <button class="m-buttonText" type="button" role="menuitem">
-            <span class="m-buttonText-x-text">Action 2</span>
-          </button>
-
-          <button class="m-buttonText" type="button" role="menuitem">
-            <span class="m-buttonText-x-text">Action 3</span>
-          </button>
-
-          <button class="m-buttonText" type="button" role="menuitem">
-            <span class="m-buttonText-x-text">Action 4</span>
-          </button>
-
-        </div>
-      </div>
-
+      <app-ellipses-menu
+        [id]="id"
+        [actions]="actions"
+        (optionSelected)="handleActionMenuSelection()"
+      ></app-ellipses-menu>
     </div>
 
   </td>

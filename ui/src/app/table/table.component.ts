@@ -1,8 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {ApiSkillSortOrder} from "../richskill/ApiSkill"
 import {Observable} from "rxjs"
-import {SkillWithSelection} from "./table-row/table-row.component"
+import {SkillWithMetadata} from "./table-row/table-row.component"
 import {IApiSkillSummary} from "../richskill/ApiSkillSummary"
+import {SkillActions} from "./table-row/ellipses-menu/ellipses-menu.component";
 
 /**
  * Implement row components to hold datasets and figure out how to dynamically pass and use them
@@ -15,18 +16,19 @@ export class TableComponent implements OnInit {
 
   @Input() skills: IApiSkillSummary[] = []
   @Input() currentlySortedColumn: ApiSkillSortOrder | undefined = undefined
+  @Input() actions: SkillActions | null = null
 
   // Any time a row is selected, broadcast out the list of currently selected skills from preparedSkills
   @Output() rowSelected: EventEmitter<IApiSkillSummary[]> = new EventEmitter<IApiSkillSummary[]>()
   @Output() columnSorted = new EventEmitter<ApiSkillSortOrder>()
 
   // handles the inner state of the loaded skills
-  preparedSkills: SkillWithSelection[] = []
+  preparedSkills: SkillWithMetadata[] = []
 
   constructor() { }
 
   ngOnInit(): void {
-    this.preparedSkills = this.skills?.map<SkillWithSelection>(skill => ({skill, selected: false})) ?? []
+    this.preparedSkills = this.skills?.map<SkillWithMetadata>(skill => ({skill, selected: false})) ?? []
   }
 
   getSelected(): IApiSkillSummary[] {

@@ -170,32 +170,34 @@ export class RichSkillSearchResultsComponent implements OnInit {
   }
 
   private handleClickUnarchive(): boolean {
+    this.submitStatusChange(PublishStatus.Published)
     return false
   }
 
   private handleClickArchive(): boolean {
+    this.submitStatusChange(PublishStatus.Archived)
     return false
   }
 
   handleClickPublish(): boolean  {
+    this.submitStatusChange(PublishStatus.Published)
+    return false
+  }
+
+  submitStatusChange(newStatus: PublishStatus): boolean  {
     const selectedUuids = this.selectedSkills?.map(s => s.uuid)
     if (selectedUuids === undefined) {
       return false
     }
 
-    console.log("PROCESSING PUBLISH", selectedUuids)
-
     this.toastService.showBlockingLoader()
 
     const apiSearch = ApiSearch.factory({uuids: selectedUuids})
-    this.skillsSaved = this.richSkillService.publishSkillsWithResult(apiSearch)
+    this.skillsSaved = this.richSkillService.publishSkillsWithResult(apiSearch, newStatus, this.selectedFilters)
     this.skillsSaved.subscribe((result) => {
       if (result !== undefined) {
         this.toastService.hideBlockingLoader()
         this.loadNextPage()
-      }
-      else {
-        console.log("tick")
       }
     })
     return false

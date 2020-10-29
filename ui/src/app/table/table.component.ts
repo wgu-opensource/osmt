@@ -3,7 +3,7 @@ import {ApiSkillSortOrder} from "../richskill/ApiSkill"
 import {Observable} from "rxjs"
 import {SkillWithMetadata} from "./table-row/table-row.component"
 import {IApiSkillSummary} from "../richskill/ApiSkillSummary"
-import {SkillActions} from "./table-row/ellipses-menu/ellipses-menu.component";
+import {SkillActions} from "./table-row/ellipses-menu/ellipses-menu.component"
 
 /**
  * Implement row components to hold datasets and figure out how to dynamically pass and use them
@@ -31,7 +31,7 @@ export class TableComponent implements OnInit {
     this.preparedSkills = this.skills?.map<SkillWithMetadata>(skill => ({skill, selected: false})) ?? []
   }
 
-  getSelected(): IApiSkillSummary[] {
+  getSelectedSkills(): IApiSkillSummary[] {
     return this.preparedSkills.filter(row => row.selected).map(row => row.skill)
   }
 
@@ -45,7 +45,7 @@ export class TableComponent implements OnInit {
     if (maybeFound) {
       maybeFound.selected = !maybeFound.selected
     }
-    this.rowSelected.emit(this.getSelected())
+    this.rowSelected.emit(this.getSelectedSkills())
 
   }
 
@@ -56,7 +56,7 @@ export class TableComponent implements OnInit {
 
   handleSelectAll(selected: boolean): void {
     this.preparedSkills.forEach(skill => skill.selected = selected)
-    this.rowSelected.emit(this.getSelected())
+    this.rowSelected.emit(this.getSelectedSkills())
   }
 
 }

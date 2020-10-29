@@ -25,8 +25,6 @@ export class EllipsesMenuComponent implements OnInit {
     handleAddToCollection: s => {}
   }
 
-  @Output() optionSelected = new EventEmitter<void>()
-
   isOpen = false
 
   moreIcon = SvgHelper.path(SvgIcon.MORE)

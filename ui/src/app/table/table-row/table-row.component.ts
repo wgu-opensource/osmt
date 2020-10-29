@@ -69,8 +69,4 @@ export class TableRowComponent implements OnInit {
   isArchived(): boolean {
     return this.isStatus(PublishStatus.Archived)
   }
-
-  handleActionMenuSelection(): void {
-    console.log("This was clicked!")
-  }
 }

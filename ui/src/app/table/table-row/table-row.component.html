@@ -58,16 +58,16 @@
       </div>
     </div>
 
-    <app-select-menu [actions]="getRowActions()" id="selectmenu-{{id}}">
-      <button class="m-iconInteractive" type="button" data-select-menu="selectmenu" aria-haspopup="true" aria-expanded="false" aria-labelledby="tableRow-header">
-        <span class="t-visuallyHidden">More</span>
+    <button [appSelectMenuTrigger]="rowActionMenu" class="m-iconInteractive" type="button" aria-haspopup="true" aria-expanded="false" aria-labelledby="tableRow-header">
+      <span class="t-visuallyHidden">More</span>
 
-        <span class="m-iconInteractive-x-icon">
+      <span class="m-iconInteractive-x-icon">
           <svg class="t-icon" aria-hidden="true">
             <use [attr.xlink:href]="moreIcon"></use>
           </svg>
         </span>
-      </button>
+    </button>
+    <app-select-menu [actions]="getRowActions()" #rowActionMenu>
     </app-select-menu>
 
 

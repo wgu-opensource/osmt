@@ -48,6 +48,7 @@ import {ActionBarItemComponent} from "./table/action-bar-item.component";
 import {TableActionBarComponent} from "./table/table-action-bar.component";
 import {EmptyMessageComponent} from "./table/empty-message.component";
 import {SelectMenuComponent, SelectMenuTriggerDirective} from "./table/select-menu.component";
+import {SkillsListComponent} from "./table/skills-list.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -107,7 +108,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     PaginationComponent,
     EmptyMessageComponent,
     SelectMenuComponent,
-    SelectMenuTriggerDirective
+    SelectMenuTriggerDirective,
+    SkillsListComponent
   ],
   imports: [
     BrowserModule,

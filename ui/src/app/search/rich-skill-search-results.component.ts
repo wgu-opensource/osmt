@@ -42,7 +42,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 
   loadNextPage(): void {
     if (this.apiSearch !== undefined) {
-      this.resultsLoaded = this.richSkillService.searchSkills(this.apiSearch, this.size, this.from, this.selectedFilters)
+      this.resultsLoaded = this.richSkillService.searchSkills(this.apiSearch, this.size, this.from, this.selectedFilters, this.columnSort)
       this.resultsLoaded.subscribe(results => this.setResults(results))
     }
   }

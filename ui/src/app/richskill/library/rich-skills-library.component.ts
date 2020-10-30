@@ -9,6 +9,8 @@ import {ToastService} from "../../toast/toast.service";
 })
 export class RichSkillsLibraryComponent extends SkillsListComponent implements OnInit {
 
+  title = "Skills Library"
+
   constructor(
     protected richSkillService: RichSkillService,
     protected toastService: ToastService
@@ -21,7 +23,7 @@ export class RichSkillsLibraryComponent extends SkillsListComponent implements O
   }
 
   loadNextPage(): void {
-    this.resultsLoaded = this.richSkillService.getSkills(this.size, [...this.selectedFilters], this.columnSort)
+    this.resultsLoaded = this.richSkillService.getSkills(this.size, this.from, this.selectedFilters, this.columnSort)
     this.resultsLoaded.subscribe((results) => {
       this.setResults(results)
     })

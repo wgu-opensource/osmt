@@ -15,6 +15,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 
   apiSearch: ApiSearch | undefined
 
+  title = "Search Results"
 
   constructor(protected richSkillService: RichSkillService,
               protected toastService: ToastService,

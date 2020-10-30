@@ -26,13 +26,17 @@ export class RichSkillService extends AbstractService {
 
   getSkills(
     size: number = 50,
-    status: PublishStatus[] | undefined,
+    from: number = 0,
+    filterByStatuses: Set<PublishStatus> | undefined,
     sort: ApiSkillSortOrder | undefined,
   ): Observable<PaginatedSkills> {
+
+    const status = filterByStatuses !== undefined ? Array.from(filterByStatuses).map(s => s.toString()) : undefined
     return this.get<IApiSkillSummary[]>({
       path: `${this.serviceUrl}`,
       params: {
         size: size.toString(),
+        from: from.toString(),
         ...status && {status},
         ...sort && {sort}
       }

@@ -4,15 +4,11 @@
   <div class="l-container t-padding-large t-padding-top">
 
     <div class="l-container l-container-mobile">
-      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Search Results</h2>
+      <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom">{{title}}</h2>
       <p class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">
-        {{skillCountLabel}}
-        <ng-template [ngIf]="matchingQuery" [ngIfElse]="matchingLibrary">
-          matching <span class="t-type-bodyLargeBold t-color-text1">{{matchingQuery}}</span>.
-        </ng-template>
-        <ng-template #matchingLibrary>
-          in skills library
-        </ng-template>
+        {{skillCountLabel}}<ng-template [ngIf]="matchingQuery">
+          matching <span class="t-type-bodyLargeBold t-color-text1">{{matchingQuery}}</span>
+        </ng-template>.
         <ng-template [ngIf]="totalCount > 0">
           Viewing skills {{firstRecordNo}}-{{lastRecordNo}}
         </ng-template>

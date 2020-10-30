@@ -34,6 +34,7 @@ export class SkillsListComponent {
 
   // "abstract" methods to be implemented by a "subclas"
   matchingQuery?: string
+  title?: string
   loadNextPage(): void {}
 
 
@@ -66,7 +67,7 @@ export class SkillsListComponent {
     return this.from + 1
   }
   get lastRecordNo(): number {
-    return this.from + this.curPageCount
+    return Math.min(this.from + this.curPageCount, this.totalCount)
   }
 
   get totalPageCount(): number {

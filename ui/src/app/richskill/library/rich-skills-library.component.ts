@@ -1,9 +1,10 @@
 import {Component, OnInit} from "@angular/core"
-import {ApiSkill} from "../ApiSkill"
+import {ApiSkill, ApiSkillSortOrder} from "../ApiSkill"
 import {Observable} from "rxjs"
 import {RichSkillService} from "../service/rich-skill.service"
-import {CurrentSort} from "../../table/table-header/table-header.component"
-import {PublishStatus} from "../../PublishStatus";
+import {PublishStatus} from "../../PublishStatus"
+import {PaginatedSkills} from "../service/rich-skill-search.service"
+import {IApiSkillSummary} from "../ApiSkillSummary"
 
 @Component({
   selector: "app-rich-skills-library",
@@ -11,25 +12,20 @@ import {PublishStatus} from "../../PublishStatus";
 })
 export class RichSkillsLibraryComponent implements OnInit {
 
-  skillsLoaded: Observable<ApiSkill[]> | null = null
-  skills: ApiSkill[] = []
+  skillsLoaded: Observable<PaginatedSkills> | null = null
+  skills: IApiSkillSummary[] = []
+  selectedSkills: IApiSkillSummary[] = []
   loading = true
-  selectedSkills: ApiSkill[] = []
 
   defaultSortDirection = false
-  currentSort: CurrentSort | undefined = undefined
-
-  // Total counts (not paginated)
-  draftCount = 0
-  publishedCount = 0
-  archivedCount = 0
+  currentSort: ApiSkillSortOrder | undefined = undefined
 
   // filters with defaults
   draftApplied = true
   publishedApplied = true
   archivedApplied = false
 
-  totalSkills = this.draftCount + this.publishedCount + this.archivedCount
+  totalSkills = 0
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
 
   constructor(
@@ -41,38 +37,25 @@ export class RichSkillsLibraryComponent implements OnInit {
     this.getSkills()
   }
 
-  currentlyViewing(): number {
-    return (this.draftApplied ? this.draftCount : 0)
-      + (this.publishedApplied ? this.publishedCount : 0)
-      + (this.archivedApplied ? this.archivedCount : 0)
-  }
-
   getSkills(
     size: number = 50,
-    sort: string | undefined = this.formatCurrentSort()
+    sort: ApiSkillSortOrder | undefined = this.currentSort
   ): void {
-    this.skillsLoaded = this.richSkillService.getSkills(size, sort)
-    this.skillsLoaded.subscribe(skills => {
+    this.skillsLoaded = this.richSkillService.getSkills(size, [...this.selectedFilters], sort)
+    this.skillsLoaded.subscribe(({skills, totalCount}) => {
       this.skills = skills
+      this.totalSkills = totalCount
     })
   }
 
-  formatCurrentSort(): string | undefined {
-    return this.currentSort ? `${this.currentSort.column}.${this.currentSort.ascending ? "asc" : "desc"}` : undefined
-  }
-
-  // Every time a row is toggled, emit the current list of all selected rows
-
-  onRowToggle(selectedSkills: ApiSkill[]): void {
-    this.selectedSkills = selectedSkills
-  }
-
-  onHeaderColumnSort(sort: CurrentSort): void {
+  handleHeaderColumnSort(sort: ApiSkillSortOrder): void {
+    console.log("library got sort: " + sort)
     this.currentSort = sort
     this.getSkills()
   }
 
   filterControlsChanged(name: string, isChecked: boolean): void {
+    this.selectedSkills = []
     switch (name) {
       case "draft": {
         this.draftApplied = isChecked
@@ -91,5 +74,14 @@ export class RichSkillsLibraryComponent implements OnInit {
 
   handleFiltersChanged(newFilters: Set<PublishStatus>): void {
     this.selectedFilters = newFilters
+    this.getSkills()
+  }
+
+  handleSelectedRows(uuids: IApiSkillSummary[]): void {
+    this.selectedSkills = uuids
+  }
+
+  handleSelectAll(isChecked: boolean): void {
+    console.log(`Select all ${isChecked ? "checked" : "unchecked"}`)
   }
 }

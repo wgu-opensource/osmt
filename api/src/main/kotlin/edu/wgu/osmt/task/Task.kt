@@ -18,7 +18,11 @@ import java.util.*
     property = "type"
 )
 @JsonSubTypes(
-    JsonSubTypes.Type(value = CsvTask::class, name = "CsvTask")
+    JsonSubTypes.Type(value = CsvTask::class, name = "CsvTask"),
+    JsonSubTypes.Type(value = ApiSearch::class, name = "ApiSearch"),
+    JsonSubTypes.Type(value = ApiBatchResult::class, name = "ApiBatchResult"),
+    JsonSubTypes.Type(value = PublishSkillsTask::class, name = "PublishSkillsTask"),
+    JsonSubTypes.Type(value = UpdateCollectionSkillsTask::class, name = "UpdateCollectionSkillsTask")
 )
 
 interface Task {
@@ -56,10 +60,10 @@ data class CsvTask(
 
 
 data class PublishSkillsTask(
-    val search: ApiSearch,
+    val search: ApiSearch = ApiSearch(),
     val filterByStatus: Set<PublishStatus> = setOf(PublishStatus.Unpublished),
     val publishStatus: PublishStatus = PublishStatus.Published,
-    val userString: String,
+    val userString: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: ApiBatchResult? = null,

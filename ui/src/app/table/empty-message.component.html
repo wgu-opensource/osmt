@@ -1,0 +1,13 @@
+<div class="m-emptyMessage" [class.m-emptyMessage-form]="isForm">
+  <div class="m-emptyMessage-x-icon">
+    <div class="m-counterIcon">
+      <div class="m-iconWithFrame">
+        <svg class="t-icon" aria-hidden="true">
+          <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
+        </svg>
+      </div>
+      <div class="m-counterIcon-x-counter"><div class="m-counter"><span>{{count}}</span></div></div>
+    </div>
+  </div>
+  <p class="m-emptyMessage-x-message"><ng-content></ng-content></p>
+</div>

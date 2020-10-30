@@ -1,0 +1,8 @@
+<div class="m-selectMenu" role="menu" [class.m-selectMenu-is-active]="isOpen" #container [attr.inert]="!isOpen ? '' : null">
+  <div class="m-selectMenu-x-content">
+    <h6 *ngIf="title !== undefined" class="t-type-small">{{title}}</h6>
+    <button *ngFor="let action of visibleActions()" class="m-buttonText" type="button" role="menuitem" (click)="clickAction(action)">
+      <span class="m-buttonText-x-text">{{action.label}}</span>
+    </button>
+  </div>
+</div>

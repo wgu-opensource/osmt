@@ -1,5 +1,5 @@
 
-<ng-template [ngIf]="isVisible()">
+<ng-template [ngIf]="isToastVisible()">
   <div class="l-toast l-toast-is-active" id="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="m-toast" [class.m-toast-attention]="message?.isAttention">
       <div class="m-toast-x-icon">
@@ -9,6 +9,14 @@
       </div>
       <div class="m-toast-x-title">{{message?.title}}</div>
       <div class="m-toast-x-message">{{message?.message}}</div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template [ngIf]="loaderVisible">
+  <div class="PUI-overlay">
+    <div class="PUI-overlay-content">
+      <app-loading></app-loading>
     </div>
   </div>
 </ng-template>

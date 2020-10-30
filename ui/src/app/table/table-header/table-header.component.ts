@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
-
-export interface CurrentSort { column: string, ascending: boolean }
+import {ApiSkillSortOrder} from "../../richskill/ApiSkill"
 
 @Component({
   selector: "app-table-header",
@@ -10,14 +9,10 @@ export interface CurrentSort { column: string, ascending: boolean }
 export class TableHeaderComponent implements OnInit {
 
   @Input() numberSelected = 0
+  @Input() currentSort: ApiSkillSortOrder | undefined = undefined
 
-  @Output() columnClicked: EventEmitter<CurrentSort> = new EventEmitter<CurrentSort>()
-  @Output() selectAllEmitter: EventEmitter<boolean> = new EventEmitter<boolean>()
-
-  // categorySortAscending: boolean | undefined = undefined
-  // skillSortAscending: boolean | undefined = undefined
-
-  currentSort: CurrentSort | undefined = undefined
+  @Output() columnChanged = new EventEmitter<ApiSkillSortOrder>()
+  @Output() selectAllChanged = new EventEmitter<boolean>()
 
   chevronIcon = SvgHelper.path(SvgIcon.CHEVRON)
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
@@ -30,28 +25,43 @@ export class TableHeaderComponent implements OnInit {
 
   getCategorySort(): boolean | undefined {
     if (this.currentSort) {
-      return this.currentSort.column.toLowerCase() === "category" ? this.currentSort.ascending : undefined
-    } else {
-      return undefined
+      switch (this.currentSort) {
+        case ApiSkillSortOrder.CategoryAsc: return true
+        case ApiSkillSortOrder.CategoryDesc: return false
+      }
     }
+    return undefined
   }
 
   getSkillSort(): boolean | undefined {
     if (this.currentSort) {
-      return this.currentSort.column.toLowerCase() === "skill" ? this.currentSort.ascending : undefined
-    } else {
-      return undefined
+      switch (this.currentSort) {
+        case ApiSkillSortOrder.NameAsc: return true
+        case ApiSkillSortOrder.NameDesc: return false
+      }
     }
+    return undefined
   }
 
   sortColumn(column: string, ascending: boolean): void {
-    console.log("header got it" + ` ${column} ${ascending}`)
-    this.currentSort = {column, ascending}
-    this.columnClicked.emit(this.currentSort)
+    if (column.toLowerCase() === "name") {
+      if (ascending) {
+        this.currentSort = ApiSkillSortOrder.NameAsc
+      } else {
+        this.currentSort = ApiSkillSortOrder.NameDesc
+      }
+    } else if (column.toLowerCase() === "category") {
+      if (ascending) {
+        this.currentSort = ApiSkillSortOrder.CategoryAsc
+      } else {
+        this.currentSort = ApiSkillSortOrder.CategoryDesc
+      }
+    }
+    this.columnChanged.emit(this.currentSort)
   }
 
-  emitSelectAll(event: Event): void {
+  handleSelectAll(event: Event): void {
     const checkbox = event.target as HTMLInputElement
-    this.selectAllEmitter.emit(checkbox.checked)
+    this.selectAllChanged.emit(checkbox.checked)
   }
 }

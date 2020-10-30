@@ -31,21 +31,23 @@ import {RichSkillManageComponent} from "./richskill/detail/rich-skill-manage/ric
 import {ManageSkillActionBarVerticalComponent} from "./richskill/detail/rich-skill-manage/action-bar/action-bar-vertical/manage-skill-action-bar-vertical.component"
 import {ManageSkillActionBarHorizontalComponent} from "./richskill/detail/rich-skill-manage/action-bar/action-bar-horizontal/manage-skill-action-bar-horizontal.component"
 import {ServerErrorComponent} from "./loading/server-error.component"
-import { CommonModule } from "@angular/common"
+import {CommonModule} from "@angular/common"
 import {DetailCardStatusBarComponent} from "./detail-card/status-bar/detail-card-status-bar.component"
 import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component"
-import { TableComponent } from "./table/table.component"
-import { TableRowComponent } from "./table/table-row/table-row.component"
-import { TableHeaderComponent } from "./table/table-header/table-header.component"
-import { TableLabelComponent } from "./table/table-label/table-label.component"
-import { LabelWithFilterComponent } from "./table/table-header/label-with-filter/label-with-filter.component"
+import {TableComponent} from "./table/table.component"
+import {TableRowComponent} from "./table/table-row/table-row.component"
+import {TableHeaderComponent} from "./table/table-header/table-header.component"
+import {TableLabelComponent} from "./table/table-label/table-label.component"
+import {LabelWithFilterComponent} from "./table/table-header/label-with-filter/label-with-filter.component"
 import {AccordianComponent} from "./table/table-row/accordian/accordian.component"
-import { FilterControlsComponent } from "./table/filter-controls/filter-controls.component"
-import { FilterChoiceComponent } from "./table/filter-controls/filter-choice/filter-choice.component"
+import {FilterControlsComponent} from "./table/filter-controls/filter-controls.component"
+import {FilterChoiceComponent} from "./table/filter-controls/filter-choice/filter-choice.component"
 import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
 import {PaginationComponent} from "./table/pagination.component";
 import {ActionBarItemComponent} from "./table/action-bar-item.component";
 import {TableActionBarComponent} from "./table/table-action-bar.component";
+import {EmptyMessageComponent} from "./table/empty-message.component";
+import {SelectMenuComponent, SelectMenuTriggerDirective} from "./table/select-menu.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -102,7 +104,10 @@ export function initializeApp(appConfig: AppConfig): () => void {
     LabelWithFilterComponent,
     FilterControlsComponent,
     FilterChoiceComponent,
-    PaginationComponent
+    PaginationComponent,
+    EmptyMessageComponent,
+    SelectMenuComponent,
+    SelectMenuTriggerDirective
   ],
   imports: [
     BrowserModule,

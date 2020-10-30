@@ -24,9 +24,11 @@
     "@angular/router": "~10.0.9",
     "@types/file-saver": "^2.0.1",
     "file-saver": "^2.0.2",
+    "inert-polyfill": "^0.2.5",
+    "popper.js": "^1.16.1",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
-    "wgu-design-system-patternlibrary": "4.2.0",
+    "wgu-design-system-patternlibrary": "4.3.0",
     "zone.js": "~0.10.3"
   },
   "devDependencies": {

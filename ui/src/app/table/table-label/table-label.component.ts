@@ -7,7 +7,7 @@ import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
     <button class="m-tableLabel" data-table-filter (click)="onClick()">
       <span class="m-tableLabel-x-text">{{text}}</span>
       <span class="m-tableLabel-x-control">
-        <div [ngClass]="{ 'l-iconTransition': true, 'l-iconTransition-is-flipped': ascending }">
+        <div class="l-iconTransition" [class.l-iconTransition-is-flipped]="ascending">
             <svg class="l-iconTransition-x-icon t-icon">
                 <use [attr.xlink:href]="iconChevron"></use>
             </svg>
@@ -19,7 +19,7 @@ import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 export class TableLabelComponent implements OnInit {
 
   @Input() text = ""
-  @Output() sortChangeFilter: EventEmitter<boolean> = new EventEmitter<boolean>()
+  @Output() sortChanged: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   ascending = true
 
@@ -32,7 +32,7 @@ export class TableLabelComponent implements OnInit {
 
   onClick(): void {
     this.ascending = !this.ascending
-    this.sortChangeFilter.emit(this.ascending)
+    this.sortChanged.emit(this.ascending)
   }
 
 }

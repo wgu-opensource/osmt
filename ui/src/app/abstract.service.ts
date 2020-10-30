@@ -2,6 +2,7 @@ import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common
 import {AppConfig} from "./app.config"
 import {Observable} from "rxjs"
 import {AuthService} from "./auth/auth-service";
+import {ApiTaskResult} from "./task/ApiTaskResult";
 
 interface ApiGetParams {
   path: string,
@@ -67,5 +68,28 @@ export abstract class AbstractService {
       headers = headers.set("Authorization", `Bearer ${token}`)
     }
     return headers
+  }
+
+  observableForTaskResult<T>(task: ApiTaskResult, pollIntervalMs: number = 1000): Observable<T> {
+    return new Observable((observer) => {
+
+      const tick = () => {
+        this.httpClient.get<any>(task.id, {
+          headers: this.wrapHeaders(),
+          observe: "response"
+        }).subscribe(({body, status}) => {
+          if (status === 200) {
+            observer.next(body as T)
+            observer.complete()
+          } else {
+            observer.next(undefined)
+            setTimeout(() => tick(), pollIntervalMs)
+          }
+        })
+      }
+
+      tick()
+
+    })
   }
 }

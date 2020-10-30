@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
-import {ApiSkill} from "../richskill/ApiSkill"
+import {ApiSkillSortOrder} from "../richskill/ApiSkill"
 import {Observable} from "rxjs"
-import {SkillWithSelection} from "./table-row/table-row.component"
-import {CurrentSort} from "./table-header/table-header.component";
+import {SkillWithMetadata} from "./table-row/table-row.component"
+import {IApiSkillSummary} from "../richskill/ApiSkillSummary"
 
 /**
  * Implement row components to hold datasets and figure out how to dynamically pass and use them
@@ -13,19 +13,25 @@ import {CurrentSort} from "./table-header/table-header.component";
 })
 export class TableComponent implements OnInit {
 
-  @Input() skills: ApiSkill[] | null = null
+  @Input() skills: IApiSkillSummary[] = []
+  @Input() currentlySortedColumn: ApiSkillSortOrder | undefined = undefined
 
-  @Output() columnSortEmitter = new EventEmitter<CurrentSort>()
-  @Output() selectedRowEmitter: EventEmitter<ApiSkill[]> = new EventEmitter<ApiSkill[]>()
+  // Any time a row is selected, broadcast out the list of currently selected skills from preparedSkills
+  @Output() rowSelected: EventEmitter<IApiSkillSummary[]> = new EventEmitter<IApiSkillSummary[]>()
+  @Output() columnSorted = new EventEmitter<ApiSkillSortOrder>()
+  @Output() selectAllSelected = new EventEmitter<boolean>()
 
-  // can I change this type?  Just pass along the same observable to all components that need it.
-  preparedSkills: SkillWithSelection[] = [] // skillwithselection not necessary, the presence of a skill in an event is proof
-
+  // handles the inner state of the loaded skills
+  preparedSkills: SkillWithMetadata[] = []
 
   constructor() { }
 
   ngOnInit(): void {
-    this.preparedSkills = this.skills?.map<SkillWithSelection>(skill => ({skill, selected: false})) ?? []
+    this.preparedSkills = this.skills?.map<SkillWithMetadata>(skill => ({skill, selected: false})) ?? []
+  }
+
+  getSelectedSkills(): IApiSkillSummary[] {
+    return this.preparedSkills.filter(row => row.selected).map(row => row.skill)
   }
 
   numberOfSelected(): number {
@@ -33,22 +39,23 @@ export class TableComponent implements OnInit {
   }
 
   // Every time a row is toggled, emit the current list of all selected rows
-  onRowToggle(skill: ApiSkill): void {
+  onRowToggle(skill: IApiSkillSummary): void {
     const maybeFound = this.preparedSkills.find(s => s.skill === skill)
     if (maybeFound) {
       maybeFound.selected = !maybeFound.selected
     }
-    this.selectedRowEmitter.emit(this.preparedSkills.filter(row => row.selected).map(row => row.skill))
+    this.rowSelected.emit(this.getSelectedSkills())
 
   }
 
-  // propogate the header component's column sort event upward
-  headerColumnSortPerformed(columnName: CurrentSort): void {
-    this.columnSortEmitter.emit(columnName)
+  // propagate the header component's column sort event upward
+  headerColumnSortPerformed(columnName: ApiSkillSortOrder): void {
+    this.columnSorted.emit(columnName)
   }
 
-  selectAll(selected: boolean): void {
-    this.preparedSkills.map(skill => skill.selected = selected)
+  handleSelectAll(selected: boolean): void {
+    this.preparedSkills.forEach(skill => skill.selected = selected)
+    this.selectAllSelected.emit(selected)
   }
 
 }

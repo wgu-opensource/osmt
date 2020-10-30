@@ -1,18 +1,22 @@
-<div class="l-filterControls">
-  <app-filter-choice
-    label="Draft"
-    [checked]="isDraftChecked"
-    (changeEmitter)="onFilterChangeUnpublished($event)"
-  ></app-filter-choice>
-  <app-filter-choice
-    label="Published"
-    [checked]="isPublishedChecked"
-    (changeEmitter)="onFilterChangePublished($event)"
-  ></app-filter-choice>
-  <app-filter-choice
-    label="Archived"
-    [checked]="isArchivedChecked"
-    (changeEmitter)="onFilterChangeArchived($event)"
-  ></app-filter-choice>
+<div class="t-margin-medium t-margin-bottom">
+  <h3 class="t-visuallyHidden">Filters</h3>
+  <div class="l-filterControls">
+    <app-filter-choice
+      label="Draft"
+      [isChecked]="isDraftChecked"
+      (filterChanged)="onFilterChangeUnpublished($event)"
+    ></app-filter-choice>
+    <app-filter-choice
+      label="Published"
+      [isChecked]="isPublishedChecked"
+      (filterChanged)="onFilterChangePublished($event)"
+    ></app-filter-choice>
+    <app-filter-choice
+      label="Archived"
+      [isChecked]="isArchivedChecked"
+      (filterChanged)="onFilterChangeArchived($event)"
+    ></app-filter-choice>
+  </div>
+
 </div>
 

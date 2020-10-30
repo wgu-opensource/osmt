@@ -1,14 +1,19 @@
-import {OnInit} from "@angular/core";
 import {FormControl, FormGroup} from "@angular/forms";
 import {SearchService} from "../search/search.service";
+import {ActivatedRoute} from "@angular/router";
 
 export class AbstractSearchComponent {
   searchForm = new FormGroup({
     search: new FormControl("")
   })
 
-  constructor(protected searchService: SearchService) {
-
+  constructor(protected searchService: SearchService, protected route: ActivatedRoute) {
+    this.route.queryParams.subscribe(params => {
+      const queryString = params.q
+      if (queryString && queryString.length > 0) {
+        this.searchForm.setValue({search: queryString})
+      }
+    })
   }
 
   clearSearch(): boolean {
@@ -33,4 +38,5 @@ export class AbstractSearchComponent {
     console.log("Search Collections", this.searchQuery)
     return false
   }
+
 }

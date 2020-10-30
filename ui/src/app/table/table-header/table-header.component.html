@@ -8,7 +8,7 @@
     <app-label-with-filter
       label="Category"
       [sortAscending]="getCategorySort()"
-      (emitSortAscending)="sortColumn('category', $event)"
+      (sortChanged)="sortColumn('category', $event)"
     ></app-label-with-filter>
   </div>
 
@@ -16,7 +16,7 @@
     <app-label-with-filter
       label="Skill"
       [sortAscending]="getSkillSort()"
-      (emitSortAscending)="sortColumn('skill', $event)"
+      (sortChanged)="sortColumn('name', $event)"
     ></app-label-with-filter>
   </div>
 
@@ -27,7 +27,7 @@
       <div class="m-tableLabel-x-control">
         <div class="m-checkbox">
 
-          <input type="checkbox" id="checkbox" name="checkbox" (change)="emitSelectAll($event)">
+          <input type="checkbox" id="checkbox" name="checkbox" (change)="handleSelectAll($event)">
 
           <div class="m-checkbox-x-icon">
             <svg class="t-icon" aria-hidden="true">

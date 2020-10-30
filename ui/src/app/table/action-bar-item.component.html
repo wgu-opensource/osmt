@@ -1,4 +1,4 @@
-<button *ngIf="action !== undefined" class="m-actionBarItemHorizontal" [class.m-actionBarItemHorizontal-secondary]="!action.primary" type="button">
+<button *ngIf="action !== undefined" class="m-actionBarItemHorizontal" [class.m-actionBarItemHorizontal-secondary]="!action.primary" type="button" (click)="handleClick($event)">
 
   <svg class="m-actionBarItemHorizontal-x-icon t-icon">
     <use [attr.xlink:href]="iconPath()"></use>

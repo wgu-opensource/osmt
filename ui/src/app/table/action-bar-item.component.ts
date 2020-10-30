@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {TableActionDefinition} from "./table-action-bar.component";
+import {TableActionDefinition} from "./has-action-definitions";
 
 @Component({
   selector: "app-action-bar-item",
@@ -16,5 +16,10 @@ export class ActionBarItemComponent implements OnInit {
 
   iconPath(): string {
     return `/assets/images/svg-defs.svg#icon-${this.action?.icon}`
+  }
+
+  handleClick($event: MouseEvent): boolean {
+    this.action?.fire()
+    return false
   }
 }

@@ -92,3 +92,11 @@ export class ApiSkill {
     this.occupations = iRichSkill.occupations
   }
 }
+
+export enum ApiSkillSortOrder {
+  CategoryAsc = "category.asc",
+  CategoryDesc = "category.desc",
+  NameAsc = "name.asc",
+  NameDesc = "name.desc"
+}
+

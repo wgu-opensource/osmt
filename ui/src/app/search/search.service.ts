@@ -17,7 +17,7 @@ export class SearchService {
 
   simpleSkillSearch(query: string): void {
     this.setLatestSearch(ApiSearch.factory({query}))
-    this.router.navigate(["/search/skills"])
+    this.router.navigate(["/search/skills"], {queryParams: {q: query}})
   }
 
   protected setLatestSearch(apiSearch?: ApiSearch): void {

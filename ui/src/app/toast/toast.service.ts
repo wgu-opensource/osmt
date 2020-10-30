@@ -12,6 +12,7 @@ export interface ToastMessage {
 })
 export class ToastService {
   subject = new Subject<ToastMessage>()
+  loaderSubject = new Subject<boolean>()
 
   constructor() { }
 
@@ -21,5 +22,12 @@ export class ToastService {
       message,
       isAttention
     })
+  }
+
+  showBlockingLoader(): void {
+    this.loaderSubject.next( true)
+  }
+  hideBlockingLoader(): void {
+    this.loaderSubject.next( false)
   }
 }

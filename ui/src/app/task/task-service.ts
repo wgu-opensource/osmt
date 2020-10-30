@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http"
 import { Observable } from "rxjs"
-import { ITaskResponse, TaskInProgress } from "./TaskInProgress"
+import { ITaskResult, ApiTaskResult } from "./ApiTaskResult"
 import {map, share} from "rxjs/operators"
 import {AbstractService} from "../abstract.service"
 import {AuthService} from "../auth/auth-service";
@@ -18,16 +18,16 @@ export class TaskService extends AbstractService {
   private serviceUrl = "api/tasks/"
 
 
-  startAllSkillsCsvTask(): Observable<ITaskResponse> {
+  startAllSkillsCsvTask(): Observable<ITaskResult> {
     const failureMessage = "Could not start a skills csv export"
-    return this.get<ITaskResponse>({
+    return this.get<ITaskResult>({
       path: "api/skills",
       headers: new HttpHeaders({
         Accept: "text/csv"
       })
     })
       .pipe(share())
-      .pipe(map(({body}) => new TaskInProgress(this.safeUnwrapBody(body, failureMessage))))
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, failureMessage))))
   }
 
   // this call is a bit different since it's returning a csv for immediate download, so use httpClient's get() method

@@ -1,4 +1,3 @@
-<ng-template [appLoadingObservables]="[resultsLoaded]">
 
   <div class="l-stickyBar">
 
@@ -20,10 +19,17 @@
       </div>
 
       <div class="t-margin-medium t-margin-bottom">
-        <app-table
-          [skills]="results.skills"
-          (selectedRowEmitter)="handleNewSelection($event)"
-        ></app-table>
+        <ng-template [appLoadingObservables]="[resultsLoaded]">
+          <app-table
+            *ngIf="!emptyResults"
+            [skills]="results.skills"
+            (rowSelected)="handleNewSelection($event)"
+          ></app-table>
+
+          <app-empty-message *ngIf="emptyResults">
+            Try changing your search term or using <a routerLink="/search/skills/advanced">Advanced Search</a>.
+          </app-empty-message>
+        </ng-template>
       </div>
 
       <app-pagination
@@ -42,5 +48,4 @@
 
   </div>
 
-</ng-template>
 

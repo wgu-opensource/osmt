@@ -30,6 +30,8 @@
           *ngIf="!emptyResults"
           [skills]="results.skills"
           (rowSelected)="handleNewSelection($event)"
+          [currentlySortedColumn]="columnSort"
+          (columnSorted)="handleHeaderColumnSort($event)"
         ></app-table>
 
         <app-empty-message *ngIf="emptyResults">

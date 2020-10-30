@@ -7,6 +7,7 @@ import {Observable} from "rxjs";
 import {ApiBatchResult} from "../richskill/ApiBatchResult";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {ToastService} from "../toast/toast.service";
+import {ApiSkillSortOrder} from "../richskill/ApiSkill";
 
 
 @Component({
@@ -23,6 +24,8 @@ export class SkillsListComponent {
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
   selectedSkills?: IApiSkillSummary[]
   skillsSaved?: Observable<ApiBatchResult>
+
+  columnSort: ApiSkillSortOrder = ApiSkillSortOrder.CategoryAsc
 
   constructor(protected richSkillService: RichSkillService,
               protected toastService: ToastService
@@ -108,6 +111,10 @@ export class SkillsListComponent {
     this.selectedSkills = selectedSkills
   }
 
+  handleHeaderColumnSort(sort: ApiSkillSortOrder): void {
+    this.columnSort = sort
+    this.loadNextPage()
+  }
 
   tableActions(): TableActionDefinition[] {
     return [

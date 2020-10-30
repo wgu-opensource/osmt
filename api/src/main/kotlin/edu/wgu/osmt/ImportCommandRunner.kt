@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 
 @Component
 @Profile("import")
-class ImportCommandRunner: CommandLineRunner {
+class ImportCommandRunner : CommandLineRunner {
     val LOG: Logger = LoggerFactory.getLogger(ImportCommandRunner::class.java)
 
     @Autowired
@@ -30,16 +30,23 @@ class ImportCommandRunner: CommandLineRunner {
     private lateinit var onetImport: OnetImport
 
     override fun run(vararg args: String?) {
-        // --csv=path/to/csv
         val arguments = args.filterNotNull().flatMap { it.split(",") }
+
+        /**
+         * --csv=path/to/csv
+         */
         val csvPath = arguments.find { it.contains("--csv") }?.split("=")?.last()
 
+        /**
+         * --import-type=
+         * must match an entry in [[ImportType]]
+         */
         val importType = arguments.find { it.contains("--import-type") }?.split("=")?.last()
             ?.let { ImportType.valueOf(it.toLowerCase().capitalize()) } ?: ImportType.Batchskill
 
         if (csvPath != null) {
             LOG.info("running import command for ${importType}")
-            when (importType){
+            when (importType) {
                 ImportType.Batchskill -> batchImportRichSkill.processCsv(csvPath)
                 ImportType.Bls -> blsImport.processCsv(csvPath)
                 ImportType.Onet -> onetImport.processCsv(csvPath)

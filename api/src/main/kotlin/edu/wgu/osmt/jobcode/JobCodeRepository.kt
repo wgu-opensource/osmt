@@ -3,6 +3,7 @@ package edu.wgu.osmt.jobcode
 import edu.wgu.osmt.elasticsearch.EsJobCodeRepository
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
@@ -16,9 +17,10 @@ interface JobCodeRepository {
     fun findById(id: Long): JobCodeDao?
     fun findByCode(code: String): JobCodeDao?
     fun findByCodeOrCreate(code: String, framework: String? = null): JobCodeDao
+    fun findBlsCode(code: String): JobCodeDao?
     fun create(code: String, framework: String? = null): JobCodeDao
 
-    companion object{
+    companion object {
         const val BLS_FRAMEWORK = "bls"
         const val `O*NET_FRAMEWORK` = "o*net"
     }
@@ -35,7 +37,12 @@ class JobCodeRepositoryImpl @Autowired constructor(val esJobCodeRepository: EsJo
     override fun findById(id: Long): JobCodeDao? = dao.findById(id)
 
     override fun findByCode(code: String): JobCodeDao? {
-        return table.select { table.code eq code }.singleOrNull()?.let { dao.wrapRow(it) }
+        return table.select { table.code eq code }.firstOrNull()?.let { dao.wrapRow(it) }
+    }
+
+    override fun findBlsCode(code: String): JobCodeDao? {
+        return table.select { table.code eq code and (table.framework eq JobCodeRepository.BLS_FRAMEWORK) }
+            .firstOrNull()?.let { dao.wrapRow(it) }
     }
 
     override fun findByCodeOrCreate(code: String, framework: String?): JobCodeDao {

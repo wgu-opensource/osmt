@@ -110,8 +110,7 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
     fun parse_jobcodes(rowValue: String?): List<JobCodeDao>? {
         return split_field(rowValue)?.map { code ->
             val sanitizedCode = JobCodeBreakout.jobRoleCode(code)
-            val jobCode = jobCodeRepository.findByCode(code)
-            jobCode ?: jobCodeRepository.create(sanitizedCode!!)
+            jobCodeRepository.findByCodeOrCreate(sanitizedCode!!)
         }
     }
 

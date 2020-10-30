@@ -86,12 +86,12 @@ class CollectionRepositoryImpl @Autowired constructor(
     override fun findById(id: Long) = dao.findById(id)
 
     override fun findByUUID(uuid: String): CollectionDao? {
-        val query = table.select { table.uuid eq uuid }.singleOrNull()
+        val query = table.select { table.uuid eq uuid }.firstOrNull()
         return query?.let { dao.wrapRow(it) }
     }
 
     override fun findByName(name: String): CollectionDao? {
-        val query = table.select { table.name eq name }.singleOrNull()
+        val query = table.select { table.name eq name }.firstOrNull()
         return query?.let { dao.wrapRow(it) }
     }
 

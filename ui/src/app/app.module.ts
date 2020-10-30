@@ -46,6 +46,9 @@ import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-result
 import {PaginationComponent} from "./table/pagination.component"
 import {ActionBarItemComponent} from "./table/action-bar-item.component"
 import {TableActionBarComponent} from "./table/table-action-bar.component"
+import { AdvancedSearchComponent } from "./search/advanced-search/advanced-search.component"
+import { AdvancedSearchHorizontalActionBarComponent } from "./search/advanced-search/action-bar/advanced-search-horizontal-action-bar.component"
+import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -102,7 +105,10 @@ export function initializeApp(appConfig: AppConfig): () => void {
     LabelWithFilterComponent,
     FilterControlsComponent,
     FilterChoiceComponent,
-    PaginationComponent
+    PaginationComponent,
+    AdvancedSearchComponent,
+    AdvancedSearchVerticalActionBarComponent,
+    AdvancedSearchHorizontalActionBarComponent
   ],
   imports: [
     BrowserModule,

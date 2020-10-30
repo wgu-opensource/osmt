@@ -1,12 +1,11 @@
-import {Component, OnInit} from "@angular/core";
-import {SearchService} from "./search.service";
-import {RichSkillService} from "../richskill/service/rich-skill.service";
-import {Observable} from "rxjs";
-import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {ApiSkill} from "../richskill/ApiSkill";
-import {TableActionDefinition} from "../table/table-action-bar.component";
-import {PublishStatus} from "../PublishStatus";
-import {IApiSkillSummary} from "../richskill/ApiSkillSummary";
+import {Component, OnInit} from "@angular/core"
+import {SearchService} from "./search.service"
+import {RichSkillService} from "../richskill/service/rich-skill.service"
+import {Observable} from "rxjs"
+import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service"
+import {TableActionDefinition} from "../table/table-action-bar.component"
+import {PublishStatus} from "../PublishStatus"
+import {IApiSkillSummary} from "../richskill/ApiSkillSummary"
 
 
 @Component({
@@ -19,8 +18,8 @@ export class RichSkillSearchResultsComponent implements OnInit {
   private results: PaginatedSkills | undefined
   private apiSearch: ApiSearch | undefined
 
-  private from: number = 0
-  private size: number = 2
+  private from = 0
+  private size = 2
   private selectedSkills?: IApiSkillSummary[]
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
   get skillCountLabel(): string {

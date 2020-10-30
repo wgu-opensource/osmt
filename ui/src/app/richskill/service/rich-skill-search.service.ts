@@ -47,6 +47,7 @@ export class ApiAdvancedSearch {
   certifications: [] | undefined
   employers: [] | undefined
   alignments: [] | undefined
+  author: string | undefined // TODO there's some white label shenanigans here
 
   static factory(options: object): ApiSearch {
     return Object.assign(new ApiSearch(), options)

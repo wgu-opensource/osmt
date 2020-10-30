@@ -9,6 +9,7 @@ import {AuthGuard} from "./auth/auth.guard"
 import {LoginComponent} from "./auth/login.component"
 import {RichSkillManageComponent} from "./richskill/detail/rich-skill-manage/rich-skill-manage.component"
 import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
+import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -40,6 +41,7 @@ const routes: Routes = [
 
   // search
   {path: "search/skills", component: RichSkillSearchResultsComponent},
+  {path: "search/advanced", component: AdvancedSearchComponent},
 
   // authentication redirects
   {path: "login", component: LoginComponent},  // redirect to oauth login

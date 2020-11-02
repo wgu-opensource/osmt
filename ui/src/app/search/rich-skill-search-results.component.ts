@@ -27,16 +27,20 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
               protected route: ActivatedRoute,
 ) {
     super(richSkillService, toastService)
-    searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
+    this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      const query = params.q
-      if (query && query.length > 0) {
-        this.handleNewSearch(ApiSearch.factory({query}))
-      }
-    })
+    if (this.searchService.latestSearch !== undefined) {
+      this.handleNewSearch(this.searchService.latestSearch)
+    } else {
+      this.route.queryParams.subscribe(params => {
+        const query = params.q
+        if (query && query.length > 0) {
+          this.handleNewSearch(ApiSearch.factory({query}))
+        }
+      })
+    }
   }
 
   private handleNewSearch(apiSearch: ApiSearch): void {

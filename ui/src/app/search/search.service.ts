@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {ApiSearch} from "../richskill/service/rich-skill-search.service";
+import {ApiAdvancedSearch, ApiSearch, IAdvancedSearch} from "../richskill/service/rich-skill-search.service";
 import {Router} from "@angular/router";
 import {Subject} from "rxjs";
 
@@ -18,6 +18,10 @@ export class SearchService {
   simpleSkillSearch(query: string): void {
     this.setLatestSearch(ApiSearch.factory({query}))
     this.router.navigate(["/search/skills"], {queryParams: {q: query}})
+  }
+  advancedSkillSearch(advanced: ApiAdvancedSearch): void {
+    this.setLatestSearch(ApiSearch.factory({advanced}))
+    this.router.navigate(["/search/skills"])
   }
 
   protected setLatestSearch(apiSearch?: ApiSearch): void {

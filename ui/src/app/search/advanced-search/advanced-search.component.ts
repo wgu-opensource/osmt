@@ -5,7 +5,7 @@ import {AppConfig} from "../../app.config"
 import {urlValidator} from "../../validators/url.validator"
 import {ApiSkillSummary, IApiSkillSummary} from "../../richskill/ApiSkillSummary";
 import {SearchService} from "../search.service";
-import {IAdvancedSearch} from "../../richskill/service/rich-skill-search.service";
+import {ApiAdvancedSearch, IAdvancedSearch} from "../../richskill/service/rich-skill-search.service";
 
 @Component({
   selector: "app-advanced-search",
@@ -53,7 +53,7 @@ export class AdvancedSearchComponent implements OnInit {
     console.log("Searching collections...")
   }
 
-  private collectFieldData(): IAdvancedSearch {
+  private collectFieldData(): ApiAdvancedSearch {
     const {
       skillName,
       author,
@@ -68,7 +68,7 @@ export class AdvancedSearchComponent implements OnInit {
       collections: collectionName
     } = this.skillForm.value
 
-    return {
+    return ApiAdvancedSearch.factory({
       skillName: skillName || undefined,
       skillStatement: skillStatement || undefined,
       category: category || undefined,
@@ -79,6 +79,6 @@ export class AdvancedSearchComponent implements OnInit {
       employers: employers || undefined,
       alignments: alignments || undefined,
       collectionName: collectionName || undefined
-    }
+    })
   }
 }

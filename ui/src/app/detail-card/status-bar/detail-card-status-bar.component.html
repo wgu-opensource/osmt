@@ -2,32 +2,26 @@
   <div class="l-statusbar-x-container">
 
     <!-- Published -->
-    <div *ngIf="isPublished(); else draft">
-      <div class="m-status m-status-published">
-        <div class="m-status-x-icon">
-          <svg class="t-icon" aria-hidden="true">
-            <use [attr.xlink:href]="iconUp"></use>
-          </svg>
-        </div>
-        <div class="m-status-x-label">Published</div>
+    <div *ngIf="isPublished()" class="m-status m-status-published">
+      <div class="m-status-x-icon">
+        <svg class="t-icon" aria-hidden="true">
+          <use [attr.xlink:href]="iconUp"></use>
+        </svg>
       </div>
+      <div class="m-status-x-label">Published</div>
     </div>
 
     <!-- Default -->
-    <ng-template #draft>
-      <div class="m-status">
-        <div class="m-status-x-icon"></div>
-        <div class="m-status-x-label">Draft</div>
-      </div>
-    </ng-template>
+    <div *ngIf="isDraft()" class="m-status">
+      <div class="m-status-x-icon"></div>
+      <div class="m-status-x-label">Draft</div>
+    </div>
 
-    <div class="l-flex l-flex-alignCenter" *ngIf="isArchived()">
+    <div *ngIf="isArchived()" class="l-flex l-flex-alignCenter">
       <svg class="t-icon" aria-hidden="true">
         <use [attr.xlink:href]="archiveIcon"></use>
       </svg>
-      <span class="t-type-body">
-    Archived {{archived}}
-  </span>
+      <span class="t-type-body">Archived</span>
     </div>
 
   </div>

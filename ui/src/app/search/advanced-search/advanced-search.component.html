@@ -1,5 +1,4 @@
-
-<div class="l-stickyBar">
+<form [formGroup]="skillForm" (ngSubmit)="handleSearchSkills()" class="l-stickyBar">
 
   <div class="l-stickySidebar l-container">
 
@@ -24,112 +23,96 @@
 
         <app-formfield-text
           [control]="skillForm.controls.skillName"
-          name=""
+          name="skillName"
           label="Skill Name"
-          placeholder=""
           [required]="false"
-          errorMessage="Name required"
         >
         </app-formfield-text>
 
         <!-- TODO this is conditionally allowed via white label -->
-        <app-formfield-text
+        <app-formfield-text *ngIf="showAuthor()"
           [control]="skillForm.controls.author"
-          name=""
+          name="author"
           label="Author"
-          placeholder="Health Education Development"
           [required]="false"
-          errorMessage=""
         >
         </app-formfield-text>
 
         <app-formfield-text
           [control]="skillForm.controls.skillStatement"
-          name=""
+          name="skillStatement"
           label="Skill Statement"
-          placeholder=""
           [required]="false"
-          errorMessage=""
         >
         </app-formfield-text>
 
         <app-formfield-text
           [control]="skillForm.controls.category"
-          name=""
+          name="category"
           label="Category"
-          placeholder=""
           [required]="false"
-          errorMessage=""
         >
         </app-formfield-text>
 
         <app-formfield-text
           [control]="skillForm.controls.keywords"
-          name=""
+          name="keywords"
           label="Keywords"
-          placeholder=""
           [required]="false"
-          errorMessage=""
+          [helpMessage]="getSemicolonHelpMessage()"
         >
         </app-formfield-text>
 
         <app-formfield-text
           [control]="skillForm.controls.standards"
-          name=""
+          name="standards"
           label="Standards"
-          placeholder=""
           [required]="false"
-          errorMessage="N"
+          [helpMessage]="getSemicolonHelpMessage()"
         >
         </app-formfield-text>
 
         <app-formfield-text
           [control]="skillForm.controls.certifications"
-          name=""
+          name="certifications"
           label="Certifications"
-          placeholder=""
           [required]="false"
-          errorMessage=""
+          [helpMessage]="getSemicolonHelpMessage()"
         >
         </app-formfield-text>
 
         <app-formfield-text
           [control]="skillForm.controls.occupations"
-          name=""
+          name="occupations"
           label="Occupations"
-          placeholder=""
           [required]="false"
-          errorMessage=""
+          [helpMessage]="getOccupationHelpMessage()"
         >
         </app-formfield-text>
 
         <app-formfield-text
           [control]="skillForm.controls.employers"
-          name=""
+          name="employers"
           label="Employers"
-          placeholder=""
           [required]="false"
-          errorMessage=""
+          [helpMessage]="getSemicolonHelpMessage()"
         >
         </app-formfield-text>
 
         <app-formfield-text
           [control]="skillForm.controls.alignments"
-          name=""
+          name="alignments"
           label="Alignment"
-          placeholder=""
           [required]="false"
-          errorMessage=""
+          [helpMessage]="getSemicolonHelpMessage()"
         >
         </app-formfield-text>
 
         <app-formfield-text
           [control]="skillForm.controls.collectionName"
-          name=""
+          name="collectionName"
           label="Collection Name"
-          placeholder=""
           [required]="false"
-          errorMessage=""
         >
         </app-formfield-text>
       </div>
@@ -147,12 +130,10 @@
   </div>
 
   <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
-    <!-- {{render '@actionbarhorizontal'}} -->
     <app-advanced-search-horizontal-action-bar
       (searchSkillsClicked)="handleSearchSkills()"
       (searchCollectionsClicked)="handleSearchCollections()"
     ></app-advanced-search-horizontal-action-bar>
   </div>
 
-</div>
-
+</form>

@@ -9,6 +9,9 @@ export class AbstractAdvancedSearchActionBarComponent implements OnInit {
   @Output() searchSkillsClicked = new EventEmitter<void>()
   @Output() searchCollectionsClicked = new EventEmitter<void>()
 
+  skillButtonText = "Search Skills"
+  collectionButtonText = "Search Collections"
+
   constructor() { }
 
   ngOnInit(): void {

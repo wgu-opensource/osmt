@@ -48,7 +48,7 @@ export class ApiAdvancedSearch implements IAdvancedSearch {
   certifications: [] | undefined
   employers: [] | undefined
   alignments: [] | undefined
-  author: string | undefined // TODO there's some white label shenanigans here
+  author: string | undefined // TODO Doesn't exist yet in api
 
   static factory(options: object): ApiAdvancedSearch {
     return Object.assign(new ApiAdvancedSearch(), options)

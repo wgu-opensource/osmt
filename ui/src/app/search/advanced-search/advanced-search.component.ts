@@ -3,9 +3,8 @@ import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms"
 import {AppConfig} from "../../app.config"
 import {urlValidator} from "../../validators/url.validator"
-import {ApiSkillSummary, IApiSkillSummary} from "../../richskill/ApiSkillSummary";
-import {SearchService} from "../search.service";
-import {ApiAdvancedSearch, IAdvancedSearch} from "../../richskill/service/rich-skill-search.service";
+import {SearchService} from "../search.service"
+import {ApiAdvancedSearch, IAdvancedSearch} from "../../richskill/service/rich-skill-search.service"
 
 @Component({
   selector: "app-advanced-search",
@@ -65,11 +64,12 @@ export class AdvancedSearchComponent implements OnInit {
       occupations,
       employers,
       alignments,
-      collections: collectionName
+      collectionName
     } = this.skillForm.value
 
     return ApiAdvancedSearch.factory({
       skillName: skillName || undefined,
+      author: author || undefined,
       skillStatement: skillStatement || undefined,
       category: category || undefined,
       keywords: keywords || undefined,
@@ -80,5 +80,17 @@ export class AdvancedSearchComponent implements OnInit {
       alignments: alignments || undefined,
       collectionName: collectionName || undefined
     })
+  }
+
+  showAuthor(): boolean {
+    return AppConfig.settings.editableAuthor
+  }
+
+  getSemicolonHelpMessage(): string {
+    return "Use a semicolon to separate multiple entries in a field."
+  }
+
+  getOccupationHelpMessage(): string {
+    return "BLS or O*NET job codes."
   }
 }

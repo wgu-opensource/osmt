@@ -22,6 +22,7 @@ export class TableRowComponent implements OnInit {
 
   @Output() rowSelected = new EventEmitter<IApiSkillSummary>()
 
+  @Input() rowActions: TableActionDefinition[] = []
 
   upIcon = SvgHelper.path(SvgIcon.ICON_UP)
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
@@ -66,16 +67,4 @@ export class TableRowComponent implements OnInit {
     return this.isStatus(PublishStatus.Archived)
   }
 
-  getRowActions(): TableActionDefinition[] {
-    return [
-      new TableActionDefinition({
-        label: "First",
-        callback: () => { console.log("clicked first") }
-      }),
-      new TableActionDefinition({
-        label: "Second",
-        callback: () => { console.log("clicked second") }
-      })
-    ]
-  }
 }

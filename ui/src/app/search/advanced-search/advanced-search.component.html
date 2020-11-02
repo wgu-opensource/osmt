@@ -1,0 +1,158 @@
+
+<div class="l-stickyBar">
+
+  <div class="l-stickySidebar l-container">
+
+    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
+      <div class="m-skillBackground">
+        <div class="t-margin-medium t-margin-bottom">
+          <!-- icon message goes here -->
+        </div>
+
+        <div class="t-margin-medium t-margin-bottom">
+
+          <h3 class="m-iconTitle">
+            <div class="m-iconTitle-x-icon">
+              <svg class="t-icon" aria-hidden="true">
+                <use [attr.xlink:href]="iconSearch"></use>
+              </svg>
+            </div>
+            <div class="m-iconTitle-x-label">Advanced Search</div>
+          </h3>
+
+        </div>
+
+        <app-formfield-text
+          [control]="skillForm.controls.skillName"
+          name=""
+          label="Skill Name"
+          placeholder=""
+          [required]="false"
+          errorMessage="Name required"
+        >
+        </app-formfield-text>
+
+        <!-- TODO this is conditionally allowed via white label -->
+        <app-formfield-text
+          [control]="skillForm.controls.author"
+          name=""
+          label="Author"
+          placeholder="Health Education Development"
+          [required]="false"
+          errorMessage=""
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.skillStatement"
+          name=""
+          label="Skill Statement"
+          placeholder=""
+          [required]="false"
+          errorMessage=""
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.category"
+          name=""
+          label="Category"
+          placeholder=""
+          [required]="false"
+          errorMessage=""
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.keywords"
+          name=""
+          label="Keywords"
+          placeholder=""
+          [required]="false"
+          errorMessage=""
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.standards"
+          name=""
+          label="Standards"
+          placeholder=""
+          [required]="false"
+          errorMessage="N"
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.certifications"
+          name=""
+          label="Certifications"
+          placeholder=""
+          [required]="false"
+          errorMessage=""
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.occupations"
+          name=""
+          label="Occupations"
+          placeholder=""
+          [required]="false"
+          errorMessage=""
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.employers"
+          name=""
+          label="Employers"
+          placeholder=""
+          [required]="false"
+          errorMessage=""
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.alignments"
+          name=""
+          label="Alignment"
+          placeholder=""
+          [required]="false"
+          errorMessage=""
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.collectionName"
+          name=""
+          label="Collection Name"
+          placeholder=""
+          [required]="false"
+          errorMessage=""
+        >
+        </app-formfield-text>
+      </div>
+    </div>
+
+    <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
+      <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
+        <app-advanced-search-vertical-action-bar
+          (searchCollectionsClicked)="handleSearchCollections()"
+          (searchSkillsClicked)="handleSearchSkills()"
+        ></app-advanced-search-vertical-action-bar>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
+    <!-- {{render '@actionbarhorizontal'}} -->
+    <app-advanced-search-horizontal-action-bar
+      (searchSkillsClicked)="handleSearchSkills()"
+      (searchCollectionsClicked)="handleSearchCollections()"
+    ></app-advanced-search-horizontal-action-bar>
+  </div>
+
+</div>
+

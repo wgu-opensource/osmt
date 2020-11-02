@@ -26,13 +26,17 @@ export class RichSkillService extends AbstractService {
 
   getSkills(
     size: number = 50,
-    status: PublishStatus[] | undefined,
+    from: number = 0,
+    filterByStatuses: Set<PublishStatus> | undefined,
     sort: ApiSkillSortOrder | undefined,
   ): Observable<PaginatedSkills> {
+
+    const status = filterByStatuses !== undefined ? Array.from(filterByStatuses).map(s => s.toString()) : undefined
     return this.get<IApiSkillSummary[]>({
       path: `${this.serviceUrl}`,
       params: {
         size: size.toString(),
+        from: from.toString(),
         ...status && {status},
         ...sort && {sort}
       }
@@ -122,7 +126,7 @@ export class RichSkillService extends AbstractService {
     size: number | undefined,
     from: number | undefined,
     filterByStatuses?: Set<PublishStatus>,
-    sort: string = "category.asc",
+    sort?: ApiSkillSortOrder,
   ): Observable<PaginatedSkills> {
     const errorMsg = `Failed to unwrap response for skill search`
 
@@ -134,6 +138,7 @@ export class RichSkillService extends AbstractService {
     }
     if (size !== undefined) { params.size = size }
     if (from !== undefined) { params.from = from }
+    if (sort !== undefined) { params.sort = sort.toString()}
 
     return this.post<IApiSkillSummary[]>({
       path: "api/search/skills",

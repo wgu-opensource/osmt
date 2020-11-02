@@ -9,7 +9,7 @@ import {IApiSkillSummary} from "../ApiSkillSummary"
 
 export interface ISearch {
   query: string | undefined
-  advanced: ApiAdvancedSearch | undefined
+  advanced: IAdvancedSearch | undefined
   uuids: [] | undefined
 }
 
@@ -24,11 +24,12 @@ export interface IAdvancedSearch {
   certifications: [] | undefined
   employers: [] | undefined
   alignments: [] | undefined
+  author: string | undefined
 }
 
-export class ApiSearch {
+export class ApiSearch implements ISearch {
   query: string | undefined
-  advanced: ApiAdvancedSearch | undefined
+  advanced: IAdvancedSearch | undefined
   uuids: [] | undefined
 
   static factory(options: object): ApiSearch {
@@ -36,7 +37,7 @@ export class ApiSearch {
   }
 }
 
-export class ApiAdvancedSearch {
+export class ApiAdvancedSearch implements IAdvancedSearch {
   skillName: string | undefined
   collectionName: string | undefined
   category: string | undefined
@@ -47,9 +48,10 @@ export class ApiAdvancedSearch {
   certifications: [] | undefined
   employers: [] | undefined
   alignments: [] | undefined
+  author: string | undefined // TODO there's some white label shenanigans here
 
-  static factory(options: object): ApiSearch {
-    return Object.assign(new ApiSearch(), options)
+  static factory(options: object): ApiAdvancedSearch {
+    return Object.assign(new ApiAdvancedSearch(), options)
   }
 }
 

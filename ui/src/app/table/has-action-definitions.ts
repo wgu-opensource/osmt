@@ -5,8 +5,8 @@ interface IActionDefinition {
   icon?: string
   primary?: boolean
   offset?: boolean
-  callback?: (actionDefinition: TableActionDefinition) => void
-  visible?: () => boolean
+  callback?: (actionDefinition: TableActionDefinition, data?: any) => void
+  visible?: (data?: any) => boolean
 }
 
 export class TableActionDefinition {
@@ -14,8 +14,8 @@ export class TableActionDefinition {
   icon: string = "dismiss"
   primary: boolean = false
   offset: boolean = false
-  callback?: ((actionDefinition: TableActionDefinition) => void)
-  visible?: (() => void)
+  callback?: ((actionDefinition: TableActionDefinition, data?: any) => void)
+  visible?: (data?: any) => boolean
 
   constructor({label, icon, primary, offset, callback, visible}: IActionDefinition) {
     this.label = label ?? ""
@@ -26,9 +26,9 @@ export class TableActionDefinition {
     this.offset = offset ?? false
   }
 
-  fire(): void {
+  fire(data?: any): void {
     if (this.callback !== undefined) {
-      this.callback(this)
+      this.callback(this, data)
     }
   }
 }
@@ -42,17 +42,17 @@ export class HasActionDefinitions {
   constructor() {
   }
 
-  visibleActions(): TableActionDefinition[] {
+  visibleActions(data?: any): TableActionDefinition[] {
     return this.actions.filter((def: TableActionDefinition) => {
       if (def.visible !== undefined) {
-        return def.visible()
+        return def.visible(data)
       }
       return true
     })
   }
 
-  clickAction(action?: TableActionDefinition): boolean {
-    action?.fire()
+  clickAction(action?: TableActionDefinition, data?: any): boolean {
+    action?.fire(data)
     return false
   }
 }

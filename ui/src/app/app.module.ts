@@ -48,6 +48,11 @@ import {ActionBarItemComponent} from "./table/action-bar-item.component";
 import {TableActionBarComponent} from "./table/table-action-bar.component";
 import {EmptyMessageComponent} from "./table/empty-message.component";
 import {SelectMenuComponent, SelectMenuTriggerDirective} from "./table/select-menu.component";
+import {SkillsListComponent} from "./table/skills-list.component";
+import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component"
+import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-horizontal-action-bar.component"
+import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
+import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -107,7 +112,12 @@ export function initializeApp(appConfig: AppConfig): () => void {
     PaginationComponent,
     EmptyMessageComponent,
     SelectMenuComponent,
-    SelectMenuTriggerDirective
+    SelectMenuTriggerDirective,
+    SkillsListComponent,
+    AdvancedSearchComponent,
+    AdvancedSearchVerticalActionBarComponent,
+    AdvancedSearchHorizontalActionBarComponent,
+    AbstractAdvancedSearchActionBarComponent
   ],
   imports: [
     BrowserModule,

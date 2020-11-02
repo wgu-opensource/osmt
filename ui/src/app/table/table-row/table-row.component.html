@@ -29,10 +29,7 @@
 
     <p class="t-margin-small t-margin-bottom">{{skill.skillStatement}}</p>
 
-    <app-detail-card-status-bar
-      [archived]="isArchived()"
-      [published]="isPublished()"
-    ></app-detail-card-status-bar>
+    <app-detail-card-status-bar [status]="skill.status"></app-detail-card-status-bar>
 
     <div class="t-margin-small t-margin-bottom" *ngIf="getFormattedKeywords()">
       <div class="m-inlineHeading">
@@ -74,7 +71,7 @@
           </svg>
         </span>
     </button>
-    <app-select-menu [actions]="getRowActions()" #rowActionMenu>
+    <app-select-menu [actions]="rowActions" [data]="skill" #rowActionMenu>
     </app-select-menu>
 
 

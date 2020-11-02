@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
+import {PublishStatus} from "../../PublishStatus";
 
 @Component({
   selector: "app-detail-card-status-bar",
@@ -7,8 +8,9 @@ import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 })
 export class DetailCardStatusBarComponent implements OnInit {
 
-  @Input() published = ""
-  @Input() archived = ""
+  @Input() status: PublishStatus = PublishStatus.Unpublished
+  @Input() publishDate = ""
+  @Input() archiveDate = ""
 
   iconUp = SvgHelper.path(SvgIcon.ICON_UP)
   archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)
@@ -19,10 +21,14 @@ export class DetailCardStatusBarComponent implements OnInit {
   }
 
   isPublished(): boolean {
-    return !!this.published
+    return this.status === PublishStatus.Published
   }
 
   isArchived(): boolean {
-    return !!this.archived
+    return this.status === PublishStatus.Archived
+  }
+
+  isDraft(): boolean {
+    return this.status === PublishStatus.Unpublished
   }
 }

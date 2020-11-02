@@ -29,6 +29,7 @@
           [currentlySortedColumn]="columnSort"
           (columnSorted)="handleHeaderColumnSort($event)"
           [rowActions]="rowActions()"
+          (selectAllSelected)="handleSelectAll($event)"
         ></app-table>
 
         <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">

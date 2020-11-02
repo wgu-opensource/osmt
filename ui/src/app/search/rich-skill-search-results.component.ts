@@ -5,6 +5,7 @@ import {ApiSearch} from "../richskill/service/rich-skill-search.service";
 import {ActivatedRoute} from "@angular/router";
 import {ToastService} from "../toast/toast.service";
 import {SkillsListComponent} from "../table/skills-list.component";
+import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
 
 
 @Component({
@@ -18,6 +19,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
   title = "Search Results"
 
   showSearchEmptyMessage = true
+  private multiplePagesSelected: boolean = false
 
   constructor(protected richSkillService: RichSkillService,
               protected toastService: ToastService,
@@ -50,5 +52,12 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
     }
   }
 
+  getApiSearch(skill?: ApiSkillSummary): ApiSearch | undefined {
+    return (this.multiplePagesSelected) ? this.apiSearch : SkillsListComponent.prototype.getApiSearch(skill)
+  }
+
+  handleSelectAll(selectAllChecked: boolean): void {
+    this.multiplePagesSelected = this.totalPageCount > 1
+  }
 
 }

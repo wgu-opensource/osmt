@@ -2,7 +2,7 @@ import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search
 import {ApiSkillSummary, IApiSkillSummary} from "../richskill/ApiSkillSummary";
 import {PublishStatus} from "../PublishStatus";
 import {TableActionDefinition} from "./has-action-definitions";
-import {Component} from "@angular/core";
+import {Component, EventEmitter, Output} from "@angular/core";
 import {Observable} from "rxjs";
 import {ApiBatchResult} from "../richskill/ApiBatchResult";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
@@ -15,6 +15,7 @@ import {ApiSkill, ApiSkillSortOrder} from "../richskill/ApiSkill";
   templateUrl: "./skills-list.component.html"
 })
 export class SkillsListComponent {
+
   from = 0
   size = 50
 
@@ -38,6 +39,7 @@ export class SkillsListComponent {
   matchingQuery?: string
   title?: string
   loadNextPage(): void {}
+  handleSelectAll(selectAllChecked: boolean): void {}
 
 
   // base component methods
@@ -221,15 +223,26 @@ export class SkillsListComponent {
     return false
   }
 
+  getApiSearch(skill?: ApiSkillSummary): ApiSearch | undefined {
+    if (skill !== undefined) {
+      return ApiSearch.factory({uuids: [skill.uuid]})
+    }
+
+    const selectedUuids = this.selectedSkills?.map(s => s.uuid)
+    if (selectedUuids !== undefined) {
+      return ApiSearch.factory({uuids: selectedUuids})
+    }
+
+    return undefined
+  }
+
   submitStatusChange(newStatus: PublishStatus, skill?: ApiSkillSummary): boolean  {
-    const selectedUuids = skill !== undefined ? [skill.uuid] : this.selectedSkills?.map(s => s.uuid)
-    if (selectedUuids === undefined) {
+    const apiSearch = this.getApiSearch(skill)
+    if (apiSearch === undefined) {
       return false
     }
 
     this.toastService.showBlockingLoader()
-
-    const apiSearch = ApiSearch.factory({uuids: selectedUuids})
     this.skillsSaved = this.richSkillService.publishSkillsWithResult(apiSearch, newStatus, this.selectedFilters)
     this.skillsSaved.subscribe((result) => {
       if (result !== undefined) {

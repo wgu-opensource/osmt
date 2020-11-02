@@ -42,6 +42,7 @@ export class SkillsListComponent {
 
   protected setResults(results: PaginatedSkills): void {
     this.results = results
+    this.selectedSkills = undefined
   }
 
   get skillCountLabel(): string {

@@ -9,7 +9,8 @@ export enum SvgIcon {
   EDIT = "icon-edit",
   ICON_UP = "icon-up",
   MORE = "icon-more",
-  PUBLISH = "icon-publish"
+  PUBLISH = "icon-publish",
+  SEARCH = "icon-search"
 }
 
 export class SvgHelper {

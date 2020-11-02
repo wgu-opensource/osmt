@@ -18,7 +18,7 @@
       *ngFor="let skill of preparedSkills; let i=index"
       [skill]="skill.skill"
       [isSelected]="skill.selected"
-      [actions]="actions"
+      [rowActions]="rowActions"
       (rowSelected)="onRowToggle($event)"
       id="table-row-{{i}}"
     ></app-table-row>

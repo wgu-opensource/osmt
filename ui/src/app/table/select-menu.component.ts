@@ -12,6 +12,8 @@ export class SelectMenuComponent extends HasActionDefinitions {
   @Input() title?: string
   isOpen: boolean = false
 
+  @Input() data?: any
+
   @Input()
   closeOnOutsideClick = true
 

@@ -1,5 +1,5 @@
 import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {IApiSkillSummary} from "../richskill/ApiSkillSummary";
+import {ApiSkillSummary, IApiSkillSummary} from "../richskill/ApiSkillSummary";
 import {PublishStatus} from "../PublishStatus";
 import {TableActionDefinition} from "./has-action-definitions";
 import {Component} from "@angular/core";
@@ -7,7 +7,7 @@ import {Observable} from "rxjs";
 import {ApiBatchResult} from "../richskill/ApiBatchResult";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {ToastService} from "../toast/toast.service";
-import {ApiSkillSortOrder} from "../richskill/ApiSkill";
+import {ApiSkill, ApiSkillSortOrder} from "../richskill/ApiSkill";
 
 
 @Component({
@@ -85,17 +85,30 @@ export class SkillsListComponent {
   actionsVisible(): boolean {
     return (this.selectedSkills?.length ?? 0) > 0
   }
-  publishVisible(): boolean {
-    const unpublishedSkill = this.selectedSkills?.find(s => s.status === PublishStatus.Unpublished)
-    return unpublishedSkill !== undefined
+
+  publishVisible(skill?: ApiSkillSummary): boolean {
+    if (skill !== undefined) {
+      return skill.status === PublishStatus.Unpublished
+    } else {
+      const unpublishedSkill = this.selectedSkills?.find(s => s.status === PublishStatus.Unpublished)
+      return unpublishedSkill !== undefined
+    }
   }
-  archiveVisible(): boolean {
-    const unarchivedSkills = this.selectedSkills?.find(s => s.status === PublishStatus.Published)
-    return unarchivedSkills !== undefined
+  archiveVisible(skill?: ApiSkillSummary): boolean {
+    if (skill !== undefined) {
+      return skill.status === PublishStatus.Published
+    } else {
+      const unarchivedSkills = this.selectedSkills?.find(s => s.status === PublishStatus.Published)
+      return unarchivedSkills !== undefined
+    }
   }
-  unarchiveVisible(): boolean {
-    const archivedSkill = this.selectedSkills?.find(s => s.status === PublishStatus.Archived)
-    return archivedSkill !== undefined
+  unarchiveVisible(skill?: ApiSkillSummary): boolean {
+    if (skill !== undefined) {
+      return skill.status === PublishStatus.Archived
+    } else {
+      const archivedSkill = this.selectedSkills?.find(s => s.status === PublishStatus.Archived)
+      return archivedSkill !== undefined
+    }
   }
 
 
@@ -117,71 +130,96 @@ export class SkillsListComponent {
     this.loadNextPage()
   }
 
+
+  rowActions(): TableActionDefinition[] {
+    return [
+      new TableActionDefinition({
+        label: "Archive skill",
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickArchive(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.archiveVisible(skill)
+      }),
+      new TableActionDefinition({
+        label: "Unarchive skill",
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickUnarchive(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.unarchiveVisible(skill)
+      }),
+      new TableActionDefinition({
+        label: "Publish skill",
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickPublish(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.publishVisible(skill)
+      }),
+      new TableActionDefinition({
+        label: "Add to Collection",
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
+      }),
+    ]
+  }
+
   tableActions(): TableActionDefinition[] {
     return [
       new TableActionDefinition({
         label: "Back to Top",
         icon: "up",
         offset: true,
-        callback: () => this.handleClickBackToTop(),
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickBackToTop(action, skill),
       }),
 
       new TableActionDefinition({
         label: "Publish",
         icon: "publish",
-        callback: () => this.handleClickPublish(),
-        visible: () => this.publishVisible()
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickPublish(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.publishVisible(skill)
       }),
 
       new TableActionDefinition({
         label: "Archive",
         icon: "archive",
-        callback: () => this.handleClickArchive(),
-        visible: () => this.archiveVisible()
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickArchive(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.archiveVisible(skill)
       }),
 
       new TableActionDefinition({
         label: "Unarchive",
         icon: "unarchive",
-        callback: () => this.handleClickUnarchive(),
-        visible: () => this.unarchiveVisible()
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickUnarchive(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.unarchiveVisible(skill)
       }),
 
       new TableActionDefinition({
         label: "Add to Collection",
         icon: "collection",
         primary: true,
-        callback: () => this.handleClickAddCollection()
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
       }),
     ]
 
   }
 
-  private handleClickBackToTop(): boolean {
+  private handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
     return false
   }
 
-  private handleClickAddCollection(): boolean {
+  private handleClickAddCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
     return false
   }
 
-  private handleClickUnarchive(): boolean {
-    this.submitStatusChange(PublishStatus.Published)
+  private handleClickUnarchive(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    this.submitStatusChange(PublishStatus.Published, skill)
     return false
   }
 
-  private handleClickArchive(): boolean {
-    this.submitStatusChange(PublishStatus.Archived)
+  private handleClickArchive(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    this.submitStatusChange(PublishStatus.Archived, skill)
     return false
   }
 
-  handleClickPublish(): boolean  {
-    this.submitStatusChange(PublishStatus.Published)
+  private handleClickPublish(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    this.submitStatusChange(PublishStatus.Published, skill)
     return false
   }
 
-  submitStatusChange(newStatus: PublishStatus): boolean  {
-    const selectedUuids = this.selectedSkills?.map(s => s.uuid)
+  submitStatusChange(newStatus: PublishStatus, skill?: ApiSkillSummary): boolean  {
+    const selectedUuids = skill !== undefined ? [skill.uuid] : this.selectedSkills?.map(s => s.uuid)
     if (selectedUuids === undefined) {
       return false
     }

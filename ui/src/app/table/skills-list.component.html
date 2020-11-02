@@ -28,6 +28,7 @@
           (rowSelected)="handleNewSelection($event)"
           [currentlySortedColumn]="columnSort"
           (columnSorted)="handleHeaderColumnSort($event)"
+          [rowActions]="rowActions()"
         ></app-table>
 
         <app-empty-message *ngIf="emptyResults">

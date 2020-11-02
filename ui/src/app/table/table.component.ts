@@ -3,6 +3,7 @@ import {ApiSkillSortOrder} from "../richskill/ApiSkill"
 import {Observable} from "rxjs"
 import {SkillWithMetadata} from "./table-row/table-row.component"
 import {IApiSkillSummary} from "../richskill/ApiSkillSummary"
+import {TableActionDefinition} from "./has-action-definitions";
 
 /**
  * Implement row components to hold datasets and figure out how to dynamically pass and use them
@@ -15,6 +16,7 @@ export class TableComponent implements OnInit {
 
   @Input() skills: IApiSkillSummary[] = []
   @Input() currentlySortedColumn: ApiSkillSortOrder | undefined = undefined
+  @Input() rowActions: TableActionDefinition[] = []
 
   // Any time a row is selected, broadcast out the list of currently selected skills from preparedSkills
   @Output() rowSelected: EventEmitter<IApiSkillSummary[]> = new EventEmitter<IApiSkillSummary[]>()

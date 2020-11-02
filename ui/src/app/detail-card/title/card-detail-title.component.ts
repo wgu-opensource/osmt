@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core"
+import {PublishStatus} from "../../PublishStatus";
 
 @Component({
   selector: "app-card-detail-title",
@@ -9,8 +10,9 @@ export class CardDetailTitleComponent implements OnInit {
   @Input() cardType = ""
   @Input() title = ""
   @Input() author = ""
-  @Input() published = ""
-  @Input() archived = ""
+  @Input() status: PublishStatus = PublishStatus.Unpublished
+  @Input() publishDate = ""
+  @Input() archiveDate = ""
 
   constructor() { }
 

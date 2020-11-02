@@ -5,6 +5,7 @@ import {ApiSkill, INamedReference} from "../ApiSkill"
 import {IDetailCardSectionData} from "../../detail-card/section/section.component"
 import {formatDate} from "@angular/common"
 import {Observable} from "rxjs"
+import {PublishStatus} from "../../PublishStatus";
 
 @Component({template: ""})
 export abstract class AbstractRichSkillDetailComponent implements OnInit {
@@ -40,6 +41,9 @@ export abstract class AbstractRichSkillDetailComponent implements OnInit {
 
   getSkillName(): string {
     return this.richSkill?.skillName ?? ""
+  }
+  getPublishStatus(): PublishStatus {
+    return this.richSkill?.status ?? PublishStatus.Unpublished
   }
 
   getPublishedDate(): string {

@@ -9,6 +9,8 @@ import {PublishStatus} from "../../PublishStatus";
 export class DetailCardStatusBarComponent implements OnInit {
 
   @Input() status: PublishStatus = PublishStatus.Unpublished
+  @Input() publishDate = ""
+  @Input() archiveDate = ""
 
   iconUp = SvgHelper.path(SvgIcon.ICON_UP)
   archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)

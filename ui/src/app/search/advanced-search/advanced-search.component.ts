@@ -1,8 +1,11 @@
 import {Component, OnInit} from "@angular/core"
-import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
-import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
-import {AppConfig} from "../../app.config";
-import {urlValidator} from "../../validators/url.validator";
+import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
+import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms"
+import {AppConfig} from "../../app.config"
+import {urlValidator} from "../../validators/url.validator"
+import {ApiSkillSummary, IApiSkillSummary} from "../../richskill/ApiSkillSummary";
+import {SearchService} from "../search.service";
+import {IAdvancedSearch} from "../../richskill/service/rich-skill-search.service";
 
 @Component({
   selector: "app-advanced-search",
@@ -13,24 +16,26 @@ export class AdvancedSearchComponent implements OnInit {
   skillForm = new FormGroup(this.getFormDefinitions())
 
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)
-  constructor() { }
+  constructor(
+    private searchService: SearchService
+  ) { }
 
   ngOnInit(): void {
   }
 
   getFormDefinitions(): {[key: string]: AbstractControl} {
     const fields = {
-      skillName: new FormControl("", Validators.required),
-      skillStatement: new FormControl("", Validators.required),
+      skillName: new FormControl(""),
+      author: new FormControl(""),
+      skillStatement: new FormControl(""),
       category: new FormControl(""),
       keywords: new FormControl(""),
       standards: new FormControl(""),
-      collections: new FormControl(""),
       certifications: new FormControl(""),
       occupations: new FormControl(""),
       employers: new FormControl(""),
-      alignmentText: new FormControl(""),
-      alignmentUrl: new FormControl("", urlValidator),
+      alignments: new FormControl("", urlValidator),
+      collectionName: new FormControl("")
     }
     if (AppConfig.settings.editableAuthor) {
       // @ts-ignore
@@ -41,9 +46,39 @@ export class AdvancedSearchComponent implements OnInit {
 
   handleSearchSkills(): void {
     console.log("Searching skills...")
+    this.searchService.advancedSkillSearch(this.collectFieldData())
   }
 
   handleSearchCollections(): void {
     console.log("Searching collections...")
+  }
+
+  private collectFieldData(): IAdvancedSearch {
+    const {
+      skillName,
+      author,
+      skillStatement,
+      category,
+      keywords,
+      standards,
+      certifications,
+      occupations,
+      employers,
+      alignments,
+      collections: collectionName
+    } = this.skillForm.value
+
+    return {
+      skillName: skillName || undefined,
+      skillStatement: skillStatement || undefined,
+      category: category || undefined,
+      keywords: keywords || undefined,
+      standards: standards || undefined,
+      certifications: certifications || undefined,
+      occupations: occupations || undefined,
+      employers: employers || undefined,
+      alignments: alignments || undefined,
+      collectionName: collectionName || undefined
+    }
   }
 }

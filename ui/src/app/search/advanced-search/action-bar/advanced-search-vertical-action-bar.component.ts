@@ -1,4 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core"
+import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-search-action-bar.component"
 
 @Component({
   selector: "app-advanced-search-vertical-action-bar",
@@ -6,27 +7,22 @@ import {Component, EventEmitter, OnInit, Output} from "@angular/core"
     <div class="l-actionBarVertical">
 
       <div class="l-actionBarVertical-x-action">
-        <button class="m-button" (click)="searchSkillsClicked.emit()">
+        <button class="m-button" (click)="skillButtonClicked()">
           <span class="m-button-x-text">Search Skills</span>
         </button>
       </div>
 
       <div class="l-actionBarVertical-x-action">
-        <button class="m-button" (click)="searchCollectionsClicked.emit()">
+        <button class="m-button" (click)="collectionButtonClicked()">
           <span class="m-button-x-text">Search Collections</span>
         </button>
       </div>
     </div>
   `
 })
-export class AdvancedSearchVerticalActionBarComponent implements OnInit {
+export class AdvancedSearchVerticalActionBarComponent extends AbstractAdvancedSearchActionBarComponent {
 
-  @Output() searchSkillsClicked = new EventEmitter<void>()
-  @Output() searchCollectionsClicked = new EventEmitter<void>()
-
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor() {
+    super()
   }
-
 }

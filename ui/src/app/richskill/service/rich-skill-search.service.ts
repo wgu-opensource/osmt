@@ -9,7 +9,7 @@ import {IApiSkillSummary} from "../ApiSkillSummary"
 
 export interface ISearch {
   query: string | undefined
-  advanced: ApiAdvancedSearch | undefined
+  advanced: IAdvancedSearch | undefined
   uuids: [] | undefined
 }
 
@@ -26,9 +26,9 @@ export interface IAdvancedSearch {
   alignments: [] | undefined
 }
 
-export class ApiSearch {
+export class ApiSearch implements ISearch {
   query: string | undefined
-  advanced: ApiAdvancedSearch | undefined
+  advanced: IAdvancedSearch | undefined
   uuids: [] | undefined
 
   static factory(options: object): ApiSearch {
@@ -36,7 +36,7 @@ export class ApiSearch {
   }
 }
 
-export class ApiAdvancedSearch {
+export class ApiAdvancedSearch implements IAdvancedSearch {
   skillName: string | undefined
   collectionName: string | undefined
   category: string | undefined

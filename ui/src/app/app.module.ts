@@ -49,6 +49,7 @@ import {TableActionBarComponent} from "./table/table-action-bar.component"
 import { AdvancedSearchComponent } from "./search/advanced-search/advanced-search.component"
 import { AdvancedSearchHorizontalActionBarComponent } from "./search/advanced-search/action-bar/advanced-search-horizontal-action-bar.component"
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
+import { AbstractAdvancedSearchActionBarComponent } from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -108,7 +109,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     PaginationComponent,
     AdvancedSearchComponent,
     AdvancedSearchVerticalActionBarComponent,
-    AdvancedSearchHorizontalActionBarComponent
+    AdvancedSearchHorizontalActionBarComponent,
+    AbstractAdvancedSearchActionBarComponent
   ],
   imports: [
     BrowserModule,

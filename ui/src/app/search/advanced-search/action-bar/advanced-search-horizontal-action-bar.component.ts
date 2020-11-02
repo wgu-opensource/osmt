@@ -1,5 +1,6 @@
 import {Component, OnInit, Output, EventEmitter} from "@angular/core"
-import {SvgHelper, SvgIcon} from "../../../core/SvgHelper";
+import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
+import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-search-action-bar.component"
 
 @Component({
   selector: "app-advanced-search-horizontal-action-bar",
@@ -23,16 +24,11 @@ import {SvgHelper, SvgIcon} from "../../../core/SvgHelper";
     </nav>
   `,
 })
-export class AdvancedSearchHorizontalActionBarComponent implements OnInit {
-
-  @Output() searchSkillsClicked = new EventEmitter<void>()
-  @Output() searchCollectionsClicked = new EventEmitter<void>()
+export class AdvancedSearchHorizontalActionBarComponent extends AbstractAdvancedSearchActionBarComponent {
 
   iconDismiss = SvgHelper.path(SvgIcon.DISMISS)
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor() {
+    super()
   }
-
 }

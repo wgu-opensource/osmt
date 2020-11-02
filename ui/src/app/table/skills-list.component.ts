@@ -27,6 +27,8 @@ export class SkillsListComponent {
 
   columnSort: ApiSkillSortOrder = ApiSkillSortOrder.CategoryAsc
 
+  showSearchEmptyMessage = false
+
   constructor(protected richSkillService: RichSkillService,
               protected toastService: ToastService
   ) {

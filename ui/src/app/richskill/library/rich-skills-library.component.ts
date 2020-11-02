@@ -9,7 +9,7 @@ import {ToastService} from "../../toast/toast.service";
 })
 export class RichSkillsLibraryComponent extends SkillsListComponent implements OnInit {
 
-  title = "Skills Library"
+  title = "RSD Library"
 
   constructor(
     protected richSkillService: RichSkillService,

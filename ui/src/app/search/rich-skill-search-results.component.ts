@@ -17,6 +17,8 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 
   title = "Search Results"
 
+  showSearchEmptyMessage = true
+
   constructor(protected richSkillService: RichSkillService,
               protected toastService: ToastService,
               protected searchService: SearchService,

@@ -1,4 +1,4 @@
-import {Component, OnInit, Output, EventEmitter} from "@angular/core"
+import {Component} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
 import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-search-action-bar.component"
 
@@ -10,7 +10,7 @@ import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-sear
         <svg class="m-actionBarItemHorizontal-x-icon t-icon">
           <use [attr.xlink:href]="iconDismiss"></use>
         </svg>
-        <span class="m-actionBarItemHorizontal-x-label">Search Skills</span>
+        <span class="m-actionBarItemHorizontal-x-label">{{skillButtonText}}</span>
         <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
       </button>
 
@@ -18,7 +18,7 @@ import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-sear
         <svg class="m-actionBarItemHorizontal-x-icon t-icon">
           <use [attr.xlink:href]="iconDismiss"></use>
         </svg>
-        <span class="m-actionBarItemHorizontal-x-label">Search Collections</span>
+        <span class="m-actionBarItemHorizontal-x-label">{{collectionButtonText}}</span>
         <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
       </button>
     </nav>

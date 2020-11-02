@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from "@angular/core"
+import {Component} from "@angular/core"
 import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-search-action-bar.component"
 
 @Component({
@@ -8,13 +8,13 @@ import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-sear
 
       <div class="l-actionBarVertical-x-action">
         <button class="m-button" (click)="skillButtonClicked()">
-          <span class="m-button-x-text">Search Skills</span>
+          <span class="m-button-x-text">{{skillButtonText}}</span>
         </button>
       </div>
 
       <div class="l-actionBarVertical-x-action">
         <button class="m-button" (click)="collectionButtonClicked()">
-          <span class="m-button-x-text">Search Collections</span>
+          <span class="m-button-x-text">{{collectionButtonText}}</span>
         </button>
       </div>
     </div>

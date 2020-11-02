@@ -16,12 +16,19 @@ export class ToastService {
 
   constructor() { }
 
-  showToast(title: string, message: string, isAttention: boolean = false): void {
+  showToast(title: string, message: string, isAttention: boolean = false, autoDismissMs: number | undefined = 5000): void {
     this.subject.next({
       title,
       message,
       isAttention
     })
+    if (autoDismissMs !== undefined) {
+      setTimeout(() => this.dismiss(), autoDismissMs)
+    }
+  }
+
+  dismiss(): void {
+    this.subject.next(undefined)
   }
 
   showBlockingLoader(): void {

@@ -2,12 +2,12 @@ import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search
 import {ApiSkillSummary, IApiSkillSummary} from "../richskill/ApiSkillSummary";
 import {PublishStatus} from "../PublishStatus";
 import {TableActionDefinition} from "./has-action-definitions";
-import {Component, EventEmitter, Output} from "@angular/core";
+import {Component} from "@angular/core";
 import {Observable} from "rxjs";
 import {ApiBatchResult} from "../richskill/ApiBatchResult";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {ToastService} from "../toast/toast.service";
-import {ApiSkill, ApiSkillSortOrder} from "../richskill/ApiSkill";
+import {ApiSkillSortOrder} from "../richskill/ApiSkill";
 
 
 @Component({
@@ -209,18 +209,25 @@ export class SkillsListComponent {
   }
 
   private handleClickUnarchive(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    this.submitStatusChange(PublishStatus.Published, skill)
+    this.submitStatusChange(PublishStatus.Published, "Un-archived", skill)
     return false
   }
 
   private handleClickArchive(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    this.submitStatusChange(PublishStatus.Archived, skill)
+    this.submitStatusChange(PublishStatus.Archived, "Archived", skill)
     return false
   }
 
   private handleClickPublish(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    this.submitStatusChange(PublishStatus.Published, skill)
+    const plural = (this.selectedUuids(skill)?.length ?? 0) > 1 ? "these RSDs" : "this RSD"
+    if (confirm(`Are you sure you want to publish ${plural}?`)) {
+      this.submitStatusChange(PublishStatus.Published, "Published", skill)
+    }
     return false
+  }
+
+  selectedUuids(skill?: ApiSkillSummary): string[] | undefined {
+    return ((skill !== undefined) ? [skill.uuid] : this.selectedSkills?.map(s => s.uuid))
   }
 
   getApiSearch(skill?: ApiSkillSummary): ApiSearch | undefined {
@@ -228,15 +235,15 @@ export class SkillsListComponent {
       return ApiSearch.factory({uuids: [skill.uuid]})
     }
 
-    const selectedUuids = this.selectedSkills?.map(s => s.uuid)
-    if (selectedUuids !== undefined) {
-      return ApiSearch.factory({uuids: selectedUuids})
+    const selected = this.selectedUuids(skill)
+    if (selected !== undefined) {
+      return ApiSearch.factory({uuids: selected})
     }
 
     return undefined
   }
 
-  submitStatusChange(newStatus: PublishStatus, skill?: ApiSkillSummary): boolean  {
+  submitStatusChange(newStatus: PublishStatus, verb: string, skill?: ApiSkillSummary): boolean  {
     const apiSearch = this.getApiSearch(skill)
     if (apiSearch === undefined) {
       return false
@@ -246,6 +253,8 @@ export class SkillsListComponent {
     this.skillsSaved = this.richSkillService.publishSkillsWithResult(apiSearch, newStatus, this.selectedFilters)
     this.skillsSaved.subscribe((result) => {
       if (result !== undefined) {
+        const partial = (result.modifiedCount !== result.totalCount)  ? ` of ${result.totalCount}` : ""
+        this.toastService.showToast("Success!", `${verb} ${result.modifiedCount}${partial} skill${(result.modifiedCount ?? 0) > 1 ? "s" : ""}.`)
         this.toastService.hideBlockingLoader()
         this.loadNextPage()
       }

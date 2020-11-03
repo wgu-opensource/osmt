@@ -51,6 +51,12 @@ if [[ -z "${OAUTH_AUDIENCE}" ]]; then
   echo "Missing environment 'OAUTH_AUDIENCE'"
 fi
 
+if [[ -z "${MIGRATIONS_ENABLED}" ]]; then
+  MISSING_ARGS=$((MISSING_ARGS + 1))
+  echo "Missing environment 'MIGRATIONS_ENABLED'"
+  echo "Valid arguments are: MIGRATIONS_ENABLED=true | MIGRATIONS_ENABLED=false"
+fi
+
 if [[ ${MISSING_ARGS} != 0 ]]; then
   echo "Missing ${MISSING_ARGS} shell variable(s), exiting.."
   exit 128
@@ -66,6 +72,7 @@ else
               -Dokta.oauth2.clientId=${OAUTH_CLIENTID}
               -Dokta.oauth2.clientSecret=${OAUTH_CLIENTSECRET}
               -Dokta.oauth2.audience=${OAUTH_AUDIENCE}
+              -Dspring.flyway.enabled=${MIGRATIONS_ENABLED}
               -jar ${BASE_DIR}/bin/osmt.jar"
 
   echo "Starting OSMT..."

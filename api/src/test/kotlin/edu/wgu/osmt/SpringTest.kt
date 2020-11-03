@@ -13,9 +13,11 @@ import org.junit.jupiter.api.TestInstance
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
 import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional
 @ConfigurationPropertiesScan("edu.wgu.osmt.config")
 @ContextConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestPropertySource(locations=["classpath:config/application-test.properties"])
 abstract class SpringTest: BaseDockerizedTest {
     val logger: Logger = LoggerFactory.getLogger(SpringTest::class.java)
 

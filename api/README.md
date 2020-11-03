@@ -22,6 +22,17 @@ This module represents the Spring Boot backend application.
 ## Spring Boot configuration / Profiles
 This project makes use of configuring Spring boot via property files. These are located at `./api/src/main/resources/config/`. A `dev` profile exists for 
   local development, and can be applied by passing the `-Dspring.profiles.active=dev` argument on launch. Active profiles also control what Spring Boot `@component`(s) are run.
+  
+### Override specific properties while using Maven
+To override specific properties with JVM arguments when developing with Maven, pass the JVM arguments as the value to `-Dspring-boot.run.jvmArguments=`
+
+Example:  
+ ```
+ mvn -Dspring-boot.run.profiles=dev,apiserver,oauth \
+ -Dspring-boot.run.jvmArguments="-Dspring.flyway.enabled=false" \
+ spring-boot:run
+```
+
 
 | Configuration Profile     | Properties file           |
 | -----------               | -----------               |
@@ -48,7 +59,10 @@ To use okta as your OAuth2 provider you will need to provide the following prope
   
 ## Database migrations
 This project uses [FlywayDb](https://flywaydb.org/). SQL Migrations can be placed in `./api/src/main/resources/db/migration/`.
-Scripts in this folder will be automatically processed when the app is ran with the appropriate `application.properties` settings in `spring.flyway.*` 
+Scripts in this folder will be automatically processed when the app is ran with the appropriate `application.properties` settings in `spring.flyway.*`. 
+
+By default only `test` and `dev` environments will automatically run migrations. To enable migrations for other environments, i.e. a single production server, include the JVM argument `-Dspring.flyway.enabled=true`
+when running the server. 
 
 ## Code style
 To automatically apply the official Kotlin code style, Install the IntelliJ plugin `Save Actions`. Configure `Save Actions` in preferences to `Reformat file` on save.    

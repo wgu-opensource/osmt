@@ -2,6 +2,8 @@ import {AfterViewInit, Component, ElementRef, Input, NgZone, OnInit, Renderer2, 
 import {HasActionDefinitions, TableActionDefinition} from "./has-action-definitions";
 import {SvgHelper, SvgIcon} from "../core/SvgHelper";
 import {createPopper, Instance} from "@popperjs/core"
+import {ClickService} from "../core/click.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: "app-dots-menu",
@@ -23,10 +25,12 @@ export class DotsMenuComponent extends HasActionDefinitions implements AfterView
   isOpen: boolean = false
 
   moreIcon = SvgHelper.path(SvgIcon.MORE)
+  private windowClickSubscription?: Subscription;
 
   constructor(private componentElemRef: ElementRef,
               private renderer: Renderer2,
-              private ngZone: NgZone) {
+              private ngZone: NgZone,
+              private clickService: ClickService) {
     super()
   }
 
@@ -73,11 +77,20 @@ export class DotsMenuComponent extends HasActionDefinitions implements AfterView
 
   close(): void {
     this.isOpen = false
+    this.windowClickSubscription?.unsubscribe()
   }
   open(): void {
     this.isOpen = true
+
+    this.windowClickSubscription = this.clickService.subscribeNextClick(this.triggerButton, () => {
+      this.close()
+    })
   }
   toggle(): void {
-    this.isOpen = !this.isOpen
+    if (this.isOpen) {
+      this.close()
+    } else {
+      this.open()
+    }
   }
 }

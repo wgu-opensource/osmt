@@ -1,8 +1,10 @@
 export enum SvgIcon {
   ADD = "icon-add",
   ARCHIVE = "icon-archive",
+  CANCEL = "icon-cancel",
   CHECK = "icon-check",
   CHEVRON = "icon-chevron",
+  COLLECTION = "icon-collection",
   DISMISS = "icon-dismiss",
   DOWNLOAD = "icon-download",
   DUPLICATE = "icon-duplicate",

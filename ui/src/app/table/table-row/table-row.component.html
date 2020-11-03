@@ -29,7 +29,9 @@
     <p class="t-margin-small t-margin-bottom t-color-text3">{{skill.skillStatement}}</p>
 
     <div class="t-margin-small t-margin-bottom">
-<!--      {{render '@m-status'}}-->
+      <app-status-pill
+        [status]="skill.status"
+      ></app-status-pill>
     </div>
 
     <div class="t-margin-small t-margin-bottom" *ngIf="getFormattedKeywords()">

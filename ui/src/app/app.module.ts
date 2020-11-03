@@ -52,6 +52,7 @@ import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.
 import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-horizontal-action-bar.component"
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
 import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
+import {StatusPillComponent} from "./table/status-pill.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -115,7 +116,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AdvancedSearchComponent,
     AdvancedSearchVerticalActionBarComponent,
     AdvancedSearchHorizontalActionBarComponent,
-    AbstractAdvancedSearchActionBarComponent
+    AbstractAdvancedSearchActionBarComponent,
+    StatusPillComponent
   ],
   imports: [
     BrowserModule,

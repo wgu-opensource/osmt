@@ -46,13 +46,13 @@ import {PaginationComponent} from "./table/pagination.component";
 import {ActionBarItemComponent} from "./table/action-bar-item.component";
 import {TableActionBarComponent} from "./table/table-action-bar.component";
 import {EmptyMessageComponent} from "./table/empty-message.component";
-import {SelectMenuComponent, SelectMenuTriggerDirective} from "./table/select-menu.component";
 import {SkillsListComponent} from "./richskill/list/skills-list.component";
 import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component"
 import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-horizontal-action-bar.component"
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
 import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
 import {StatusPillComponent} from "./core/status-pill.component";
+import {DotsMenuComponent} from "./table/dots-menu.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -110,14 +110,13 @@ export function initializeApp(appConfig: AppConfig): () => void {
     FilterChoiceComponent,
     PaginationComponent,
     EmptyMessageComponent,
-    SelectMenuComponent,
-    SelectMenuTriggerDirective,
     SkillsListComponent,
     AdvancedSearchComponent,
     AdvancedSearchVerticalActionBarComponent,
     AdvancedSearchHorizontalActionBarComponent,
     AbstractAdvancedSearchActionBarComponent,
-    StatusPillComponent
+    StatusPillComponent,
+    DotsMenuComponent
   ],
   imports: [
     BrowserModule,

@@ -62,23 +62,7 @@
       </div>
     </div>
 
-    <!-- Items must be grouped-->
-    <div>
-      <button [appSelectMenuTrigger]="rowActionMenu" class="m-iconInteractive" type="button" aria-haspopup="true" aria-expanded="false" aria-labelledby="tableRow-header">
-        <span class="t-visuallyHidden">More</span>
-
-        <span class="m-iconInteractive-x-icon">
-            <svg class="t-icon" aria-hidden="true">
-              <use [attr.xlink:href]="moreIcon"></use>
-            </svg>
-          </span>
-      </button>
-
-      <app-select-menu [actions]="rowActions" [data]="skill" #rowActionMenu>
-      </app-select-menu>
-    </div>
-
-
+    <app-dots-menu [actions]="rowActions" [data]="skill"></app-dots-menu>
   </td>
 
 

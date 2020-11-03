@@ -1,0 +1,22 @@
+<div>
+  <button #triggerButton (click)="handleClickTrigger()"
+    class="m-iconInteractive" type="button" aria-haspopup="true" [attr.aria-expanded]="isOpen" aria-labelledby="tableRow-header">
+    <span class="t-visuallyHidden">More</span>
+
+    <span class="m-iconInteractive-x-icon">
+        <svg class="t-icon" aria-hidden="true">
+          <use [attr.xlink:href]="moreIcon"></use>
+        </svg>
+      </span>
+  </button>
+
+  <div #actionMenu
+       class="m-selectMenu" role="menu" [class.m-selectMenu-is-active]="isOpen" [attr.inert]="!isOpen ? '' : null">
+    <div class="m-selectMenu-x-content">
+      <h6 *ngIf="title !== undefined" class="t-type-small">{{title}}</h6>
+      <button *ngFor="let action of visibleActions(data)" class="m-buttonText" type="button" role="menuitem" (click)="handleClickAction(action)">
+        <span class="m-buttonText-x-text">{{action.label}}</span>
+      </button>
+    </div>
+  </div>
+</div>

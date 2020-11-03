@@ -6,10 +6,10 @@ import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate"
 import {AuthService} from "../../auth/auth-service"
-import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service";
-import {PublishStatus} from "../../PublishStatus";
-import {ApiBatchResult} from "../ApiBatchResult";
-import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult";
+import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service"
+import {PublishStatus} from "../../PublishStatus"
+import {ApiBatchResult} from "../ApiBatchResult"
+import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
 import {ApiSkillSummary, IApiSkillSummary} from "../ApiSkillSummary"
 
 

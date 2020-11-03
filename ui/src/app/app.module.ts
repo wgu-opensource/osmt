@@ -42,17 +42,21 @@ import {LabelWithFilterComponent} from "./table/table-header/label-with-filter/l
 import {AccordianComponent} from "./table/table-row/accordian/accordian.component"
 import {FilterControlsComponent} from "./table/filter-controls/filter-controls.component"
 import {FilterChoiceComponent} from "./table/filter-controls/filter-choice/filter-choice.component"
-import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
-import {PaginationComponent} from "./table/pagination.component";
-import {ActionBarItemComponent} from "./table/action-bar-item.component";
-import {TableActionBarComponent} from "./table/table-action-bar.component";
-import {EmptyMessageComponent} from "./table/empty-message.component";
-import {SelectMenuComponent, SelectMenuTriggerDirective} from "./table/select-menu.component";
-import {SkillsListComponent} from "./table/skills-list.component";
+import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component"
+import {PaginationComponent} from "./table/pagination.component"
+import {ActionBarItemComponent} from "./table/action-bar-item.component"
+import {TableActionBarComponent} from "./table/table-action-bar.component"
+import {EmptyMessageComponent} from "./table/empty-message.component"
+import {SelectMenuComponent, SelectMenuTriggerDirective} from "./table/select-menu.component"
+import {SkillsListComponent} from "./table/skills-list.component"
 import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component"
 import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-horizontal-action-bar.component"
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
 import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
+import { CreateCollectionComponent } from "./collection/create-collection/create-collection.component"
+import { AbstractCreateCollectionActionbarComponent } from "./collection/create-collection/action-bar/abstract-create-collection-actionbar.component"
+import { CreateCollectionActionBarHorizontalComponent } from "./collection/create-collection/action-bar/create-collection-action-bar-horizontal.component"
+import { CreateCollectionActionBarVerticalComponent } from "./collection/create-collection/action-bar/create-collection-action-bar-vertical.component"
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -117,7 +121,11 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AdvancedSearchComponent,
     AdvancedSearchVerticalActionBarComponent,
     AdvancedSearchHorizontalActionBarComponent,
-    AbstractAdvancedSearchActionBarComponent
+    AbstractAdvancedSearchActionBarComponent,
+    CreateCollectionComponent,
+    AbstractCreateCollectionActionbarComponent,
+    CreateCollectionActionBarHorizontalComponent,
+    CreateCollectionActionBarVerticalComponent
   ],
   imports: [
     BrowserModule,

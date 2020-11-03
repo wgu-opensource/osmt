@@ -8,8 +8,9 @@ import {LogoutComponent} from "./auth/logout.component"
 import {AuthGuard} from "./auth/auth.guard"
 import {LoginComponent} from "./auth/login.component"
 import {RichSkillManageComponent} from "./richskill/detail/rich-skill-manage/rich-skill-manage.component"
-import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
-import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component";
+import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component"
+import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component"
+import {CreateCollectionComponent} from "./collection/create-collection/create-collection.component"
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -32,6 +33,9 @@ const routes: Routes = [
     component: RichSkillsLibraryComponent,
     canActivate: [AuthGuard],
   },
+
+  // collections
+  {path: "collections/create", component: CreateCollectionComponent},
 
   // public views
   {path: "skills/:uuid", component: RichSkillPublicComponent},

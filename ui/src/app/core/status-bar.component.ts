@@ -1,12 +1,12 @@
 import {Component, Input, OnInit} from "@angular/core"
-import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
-import {PublishStatus} from "../../PublishStatus";
+import {SvgHelper, SvgIcon} from "./SvgHelper"
+import {PublishStatus} from "../PublishStatus";
 
 @Component({
-  selector: "app-detail-card-status-bar",
-  templateUrl: "./detail-card-status-bar.component.html"
+  selector: "app-status-bar",
+  templateUrl: "./status-bar.component.html"
 })
-export class DetailCardStatusBarComponent implements OnInit {
+export class StatusBarComponent implements OnInit {
 
   @Input() status: PublishStatus = PublishStatus.Unpublished
   @Input() publishDate = ""

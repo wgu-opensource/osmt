@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {PublishStatus} from "../PublishStatus";
-import {SvgHelper, SvgIcon} from "../core/SvgHelper";
+import {SvgHelper, SvgIcon} from "./SvgHelper";
 
 @Component({
   selector: "app-status-pill",

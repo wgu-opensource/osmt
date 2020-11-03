@@ -32,7 +32,7 @@ import {ManageSkillActionBarVerticalComponent} from "./richskill/detail/rich-ski
 import {ManageSkillActionBarHorizontalComponent} from "./richskill/detail/rich-skill-manage/action-bar/action-bar-horizontal/manage-skill-action-bar-horizontal.component"
 import {ServerErrorComponent} from "./loading/server-error.component"
 import {CommonModule} from "@angular/common"
-import {DetailCardStatusBarComponent} from "./detail-card/status-bar/detail-card-status-bar.component"
+import {StatusBarComponent} from "./core/status-bar.component"
 import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component"
 import {TableComponent} from "./table/table.component"
 import {TableRowComponent} from "./table/table-row/table-row.component"
@@ -52,7 +52,7 @@ import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.
 import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-horizontal-action-bar.component"
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
 import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
-import {StatusPillComponent} from "./table/status-pill.component";
+import {StatusPillComponent} from "./core/status-pill.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -97,7 +97,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
 
     DetailCardComponent,
     DetailCardSectionComponent,
-    DetailCardStatusBarComponent,
+    StatusBarComponent,
     CardDetailTitleComponent,
     AccordianComponent,
     TableComponent,

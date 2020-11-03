@@ -4,42 +4,43 @@
   [class.m-tableRow-is-selected]="isSelected"
   [id]="id">
 
-  <th class="m-tableRow-x-header" scope="row" id="{{id}}-header">
-
+  <th scope="row" id="{{id}}-header">
     <div class="t-hidden-tabletMax">{{skill.category}}</div>
 
     <div class="t-hidden-tabletMin">
+      <!--{{render '@m-inlineheading'}}-->
       <div class="m-inlineHeading">
         <h5 class="m-inlineHeading-x-heading">Category:</h5>
         <p class="m-inlineHeading-x-text">{{skill.category}}</p>
       </div>
     </div>
-
   </th>
 
-  <td class="m-tableRow-x-body">
+  <td>
 
     <h4 class="t-margin-extraSmall t-margin-bottom">
-      <a class="t-focus t-type-bodyLink" href="/skills/{{skill.uuid}}/manage">{{skill.skillName}}</a>
+      <a class="t-focus t-type-bodyLink" routerLink="/skills/{{skill.uuid}}/manage">{{skill.skillName}}</a>
     </h4>
 
     <div class="m-quickLinks">
       <a href="#">Next skill</a>
     </div>
 
-    <p class="t-margin-small t-margin-bottom">{{skill.skillStatement}}</p>
+    <p class="t-margin-small t-margin-bottom t-color-text3">{{skill.skillStatement}}</p>
 
-    <app-detail-card-status-bar [status]="skill.status"></app-detail-card-status-bar>
+    <div class="t-margin-small t-margin-bottom">
+<!--      {{render '@m-status'}}-->
+    </div>
 
     <div class="t-margin-small t-margin-bottom" *ngIf="getFormattedKeywords()">
-      <div class="m-inlineHeading">
+      <div class="m-inlineHeading m-inlineHeading-is-truncated">
         <h5 class="m-inlineHeading-x-heading">Keywords:</h5>
         <p class="m-inlineHeading-x-text">{{getFormattedKeywords()}}</p>
       </div>
     </div>
 
     <div class="t-margin-small t-margin-bottom" *ngIf="getFormattedOccupations()">
-      <div class="m-inlineHeading">
+      <div class="m-inlineHeading m-inlineHeading-is-truncated">
         <h5 class="m-inlineHeading-x-heading">Detailed Occupations:</h5>
         <p class="m-inlineHeading-x-text">{{getFormattedOccupations()}}</p>
       </div>
@@ -60,19 +61,26 @@
           </svg>
         </div>
       </div>
+      <div class="m-quickLinks">
+        <a href="#">Jump to actions</a>
+      </div>
     </div>
 
-    <button [appSelectMenuTrigger]="rowActionMenu" class="m-iconInteractive" type="button" aria-haspopup="true" aria-expanded="false" aria-labelledby="tableRow-header">
-      <span class="t-visuallyHidden">More</span>
+    <!-- Items must be grouped-->
+    <div>
+      <button [appSelectMenuTrigger]="rowActionMenu" class="m-iconInteractive" type="button" aria-haspopup="true" aria-expanded="false" aria-labelledby="tableRow-header">
+        <span class="t-visuallyHidden">More</span>
 
-      <span class="m-iconInteractive-x-icon">
-          <svg class="t-icon" aria-hidden="true">
-            <use [attr.xlink:href]="moreIcon"></use>
-          </svg>
-        </span>
-    </button>
-    <app-select-menu [actions]="rowActions" [data]="skill" #rowActionMenu>
-    </app-select-menu>
+        <span class="m-iconInteractive-x-icon">
+            <svg class="t-icon" aria-hidden="true">
+              <use [attr.xlink:href]="moreIcon"></use>
+            </svg>
+          </span>
+      </button>
+
+      <app-select-menu [actions]="rowActions" [data]="skill" #rowActionMenu>
+      </app-select-menu>
+    </div>
 
 
   </td>

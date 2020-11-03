@@ -101,7 +101,6 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AccordianComponent,
     TableComponent,
     TableRowComponent,
-    TableHeaderComponent,
     TableLabelComponent,
     TableActionBarComponent,
     ActionBarItemComponent,

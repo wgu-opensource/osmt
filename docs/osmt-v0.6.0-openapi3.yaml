@@ -39,6 +39,13 @@ paths:
           name: sort
           schema:
             $ref: '#/components/schemas/SortOrder'
+        - in: query
+          name: collectionId
+          schema:
+            type: string
+            format: uri
+            required: false
+            description: Limit skills to those associated with given collection id
       requestBody:
         required: true
         content:
@@ -511,76 +518,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
-
-  /api/collection/{uuid}/skills/search:
-    parameters:
-      - name: uuid
-        in: path
-        description: Collection UUID
-        required: true
-        schema:
-          type: string
-      post:
-        tags:
-          - Skills
-          - Search
-        summary: Search for skills within a collection
-        description: Return summaries for skills that match the provided query in this collection
-        parameters:
-          - in: query
-            name: size
-            description: number of skills to return per page
-            schema:
-              type: number
-              default: 50
-          - in: query
-            name: from
-            description: zero-indexed offset from beginning of records
-            schema:
-              type: number
-              default: 0
-          - in: query
-            name: status
-            schema:
-              default:
-                - Unpublished
-                - Published
-              type: array
-              items:
-                $ref: '#/components/schemas/PublishStatus'
-          - in: query
-            name: sort
-            schema:
-              $ref: '#/components/schemas/SortOrder'
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Search'
-        responses:
-          '200':
-            description: OK
-            headers:
-              Link:
-                $ref: '#/components/headers/Link'
-              X-Total-Count:
-                $ref: '#/components/headers/XTotalCount'
-              X-RateLimit-Limit:
-                $ref: '#/components/headers/XRateLimit'
-              X-RateLimit-Remaining:
-                $ref: '#/components/headers/XRateRemaining'
-              X-RateLimit-Reset:
-                $ref: '#/components/headers/XRateReset'
-
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/SkillSummary'
 
   /api/collections/{uuid}/skills:
     get:

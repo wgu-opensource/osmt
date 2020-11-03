@@ -512,7 +512,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
 
-  /api/collections/{uuid}/skills:
+  /api/collection/{uuid}/skills/search:
     parameters:
       - name: uuid
         in: path
@@ -520,20 +520,120 @@ paths:
         required: true
         schema:
           type: string
+      post:
+        tags:
+          - Skills
+          - Search
+        summary: Search for skills within a collection
+        description: Return summaries for skills that match the provided query in this collection
+        parameters:
+          - in: query
+            name: size
+            description: number of skills to return per page
+            schema:
+              type: number
+              default: 50
+          - in: query
+            name: from
+            description: zero-indexed offset from beginning of records
+            schema:
+              type: number
+              default: 0
+          - in: query
+            name: status
+            schema:
+              default:
+                - Unpublished
+                - Published
+              type: array
+              items:
+                $ref: '#/components/schemas/PublishStatus'
+          - in: query
+            name: sort
+            schema:
+              $ref: '#/components/schemas/SortOrder'
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Search'
+        responses:
+          '200':
+            description: OK
+            headers:
+              Link:
+                $ref: '#/components/headers/Link'
+              X-Total-Count:
+                $ref: '#/components/headers/XTotalCount'
+              X-RateLimit-Limit:
+                $ref: '#/components/headers/XRateLimit'
+              X-RateLimit-Remaining:
+                $ref: '#/components/headers/XRateRemaining'
+              X-RateLimit-Reset:
+                $ref: '#/components/headers/XRateReset'
+
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/SkillSummary'
+
+  /api/collections/{uuid}/skills:
     get:
       tags:
         - Collections
       summary: Retrieve the skills in a collection
-      description: Retrieve all the information about skills in a collection
+      description: Retrieve paginated summaries of skills that belong to the collection
+      parameters:
+        - in: query
+          name: size
+          description: number of skills to return per page
+          schema:
+            type: number
+            default: 50
+        - in: query
+          name: from
+          description: zero-indexed offset from beginning of records
+          schema:
+            type: number
+            default: 0
+        - in: query
+          name: status
+          schema:
+            default:
+              - Unpublished
+              - Published
+            type: array
+            items:
+              $ref: '#/components/schemas/PublishStatus'
+        - in: query
+          name: sort
+          schema:
+            $ref: '#/components/schemas/SortOrder'
       responses:
         '200':
           description: OK
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
           content:
             application/json:
-              schema: 
+              schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Skill'
+                  $ref: '#/components/schemas/SkillSummary'
     post:
       tags:
         - Collections
@@ -832,7 +932,8 @@ components:
         skills:
           type: array
           items:
-            $ref: '#/components/schemas/SkillSummary'
+            type: string
+            format: uri
 
     CollectionSummary:
       type: object

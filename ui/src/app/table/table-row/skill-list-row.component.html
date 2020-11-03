@@ -1,8 +1,4 @@
-<tr
-  *ngIf="!!skill"
-  class="m-tableRow"
-  [class.m-tableRow-is-selected]="isSelected"
-  [id]="id">
+<ng-template [ngIf]="!!skill">
 
   <th scope="row" id="{{id}}-header">
     <div class="t-hidden-tabletMax">{{skill.category}}</div>
@@ -85,5 +81,5 @@
 
   </td>
 
-</tr>
 
+</ng-template>

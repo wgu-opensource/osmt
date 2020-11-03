@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {ApiSkillSortOrder} from "../richskill/ApiSkill"
 import {Observable} from "rxjs"
-import {SkillWithMetadata} from "./table-row/table-row.component"
+import {SkillWithMetadata} from "./table-row/skill-list-row.component"
 import {IApiSkillSummary} from "../richskill/ApiSkillSummary"
 import {TableActionDefinition} from "./has-action-definitions";
 import {SvgHelper, SvgIcon} from "../core/SvgHelper";

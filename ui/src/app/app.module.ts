@@ -35,7 +35,7 @@ import {CommonModule} from "@angular/common"
 import {StatusBarComponent} from "./core/status-bar.component"
 import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component"
 import {TableComponent} from "./table/table.component"
-import {TableRowComponent} from "./table/table-row/table-row.component"
+import {SkillListRowComponent} from "./table/table-row/skill-list-row.component"
 import {TableLabelComponent} from "./table/table-label/table-label.component"
 import {LabelWithFilterComponent} from "./table/label-with-filter.component"
 import {AccordianComponent} from "./table/table-row/accordian/accordian.component"
@@ -101,7 +101,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CardDetailTitleComponent,
     AccordianComponent,
     TableComponent,
-    TableRowComponent,
+    SkillListRowComponent,
     TableLabelComponent,
     TableActionBarComponent,
     ActionBarItemComponent,

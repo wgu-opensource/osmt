@@ -29,9 +29,9 @@
     <p class="t-margin-small t-margin-bottom t-color-text3">{{skill.skillStatement}}</p>
 
     <div class="t-margin-small t-margin-bottom">
-      <app-status-pill
+      <app-detail-card-status-bar
         [status]="skill.status"
-      ></app-status-pill>
+      ></app-detail-card-status-bar>
     </div>
 
     <div class="t-margin-small t-margin-bottom" *ngIf="getFormattedKeywords()">

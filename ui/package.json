@@ -28,7 +28,7 @@
     "popper.js": "^1.16.1",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
-    "wgu-design-system-patternlibrary": "4.3.0",
+    "wgu-design-system-patternlibrary": "6.1.0",
     "zone.js": "~0.10.3"
   },
   "devDependencies": {

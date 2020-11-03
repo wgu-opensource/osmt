@@ -1,18 +1,43 @@
-<app-table-header
-  [numberSelected]="numberOfSelected()"
-  [currentSort]="currentlySortedColumn"
-  (columnChanged)="headerColumnSortPerformed($event)"
-  (selectAllChanged)="handleSelectAll($event)"
-></app-table-header>
-
 <table class="l-table">
-  <thead class="t-visuallyHidden">
-  <tr>
-    <th scope="col">Category</th>
-    <th scope="col">Skill</th>
-    <th scope="col">Actions</th>
+  <thead>
+  <tr class="m-tableHeader">
+    <th class="t-hidden-tabletMax" scope="col">
+      <app-label-with-filter
+        label="Category"
+        [sortAscending]="getCategorySort()"
+        (sortChanged)="sortColumn('category', $event)"
+      ></app-label-with-filter>
+    </th>
+
+    <th class="t-hidden-tabletMax" scope="col">
+      <app-label-with-filter
+        label="Rich Skill Descriptor"
+        [sortAscending]="getSkillSort()"
+        (sortChanged)="sortColumn('name', $event)"
+      ></app-label-with-filter>
+    </th>
+
+    <th class="m-tableHeader-x-actions" scope="col">
+<!--      {{render '@m-tablelabel&#45;&#45;with-choice'}}-->
+      <div class="m-tableLabel">
+        <label class="m-tableLabel-x-text" for="checkbox">Select All ({{getSelectAllCount()}})</label>
+        <div class="m-tableLabel-x-control">
+          <div class="m-checkbox">
+            <input type="checkbox" id="checkbox" name="checkbox" (change)="handleSelectAll($event)">
+            <div class="m-checkbox-x-icon">
+              <svg class="t-icon" aria-hidden="true">
+                <use [attr.xlink:href]="checkIcon"></use>
+              </svg>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </th>
   </tr>
   </thead>
+
   <tbody>
     <app-table-row
       *ngFor="let skill of preparedSkills; let i=index"

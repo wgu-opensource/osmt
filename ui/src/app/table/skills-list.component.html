@@ -3,9 +3,10 @@
 
   <div class="l-container t-padding-large t-padding-top">
 
-    <div class="l-container l-container-mobile">
+<!--    {{render '@listheading'}}-->
+    <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
       <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom">{{title}}</h2>
-      <p class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">
+      <p class="t-type-bodyLarge t-color-text3">
         {{skillCountLabel}}<ng-template [ngIf]="matchingQuery">
           matching <span class="t-type-bodyLargeBold t-color-text1">{{matchingQuery}}</span>
         </ng-template>.
@@ -13,12 +14,12 @@
           Viewing skills {{firstRecordNo}}-{{lastRecordNo}}
         </ng-template>
       </p>
-
-      <app-filter-controls
-        [selectedFilters]="selectedFilters"
-        (filtersChanged)="handleFiltersChanged($event)"
-      ></app-filter-controls>
     </div>
+
+    <app-filter-controls
+      [selectedFilters]="selectedFilters"
+      (filtersChanged)="handleFiltersChanged($event)"
+    ></app-filter-controls>
 
     <div class="t-margin-medium t-margin-bottom">
       <ng-template [appLoadingObservables]="[resultsLoaded]">
@@ -26,7 +27,7 @@
           *ngIf="!emptyResults"
           [skills]="results.skills"
           (rowSelected)="handleNewSelection($event)"
-          [currentlySortedColumn]="columnSort"
+          [currentSort]="columnSort"
           (columnSorted)="handleHeaderColumnSort($event)"
           [rowActions]="rowActions()"
           (selectAllSelected)="handleSelectAll($event)"

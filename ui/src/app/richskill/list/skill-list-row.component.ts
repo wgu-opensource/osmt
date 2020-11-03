@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {OccupationsFormatter} from "../../job-codes/Jobcode"
-import {IApiSkillSummary} from "../../richskill/ApiSkillSummary"
+import {IApiSkillSummary} from "../ApiSkillSummary"
 import {PublishStatus} from "../../PublishStatus"
-import {TableActionDefinition} from "../has-action-definitions"
+import {TableActionDefinition} from "../../table/has-action-definitions"
 
 export interface SkillWithMetadata {
   skill: IApiSkillSummary,

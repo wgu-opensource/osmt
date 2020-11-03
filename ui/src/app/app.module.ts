@@ -35,19 +35,19 @@ import {CommonModule} from "@angular/common"
 import {StatusBarComponent} from "./core/status-bar.component"
 import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component"
 import {TableComponent} from "./table/table.component"
-import {SkillListRowComponent} from "./table/table-row/skill-list-row.component"
-import {TableLabelComponent} from "./table/table-label/table-label.component"
+import {SkillListRowComponent} from "./richskill/list/skill-list-row.component"
+import {TableLabelComponent} from "./table/table-label.component"
 import {LabelWithFilterComponent} from "./table/label-with-filter.component"
-import {AccordianComponent} from "./table/table-row/accordian/accordian.component"
+import {AccordianComponent} from "./core/accordian.component"
 import {FilterControlsComponent} from "./table/filter-controls/filter-controls.component"
-import {FilterChoiceComponent} from "./table/filter-controls/filter-choice/filter-choice.component"
+import {FilterChoiceComponent} from "./table/filter-controls/filter-choice.component"
 import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
 import {PaginationComponent} from "./table/pagination.component";
 import {ActionBarItemComponent} from "./table/action-bar-item.component";
 import {TableActionBarComponent} from "./table/table-action-bar.component";
 import {EmptyMessageComponent} from "./table/empty-message.component";
 import {SelectMenuComponent, SelectMenuTriggerDirective} from "./table/select-menu.component";
-import {SkillsListComponent} from "./table/skills-list.component";
+import {SkillsListComponent} from "./richskill/list/skills-list.component";
 import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component"
 import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-horizontal-action-bar.component"
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"

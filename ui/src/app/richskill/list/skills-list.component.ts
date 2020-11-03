@@ -1,13 +1,13 @@
-import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {ApiSkillSummary, IApiSkillSummary} from "../richskill/ApiSkillSummary";
-import {PublishStatus} from "../PublishStatus";
-import {TableActionDefinition} from "./has-action-definitions";
+import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service";
+import {ApiSkillSummary, IApiSkillSummary} from "../ApiSkillSummary";
+import {PublishStatus} from "../../PublishStatus";
+import {TableActionDefinition} from "../../table/has-action-definitions";
 import {Component} from "@angular/core";
 import {Observable} from "rxjs";
-import {ApiBatchResult} from "../richskill/ApiBatchResult";
-import {RichSkillService} from "../richskill/service/rich-skill.service";
-import {ToastService} from "../toast/toast.service";
-import {ApiSkillSortOrder} from "../richskill/ApiSkill";
+import {ApiBatchResult} from "../ApiBatchResult";
+import {RichSkillService} from "../service/rich-skill.service";
+import {ToastService} from "../../toast/toast.service";
+import {ApiSkillSortOrder} from "../ApiSkill";
 
 
 @Component({

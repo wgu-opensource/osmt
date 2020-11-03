@@ -4,13 +4,13 @@ import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {ApiSearch} from "../richskill/service/rich-skill-search.service";
 import {ActivatedRoute} from "@angular/router";
 import {ToastService} from "../toast/toast.service";
-import {SkillsListComponent} from "../table/skills-list.component";
+import {SkillsListComponent} from "../richskill/list/skills-list.component";
 import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
 
 
 @Component({
   selector: "app-rich-skill-search-results",
-  templateUrl: "../table/skills-list.component.html"
+  templateUrl: "../richskill/list/skills-list.component.html"
 })
 export class RichSkillSearchResultsComponent extends SkillsListComponent implements OnInit {
 

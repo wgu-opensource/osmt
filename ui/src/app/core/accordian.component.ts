@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core"
-import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
+import {SvgHelper, SvgIcon} from "./SvgHelper"
 
 @Component({
   selector: "app-accordian",

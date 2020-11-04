@@ -37,7 +37,7 @@ export class SkillsListComponent {
   }
 
   // "abstract" methods to be implemented by a "subclas"
-  matchingQuery?: string
+  matchingQuery?: string[]
   title?: string
   loadNextPage(): void {}
   handleSelectAll(selectAllChecked: boolean): void {}
@@ -249,6 +249,7 @@ export class SkillsListComponent {
     if (apiSearch === undefined) {
       return false
     }
+
 
     this.toastService.showBlockingLoader()
     this.skillsSaved = this.richSkillService.publishSkillsWithResult(apiSearch, newStatus, this.selectedFilters)

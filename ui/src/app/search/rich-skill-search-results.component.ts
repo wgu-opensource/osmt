@@ -45,7 +45,13 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 
   private handleNewSearch(apiSearch: ApiSearch): void {
     this.apiSearch = apiSearch
-    this.matchingQuery = this.apiSearch.query
+    if (this.apiSearch.query !== undefined) {
+      this.matchingQuery = [this.apiSearch.query]
+    } else if (this.apiSearch.advanced !== undefined) {
+      this.matchingQuery = Object.getOwnPropertyNames(this.apiSearch.advanced).map((k) =>
+        this.apiSearch.advanced[k]
+      ).filter(x => x !== undefined)
+    }
     this.loadNextPage()
   }
 

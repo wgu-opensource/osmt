@@ -62,6 +62,7 @@ export class TableComponent implements OnInit {
     const selected: boolean = checkbox.checked
     this.preparedSkills.forEach(skill => skill.selected = selected)
     this.selectAllSelected.emit(selected)
+    this.rowSelected.emit(this.getSelectedSkills())
   }
 
 

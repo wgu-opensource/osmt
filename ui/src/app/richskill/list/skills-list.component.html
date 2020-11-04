@@ -8,10 +8,9 @@
       <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom">{{title}}</h2>
       <p class="t-type-bodyLarge t-color-text3">
         {{skillCountLabel}}<ng-template [ngIf]="matchingQuery">
-          matching <span class="t-type-bodyLargeBold t-color-text1">{{matchingQuery}}</span>
-        </ng-template>.
+          found based on <span class="t-type-bodyLargeBold t-color-text1">{{matchingQuery}}</span> and your filters</ng-template>.
         <ng-template [ngIf]="totalCount > 0">
-          Viewing skills {{firstRecordNo}}-{{lastRecordNo}}
+          Viewing {{firstRecordNo}}-{{lastRecordNo}}
         </ng-template>
       </p>
     </div>
@@ -34,11 +33,17 @@
         ></app-table>
 
         <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">
-          Try changing your search term or using <a routerLink="/search/advanced">Advanced Search</a>.
+          <p class="m-emptyMessage-x-message">No RSDs found. Try modifying your search terms or filters.</p>
+        </app-empty-message>
+        <app-empty-message *ngIf="emptyResults && showLibraryEmptyMessage">
+          <p class="m-emptyMessage-x-message">0 RSDs in library</p>
+          <p class="m-emptyMessage-x-message">The library is ready to fill with RSDs.</p>
+          <p class="m-emptyMessage-x-message">
+          <a routerLink="/skills/create">Create an RSD</a> or <a href="#">Batch import RSDs</a>.
+          </p>
         </app-empty-message>
         <app-empty-message *ngIf="emptyResults && !showSearchEmptyMessage">
-          You have no skills yet in your library.
-          Try <a routerLink="/skills/create">Creating a skill</a> or <a href="#">Batch import skills</a>.
+          <p class="m-emptyMessage-x-message">No RSDs found. Try adjusting your filters.</p>
         </app-empty-message>
       </ng-template>
     </div>

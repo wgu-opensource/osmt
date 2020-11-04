@@ -29,6 +29,7 @@ export class SkillsListComponent {
   columnSort: ApiSkillSortOrder = ApiSkillSortOrder.CategoryAsc
 
   showSearchEmptyMessage = false
+  showLibraryEmptyMessage = false
 
   constructor(protected richSkillService: RichSkillService,
               protected toastService: ToastService
@@ -51,9 +52,9 @@ export class SkillsListComponent {
 
   get skillCountLabel(): string {
     if (this.totalCount > 0)  {
-      return `${this.curPageCount} of ${this.totalCount} skill${this.curPageCount > 1 ? "s" : ""}`
+      return `${this.totalCount} RSD${this.curPageCount > 1 ? "s" : ""}`
     }
-    return `0 skills`
+    return `0 RSDs`
   }
 
   get totalCount(): number {

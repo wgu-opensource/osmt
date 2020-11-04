@@ -21,7 +21,7 @@ export class StatusPillComponent implements OnInit {
   }
 
   isPublished(): boolean {
-    return this.status === PublishStatus.Published
+    return this.status !== PublishStatus.Unpublished
   }
 
   isArchived(): boolean {

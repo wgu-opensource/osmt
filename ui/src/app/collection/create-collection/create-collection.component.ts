@@ -1,8 +1,9 @@
 import {Component, OnInit} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
-import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
-import {urlValidator} from "../../validators/url.validator";
-import {AppConfig} from "../../app.config";
+import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms"
+import {AppConfig} from "../../app.config"
+import {CollectionService} from "../service/collection.service"
+import {PublishStatus} from "../../PublishStatus"
 
 @Component({
   selector: "app-create-collection",
@@ -10,15 +11,15 @@ import {AppConfig} from "../../app.config";
 })
 export class CreateCollectionComponent implements OnInit {
 
-  skillForm = new FormGroup(this.getFormDefinitions())
+  collectionForm = new FormGroup(this.getFormDefinitions())
 
   iconCollection = SvgHelper.path(SvgIcon.COLLECTION)
 
-  constructor() { }
+  constructor(private collectionService: CollectionService) { }
 
   ngOnInit(): void {
     if (this.isAuthorEditable()) {
-      this.skillForm.controls.author.setValue(AppConfig.settings.defaultAuthorValue)
+      this.collectionForm.controls.author.setValue(AppConfig.settings.defaultAuthorValue)
     }
   }
 
@@ -38,7 +39,22 @@ export class CreateCollectionComponent implements OnInit {
   }
 
   handleSaved(): void {
+    const formValues = this.collectionForm.value
     console.log("Save clicked")
+    this.collectionService.createCollection([{
+      author: {
+        name: formValues.author?.trim() ?? undefined
+      },
+      name: formValues.collectionName,
+      skills: {
+        add: [],
+        remove: []
+      },
+      status: PublishStatus.Unpublished
+    }])
+      .subscribe(collection => {
+        console.log(JSON.stringify(collection))
+      })
   }
 
   handleCancel(): void {

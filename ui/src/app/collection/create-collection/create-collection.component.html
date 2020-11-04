@@ -20,7 +20,7 @@
         </div>
 
         <app-formfield-textarea
-          [control]="skillForm.controls.collectionName"
+          [control]="collectionForm.controls.collectionName"
           name="collectionName"
           label="New Collection Name"
           placeholder="Health Open Skills"
@@ -29,7 +29,7 @@
 
         <app-formfield-text
           *ngIf="isAuthorEditable()"
-          [control]="skillForm.controls.author"
+          [control]="collectionForm.controls.author"
 
           name="author"
           label="Author"

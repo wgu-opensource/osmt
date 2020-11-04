@@ -11,16 +11,18 @@ import {map, share} from "rxjs/operators"
 })
 export class CollectionService extends AbstractService {
 
+  private baseServiceUrl = "api/collections"
+
   constructor(httpClient: HttpClient, authService: AuthService) {
     super(httpClient, authService)
   }
 
-  create(collections: CollectionUpdate[]): Observable<Collection> {
-    return this.post<Collection>({
-      path: "/api/collections",
+  createCollection(collections: CollectionUpdate[]): Observable<Collection[]> {
+    return this.post<Collection[]>({
+      path: this.baseServiceUrl,
       body: collections
     })
       .pipe(share())
-      .pipe(map(({body}) => this.safeUnwrapBody(body, "")))
+      .pipe(map(({body}) => this.safeUnwrapBody(body, "Failed to parse create collection response")))
   }
 }

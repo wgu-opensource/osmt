@@ -52,9 +52,9 @@ if [[ -z "${OAUTH_AUDIENCE}" ]]; then
 fi
 
 if [[ -z "${MIGRATIONS_ENABLED}" ]]; then
-  MISSING_ARGS=$((MISSING_ARGS + 1))
+  MIGRATIONS_ENABLED=false
   echo "Missing environment 'MIGRATIONS_ENABLED'"
-  echo "Valid arguments are: MIGRATIONS_ENABLED=true | MIGRATIONS_ENABLED=false"
+  echo "  Defaulting to MIGRATIONS_ENABLED=${MIGRATIONS_ENABLED}"
 fi
 
 if [[ ${MISSING_ARGS} != 0 ]]; then

@@ -3,8 +3,7 @@ import {RichSkillService} from "../../../service/rich-skill.service"
 import {ToastService} from "../../../../toast/toast.service"
 import {formatDate} from "@angular/common"
 import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
-import {AppConfig} from "../../../../app.config"
-import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper";
+import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 
 @Component({template: ""})
 export abstract class PublicRichSkillActionBarComponent implements OnInit {
@@ -29,7 +28,7 @@ export abstract class PublicRichSkillActionBarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.href = `${AppConfig.settings.baseApiUrl}${this.router.url}`
+    this.href = window.location.href // absolute path to the current page
     this.richSkillService.getSkillJsonByUuid(this.skillUuid)
       .subscribe( (json: string) => this.jsonClipboard = json)
   }

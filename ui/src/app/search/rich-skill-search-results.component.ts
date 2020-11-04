@@ -75,4 +75,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
     this.multiplePagesSelected = this.totalPageCount > 1
   }
 
+  getSelectAllCount(): number {
+    return this.totalCount
+  }
 }

@@ -10,9 +10,8 @@ export abstract class PublicRichSkillActionBarComponent implements OnInit {
 
   abstract skillUuid: string
   abstract skillName: string
+  abstract skillUrl: string
 
-  // Used in invisible labels to house the data to be added to clipboard
-  abstract href: string
   abstract jsonClipboard: string
 
   duplicateIcon = SvgHelper.path(SvgIcon.DUPLICATE)
@@ -28,7 +27,6 @@ export abstract class PublicRichSkillActionBarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.href = window.location.href // absolute path to the current page
     this.richSkillService.getSkillJsonByUuid(this.skillUuid)
       .subscribe( (json: string) => this.jsonClipboard = json)
   }

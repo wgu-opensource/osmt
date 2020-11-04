@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {SearchService} from "./search.service";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
-import {ApiSearch} from "../richskill/service/rich-skill-search.service";
+import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
 import {ActivatedRoute} from "@angular/router";
 import {ToastService} from "../toast/toast.service";
 import {SkillsListComponent} from "../richskill/list/skills-list.component";
@@ -50,6 +50,11 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
   }
 
   loadNextPage(): void {
+    if (this.selectedFilters.size < 1) {
+      this.setResults(new PaginatedSkills([], 0))
+      return
+    }
+
     if (this.apiSearch !== undefined) {
       this.resultsLoaded = this.richSkillService.searchSkills(this.apiSearch, this.size, this.from, this.selectedFilters, this.columnSort)
       this.resultsLoaded.subscribe(results => this.setResults(results))

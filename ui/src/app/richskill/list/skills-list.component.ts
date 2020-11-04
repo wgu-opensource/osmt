@@ -133,6 +133,7 @@ export class SkillsListComponent {
 
   handleHeaderColumnSort(sort: ApiSkillSortOrder): void {
     this.columnSort = sort
+    this.from = 0
     this.loadNextPage()
   }
 

@@ -32,27 +32,27 @@ import {ManageSkillActionBarVerticalComponent} from "./richskill/detail/rich-ski
 import {ManageSkillActionBarHorizontalComponent} from "./richskill/detail/rich-skill-manage/action-bar/action-bar-horizontal/manage-skill-action-bar-horizontal.component"
 import {ServerErrorComponent} from "./loading/server-error.component"
 import {CommonModule} from "@angular/common"
-import {DetailCardStatusBarComponent} from "./detail-card/status-bar/detail-card-status-bar.component"
+import {StatusBarComponent} from "./core/status-bar.component"
 import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component"
 import {TableComponent} from "./table/table.component"
-import {TableRowComponent} from "./table/table-row/table-row.component"
-import {TableHeaderComponent} from "./table/table-header/table-header.component"
-import {TableLabelComponent} from "./table/table-label/table-label.component"
-import {LabelWithFilterComponent} from "./table/table-header/label-with-filter/label-with-filter.component"
-import {AccordianComponent} from "./table/table-row/accordian/accordian.component"
+import {SkillListRowComponent} from "./richskill/list/skill-list-row.component"
+import {TableLabelComponent} from "./table/table-label.component"
+import {LabelWithFilterComponent} from "./table/label-with-filter.component"
+import {AccordianComponent} from "./core/accordian.component"
 import {FilterControlsComponent} from "./table/filter-controls/filter-controls.component"
-import {FilterChoiceComponent} from "./table/filter-controls/filter-choice/filter-choice.component"
+import {FilterChoiceComponent} from "./table/filter-controls/filter-choice.component"
 import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
 import {PaginationComponent} from "./table/pagination.component";
 import {ActionBarItemComponent} from "./table/action-bar-item.component";
 import {TableActionBarComponent} from "./table/table-action-bar.component";
 import {EmptyMessageComponent} from "./table/empty-message.component";
-import {SelectMenuComponent, SelectMenuTriggerDirective} from "./table/select-menu.component";
-import {SkillsListComponent} from "./table/skills-list.component";
+import {SkillsListComponent} from "./richskill/list/skills-list.component";
 import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component"
 import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-horizontal-action-bar.component"
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
 import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
+import {StatusPillComponent} from "./core/status-pill.component";
+import {DotsMenuComponent} from "./table/dots-menu.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -97,12 +97,11 @@ export function initializeApp(appConfig: AppConfig): () => void {
 
     DetailCardComponent,
     DetailCardSectionComponent,
-    DetailCardStatusBarComponent,
+    StatusBarComponent,
     CardDetailTitleComponent,
     AccordianComponent,
     TableComponent,
-    TableRowComponent,
-    TableHeaderComponent,
+    SkillListRowComponent,
     TableLabelComponent,
     TableActionBarComponent,
     ActionBarItemComponent,
@@ -111,13 +110,13 @@ export function initializeApp(appConfig: AppConfig): () => void {
     FilterChoiceComponent,
     PaginationComponent,
     EmptyMessageComponent,
-    SelectMenuComponent,
-    SelectMenuTriggerDirective,
     SkillsListComponent,
     AdvancedSearchComponent,
     AdvancedSearchVerticalActionBarComponent,
     AdvancedSearchHorizontalActionBarComponent,
-    AbstractAdvancedSearchActionBarComponent
+    AbstractAdvancedSearchActionBarComponent,
+    StatusPillComponent,
+    DotsMenuComponent
   ],
   imports: [
     BrowserModule,

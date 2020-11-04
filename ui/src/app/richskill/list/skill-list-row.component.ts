@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {OccupationsFormatter} from "../../job-codes/Jobcode"
-import {IApiSkillSummary} from "../../richskill/ApiSkillSummary"
+import {IApiSkillSummary} from "../ApiSkillSummary"
 import {PublishStatus} from "../../PublishStatus"
-import {TableActionDefinition} from "../has-action-definitions";
+import {TableActionDefinition} from "../../table/has-action-definitions"
 
 export interface SkillWithMetadata {
   skill: IApiSkillSummary,
@@ -11,10 +11,11 @@ export interface SkillWithMetadata {
 }
 
 @Component({
-  selector: "app-table-row",
-  templateUrl: "./table-row.component.html"
+  // tslint:disable-next-line:component-selector
+  selector: "[app-skill-list-row]",
+  templateUrl: "./skill-list-row.component.html"
 })
-export class TableRowComponent implements OnInit {
+export class SkillListRowComponent implements OnInit {
 
   @Input() skill: IApiSkillSummary | null = null
   @Input() isSelected = false

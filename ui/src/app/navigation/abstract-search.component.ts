@@ -30,7 +30,9 @@ export class AbstractSearchComponent {
   }
 
   submitSkillSearch(): boolean {
-    this.searchService.simpleSkillSearch(this.searchQuery)
+    if (this.searchQuery.trim().length > 0) {
+      this.searchService.simpleSkillSearch(this.searchQuery)
+    }
     return false
   }
 

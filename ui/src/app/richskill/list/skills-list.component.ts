@@ -1,13 +1,13 @@
-import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {ApiSkillSummary, IApiSkillSummary} from "../richskill/ApiSkillSummary";
-import {PublishStatus} from "../PublishStatus";
-import {TableActionDefinition} from "./has-action-definitions";
+import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service";
+import {ApiSkillSummary, IApiSkillSummary} from "../ApiSkillSummary";
+import {PublishStatus} from "../../PublishStatus";
+import {TableActionDefinition} from "../../table/has-action-definitions";
 import {Component} from "@angular/core";
 import {Observable} from "rxjs";
-import {ApiBatchResult} from "../richskill/ApiBatchResult";
-import {RichSkillService} from "../richskill/service/rich-skill.service";
-import {ToastService} from "../toast/toast.service";
-import {ApiSkillSortOrder} from "../richskill/ApiSkill";
+import {ApiBatchResult} from "../ApiBatchResult";
+import {RichSkillService} from "../service/rich-skill.service";
+import {ToastService} from "../../toast/toast.service";
+import {ApiSkillSortOrder} from "../ApiSkill";
 
 
 @Component({
@@ -29,6 +29,7 @@ export class SkillsListComponent {
   columnSort: ApiSkillSortOrder = ApiSkillSortOrder.CategoryAsc
 
   showSearchEmptyMessage = false
+  showLibraryEmptyMessage = false
 
   constructor(protected richSkillService: RichSkillService,
               protected toastService: ToastService
@@ -36,7 +37,7 @@ export class SkillsListComponent {
   }
 
   // "abstract" methods to be implemented by a "subclas"
-  matchingQuery?: string
+  matchingQuery?: string[]
   title?: string
   loadNextPage(): void {}
   handleSelectAll(selectAllChecked: boolean): void {}
@@ -51,9 +52,9 @@ export class SkillsListComponent {
 
   get skillCountLabel(): string {
     if (this.totalCount > 0)  {
-      return `${this.curPageCount} of ${this.totalCount} skill${this.curPageCount > 1 ? "s" : ""}`
+      return `${this.totalCount} RSD${this.curPageCount > 1 ? "s" : ""}`
     }
-    return `0 skills`
+    return `0 RSDs`
   }
 
   get totalCount(): number {
@@ -132,6 +133,7 @@ export class SkillsListComponent {
 
   handleHeaderColumnSort(sort: ApiSkillSortOrder): void {
     this.columnSort = sort
+    this.from = 0
     this.loadNextPage()
   }
 
@@ -249,12 +251,14 @@ export class SkillsListComponent {
       return false
     }
 
+
     this.toastService.showBlockingLoader()
     this.skillsSaved = this.richSkillService.publishSkillsWithResult(apiSearch, newStatus, this.selectedFilters)
     this.skillsSaved.subscribe((result) => {
       if (result !== undefined) {
         const partial = (result.modifiedCount !== result.totalCount)  ? ` of ${result.totalCount}` : ""
-        this.toastService.showToast("Success!", `${verb} ${result.modifiedCount}${partial} skill${(result.modifiedCount ?? 0) > 1 ? "s" : ""}.`)
+        const message = `${verb} ${result.modifiedCount}${partial} skill${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
+        this.toastService.showToast("Success!", message)
         this.toastService.hideBlockingLoader()
         this.loadNextPage()
       }
@@ -262,4 +266,7 @@ export class SkillsListComponent {
     return false
   }
 
+  getSelectAllCount(): number {
+    return this.curPageCount
+  }
 }

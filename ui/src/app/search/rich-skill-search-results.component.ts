@@ -1,16 +1,16 @@
 import {Component, OnInit} from "@angular/core";
 import {SearchService} from "./search.service";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
-import {ApiSearch} from "../richskill/service/rich-skill-search.service";
+import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
 import {ActivatedRoute} from "@angular/router";
 import {ToastService} from "../toast/toast.service";
-import {SkillsListComponent} from "../table/skills-list.component";
+import {SkillsListComponent} from "../richskill/list/skills-list.component";
 import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
 
 
 @Component({
   selector: "app-rich-skill-search-results",
-  templateUrl: "../table/skills-list.component.html"
+  templateUrl: "../richskill/list/skills-list.component.html"
 })
 export class RichSkillSearchResultsComponent extends SkillsListComponent implements OnInit {
 
@@ -45,11 +45,23 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 
   private handleNewSearch(apiSearch: ApiSearch): void {
     this.apiSearch = apiSearch
-    this.matchingQuery = this.apiSearch.query
+    if (this.apiSearch.query !== undefined) {
+      this.matchingQuery = [this.apiSearch.query]
+    } else if (this.apiSearch.advanced !== undefined) {
+      this.matchingQuery = Object.getOwnPropertyNames(this.apiSearch?.advanced).map((k) => {
+        const a: any = this.apiSearch?.advanced
+        return a !== undefined ? a[k] : undefined
+      }).filter(x => x !== undefined)
+    }
     this.loadNextPage()
   }
 
   loadNextPage(): void {
+    if (this.selectedFilters.size < 1) {
+      this.setResults(new PaginatedSkills([], 0))
+      return
+    }
+
     if (this.apiSearch !== undefined) {
       this.resultsLoaded = this.richSkillService.searchSkills(this.apiSearch, this.size, this.from, this.selectedFilters, this.columnSort)
       this.resultsLoaded.subscribe(results => this.setResults(results))
@@ -57,11 +69,14 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
   }
 
   getApiSearch(skill?: ApiSkillSummary): ApiSearch | undefined {
-    return (this.multiplePagesSelected) ? this.apiSearch : SkillsListComponent.prototype.getApiSearch(skill)
+    return (this.multiplePagesSelected) ? this.apiSearch : super.getApiSearch(skill)
   }
 
   handleSelectAll(selectAllChecked: boolean): void {
     this.multiplePagesSelected = this.totalPageCount > 1
   }
 
+  getSelectAllCount(): number {
+    return this.totalCount
+  }
 }

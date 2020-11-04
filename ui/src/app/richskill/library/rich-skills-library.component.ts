@@ -1,11 +1,12 @@
 import {Component, OnInit} from "@angular/core"
 import {RichSkillService} from "../service/rich-skill.service"
-import {SkillsListComponent} from "../../table/skills-list.component";
+import {SkillsListComponent} from "../list/skills-list.component";
 import {ToastService} from "../../toast/toast.service";
+import {PaginatedSkills} from "../service/rich-skill-search.service";
 
 @Component({
   selector: "app-rich-skills-library",
-  templateUrl: "../../table/skills-list.component.html"
+  templateUrl: "../list/skills-list.component.html"
 })
 export class RichSkillsLibraryComponent extends SkillsListComponent implements OnInit {
 
@@ -23,6 +24,11 @@ export class RichSkillsLibraryComponent extends SkillsListComponent implements O
   }
 
   loadNextPage(): void {
+    if (this.selectedFilters.size < 1) {
+      this.setResults(new PaginatedSkills([], 0))
+      return
+    }
+
     this.resultsLoaded = this.richSkillService.getSkills(this.size, this.from, this.selectedFilters, this.columnSort)
     this.resultsLoaded.subscribe((results) => {
       this.setResults(results)

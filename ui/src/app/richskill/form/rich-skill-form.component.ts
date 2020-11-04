@@ -10,6 +10,7 @@ import {AppConfig} from "../../app.config";
 import {urlValidator} from "../../validators/url.validator";
 import { IJobCode } from 'src/app/job-codes/Jobcode';
 import {ToastService} from "../../toast/toast.service";
+import {Title} from "@angular/platform-browser";
 
 
 @Component({
@@ -30,7 +31,8 @@ export class RichSkillFormComponent implements OnInit {
     private richSkillService: RichSkillService,
     private location: Location,
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private titleService: Title
   ) { }
 
   ngOnInit(): void {
@@ -40,6 +42,8 @@ export class RichSkillFormComponent implements OnInit {
       this.skillLoaded = this.richSkillService.getSkillByUUID(this.skillUuid)
       this.skillLoaded.subscribe(skill => { this.setSkill(skill) })
     }
+
+    this.titleService.setTitle(this.pageTitle())
   }
 
   pageTitle(): string {

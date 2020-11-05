@@ -1,4 +1,5 @@
 import {Component, OnInit, Output, EventEmitter} from "@angular/core"
+import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
 
 @Component({
   selector: "app-create-collection-action-bar",
@@ -8,6 +9,9 @@ export class AbstractCreateCollectionActionbarComponent implements OnInit {
 
   @Output() saveClicked = new EventEmitter<void>()
   @Output() cancelClicked = new EventEmitter<void>()
+
+  checkOutlineIcon = SvgHelper.path(SvgIcon.CHECK_OUTLINE)
+  cancelIcon = SvgHelper.path(SvgIcon.CANCEL)
 
   constructor() { }
 

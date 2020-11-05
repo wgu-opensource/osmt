@@ -3,6 +3,7 @@ export enum SvgIcon {
   ARCHIVE = "icon-archive",
   CANCEL = "icon-cancel",
   CHECK = "icon-check",
+  CHECK_OUTLINE = "icon-check-outline",
   CHEVRON = "icon-chevron",
   COLLECTION = "icon-collection",
   DISMISS = "icon-dismiss",

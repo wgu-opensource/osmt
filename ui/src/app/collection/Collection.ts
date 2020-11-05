@@ -3,20 +3,6 @@ import {INamedReference} from "../richskill/ApiSkill"
 import {IStringListUpdate} from "../richskill/ApiSkillUpdate"
 import {IApiSkillSummary} from "../richskill/ApiSkillSummary"
 
-export interface ICollection {
-  id: string
-  uuid: string
-  creator: string
-  status: PublishStatus
-  creationDate: Date
-  updateDate: Date
-  publishDate: Date
-  archiveDate: Date
-  name: string
-  author: INamedReference
-  skills: IApiSkillSummary[]
-}
-
 export class Collection {
   archiveDate: Date
   author: INamedReference

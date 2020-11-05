@@ -53,6 +53,10 @@
 
   <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
     <!-- Horizontal action bar -->
+    <app-create-collection-action-bar-horizontal
+      (saveClicked)="handleSaved()"
+      (cancelClicked)="handleCancel()"
+    ></app-create-collection-action-bar-horizontal>
   </div>
 
 </div>

@@ -1,4 +1,5 @@
 import {Component, OnInit} from "@angular/core"
+import {Location} from "@angular/common"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms"
 import {AppConfig} from "../../app.config"
@@ -15,7 +16,10 @@ export class CreateCollectionComponent implements OnInit {
 
   iconCollection = SvgHelper.path(SvgIcon.COLLECTION)
 
-  constructor(private collectionService: CollectionService) { }
+  constructor(
+    private collectionService: CollectionService,
+    private loc: Location
+  ) { }
 
   ngOnInit(): void {
     if (this.isAuthorEditable()) {
@@ -59,5 +63,6 @@ export class CreateCollectionComponent implements OnInit {
 
   handleCancel(): void {
     console.log("Cancel clicked")
+    this.loc.back()
   }
 }

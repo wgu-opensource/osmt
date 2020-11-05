@@ -1,6 +1,6 @@
-import { Component, OnInit } from "@angular/core"
-import {SvgHelper, SvgIcon} from "../../../core/SvgHelper";
-import {AbstractCreateCollectionActionbarComponent} from "./abstract-create-collection-actionbar.component";
+import { Component } from "@angular/core"
+import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
+import {AbstractCreateCollectionActionbarComponent} from "./abstract-create-collection-actionbar.component"
 
 @Component({
   selector: "app-create-collection-action-bar-vertical",
@@ -13,7 +13,7 @@ import {AbstractCreateCollectionActionbarComponent} from "./abstract-create-coll
         </button>
       </div>
 
-      <button class="m-actionBarItem" type="button">
+      <button class="m-actionBarItem" type="button" (click)="handleCancel()">
         <span class="m-actionBarItem-x-icon">
           <svg class="t-icon" aria-hidden="true">
             <use [attr.xlink:href]="cancelIcon"></use>

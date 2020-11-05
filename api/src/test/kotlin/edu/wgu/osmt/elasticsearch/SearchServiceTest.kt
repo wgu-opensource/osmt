@@ -1,6 +1,6 @@
 package edu.wgu.osmt.elasticsearch
 
-import edu.wgu.osmt.BatchImportConsoleApplication
+import edu.wgu.osmt.csv.BatchImportRichSkill
 import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers
@@ -49,7 +49,7 @@ class SearchServiceTest : SpringTest(), HasDatabaseReset {
                 name = name,
                 statement = statement,
                 keywords = ListFieldUpdate(add = allKeywordDao)
-            ), BatchImportConsoleApplication.user
+            ), BatchImportRichSkill.user
         )?.toModel()!!
 
         val elasticModel = searchService.esRichSkillRepository.findByUuid(rsd.uuid, Pageable.unpaged())
@@ -75,7 +75,7 @@ class SearchServiceTest : SpringTest(), HasDatabaseReset {
                 name = name,
                 statement = statement,
                 keywords = ListFieldUpdate(add = allKeywordDao)
-            ), BatchImportConsoleApplication.user
+            ), BatchImportRichSkill.user
         )?.toModel()!!
 
         val newName = UUID.randomUUID().toString()

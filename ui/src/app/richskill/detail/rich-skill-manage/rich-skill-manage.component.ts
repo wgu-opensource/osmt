@@ -4,6 +4,7 @@ import {ActivatedRoute} from "@angular/router"
 import {AbstractRichSkillDetailComponent} from "../AbstractRichSkillDetailComponent"
 import {IDetailCardSectionData} from "../../../detail-card/section/section.component"
 import {OccupationsFormatter} from "../../../job-codes/Jobcode"
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: "app-rich-skill-manage",
@@ -14,9 +15,11 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
   constructor(
     richSkillService: RichSkillService,
     route: ActivatedRoute,
-    @Inject(LOCALE_ID) locale: string
+    @Inject(LOCALE_ID) locale: string,
+    titleService: Title
   ) {
     super(richSkillService, route, locale)
+    titleService.setTitle("Manage Rich Skill Descriptor")
   }
 
   getCardFormat(): IDetailCardSectionData[] {

@@ -1,0 +1,72 @@
+
+<div class="l-stickyBar">
+
+  <div class="l-container t-padding-large t-padding-top">
+
+<!--    {{render '@listheading'}}-->
+    <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+      <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom">{{title}}</h2>
+      <p class="t-type-bodyLarge t-color-text3">
+        {{skillCountLabel}}<ng-template [ngIf]="matchingQuery !== undefined">
+          found based on
+        <ng-template ngFor let-q [ngForOf]="matchingQuery" let-last="last">
+          <span class="t-type-bodyLargeBold t-color-text1">{{q}}</span><ng-template [ngIf]="!last">, </ng-template>
+        </ng-template>
+        and your filters</ng-template>.
+        <ng-template [ngIf]="totalCount > 0">
+          Viewing {{firstRecordNo}}-{{lastRecordNo}}
+        </ng-template>
+      </p>
+    </div>
+
+    <app-filter-controls
+      [selectedFilters]="selectedFilters"
+      (filtersChanged)="handleFiltersChanged($event)"
+    ></app-filter-controls>
+
+    <div class="t-margin-medium t-margin-bottom">
+      <ng-template [appLoadingObservables]="[resultsLoaded]">
+        <app-table
+          *ngIf="!emptyResults"
+          [skills]="results.skills"
+          (rowSelected)="handleNewSelection($event)"
+          [currentSort]="columnSort"
+          (columnSorted)="handleHeaderColumnSort($event)"
+          [rowActions]="rowActions()"
+          (selectAllSelected)="handleSelectAll($event)"
+          [selectAllCount]="getSelectAllCount()"
+        ></app-table>
+
+        <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">
+          <p class="m-emptyMessage-x-message">No RSDs found. Try modifying your search terms or filters.</p>
+        </app-empty-message>
+        <app-empty-message *ngIf="emptyResults && showLibraryEmptyMessage">
+          <p class="m-emptyMessage-x-message">0 RSDs in library</p>
+          <p class="m-emptyMessage-x-message">The library is ready to fill with RSDs.</p>
+          <p class="m-emptyMessage-x-message">
+          <a routerLink="/skills/create">Create an RSD</a> or <a href="#">Batch import RSDs</a>.
+          </p>
+        </app-empty-message>
+        <app-empty-message *ngIf="emptyResults && !showSearchEmptyMessage">
+          <p class="m-emptyMessage-x-message">No RSDs found. Try adjusting your filters.</p>
+        </app-empty-message>
+      </ng-template>
+    </div>
+
+    <app-pagination
+      [currentPage]="currentPageNo"
+      [totalPages]="totalPageCount"
+      (pageClicked)="handlePageClicked($event)"
+    ></app-pagination>
+
+  </div>
+
+  <div *ngIf="actionsVisible()" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
+    <div class="l-container l-container-tablet">
+      <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
+    </div>
+  </div>
+
+</div>
+
+

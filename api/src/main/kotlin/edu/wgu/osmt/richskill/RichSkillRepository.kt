@@ -174,7 +174,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
     }
 
     override fun findByUUID(uuid: String): RichSkillDescriptorDao? {
-        val query = table.select { table.uuid eq uuid }.singleOrNull()
+        val query = table.select { table.uuid eq uuid }.firstOrNull()
         return query?.let { dao.wrapRow(it) }
     }
 

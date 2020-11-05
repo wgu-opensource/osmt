@@ -10,6 +10,7 @@
           [author]="getAuthor()"
           [archivedDate]="getArchivedDate()"
           [publishedDate]="getPublishedDate()"
+          [status]="getPublishStatus()"
         ></app-detail-card>
       </div>
 
@@ -24,10 +25,11 @@
     <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
       <app-public-skill-action-bar-horizontal [skillUuid]="getSkillUuid()" [skillName]="getSkillName()"></app-public-skill-action-bar-horizontal>
     </div>
-</div>
-<ng-template #noSkill>
-  <div *ngIf="loading; else noData" class="lds-dual-ring">Loading...</div>
-  <ng-template #noData>
-    No data to load.
+  </div>
+  <ng-template #noSkill>
+    <div *ngIf="loading; else noData" class="lds-dual-ring">Loading...</div>
+    <ng-template #noData>
+      No data to load.
+    </ng-template>
   </ng-template>
 </ng-template>

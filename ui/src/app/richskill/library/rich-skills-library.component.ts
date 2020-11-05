@@ -3,6 +3,7 @@ import {RichSkillService} from "../service/rich-skill.service"
 import {SkillsListComponent} from "../list/skills-list.component";
 import {ToastService} from "../../toast/toast.service";
 import {PaginatedSkills} from "../service/rich-skill-search.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: "app-rich-skills-library",
@@ -13,10 +14,11 @@ export class RichSkillsLibraryComponent extends SkillsListComponent implements O
   title = "RSD Library"
 
   constructor(
+    protected router: Router,
     protected richSkillService: RichSkillService,
     protected toastService: ToastService
   ) {
-    super(richSkillService, toastService)
+    super(router, richSkillService, toastService)
   }
 
   ngOnInit(): void {

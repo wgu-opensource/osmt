@@ -53,6 +53,7 @@ import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search
 import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
 import {StatusPillComponent} from "./core/status-pill.component";
 import {DotsMenuComponent} from "./table/dots-menu.component";
+import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -94,6 +95,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     ManageSkillActionBarHorizontalComponent,
 
     RichSkillSearchResultsComponent,
+
+    AddSkillsCollectionComponent,
 
     DetailCardComponent,
     DetailCardSectionComponent,

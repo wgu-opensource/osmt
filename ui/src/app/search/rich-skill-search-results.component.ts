@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {SearchService} from "./search.service";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {ToastService} from "../toast/toast.service";
 import {SkillsListComponent} from "../richskill/list/skills-list.component";
 import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
@@ -21,12 +21,13 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
   showSearchEmptyMessage = true
   private multiplePagesSelected: boolean = false
 
-  constructor(protected richSkillService: RichSkillService,
+  constructor(protected router: Router,
+              protected richSkillService: RichSkillService,
               protected toastService: ToastService,
               protected searchService: SearchService,
               protected route: ActivatedRoute,
 ) {
-    super(richSkillService, toastService)
+    super(router, richSkillService, toastService)
     this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
   }
 

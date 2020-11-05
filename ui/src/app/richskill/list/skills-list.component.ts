@@ -8,6 +8,7 @@ import {ApiBatchResult} from "../ApiBatchResult";
 import {RichSkillService} from "../service/rich-skill.service";
 import {ToastService} from "../../toast/toast.service";
 import {ApiSkillSortOrder} from "../ApiSkill";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -31,7 +32,8 @@ export class SkillsListComponent {
   showSearchEmptyMessage = false
   showLibraryEmptyMessage = false
 
-  constructor(protected richSkillService: RichSkillService,
+  constructor(protected router: Router,
+              protected richSkillService: RichSkillService,
               protected toastService: ToastService
   ) {
   }
@@ -207,6 +209,9 @@ export class SkillsListComponent {
   }
 
   private handleClickAddCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    this.router.navigate(["/collections/add-skills"], {
+      state: this.getSelectedSkills(skill)
+    })
     return false
   }
 
@@ -228,8 +233,11 @@ export class SkillsListComponent {
     return false
   }
 
+  getSelectedSkills(skill?: ApiSkillSummary): ApiSkillSummary[] | undefined {
+    return ((skill !== undefined) ? [skill] : this.selectedSkills)
+  }
   selectedUuids(skill?: ApiSkillSummary): string[] | undefined {
-    return ((skill !== undefined) ? [skill.uuid] : this.selectedSkills?.map(s => s.uuid))
+    return this.getSelectedSkills(skill)?.map(it => it.uuid)
   }
 
   getApiSearch(skill?: ApiSkillSummary): ApiSearch | undefined {

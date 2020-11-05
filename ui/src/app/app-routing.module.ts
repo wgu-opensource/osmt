@@ -10,9 +10,15 @@ import {LoginComponent} from "./auth/login.component"
 import {RichSkillManageComponent} from "./richskill/detail/rich-skill-manage/rich-skill-manage.component"
 import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
 import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component";
+import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
+
+  {path: "collections/add-skills",
+    component: AddSkillsCollectionComponent,
+    canActivate: [AuthGuard],
+  },
 
   // create skill
   {path: "skills/create",

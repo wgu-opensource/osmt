@@ -1,0 +1,51 @@
+
+
+
+
+
+<div class="l-stickyBar">
+
+  <div class="l-container t-padding-large t-padding-top">
+
+    <div class="l-container l-container-mobile">
+
+<!--      {{render '@listheading'}}-->
+      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Add RSD<ng-template [ngIf]="isPlural">s</ng-template> to a Collection</h2>
+
+      <ng-template [ngIf]="isPlural" [ngIfElse]="singleSkillSummary">
+        <ul class="PUI">
+          <li *ngFor="let skill of selectedSkills">{{skill.skillName}}</li>
+        </ul>
+      </ng-template>
+      <ng-template #singleSkillSummary>
+        <p *ngIf="selectedSkills && selectedSkills.length > 0" class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">Skill: {{selectedSkills[0].skillName}}</p>
+      </ng-template>
+
+<!--      {{render '@listheadingsearch'}}-->
+      <div class="t-margin-medium t-margin-bottom">
+        <div class="m-text">
+          <svg class="m-text-x-icon t-icon"><use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use></svg>
+          <input type="text" placeholder="Search Collections">
+        </div>
+
+        <!-- hide or show this p element depending on text input (pattern retains vertical spacing with parent div) -->
+        <p *ngIf="false" class="t-type-bodyLarge t-margin-small t-margin-top">Text here can be <span class="t-type-bodyLargeBold t-color-text1">bold and dark</span> and contain <a class="t-focus t-type-bodyLargeLink" href="#">links</a></p>
+      </div>
+
+      <app-filter-controls
+        [selectedFilters]="selectedFilters"
+        (filtersChanged)="handleFiltersChanged($event)"
+      ></app-filter-controls>
+
+    </div>
+
+    <div class="t-margin-medium t-margin-bottom">
+<!--      {{render '@table'}}-->
+    </div>
+
+<!--    {{render '@pagingnavigation'}}-->
+
+  </div>
+
+
+</div>

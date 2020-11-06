@@ -13,8 +13,8 @@ export class PublicSkillActionBarVerticalComponent extends PublicRichSkillAction
 
   @Input() skillUuid = ""
   @Input() skillName = ""
+  @Input() skillUrl = ""
 
-  href = ""
   jsonClipboard = ""
 
   constructor(

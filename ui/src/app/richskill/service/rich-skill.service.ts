@@ -166,15 +166,6 @@ export class RichSkillService extends AbstractService {
     filterByStatuses?: Set<PublishStatus>,
     pollIntervalMs: number = 1000,
   ): Observable<ApiBatchResult> {
-    return new Observable((observer) => {
-      this.publishSkills(apiSearch, newStatus, filterByStatuses).subscribe(task => {
-        this.observableForTaskResult<ApiBatchResult>(task, pollIntervalMs).subscribe(result => {
-          observer.next(result)
-          if (result) {
-            observer.complete()
-          }
-        })
-      })
-    })
+    return this.pollForTaskResult(this.publishSkills(apiSearch, newStatus, filterByStatuses), pollIntervalMs)
   }
 }

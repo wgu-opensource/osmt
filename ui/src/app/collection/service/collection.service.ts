@@ -8,6 +8,8 @@ import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../../richskill/
 import {Observable} from "rxjs";
 import {ApiCollectionSummary, ApiSkillSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary";
 import {map, share} from "rxjs/operators";
+import {ApiBatchResult} from "../../richskill/ApiBatchResult";
+import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult";
 
 @Injectable({
   providedIn: "root"
@@ -39,5 +41,18 @@ export class CollectionService extends AbstractService {
         const collections = body?.map(it => new ApiCollectionSummary(it)) || []
         return new PaginatedCollections(collections, !isNaN(totalCount) ? totalCount : collections.length)
       }))
+  }
+
+  addSkillsToCollection(collectionUuid: string, apiSearch: ApiSearch): Observable<ApiTaskResult> {
+    return this.post<ITaskResult>({
+      path: `api/collections/${collectionUuid}/skills`,
+      body: apiSearch
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
+  }
+
+  addSkillsWithResult(collectionUuid: string, apiSearch: ApiSearch, pollIntervalMs: number = 1000): Observable<ApiBatchResult> {
+    return this.pollForTaskResult(this.addSkillsToCollection(collectionUuid, apiSearch))
   }
 }

@@ -16,10 +16,6 @@ import {CreateCollectionComponent} from "./collection/create-collection/create-c
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
 
-  {path: "collections/add-skills",
-    component: AddSkillsCollectionComponent,
-    canActivate: [AuthGuard],
-  },
 
   // create skill
   {path: "skills/create",
@@ -42,6 +38,11 @@ const routes: Routes = [
 
   // collections
   {path: "collections/create", component: CreateCollectionComponent},
+  // {path: "collections/:uuid", component: CollectionManageComponent},
+  {path: "collections/add-skills",
+    component: AddSkillsCollectionComponent,
+    canActivate: [AuthGuard],
+  },
 
   // public views
   {path: "skills/:uuid", component: RichSkillPublicComponent},

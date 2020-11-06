@@ -5,6 +5,7 @@ import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/form
 import {AppConfig} from "../../app.config"
 import {CollectionService} from "../service/collection.service"
 import {PublishStatus} from "../../PublishStatus"
+import {Router} from "@angular/router";
 
 @Component({
   selector: "app-create-collection",
@@ -18,7 +19,8 @@ export class CreateCollectionComponent implements OnInit {
 
   constructor(
     private collectionService: CollectionService,
-    private loc: Location
+    private loc: Location,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -44,25 +46,17 @@ export class CreateCollectionComponent implements OnInit {
 
   handleSaved(): void {
     const formValues = this.collectionForm.value
-    console.log("Save clicked")
     this.collectionService.createCollection([{
       author: {
         name: formValues.author?.trim() ?? undefined
       },
       name: formValues.collectionName,
-      skills: {
-        add: [],
-        remove: []
-      },
-      status: PublishStatus.Unpublished
-    }])
-      .subscribe(collection => {
-        console.log(JSON.stringify(collection))
-      })
+    }]).subscribe(collections => {
+      this.router.navigate([`/collections/${collections[0].uuid}/manage`])
+    })
   }
 
   handleCancel(): void {
-    console.log("Cancel clicked")
     this.loc.back()
   }
 }

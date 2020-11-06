@@ -47,7 +47,7 @@ export class FormFieldSubmit implements OnInit {
   }
 
   isDisabled(): boolean {
-    return !this.formGroup.touched || !this.formGroup.valid
+    return !this.formGroup.touched || !this.formGroup.valid || this.formGroup.pristine
   }
 
   isProcessing(): boolean {

@@ -3,17 +3,15 @@ import {RichSkillService} from "../../../service/rich-skill.service"
 import {ToastService} from "../../../../toast/toast.service"
 import {formatDate} from "@angular/common"
 import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
-import {AppConfig} from "../../../../app.config"
-import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper";
+import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 
 @Component({template: ""})
 export abstract class PublicRichSkillActionBarComponent implements OnInit {
 
   abstract skillUuid: string
   abstract skillName: string
+  abstract skillUrl: string
 
-  // Used in invisible labels to house the data to be added to clipboard
-  abstract href: string
   abstract jsonClipboard: string
 
   duplicateIcon = SvgHelper.path(SvgIcon.DUPLICATE)
@@ -29,7 +27,6 @@ export abstract class PublicRichSkillActionBarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.href = `${AppConfig.settings.baseApiUrl}${this.router.url}`
     this.richSkillService.getSkillJsonByUuid(this.skillUuid)
       .subscribe( (json: string) => this.jsonClipboard = json)
   }

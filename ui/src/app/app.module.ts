@@ -41,18 +41,22 @@ import {LabelWithFilterComponent} from "./table/label-with-filter.component"
 import {AccordianComponent} from "./core/accordian.component"
 import {FilterControlsComponent} from "./table/filter-controls/filter-controls.component"
 import {FilterChoiceComponent} from "./table/filter-controls/filter-choice.component"
-import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
-import {PaginationComponent} from "./table/pagination.component";
-import {ActionBarItemComponent} from "./table/action-bar-item.component";
-import {TableActionBarComponent} from "./table/table-action-bar.component";
-import {EmptyMessageComponent} from "./table/empty-message.component";
-import {SkillsListComponent} from "./richskill/list/skills-list.component";
+import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component"
+import {PaginationComponent} from "./table/pagination.component"
+import {ActionBarItemComponent} from "./table/action-bar-item.component"
+import {TableActionBarComponent} from "./table/table-action-bar.component"
+import {EmptyMessageComponent} from "./table/empty-message.component"
+import {SkillsListComponent} from "./richskill/list/skills-list.component"
 import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component"
 import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-horizontal-action-bar.component"
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
 import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
-import {StatusPillComponent} from "./core/status-pill.component";
-import {DotsMenuComponent} from "./table/dots-menu.component";
+import {StatusPillComponent} from "./core/status-pill.component"
+import {DotsMenuComponent} from "./table/dots-menu.component"
+import { CreateCollectionComponent } from "./collection/create-collection/create-collection.component"
+import { AbstractCreateCollectionActionbarComponent } from "./collection/create-collection/action-bar/abstract-create-collection-actionbar.component"
+import { CreateCollectionActionBarHorizontalComponent } from "./collection/create-collection/action-bar/create-collection-action-bar-horizontal.component"
+import { CreateCollectionActionBarVerticalComponent } from "./collection/create-collection/action-bar/create-collection-action-bar-vertical.component"
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -116,7 +120,12 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AdvancedSearchHorizontalActionBarComponent,
     AbstractAdvancedSearchActionBarComponent,
     StatusPillComponent,
-    DotsMenuComponent
+    DotsMenuComponent,
+    AbstractAdvancedSearchActionBarComponent,
+    CreateCollectionComponent,
+    AbstractCreateCollectionActionbarComponent,
+    CreateCollectionActionBarHorizontalComponent,
+    CreateCollectionActionBarVerticalComponent
   ],
   imports: [
     BrowserModule,

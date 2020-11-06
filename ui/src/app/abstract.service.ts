@@ -3,6 +3,8 @@ import {AppConfig} from "./app.config"
 import {Observable} from "rxjs"
 import {AuthService} from "./auth/auth-service";
 import {ApiTaskResult} from "./task/ApiTaskResult";
+import {PublishStatus} from "./PublishStatus";
+import {ApiSkillSortOrder} from "./richskill/ApiSkill";
 
 interface ApiGetParams {
   path: string,
@@ -91,5 +93,24 @@ export abstract class AbstractService {
       tick()
 
     })
+  }
+
+  buildTableParams(
+    size: number | undefined,
+    from: number | undefined,
+    filterByStatuses?: Set<PublishStatus>,
+    sort?: ApiSkillSortOrder): any {
+
+    const params: any = {
+      sort
+    }
+    if (filterByStatuses !== undefined) {
+      params.status = Array.from(filterByStatuses).map(s => s.toString())
+    }
+    if (size !== undefined) { params.size = size }
+    if (from !== undefined) { params.from = from }
+    if (sort !== undefined) { params.sort = sort.toString()}
+
+    return params
   }
 }

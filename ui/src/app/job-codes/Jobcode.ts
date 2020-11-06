@@ -1,4 +1,3 @@
-import {OccupationsSummary} from "../richskill/ApiSkillSummary";
 
 export interface IJobCode {
   name?: string
@@ -90,11 +89,11 @@ export class JobCodeBreakout {
 
 export class OccupationsFormatter {
 
-  constructor(codes: (IJobCode | OccupationsSummary)[]) {
+  constructor(codes: (IJobCode)[]) {
     this.codes = codes
   }
 
-  private codes: (IJobCode | OccupationsSummary)[]
+  private codes: (IJobCode)[]
 
 
   private static joinList(delimeter: string, list: string[]): string {

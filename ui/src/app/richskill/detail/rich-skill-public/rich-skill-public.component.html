@@ -8,8 +8,9 @@
           [title]="getSkillName()"
           titleLabel="Rich Skill Descriptor"
           [author]="getAuthor()"
-          [archiveDate]="getArchivedDate()"
-          [publishDate]="getPublishedDate()"
+          [archivedDate]="getArchivedDate()"
+          [publishedDate]="getPublishedDate()"
+          [status]="getPublishStatus()"
         ></app-detail-card>
       </div>
 
@@ -32,10 +33,11 @@
         [skillUrl]="getSkillUrl()"
       ></app-public-skill-action-bar-horizontal>
     </div>
-</div>
-<ng-template #noSkill>
-  <div *ngIf="loading; else noData" class="lds-dual-ring">Loading...</div>
-  <ng-template #noData>
-    No data to load.
+  </div>
+  <ng-template #noSkill>
+    <div *ngIf="loading; else noData" class="lds-dual-ring">Loading...</div>
+    <ng-template #noData>
+      No data to load.
+    </ng-template>
   </ng-template>
 </ng-template>

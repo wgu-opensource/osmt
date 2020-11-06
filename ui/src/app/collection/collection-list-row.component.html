@@ -12,9 +12,9 @@
 
   <td class="m-tableRow-x-actions">
 
-    <div *ngIf="rowActions.length == 1">
+    <div *ngFor="let action in rowActions">
       <button class="m-button m-button-secondary">
-        <span class="m-button-x-text" (click)="handleSelectCollection($event)">Select Collection</span>
+        <span class="m-button-x-text" (click)="action.fire(collection)">{{action.label}}</span>
       </button>
     </div>
 

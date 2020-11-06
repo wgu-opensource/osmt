@@ -20,7 +20,4 @@ export class CollectionTableComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  handleNewSelection(collection: ApiCollectionSummary): void {
-    console.log("chose new collection", collection)
-  }
 }

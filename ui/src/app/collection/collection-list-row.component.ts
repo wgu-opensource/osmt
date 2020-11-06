@@ -11,15 +11,10 @@ export class CollectionListRowComponent implements OnInit {
   @Input() collection?: ApiCollectionSummary
   @Input() id = "collection-list-row"
   @Input() rowActions: TableActionDefinition[] = []
-  @Output() rowSelected = new EventEmitter<ApiCollectionSummary>()
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  handleSelectCollection($event: MouseEvent): boolean {
-    this.rowSelected.emit(this.collection)
-    return false
-  }
 }

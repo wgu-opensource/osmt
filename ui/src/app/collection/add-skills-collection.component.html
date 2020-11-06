@@ -43,12 +43,11 @@
 
     <div class="t-margin-medium t-margin-bottom">
       <ng-template [appLoadingObservables]="[resultsLoaded]">
-<!--        <app-table-->
-<!--          *ngIf="!emptyResults"-->
-<!--          [skills]="results.skills"-->
-<!--          [currentSort]="columnSort"-->
-<!--          (columnSorted)="handleHeaderColumnSort($event)"-->
-<!--        ></app-table>-->
+        <app-collection-table
+          *ngIf="!emptyResults"
+          [collections]="results.collections"
+          [rowActions]="rowActions()"
+        ></app-collection-table>
 
         <app-empty-message *ngIf="emptyResults">
           <p class="m-emptyMessage-x-message">What collection needs this skill?</p>

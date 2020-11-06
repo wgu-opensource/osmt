@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
-import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
+import {ApiCollectionSummary, ApiSkillSummary} from "../richskill/ApiSkillSummary";
 import {Title} from "@angular/platform-browser";
 import {PublishStatus} from "../PublishStatus";
 import {FormControl, FormGroup} from "@angular/forms";
@@ -8,6 +8,7 @@ import {Observable} from "rxjs";
 import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
 import {ApiSkillSortOrder} from "../richskill/ApiSkill";
 import {CollectionService} from "./service/collection.service";
+import {TableActionDefinition} from "../table/has-action-definitions";
 
 @Component({
   selector: "app-add-skills-collection",
@@ -117,5 +118,19 @@ export class AddSkillsCollectionComponent implements OnInit {
   }
   get currentPageNo(): number {
     return Math.floor(this.from / this.size) + 1
+  }
+
+  rowActions(): TableActionDefinition[] {
+    return [
+      new TableActionDefinition({
+        label: "Select Collection",
+        callback: (action: TableActionDefinition, collection?: ApiCollectionSummary) => this.handleSelectCollection(action, collection),
+      })
+    ]
+  }
+
+  private handleSelectCollection(action: TableActionDefinition, collection?: ApiCollectionSummary): void{
+    console.log("chose collection!", collection)
+
   }
 }

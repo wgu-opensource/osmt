@@ -1,0 +1,24 @@
+<ng-template [ngIf]="!!collection">
+
+  <th scope="row" id="{{id}}-header">
+    <a class="t-focus t-type-bodyLink" href="#">{{collection.name}}</a>
+  </th>
+
+  <td>{{collection.skillCount}}</td>
+
+  <td>
+    <app-status-bar [status]="collection.status"></app-status-bar>
+  </td>
+
+  <td class="m-tableRow-x-actions">
+
+    <div *ngIf="rowActions.length == 1">
+      <button class="m-button m-button-secondary">
+        <span class="m-button-x-text" (click)="handleSelectCollection($event)">Select Collection</span>
+      </button>
+    </div>
+
+  </td>
+
+</ng-template>
+

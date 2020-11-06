@@ -4,6 +4,7 @@ import {ToastService} from "../../../../toast/toast.service"
 import {formatDate} from "@angular/common"
 import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
+import {saveAs} from "file-saver"
 
 @Component({template: ""})
 export abstract class PublicRichSkillActionBarComponent implements OnInit {

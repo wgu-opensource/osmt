@@ -8,6 +8,7 @@
   <div class="l-container t-padding-large t-padding-top">
 
     <div class="l-container l-container-mobile">
+      <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
 
 <!--      {{render '@listheading'}}-->
       <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Add RSD<ng-template [ngIf]="isPlural">s</ng-template> to a Collection</h2>
@@ -24,8 +25,8 @@
 <!--      {{render '@listheadingsearch'}}-->
       <div class="t-margin-medium t-margin-bottom">
         <div class="m-text">
-          <svg class="m-text-x-icon t-icon"><use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use></svg>
-          <input type="text" placeholder="Search Collections">
+          <svg class="m-text-x-icon t-icon" (click)="clearSearch()"><use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use></svg>
+          <input type="text" placeholder="Search Collections" [formControl]="searchForm.controls.search">
         </div>
 
         <!-- hide or show this p element depending on text input (pattern retains vertical spacing with parent div) -->
@@ -37,13 +38,29 @@
         (filtersChanged)="handleFiltersChanged($event)"
       ></app-filter-controls>
 
+      </form>
     </div>
 
     <div class="t-margin-medium t-margin-bottom">
-<!--      {{render '@table'}}-->
+      <ng-template [appLoadingObservables]="[resultsLoaded]">
+<!--        <app-table-->
+<!--          *ngIf="!emptyResults"-->
+<!--          [skills]="results.skills"-->
+<!--          [currentSort]="columnSort"-->
+<!--          (columnSorted)="handleHeaderColumnSort($event)"-->
+<!--        ></app-table>-->
+
+        <app-empty-message *ngIf="emptyResults">
+          <p class="m-emptyMessage-x-message">What collection needs this skill?</p>
+        </app-empty-message>
+      </ng-template>
     </div>
 
-<!--    {{render '@pagingnavigation'}}-->
+    <app-pagination
+      [currentPage]="currentPageNo"
+      [totalPages]="totalPageCount"
+      (pageClicked)="handlePageClicked($event)"
+    ></app-pagination>
 
   </div>
 

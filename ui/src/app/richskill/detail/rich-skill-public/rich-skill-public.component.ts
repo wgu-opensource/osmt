@@ -35,11 +35,11 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
       },
       {
         label: "Standards",
-        bodyHtml: this.richSkill?.standards?.map(({name}) => name)?.join("\n") ?? "",
+        bodyHtml: this.richSkill?.standards?.map(({name}) => name)?.join("; ") ?? "",
         showIfEmpty: false
       }, {
         label: "Certifications",
-        bodyHtml: this.richSkill?.certifications?.map(({name}) => name)?.join("\n") ?? "",
+        bodyHtml: this.richSkill?.certifications?.map(({name}) => name)?.join("; ") ?? "",
         showIfEmpty: false
       }, {
         label: "Occupations",

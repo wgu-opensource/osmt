@@ -12,9 +12,8 @@ export class PublicSkillActionBarHorizontalComponent extends PublicRichSkillActi
 
   @Input() skillUuid = ""
   @Input() skillName = ""
+  @Input() skillUrl = ""
 
-  // This gets mapped to a visually hidden textarea so that javascript has a node to copy from
-  href = ""
   jsonClipboard = ""
 
   constructor(

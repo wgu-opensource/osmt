@@ -16,14 +16,22 @@
 
       <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
         <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
-          <app-public-skill-action-bar-vertical [skillUuid]="getSkillUuid()" [skillName]="getSkillName()"></app-public-skill-action-bar-vertical>
+          <app-public-skill-action-bar-vertical
+            [skillUuid]="getSkillUuid()"
+            [skillName]="getSkillName()"
+            [skillUrl]="getSkillUrl()"
+          ></app-public-skill-action-bar-vertical>
         </div>
       </div>
 
     </div>
 
     <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
-      <app-public-skill-action-bar-horizontal [skillUuid]="getSkillUuid()" [skillName]="getSkillName()"></app-public-skill-action-bar-horizontal>
+      <app-public-skill-action-bar-horizontal
+        [skillUuid]="getSkillUuid()"
+        [skillName]="getSkillName()"
+        [skillUrl]="getSkillUrl()"
+      ></app-public-skill-action-bar-horizontal>
     </div>
   </div>
   <ng-template #noSkill>

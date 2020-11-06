@@ -1,5 +1,5 @@
 import {NgModule} from "@angular/core"
-import {Routes, RouterModule} from "@angular/router"
+import {RouterModule, Routes} from "@angular/router"
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
 import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-library.component"
 import {RichSkillFormComponent, SkillFormDirtyGuard} from "./richskill/form/rich-skill-form.component"
@@ -11,6 +11,7 @@ import {RichSkillManageComponent} from "./richskill/detail/rich-skill-manage/ric
 import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
 import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component";
 import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component";
+import {CreateCollectionComponent} from "./collection/create-collection/create-collection.component"
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -38,6 +39,9 @@ const routes: Routes = [
     component: RichSkillsLibraryComponent,
     canActivate: [AuthGuard],
   },
+
+  // collections
+  {path: "collections/create", component: CreateCollectionComponent},
 
   // public views
   {path: "skills/:uuid", component: RichSkillPublicComponent},

@@ -4,20 +4,32 @@ import {AuthService} from "../../auth/auth-service";
 import {AbstractService} from "../../abstract.service";
 import {PublishStatus} from "../../PublishStatus";
 import {ApiSkillSortOrder} from "../../richskill/ApiSkill";
-import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../../richskill/service/rich-skill-search.service";
+import {ApiSearch, PaginatedCollections} from "../../richskill/service/rich-skill-search.service";
 import {Observable} from "rxjs";
-import {ApiCollectionSummary, ApiSkillSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary";
+import {ApiCollectionSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary";
 import {map, share} from "rxjs/operators";
 import {ApiBatchResult} from "../../richskill/ApiBatchResult";
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult";
+import {Collection, CollectionUpdate} from "../Collection"
 
 @Injectable({
   providedIn: "root"
 })
 export class CollectionService extends AbstractService {
 
+  private baseServiceUrl = "api/collections"
+
   constructor(httpClient: HttpClient, authService: AuthService) {
     super(httpClient, authService)
+  }
+
+  createCollection(collections: CollectionUpdate[]): Observable<Collection[]> {
+    return this.post<Collection[]>({
+      path: this.baseServiceUrl,
+      body: collections
+    })
+      .pipe(share())
+      .pipe(map(({body}) => this.safeUnwrapBody(body, "Failed to parse create collection response")))
   }
 
   searchCollections(

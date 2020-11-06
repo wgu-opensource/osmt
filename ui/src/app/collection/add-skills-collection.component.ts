@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {ApiCollectionSummary, ApiSkillSummary} from "../richskill/ApiSkillSummary";
 import {Title} from "@angular/platform-browser";
 import {PublishStatus} from "../PublishStatus";
@@ -9,12 +9,15 @@ import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../richskill/ser
 import {ApiSkillSortOrder} from "../richskill/ApiSkill";
 import {CollectionService} from "./service/collection.service";
 import {TableActionDefinition} from "../table/has-action-definitions";
+import {ToastService} from "../toast/toast.service";
 
 @Component({
   selector: "app-add-skills-collection",
   templateUrl: "./add-skills-collection.component.html"
 })
 export class AddSkillsCollectionComponent implements OnInit {
+  uuidParam?: string
+
   from = 0
   size = 50
 
@@ -32,9 +35,15 @@ export class AddSkillsCollectionComponent implements OnInit {
   selectedSkills?: ApiSkillSummary[]
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
 
-  constructor(protected router: Router, protected titleService: Title, protected collectionService: CollectionService) {
+  constructor(protected router: Router,
+              protected titleService: Title,
+              protected route: ActivatedRoute,
+              protected collectionService: CollectionService,
+              protected toastService: ToastService
+  ) {
     this.selectedSkills = this.router.getCurrentNavigation()?.extras.state as ApiSkillSummary[]
     this.titleService.setTitle("Add RSDs to a Collection")
+    this.uuidParam = this.route.snapshot.paramMap.get("uuid") || undefined
   }
 
   ngOnInit(): void {
@@ -129,8 +138,23 @@ export class AddSkillsCollectionComponent implements OnInit {
     ]
   }
 
-  private handleSelectCollection(action: TableActionDefinition, collection?: ApiCollectionSummary): void{
+  private handleSelectCollection(action: TableActionDefinition, collection?: ApiCollectionSummary): boolean {
     console.log("chose collection!", collection)
+    if (this.uuidParam === undefined) { return false }
+
+    const apiSearch = ApiSearch.factory({uuids: this.selectedSkills?.map(it => it.uuid) })
+
+    this.toastService.showBlockingLoader()
+    this.collectionService.addSkillsWithResult(this.uuidParam, apiSearch).subscribe(result => {
+      const message = `Added ${result.modifiedCount} skills to collection`
+      this.toastService.showToast("Success!", message)
+      this.toastService.hideBlockingLoader()
+      this.return()
+    })
+    return false
+  }
+
+  private return(): void {
 
   }
 }

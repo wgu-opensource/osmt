@@ -10,12 +10,16 @@ export interface INamedReference {
   id?: string
   name?: string
 }
-export class ApiNamedReference {
+export class ApiNamedReference implements INamedReference {
   id?: string
   name?: string
   constructor(reference: INamedReference) {
     this.id = reference.id
     this.name = reference.name
+  }
+
+  equals(other: ApiNamedReference): boolean {
+    return this.id === other.id && this.name === other.name
   }
 }
 

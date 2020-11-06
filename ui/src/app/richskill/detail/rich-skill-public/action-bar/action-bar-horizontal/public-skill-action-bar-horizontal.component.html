@@ -1,9 +1,10 @@
 <nav class="l-flex l-flex-alignCenter l-flex-0 t-elevation-large">
 
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyURL(fullPath)">
+  <button type="button" class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyURL(fullPath)">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="duplicateIcon"></use>
     </svg>
+
     <span class="m-actionBarItemHorizontal-x-label m-buttonText">
         <span class="button-x-text">
             Copy URL
@@ -12,10 +13,10 @@
           <textarea class="t-visuallyHidden" #fullPath>{{href}}</textarea>
         </label>
         </span>
-    <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
-  </div>
+    <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
+  </button>
 
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onDownloadCsv()">
+  <button type="button" class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onDownloadCsv()">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="downloadIcon"></use>
     </svg>
@@ -25,9 +26,9 @@
           </span>
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
-  </div>
+  </button>
 
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyJSON(skillJson)">
+  <button type="button" class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyJSON(skillJson)">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="duplicateIcon"></use>
     </svg>
@@ -40,6 +41,6 @@
       </label>
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
-  </div>
+  </button>
 
 </nav>

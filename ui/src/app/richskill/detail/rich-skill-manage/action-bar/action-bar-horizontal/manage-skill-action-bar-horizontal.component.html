@@ -1,5 +1,5 @@
 <nav class="l-flex l-flex-alignCenter t-elevation-large">
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" routerLink="../edit">
+  <button type="button" class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" routerLink="../edit">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="editIcon"></use>
     </svg>
@@ -9,8 +9,8 @@
           </span>
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
-  </div>
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary">
+  </button>
+  <button type="button" class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="duplicateIcon"></use>
     </svg>
@@ -20,8 +20,8 @@
           </span>
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
-  </div>
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" [routerLink]="publishLinkDestination()">
+  </button>
+  <button type="button" class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" [routerLink]="publishLinkDestination()">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="publishIcon"></use>
     </svg>
@@ -31,8 +31,8 @@
           </span>
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
-  </div>
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary">
+  </button>
+  <button type="button" class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="archiveIcon"></use>
     </svg>
@@ -42,8 +42,8 @@
           </span>
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
-  </div>
-  <div class="m-actionBarItemHorizontal m-actionBarItemHorizontal">
+  </button>
+  <button type="button" class="m-actionBarItemHorizontal m-actionBarItemHorizontal">
     <svg class="m-actionBarItemHorizontal-x-icon t-icon">
       <use [attr.xlink:href]="dismissIcon"></use>
     </svg>
@@ -53,5 +53,5 @@
           </span>
         </span>
     <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
-  </div>
+  </button>
 </nav>

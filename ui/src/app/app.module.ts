@@ -51,12 +51,15 @@ import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.
 import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-horizontal-action-bar.component"
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
 import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
-import {StatusPillComponent} from "./core/status-pill.component"
-import {DotsMenuComponent} from "./table/dots-menu.component"
-import { CreateCollectionComponent } from "./collection/create-collection/create-collection.component"
-import { AbstractCreateCollectionActionbarComponent } from "./collection/create-collection/action-bar/abstract-create-collection-actionbar.component"
-import { CreateCollectionActionBarHorizontalComponent } from "./collection/create-collection/action-bar/create-collection-action-bar-horizontal.component"
-import { CreateCollectionActionBarVerticalComponent } from "./collection/create-collection/action-bar/create-collection-action-bar-vertical.component"
+import {StatusPillComponent} from "./core/status-pill.component";
+import {DotsMenuComponent} from "./table/dots-menu.component";
+import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component";
+import {CollectionTableComponent} from "./collection/collection-table.component";
+import {CollectionListRowComponent} from "./collection/collection-list-row.component";
+import {CreateCollectionComponent} from "./collection/create-collection/create-collection.component"
+import {AbstractCreateCollectionActionbarComponent} from "./collection/create-collection/action-bar/abstract-create-collection-actionbar.component"
+import {CreateCollectionActionBarHorizontalComponent} from "./collection/create-collection/action-bar/create-collection-action-bar-horizontal.component"
+import {CreateCollectionActionBarVerticalComponent} from "./collection/create-collection/action-bar/create-collection-action-bar-vertical.component"
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -98,6 +101,10 @@ export function initializeApp(appConfig: AppConfig): () => void {
     ManageSkillActionBarHorizontalComponent,
 
     RichSkillSearchResultsComponent,
+
+    AddSkillsCollectionComponent,
+    CollectionTableComponent,
+    CollectionListRowComponent,
 
     DetailCardComponent,
     DetailCardSectionComponent,

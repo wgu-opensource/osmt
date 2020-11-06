@@ -1,8 +1,11 @@
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http"
 import {AppConfig} from "./app.config"
-import {Observable} from "rxjs"
+import {Observable, Subscription} from "rxjs"
 import {AuthService} from "./auth/auth-service";
 import {ApiTaskResult} from "./task/ApiTaskResult";
+import {PublishStatus} from "./PublishStatus";
+import {ApiSkillSortOrder} from "./richskill/ApiSkill";
+import {ApiBatchResult} from "./richskill/ApiBatchResult";
 
 interface ApiGetParams {
   path: string,
@@ -70,6 +73,19 @@ export abstract class AbstractService {
     return headers
   }
 
+  pollForTaskResult(obs: Observable<ApiTaskResult>, pollIntervalMs: number = 1000): Observable<ApiBatchResult> {
+    return new Observable((observer) => {
+      obs.subscribe(task => {
+        this.observableForTaskResult<ApiBatchResult>(task, pollIntervalMs).subscribe(result => {
+          observer.next(result)
+          if (result) {
+            observer.complete()
+          }
+        })
+      })
+    })
+  }
+
   observableForTaskResult<T>(task: ApiTaskResult, pollIntervalMs: number = 1000): Observable<T> {
     return new Observable((observer) => {
 
@@ -91,5 +107,24 @@ export abstract class AbstractService {
       tick()
 
     })
+  }
+
+  buildTableParams(
+    size: number | undefined,
+    from: number | undefined,
+    filterByStatuses?: Set<PublishStatus>,
+    sort?: ApiSkillSortOrder): any {
+
+    const params: any = {
+      sort
+    }
+    if (filterByStatuses !== undefined) {
+      params.status = Array.from(filterByStatuses).map(s => s.toString())
+    }
+    if (size !== undefined) { params.size = size }
+    if (from !== undefined) { params.from = from }
+    if (sort !== undefined) { params.sort = sort.toString()}
+
+    return params
   }
 }

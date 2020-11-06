@@ -31,15 +31,10 @@ export class RichSkillService extends AbstractService {
     sort: ApiSkillSortOrder | undefined,
   ): Observable<PaginatedSkills> {
 
-    const status = filterByStatuses !== undefined ? Array.from(filterByStatuses).map(s => s.toString()) : undefined
+    const params = this.buildTableParams(size, from, filterByStatuses, sort)
     return this.get<IApiSkillSummary[]>({
       path: `${this.serviceUrl}`,
-      params: {
-        size: size.toString(),
-        from: from.toString(),
-        ...status && {status},
-        ...sort && {sort}
-      }
+      params,
     })
       .pipe(share())
       .pipe(map(({body, headers}) => {
@@ -130,15 +125,7 @@ export class RichSkillService extends AbstractService {
   ): Observable<PaginatedSkills> {
     const errorMsg = `Failed to unwrap response for skill search`
 
-    const params: any = {
-      sort
-    }
-    if (filterByStatuses !== undefined) {
-      params.status = Array.from(filterByStatuses).map(s => s.toString())
-    }
-    if (size !== undefined) { params.size = size }
-    if (from !== undefined) { params.from = from }
-    if (sort !== undefined) { params.sort = sort.toString()}
+    const params = this.buildTableParams(size, from, filterByStatuses, sort)
 
     return this.post<IApiSkillSummary[]>({
       path: "api/search/skills",
@@ -179,15 +166,6 @@ export class RichSkillService extends AbstractService {
     filterByStatuses?: Set<PublishStatus>,
     pollIntervalMs: number = 1000,
   ): Observable<ApiBatchResult> {
-    return new Observable((observer) => {
-      this.publishSkills(apiSearch, newStatus, filterByStatuses).subscribe(task => {
-        this.observableForTaskResult<ApiBatchResult>(task, pollIntervalMs).subscribe(result => {
-          observer.next(result)
-          if (result) {
-            observer.complete()
-          }
-        })
-      })
-    })
+    return this.pollForTaskResult(this.publishSkills(apiSearch, newStatus, filterByStatuses), pollIntervalMs)
   }
 }

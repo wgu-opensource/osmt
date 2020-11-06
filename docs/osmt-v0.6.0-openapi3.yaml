@@ -346,7 +346,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/SearchQuery'
+                $ref: '#/components/schemas/Search'
       responses:
         '200':
           description: OK

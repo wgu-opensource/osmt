@@ -44,8 +44,8 @@ export class Collection {
 }
 
 export interface CollectionUpdate {
-  name: string,
-  status: PublishStatus,
-  author: INamedReference,
-  skills: IStringListUpdate
+  name?: string,
+  status?: PublishStatus,
+  author?: INamedReference,
+  skills?: IStringListUpdate
 }

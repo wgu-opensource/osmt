@@ -1,0 +1,38 @@
+<table class="l-table">
+  <thead>
+    <tr class="m-tableHeader">
+      <th class="t-hidden-tabletMax" scope="col">
+        <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Collection Name</span>
+        </span>
+      </th>
+
+      <th class="t-hidden-tabletMax" scope="col">
+        <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Skills</span>
+        </span>
+      </th>
+
+      <th class="t-hidden-tabletMax" scope="col">
+        <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Status</span>
+        </span>
+      </th>
+
+      <th class="m-tableHeader-x-actions" scope="col">
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+  <tr
+    *ngFor="let collection of collections; let i=index"
+    id="table-row-{{i}}"
+    class="m-tableRow"
+
+    app-collection-list-row
+    [collection]="collection"
+    [rowActions]="rowActions"
+  ></tr>
+  </tbody>
+</table>

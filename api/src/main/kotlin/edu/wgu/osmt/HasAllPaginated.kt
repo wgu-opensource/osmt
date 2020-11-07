@@ -1,6 +1,7 @@
 package edu.wgu.osmt
 
-import edu.wgu.osmt.api.model.ApiSortEnum
+import edu.wgu.osmt.api.model.SortOrder
+import edu.wgu.osmt.api.model.SortOrderCompanion
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.*
 import org.springframework.http.HttpEntity
@@ -22,6 +23,7 @@ interface HasAllPaginated<T> {
      * handles
      */
     val allPaginatedPath: String
+    val sortOrderCompanion: SortOrderCompanion<*>
 
     fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -31,12 +33,12 @@ interface HasAllPaginated<T> {
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
-        @RequestParam(required = false, defaultValue = "category.asc") sort: String
+        @RequestParam(required = false) sort: String?
     ): HttpEntity<List<T>> {
 
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val sortEnum = ApiSortEnum.forApiValue(sort)
-        val pageable = OffsetPageable(from, size, sortEnum.esSort)
+        val sortEnum: SortOrder = sortOrderCompanion.forValueOrDefault(sort)
+        val pageable = OffsetPageable(from, size, sortEnum.sort)
 
         val searchHits = elasticRepository.findAllFilteredByPublishStatus(publishStatuses, pageable)
 

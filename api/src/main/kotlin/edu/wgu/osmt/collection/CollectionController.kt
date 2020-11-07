@@ -5,13 +5,13 @@ import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiCollection
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
 import edu.wgu.osmt.api.model.ApiSkillListUpdate
+import edu.wgu.osmt.api.model.SkillSortEnum
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.*
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.security.OAuth2Helper
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
-import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskResult
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
@@ -36,6 +36,7 @@ class CollectionController @Autowired constructor(
 ): HasAllPaginated<CollectionDoc> {
 
     override val allPaginatedPath: String = RoutePaths.COLLECTIONS_PATH
+    override val sortOrderCompanion = SkillSortEnum.Companion
 
     @GetMapping(RoutePaths.COLLECTIONS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -44,7 +45,7 @@ class CollectionController @Autowired constructor(
         size: Int,
         from: Int,
         status: Array<String>,
-        sort: String
+        sort: String?
     ): HttpEntity<List<CollectionDoc>> {
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort)
     }

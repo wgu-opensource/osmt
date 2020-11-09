@@ -83,9 +83,9 @@ export class RichSkillFormComponent implements OnInit {
     const existing = new Set(refs?.map(it => this.stringFromNamedReference(it)))
     const provided = new Set(words)
     const removing = [...existing].filter(x => !provided.has(x)).map(it => this.namedReferenceForString(it))
-      .filter(it => it).map(it => it as INamedReference)
+      .filter(it => it).map(it => it as ApiNamedReference)
     const adding = [...provided].filter(x => !existing.has(x)).map(it => this.namedReferenceForString(it))
-      .filter(it => it).map(it => it as INamedReference)
+      .filter(it => it).map(it => it as ApiNamedReference)
     return (removing.length > 0 || adding.length > 0) ? new ApiReferenceListUpdate(adding, removing) : undefined
 
   }
@@ -165,15 +165,19 @@ export class RichSkillFormComponent implements OnInit {
 
 
     // handle a single alignment with title and url only
-    const firstAlignment: INamedReference | undefined = this.existingSkill?.alignments?.find(it => true)
+    const firstAlignment: ApiNamedReference | undefined = this.existingSkill
+      ?.alignments
+      ?.map(it => new ApiNamedReference(it))
+      ?.find(it => true)
     const inputAlignment = new ApiNamedReference({
       id: this.nonEmptyOrNull(formValue.alignmentUrl),
       name: this.nonEmptyOrNull(formValue.alignmentText)
     })
-    if ((inputAlignment.id || inputAlignment.name) && firstAlignment !== inputAlignment) {
+
+    if ((inputAlignment.id || inputAlignment.name) && !firstAlignment?.equals(inputAlignment)) {
       update.alignments = new ApiReferenceListUpdate(
         [inputAlignment],
-        firstAlignment !== undefined ? [firstAlignment as INamedReference] : []
+        firstAlignment ? [firstAlignment] : []
       )
     }
 
@@ -212,7 +216,7 @@ export class RichSkillFormComponent implements OnInit {
     }
   }
 
-  namedReferenceForString(value: string): INamedReference | undefined {
+  namedReferenceForString(value: string): ApiNamedReference | undefined {
     const str = value.trim()
     if (str.length < 1) {
       return undefined

@@ -132,14 +132,14 @@ class SearchService @Autowired constructor(
     ): SearchHits<CollectionDoc> {
         val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(Pageable.unpaged())
         val bq = boolQuery()
-        val filter = BoolQueryBuilder().should(termsQuery(RichSkillDoc::publishStatus.name, publishStatus))
+        val filter = BoolQueryBuilder().must(termsQuery(RichSkillDoc::publishStatus.name, publishStatus))
         nsq.withFilter(filter)
         nsq.withQuery(bq)
 
         var collectionMultiPropertyResults: List<String> = listOf()
 
         // treat the presence of query property to mean multi field search with that term
-        if (apiSearch.query != null) {
+        if (!apiSearch.query.isNullOrBlank()) {
             // Search against rich skill properties
             bq.must(richSkillPropertiesMultiMatch(apiSearch.query))
 
@@ -179,6 +179,14 @@ class SearchService @Autowired constructor(
                     ).innerHit(InnerHitBuilder())
                 )
             }
+        } else { // query nor advanced search was provided, return all collections
+            bq.must(
+                nestedQuery(
+                    RichSkillDoc::collections.name,
+                    matchAllQuery(),
+                    ScoreMode.Avg
+                ).innerHit(InnerHitBuilder())
+            )
         }
 
         val results = elasticsearchRestTemplate.search(nsq.build(), RichSkillDoc::class.java)
@@ -204,13 +212,13 @@ class SearchService @Autowired constructor(
     ): SearchHits<RichSkillDoc> {
         val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
         val bq = boolQuery()
-        val filter = BoolQueryBuilder().should(termsQuery(RichSkillDoc::publishStatus.name, publishStatus))
+        val filter = BoolQueryBuilder().must(termsQuery(RichSkillDoc::publishStatus.name, publishStatus))
 
         nsq.withQuery(bq)
         nsq.withFilter(filter)
 
         // treat the presence of query property to mean multi field search with that term
-        if (apiSearch.query != null) {
+        if (!apiSearch.query.isNullOrBlank()) {
             bq.should(richSkillPropertiesMultiMatch(apiSearch.query))
 
             bq.should(

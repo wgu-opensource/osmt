@@ -1017,8 +1017,8 @@ components:
     SortOrder:
       type: string
       enum:
-        - category.asc
-        - category.desc
+        - name.asc
+        - name.desc
         - skill.asc
         - skill.desc
 

@@ -2,9 +2,7 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
-import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.ApiSkill
-import edu.wgu.osmt.api.model.ApiSkillUpdate
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.*
@@ -35,6 +33,7 @@ class RichSkillController @Autowired constructor(
     val keywordDao = KeywordDao.Companion
 
     override val allPaginatedPath: String = RoutePaths.SKILLS_PATH
+    override val sortOrderCompanion = SkillSortEnum.Companion
 
     @GetMapping(RoutePaths.SKILLS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -43,7 +42,7 @@ class RichSkillController @Autowired constructor(
         size: Int,
         from: Int,
         status: Array<String>,
-        sort: String
+        sort: String?
     ): HttpEntity<List<RichSkillDoc>> {
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort)
     }

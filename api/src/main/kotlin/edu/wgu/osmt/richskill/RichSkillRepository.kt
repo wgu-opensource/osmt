@@ -47,8 +47,6 @@ interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
     fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String): RichSkillDescriptorDao?
     fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject
 
-    fun paginateAll(publishStatuses: Set<PublishStatus>, pageable: Pageable): PaginatedResults<RichSkillDescriptorDao>
-
     fun changeStatusesForTask(task: PublishSkillsTask): ApiBatchResult
 }
 
@@ -342,16 +340,6 @@ class RichSkillRepositoryImpl @Autowired constructor(
                 removingCollections
             ) else null
         )
-    }
-
-    override fun paginateAll(publishStatuses: Set<PublishStatus>, pageable: Pageable): PaginatedResults<RichSkillDescriptorDao> {
-        var query: Query = publishStatusSetToQuery(publishStatuses)
-
-        query = query.orderBy(*sortToQueryOrder(pageable.sort, query).toList().toTypedArray())
-
-        val total = query.count()
-        val results =  dao.wrapRows(query.limit(pageable.pageSize, offset = pageable.offset)).toList()
-        return PaginatedResults(total.toInt(), results)
     }
 
     override fun changeStatusesForTask(publishSkillsTask: PublishSkillsTask): ApiBatchResult {

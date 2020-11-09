@@ -2,7 +2,8 @@ package edu.wgu.osmt.elasticsearch
 
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.ApiSortEnum
+import edu.wgu.osmt.api.model.CollectionSortEnum
+import edu.wgu.osmt.api.model.SkillSortEnum
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
@@ -34,12 +35,12 @@ class SearchController @Autowired constructor(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
-        @RequestParam(required = false, defaultValue = "category.asc") sort: String,
+        @RequestParam(required = false) sort: String?,
         @RequestBody apiSearch: ApiSearch
     ): HttpEntity<List<CollectionDoc>> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val sortEnum = ApiSortEnum.forApiValue(sort)
-        val pageable = OffsetPageable(from, size, sortEnum.esSort)
+        val sortEnum: CollectionSortEnum = CollectionSortEnum.forValueOrDefault(sort)
+        val pageable = OffsetPageable(from, size, sortEnum.sort)
 
         val searchHits =
             elasticsearchService.searchCollectionsByApiSearch(apiSearch, publishStatuses, pageable)
@@ -73,12 +74,12 @@ class SearchController @Autowired constructor(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
-        @RequestParam(required = false, defaultValue = "category.asc") sort: String,
+        @RequestParam(required = false) sort: String?,
         @RequestBody apiSearch: ApiSearch
     ): HttpEntity<List<RichSkillDoc>> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val sortEnum = ApiSortEnum.forApiValue(sort)
-        val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum.esSort)
+        val sortEnum = SkillSortEnum.forValueOrDefault(sort)
+        val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum.sort)
 
         val searchHits = elasticsearchService.searchRichSkillsByApiSearch(
             apiSearch,

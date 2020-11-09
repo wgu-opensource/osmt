@@ -4,6 +4,7 @@ import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.collection.CollectionDoc
+import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.richskill.RichSkillDoc
@@ -25,17 +26,15 @@ import org.springframework.stereotype.Service
 class SearchService @Autowired constructor(
     val esRichSkillRepository: EsRichSkillRepository,
     val esCollectionRepository: EsCollectionRepository,
-    val elasticsearchRestTemplate: ElasticsearchRestTemplate
+    val elasticsearchRestTemplate: ElasticsearchRestTemplate,
+    val appConfig: AppConfig
 ) {
-
-    val whiteLabelAllowsSearchingByAuthor: Boolean = true // TODO wire this up to white labeling
-
     fun collectionPropertiesMultiMatch(query: String): MultiMatchQueryBuilder {
         var fields = arrayOf(
             CollectionDoc::name.name
         )
 
-        if (whiteLabelAllowsSearchingByAuthor) {
+        if (appConfig.whiteLabelEnabled) {
             fields += CollectionDoc::author.name
         }
 
@@ -55,7 +54,7 @@ class SearchService @Autowired constructor(
             RichSkillDoc::alignments.name
         )
 
-        if (whiteLabelAllowsSearchingByAuthor) {
+        if (appConfig.whiteLabelEnabled) {
             fields += RichSkillDoc::author.name
         }
 
@@ -159,7 +158,7 @@ class SearchService @Autowired constructor(
                 ).withPageable(Pageable.unpaged()).withFilter(filter).build(), CollectionDoc::class.java
             ).searchHits.map { it.content.uuid }
 
-        } else if (apiSearch.advanced != null){
+        } else if (apiSearch.advanced != null) {
             generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)
 
             if (apiSearch.advanced.collectionName != null) {
@@ -208,7 +207,8 @@ class SearchService @Autowired constructor(
     fun searchRichSkillsByApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
-        pageable: Pageable = Pageable.unpaged()
+        pageable: Pageable = Pageable.unpaged(),
+        collectionId: String? = null
     ): SearchHits<RichSkillDoc> {
         val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
         val bq = boolQuery()
@@ -219,34 +219,62 @@ class SearchService @Autowired constructor(
 
         // treat the presence of query property to mean multi field search with that term
         if (!apiSearch.query.isNullOrBlank()) {
-            bq.should(richSkillPropertiesMultiMatch(apiSearch.query))
 
-            bq.should(
-                nestedQuery(
-                    RichSkillDoc::collections.name,
-                    matchQuery("collections.name", apiSearch.query),
-                    ScoreMode.Avg
+            if (collectionId.isNullOrBlank()) {
+                bq.should(richSkillPropertiesMultiMatch(apiSearch.query))
+                bq.should(
+                    nestedQuery(
+                        RichSkillDoc::collections.name,
+                        matchQuery("collections.name", apiSearch.query),
+                        ScoreMode.Avg
+                    )
                 )
-            )
-        } else if (apiSearch.advanced != null) {
-            generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)
-
-            apiSearch.advanced.collectionName?.let {
+            } else {
+                bq.must(richSkillPropertiesMultiMatch(apiSearch.query))
                 bq.must(
                     nestedQuery(
                         RichSkillDoc::collections.name,
-                        matchQuery("collections.name", it),
+                        boolQuery().must(matchQuery("collections.uuid", collectionId)),
                         ScoreMode.Avg
                     )
                 )
             }
+        } else if (apiSearch.advanced != null) {
+            generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)
+
+            if (collectionId.isNullOrBlank()) {
+                apiSearch.advanced.collectionName?.let {
+                    bq.must(
+                        nestedQuery(
+                            RichSkillDoc::collections.name,
+                            matchQuery("collections.name", it),
+                            ScoreMode.Avg
+                        )
+                    )
+                }
+            } else {
+                bq.must(
+                    nestedQuery(
+                        RichSkillDoc::collections.name,
+                        boolQuery().must(matchQuery("collections.uuid", collectionId)),
+                        ScoreMode.Avg
+                    )
+                )
+            }
+        } else if (!collectionId.isNullOrBlank()){
+            bq.must(
+                nestedQuery(
+                    RichSkillDoc::collections.name,
+                    boolQuery().must(matchQuery("collections.uuid", collectionId)),
+                    ScoreMode.Avg
+                )
+            )
         }
 
         return elasticsearchRestTemplate.search(nsq.build(), RichSkillDoc::class.java)
     }
 
     companion object {
-        // TODO configurable?
         const val DEFAULT_PAGESIZE: Int = 50
     }
 }

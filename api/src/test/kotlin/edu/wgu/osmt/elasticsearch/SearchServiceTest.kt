@@ -2,6 +2,7 @@ package edu.wgu.osmt.elasticsearch
 
 import edu.wgu.osmt.csv.BatchImportRichSkill
 import edu.wgu.osmt.HasDatabaseReset
+import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers
 import edu.wgu.osmt.TestObjectHelpers.keywordGenerator
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Transactional
-class SearchServiceTest : SpringTest(), HasDatabaseReset {
+class SearchServiceTest : SpringTest(), HasDatabaseReset, HasElasticsearchReset {
 
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository
@@ -28,12 +29,12 @@ class SearchServiceTest : SpringTest(), HasDatabaseReset {
     lateinit var keywordRepository: KeywordRepository
 
     @Autowired
-    lateinit var searchService: SearchService
+    override lateinit var searchService: SearchService
 
     val authorString = "unit-test-author"
 
     @Test
-    fun `should insert a rich skill into elastic search`() {
+    fun `Should insert a rich skill into elastic search`() {
         val name = UUID.randomUUID().toString()
         val statement = UUID.randomUUID().toString()
 
@@ -59,7 +60,7 @@ class SearchServiceTest : SpringTest(), HasDatabaseReset {
     }
 
     @Test
-    fun `should update a rich skill in elastic search`() {
+    fun `Should update a rich skill in elastic search`() {
         val name = UUID.randomUUID().toString()
         val statement = UUID.randomUUID().toString()
 
@@ -198,5 +199,36 @@ class SearchServiceTest : SpringTest(), HasDatabaseReset {
         ).searchHits.map { it.content }
 
         assertThat(searchByCollectionName[0].uuid).isEqualTo(richSkillDoc.uuid)
+    }
+
+    @Test
+    fun `Should limit rich skills search to a related collection if collection id present`() {
+        val associatedCollection = TestObjectHelpers.collectionDoc(name = "Test Collection")
+
+
+        val skillsWCollectionIds = (1..100).map {
+            val doc = TestObjectHelpers.randomRichSkillDoc()
+            doc.copy(collections = listOf(associatedCollection))
+        }
+
+        val nonCollectionSkills = (1..100).map {
+            TestObjectHelpers.randomRichSkillDoc()
+        }
+
+        searchService.esCollectionRepository.save(associatedCollection)
+        searchService.esRichSkillRepository.saveAll(skillsWCollectionIds + nonCollectionSkills)
+
+        val collectionRelatedResults =
+            searchService.searchRichSkillsByApiSearch(apiSearch = ApiSearch(), collectionId = associatedCollection.uuid)
+
+        val allResults = searchService.searchRichSkillsByApiSearch(apiSearch = ApiSearch())
+
+        val collectionRelatedSkillIds = collectionRelatedResults.searchHits.map { it.content.uuid }.toSet()
+        val allResultsCollectionIds = allResults.searchHits.map { it.content.uuid }.toSet()
+
+        assertThat(collectionRelatedSkillIds).isEqualTo(skillsWCollectionIds.map { it.uuid }.toSet())
+
+        assertThat(allResultsCollectionIds).isEqualTo((skillsWCollectionIds + nonCollectionSkills).map { it.uuid }
+            .toSet())
     }
 }

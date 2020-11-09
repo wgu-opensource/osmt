@@ -1,14 +1,12 @@
-
-
 <div class="m-commonControls">
-    <div class="l-container">
-      <!-- {{render '@m-search--with-buttontextbar'}} -->
-      <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
+  <div class="l-container">
+    <!-- {{render '@m-search--with-buttontextbar'}} -->
+    <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
       <div class="m-search">
         <svg class="m-search-x-icon t-icon">
-          <use xlink:href="/assets/images/svg-defs.svg#icon-search"></use>
+          <use [attr.xlink:href]="searchIcon"></use>
         </svg>
-          <input class="m-search-x-input" type="text" required [formControl]="searchForm.controls.search">
+        <input class="m-search-x-input" type="text" required [formControl]="searchForm.controls.search">
         <div class="m-search-x-controls">
           <div class="m-search-x-clear">
             <button class="m-iconInteractive" type="button" (click)="clearSearch()">
@@ -17,64 +15,57 @@
 
               <div class="m-iconInteractive-x-icon">
                 <svg class="t-icon" aria-hidden="true">
-                  <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
+                  <use [attr.xlink:href]="dismissIcon"></use>
                 </svg>
               </div>
-
             </button>
           </div>
           <div class="l-buttonTextBar">
 
-            <a class="m-buttonText" (click)="submitSkillSearch()">
+            <button type="button" class="m-buttonText" (click)="submitSkillSearch()">
               <span class="m-buttonText-x-text">Skills</span>
-            </a>
+            </button>
 
             <div class="m-divider"></div>
 
-            <a class="m-buttonText" (click)="submitCollectionSearch()">
+            <button type="button" class="m-buttonText" (click)="submitCollectionSearch()">
               <span class="m-buttonText-x-text">Collections</span>
-            </a>
-
+            </button>
           </div>
         </div>
       </div>
-      </form>
+    </form>
 
-      <div class="m-commonControls-x-controls">
-        <div>
+    <div class="m-commonControls-x-controls">
+      <div>
 
-          <a class="m-button" routerLink="/skills/create">
-            <svg class="m-button-x-icon t-icon">
-              <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
-            </svg>
-            <span class="m-button-x-text">Create Skill</span>
-          </a>
+        <a class="m-button" routerLink="/skills/create">
+          <svg class="m-button-x-icon t-icon">
+            <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
+          </svg>
+          <span class="m-button-x-text">Create Skill</span>
+        </a>
 
-          <a class="m-button" routerLink="/collections/create">
-            <svg class="m-button-x-icon t-icon">
-              <use xlink:href="/assets/images/svg-defs.svg#icon-collection"></use>
-            </svg>
-            <span class="m-button-x-text">Create Collection</span>
-          </a>
+        <a class="m-button" routerLink="/collections/create">
+          <svg class="m-button-x-icon t-icon">
+            <use xlink:href="/assets/images/svg-defs.svg#icon-collection"></use>
+          </svg>
+          <span class="m-button-x-text">Create Collection</span>
+        </a>
 
-          <a class="m-button" href="#">
-            <svg class="m-button-x-icon t-icon">
-              <use xlink:href="/assets/images/svg-defs.svg#icon-upload"></use>
-            </svg>
-            <span class="m-button-x-text">Batch Import Skills</span>
-          </a>
-
-        </div>
-
-        <div>
-          <a class="m-buttonText m-buttonText-alt" href="search/advanced">
-            <span class="m-buttonText-x-text">Advanced Search</span>
-          </a>
-        </div>
+        <a class="m-button" href="#">
+          <svg class="m-button-x-icon t-icon">
+            <use xlink:href="/assets/images/svg-defs.svg#icon-upload"></use>
+          </svg>
+          <span class="m-button-x-text">Batch Import Skills</span>
+        </a>
 
       </div>
-
-
-
+      <div>
+        <a class="m-buttonText m-buttonText-alt" href="search/advanced">
+          <span class="m-buttonText-x-text">Advanced Search</span>
+        </a>
+      </div>
     </div>
   </div>
+</div>

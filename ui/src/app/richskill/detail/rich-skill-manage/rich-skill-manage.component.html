@@ -12,7 +12,8 @@
         [status]="getPublishStatus()"
         [archiveDate]="getArchivedDate()"
         [publishDate]="getPublishedDate()"
-      ></app-detail-card>    </div>
+      ></app-detail-card>
+    </div>
 
     <div class="l-stickySidebar-x-sidebar">
       <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
@@ -21,6 +22,7 @@
           [skillName]="getSkillName()"
           [archived]="getArchivedDate()"
           [published]="getPublishedDate()"
+          (reloadSkill)="loadSkill()"
         ></app-manage-skill-action-bar-vertical>
       </div>
     </div>
@@ -33,6 +35,7 @@
       [skillName]="getSkillName()"
       [archived]="getArchivedDate()"
       [published]="getPublishedDate()"
+      (reloadSkill)="loadSkill()"
     ></app-manage-skill-action-bar-horizontal>
   </div>
 

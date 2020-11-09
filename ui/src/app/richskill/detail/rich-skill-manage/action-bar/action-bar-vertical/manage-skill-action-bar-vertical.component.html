@@ -24,7 +24,7 @@
     <span class="m-actionBarItem-x-text">Make Copy</span>
   </button>
 
-  <button type="button" class="m-actionBarItem" [routerLink]="publishLinkDestination()">
+  <button type="button" class="m-actionBarItem" (click)="handlePublish()">
 	<span class="m-actionBarItem-x-icon">
 		<svg class="t-icon" aria-hidden="true">
 			<use [attr.xlink:href]="publishIcon"></use>
@@ -33,7 +33,7 @@
     <span class="m-actionBarItem-x-text">{{publishLinkText()}}</span>
   </button>
 
-  <button type="button" class="m-actionBarItem" routerLink="../archive">
+  <button type="button" class="m-actionBarItem" (click)="handleArchive()">
 	<span class="m-actionBarItem-x-icon">
 		<svg class="t-icon" aria-hidden="true">
 			<use [attr.xlink:href]="archiveIcon"></use>

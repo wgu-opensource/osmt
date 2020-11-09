@@ -25,11 +25,15 @@ export abstract class AbstractRichSkillDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.skillLoaded = this.richSkillService.getSkillByUUID(this.uuidParam ?? "")
-    this.skillLoaded.subscribe(skill => { this.richSkill = skill })
+    this.loadSkill()
   }
 
   abstract getCardFormat(): IDetailCardSectionData[]
+
+  loadSkill(): void {
+    this.skillLoaded = this.richSkillService.getSkillByUUID(this.uuidParam ?? "")
+    this.skillLoaded.subscribe(skill => { this.richSkill = skill })
+  }
 
   getAuthor(): string {
     return this.richSkill?.author?.name ?? ""

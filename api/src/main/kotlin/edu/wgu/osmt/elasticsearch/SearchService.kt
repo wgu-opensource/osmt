@@ -30,19 +30,16 @@ class SearchService @Autowired constructor(
     val appConfig: AppConfig
 ) {
     fun collectionPropertiesMultiMatch(query: String): MultiMatchQueryBuilder {
-        var fields = arrayOf(
-            CollectionDoc::name.name
+        val fields = arrayOf(
+            CollectionDoc::name.name,
+            CollectionDoc::author.name
         )
-
-        if (appConfig.whiteLabelEnabled) {
-            fields += CollectionDoc::author.name
-        }
 
         return multiMatchQuery(query, *fields)
     }
 
     fun richSkillPropertiesMultiMatch(query: String): MultiMatchQueryBuilder {
-        var fields = arrayOf(
+        val fields = arrayOf(
             RichSkillDoc::name.name,
             RichSkillDoc::category.name,
             RichSkillDoc::statement.name,
@@ -51,12 +48,9 @@ class SearchService @Autowired constructor(
             RichSkillDoc::standards.name,
             RichSkillDoc::certifications.name,
             RichSkillDoc::employers.name,
-            RichSkillDoc::alignments.name
+            RichSkillDoc::alignments.name,
+            RichSkillDoc::author.name
         )
-
-        if (appConfig.whiteLabelEnabled) {
-            fields += RichSkillDoc::author.name
-        }
 
         return multiMatchQuery(
             query,

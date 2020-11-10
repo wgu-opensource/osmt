@@ -143,17 +143,17 @@ export class SkillsListComponent {
   rowActions(): TableActionDefinition[] {
     return [
       new TableActionDefinition({
-        label: "Archive skill",
+        label: "Archive RSD",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickArchive(action, skill),
         visible: (skill?: ApiSkillSummary) => this.archiveVisible(skill)
       }),
       new TableActionDefinition({
-        label: "Unarchive skill",
+        label: "Unarchive RSD",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickUnarchive(action, skill),
         visible: (skill?: ApiSkillSummary) => this.unarchiveVisible(skill)
       }),
       new TableActionDefinition({
-        label: "Publish skill",
+        label: "Publish RSD",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickPublish(action, skill),
         visible: (skill?: ApiSkillSummary) => this.publishVisible(skill)
       }),

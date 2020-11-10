@@ -1,4 +1,4 @@
-import {Component, Inject, Input, LOCALE_ID, OnInit} from "@angular/core"
+import {Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output} from "@angular/core"
 import {Router} from "@angular/router"
 import {AppConfig} from "../../../../../app.config"
 import {RichSkillService} from "../../../../service/rich-skill.service"
@@ -16,6 +16,8 @@ export class ManageSkillActionBarVerticalComponent extends ManageRichSkillAction
   @Input() skillName = ""
   @Input() archived = undefined
   @Input() published = undefined
+
+  @Output() reloadSkill = new EventEmitter<void>()
 
   href = ""
   jsonClipboard = ""

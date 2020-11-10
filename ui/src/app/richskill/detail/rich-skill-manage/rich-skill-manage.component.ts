@@ -4,7 +4,7 @@ import {ActivatedRoute} from "@angular/router"
 import {AbstractRichSkillDetailComponent} from "../AbstractRichSkillDetailComponent"
 import {IDetailCardSectionData} from "../../../detail-card/section/section.component"
 import {OccupationsFormatter} from "../../../job-codes/Jobcode"
-import {Title} from "@angular/platform-browser";
+import {Title} from "@angular/platform-browser"
 
 @Component({
   selector: "app-rich-skill-manage",

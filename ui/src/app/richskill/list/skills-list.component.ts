@@ -265,7 +265,7 @@ export class SkillsListComponent {
     this.skillsSaved.subscribe((result) => {
       if (result !== undefined) {
         const partial = (result.modifiedCount !== result.totalCount)  ? ` of ${result.totalCount}` : ""
-        const message = `${verb} ${result.modifiedCount}${partial} skill${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
+        const message = `${verb} ${result.modifiedCount}${partial} RSD${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
         this.toastService.showToast("Success!", message)
         this.toastService.hideBlockingLoader()
         this.loadNextPage()

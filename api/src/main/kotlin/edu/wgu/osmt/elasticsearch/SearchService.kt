@@ -13,7 +13,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.InnerHitBuilder
 import org.elasticsearch.index.query.MultiMatchQueryBuilder
 import org.elasticsearch.index.query.QueryBuilders.*
-import org.parboiled.common.Tuple3
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -31,25 +30,18 @@ class SearchService @Autowired constructor(
     val appConfig: AppConfig
 ) {
     fun collectionPropertiesMultiMatch(query: String): MultiMatchQueryBuilder {
-        var fields = arrayOf(
+        val fields = arrayOf(
             CollectionDoc::name.name,
             "${CollectionDoc::name.name}._2gram",
-            "${CollectionDoc::name.name}._3gram"
+            "${CollectionDoc::name.name}._3gram",
+            CollectionDoc::author.name
         )
-
-        if (appConfig.whiteLabelEnabled) {
-            fields += listOf(
-                CollectionDoc::author.name,
-                "${CollectionDoc::author.name}._2gram",
-                "${CollectionDoc::author.name}._3gram"
-            )
-        }
 
         return multiMatchQuery(query, *fields).type(MultiMatchQueryBuilder.Type.BOOL_PREFIX)
     }
 
     fun richSkillPropertiesMultiMatch(query: String): MultiMatchQueryBuilder {
-        var fields = arrayOf(
+        val fields = arrayOf(
             "${RichSkillDoc::name.name}",
             "${RichSkillDoc::name.name}._2gram",
             "${RichSkillDoc::name.name}._3gram",
@@ -73,12 +65,12 @@ class SearchService @Autowired constructor(
             "${RichSkillDoc::employers.name}._3gram",
             RichSkillDoc::alignments.name,
             "${RichSkillDoc::alignments.name}._2gram",
-            "${RichSkillDoc::alignments.name}._3gram"
-        )
+            "${RichSkillDoc::alignments.name}._3gram",
+            RichSkillDoc::author.name,
+            "${RichSkillDoc::author.name}._2gram",
+            "${RichSkillDoc::author.name}._3gram"
 
-        if (appConfig.whiteLabelEnabled) {
-            fields += RichSkillDoc::author.name
-        }
+        )
 
         return multiMatchQuery(
             query,

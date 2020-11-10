@@ -10,9 +10,6 @@ import org.springframework.stereotype.Component
 @Component
 @ConfigurationProperties(prefix = "app", ignoreInvalidFields = true)
 class AppConfig(
-    @Value("\${app.whiteLabelEnabled}")
-    val whiteLabelEnabled: Boolean,
-
     @Value("\${app.baseDomain}")
     val baseDomain: String,
 

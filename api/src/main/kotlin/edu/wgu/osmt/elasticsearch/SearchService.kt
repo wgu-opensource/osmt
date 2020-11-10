@@ -13,6 +13,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.InnerHitBuilder
 import org.elasticsearch.index.query.MultiMatchQueryBuilder
 import org.elasticsearch.index.query.QueryBuilders.*
+import org.parboiled.common.Tuple3
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -31,27 +32,48 @@ class SearchService @Autowired constructor(
 ) {
     fun collectionPropertiesMultiMatch(query: String): MultiMatchQueryBuilder {
         var fields = arrayOf(
-            CollectionDoc::name.name
+            CollectionDoc::name.name,
+            "${CollectionDoc::name.name}._2gram",
+            "${CollectionDoc::name.name}._3gram"
         )
 
         if (appConfig.whiteLabelEnabled) {
-            fields += CollectionDoc::author.name
+            fields += listOf(
+                CollectionDoc::author.name,
+                "${CollectionDoc::author.name}._2gram",
+                "${CollectionDoc::author.name}._3gram"
+            )
         }
 
-        return multiMatchQuery(query, *fields)
+        return multiMatchQuery(query, *fields).type(MultiMatchQueryBuilder.Type.BOOL_PREFIX)
     }
 
     fun richSkillPropertiesMultiMatch(query: String): MultiMatchQueryBuilder {
         var fields = arrayOf(
-            RichSkillDoc::name.name,
+            "${RichSkillDoc::name.name}",
+            "${RichSkillDoc::name.name}._2gram",
+            "${RichSkillDoc::name.name}._3gram",
             RichSkillDoc::category.name,
-            RichSkillDoc::statement.name,
+            "${RichSkillDoc::category.name}._2gram",
+            "${RichSkillDoc::category.name}._3gram",
             RichSkillDoc::searchingKeywords.name,
+            "${RichSkillDoc::searchingKeywords.name}._2gram",
+            "${RichSkillDoc::searchingKeywords.name}._3gram",
             "${RichSkillDoc::jobCodes.name}.${JobCode::code.name}",
+            "${RichSkillDoc::jobCodes.name}.${JobCode::code.name}._2gram",
+            "${RichSkillDoc::jobCodes.name}.${JobCode::code.name}._3gram",
             RichSkillDoc::standards.name,
+            "${RichSkillDoc::standards.name}._2gram",
+            "${RichSkillDoc::standards.name}._3gram",
             RichSkillDoc::certifications.name,
+            "${RichSkillDoc::certifications.name}._2gram",
+            "${RichSkillDoc::certifications.name}._3gram",
             RichSkillDoc::employers.name,
-            RichSkillDoc::alignments.name
+            "${RichSkillDoc::employers.name}._2gram",
+            "${RichSkillDoc::employers.name}._3gram",
+            RichSkillDoc::alignments.name,
+            "${RichSkillDoc::alignments.name}._2gram",
+            "${RichSkillDoc::alignments.name}._3gram"
         )
 
         if (appConfig.whiteLabelEnabled) {
@@ -61,7 +83,7 @@ class SearchService @Autowired constructor(
         return multiMatchQuery(
             query,
             *fields
-        )
+        ).type(MultiMatchQueryBuilder.Type.BOOL_PREFIX)
     }
 
     // Query clauses for Rich Skill properties
@@ -165,7 +187,15 @@ class SearchService @Autowired constructor(
                 bq.must(
                     nestedQuery(
                         RichSkillDoc::collections.name,
-                        boolQuery().must(matchQuery("collections.name", apiSearch.advanced.collectionName)),
+                        boolQuery().must(
+                            multiMatchQuery(
+                                apiSearch.advanced.collectionName, *listOf(
+                                    "collections.name",
+                                    "collections.name._2gram",
+                                    "collections.name._3gram"
+                                ).toTypedArray()
+                            ).type(MultiMatchQueryBuilder.Type.BOOL_PREFIX)
+                        ),
                         ScoreMode.Avg
                     ).innerHit(InnerHitBuilder())
                 )
@@ -261,7 +291,7 @@ class SearchService @Autowired constructor(
                     )
                 )
             }
-        } else if (!collectionId.isNullOrBlank()){
+        } else if (!collectionId.isNullOrBlank()) {
             bq.must(
                 nestedQuery(
                     RichSkillDoc::collections.name,

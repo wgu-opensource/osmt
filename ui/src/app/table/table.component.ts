@@ -24,6 +24,7 @@ export class TableComponent implements OnInit {
   @Output() columnSorted = new EventEmitter<ApiSkillSortOrder>()
   @Output() selectAllSelected = new EventEmitter<boolean>()
   @Input() selectAllCount?: number
+  @Input() selectAllEnabled: boolean = true
 
   // handles the inner state of the loaded skills
   preparedSkills: SkillWithMetadata[] = []

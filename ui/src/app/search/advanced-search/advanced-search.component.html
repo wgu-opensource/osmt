@@ -18,18 +18,18 @@
             </div>
             <div class="m-iconTitle-x-label">Advanced Search</div>
           </h3>
+          {{getSemicolonHelpMessage()}}
 
         </div>
 
         <app-formfield-text
           [control]="skillForm.controls.skillName"
           name="skillName"
-          label="Skill Name"
+          label="RSD Name"
           [required]="false"
         >
         </app-formfield-text>
 
-        <!-- TODO this is conditionally allowed via white label -->
         <app-formfield-text *ngIf="showAuthor()"
           [control]="skillForm.controls.author"
           name="author"
@@ -59,7 +59,6 @@
           name="keywords"
           label="Keywords"
           [required]="false"
-          [helpMessage]="getSemicolonHelpMessage()"
         >
         </app-formfield-text>
 
@@ -68,7 +67,6 @@
           name="standards"
           label="Standards"
           [required]="false"
-          [helpMessage]="getSemicolonHelpMessage()"
         >
         </app-formfield-text>
 
@@ -77,7 +75,6 @@
           name="certifications"
           label="Certifications"
           [required]="false"
-          [helpMessage]="getSemicolonHelpMessage()"
         >
         </app-formfield-text>
 
@@ -95,7 +92,6 @@
           name="employers"
           label="Employers"
           [required]="false"
-          [helpMessage]="getSemicolonHelpMessage()"
         >
         </app-formfield-text>
 
@@ -104,7 +100,6 @@
           name="alignments"
           label="Alignment"
           [required]="false"
-          [helpMessage]="getSemicolonHelpMessage()"
         >
         </app-formfield-text>
 

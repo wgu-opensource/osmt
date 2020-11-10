@@ -37,4 +37,7 @@ export class RichSkillsLibraryComponent extends SkillsListComponent implements O
     })
   }
 
+  getSelectAllEnabled(): boolean {
+    return false
+  }
 }

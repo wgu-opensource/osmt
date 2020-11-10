@@ -37,6 +37,7 @@
           [rowActions]="rowActions()"
           (selectAllSelected)="handleSelectAll($event)"
           [selectAllCount]="getSelectAllCount()"
+          [selectAllEnabled]="getSelectAllEnabled()"
         ></app-table>
 
         <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">

@@ -19,7 +19,7 @@
 
     <th class="m-tableHeader-x-actions" scope="col">
       <!--{{render '@m-tablelabel&#45;&#45;with-choice'}}-->
-      <div class="m-tableLabel">
+      <div class="m-tableLabel" *ngIf="selectAllEnabled">
         <label class="m-tableLabel-x-text" for="checkbox">Select ({{getSelectAllCount()}})</label>
 
         <div class="m-tableLabel-x-control">

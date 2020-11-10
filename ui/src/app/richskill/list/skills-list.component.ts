@@ -277,4 +277,8 @@ export class SkillsListComponent {
   getSelectAllCount(): number {
     return this.curPageCount
   }
+
+  getSelectAllEnabled(): boolean {
+    return true
+  }
 }

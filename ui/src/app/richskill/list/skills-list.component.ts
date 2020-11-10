@@ -91,12 +91,15 @@ export class SkillsListComponent {
   }
 
   actionsVisible(): boolean {
-    return (this.selectedSkills?.length ?? 0) > 0
+    return true
+    // return (this.selectedSkills?.length ?? 0) > 0
   }
 
   publishVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
       return skill.status === PublishStatus.Unpublished
+    } else if ((this.selectedSkills?.length ?? 0) === 0) {
+      return false
     } else {
       const unpublishedSkill = this.selectedSkills?.find(s => s.status === PublishStatus.Unpublished)
       return unpublishedSkill !== undefined
@@ -105,6 +108,8 @@ export class SkillsListComponent {
   archiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
       return skill.status === PublishStatus.Published
+    } else if ((this.selectedSkills?.length ?? 0) === 0) {
+      return false
     } else {
       const unarchivedSkills = this.selectedSkills?.find(s => s.status === PublishStatus.Published)
       return unarchivedSkills !== undefined
@@ -113,10 +118,16 @@ export class SkillsListComponent {
   unarchiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
       return skill.status === PublishStatus.Archived
+    } else if ((this.selectedSkills?.length ?? 0) === 0) {
+      return false
     } else {
       const archivedSkill = this.selectedSkills?.find(s => s.status === PublishStatus.Archived)
       return archivedSkill !== undefined
     }
+  }
+
+  addToCollectionVisible(skill?: ApiSkillSummary): boolean {
+    return ((this.selectedSkills?.length ?? 0) > 0)
   }
 
 
@@ -171,6 +182,7 @@ export class SkillsListComponent {
         icon: "up",
         offset: true,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickBackToTop(action, skill),
+        visible: (skill?: ApiSkillSummary) => true
       }),
 
       new TableActionDefinition({
@@ -199,6 +211,7 @@ export class SkillsListComponent {
         icon: "collection",
         primary: true,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
       }),
     ]
 
@@ -281,4 +294,5 @@ export class SkillsListComponent {
   getSelectAllEnabled(): boolean {
     return true
   }
+
 }

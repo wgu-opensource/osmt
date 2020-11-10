@@ -44,7 +44,7 @@ export class TableActionDefinition {
   template: ""
 })
 export class HasActionDefinitions {
-  @Input() protected actions: TableActionDefinition[] = []
+  @Input() actions: TableActionDefinition[] = []
 
   constructor() {
   }

@@ -9,6 +9,7 @@ import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RsdUpdateObject
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionRepository
+import edu.wgu.osmt.collection.CollectionUpdateObject
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.jobcode.JobCodeBreakout
 import edu.wgu.osmt.jobcode.JobCodeDao
@@ -117,7 +118,7 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
     fun parse_collections(rowValue: String?): List<CollectionDao>? {
         return split_field(rowValue)?.filter { it.isNotBlank() }?.mapNotNull { collectionName ->
             val collection = collectionRepository.findByName(collectionName)
-            collection ?:  collectionRepository.create(collectionName, user)
+            collection ?:  collectionRepository.create(CollectionUpdateObject(name = collectionName, author = NullableFieldUpdate(keywordRepository.getDefaultAuthor())), user)
         }
     }
 
@@ -164,7 +165,8 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
                     category = NullableFieldUpdate(category),
                     keywords = all_keywords?.let { ListFieldUpdate(add = it) },
                     collections = collections?.let {ListFieldUpdate(add = it)},
-                    jobCodes = occupations?.let { ListFieldUpdate(add = it) }
+                    jobCodes = occupations?.let { ListFieldUpdate(add = it) },
+                    author = NullableFieldUpdate(keywordRepository.getDefaultAuthor())
                 ), user)
                 log.info("created skill '${row.skillName!!}'")
             }

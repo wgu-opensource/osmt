@@ -190,8 +190,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         }
 
         val updateWithIdAndAuthor = updateObject.copy(
-            id = newRsd.id.value,
-            author = updateObject.author ?: NullableFieldUpdate(keywordRepository.getDefaultAuthor())
+            id = newRsd.id.value
         )
 
         return update(updateWithIdAndAuthor, user)

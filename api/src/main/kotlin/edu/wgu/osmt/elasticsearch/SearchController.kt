@@ -28,7 +28,8 @@ class SearchController @Autowired constructor(
 
     @PostMapping(RoutePaths.SEARCH_COLLECTIONS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun searchCollections(uriComponentsBuilder: UriComponentsBuilder,
+    fun searchCollections(
+        uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
         @RequestParam(
@@ -53,8 +54,8 @@ class SearchController @Autowired constructor(
             .path(RoutePaths.SEARCH_COLLECTIONS)
             .queryParam(RoutePaths.QueryParams.FROM, from)
             .queryParam(RoutePaths.QueryParams.SIZE, size)
-            .queryParam(RoutePaths.QueryParams.SORT, sort)
             .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
+        sort?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.SORT, it) }
 
         PaginatedLinks(
             pageable,
@@ -67,7 +68,8 @@ class SearchController @Autowired constructor(
 
     @PostMapping(RoutePaths.SEARCH_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun searchSkills(uriComponentsBuilder: UriComponentsBuilder,
+    fun searchSkills(
+        uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
         @RequestParam(
@@ -75,6 +77,7 @@ class SearchController @Autowired constructor(
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
         @RequestParam(required = false) sort: String?,
+        @RequestParam(required = false) collectionId: String?,
         @RequestBody apiSearch: ApiSearch
     ): HttpEntity<List<RichSkillDoc>> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
@@ -84,7 +87,8 @@ class SearchController @Autowired constructor(
         val searchHits = elasticsearchService.searchRichSkillsByApiSearch(
             apiSearch,
             publishStatuses,
-            pageable
+            pageable,
+            collectionId
         )
 
         // build up current uri with path and params
@@ -92,8 +96,9 @@ class SearchController @Autowired constructor(
             .path(RoutePaths.SEARCH_SKILLS)
             .queryParam(RoutePaths.QueryParams.FROM, from)
             .queryParam(RoutePaths.QueryParams.SIZE, size)
-            .queryParam(RoutePaths.QueryParams.SORT, sort)
             .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
+        sort?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.SORT, it) }
+        collectionId?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.COLLECTION_ID, it) }
 
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", searchHits.totalHits.toString())
@@ -106,6 +111,23 @@ class SearchController @Autowired constructor(
 
         return ResponseEntity.status(200).headers(responseHeaders)
             .body(searchHits.map { it.content }.toList())
+    }
+
+    @GetMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun collectionSkills(
+        uriComponentsBuilder: UriComponentsBuilder,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = "0") from: Int,
+        @RequestParam(
+            required = false,
+            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+        ) status: Array<String>,
+        @RequestParam(required = false) sort: String?,
+        @PathVariable uuid: String,
+        @RequestBody apiSearch: ApiSearch
+    ): HttpEntity<List<RichSkillDoc>> {
+        return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch)
     }
 }
 
@@ -127,10 +149,14 @@ class PaginatedLinks(
         }
 
     val nextLink =
-        if (hasNext) "<${uriComponentsBuilder.replaceQueryParam(QP.FROM, (pageable.offset + pageable.limit)).toUriString()}>; rel=\"next\"" else null
+        if (hasNext) "<${
+            uriComponentsBuilder.replaceQueryParam(QP.FROM, (pageable.offset + pageable.limit)).toUriString()
+        }>; rel=\"next\"" else null
 
     val prevLink =
-        if (hasPrevious) "<${uriComponentsBuilder.replaceQueryParam(QP.FROM, previousOrLastOffset).toUriString()}>; rel=\"prev\"" else null
+        if (hasPrevious) "<${
+            uriComponentsBuilder.replaceQueryParam(QP.FROM, previousOrLastOffset).toUriString()
+        }>; rel=\"prev\"" else null
 
     fun addToHeaders(headers: HttpHeaders) {
         val links = listOfNotNull(nextLink, prevLink)

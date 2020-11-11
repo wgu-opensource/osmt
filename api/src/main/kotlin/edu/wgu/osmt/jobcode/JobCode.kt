@@ -1,6 +1,7 @@
 package edu.wgu.osmt.jobcode
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import edu.wgu.osmt.csv.HasCodeHierarchy
 import edu.wgu.osmt.db.DatabaseData
 import org.elasticsearch.common.Nullable
 import org.springframework.data.elasticsearch.annotations.*
@@ -60,6 +61,22 @@ data class JobCode(
     @Field
     val url: String? = null                     // e.g.: "http://onetonline/an/example/of/a/jobcode/canonicalUri"
 ) : DatabaseData {
+
+    @Field
+    @Nullable
+    val majorCode: String? = JobCodeBreakout.majorCode(code)
+
+    @Field
+    @Nullable
+    val minorCode: String? = JobCodeBreakout.minorCode(code)
+
+    @Field
+    @Nullable
+    val broadCode: String? = JobCodeBreakout.broadCode(code)
+
+    @Field
+    @Nullable
+    val jobRoleCode: String? = JobCodeBreakout.jobRoleCode(code)
 
     companion object {
         fun create(code: String): JobCode {

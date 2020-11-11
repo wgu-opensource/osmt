@@ -51,9 +51,10 @@ class SearchService @Autowired constructor(
             RichSkillDoc::searchingKeywords.name,
             "${RichSkillDoc::searchingKeywords.name}._2gram",
             "${RichSkillDoc::searchingKeywords.name}._3gram",
-            "${RichSkillDoc::jobCodes.name}.${JobCode::code.name}",
-            "${RichSkillDoc::jobCodes.name}.${JobCode::code.name}._2gram",
-            "${RichSkillDoc::jobCodes.name}.${JobCode::code.name}._3gram",
+            "${RichSkillDoc::majorCodes.name}",
+            "${RichSkillDoc::minorCodes.name}",
+            "${RichSkillDoc::broadCodes.name}",
+            "${RichSkillDoc::jobRoleCodes.name}",
             RichSkillDoc::standards.name,
             "${RichSkillDoc::standards.name}._2gram",
             "${RichSkillDoc::standards.name}._3gram",
@@ -69,7 +70,6 @@ class SearchService @Autowired constructor(
             RichSkillDoc::author.name,
             "${RichSkillDoc::author.name}._2gram",
             "${RichSkillDoc::author.name}._3gram"
-
         )
 
         return multiMatchQuery(
@@ -90,17 +90,31 @@ class SearchService @Autowired constructor(
             keywords?.let { bq.must(termsQuery(RichSkillDoc::searchingKeywords.name, it)) }
 
             occupations?.let {
-                bq.must(
-                    boolQuery().should(
-                        termsQuery(
-                            "${RichSkillDoc::jobCodes.name}.${JobCode::name.name}",
-                            it.mapNotNull { it.name })
-                    ).should(
-                        termsQuery(
-                            "${RichSkillDoc::jobCodes.name}.${JobCode::code.name}",
-                            it.mapNotNull { it.name })
+                it.mapNotNull { it.name }.map { value ->
+                    bq.must(
+                        boolQuery().should(
+                            termQuery(
+                                RichSkillDoc::majorCodes.name,
+                                value
+                            )
+                        ).should(
+                            termQuery(
+                                RichSkillDoc::minorCodes.name,
+                                value
+                            )
+                        ).should(
+                            termQuery(
+                                RichSkillDoc::broadCodes.name,
+                                value
+                            )
+                        ).should(
+                            prefixQuery(
+                                RichSkillDoc::jobRoleCodes.name,
+                                value
+                            )
+                        )
                     )
-                )
+                }
             }
 
             standards?.let {

@@ -38,8 +38,11 @@ data class RichSkillDoc(
     val uri: String,
 
     @MultiField(
-        mainField = Field(type = Search_As_You_Type),
-        otherFields = [InnerField(suffix = "keyword", type = Keyword)]
+        mainField = Field(type = Text),
+        otherFields = [
+            InnerField(suffix = "", type = Search_As_You_Type),
+            InnerField(suffix = "keyword", type = Keyword)
+        ]
     )
     @get:JsonProperty("skillName")
     val name: String,
@@ -72,7 +75,7 @@ data class RichSkillDoc(
     @get:JsonProperty("keywords")
     val searchingKeywords: List<String> = listOf(),
 
-    @Field(type = Object)
+    @Field(type = Nested)
     @get:JsonProperty("occupations")
     val jobCodes: List<JobCode> = listOf(),
 
@@ -96,6 +99,23 @@ data class RichSkillDoc(
     @get:JsonIgnore
     val collections: List<CollectionDoc> = listOf()
 ) {
+    @Field(type = Keyword)
+    @get:JsonIgnore
+    val majorCodes: List<String> = jobCodes.mapNotNull { it.majorCode }.distinct()
+
+    @Field(type = Keyword)
+    @get:JsonIgnore
+    val minorCodes: List<String> = jobCodes.mapNotNull { it.minorCode }.distinct()
+
+    @Field(type = Keyword)
+    @get:JsonIgnore
+    val broadCodes: List<String> = jobCodes.mapNotNull { it.broadCode }.distinct()
+
+    @Field(type = Keyword)
+    @get:JsonIgnore
+    val jobRoleCodes: List<String> = jobCodes.mapNotNull { it.jobRoleCode }.distinct()
+
+
     companion object {
         fun fromDao(dao: RichSkillDescriptorDao, appConfig: AppConfig): RichSkillDoc {
             return RichSkillDoc(

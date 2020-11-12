@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
-import {SvgHelper, SvgIcon} from "../core/SvgHelper"
+import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 
 @Component({
   selector: "app-table-label",

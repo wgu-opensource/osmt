@@ -3,17 +3,17 @@ import {ApiSkillSortOrder} from "../richskill/ApiSkill"
 import {Observable} from "rxjs"
 import {SkillWithMetadata} from "../richskill/list/skill-list-row.component"
 import {IApiSkillSummary} from "../richskill/ApiSkillSummary"
-import {TableActionDefinition} from "./has-action-definitions";
-import {SvgHelper, SvgIcon} from "../core/SvgHelper";
+import {TableActionDefinition} from "./skills-library-table/has-action-definitions"
+import {SvgHelper, SvgIcon} from "../core/SvgHelper"
 
 /**
  * Implement row components to hold datasets and figure out how to dynamically pass and use them
  */
 @Component({
-  selector: "app-table",
-  templateUrl: "./table.component.html"
+  selector: "app-abstract-table",
+  template: ``
 })
-export class TableComponent implements OnInit {
+export class AbstractTableComponent implements OnInit {
 
   @Input() skills: IApiSkillSummary[] = []
   @Input() currentSort: ApiSkillSortOrder | undefined = undefined

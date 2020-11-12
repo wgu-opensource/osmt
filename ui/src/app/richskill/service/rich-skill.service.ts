@@ -118,8 +118,8 @@ export class RichSkillService extends AbstractService {
 
   searchSkills(
     apiSearch: ApiSearch,
-    size: number | undefined,
-    from: number | undefined,
+    size?: number,
+    from?: number,
     filterByStatuses?: Set<PublishStatus>,
     sort?: ApiSkillSortOrder,
   ): Observable<PaginatedSkills> {

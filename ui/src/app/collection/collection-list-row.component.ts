@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ApiCollectionSummary} from "../richskill/ApiSkillSummary";
-import {TableActionDefinition} from "../table/has-action-definitions";
+import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
 
 @Component({
   // tslint:disable-next-line:component-selector

@@ -3,7 +3,7 @@ import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {OccupationsFormatter} from "../../job-codes/Jobcode"
 import {IApiSkillSummary} from "../ApiSkillSummary"
 import {PublishStatus} from "../../PublishStatus"
-import {TableActionDefinition} from "../../table/has-action-definitions"
+import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions"
 
 export interface SkillWithMetadata {
   skill: IApiSkillSummary,

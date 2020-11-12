@@ -110,21 +110,16 @@ export abstract class AbstractService {
   }
 
   buildTableParams(
-    size: number | undefined,
-    from: number | undefined,
+    size?: number,
+    from?: number,
     filterByStatuses?: Set<PublishStatus>,
     sort?: ApiSkillSortOrder): any {
-
-    const params: any = {
-      sort
+    const status = Array.from(filterByStatuses ?? []).map(s => s.toString())
+    return {
+      ...filterByStatuses && { status },
+      ...size && { size },
+      ...from && { from },
+      ...sort && { sort: sort.toString() }
     }
-    if (filterByStatuses !== undefined) {
-      params.status = Array.from(filterByStatuses).map(s => s.toString())
-    }
-    if (size !== undefined) { params.size = size }
-    if (from !== undefined) { params.from = from }
-    if (sort !== undefined) { params.sort = sort.toString()}
-
-    return params
   }
 }

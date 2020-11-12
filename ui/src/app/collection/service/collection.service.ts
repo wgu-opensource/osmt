@@ -1,15 +1,15 @@
-import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../auth/auth-service";
-import {AbstractService} from "../../abstract.service";
-import {PublishStatus} from "../../PublishStatus";
-import {ApiSkillSortOrder} from "../../richskill/ApiSkill";
-import {ApiSearch, PaginatedCollections} from "../../richskill/service/rich-skill-search.service";
-import {Observable} from "rxjs";
-import {ApiCollectionSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary";
-import {map, share} from "rxjs/operators";
-import {ApiBatchResult} from "../../richskill/ApiBatchResult";
-import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult";
+import {Injectable} from "@angular/core"
+import {HttpClient, HttpHeaders} from "@angular/common/http"
+import {AuthService} from "../../auth/auth-service"
+import {AbstractService} from "../../abstract.service"
+import {PublishStatus} from "../../PublishStatus"
+import {ApiSkillSortOrder} from "../../richskill/ApiSkill"
+import {ApiSearch, PaginatedCollections} from "../../richskill/service/rich-skill-search.service"
+import {Observable} from "rxjs"
+import {ApiCollectionSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary"
+import {map, share} from "rxjs/operators"
+import {ApiBatchResult} from "../../richskill/ApiBatchResult"
+import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
 import {Collection, CollectionUpdate} from "../Collection"
 
 @Injectable({
@@ -21,6 +21,18 @@ export class CollectionService extends AbstractService {
 
   constructor(httpClient: HttpClient, authService: AuthService) {
     super(httpClient, authService)
+  }
+
+  getCollection(uuid: string): Observable<Collection> {
+    return this.get<Collection>({
+      path: `${this.baseServiceUrl}/${uuid}`,
+      headers: this.wrapHeaders(new HttpHeaders({
+          Accept: "application/json"
+        }
+      )),
+    })
+      .pipe(share())
+      .pipe(map(({body}) => this.safeUnwrapBody(body, "Collection not found.")))
   }
 
   createCollection(collections: CollectionUpdate[]): Observable<Collection[]> {

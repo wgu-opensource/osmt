@@ -98,8 +98,8 @@ export class ApiSkill {
 }
 
 export enum ApiSkillSortOrder {
-  CategoryAsc = "category.asc",
-  CategoryDesc = "category.desc",
+  CategoryAsc = "skill.asc",
+  CategoryDesc = "skill.desc",
   NameAsc = "name.asc",
   NameDesc = "name.desc"
 }

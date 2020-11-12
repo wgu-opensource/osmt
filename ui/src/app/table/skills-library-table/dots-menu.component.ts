@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, ElementRef, Input, NgZone, OnInit, Renderer2, ViewChild} from "@angular/core";
 import {HasActionDefinitions, TableActionDefinition} from "./has-action-definitions";
-import {SvgHelper, SvgIcon} from "../core/SvgHelper";
+import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
 import {createPopper, Instance} from "@popperjs/core"
-import {ClickService} from "../core/click.service";
+import {ClickService} from "../../core/click.service";
 import {Subscription} from "rxjs";
 
 @Component({

@@ -34,32 +34,34 @@ import {ServerErrorComponent} from "./loading/server-error.component"
 import {CommonModule} from "@angular/common"
 import {StatusBarComponent} from "./core/status-bar.component"
 import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component"
-import {TableComponent} from "./table/table.component"
+import {TableComponent} from "./table/skills-library-table/table.component"
 import {SkillListRowComponent} from "./richskill/list/skill-list-row.component"
-import {TableLabelComponent} from "./table/table-label.component"
-import {LabelWithFilterComponent} from "./table/label-with-filter.component"
+import {TableLabelComponent} from "./table/skills-library-table/table-label.component"
+import {LabelWithFilterComponent} from "./table/skills-library-table/label-with-filter.component"
 import {AccordianComponent} from "./core/accordian.component"
 import {FilterControlsComponent} from "./table/filter-controls/filter-controls.component"
 import {FilterChoiceComponent} from "./table/filter-controls/filter-choice.component"
 import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component"
-import {PaginationComponent} from "./table/pagination.component"
-import {ActionBarItemComponent} from "./table/action-bar-item.component"
-import {TableActionBarComponent} from "./table/table-action-bar.component"
-import {EmptyMessageComponent} from "./table/empty-message.component"
+import {PaginationComponent} from "./table/skills-library-table/pagination.component"
+import {ActionBarItemComponent} from "./table/skills-library-table/action-bar-item.component"
+import {TableActionBarComponent} from "./table/skills-library-table/table-action-bar.component"
+import {EmptyMessageComponent} from "./table/skills-library-table/empty-message.component"
 import {SkillsListComponent} from "./richskill/list/skills-list.component"
 import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component"
 import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-horizontal-action-bar.component"
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
 import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
-import {StatusPillComponent} from "./core/status-pill.component";
-import {DotsMenuComponent} from "./table/dots-menu.component";
-import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component";
-import {CollectionTableComponent} from "./collection/collection-table.component";
-import {CollectionListRowComponent} from "./collection/collection-list-row.component";
+import {StatusPillComponent} from "./core/status-pill.component"
+import {DotsMenuComponent} from "./table/skills-library-table/dots-menu.component"
+import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component"
+import {CollectionTableComponent} from "./collection/collection-table.component"
+import {CollectionListRowComponent} from "./collection/collection-list-row.component"
 import {CreateCollectionComponent} from "./collection/create-collection/create-collection.component"
 import {AbstractCreateCollectionActionbarComponent} from "./collection/create-collection/action-bar/abstract-create-collection-actionbar.component"
 import {CreateCollectionActionBarHorizontalComponent} from "./collection/create-collection/action-bar/create-collection-action-bar-horizontal.component"
 import {CreateCollectionActionBarVerticalComponent} from "./collection/create-collection/action-bar/create-collection-action-bar-vertical.component"
+import {AbstractTableComponent} from "./table/abstract-table.component"
+import {PublicTableComponent} from "./table/public-table/public-table.component"
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -111,6 +113,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     StatusBarComponent,
     CardDetailTitleComponent,
     AccordianComponent,
+    AbstractTableComponent,
     TableComponent,
     SkillListRowComponent,
     TableLabelComponent,
@@ -132,7 +135,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CreateCollectionComponent,
     AbstractCreateCollectionActionbarComponent,
     CreateCollectionActionBarHorizontalComponent,
-    CreateCollectionActionBarVerticalComponent
+    CreateCollectionActionBarVerticalComponent,
+    PublicTableComponent
   ],
   imports: [
     BrowserModule,

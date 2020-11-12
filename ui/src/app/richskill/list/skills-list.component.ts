@@ -1,7 +1,7 @@
 import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service";
 import {ApiSkillSummary, IApiSkillSummary} from "../ApiSkillSummary";
 import {PublishStatus} from "../../PublishStatus";
-import {TableActionDefinition} from "../../table/has-action-definitions";
+import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
 import {Component} from "@angular/core";
 import {Observable} from "rxjs";
 import {ApiBatchResult} from "../ApiBatchResult";

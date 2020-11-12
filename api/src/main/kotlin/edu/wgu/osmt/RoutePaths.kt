@@ -25,5 +25,6 @@ object RoutePaths {
         const val SIZE = "size"
         const val STATUS = "status"
         const val SORT = "sort"
+        const val COLLECTION_ID = "collectionId"
     }
 }

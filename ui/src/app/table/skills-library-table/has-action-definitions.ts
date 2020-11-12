@@ -31,13 +31,20 @@ export class TableActionDefinition {
       this.callback(this, data)
     }
   }
+
+  get isVisible(): boolean {
+    if (this.visible !== undefined) {
+      return this.visible()
+    }
+    return true
+  }
 }
 
 @Component({
   template: ""
 })
 export class HasActionDefinitions {
-  @Input() protected actions: TableActionDefinition[] = []
+  @Input() actions: TableActionDefinition[] = []
 
   constructor() {
   }

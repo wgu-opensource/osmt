@@ -1,8 +1,8 @@
-import {Component, Inject, Input, LOCALE_ID} from "@angular/core"
+import {Component, EventEmitter, Inject, Input, LOCALE_ID, Output} from "@angular/core"
 import {Router} from "@angular/router"
-import {ManageRichSkillActionBarComponent} from "../manage-rich-skill-action-bar.component";
-import {RichSkillService} from "../../../../service/rich-skill.service";
-import {ToastService} from "../../../../../toast/toast.service";
+import {ManageRichSkillActionBarComponent} from "../manage-rich-skill-action-bar.component"
+import {RichSkillService} from "../../../../service/rich-skill.service"
+import {ToastService} from "../../../../../toast/toast.service"
 
 @Component({
   selector: "app-manage-skill-action-bar-horizontal",
@@ -14,6 +14,8 @@ export class ManageSkillActionBarHorizontalComponent extends ManageRichSkillActi
   @Input() skillName = ""
   @Input() archived = undefined
   @Input() published = undefined
+
+  @Output() reloadSkill = new EventEmitter<void>()
 
   // This gets mapped to a visually hidden textarea so that javascript has a node to copy from
   href = ""

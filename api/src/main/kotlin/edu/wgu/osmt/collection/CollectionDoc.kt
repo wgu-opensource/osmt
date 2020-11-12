@@ -24,7 +24,6 @@ data class CollectionDoc(
 
     @Id
     @Field(type = Keyword)
-    @get:JsonIgnore
     val uuid: String,
 
     @MultiField(

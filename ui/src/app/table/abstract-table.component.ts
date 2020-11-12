@@ -15,8 +15,6 @@ export class AbstractTableComponent implements OnInit {
   @Input() currentSort: ApiSkillSortOrder | undefined = undefined
   @Input() rowActions: TableActionDefinition[] = []
 
-  // Any time a row is selected, broadcast out the list of currently selected skills from preparedSkills
-  @Output() rowSelected: EventEmitter<IApiSkillSummary[]> = new EventEmitter<IApiSkillSummary[]>()
   @Output() columnSorted = new EventEmitter<ApiSkillSortOrder>()
 
   // handles the inner state of the loaded skills

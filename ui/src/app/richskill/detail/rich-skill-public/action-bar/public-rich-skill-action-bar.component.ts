@@ -33,10 +33,10 @@ export abstract class PublicRichSkillActionBarComponent implements OnInit {
   }
 
   onCopyURL(fullPath: HTMLTextAreaElement): void {
-    console.log(`copying ${fullPath.textContent}`)
     fullPath.select()
     document.execCommand("copy")
     fullPath.setSelectionRange(0, 0)
+    this.toastService.showToast("Success!", "URL copied to clipboard")
   }
 
   onDownloadCsv(): void {
@@ -53,11 +53,10 @@ export abstract class PublicRichSkillActionBarComponent implements OnInit {
     this.richSkillService.getSkillJsonByUuid(this.skillUuid)
       .subscribe((json: string) => {
         this.jsonClipboard = json
-        console.log(`copying ${skillJson.textContent}`)
         skillJson.select()
         document.execCommand("copy")
         skillJson.setSelectionRange(0, 0)
-        this.toastService.showToast("Copied", "JSON was successfully copied to the clipboard")
+        this.toastService.showToast("Success!", "JSON copied to clipboard")
       })
   }
 }

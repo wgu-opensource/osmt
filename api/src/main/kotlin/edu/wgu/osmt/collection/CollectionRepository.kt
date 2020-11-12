@@ -112,8 +112,7 @@ class CollectionRepositoryImpl @Autowired constructor(
         }
 
         val updateWithIdAndAuthor = updateObject.copy(
-            id = newCollection.id.value,
-            author = updateObject.author ?: NullableFieldUpdate(keywordRepository.getDefaultAuthor())
+            id = newCollection.id.value
         )
         return update(updateWithIdAndAuthor, user)
     }

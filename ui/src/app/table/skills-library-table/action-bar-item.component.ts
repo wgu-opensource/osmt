@@ -8,6 +8,8 @@ import {TableActionDefinition} from "./has-action-definitions";
 export class ActionBarItemComponent implements OnInit {
   @Input() action: TableActionDefinition | undefined
 
+  @Input() disabled: boolean = true
+
   constructor() {
   }
 

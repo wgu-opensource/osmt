@@ -11,10 +11,9 @@
   </td>
 
   <td class="m-tableRow-x-actions">
-
-    <div *ngFor="let action in rowActions">
-      <button class="m-button m-button-secondary">
-        <span class="m-button-x-text" (click)="action.fire(collection)">{{action.label}}</span>
+    <div *ngFor="let action of rowActions">
+      <button class="m-buttonSmall">
+        <span class="m-buttonSmall-x-text" (click)="handleClick(action)">{{action.label}}</span>
       </button>
     </div>
 

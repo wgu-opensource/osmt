@@ -55,6 +55,20 @@ export class ApiAdvancedSearch implements IAdvancedSearch {
   }
 }
 
+export interface ISkillListUpdate {
+  add?: ApiSearch
+  remove?: string[]
+}
+export class ApiSkillListUpdate implements ISkillListUpdate {
+  add?: ApiSearch
+  remove?: string[]
+
+  constructor({add, remove}: ISkillListUpdate) {
+    this.add = add
+    this.remove = remove
+  }
+
+}
 
 export class PaginatedSkills {
   totalCount = 0

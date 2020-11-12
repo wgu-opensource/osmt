@@ -4,7 +4,7 @@ import {AuthService} from "../../auth/auth-service";
 import {AbstractService} from "../../abstract.service";
 import {PublishStatus} from "../../PublishStatus";
 import {ApiSkillSortOrder} from "../../richskill/ApiSkill";
-import {ApiSearch, PaginatedCollections} from "../../richskill/service/rich-skill-search.service";
+import {ApiSearch, ApiSkillListUpdate, PaginatedCollections} from "../../richskill/service/rich-skill-search.service";
 import {Observable} from "rxjs";
 import {ApiCollectionSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary";
 import {map, share} from "rxjs/operators";
@@ -58,7 +58,7 @@ export class CollectionService extends AbstractService {
   addSkillsToCollection(collectionUuid: string, apiSearch: ApiSearch): Observable<ApiTaskResult> {
     return this.post<ITaskResult>({
       path: `api/collections/${collectionUuid}/skills`,
-      body: apiSearch
+      body: new ApiSkillListUpdate({add: apiSearch})
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))

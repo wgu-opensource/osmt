@@ -29,8 +29,13 @@
           <input type="text" placeholder="Search Collections" [formControl]="searchForm.controls.search">
         </div>
 
-        <!-- hide or show this p element depending on text input (pattern retains vertical spacing with parent div) -->
-        <p *ngIf="false" class="t-type-bodyLarge t-margin-small t-margin-top">Text here can be <span class="t-type-bodyLargeBold t-color-text1">bold and dark</span> and contain <a class="t-focus t-type-bodyLargeLink" href="#">links</a></p>
+        <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
+          {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">collections contain</ng-template><ng-template #singular>collection containing</ng-template> the search term
+          <span class="t-type-bodyLargeBold t-color-text1">{{searchQuery}}</span>.
+          <ng-template [ngIf]="totalCount > 0">
+            Viewing {{firstRecordNo}}-{{lastRecordNo}}.
+          </ng-template>
+        </p>
       </div>
 
       <app-filter-controls

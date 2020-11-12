@@ -17,4 +17,8 @@ export class CollectionListRowComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  handleClick(action: TableActionDefinition): boolean {
+    action.fire(this.collection)
+    return false
+  }
 }

@@ -8,8 +8,12 @@ import {AbstractTableComponent} from "../abstract-table.component"
 })
 export class TableComponent extends AbstractTableComponent {
 
+  // Any time a row is selected, broadcast out the list of currently selected skills from preparedSkills
+  @Output() rowSelected: EventEmitter<IApiSkillSummary[]> = new EventEmitter<IApiSkillSummary[]>()
   @Output() selectAllSelected = new EventEmitter<boolean>()
   @Input() selectAllCount?: number
+  @Input() selectAllEnabled: boolean = true
+
 
   constructor() {
     super()

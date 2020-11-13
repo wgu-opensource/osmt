@@ -2,12 +2,12 @@ import {Component, OnInit} from "@angular/core"
 import {ApiSearch, PaginatedSkills} from "../../../richskill/service/rich-skill-search.service"
 import {RichSkillService} from "../../../richskill/service/rich-skill.service"
 import {Collection} from "../../Collection"
-import {SkillsListComponent} from "../../../richskill/list/skills-list.component"
 import {ActivatedRoute, Router} from "@angular/router"
 import {ToastService} from "../../../toast/toast.service"
 import {CollectionService} from "../../service/collection.service"
-import {Observable} from "rxjs";
-import {ApiSkillSortOrder} from "../../../richskill/ApiSkill";
+import {Observable} from "rxjs"
+import {ApiSkillSortOrder} from "../../../richskill/ApiSkill"
+import {PublishStatus} from "../../../PublishStatus";
 
 @Component({
   selector: "app-collection-public",
@@ -44,38 +44,45 @@ export class CollectionPublicComponent implements OnInit {
 
   get totalCount(): number {
     const count = this.results?.totalCount ?? 0
-    console.log(`count ${count}`)
     return count
   }
 
   get emptyResults(): boolean {
     const empty = this.curPageCount < 1
-    console.log(`empty ${empty}`)
     return empty
   }
   get curPageCount(): number {
     const currentPage = this.results?.skills.length ?? 0
-    console.log(`current page ${currentPage}`)
     return currentPage
   }
 
   get totalPageCount(): number {
     const totalPages = Math.ceil(this.totalCount / this.size)
-    console.log(`total pages ${totalPages}`)
     return totalPages
   }
   get currentPageNo(): number {
     const currentPage = Math.floor(this.from / this.size) + 1
-    console.log(`current page ${currentPage}`)
     return currentPage
   }
 
+  get collectionUrl(): string {
+    return this.collection?.id ?? ""
+  }
+
+  get collectionUuid(): string {
+    return this.collection?.uuid ?? ""
+  }
+
   loadSkillsInCollection(): void {
+    this.collectionService.getCollectionSkills(this.collectionUuid)
+      .subscribe( skills => {
+        console.log(JSON.stringify(skills))
+      })
     this.resultsLoaded = this.skillService.searchSkills(
       {advanced: { collectionName: this.collection?.name }},
       this.size,
       this.from,
-      undefined,
+      new Set<PublishStatus>([PublishStatus.Archived, PublishStatus.Unpublished, PublishStatus.Published]),
       this.columnSort
     )
     this.resultsLoaded.subscribe(skills => this.setResults(skills))
@@ -90,7 +97,6 @@ export class CollectionPublicComponent implements OnInit {
   }
 
   handleHeaderColumnSort(sort: ApiSkillSortOrder): void {
-    console.log("handling sort " + sort.toString())
     this.columnSort = sort
     this.from = 0
     this.loadNextPage()

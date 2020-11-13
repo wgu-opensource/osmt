@@ -1,8 +1,9 @@
-import { Component, OnInit } from "@angular/core"
+import {Component, Input, OnInit} from "@angular/core"
 import {SkillsListComponent} from "../../../richskill/list/skills-list.component"
-import {ActivatedRoute, Router} from "@angular/router";
-import {RichSkillService} from "../../../richskill/service/rich-skill.service";
-import {ToastService} from "../../../toast/toast.service";
+import {ActivatedRoute, Router} from "@angular/router"
+import {RichSkillService} from "../../../richskill/service/rich-skill.service"
+import {ToastService} from "../../../toast/toast.service"
+import {Collection} from "../../Collection"
 
 @Component({
   selector: "app-collection-public-detail-card",
@@ -10,7 +11,10 @@ import {ToastService} from "../../../toast/toast.service";
 })
 export class PublicCollectionDetailCardComponent implements OnInit {
 
-  uuidParam: string | null = ""
+  @Input() collection: Collection | null = null
+  @Input() totalSkills = 0
+  @Input() indexOfFirstSkill = 0
+  @Input() currentOnPage = 0
 
   constructor(protected router: Router,
               protected route: ActivatedRoute,
@@ -19,7 +23,26 @@ export class PublicCollectionDetailCardComponent implements OnInit {
   ) {
   }
 
+  get indexOfLastSkill(): number {
+    return this.indexOfFirstSkill + this.currentOnPage
+  }
+
   ngOnInit(): void {
-    this.uuidParam = this.route.snapshot.paramMap.get("uuid")
+  }
+
+  get status(): string | undefined {
+    return this.collection?.status
+  }
+
+  get archiveDate(): Date | undefined {
+    return this.collection?.archiveDate
+  }
+
+  get publishDate(): Date | undefined {
+    return this.collection?.publishDate
+  }
+
+  get collectionName(): string {
+    return this.collection?.name ?? ""
   }
 }

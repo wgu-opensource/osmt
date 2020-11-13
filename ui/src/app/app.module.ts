@@ -61,13 +61,13 @@ import {AbstractCreateCollectionActionbarComponent} from "./collection/create-co
 import {CreateCollectionActionBarHorizontalComponent} from "./collection/create-collection/action-bar/create-collection-action-bar-horizontal.component"
 import {CreateCollectionActionBarVerticalComponent} from "./collection/create-collection/action-bar/create-collection-action-bar-vertical.component"
 import {AbstractTableComponent} from "./table/abstract-table.component"
-import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component";
-import {PublicCollectionDetailCardComponent} from "./collection/detail/collection-public/public-collection-detail-card.component";
-import {CollectionPublicHorizontalActionBarComponent} from "./collection/detail/collection-public/action-bar/horizontal/collection-public-horizontal-action-bar.component";
-import {CollectionPublicVerticalActionBarComponent} from "./collection/detail/collection-public/action-bar/vertical/collection-public-vertical-action-bar.component";
-import {CollectionPublicActionBarComponent} from "./collection/detail/collection-public/action-bar/collection-public-action-bar.component";
-import {PublicTableComponent} from "./table/public-table/public-table.component";
-
+import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component"
+import {PublicCollectionDetailCardComponent} from "./collection/detail/collection-public/public-collection-detail-card.component"
+import {CollectionPublicHorizontalActionBarComponent} from "./collection/detail/collection-public/action-bar/horizontal/collection-public-horizontal-action-bar.component"
+import {CollectionPublicVerticalActionBarComponent} from "./collection/detail/collection-public/action-bar/vertical/collection-public-vertical-action-bar.component"
+import {CollectionPublicActionBarComponent} from "./collection/detail/collection-public/action-bar/collection-public-action-bar.component"
+import {PublicTableComponent} from "./table/public-table/public-table.component"
+import {PublicRichSkillActionBarComponent} from "./richskill/detail/rich-skill-public/action-bar/public-rich-skill-action-bar.component"
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -146,7 +146,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     PublicCollectionDetailCardComponent,
     CollectionPublicHorizontalActionBarComponent,
     CollectionPublicVerticalActionBarComponent,
-    CollectionPublicActionBarComponent
+    CollectionPublicActionBarComponent,
+    PublicRichSkillActionBarComponent
   ],
   imports: [
     BrowserModule,

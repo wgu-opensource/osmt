@@ -6,7 +6,7 @@ import {PublishStatus} from "../../PublishStatus"
 import {ApiSkillSortOrder} from "../../richskill/ApiSkill"
 import {ApiSearch, PaginatedCollections} from "../../richskill/service/rich-skill-search.service"
 import {Observable} from "rxjs"
-import {ApiCollectionSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary"
+import {ApiCollectionSummary, ApiSkillSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary"
 import {map, share} from "rxjs/operators"
 import {ApiBatchResult} from "../../richskill/ApiBatchResult"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
@@ -33,6 +33,35 @@ export class CollectionService extends AbstractService {
     })
       .pipe(share())
       .pipe(map(({body}) => this.safeUnwrapBody(body, "Collection not found.")))
+  }
+
+  getCollectionJson(uuid: string): Observable<string> {
+    if (!uuid) {
+      throw new Error("No uuid provided for collection json export")
+    }
+    const errorMsg = `Could not find collection by uuid [${uuid}]`
+    return this.httpClient
+      .get(this.buildUrl(`${this.baseServiceUrl}/${uuid}`), {
+        headers: this.wrapHeaders(new HttpHeaders({
+          Accept: "application/json"
+        })),
+        responseType: "text",
+        observe: "response"
+      })
+      .pipe(share())
+      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg)))
+  }
+
+  getCollectionSkills(uuid: string): Observable<ApiSkillSummary> {
+    const errorMsg = `Could not find skills in collection [${uuid}]`
+    return this.get<ApiSkillSummary>({
+      path: this.buildUrl(`${this.baseServiceUrl}/${uuid}/skills`),
+      headers: this.wrapHeaders(new HttpHeaders({
+        Accept: "application/json"
+      }))
+    })
+      .pipe(share())
+      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg)))
   }
 
   createCollection(collections: CollectionUpdate[]): Observable<Collection[]> {

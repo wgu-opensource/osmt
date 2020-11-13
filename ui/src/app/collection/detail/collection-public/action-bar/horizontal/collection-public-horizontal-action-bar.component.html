@@ -1,1 +1,46 @@
-<p>collection-public-horizontal-action-bar works!</p>
+<nav class="l-flex l-flex-alignCenter l-flex-0 t-elevation-large">
+
+  <button type="button" class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyURL(fullPath)">
+    <svg class="m-actionBarItemHorizontal-x-icon t-icon">
+      <use [attr.xlink:href]="duplicateIcon"></use>
+    </svg>
+
+    <span class="m-actionBarItemHorizontal-x-label m-buttonText">
+        <span class="button-x-text">
+            Copy URL
+        </span>
+        <label>
+          <textarea class="t-visuallyHidden" #fullPath>{{collectionUrl}}</textarea>
+        </label>
+        </span>
+    <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
+  </button>
+
+  <button type="button" class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onDownloadCsv()">
+    <svg class="m-actionBarItemHorizontal-x-icon t-icon">
+      <use [attr.xlink:href]="downloadIcon"></use>
+    </svg>
+    <span class="m-actionBarItemHorizontal-x-label m-buttonText">
+          <span class="button-x-text">
+            Download CSV
+          </span>
+        </span>
+    <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
+  </button>
+
+  <button type="button" class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" (click)="onCopyJSON(collectionJson)">
+    <svg class="m-actionBarItemHorizontal-x-icon t-icon">
+      <use [attr.xlink:href]="duplicateIcon"></use>
+    </svg>
+    <span class="m-actionBarItemHorizontal-x-label m-buttonText">
+      <span class="button-x-text">
+        Copy JSON
+      </span>
+      <label>
+        <textarea class="t-visuallyHidden" #collectionJson>{{jsonClipboard}}</textarea>
+      </label>
+        </span>
+    <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
+  </button>
+
+</nav>

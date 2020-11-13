@@ -5,12 +5,21 @@
   <div class="l-stickySidebar l-container t-margin-medium t-margin-bottom">
 
     <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
-      <app-collection-public-detail-card></app-collection-public-detail-card>
+      <app-collection-public-detail-card
+        *ngIf="collection"
+        [collection]="collection"
+        [indexOfFirstSkill]="from"
+        [currentOnPage]="curPageCount"
+        [totalSkills]="totalCount"
+      ></app-collection-public-detail-card>
     </div>
 
     <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
       <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
-        <app-collection-public-vertical-action-bar></app-collection-public-vertical-action-bar>
+        <app-collection-public-vertical-action-bar
+          [collectionUrl]="collectionUrl"
+          [collectionUuid]="collectionUuid"
+        ></app-collection-public-vertical-action-bar>
       </div>
     </div>
 
@@ -35,6 +44,9 @@
     </ng-template>
   </div>
   <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
-    <app-collection-public-horizontal-action-bar></app-collection-public-horizontal-action-bar>
+    <app-collection-public-horizontal-action-bar
+      [collectionUrl]="collectionUrl"
+      [collectionUuid]="collectionUuid"
+    ></app-collection-public-horizontal-action-bar>
   </div>
 </div>

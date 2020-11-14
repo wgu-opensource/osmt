@@ -231,4 +231,31 @@ class SearchServiceTest : SpringTest(), HasDatabaseReset, HasElasticsearchReset 
         assertThat(allResultsCollectionIds).isEqualTo((skillsWCollectionIds + nonCollectionSkills).map { it.uuid }
             .toSet())
     }
+
+    @Test
+    fun `Should match on partial word queries`(){
+        var collection = TestObjectHelpers.randomCollectionDoc().copy(name = "A collection that questions the ability to perform partial query matches")
+        val skill = TestObjectHelpers.randomRichSkillDoc().copy(name = "A skill that questions the ability to perform partial query matches", collections = listOf(collection))
+        collection = collection.copy(skillIds = listOf(skill.uuid))
+
+        var otherCollections = (1..20).map{TestObjectHelpers.randomCollectionDoc()}
+        val otherSkills = (1..100).map {TestObjectHelpers.randomRichSkillDoc().copy(collections = otherCollections)}
+        otherCollections = otherCollections.map{it.copy(skillIds = otherSkills.map{it.uuid})}
+
+
+
+        searchService.esRichSkillRepository.saveAll(listOf(skill) + otherSkills)
+        searchService.esCollectionRepository.saveAll(listOf(collection) + otherCollections)
+
+
+        val skillSearchResult = searchService.searchRichSkillsByApiSearch(ApiSearch(query = "quest"))
+        val collectionSearchResult = searchService.searchCollectionsByApiSearch(ApiSearch(query = "quest"))
+
+
+        assertThat(skillSearchResult.searchHits.first().content.uuid).isEqualTo(skill.uuid)
+        assertThat(skillSearchResult.totalHits).isEqualTo(1L)
+
+        assertThat(collectionSearchResult.searchHits.first().content.uuid).isEqualTo(collection.uuid)
+        assertThat(collectionSearchResult.totalHits).isEqualTo(1L)
+    }
 }

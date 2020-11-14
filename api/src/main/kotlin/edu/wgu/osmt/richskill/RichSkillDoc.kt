@@ -113,7 +113,7 @@ data class RichSkillDoc(
 
     @Field(type = Keyword)
     @get:JsonIgnore
-    val jobRoleCodes: List<String> = jobCodes.mapNotNull { it.jobRoleCode }.distinct()
+    val jobRoleCodes: List<String> = jobCodes.mapNotNull { it.jobRoleCode ?: it.code }.distinct()
 
 
     companion object {

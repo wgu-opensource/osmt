@@ -27,8 +27,11 @@ data class CollectionDoc(
     val uuid: String,
 
     @MultiField(
-        mainField = Field(type = Search_As_You_Type),
-        otherFields = [InnerField(suffix = "keyword", type = Keyword)]
+        mainField = Field(type = Text),
+        otherFields = [
+            InnerField(suffix = "", type = Search_As_You_Type),
+            InnerField(suffix = "keyword", type = Keyword)
+        ]
     )
     val name: String,
 

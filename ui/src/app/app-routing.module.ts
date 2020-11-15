@@ -13,6 +13,7 @@ import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.
 import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component";
 import {CollectionFormComponent} from "./collection/create-collection/collection-form.component"
 import {FormDirtyGuard} from "./core/abstract-form.component";
+import {CollectionsLibraryComponent} from "./table/collections-library.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -67,10 +68,10 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   // collections library
-  // {path: "collections",
-  //   component: CollectionsLibraryComponent,
-  //   canActivate: [AuthGuard],
-  // },
+  {path: "collections",
+    component: CollectionsLibraryComponent,
+    canActivate: [AuthGuard],
+  },
 
   /* SEARCHING */
   {path: "search/skills", component: RichSkillSearchResultsComponent},

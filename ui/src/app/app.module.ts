@@ -34,7 +34,7 @@ import {ServerErrorComponent} from "./loading/server-error.component"
 import {CommonModule} from "@angular/common"
 import {StatusBarComponent} from "./core/status-bar.component"
 import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component"
-import {TableComponent} from "./table/skills-library-table/table.component"
+import {SkillTableComponent} from "./table/skills-library-table/skill-table.component"
 import {SkillListRowComponent} from "./richskill/list/skill-list-row.component"
 import {TableLabelComponent} from "./table/skills-library-table/table-label.component"
 import {LabelWithFilterComponent} from "./table/skills-library-table/label-with-filter.component"
@@ -63,6 +63,8 @@ import {CreateCollectionActionBarVerticalComponent} from "./collection/create-co
 import {AbstractTableComponent} from "./table/abstract-table.component"
 import {PublicTableComponent} from "./table/public-table/public-table.component"
 import {FormDirtyGuard} from "./core/abstract-form.component";
+import {CollectionsLibraryComponent} from "./table/collections-library.component";
+import {CollectionsListComponent} from "./collection/collections-list.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -108,6 +110,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AddSkillsCollectionComponent,
     CollectionTableComponent,
     CollectionListRowComponent,
+    CollectionsLibraryComponent,
+    CollectionsListComponent,
 
     DetailCardComponent,
     DetailCardSectionComponent,
@@ -115,7 +119,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CardDetailTitleComponent,
     AccordianComponent,
     AbstractTableComponent,
-    TableComponent,
+    SkillTableComponent,
     SkillListRowComponent,
     TableLabelComponent,
     TableActionBarComponent,

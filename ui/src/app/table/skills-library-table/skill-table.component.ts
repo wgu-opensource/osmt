@@ -3,10 +3,10 @@ import {IApiSkillSummary} from "../../richskill/ApiSkillSummary"
 import {AbstractTableComponent} from "../abstract-table.component"
 
 @Component({
-  selector: "app-table",
-  templateUrl: "./table.component.html"
+  selector: "app-skill-table",
+  templateUrl: "./skill-table.component.html"
 })
-export class TableComponent extends AbstractTableComponent {
+export class SkillTableComponent extends AbstractTableComponent {
 
   // Any time a row is selected, broadcast out the list of currently selected skills from preparedSkills
   @Output() rowSelected: EventEmitter<IApiSkillSummary[]> = new EventEmitter<IApiSkillSummary[]>()

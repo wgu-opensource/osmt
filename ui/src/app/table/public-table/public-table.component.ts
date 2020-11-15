@@ -1,5 +1,5 @@
 import {Component} from "@angular/core"
-import {TableComponent} from "../skills-library-table/table.component"
+import {SkillTableComponent} from "../skills-library-table/skill-table.component"
 import {PublishStatus} from "../../PublishStatus"
 import {IApiSkillSummary} from "../../richskill/ApiSkillSummary"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper";

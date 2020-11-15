@@ -57,14 +57,15 @@
 
   <tbody>
   <tr
-    *ngFor="let collection of collections; let i=index"
+    *ngFor="let collection of items; let i=index"
     id="table-row-{{i}}"
     class="m-tableRow"
+    [class.m-tableRow-is-selected]="isSelected(collection)"
 
     app-collection-list-row
     [collection]="collection"
+    [isSelected]="isSelected(collection)"
     [rowActions]="rowActions"
-    [isSelected]="false"
     (rowSelected)="onRowToggle($event)"
   ></tr>
   </tbody>

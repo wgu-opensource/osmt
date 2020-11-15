@@ -32,7 +32,7 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
   ngOnInit(): void {
   }
 
-  getCategorySort(): boolean | undefined {
+  getNameSort(): boolean | undefined {
     if (this.currentSort) {
       switch (this.currentSort) {
         case ApiSortOrder.NameAsc: return true

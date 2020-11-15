@@ -45,7 +45,7 @@
       <ng-template [appLoadingObservables]="[resultsLoaded]">
         <app-collection-table
           *ngIf="!emptyResults"
-          [collections]="results.collections"
+          [items]="results.collections"
           [rowActions]="rowActions()"
         ></app-collection-table>
 

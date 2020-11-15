@@ -24,6 +24,15 @@ export class SearchService {
     this.router.navigate(["/search/skills"])
   }
 
+  simpleCollectionSearch(query: string): void {
+    this.setLatestSearch(ApiSearch.factory({query}))
+    this.router.navigate(["/search/collections"], {queryParams: {q: query}})
+  }
+  advancedCollectionSearch(advanced: ApiAdvancedSearch): void {
+    this.setLatestSearch(ApiSearch.factory({advanced}))
+    this.router.navigate(["/search/collections"])
+  }
+
   protected setLatestSearch(apiSearch?: ApiSearch): void {
     this.latestSearch = apiSearch
     this.searchQuerySource.next(this.latestSearch)

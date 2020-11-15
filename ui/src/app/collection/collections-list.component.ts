@@ -126,10 +126,6 @@ export class CollectionsListComponent {
     }
   }
 
-  addToCollectionVisible(skill?: ApiCollectionSummary): boolean {
-    return ((this.selectedCollections?.length ?? 0) > 0)
-  }
-
 
   handleFiltersChanged(newFilters: Set<PublishStatus>): void {
     this.selectedFilters = newFilters

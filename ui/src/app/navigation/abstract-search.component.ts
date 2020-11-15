@@ -37,7 +37,9 @@ export class AbstractSearchComponent {
   }
 
   submitCollectionSearch(): boolean {
-    console.log("Search Collections", this.searchQuery)
+    if (this.searchQuery.trim().length > 0) {
+      this.searchService.simpleCollectionSearch(this.searchQuery)
+    }
     return false
   }
 

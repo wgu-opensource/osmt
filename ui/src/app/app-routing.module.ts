@@ -14,6 +14,7 @@ import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.c
 import {CollectionFormComponent} from "./collection/create-collection/collection-form.component"
 import {FormDirtyGuard} from "./core/abstract-form.component";
 import {CollectionsLibraryComponent} from "./table/collections-library.component";
+import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -74,8 +75,18 @@ const routes: Routes = [
   },
 
   /* SEARCHING */
-  {path: "search/skills", component: RichSkillSearchResultsComponent},
-  {path: "search/advanced", component: AdvancedSearchComponent},
+  {path: "search/skills",
+    component: RichSkillSearchResultsComponent,
+    canActivate: [AuthGuard],
+  },
+  {path: "search/collections",
+    component: CollectionSearchResultsComponent,
+    canActivate: [AuthGuard],
+  },
+  {path: "search/advanced",
+    component: AdvancedSearchComponent,
+    canActivate: [AuthGuard],
+  },
 
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},

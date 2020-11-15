@@ -44,12 +44,11 @@ export class AdvancedSearchComponent implements OnInit {
   }
 
   handleSearchSkills(): void {
-    console.log("Searching skills...")
     this.searchService.advancedSkillSearch(this.collectFieldData())
   }
 
   handleSearchCollections(): void {
-    console.log("Searching collections...")
+    this.searchService.advancedCollectionSearch(this.collectFieldData())
   }
 
   private collectFieldData(): ApiAdvancedSearch {

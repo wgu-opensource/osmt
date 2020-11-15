@@ -65,6 +65,7 @@ import {PublicTableComponent} from "./table/public-table/public-table.component"
 import {FormDirtyGuard} from "./core/abstract-form.component";
 import {CollectionsLibraryComponent} from "./table/collections-library.component";
 import {CollectionsListComponent} from "./collection/collections-list.component";
+import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -112,6 +113,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CollectionListRowComponent,
     CollectionsLibraryComponent,
     CollectionsListComponent,
+    CollectionSearchResultsComponent,
 
     DetailCardComponent,
     DetailCardSectionComponent,

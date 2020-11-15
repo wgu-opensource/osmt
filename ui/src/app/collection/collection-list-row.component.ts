@@ -29,4 +29,9 @@ export class CollectionListRowComponent implements OnInit {
   get singleRowAction(): boolean {
     return this.rowActions.length === 1
   }
+
+  handleClick(action: TableActionDefinition): boolean {
+    action.fire(this.collection)
+    return false
+  }
 }

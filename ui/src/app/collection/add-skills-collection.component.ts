@@ -44,6 +44,7 @@ export class AddSkillsCollectionComponent implements OnInit {
     this.selectedSkills = this.router.getCurrentNavigation()?.extras.state as ApiSkillSummary[]
     this.titleService.setTitle("Add RSDs to a Collection")
     this.uuidParam = this.route.snapshot.paramMap.get("uuid") || undefined
+
   }
 
   ngOnInit(): void {
@@ -100,7 +101,6 @@ export class AddSkillsCollectionComponent implements OnInit {
 
   protected setResults(results: PaginatedCollections): void {
     this.results = results
-    this.selectedSkills = undefined
   }
 
   get totalCount(): number {
@@ -140,12 +140,12 @@ export class AddSkillsCollectionComponent implements OnInit {
 
   private handleSelectCollection(action: TableActionDefinition, collection?: ApiCollectionSummary): boolean {
     console.log("chose collection!", collection)
-    if (this.uuidParam === undefined) { return false }
+    if (collection?.uuid === undefined) { return false }
 
     const apiSearch = ApiSearch.factory({uuids: this.selectedSkills?.map(it => it.uuid) })
 
     this.toastService.showBlockingLoader()
-    this.collectionService.addSkillsWithResult(this.uuidParam, apiSearch).subscribe(result => {
+    this.collectionService.addSkillsWithResult(collection.uuid, apiSearch).subscribe(result => {
       const message = `Added ${result.modifiedCount} RSDs to collection`
       this.toastService.showToast("Success!", message)
       this.toastService.hideBlockingLoader()

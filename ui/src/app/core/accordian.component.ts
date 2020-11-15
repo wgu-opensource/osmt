@@ -6,12 +6,17 @@ import {SvgHelper, SvgIcon} from "./SvgHelper"
   templateUrl: "./accordian.component.html"
 })
 export class AccordianComponent implements OnInit {
+  @Input() isExpanded = false
 
-  @Input() buttonText = ""
-  @Input() keywords = ""
-  @Input() detailedOccupations = ""
+  @Input() closedLabel = "View All"
+  @Input() openLabel = "View Less"
+  get triggerLabel(): string {
+    if (this.isExpanded) {
+      return this.openLabel
+    }
+    return this.closedLabel
+  }
 
-  isExpanded = false
 
   dismissIcon = SvgHelper.path(SvgIcon.DISMISS)
   addIcon = SvgHelper.path(SvgIcon.ADD)
@@ -21,4 +26,13 @@ export class AccordianComponent implements OnInit {
   ngOnInit(): void {
   }
 
+
+  handleClickTrigger(): boolean {
+    this.toggle()
+    return false
+  }
+
+  toggle(): void {
+    this.isExpanded = !this.isExpanded
+  }
 }

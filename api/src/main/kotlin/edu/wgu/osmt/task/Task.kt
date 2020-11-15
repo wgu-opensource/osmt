@@ -22,6 +22,7 @@ import java.util.*
     JsonSubTypes.Type(value = ApiSearch::class, name = "ApiSearch"),
     JsonSubTypes.Type(value = ApiBatchResult::class, name = "ApiBatchResult"),
     JsonSubTypes.Type(value = PublishSkillsTask::class, name = "PublishSkillsTask"),
+    JsonSubTypes.Type(value = ApiSkillListUpdate::class, name = "ApiSkillListUpdate"),
     JsonSubTypes.Type(value = UpdateCollectionSkillsTask::class, name = "UpdateCollectionSkillsTask")
 )
 
@@ -77,7 +78,7 @@ data class PublishSkillsTask(
 
 data class UpdateCollectionSkillsTask(
     val collectionUuid: String,
-    val skillListUpdate: ApiSkillListUpdate,
+    val skillListUpdate: ApiSkillListUpdate = ApiSkillListUpdate(),
     val publishStatuses: Set<PublishStatus> = setOf(PublishStatus.Unpublished),
     val userString: String,
     override val uuid: String = UUID.randomUUID().toString(),

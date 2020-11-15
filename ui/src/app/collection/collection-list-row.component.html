@@ -11,11 +11,10 @@
   </td>
 
   <td class="m-tableRow-x-actions">
-
     <ng-template [ngIf]="singleRowAction" [ngIfElse]="dotActions">
       <div *ngFor="let action in rowActions">
-        <button class="m-button m-button-secondary">
-          <span class="m-button-x-text" (click)="action.fire(collection)">{{action.label}}</span>
+        <button class="m-buttonSmall">
+          <span class="m-buttonSmall-x-text" (click)="handleClick(action)">{{action.label}}</span>
         </button>
       </div>
     </ng-template>

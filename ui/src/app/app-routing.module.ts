@@ -16,45 +16,67 @@ import {CreateCollectionComponent} from "./collection/create-collection/create-c
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
 
+  /* SKILLS */
 
   // create skill
   {path: "skills/create",
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
     canDeactivate: [SkillFormDirtyGuard]},
-
   // edit skill
   {path: "skills/:uuid/edit",
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
     canDeactivate: [SkillFormDirtyGuard]
   },
-
+  // manage skill
+  {path: "skills/:uuid/manage",
+    component: RichSkillManageComponent,
+    canActivate: [AuthGuard]
+  },
   // skills library
   {path: "skills",
     component: RichSkillsLibraryComponent,
     canActivate: [AuthGuard],
   },
 
-  // collections
-  {path: "collections/create", component: CreateCollectionComponent},
-  // {path: "collections/:uuid", component: CollectionManageComponent},
+  /* COLLECTIONS */
+
+  // create collection
+  {path: "collections/create",
+    component: CreateCollectionComponent,
+    canActivate: [AuthGuard]
+  },
+  // edit collection
+  // {path: "collections/:uuid/edit",
+  //   component: CollectionFormComponent,
+  //   canActivate: [AuthGuard]
+  // },
+  // manage collection
+  // {path: "collections/:uuid/manage",
+  //   component: CollectionManageComponent,
+  //   canActivate: [AuthGuard]
+  // },
+  // add skills to a collection
   {path: "collections/add-skills",
     component: AddSkillsCollectionComponent,
     canActivate: [AuthGuard],
   },
+  // collections library
+  // {path: "collections",
+  //   component: CollectionsLibraryComponent,
+  //   canActivate: [AuthGuard],
+  // },
 
-  // public views
-  {path: "skills/:uuid", component: RichSkillPublicComponent},
-
-  // Authed views
-  {path: "skills/:uuid/manage", component: RichSkillManageComponent},
-
-  // search
+  /* SEARCHING */
   {path: "search/skills", component: RichSkillSearchResultsComponent},
   {path: "search/advanced", component: AdvancedSearchComponent},
 
-  // authentication redirects
+  /* PUBLIC VIEWS */
+  {path: "skills/:uuid", component: RichSkillPublicComponent},
+  // {path: "collections/:uuid", component: CollectionPublicComponent},
+
+  /* AUTHENTICATION REDIRECTS */
   {path: "login", component: LoginComponent},  // redirect to oauth login
   {path: "logout", component: LogoutComponent},  // app logout
   {path: "login/success", component: LoginSuccessComponent},  // post-login redirect destination

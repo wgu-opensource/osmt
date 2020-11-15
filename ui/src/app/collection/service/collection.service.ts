@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http"
 import {AuthService} from "../../auth/auth-service"
 import {AbstractService} from "../../abstract.service"
 import {PublishStatus} from "../../PublishStatus"
-import {ApiSkillSortOrder} from "../../richskill/ApiSkill"
+import {ApiSkill, ApiSkillSortOrder} from "../../richskill/ApiSkill"
 import {ApiSearch, PaginatedCollections} from "../../richskill/service/rich-skill-search.service"
 import {Observable} from "rxjs"
 import {ApiCollectionSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary"
@@ -52,13 +52,14 @@ export class CollectionService extends AbstractService {
       .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
   }
 
-  createCollection(collections: ICollectionUpdate[]): Observable<ApiCollection[]> {
+  createCollection(updateObject: ICollectionUpdate): Observable<ApiCollection> {
+    const errorMsg = `Error creating collection`
     return this.post<ApiCollection[]>({
       path: this.baseServiceUrl,
-      body: collections
+      body: [updateObject]
     })
       .pipe(share())
-      .pipe(map(({body}) => this.safeUnwrapBody(body, "Failed to parse create collection response")))
+      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiCollection(s))[0]))
   }
 
   updateCollection(uuid: string, updateObject: ICollectionUpdate): Observable<ApiCollection> {

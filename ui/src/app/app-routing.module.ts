@@ -11,7 +11,7 @@ import {RichSkillManageComponent} from "./richskill/detail/rich-skill-manage/ric
 import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
 import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component";
 import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component";
-import {CreateCollectionComponent} from "./collection/create-collection/create-collection.component"
+import {CollectionFormComponent} from "./collection/create-collection/collection-form.component"
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -44,14 +44,14 @@ const routes: Routes = [
 
   // create collection
   {path: "collections/create",
-    component: CreateCollectionComponent,
+    component: CollectionFormComponent,
     canActivate: [AuthGuard]
   },
   // edit collection
-  // {path: "collections/:uuid/edit",
-  //   component: CollectionFormComponent,
-  //   canActivate: [AuthGuard]
-  // },
+  {path: "collections/:uuid/edit",
+    component: CollectionFormComponent,
+    canActivate: [AuthGuard]
+  },
   // manage collection
   // {path: "collections/:uuid/manage",
   //   component: CollectionManageComponent,

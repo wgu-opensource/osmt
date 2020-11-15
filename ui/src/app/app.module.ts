@@ -56,7 +56,7 @@ import {DotsMenuComponent} from "./table/skills-library-table/dots-menu.componen
 import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component"
 import {CollectionTableComponent} from "./collection/collection-table.component"
 import {CollectionListRowComponent} from "./collection/collection-list-row.component"
-import {CreateCollectionComponent} from "./collection/create-collection/create-collection.component"
+import {CollectionFormComponent} from "./collection/create-collection/collection-form.component"
 import {AbstractCreateCollectionActionbarComponent} from "./collection/create-collection/action-bar/abstract-create-collection-actionbar.component"
 import {CreateCollectionActionBarHorizontalComponent} from "./collection/create-collection/action-bar/create-collection-action-bar-horizontal.component"
 import {CreateCollectionActionBarVerticalComponent} from "./collection/create-collection/action-bar/create-collection-action-bar-vertical.component"
@@ -132,7 +132,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     StatusPillComponent,
     DotsMenuComponent,
     AbstractAdvancedSearchActionBarComponent,
-    CreateCollectionComponent,
+    CollectionFormComponent,
     AbstractCreateCollectionActionbarComponent,
     CreateCollectionActionBarHorizontalComponent,
     CreateCollectionActionBarVerticalComponent,

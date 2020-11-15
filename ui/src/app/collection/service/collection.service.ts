@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http"
 import {AuthService} from "../../auth/auth-service"
 import {AbstractService} from "../../abstract.service"
 import {PublishStatus} from "../../PublishStatus"
-import {ApiSkill, ApiSkillSortOrder} from "../../richskill/ApiSkill"
+import {ApiSkill, ApiSortOrder} from "../../richskill/ApiSkill"
 import {ApiSearch, PaginatedCollections} from "../../richskill/service/rich-skill-search.service"
 import {Observable} from "rxjs"
 import {ApiCollectionSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary"
@@ -27,7 +27,7 @@ export class CollectionService extends AbstractService {
     size: number = 50,
     from: number = 0,
     filterByStatuses: Set<PublishStatus> | undefined,
-    sort: ApiSkillSortOrder | undefined,
+    sort: ApiSortOrder | undefined,
   ): Observable<PaginatedCollections> {
     const params = this.buildTableParams(size, from, filterByStatuses, sort)
     return this.get<ICollectionSummary[]>({
@@ -77,7 +77,7 @@ export class CollectionService extends AbstractService {
     size: number | undefined,
     from: number | undefined,
     filterByStatuses?: Set<PublishStatus>,
-    sort?: ApiSkillSortOrder,
+    sort?: ApiSortOrder,
   ): Observable<PaginatedCollections> {
 
     const params = this.buildTableParams(size, from, filterByStatuses, sort)

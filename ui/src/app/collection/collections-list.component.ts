@@ -4,7 +4,7 @@ import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../richskill/ser
 import {PublishStatus} from "../PublishStatus";
 import {ApiCollectionSummary, IApiSkillSummary, ICollectionSummary} from "../richskill/ApiSkillSummary";
 import {ApiBatchResult} from "../richskill/ApiBatchResult";
-import {ApiSkillSortOrder} from "../richskill/ApiSkill";
+import {ApiSortOrder} from "../richskill/ApiSkill";
 import {Router} from "@angular/router";
 import {ToastService} from "../toast/toast.service";
 import {CollectionService} from "./service/collection.service";
@@ -27,7 +27,7 @@ export class CollectionsListComponent {
   selectedCollections?: ICollectionSummary[]
   skillsSaved?: Observable<ApiBatchResult>
 
-  columnSort: ApiSkillSortOrder = ApiSkillSortOrder.CategoryAsc
+  columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
 
   showSearchEmptyMessage = false
   showLibraryEmptyMessage = false
@@ -144,7 +144,7 @@ export class CollectionsListComponent {
     this.selectedCollections = selected
   }
 
-  handleHeaderColumnSort(sort: ApiSkillSortOrder): void {
+  handleHeaderColumnSort(sort: ApiSortOrder): void {
     this.columnSort = sort
     this.from = 0
     this.loadNextPage()

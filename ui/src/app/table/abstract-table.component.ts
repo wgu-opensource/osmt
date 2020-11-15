@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
-import {ApiSkillSortOrder} from "../richskill/ApiSkill"
+import {ApiSortOrder} from "../richskill/ApiSkill"
 import {Observable} from "rxjs"
 import {SkillWithMetadata} from "../richskill/list/skill-list-row.component"
 import {IApiSkillSummary} from "../richskill/ApiSkillSummary"
@@ -16,10 +16,10 @@ import {SvgHelper, SvgIcon} from "../core/SvgHelper"
 export class AbstractTableComponent implements OnInit {
 
   @Input() skills: IApiSkillSummary[] = []
-  @Input() currentSort: ApiSkillSortOrder | undefined = undefined
+  @Input() currentSort: ApiSortOrder | undefined = undefined
   @Input() rowActions: TableActionDefinition[] = []
 
-  @Output() columnSorted = new EventEmitter<ApiSkillSortOrder>()
+  @Output() columnSorted = new EventEmitter<ApiSortOrder>()
 
   // handles the inner state of the loaded skills
   preparedSkills: SkillWithMetadata[] = []
@@ -35,8 +35,8 @@ export class AbstractTableComponent implements OnInit {
   getCategorySort(): boolean | undefined {
     if (this.currentSort) {
       switch (this.currentSort) {
-        case ApiSkillSortOrder.CategoryAsc: return true
-        case ApiSkillSortOrder.CategoryDesc: return false
+        case ApiSortOrder.NameAsc: return true
+        case ApiSortOrder.NameDesc: return false
       }
     }
     return undefined
@@ -45,8 +45,8 @@ export class AbstractTableComponent implements OnInit {
   getSkillSort(): boolean | undefined {
     if (this.currentSort) {
       switch (this.currentSort) {
-        case ApiSkillSortOrder.NameAsc: return true
-        case ApiSkillSortOrder.NameDesc: return false
+        case ApiSortOrder.SkillAsc: return true
+        case ApiSortOrder.SkillDesc: return false
       }
     }
     return undefined
@@ -55,15 +55,15 @@ export class AbstractTableComponent implements OnInit {
   sortColumn(column: string, ascending: boolean): void {
     if (column.toLowerCase() === "name") {
       if (ascending) {
-        this.currentSort = ApiSkillSortOrder.NameAsc
+        this.currentSort = ApiSortOrder.NameAsc
       } else {
-        this.currentSort = ApiSkillSortOrder.NameDesc
+        this.currentSort = ApiSortOrder.NameDesc
       }
     } else if (column.toLowerCase() === "category") {
       if (ascending) {
-        this.currentSort = ApiSkillSortOrder.CategoryAsc
+        this.currentSort = ApiSortOrder.SkillAsc
       } else {
-        this.currentSort = ApiSkillSortOrder.CategoryDesc
+        this.currentSort = ApiSortOrder.SkillDesc
       }
     }
     this.columnSorted.emit(this.currentSort)

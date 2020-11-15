@@ -6,7 +6,7 @@ import {PublishStatus} from "../PublishStatus";
 import {FormControl, FormGroup} from "@angular/forms";
 import {Observable} from "rxjs";
 import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {ApiSkillSortOrder} from "../richskill/ApiSkill";
+import {ApiSortOrder} from "../richskill/ApiSkill";
 import {CollectionService} from "./service/collection.service";
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
 import {ToastService} from "../toast/toast.service";
@@ -31,7 +31,7 @@ export class AddSkillsCollectionComponent implements OnInit {
     return this.searchForm.get("search")?.value ?? ""
   }
 
-  columnSort: ApiSkillSortOrder = ApiSkillSortOrder.CategoryAsc
+  columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
   selectedSkills?: ApiSkillSummary[]
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
 
@@ -92,7 +92,7 @@ export class AddSkillsCollectionComponent implements OnInit {
     this.loadNextPage()
   }
 
-  handleHeaderColumnSort(sort: ApiSkillSortOrder): void {
+  handleHeaderColumnSort(sort: ApiSortOrder): void {
     this.columnSort = sort
     this.from = 0
     this.loadNextPage()

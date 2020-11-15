@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core"
 import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {Observable} from "rxjs"
-import {ApiSkill, ApiSkillSortOrder, ISkill} from "../ApiSkill"
+import {ApiSkill, ApiSortOrder, ISkill} from "../ApiSkill"
 import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate"
@@ -28,7 +28,7 @@ export class RichSkillService extends AbstractService {
     size: number = 50,
     from: number = 0,
     filterByStatuses: Set<PublishStatus> | undefined,
-    sort: ApiSkillSortOrder | undefined,
+    sort: ApiSortOrder | undefined,
   ): Observable<PaginatedSkills> {
 
     const params = this.buildTableParams(size, from, filterByStatuses, sort)
@@ -121,7 +121,7 @@ export class RichSkillService extends AbstractService {
     size: number | undefined,
     from: number | undefined,
     filterByStatuses?: Set<PublishStatus>,
-    sort?: ApiSkillSortOrder,
+    sort?: ApiSortOrder,
   ): Observable<PaginatedSkills> {
     const errorMsg = `Failed to unwrap response for skill search`
 

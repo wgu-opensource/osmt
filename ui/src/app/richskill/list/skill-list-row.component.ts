@@ -5,11 +5,6 @@ import {IApiSkillSummary} from "../ApiSkillSummary"
 import {PublishStatus} from "../../PublishStatus"
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
 
-export interface SkillWithMetadata {
-  skill: IApiSkillSummary,
-  selected: boolean
-}
-
 @Component({
   // tslint:disable-next-line:component-selector
   selector: "[app-skill-list-row]",

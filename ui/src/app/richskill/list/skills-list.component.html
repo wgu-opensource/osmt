@@ -30,7 +30,7 @@
       <ng-template [appLoadingObservables]="[resultsLoaded]">
         <app-skill-table
           *ngIf="!emptyResults"
-          [skills]="results.skills"
+          [items]="results.skills"
           (rowSelected)="handleNewSelection($event)"
           [currentSort]="columnSort"
           (columnSorted)="handleHeaderColumnSort($event)"

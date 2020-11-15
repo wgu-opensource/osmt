@@ -9,7 +9,7 @@ import {AbstractTableComponent} from "../abstract-table.component";
   selector: "app-public-table",
   templateUrl: "./public-table.component.html"
 })
-export class PublicTableComponent extends AbstractTableComponent {
+export class PublicTableComponent extends AbstractTableComponent<IApiSkillSummary> {
 
   archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)
   constructor() {

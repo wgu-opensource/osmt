@@ -2,15 +2,31 @@
   <thead>
     <tr class="m-tableHeader">
       <th class="t-hidden-tabletMax" scope="col">
-        <span class="m-tableLabel">
-          <span class="m-tableLabel-x-text">Collection Name</span>
-        </span>
+        <app-label-with-filter
+          *ngIf="allowSorting; else noSortName"
+          label="Collection Name"
+          [sortAscending]="getNameSort()"
+          (sortChanged)="sortColumn('name', $event)"
+        ></app-label-with-filter>
+        <ng-template #noSortName>
+          <span class="m-tableLabel">
+            <span class="m-tableLabel-x-text">Collection Name</span>
+          </span>
+        </ng-template>
       </th>
 
       <th class="t-hidden-tabletMax" scope="col">
-        <span class="m-tableLabel">
-          <span class="m-tableLabel-x-text">Skills</span>
-        </span>
+        <app-label-with-filter
+          *ngIf="allowSorting; else noSortSkills"
+          label="Skills"
+          [sortAscending]="getSkillSort()"
+          (sortChanged)="sortColumn('skill', $event)"
+        ></app-label-with-filter>
+        <ng-template #noSortSkills>
+          <span class="m-tableLabel">
+            <span class="m-tableLabel-x-text">Skills</span>
+          </span>
+        </ng-template>
       </th>
 
       <th class="t-hidden-tabletMax" scope="col">
@@ -20,7 +36,22 @@
       </th>
 
       <th class="m-tableHeader-x-actions" scope="col">
+        <div class="m-tableLabel" *ngIf="selectAllEnabled">
+          <label class="m-tableLabel-x-text" for="checkbox">Select ({{getSelectAllCount()}})</label>
+
+          <div class="m-tableLabel-x-control">
+            <div class="m-checkbox">
+              <input type="checkbox" id="checkbox" name="checkbox" (change)="handleSelectAll($event)">
+              <div class="m-checkbox-x-icon">
+                <svg class="t-icon" aria-hidden="true">
+                  <use [attr.xlink:href]="checkIcon"></use>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
       </th>
+
     </tr>
   </thead>
 
@@ -33,6 +64,8 @@
     app-collection-list-row
     [collection]="collection"
     [rowActions]="rowActions"
+    [isSelected]="false"
+    (rowSelected)="onRowToggle($event)"
   ></tr>
   </tbody>
 </table>

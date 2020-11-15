@@ -154,23 +154,19 @@ export class CollectionsListComponent {
   rowActions(): TableActionDefinition[] {
     return [
       new TableActionDefinition({
-        label: "Archive RSD",
+        label: "Archive collection",
         callback: (action: TableActionDefinition, skill?: ApiCollectionSummary) => this.handleClickArchive(action, skill),
         visible: (skill?: ApiCollectionSummary) => this.archiveVisible(skill)
       }),
       new TableActionDefinition({
-        label: "Unarchive RSD",
+        label: "Unarchive collection",
         callback: (action: TableActionDefinition, skill?: ApiCollectionSummary) => this.handleClickUnarchive(action, skill),
         visible: (skill?: ApiCollectionSummary) => this.unarchiveVisible(skill)
       }),
       new TableActionDefinition({
-        label: "Publish RSD",
+        label: "Publish collection",
         callback: (action: TableActionDefinition, skill?: ApiCollectionSummary) => this.handleClickPublish(action, skill),
         visible: (skill?: ApiCollectionSummary) => this.publishVisible(skill)
-      }),
-      new TableActionDefinition({
-        label: "Add to Collection",
-        callback: (action: TableActionDefinition, skill?: ApiCollectionSummary) => this.handleClickAddCollection(action, skill),
       }),
     ]
   }
@@ -206,25 +202,11 @@ export class CollectionsListComponent {
         visible: (skill?: ApiCollectionSummary) => this.unarchiveVisible(skill)
       }),
 
-      new TableActionDefinition({
-        label: "Add to Collection",
-        icon: "collection",
-        primary: true,
-        callback: (action: TableActionDefinition, skill?: ApiCollectionSummary) => this.handleClickAddCollection(action, skill),
-        visible: (skill?: ApiCollectionSummary) => this.addToCollectionVisible(skill)
-      }),
     ]
 
   }
 
   private handleClickBackToTop(action: TableActionDefinition, skill?: ApiCollectionSummary): boolean {
-    return false
-  }
-
-  private handleClickAddCollection(action: TableActionDefinition, skill?: ApiCollectionSummary): boolean {
-    this.router.navigate(["/collections/add-skills"], {
-      state: this.getSelectedSkills(skill)
-    })
     return false
   }
 
@@ -239,7 +221,7 @@ export class CollectionsListComponent {
   }
 
   private handleClickPublish(action: TableActionDefinition, skill?: ApiCollectionSummary): boolean {
-    const plural = (this.selectedUuids(skill)?.length ?? 0) > 1 ? "these RSDs" : "this RSD"
+    const plural = (this.selectedUuids(skill)?.length ?? 0) > 1 ? "these collections" : "this collection"
     if (confirm(`Are you sure you want to publish ${plural}?`)) {
       this.submitStatusChange(PublishStatus.Published, "Published", skill)
     }

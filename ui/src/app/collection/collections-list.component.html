@@ -30,6 +30,7 @@
       <ng-template [appLoadingObservables]="[resultsLoaded]">
         <app-collection-table
           *ngIf="!emptyResults"
+          [allowSorting]="true"
           [collections]="results.collections"
           (rowSelected)="handleNewSelection($event)"
           [currentSort]="columnSort"

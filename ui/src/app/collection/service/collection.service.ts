@@ -1,16 +1,16 @@
-import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../auth/auth-service";
-import {AbstractService} from "../../abstract.service";
-import {PublishStatus} from "../../PublishStatus";
-import {ApiSkillSortOrder} from "../../richskill/ApiSkill";
-import {ApiSearch, PaginatedCollections} from "../../richskill/service/rich-skill-search.service";
-import {Observable} from "rxjs";
-import {ApiCollectionSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary";
-import {map, share} from "rxjs/operators";
-import {ApiBatchResult} from "../../richskill/ApiBatchResult";
-import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult";
-import {Collection, CollectionUpdate} from "../Collection"
+import {Injectable} from "@angular/core"
+import {HttpClient} from "@angular/common/http"
+import {AuthService} from "../../auth/auth-service"
+import {AbstractService} from "../../abstract.service"
+import {PublishStatus} from "../../PublishStatus"
+import {ApiSkillSortOrder} from "../../richskill/ApiSkill"
+import {ApiSearch, PaginatedCollections} from "../../richskill/service/rich-skill-search.service"
+import {Observable} from "rxjs"
+import {ApiCollectionSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary"
+import {map, share} from "rxjs/operators"
+import {ApiBatchResult} from "../../richskill/ApiBatchResult"
+import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
+import {ApiCollection, ICollection, ICollectionUpdate} from "../ApiCollection"
 
 @Injectable({
   providedIn: "root"
@@ -23,13 +23,52 @@ export class CollectionService extends AbstractService {
     super(httpClient, authService)
   }
 
-  createCollection(collections: CollectionUpdate[]): Observable<Collection[]> {
-    return this.post<Collection[]>({
+  getCollections(
+    size: number = 50,
+    from: number = 0,
+    filterByStatuses: Set<PublishStatus> | undefined,
+    sort: ApiSkillSortOrder | undefined,
+  ): Observable<PaginatedCollections> {
+    const params = this.buildTableParams(size, from, filterByStatuses, sort)
+    return this.get<ICollectionSummary[]>({
+      path: `${this.baseServiceUrl}`,
+      params,
+    })
+      .pipe(share())
+      .pipe(map(({body, headers}) => {
+        return new PaginatedCollections(
+          body?.map(skill => new ApiCollectionSummary(skill)) || [],
+          Number(headers.get("X-Total-Count"))
+        )
+      }))
+  }
+
+  getCollectionByUUID(uuid: string): Observable<ApiCollection> {
+    const errorMsg = `Could not find skill by uuid [${uuid}]`
+    return this.get<ICollection>({
+      path: `${this.baseServiceUrl}/${uuid}`
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
+  }
+
+  createCollection(collections: ICollectionUpdate[]): Observable<ApiCollection[]> {
+    return this.post<ApiCollection[]>({
       path: this.baseServiceUrl,
       body: collections
     })
       .pipe(share())
       .pipe(map(({body}) => this.safeUnwrapBody(body, "Failed to parse create collection response")))
+  }
+
+  updateCollection(uuid: string, updateObject: ICollectionUpdate): Observable<ApiCollection> {
+    const errorMsg = `Could not find collection by uuid [${uuid}]`
+    return this.post<ICollection>({
+      path: `${this.baseServiceUrl}/${uuid}/update`,
+      body: updateObject
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
   }
 
   searchCollections(

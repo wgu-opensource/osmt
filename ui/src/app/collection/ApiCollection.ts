@@ -3,31 +3,46 @@ import {INamedReference} from "../richskill/ApiSkill"
 import {IStringListUpdate} from "../richskill/ApiSkillUpdate"
 import {IApiSkillSummary} from "../richskill/ApiSkillSummary"
 
-export class Collection {
-  archiveDate: Date
-  author: INamedReference
-  creationDate: Date
+export interface ICollection {
+  archiveDate?: Date
+  author?: INamedReference
+  creationDate?: Date
   creator: string
   id: string
   name: string
-  publishDate: Date
-  skills: IApiSkillSummary[]
+  publishDate?: Date
+  skills: string[]
   status: PublishStatus
-  updateDate: Date
+  updateDate?: Date
+  uuid: string
+}
+
+export class ApiCollection {
+  archiveDate?: Date
+  author?: INamedReference
+  creationDate?: Date
+  creator: string
+  id: string
+  name: string
+  publishDate?: Date
+  skills: string[]
+  status: PublishStatus
+  updateDate?: Date
   uuid: string
 
   constructor(
-    archiveDate: Date,
-    author: INamedReference,
-    creationDate: Date,
-    creator: string,
-    id: string,
-    name: string,
-    publishDate: Date,
-    skills: IApiSkillSummary[],
-    status: PublishStatus,
-    updateDate: Date,
-    uuid: string
+    {
+    archiveDate,
+    author,
+    creationDate,
+    creator,
+    id,
+    name,
+    publishDate,
+    skills,
+    status,
+    updateDate,
+    uuid}: ICollection
   ) {
     this.archiveDate = archiveDate
     this.author = author
@@ -43,7 +58,7 @@ export class Collection {
   }
 }
 
-export interface CollectionUpdate {
+export interface ICollectionUpdate {
   name?: string,
   status?: PublishStatus,
   author?: INamedReference,

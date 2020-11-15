@@ -7,7 +7,6 @@ import {ToastService} from "../../../toast/toast.service"
 import {CollectionService} from "../../service/collection.service"
 import {Observable} from "rxjs"
 import {ApiSkillSortOrder} from "../../../richskill/ApiSkill"
-import {PublishStatus} from "../../../PublishStatus";
 
 @Component({
   selector: "app-collection-public",
@@ -26,6 +25,8 @@ export class CollectionPublicComponent implements OnInit {
   size = 50
   columnSort: ApiSkillSortOrder = ApiSkillSortOrder.CategoryAsc
 
+  showLibraryEmptyMessage = false
+
   constructor(protected router: Router,
               protected skillService: RichSkillService,
               protected collectionService: CollectionService,
@@ -38,31 +39,25 @@ export class CollectionPublicComponent implements OnInit {
     this.collectionService.getCollection(uuid).subscribe(collection => {
       this.collection = collection
       this.loadNextPage()
-      console.log(JSON.stringify(collection))
     })
   }
 
   get totalCount(): number {
-    const count = this.results?.totalCount ?? 0
-    return count
+    return this.results?.totalCount ?? 0
   }
 
   get emptyResults(): boolean {
-    const empty = this.curPageCount < 1
-    return empty
+    return this.curPageCount < 1
   }
   get curPageCount(): number {
-    const currentPage = this.results?.skills.length ?? 0
-    return currentPage
+    return this.results?.skills.length ?? 0
   }
 
   get totalPageCount(): number {
-    const totalPages = Math.ceil(this.totalCount / this.size)
-    return totalPages
+    return Math.ceil(this.totalCount / this.size)
   }
   get currentPageNo(): number {
-    const currentPage = Math.floor(this.from / this.size) + 1
-    return currentPage
+    return Math.floor(this.from / this.size) + 1
   }
 
   get collectionUrl(): string {
@@ -74,17 +69,7 @@ export class CollectionPublicComponent implements OnInit {
   }
 
   loadSkillsInCollection(): void {
-    this.collectionService.getCollectionSkills(this.collectionUuid)
-      .subscribe( skills => {
-        console.log(JSON.stringify(skills))
-      })
-    this.resultsLoaded = this.skillService.searchSkills(
-      {advanced: { collectionName: this.collection?.name }},
-      this.size,
-      this.from,
-      new Set<PublishStatus>([PublishStatus.Archived, PublishStatus.Unpublished, PublishStatus.Published]),
-      this.columnSort
-    )
+    this.resultsLoaded = this.collectionService.getCollectionSkills(this.collectionUuid)
     this.resultsLoaded.subscribe(skills => this.setResults(skills))
   }
 

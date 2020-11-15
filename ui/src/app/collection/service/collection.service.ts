@@ -4,7 +4,7 @@ import {AuthService} from "../../auth/auth-service"
 import {AbstractService} from "../../abstract.service"
 import {PublishStatus} from "../../PublishStatus"
 import {ApiSkillSortOrder} from "../../richskill/ApiSkill"
-import {ApiSearch, PaginatedCollections} from "../../richskill/service/rich-skill-search.service"
+import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../../richskill/service/rich-skill-search.service"
 import {Observable} from "rxjs"
 import {ApiCollectionSummary, ApiSkillSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary"
 import {map, share} from "rxjs/operators"
@@ -52,16 +52,18 @@ export class CollectionService extends AbstractService {
       .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg)))
   }
 
-  getCollectionSkills(uuid: string): Observable<ApiSkillSummary> {
+  getCollectionSkills(uuid: string): Observable<PaginatedSkills> {
     const errorMsg = `Could not find skills in collection [${uuid}]`
-    return this.get<ApiSkillSummary>({
-      path: this.buildUrl(`${this.baseServiceUrl}/${uuid}/skills`),
-      headers: this.wrapHeaders(new HttpHeaders({
+    return this.get<ApiSkillSummary[]>({
+      path: `${this.baseServiceUrl}/${uuid}/skills`,
+      headers: new HttpHeaders({
         Accept: "application/json"
-      }))
+      })
     })
       .pipe(share())
-      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg)))
+      .pipe(map(({body, headers}) =>
+        new PaginatedSkills(this.safeUnwrapBody(body, errorMsg), Number(headers.get("X-Total-Count")))
+      ))
   }
 
   createCollection(collections: CollectionUpdate[]): Observable<Collection[]> {
@@ -106,6 +108,6 @@ export class CollectionService extends AbstractService {
   }
 
   addSkillsWithResult(collectionUuid: string, apiSearch: ApiSearch, pollIntervalMs: number = 1000): Observable<ApiBatchResult> {
-    return this.pollForTaskResult(this.addSkillsToCollection(collectionUuid, apiSearch))
+    return this.pollForTaskResult(this.addSkillsToCollection(collectionUuid, apiSearch), pollIntervalMs)
   }
 }

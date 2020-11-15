@@ -10,12 +10,13 @@ import {Observable} from "rxjs";
 import {ToastService} from "../../toast/toast.service";
 import {Title} from "@angular/platform-browser";
 import {ApiNamedReference, INamedReference} from "../../richskill/ApiSkill";
+import {HasFormGroup} from "../../core/abstract-form.component";
 
 @Component({
   selector: "app-create-collection",
   templateUrl: "./collection-form.component.html"
 })
-export class CollectionFormComponent implements OnInit {
+export class CollectionFormComponent implements OnInit, HasFormGroup {
 
   collectionForm = new FormGroup(this.getFormDefinitions())
   collectionUuid: string | null = null
@@ -34,6 +35,8 @@ export class CollectionFormComponent implements OnInit {
     private toastService: ToastService,
     private titleService: Title
   ) { }
+
+  formGroup(): FormGroup { return this.collectionForm }
 
   ngOnInit(): void {
     this.collectionUuid = this.route.snapshot.paramMap.get("uuid")

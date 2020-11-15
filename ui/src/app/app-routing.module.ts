@@ -2,7 +2,7 @@ import {NgModule} from "@angular/core"
 import {RouterModule, Routes} from "@angular/router"
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
 import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-library.component"
-import {RichSkillFormComponent, SkillFormDirtyGuard} from "./richskill/form/rich-skill-form.component"
+import {RichSkillFormComponent} from "./richskill/form/rich-skill-form.component"
 import {LoginSuccessComponent} from "./auth/login-success.component"
 import {LogoutComponent} from "./auth/logout.component"
 import {AuthGuard} from "./auth/auth.guard"
@@ -12,6 +12,7 @@ import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-result
 import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component";
 import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component";
 import {CollectionFormComponent} from "./collection/create-collection/collection-form.component"
+import {FormDirtyGuard} from "./core/abstract-form.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -22,12 +23,13 @@ const routes: Routes = [
   {path: "skills/create",
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
-    canDeactivate: [SkillFormDirtyGuard]},
+    canDeactivate: [FormDirtyGuard]
+  },
   // edit skill
   {path: "skills/:uuid/edit",
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
-    canDeactivate: [SkillFormDirtyGuard]
+    canDeactivate: [FormDirtyGuard]
   },
   // manage skill
   {path: "skills/:uuid/manage",
@@ -45,12 +47,14 @@ const routes: Routes = [
   // create collection
   {path: "collections/create",
     component: CollectionFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    canDeactivate: [FormDirtyGuard]
   },
   // edit collection
   {path: "collections/:uuid/edit",
     component: CollectionFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    canDeactivate: [FormDirtyGuard]
   },
   // manage collection
   // {path: "collections/:uuid/manage",

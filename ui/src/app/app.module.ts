@@ -7,7 +7,7 @@ import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-librar
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
 import {RichSkillsCsvExportComponent} from "./richskill/task/rich-skills-csv-export.component"
 import {AppConfig} from "./app.config"
-import {RichSkillFormComponent, SkillFormDirtyGuard} from "./richskill/form/rich-skill-form.component"
+import {RichSkillFormComponent} from "./richskill/form/rich-skill-form.component"
 import {ReactiveFormsModule} from "@angular/forms"
 import {FormField} from "./form/form-field.component"
 import {FormFieldText} from "./form/form-field-text.component"
@@ -62,6 +62,7 @@ import {CreateCollectionActionBarHorizontalComponent} from "./collection/create-
 import {CreateCollectionActionBarVerticalComponent} from "./collection/create-collection/action-bar/create-collection-action-bar-vertical.component"
 import {AbstractTableComponent} from "./table/abstract-table.component"
 import {PublicTableComponent} from "./table/public-table/public-table.component"
+import {FormDirtyGuard} from "./core/abstract-form.component";
 
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -148,7 +149,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
   providers: [
     Title,
     AppConfig,
-    SkillFormDirtyGuard,
+    FormDirtyGuard,
     AuthService,
     AuthGuard,
     { provide: APP_INITIALIZER,

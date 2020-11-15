@@ -8,16 +8,17 @@ import {ApiNamedReference, INamedReference, ApiSkill} from "../ApiSkill";
 import {ApiStringListUpdate, IStringListUpdate, ApiSkillUpdate, ApiReferenceListUpdate} from "../ApiSkillUpdate";
 import {AppConfig} from "../../app.config";
 import {urlValidator} from "../../validators/url.validator";
-import { IJobCode } from 'src/app/job-codes/Jobcode';
+import { IJobCode } from "src/app/job-codes/Jobcode";
 import {ToastService} from "../../toast/toast.service";
 import {Title} from "@angular/platform-browser";
+import {HasFormGroup} from "../../core/abstract-form.component";
 
 
 @Component({
   selector: "app-rich-skill-form",
   templateUrl: "./rich-skill-form.component.html"
 })
-export class RichSkillFormComponent implements OnInit {
+export class RichSkillFormComponent implements OnInit, HasFormGroup {
   skillForm = new FormGroup(this.getFormDefinitions())
   skillUuid: string | null = null
   existingSkill: ApiSkill | null = null
@@ -34,6 +35,8 @@ export class RichSkillFormComponent implements OnInit {
     private toastService: ToastService,
     private titleService: Title
   ) { }
+
+  formGroup(): FormGroup { return this.skillForm }
 
   ngOnInit(): void {
     this.skillUuid = this.route.snapshot.paramMap.get("uuid")
@@ -322,20 +325,3 @@ export class RichSkillFormComponent implements OnInit {
 }
 
 
-@Injectable()
-export class SkillFormDirtyGuard implements CanDeactivate<RichSkillFormComponent> {
-
-  canDeactivate(
-    component: RichSkillFormComponent,
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean> | boolean {
-    if (!component.skillForm.pristine) {
-      return new Observable((observer) => {
-        observer.next(confirm("Whoa, there! You have unsaved changes.\nIf you leave this page without saving, you'll lose your edits. Are you sure you want to leave?"))
-        observer.complete()
-      })
-    }
-    return true
-  }
-}

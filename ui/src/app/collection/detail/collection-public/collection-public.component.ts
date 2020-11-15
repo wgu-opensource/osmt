@@ -7,6 +7,7 @@ import {ToastService} from "../../../toast/toast.service"
 import {CollectionService} from "../../service/collection.service"
 import {Observable} from "rxjs"
 import {ApiSkillSortOrder} from "../../../richskill/ApiSkill"
+import {PublishStatus} from "../../../PublishStatus"
 
 @Component({
   selector: "app-collection-public",
@@ -69,7 +70,13 @@ export class CollectionPublicComponent implements OnInit {
   }
 
   loadSkillsInCollection(): void {
-    this.resultsLoaded = this.collectionService.getCollectionSkills(this.collectionUuid)
+    this.resultsLoaded = this.collectionService.getCollectionSkills(
+      this.collectionUuid,
+      this.size,
+      this.from,
+      new Set<PublishStatus>([PublishStatus.Archived, PublishStatus.Unpublished, PublishStatus.Published]),
+      this.columnSort
+    )
     this.resultsLoaded.subscribe(skills => this.setResults(skills))
   }
 

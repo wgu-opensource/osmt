@@ -52,13 +52,19 @@ export class CollectionService extends AbstractService {
       .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg)))
   }
 
-  getCollectionSkills(uuid: string): Observable<PaginatedSkills> {
+  getCollectionSkills(
+    uuid: string,
+    size?: number,
+    from?: number,
+    filterByStatuses?: Set<PublishStatus>,
+    sort?: ApiSkillSortOrder): Observable<PaginatedSkills> {
     const errorMsg = `Could not find skills in collection [${uuid}]`
     return this.get<ApiSkillSummary[]>({
       path: `${this.baseServiceUrl}/${uuid}/skills`,
       headers: new HttpHeaders({
         Accept: "application/json"
-      })
+      }),
+      params: this.buildTableParams(size, from, filterByStatuses, sort)
     })
       .pipe(share())
       .pipe(map(({body, headers}) =>

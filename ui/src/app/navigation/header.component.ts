@@ -32,6 +32,6 @@ export class HeaderComponent extends Whitelabelled implements OnInit {
   }
 
   get skillsActive(): boolean {
-    return window.location.pathname.startsWith("/skills")
+    return !this.collectionsActive
   }
 }

@@ -27,6 +27,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     canDeactivate: [FormDirtyGuard]
   },
+  // skill search results
+  {path: "skills/search",
+    component: RichSkillSearchResultsComponent,
+    canActivate: [AuthGuard],
+  },
   // edit skill
   {path: "skills/:uuid/edit",
     component: RichSkillFormComponent,
@@ -52,6 +57,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     canDeactivate: [FormDirtyGuard]
   },
+  // collection search results
+  {path: "collections/search",
+    component: CollectionSearchResultsComponent,
+    canActivate: [AuthGuard],
+  },
   // edit collection
   {path: "collections/:uuid/edit",
     component: CollectionFormComponent,
@@ -74,16 +84,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
 
-  /* SEARCHING */
-  {path: "search/skills",
-    component: RichSkillSearchResultsComponent,
-    canActivate: [AuthGuard],
-  },
-  {path: "search/collections",
-    component: CollectionSearchResultsComponent,
-    canActivate: [AuthGuard],
-  },
-  {path: "search/advanced",
+  // advanced search
+  {path: "search",
     component: AdvancedSearchComponent,
     canActivate: [AuthGuard],
   },

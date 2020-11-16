@@ -77,7 +77,7 @@ export class RichSkillService extends AbstractService {
 
   getSkillJsonByUuid(uuid: string): Observable<string> {
     if (!uuid) {
-      throw new Error("No uuid provided for single skill csv export")
+      throw new Error("No uuid provided for single skill json export")
     }
     const errorMsg = `Could not find skill by uuid [${uuid}]`
 
@@ -118,8 +118,8 @@ export class RichSkillService extends AbstractService {
 
   searchSkills(
     apiSearch: ApiSearch,
-    size: number | undefined,
-    from: number | undefined,
+    size?: number,
+    from?: number,
     filterByStatuses?: Set<PublishStatus>,
     sort?: ApiSortOrder,
   ): Observable<PaginatedSkills> {

@@ -8,7 +8,7 @@ import {Observable} from "rxjs";
 import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
 import {ApiSortOrder} from "../richskill/ApiSkill";
 import {CollectionService} from "./service/collection.service";
-import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
+import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
 import {ToastService} from "../toast/toast.service";
 
 @Component({

@@ -15,6 +15,7 @@ import {CollectionFormComponent} from "./collection/create-collection/collection
 import {FormDirtyGuard} from "./core/abstract-form.component";
 import {CollectionsLibraryComponent} from "./table/collections-library.component";
 import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component";
+import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -92,7 +93,7 @@ const routes: Routes = [
 
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},
-  // {path: "collections/:uuid", component: CollectionPublicComponent},
+  {path: "collections/:uuid", component: CollectionPublicComponent},
 
   /* AUTHENTICATION REDIRECTS */
   {path: "login", component: LoginComponent},  // redirect to oauth login

@@ -124,10 +124,9 @@ class SearchController @Autowired constructor(
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
         @RequestParam(required = false) sort: String?,
-        @PathVariable uuid: String,
-        @RequestBody apiSearch: ApiSearch
+        @PathVariable uuid: String
     ): HttpEntity<List<RichSkillDoc>> {
-        return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch)
+        return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, ApiSearch(null, null, null ))
     }
 }
 

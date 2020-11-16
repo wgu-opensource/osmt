@@ -1,12 +1,17 @@
 import {Injectable} from "@angular/core"
-import {HttpClient} from "@angular/common/http"
+import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {AuthService} from "../../auth/auth-service"
 import {AbstractService} from "../../abstract.service"
 import {PublishStatus} from "../../PublishStatus"
 import {ApiSortOrder} from "../../richskill/ApiSkill"
-import {ApiSearch, ApiSkillListUpdate, PaginatedCollections} from "../../richskill/service/rich-skill-search.service"
+import {
+  ApiSearch,
+  ApiSkillListUpdate,
+  PaginatedCollections,
+  PaginatedSkills
+} from "../../richskill/service/rich-skill-search.service"
 import {Observable} from "rxjs"
-import {ApiCollectionSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary"
+import {ApiCollectionSummary, ApiSkillSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary"
 import {map, share} from "rxjs/operators"
 import {ApiBatchResult} from "../../richskill/ApiBatchResult"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
@@ -50,6 +55,43 @@ export class CollectionService extends AbstractService {
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
+  }
+
+  getCollectionJson(uuid: string): Observable<string> {
+    if (!uuid) {
+      throw new Error("No uuid provided for collection json export")
+    }
+    const errorMsg = `Could not find collection by uuid [${uuid}]`
+    return this.httpClient
+      .get(this.buildUrl(`${this.baseServiceUrl}/${uuid}`), {
+        headers: this.wrapHeaders(new HttpHeaders({
+          Accept: "application/json"
+        })),
+        responseType: "text",
+        observe: "response"
+      })
+      .pipe(share())
+      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg)))
+  }
+
+  getCollectionSkills(
+    uuid: string,
+    size?: number,
+    from?: number,
+    filterByStatuses?: Set<PublishStatus>,
+    sort?: ApiSortOrder): Observable<PaginatedSkills> {
+    const errorMsg = `Could not find skills in collection [${uuid}]`
+    return this.get<ApiSkillSummary[]>({
+      path: `${this.baseServiceUrl}/${uuid}/skills`,
+      headers: new HttpHeaders({
+        Accept: "application/json"
+      }),
+      params: this.buildTableParams(size, from, filterByStatuses, sort)
+    })
+      .pipe(share())
+      .pipe(map(({body, headers}) =>
+        new PaginatedSkills(this.safeUnwrapBody(body, errorMsg), Number(headers.get("X-Total-Count")))
+      ))
   }
 
   createCollection(updateObject: ICollectionUpdate): Observable<ApiCollection> {
@@ -105,6 +147,6 @@ export class CollectionService extends AbstractService {
   }
 
   addSkillsWithResult(collectionUuid: string, apiSearch: ApiSearch, pollIntervalMs: number = 1000): Observable<ApiBatchResult> {
-    return this.pollForTaskResult(this.addSkillsToCollection(collectionUuid, apiSearch))
+    return this.pollForTaskResult(this.addSkillsToCollection(collectionUuid, apiSearch), pollIntervalMs)
   }
 }

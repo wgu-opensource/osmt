@@ -10,12 +10,6 @@ import {ToastService} from "../../../../../toast/toast.service";
 })
 export class PublicSkillActionBarHorizontalComponent extends PublicRichSkillActionBarComponent {
 
-  @Input() skillUuid = ""
-  @Input() skillName = ""
-  @Input() skillUrl = ""
-
-  jsonClipboard = ""
-
   constructor(
     router: Router,
     richSkillService: RichSkillService,

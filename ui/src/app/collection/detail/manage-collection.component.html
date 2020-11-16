@@ -8,9 +8,7 @@
       <app-collection-public-detail-card
         *ngIf="collection"
         [collection]="collection"
-        [indexOfFirstSkill]="from"
-        [currentOnPage]="curPageCount"
-        [totalSkills]="totalCount"
+        [showSkillCount]="false"
       ></app-collection-public-detail-card>
     </div>
 
@@ -24,6 +22,35 @@
     </div>
 
   </div>
+
+  <div class="l-container">
+    <!--      {{render '@listheadingsearch'}}-->
+    <div class="t-margin-medium t-margin-bottom">
+      <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
+        <div class="m-text">
+          <svg class="m-text-x-icon t-icon" (click)="clearSearch()"><use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use></svg>
+          <input type="text" placeholder="Search Collections" [formControl]="searchForm.controls.search">
+        </div>
+
+        <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
+          {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">RSDs</ng-template><ng-template #singular>RSD</ng-template> found in this collection based on
+          <ng-template [ngIf]="matchingQuery">
+            <span class="t-type-bodyLargeBold t-color-text1">{{matchingQuery[0]}}</span> and
+          </ng-template>
+          your filters.
+          <ng-template [ngIf]="totalCount > 0">
+            Viewing {{firstRecordNo}}-{{lastRecordNo}}.
+          </ng-template>
+        </p>
+      </form>
+    </div>
+
+    <app-filter-controls
+      [selectedFilters]="selectedFilters"
+      (filtersChanged)="handleFiltersChanged($event)"
+    ></app-filter-controls>
+  </div>
+
 
   <div class="l-container">
     <ng-template [appLoadingObservables]="[resultsLoaded]">

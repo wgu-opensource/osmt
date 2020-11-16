@@ -6,6 +6,7 @@ import {CollectionService} from "../service/collection.service";
 import {ToastService} from "../../toast/toast.service";
 import {SkillsListComponent} from "../../richskill/list/skills-list.component";
 import {RichSkillService} from "../../richskill/service/rich-skill.service";
+import {FormControl, FormGroup} from "@angular/forms";
 
 @Component({
   selector: "app-manage-collection",
@@ -14,6 +15,13 @@ import {RichSkillService} from "../../richskill/service/rich-skill.service";
 export class ManageCollectionComponent extends SkillsListComponent implements OnInit {
   collection?: ApiCollection
   apiSearch?: ApiSearch
+
+  searchForm = new FormGroup({
+    search: new FormControl("")
+  })
+  get isPlural(): boolean {
+    return (this.results?.skills.length ?? 0) > 1
+  }
 
   constructor(protected router: Router,
               protected richSkillService: RichSkillService,
@@ -52,4 +60,22 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     return this.totalCount
   }
 
+
+  public get searchQuery(): string {
+    return this.searchForm.get("search")?.value ?? ""
+  }
+  clearSearch(): boolean {
+    this.searchForm.reset()
+    this.apiSearch = undefined
+    this.from = 0
+    this.loadNextPage()
+    return false
+  }
+  handleDefaultSubmit(): boolean {
+    this.apiSearch = new ApiSearch({query: this.searchQuery})
+    this.matchingQuery = [this.searchQuery]
+    this.from = 0
+    this.loadNextPage()
+    return false
+  }
 }

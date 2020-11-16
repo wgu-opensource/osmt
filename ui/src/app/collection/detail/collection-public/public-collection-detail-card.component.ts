@@ -14,6 +14,7 @@ export class PublicCollectionDetailCardComponent implements OnInit {
   @Input() totalSkills = 0
   @Input() indexOfFirstSkill = 0
   @Input() currentOnPage = 0
+  @Input() showSkillCount = true
 
   constructor(protected router: Router,
               protected route: ActivatedRoute,

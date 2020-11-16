@@ -88,7 +88,7 @@ export class CollectionService extends AbstractService {
         Accept: "application/json"
       }),
       params: this.buildTableParams(size, from, filterByStatuses, sort),
-      body: apiSearch ?? new ApiSearch()
+      body: apiSearch ?? new ApiSearch({})
     })
       .pipe(share())
       .pipe(map(({body, headers}) =>

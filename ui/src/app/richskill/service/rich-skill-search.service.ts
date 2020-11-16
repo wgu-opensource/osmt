@@ -10,7 +10,7 @@ import {ApiCollectionSummary, IApiSkillSummary, ICollectionSummary} from "../Api
 export interface ISearch {
   query?: string
   advanced?: IAdvancedSearch
-  uuids?: []
+  uuids?: string[]
 }
 
 export interface IAdvancedSearch {
@@ -30,11 +30,14 @@ export interface IAdvancedSearch {
 export class ApiSearch implements ISearch {
   query?: string
   advanced?: IAdvancedSearch
-  uuids?: []
+  uuids?: string[]
 
-  static factory(options: object): ApiSearch {
-    return Object.assign(new ApiSearch(), options)
+  constructor({query, advanced, uuids}: ISearch) {
+    this.query = query
+    this.advanced = advanced
+    this.uuids = uuids
   }
+
 }
 
 export class ApiAdvancedSearch implements IAdvancedSearch {

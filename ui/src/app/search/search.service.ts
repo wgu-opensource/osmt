@@ -17,11 +17,20 @@ export class SearchService {
 
   simpleSkillSearch(query: string): void {
     this.setLatestSearch(ApiSearch.factory({query}))
-    this.router.navigate(["/search/skills"], {queryParams: {q: query}})
+    this.router.navigate(["/skills/search"], {queryParams: {q: query}})
   }
   advancedSkillSearch(advanced: ApiAdvancedSearch): void {
     this.setLatestSearch(ApiSearch.factory({advanced}))
-    this.router.navigate(["/search/skills"])
+    this.router.navigate(["/skills/search"])
+  }
+
+  simpleCollectionSearch(query: string): void {
+    this.setLatestSearch(ApiSearch.factory({query}))
+    this.router.navigate(["/collections/search"], {queryParams: {q: query}})
+  }
+  advancedCollectionSearch(advanced: ApiAdvancedSearch): void {
+    this.setLatestSearch(ApiSearch.factory({advanced}))
+    this.router.navigate(["/collections/search"])
   }
 
   protected setLatestSearch(apiSearch?: ApiSearch): void {

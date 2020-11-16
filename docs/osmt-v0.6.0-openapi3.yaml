@@ -520,7 +520,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
 
   /api/collections/{uuid}/skills:
-    get:
+    post:
       tags:
         - Collections
       summary: Retrieve the skills in a collection
@@ -551,6 +551,14 @@ paths:
           name: sort
           schema:
             $ref: '#/components/schemas/SortOrder'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Search'
       responses:
         '200':
           description: OK
@@ -571,11 +579,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SkillSummary'
+
+  /api/collections/{uuid}/updateSkills:
     post:
       tags:
         - Collections
-      summary: Add skills to a collection
-      description: Batch add skills to an existing collection
+      summary: Add or remove skills from a collection
+      description: Batch add or remove skills from an existing collection
       requestBody:
         required: true
         content:

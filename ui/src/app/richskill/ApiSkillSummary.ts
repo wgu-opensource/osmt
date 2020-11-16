@@ -38,21 +38,25 @@ export class ApiSkillSummary implements IApiSkillSummary {
 
 // move to collections space when created
 export interface ICollectionSummary {
-  id?: number
-  uuid?: string
-  name?: string
+  id: string
+  uuid: string
+  name: string
   skillCount?: number
   status?: PublishStatus
 }
 
 export class ApiCollectionSummary implements ICollectionSummary {
-  id?: number
-  uuid?: string
-  name?: string
+  id: string
+  uuid: string
+  name: string
   skillCount?: number
   status?: PublishStatus
 
-  constructor(options: ICollectionSummary)  {
-    Object.assign(this, options)
+  constructor({id, uuid, name, skillCount, status}: ICollectionSummary)  {
+    this.id = id
+    this.uuid = uuid
+    this.name = name
+    this.skillCount = skillCount
+    this.status = status
   }
 }

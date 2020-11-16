@@ -7,7 +7,7 @@ import {Observable} from "rxjs";
 import {ApiBatchResult} from "../ApiBatchResult";
 import {RichSkillService} from "../service/rich-skill.service";
 import {ToastService} from "../../toast/toast.service";
-import {ApiSkillSortOrder} from "../ApiSkill";
+import {ApiSortOrder} from "../ApiSkill";
 import {Router} from "@angular/router";
 
 
@@ -27,7 +27,7 @@ export class SkillsListComponent {
   selectedSkills?: IApiSkillSummary[]
   skillsSaved?: Observable<ApiBatchResult>
 
-  columnSort: ApiSkillSortOrder = ApiSkillSortOrder.CategoryAsc
+  columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
 
   showSearchEmptyMessage = false
   showLibraryEmptyMessage = false
@@ -144,7 +144,7 @@ export class SkillsListComponent {
     this.selectedSkills = selectedSkills
   }
 
-  handleHeaderColumnSort(sort: ApiSkillSortOrder): void {
+  handleHeaderColumnSort(sort: ApiSortOrder): void {
     this.columnSort = sort
     this.from = 0
     this.loadNextPage()

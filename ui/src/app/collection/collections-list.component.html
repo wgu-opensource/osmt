@@ -7,7 +7,7 @@
     <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
       <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom">{{title}}</h2>
       <p class="t-type-bodyLarge t-color-text3">
-        {{skillCountLabel}}
+        {{collectionCountLabel}}
         found based on
         <ng-template [ngIf]="matchingQuery !== undefined">
           <ng-template ngFor let-q [ngForOf]="matchingQuery" let-last="last">
@@ -28,9 +28,10 @@
 
     <div class="t-margin-medium t-margin-bottom">
       <ng-template [appLoadingObservables]="[resultsLoaded]">
-        <app-skill-table
+        <app-collection-table
           *ngIf="!emptyResults"
-          [items]="results.skills"
+          [allowSorting]="true"
+          [items]="results.collections"
           (rowSelected)="handleNewSelection($event)"
           [currentSort]="columnSort"
           (columnSorted)="handleHeaderColumnSort($event)"
@@ -38,20 +39,20 @@
           (selectAllSelected)="handleSelectAll($event)"
           [selectAllCount]="getSelectAllCount()"
           [selectAllEnabled]="getSelectAllEnabled()"
-        ></app-skill-table>
+        ></app-collection-table>
 
         <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">
-          <p class="m-emptyMessage-x-message">No RSDs found. Try modifying your search terms or filters.</p>
+          <p class="m-emptyMessage-x-message">No collections found. Try modifying your search terms or filters.</p>
         </app-empty-message>
         <app-empty-message *ngIf="emptyResults && showLibraryEmptyMessage">
-          <p class="m-emptyMessage-x-message">0 RSDs in library</p>
-          <p class="m-emptyMessage-x-message">The library is ready to fill with RSDs.</p>
+          <p class="m-emptyMessage-x-message">0 Collections in library</p>
+          <p class="m-emptyMessage-x-message">The library is ready to fill with collections.</p>
           <p class="m-emptyMessage-x-message">
-          <a routerLink="/skills/create">Create an RSD</a> or <a href="#">Batch import RSDs</a>.
+          <a routerLink="/collections/create">Create a collection</a>.
           </p>
         </app-empty-message>
         <app-empty-message *ngIf="emptyResults && !showSearchEmptyMessage">
-          <p class="m-emptyMessage-x-message">No RSDs found. Try adjusting your filters.</p>
+          <p class="m-emptyMessage-x-message">No collections found. Try adjusting your filters.</p>
         </app-empty-message>
       </ng-template>
     </div>

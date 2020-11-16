@@ -2,18 +2,21 @@ import {Router} from "@angular/router"
 import {RichSkillService} from "../../../service/rich-skill.service"
 import {ToastService} from "../../../../toast/toast.service"
 import {formatDate} from "@angular/common"
-import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
+import {Component, Inject, Input, LOCALE_ID, OnInit} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {saveAs} from "file-saver"
 
-@Component({template: ""})
-export abstract class PublicRichSkillActionBarComponent implements OnInit {
+@Component({
+  selector: "app-abstract-public-rich-skill-action-bar",
+  template: ``
+})
+export class PublicRichSkillActionBarComponent implements OnInit {
 
-  abstract skillUuid: string
-  abstract skillName: string
-  abstract skillUrl: string
+  @Input() skillUuid = ""
+  @Input() skillName = ""
+  @Input() skillUrl = ""
 
-  abstract jsonClipboard: string
+  jsonClipboard = ""
 
   duplicateIcon = SvgHelper.path(SvgIcon.DUPLICATE)
   downloadIcon = SvgHelper.path(SvgIcon.DOWNLOAD)
@@ -23,7 +26,7 @@ export abstract class PublicRichSkillActionBarComponent implements OnInit {
     protected router: Router,
     protected richSkillService: RichSkillService,
     protected toastService: ToastService,
-    @Inject(LOCALE_ID) private locale: string
+    @Inject(LOCALE_ID) protected locale: string
   ) {
   }
 

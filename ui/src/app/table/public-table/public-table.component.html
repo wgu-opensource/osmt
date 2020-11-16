@@ -4,7 +4,7 @@
     <th class="t-hidden-tabletMax" scope="col">
       <app-label-with-filter
         label="Category"
-        [sortAscending]="getCategorySort()"
+        [sortAscending]="getNameSort()"
         (sortChanged)="sortColumn('category', $event)"
       ></app-label-with-filter>
     </th>
@@ -20,15 +20,15 @@
   </thead>
 
   <tbody>
-  <tr class="m-tableRow" id="row1" *ngFor="let skill of preparedSkills; let i = index">
+  <tr class="m-tableRow" id="row1" *ngFor="let skill of items; let i = index">
 
     <th class="m-tableRow-x-header" scope="row" id="row{{i}}-header" *ngIf="!!skill">
 
-      <div class="t-hidden-tabletMax">{{skill.skill.category}}</div>
+      <div class="t-hidden-tabletMax">{{skill.category}}</div>
       <div class="t-hidden-tabletMin">
         <div class="m-inlineHeading">
-          <h5 class="m-inlineHeading-x-heading">Heading:</h5>
-          <p class="m-inlineHeading-x-text">text</p>
+          <h5 class="m-inlineHeading-x-heading">Category:</h5>
+          <p class="m-inlineHeading-x-text">{{skill.category}}</p>
         </div>
       </div>
 
@@ -37,15 +37,15 @@
     <td class="m-tableRow-x-body">
 
       <h4 class="t-margin-extraSmall t-margin-bottom">
-        <a class="t-focus t-type-bodyLink" routerLink="/skills/{{skill.skill.uuid}}">{{skill.skill.skillName}}</a>
+        <a class="t-focus t-type-bodyLink" routerLink="/skills/{{skill.uuid}}">{{skill.skillName}}</a>
       </h4>
 
       <div class="m-quickLinks">
         <a href="#">TODO Next skill</a>
       </div>
 
-      <p class="t-margin-small t-margin-bottom">{{skill.skill.skillStatement}}</p>
-      <div class="l-flex" *ngIf="isArchived(skill.skill)">
+      <p class="t-margin-small t-margin-bottom">{{skill.skillStatement}}</p>
+      <div class="l-flex" *ngIf="isArchived(skill)">
         <svg class="t-icon" aria-hidden="true">
           <use [attr.xlink:href]="archiveIcon"></use>
         </svg>

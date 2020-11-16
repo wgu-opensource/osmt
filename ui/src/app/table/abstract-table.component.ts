@@ -1,8 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
-import {ApiSkillSortOrder} from "../richskill/ApiSkill"
-import {Observable} from "rxjs"
-import {SkillWithMetadata} from "../richskill/list/skill-list-row.component"
-import {IApiSkillSummary} from "../richskill/ApiSkillSummary"
+import {ApiSortOrder} from "../richskill/ApiSkill"
 import {TableActionDefinition} from "./skills-library-table/has-action-definitions"
 import {SvgHelper, SvgIcon} from "../core/SvgHelper"
 
@@ -13,30 +10,33 @@ import {SvgHelper, SvgIcon} from "../core/SvgHelper"
   selector: "app-abstract-table",
   template: ``
 })
-export class AbstractTableComponent implements OnInit {
+export class AbstractTableComponent<SummaryT> implements OnInit {
 
-  @Input() skills: IApiSkillSummary[] = []
-  @Input() currentSort: ApiSkillSortOrder | undefined = undefined
+  @Input() items: SummaryT[] = []
+  @Input() currentSort: ApiSortOrder | undefined = undefined
   @Input() rowActions: TableActionDefinition[] = []
+  @Input() selectAllCount?: number
+  @Input() selectAllEnabled: boolean = true
 
-  @Output() columnSorted = new EventEmitter<ApiSkillSortOrder>()
+  @Output() columnSorted = new EventEmitter<ApiSortOrder>()
 
-  // handles the inner state of the loaded skills
-  preparedSkills: SkillWithMetadata[] = []
+  @Output() rowSelected: EventEmitter<SummaryT[]> = new EventEmitter<SummaryT[]>()
+  @Output() selectAllSelected = new EventEmitter<boolean>()
+
+  selectedItems: Set<SummaryT> = new Set()
 
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
 
   constructor() { }
 
   ngOnInit(): void {
-    this.preparedSkills = this.skills?.map<SkillWithMetadata>(skill => ({skill, selected: false})) ?? []
   }
 
-  getCategorySort(): boolean | undefined {
+  getNameSort(): boolean | undefined {
     if (this.currentSort) {
       switch (this.currentSort) {
-        case ApiSkillSortOrder.CategoryAsc: return true
-        case ApiSkillSortOrder.CategoryDesc: return false
+        case ApiSortOrder.NameAsc: return true
+        case ApiSortOrder.NameDesc: return false
       }
     }
     return undefined
@@ -45,8 +45,8 @@ export class AbstractTableComponent implements OnInit {
   getSkillSort(): boolean | undefined {
     if (this.currentSort) {
       switch (this.currentSort) {
-        case ApiSkillSortOrder.NameAsc: return true
-        case ApiSkillSortOrder.NameDesc: return false
+        case ApiSortOrder.SkillAsc: return true
+        case ApiSortOrder.SkillDesc: return false
       }
     }
     return undefined
@@ -55,18 +55,43 @@ export class AbstractTableComponent implements OnInit {
   sortColumn(column: string, ascending: boolean): void {
     if (column.toLowerCase() === "name") {
       if (ascending) {
-        this.currentSort = ApiSkillSortOrder.NameAsc
+        this.currentSort = ApiSortOrder.NameAsc
       } else {
-        this.currentSort = ApiSkillSortOrder.NameDesc
+        this.currentSort = ApiSortOrder.NameDesc
       }
     } else if (column.toLowerCase() === "category") {
       if (ascending) {
-        this.currentSort = ApiSkillSortOrder.CategoryAsc
+        this.currentSort = ApiSortOrder.SkillAsc
       } else {
-        this.currentSort = ApiSkillSortOrder.CategoryDesc
+        this.currentSort = ApiSortOrder.SkillDesc
       }
     }
     this.columnSorted.emit(this.currentSort)
   }
 
+  isSelected(item: SummaryT): boolean {
+    return this.selectedItems.has(item)
+  }
+
+  numberOfSelected(): number {
+    return this.selectedItems.size
+  }
+
+  getSelectAllCount(): number {
+    return (this.selectAllCount !== undefined) ? this.selectAllCount : this.items.length
+  }
+
+  // Every time a row is toggled, emit the current list of all selected rows
+  onRowToggle(item: SummaryT): void {
+    this.selectedItems.add(item)
+    this.rowSelected.emit(Array.from(this.selectedItems))
+  }
+
+  handleSelectAll(event: Event): void {
+    const checkbox = event.target as HTMLInputElement
+    const selected: boolean = checkbox.checked
+    this.selectAllSelected.emit(selected)
+    this.items.forEach(it => this.selectedItems.add(it))
+    this.rowSelected.emit(Array.from(this.selectedItems))
+  }
 }

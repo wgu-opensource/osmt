@@ -2,6 +2,7 @@ package edu.wgu.osmt.collection
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.db.PublishStatus
 import org.elasticsearch.common.Nullable
 import org.springframework.data.annotation.Id
@@ -33,6 +34,7 @@ data class CollectionDoc(
     val name: String,
 
     @Field(type = Keyword)
+    @get:JsonProperty("status")
     val publishStatus: PublishStatus,
 
     @Field(type = Keyword)

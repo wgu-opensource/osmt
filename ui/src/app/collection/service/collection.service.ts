@@ -1,16 +1,21 @@
-import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../auth/auth-service";
-import {AbstractService} from "../../abstract.service";
-import {PublishStatus} from "../../PublishStatus";
-import {ApiSkillSortOrder} from "../../richskill/ApiSkill";
-import {ApiSearch, PaginatedCollections} from "../../richskill/service/rich-skill-search.service";
-import {Observable} from "rxjs";
-import {ApiCollectionSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary";
-import {map, share} from "rxjs/operators";
-import {ApiBatchResult} from "../../richskill/ApiBatchResult";
-import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult";
-import {Collection, CollectionUpdate} from "../Collection"
+import {Injectable} from "@angular/core"
+import {HttpClient, HttpHeaders} from "@angular/common/http"
+import {AuthService} from "../../auth/auth-service"
+import {AbstractService} from "../../abstract.service"
+import {PublishStatus} from "../../PublishStatus"
+import {ApiSortOrder} from "../../richskill/ApiSkill"
+import {
+  ApiSearch,
+  ApiSkillListUpdate,
+  PaginatedCollections,
+  PaginatedSkills
+} from "../../richskill/service/rich-skill-search.service"
+import {Observable} from "rxjs"
+import {ApiCollectionSummary, ApiSkillSummary, ICollectionSummary} from "../../richskill/ApiSkillSummary"
+import {map, share} from "rxjs/operators"
+import {ApiBatchResult} from "../../richskill/ApiBatchResult"
+import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
+import {ApiCollection, ICollection, ICollectionUpdate} from "../ApiCollection"
 
 @Injectable({
   providedIn: "root"
@@ -23,13 +28,92 @@ export class CollectionService extends AbstractService {
     super(httpClient, authService)
   }
 
-  createCollection(collections: CollectionUpdate[]): Observable<Collection[]> {
-    return this.post<Collection[]>({
-      path: this.baseServiceUrl,
-      body: collections
+  getCollections(
+    size: number = 50,
+    from: number = 0,
+    filterByStatuses: Set<PublishStatus> | undefined,
+    sort: ApiSortOrder | undefined,
+  ): Observable<PaginatedCollections> {
+    const params = this.buildTableParams(size, from, filterByStatuses, sort)
+    return this.get<ICollectionSummary[]>({
+      path: `${this.baseServiceUrl}`,
+      params,
     })
       .pipe(share())
-      .pipe(map(({body}) => this.safeUnwrapBody(body, "Failed to parse create collection response")))
+      .pipe(map(({body, headers}) => {
+        return new PaginatedCollections(
+          body?.map(skill => new ApiCollectionSummary(skill)) || [],
+          Number(headers.get("X-Total-Count"))
+        )
+      }))
+  }
+
+  getCollectionByUUID(uuid: string): Observable<ApiCollection> {
+    const errorMsg = `Could not find skill by uuid [${uuid}]`
+    return this.get<ICollection>({
+      path: `${this.baseServiceUrl}/${uuid}`
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
+  }
+
+  getCollectionJson(uuid: string): Observable<string> {
+    if (!uuid) {
+      throw new Error("No uuid provided for collection json export")
+    }
+    const errorMsg = `Could not find collection by uuid [${uuid}]`
+    return this.httpClient
+      .get(this.buildUrl(`${this.baseServiceUrl}/${uuid}`), {
+        headers: this.wrapHeaders(new HttpHeaders({
+          Accept: "application/json"
+        })),
+        responseType: "text",
+        observe: "response"
+      })
+      .pipe(share())
+      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg)))
+  }
+
+  getCollectionSkills(
+    uuid: string,
+    size?: number,
+    from?: number,
+    filterByStatuses?: Set<PublishStatus>,
+    sort?: ApiSortOrder,
+    apiSearch?: ApiSearch): Observable<PaginatedSkills> {
+    const errorMsg = `Could not find skills in collection [${uuid}]`
+    return this.post<ApiSkillSummary[]>({
+      path: `${this.baseServiceUrl}/${uuid}/skills`,
+      headers: new HttpHeaders({
+        Accept: "application/json"
+      }),
+      params: this.buildTableParams(size, from, filterByStatuses, sort),
+      body: apiSearch ?? new ApiSearch()
+    })
+      .pipe(share())
+      .pipe(map(({body, headers}) =>
+        new PaginatedSkills(this.safeUnwrapBody(body, errorMsg), Number(headers.get("X-Total-Count")))
+      ))
+  }
+
+  createCollection(updateObject: ICollectionUpdate): Observable<ApiCollection> {
+    const errorMsg = `Error creating collection`
+    return this.post<ApiCollection[]>({
+      path: this.baseServiceUrl,
+      body: [updateObject]
+    })
+      .pipe(share())
+      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiCollection(s))[0]))
+  }
+
+  updateCollection(uuid: string, updateObject: ICollectionUpdate): Observable<ApiCollection> {
+    const errorMsg = `Could not find collection by uuid [${uuid}]`
+    return this.post<ICollection>({
+      path: `${this.baseServiceUrl}/${uuid}/update`,
+      body: updateObject
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
   }
 
   searchCollections(
@@ -37,7 +121,7 @@ export class CollectionService extends AbstractService {
     size: number | undefined,
     from: number | undefined,
     filterByStatuses?: Set<PublishStatus>,
-    sort?: ApiSkillSortOrder,
+    sort?: ApiSortOrder,
   ): Observable<PaginatedCollections> {
 
     const params = this.buildTableParams(size, from, filterByStatuses, sort)
@@ -57,14 +141,14 @@ export class CollectionService extends AbstractService {
 
   addSkillsToCollection(collectionUuid: string, apiSearch: ApiSearch): Observable<ApiTaskResult> {
     return this.post<ITaskResult>({
-      path: `api/collections/${collectionUuid}/skills`,
-      body: apiSearch
+      path: `api/collections/${collectionUuid}/updateSkills`,
+      body: new ApiSkillListUpdate({add: apiSearch})
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }
 
   addSkillsWithResult(collectionUuid: string, apiSearch: ApiSearch, pollIntervalMs: number = 1000): Observable<ApiBatchResult> {
-    return this.pollForTaskResult(this.addSkillsToCollection(collectionUuid, apiSearch))
+    return this.pollForTaskResult(this.addSkillsToCollection(collectionUuid, apiSearch), pollIntervalMs)
   }
 }

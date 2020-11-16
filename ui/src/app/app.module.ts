@@ -7,7 +7,7 @@ import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-librar
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
 import {RichSkillsCsvExportComponent} from "./richskill/task/rich-skills-csv-export.component"
 import {AppConfig} from "./app.config"
-import {RichSkillFormComponent, SkillFormDirtyGuard} from "./richskill/form/rich-skill-form.component"
+import {RichSkillFormComponent} from "./richskill/form/rich-skill-form.component"
 import {ReactiveFormsModule} from "@angular/forms"
 import {FormField} from "./form/form-field.component"
 import {FormFieldText} from "./form/form-field-text.component"
@@ -34,7 +34,7 @@ import {ServerErrorComponent} from "./loading/server-error.component"
 import {CommonModule} from "@angular/common"
 import {StatusBarComponent} from "./core/status-bar.component"
 import {CardDetailTitleComponent} from "./detail-card/title/card-detail-title.component"
-import {TableComponent} from "./table/skills-library-table/table.component"
+import {SkillTableComponent} from "./table/skills-library-table/skill-table.component"
 import {SkillListRowComponent} from "./richskill/list/skill-list-row.component"
 import {TableLabelComponent} from "./table/skills-library-table/table-label.component"
 import {LabelWithFilterComponent} from "./table/skills-library-table/label-with-filter.component"
@@ -56,13 +56,22 @@ import {DotsMenuComponent} from "./table/skills-library-table/dots-menu.componen
 import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component"
 import {CollectionTableComponent} from "./collection/collection-table.component"
 import {CollectionListRowComponent} from "./collection/collection-list-row.component"
-import {CreateCollectionComponent} from "./collection/create-collection/create-collection.component"
+import {CollectionFormComponent} from "./collection/create-collection/collection-form.component"
 import {AbstractCreateCollectionActionbarComponent} from "./collection/create-collection/action-bar/abstract-create-collection-actionbar.component"
 import {CreateCollectionActionBarHorizontalComponent} from "./collection/create-collection/action-bar/create-collection-action-bar-horizontal.component"
 import {CreateCollectionActionBarVerticalComponent} from "./collection/create-collection/action-bar/create-collection-action-bar-vertical.component"
 import {AbstractTableComponent} from "./table/abstract-table.component"
+import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component"
+import {PublicCollectionDetailCardComponent} from "./collection/detail/collection-public/public-collection-detail-card.component"
+import {CollectionPublicHorizontalActionBarComponent} from "./collection/detail/collection-public/action-bar/horizontal/collection-public-horizontal-action-bar.component"
+import {CollectionPublicVerticalActionBarComponent} from "./collection/detail/collection-public/action-bar/vertical/collection-public-vertical-action-bar.component"
+import {CollectionPublicActionBarComponent} from "./collection/detail/collection-public/action-bar/collection-public-action-bar.component"
 import {PublicTableComponent} from "./table/public-table/public-table.component"
-
+import {FormDirtyGuard} from "./core/abstract-form.component";
+import {CollectionsLibraryComponent} from "./table/collections-library.component";
+import {CollectionsListComponent} from "./collection/collections-list.component";
+import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component";
+import {PublicRichSkillActionBarComponent} from "./richskill/detail/rich-skill-public/action-bar/public-rich-skill-action-bar.component"
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -107,6 +116,9 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AddSkillsCollectionComponent,
     CollectionTableComponent,
     CollectionListRowComponent,
+    CollectionsLibraryComponent,
+    CollectionsListComponent,
+    CollectionSearchResultsComponent,
 
     DetailCardComponent,
     DetailCardSectionComponent,
@@ -114,7 +126,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CardDetailTitleComponent,
     AccordianComponent,
     AbstractTableComponent,
-    TableComponent,
+    SkillTableComponent,
     SkillListRowComponent,
     TableLabelComponent,
     TableActionBarComponent,
@@ -132,11 +144,17 @@ export function initializeApp(appConfig: AppConfig): () => void {
     StatusPillComponent,
     DotsMenuComponent,
     AbstractAdvancedSearchActionBarComponent,
-    CreateCollectionComponent,
+    CollectionFormComponent,
     AbstractCreateCollectionActionbarComponent,
     CreateCollectionActionBarHorizontalComponent,
     CreateCollectionActionBarVerticalComponent,
-    PublicTableComponent
+    PublicTableComponent,
+    CollectionPublicComponent,
+    PublicCollectionDetailCardComponent,
+    CollectionPublicHorizontalActionBarComponent,
+    CollectionPublicVerticalActionBarComponent,
+    CollectionPublicActionBarComponent,
+    PublicRichSkillActionBarComponent
   ],
   imports: [
     BrowserModule,
@@ -148,7 +166,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
   providers: [
     Title,
     AppConfig,
-    SkillFormDirtyGuard,
+    FormDirtyGuard,
     AuthService,
     AuthGuard,
     { provide: APP_INITIALIZER,

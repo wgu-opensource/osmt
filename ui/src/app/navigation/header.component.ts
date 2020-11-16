@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core"
 import {Whitelabelled} from "../../whitelabel"
 import {AuthService} from "../auth/auth-service"
-import {Router} from "@angular/router"
+import {ActivatedRoute, Router} from "@angular/router"
 import {AppConfig} from "../app.config"
 
 @Component({
@@ -11,7 +11,7 @@ import {AppConfig} from "../app.config"
 export class HeaderComponent extends Whitelabelled implements OnInit {
   menuExpanded: boolean = false
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) {
     super()
   }
 
@@ -25,5 +25,13 @@ export class HeaderComponent extends Whitelabelled implements OnInit {
   handleClickMenu(): boolean {
     this.menuExpanded = !this.menuExpanded
     return false
+  }
+
+  get collectionsActive(): boolean {
+    return window.location.pathname.startsWith("/collections")
+  }
+
+  get skillsActive(): boolean {
+    return !this.collectionsActive
   }
 }

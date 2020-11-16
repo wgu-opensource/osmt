@@ -11,12 +11,6 @@ import {PublicRichSkillActionBarComponent} from "../public-rich-skill-action-bar
 })
 export class PublicSkillActionBarVerticalComponent extends PublicRichSkillActionBarComponent {
 
-  @Input() skillUuid = ""
-  @Input() skillName = ""
-  @Input() skillUrl = ""
-
-  jsonClipboard = ""
-
   constructor(
     router: Router,
     richSkillService: RichSkillService,

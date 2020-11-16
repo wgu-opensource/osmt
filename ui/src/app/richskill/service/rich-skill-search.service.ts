@@ -8,29 +8,29 @@ import {map} from "rxjs/operators"
 import {ApiCollectionSummary, IApiSkillSummary, ICollectionSummary} from "../ApiSkillSummary"
 
 export interface ISearch {
-  query: string | undefined
-  advanced: IAdvancedSearch | undefined
-  uuids: [] | undefined
+  query?: string
+  advanced?: IAdvancedSearch
+  uuids?: []
 }
 
 export interface IAdvancedSearch {
-  skillName: string | undefined
-  collectionName: string | undefined
-  category: string | undefined
-  skillStatement: string | undefined
-  keywords: [] | undefined
-  occupations: [] | undefined
-  standards: []| undefined
-  certifications: [] | undefined
-  employers: [] | undefined
-  alignments: [] | undefined
-  author: string | undefined
+  skillName?: string
+  collectionName?: string
+  category?: string
+  skillStatement?: string
+  keywords?: []
+  occupations?: []
+  standards?: []
+  certifications?: []
+  employers?: []
+  alignments?: []
+  author?: string
 }
 
 export class ApiSearch implements ISearch {
-  query: string | undefined
-  advanced: IAdvancedSearch | undefined
-  uuids: [] | undefined
+  query?: string
+  advanced?: IAdvancedSearch
+  uuids?: []
 
   static factory(options: object): ApiSearch {
     return Object.assign(new ApiSearch(), options)
@@ -55,6 +55,20 @@ export class ApiAdvancedSearch implements IAdvancedSearch {
   }
 }
 
+export interface ISkillListUpdate {
+  add?: ApiSearch
+  remove?: string[]
+}
+export class ApiSkillListUpdate implements ISkillListUpdate {
+  add?: ApiSearch
+  remove?: string[]
+
+  constructor({add, remove}: ISkillListUpdate) {
+    this.add = add
+    this.remove = remove
+  }
+
+}
 
 export class PaginatedSkills {
   totalCount = 0

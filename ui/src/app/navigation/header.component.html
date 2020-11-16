@@ -16,10 +16,10 @@
 
       <ul *ngIf="isAuthenticated()" class="m-navBar-x-desktopNav">
         <li>
-          <a class="m-navItem m-navItem-is-active" aria-current="page" routerLink="/skills">Skills Library</a>
+          <a class="m-navItem " [class.m-navItem-is-active]="skillsActive" aria-current="page" routerLink="/skills">Skills Library</a>
         </li>
         <li>
-          <a class="m-navItem" href="#">Collections</a>
+          <a class="m-navItem" [class.m-navItem-is-active]="collectionsActive" routerLink="/collections">Collections</a>
         </li>
         <li>
           <a class="m-iconInteractive m-iconInteractive-onDark" routerLink="/logout">

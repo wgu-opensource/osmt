@@ -4,8 +4,8 @@
     <th class="t-hidden-tabletMax" scope="col">
       <app-label-with-filter
         label="Category"
-        [sortAscending]="getCategorySort()"
-        (sortChanged)="sortColumn('category', $event)"
+        [sortAscending]="getNameSort()"
+        (sortChanged)="sortColumn('name', $event)"
       ></app-label-with-filter>
     </th>
 
@@ -13,7 +13,7 @@
       <app-label-with-filter
         label="Rich Skill Descriptor"
         [sortAscending]="getSkillSort()"
-        (sortChanged)="sortColumn('name', $event)"
+        (sortChanged)="sortColumn('skill', $event)"
       ></app-label-with-filter>
     </th>
 
@@ -40,14 +40,14 @@
 
   <tbody>
     <tr
-      *ngFor="let skill of preparedSkills; let i=index"
+      *ngFor="let skill of items; let i=index"
       id="table-row-{{i}}"
       class="m-tableRow"
-      [class.m-tableRow-is-selected]="skill.selected"
+      [class.m-tableRow-is-selected]="isSelected(skill)"
 
       app-skill-list-row
-      [skill]="skill.skill"
-      [isSelected]="skill.selected"
+      [skill]="skill"
+      [isSelected]="isSelected(skill)"
       [rowActions]="rowActions"
       (rowSelected)="onRowToggle($event)"
     ></tr>

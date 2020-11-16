@@ -1,53 +1,21 @@
-<div [class.a-accordian-is-open]="isExpanded" class="l-accordian">
+<div class="l-accordion" [class.l-accordion-is-open]="isExpanded">
 
-  <button
-    class="l-accordion-x-trigger m-buttonText"
-    role="button"
-    data-accordion="accordion"
-    [attr.aria-expanded]="isExpanded"
-    (click)="isExpanded = !isExpanded"
-  >
-
+  <button class="l-accordion-x-trigger m-buttonText" role="button" [attr.aria-expanded]="isExpanded" (click)="handleClickTrigger()">
 		<span class="m-buttonText-x-icon">
-
 			<div class="l-iconTransition" [class.l-iconTransition-is-toggled]="isExpanded">
-
 				<svg class="l-iconTransition-x-icon t-icon">
-					<use [attr.xlink:href]="addIcon"></use>
+					<use xlink:href="/assets/images/svg-defs.svg#icon-add"></use>
 				</svg>
-
 				<svg class="l-iconTransition-x-iconSwap l-iconTransition-x-replace t-icon">
-					<use [attr.xlink:href]="dismissIcon"></use>
+					<use xlink:href="/assets/images/svg-defs.svg#icon-minus"></use>
 				</svg>
-
 			</div>
-
 		</span>
-
-    <span class="m-buttonText-x-text">Button</span>
-
+    <span class="m-buttonText-x-text">{{triggerLabel}}</span>
   </button>
 
-  <div
-    class="l-accordion-x-content t-margin-small t-margin-bottom"
-    id="accordion"
-    [attr.aria-hidden]="!isExpanded"
-    [attr.inert]="!isExpanded ? '' : null"
-  >
-
-    <div class="l-flex l-flex-gapp5x t-margin-extraSmall t-margin-bottom">
-      <h5 class="t-type-smallBold">Keywords:</h5>
-      <p class="t-type-small">{{keywords}}</p>
-
-    </div>
-
-    <div class="l-flex l-flex-gapp5x">
-      <h5 class="t-type-smallBold">Detailed Occupations:</h5>
-      <p class="t-type-small">{{detailedOccupations}}</p>
-
-    </div>
-
+  <div class="l-accordion-x-content t-margin-small t-margin-bottom" #content [attr.inert]="isExpanded ? false : ''">
+    <ng-content></ng-content>
   </div>
 
 </div>
-

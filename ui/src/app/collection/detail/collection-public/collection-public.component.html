@@ -30,7 +30,7 @@
       <div class="t-margin-medium t-margin-bottom">
         <app-public-table
           *ngIf="!emptyResults"
-          [skills]="results.skills"
+          [items]="results.skills"
           [currentSort]="columnSort"
           (columnSorted)="handleHeaderColumnSort($event)"
         ></app-public-table>

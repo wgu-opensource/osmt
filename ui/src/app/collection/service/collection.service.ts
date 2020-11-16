@@ -79,14 +79,16 @@ export class CollectionService extends AbstractService {
     size?: number,
     from?: number,
     filterByStatuses?: Set<PublishStatus>,
-    sort?: ApiSortOrder): Observable<PaginatedSkills> {
+    sort?: ApiSortOrder,
+    apiSearch?: ApiSearch): Observable<PaginatedSkills> {
     const errorMsg = `Could not find skills in collection [${uuid}]`
-    return this.get<ApiSkillSummary[]>({
+    return this.post<ApiSkillSummary[]>({
       path: `${this.baseServiceUrl}/${uuid}/skills`,
       headers: new HttpHeaders({
         Accept: "application/json"
       }),
-      params: this.buildTableParams(size, from, filterByStatuses, sort)
+      params: this.buildTableParams(size, from, filterByStatuses, sort),
+      body: apiSearch ?? new ApiSearch()
     })
       .pipe(share())
       .pipe(map(({body, headers}) =>
@@ -139,7 +141,7 @@ export class CollectionService extends AbstractService {
 
   addSkillsToCollection(collectionUuid: string, apiSearch: ApiSearch): Observable<ApiTaskResult> {
     return this.post<ITaskResult>({
-      path: `api/collections/${collectionUuid}/skills`,
+      path: `api/collections/${collectionUuid}/updateSkills`,
       body: new ApiSkillListUpdate({add: apiSearch})
     })
       .pipe(share())

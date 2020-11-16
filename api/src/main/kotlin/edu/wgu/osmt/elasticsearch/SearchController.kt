@@ -113,7 +113,7 @@ class SearchController @Autowired constructor(
             .body(searchHits.map { it.content }.toList())
     }
 
-    @GetMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun collectionSkills(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -124,9 +124,10 @@ class SearchController @Autowired constructor(
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
         @RequestParam(required = false) sort: String?,
-        @PathVariable uuid: String
+        @PathVariable uuid: String,
+        @RequestBody apiSearch: ApiSearch
     ): HttpEntity<List<RichSkillDoc>> {
-        return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, ApiSearch(null, null, null ))
+        return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch)
     }
 }
 

@@ -101,7 +101,7 @@ class CollectionController @Autowired constructor(
     }
 
 
-    @PostMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.COLLECTION_SKILLS_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun manageSkills(
         @PathVariable uuid: String,

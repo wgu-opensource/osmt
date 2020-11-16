@@ -75,15 +75,15 @@ export class CollectionService extends AbstractService {
   }
 
   getCollectionSkills(
-    uuid: string,
+    collectionUuid: string,
     size?: number,
     from?: number,
     filterByStatuses?: Set<PublishStatus>,
     sort?: ApiSortOrder,
     apiSearch?: ApiSearch): Observable<PaginatedSkills> {
-    const errorMsg = `Could not find skills in collection [${uuid}]`
+    const errorMsg = `Could not find skills in collection [${collectionUuid}]`
     return this.post<ApiSkillSummary[]>({
-      path: `${this.baseServiceUrl}/${uuid}/skills`,
+      path: `${this.baseServiceUrl}/${collectionUuid}/skills`,
       headers: new HttpHeaders({
         Accept: "application/json"
       }),

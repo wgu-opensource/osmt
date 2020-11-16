@@ -83,7 +83,11 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
 
   // Every time a row is toggled, emit the current list of all selected rows
   onRowToggle(item: SummaryT): void {
-    this.selectedItems.add(item)
+    if (this.selectedItems.has(item)) {
+      this.selectedItems.delete(item)
+    } else {
+      this.selectedItems.add(item)
+    }
     this.rowSelected.emit(Array.from(this.selectedItems))
   }
 
@@ -91,7 +95,12 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
     const checkbox = event.target as HTMLInputElement
     const selected: boolean = checkbox.checked
     this.selectAllSelected.emit(selected)
-    this.items.forEach(it => this.selectedItems.add(it))
+    if (selected) {
+      this.items.forEach(it => this.selectedItems.add(it))
+    } else {
+      this.selectedItems.clear()
+    }
+
     this.rowSelected.emit(Array.from(this.selectedItems))
   }
 }

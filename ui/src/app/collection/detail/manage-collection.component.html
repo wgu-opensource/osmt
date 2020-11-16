@@ -1,0 +1,63 @@
+
+
+<div class="l-stickyBar">
+
+  <div class="l-stickySidebar l-container t-margin-medium t-margin-bottom">
+
+    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
+      <app-collection-public-detail-card
+        *ngIf="collection"
+        [collection]="collection"
+        [indexOfFirstSkill]="from"
+        [currentOnPage]="curPageCount"
+        [totalSkills]="totalCount"
+      ></app-collection-public-detail-card>
+    </div>
+
+    <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
+      <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
+        <app-collection-public-vertical-action-bar
+          [collectionUrl]="collection?.id"
+          [collectionUuid]="collection?.uuid"
+        ></app-collection-public-vertical-action-bar>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="l-container">
+    <ng-template [appLoadingObservables]="[resultsLoaded]">
+
+      <div class="t-margin-medium t-margin-bottom">
+        <app-skill-table
+          *ngIf="!emptyResults"
+          [items]="results.skills"
+          (rowSelected)="handleNewSelection($event)"
+          [currentSort]="columnSort"
+          (columnSorted)="handleHeaderColumnSort($event)"
+          [rowActions]="rowActions()"
+          (selectAllSelected)="handleSelectAll($event)"
+          [selectAllCount]="getSelectAllCount()"
+          [selectAllEnabled]="getSelectAllEnabled()"
+        ></app-skill-table>
+      </div>
+
+      <app-empty-message *ngIf="emptyResults">
+        <p class="m-emptyMessage-x-message">0 RSDs associated with this collection</p>
+      </app-empty-message>
+
+      <app-pagination
+        [currentPage]="currentPageNo"
+        [totalPages]="totalPageCount"
+        (pageClicked)="handlePageClicked($event)"
+      ></app-pagination>
+    </ng-template>
+  </div>
+
+  <div *ngIf="actionsVisible()" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
+    <div class="l-container l-container-tablet">
+      <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
+    </div>
+  </div>
+
+</div>

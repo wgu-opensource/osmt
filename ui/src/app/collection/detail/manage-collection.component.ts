@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core"
 import {ApiCollection} from "../ApiCollection";
-import {ApiSearch} from "../../richskill/service/rich-skill-search.service";
+import {ApiSearch, ApiSkillListUpdate} from "../../richskill/service/rich-skill-search.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CollectionService} from "../service/collection.service";
 import {ToastService} from "../../toast/toast.service";
@@ -22,13 +22,17 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   editIcon = SvgHelper.path(SvgIcon.EDIT)
   publishIcon = SvgHelper.path(SvgIcon.PUBLISH)
   archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)
-  unarchiveIcon = SvgHelper.path(SvgIcon.PUBLISH)
+  unarchiveIcon = SvgHelper.path(SvgIcon.UNARCHIVE)
   addIcon = SvgHelper.path(SvgIcon.ADD)
+
+  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published, PublishStatus.Archived])
 
   searchForm = new FormGroup({
     search: new FormControl("")
   })
   uuidParam?: string
+
+  showAddToCollection = false
 
   get isPlural(): boolean {
     return (this.results?.skills.length ?? 0) > 1
@@ -131,4 +135,25 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   archiveAction(): void {}
   unarchiveAction(): void {}
   addSkillsAction(): void {}
+
+  removeFromCollection(apiSearch?: ApiSearch): void {
+    if (this.uuidParam === undefined) {
+      return
+    }
+
+    const count = (apiSearch?.uuids?.length ?? 0)
+    const msg = count > 1 ? `these ${count} RSDs` : `this RSD`
+    if (confirm(`Are you sure you want to remove ${msg} from this collection?`)) {
+      const update = new ApiSkillListUpdate({remove: apiSearch})
+      this.toastService.showBlockingLoader()
+      this.skillsSaved = this.collectionService.updateSkillsWithResult(this.uuidParam, update)
+      this.skillsSaved.subscribe(result => {
+        this.toastService.showToast("Success!", `Removed ${count} RSD${count > 1 ? "s" : ""} from this collection.`)
+        this.toastService.hideBlockingLoader()
+        this.loadNextPage()
+      })
+
+    }
+
+  }
 }

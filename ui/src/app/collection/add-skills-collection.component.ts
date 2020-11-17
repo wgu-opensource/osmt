@@ -5,7 +5,12 @@ import {Title} from "@angular/platform-browser";
 import {PublishStatus} from "../PublishStatus";
 import {FormControl, FormGroup} from "@angular/forms";
 import {Observable} from "rxjs";
-import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
+import {
+  ApiSearch,
+  ApiSkillListUpdate,
+  PaginatedCollections,
+  PaginatedSkills
+} from "../richskill/service/rich-skill-search.service";
 import {ApiSortOrder} from "../richskill/ApiSkill";
 import {CollectionService} from "./service/collection.service";
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
@@ -143,9 +148,10 @@ export class AddSkillsCollectionComponent implements OnInit {
     if (collection?.uuid === undefined) { return false }
 
     const apiSearch = new ApiSearch({uuids: this.selectedSkills?.map(it => it.uuid) })
+    const update = new ApiSkillListUpdate({add: apiSearch})
 
     this.toastService.showBlockingLoader()
-    this.collectionService.addSkillsWithResult(collection.uuid, apiSearch).subscribe(result => {
+    this.collectionService.updateSkillsWithResult(collection.uuid, update).subscribe(result => {
       const message = `Added ${result.modifiedCount} RSDs to collection`
       this.toastService.showToast("Success!", message)
       this.toastService.hideBlockingLoader()

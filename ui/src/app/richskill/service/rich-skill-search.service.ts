@@ -60,11 +60,11 @@ export class ApiAdvancedSearch implements IAdvancedSearch {
 
 export interface ISkillListUpdate {
   add?: ApiSearch
-  remove?: string[]
+  remove?: ApiSearch
 }
 export class ApiSkillListUpdate implements ISkillListUpdate {
   add?: ApiSearch
-  remove?: string[]
+  remove?: ApiSearch
 
   constructor({add, remove}: ISkillListUpdate) {
     this.add = add

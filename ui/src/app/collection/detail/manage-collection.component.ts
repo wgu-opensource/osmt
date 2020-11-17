@@ -26,7 +26,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   unarchiveIcon = SvgHelper.path(SvgIcon.UNARCHIVE)
   addIcon = SvgHelper.path(SvgIcon.ADD)
 
-  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published, PublishStatus.Archived])
+  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unarchived, PublishStatus.Published, PublishStatus.Archived])
 
   searchForm = new FormGroup({
     search: new FormControl("")

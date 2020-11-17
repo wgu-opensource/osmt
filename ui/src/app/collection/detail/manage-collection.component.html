@@ -14,10 +14,10 @@
 
     <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
       <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
-        <app-collection-public-vertical-action-bar
-          [collectionUrl]="collection?.id"
-          [collectionUuid]="collection?.uuid"
-        ></app-collection-public-vertical-action-bar>
+        <app-vertical-action-bar
+          [actions]="actionDefinitions()"
+          [data]="this.collection">
+        </app-vertical-action-bar>
       </div>
     </div>
 

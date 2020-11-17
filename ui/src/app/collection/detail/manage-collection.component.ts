@@ -7,6 +7,9 @@ import {ToastService} from "../../toast/toast.service";
 import {SkillsListComponent} from "../../richskill/list/skills-list.component";
 import {RichSkillService} from "../../richskill/service/rich-skill.service";
 import {FormControl, FormGroup} from "@angular/forms";
+import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
+import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
+import {PublishStatus} from "../../PublishStatus";
 
 @Component({
   selector: "app-manage-collection",
@@ -16,9 +19,17 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   collection?: ApiCollection
   apiSearch?: ApiSearch
 
+  editIcon = SvgHelper.path(SvgIcon.EDIT)
+  publishIcon = SvgHelper.path(SvgIcon.PUBLISH)
+  archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)
+  unarchiveIcon = SvgHelper.path(SvgIcon.PUBLISH)
+  addIcon = SvgHelper.path(SvgIcon.ADD)
+
   searchForm = new FormGroup({
     search: new FormControl("")
   })
+  uuidParam?: string
+
   get isPlural(): boolean {
     return (this.results?.skills.length ?? 0) > 1
   }
@@ -33,8 +44,8 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   }
 
   ngOnInit(): void {
-    const uuid = this.route.snapshot.paramMap.get("uuid") ?? ""
-    this.collectionService.getCollectionByUUID(uuid).subscribe(collection => {
+    this.uuidParam = this.route.snapshot.paramMap.get("uuid") ?? ""
+    this.collectionService.getCollectionByUUID(this.uuidParam).subscribe(collection => {
       this.collection = collection
       this.loadNextPage()
     })
@@ -78,4 +89,46 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     this.loadNextPage()
     return false
   }
+
+  actionDefinitions(): TableActionDefinition[] {
+    return [
+      new TableActionDefinition({
+        label: "Edit Collection Name",
+        icon: this.editIcon,
+        callback: () => this.editAction()
+      }),
+      new TableActionDefinition({
+        label: "Publish Collection ",
+        icon: this.publishIcon,
+        callback: () => this.publishAction(),
+        visible: () => this.collection?.status !== PublishStatus.Published
+      }),
+      new TableActionDefinition({
+        label: "Archive Collection ",
+        icon: this.archiveIcon,
+        callback: () => this.archiveAction(),
+        visible: () => this.collection?.status !== PublishStatus.Archived
+      }),
+      new TableActionDefinition({
+        label: "Un-archive Collection ",
+        icon: this.unarchiveIcon,
+        callback: () => this.unarchiveAction(),
+        visible: () => this.collection?.status === PublishStatus.Archived
+      }),
+      new TableActionDefinition({
+        label: "Add Skills to This Collection",
+        icon: this.addIcon,
+        callback: () => this.addSkillsAction(),
+      }),
+    ]
+  }
+
+  editAction(): void {
+    this.router.navigate([`/collections/${this.uuidParam}/edit`])
+  }
+
+  publishAction(): void {}
+  archiveAction(): void {}
+  unarchiveAction(): void {}
+  addSkillsAction(): void {}
 }

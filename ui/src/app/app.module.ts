@@ -73,6 +73,7 @@ import {CollectionsListComponent} from "./collection/collections-list.component"
 import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component";
 import {PublicRichSkillActionBarComponent} from "./richskill/detail/rich-skill-public/action-bar/public-rich-skill-action-bar.component"
 import {ManageCollectionComponent} from "./collection/detail/manage-collection.component";
+import {VerticalActionBarComponent} from "./core/vertical-action-bar.component";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -156,7 +157,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CollectionPublicVerticalActionBarComponent,
     CollectionPublicActionBarComponent,
     PublicRichSkillActionBarComponent,
-    ManageCollectionComponent
+    ManageCollectionComponent,
+    VerticalActionBarComponent
   ],
   imports: [
     BrowserModule,

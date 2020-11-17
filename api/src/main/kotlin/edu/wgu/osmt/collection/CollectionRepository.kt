@@ -217,13 +217,22 @@ class CollectionRepositoryImpl @Autowired constructor(
         var modifiedCount = 0
         var totalCount = 0
 
-        val collectionId = this.findByUUID(collectionUuid)!!.id.value
+        val collectionDao = this.findByUUID(collectionUuid)
+        val collectionId = collectionDao!!.id.value
 
 
         //process additions
         val add_skill_dao = {skillDao: RichSkillDescriptorDao? ->
             skillDao?.let {
                 CollectionSkills.create(collectionId, skillDao.id.value)
+                esRichSkillRepository.save(RichSkillDoc.fromDao(it, appConfig))
+                modifiedCount += 1
+            }
+        }
+        val remove_skill_dao = {skillDao: RichSkillDescriptorDao? ->
+            skillDao?.let {
+                CollectionSkills.delete(collectionId, it.id.value)
+                esRichSkillRepository.save(RichSkillDoc.fromDao(it, appConfig))
                 modifiedCount += 1
             }
         }
@@ -248,15 +257,11 @@ class CollectionRepositoryImpl @Autowired constructor(
 
         // process removals
         if (!task.skillListUpdate.remove?.uuids.isNullOrEmpty()) {
-
             task.skillListUpdate.remove?.uuids?.forEach{ skillUuid ->
-                val skillId = richSkillRepository.findByUUID(skillUuid)?.id?.value
-                skillId?.let {
-                    modifiedCount += CollectionSkills.delete(collectionId, it)
-                }
+                val skillDao = richSkillRepository.findByUUID(skillUuid)
+                remove_skill_dao(skillDao)
                 totalCount += 1
             }
-
         } else if (task.skillListUpdate.remove != null) {
             val searchHits = searchService.searchRichSkillsByApiSearch(
                 task.skillListUpdate.remove,
@@ -264,13 +269,16 @@ class CollectionRepositoryImpl @Autowired constructor(
                 Pageable.unpaged()
             )
             searchHits.forEach { hit ->
-                val skillId = hit.content.id
-                modifiedCount += CollectionSkills.delete(collectionId, skillId)
+                remove_skill_dao(richSkillRepository.findById(hit.content.id))
             }
             totalCount += searchHits.totalHits.toInt()
 
         }
 
+        // update affected elasticsearch indexes
+        this.findByUUID(collectionUuid)?.let {
+            esCollectionRepository.save(it.toDoc())
+        }
 
         return ApiBatchResult(
             success = true,

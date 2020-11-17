@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {OccupationsFormatter} from "../../job-codes/Jobcode"
 import {ApiSkillSummary} from "../ApiSkillSummary"
@@ -57,11 +57,10 @@ export class SkillListRowComponent implements OnInit {
   }
 
   isPublished(): boolean {
-    return this.isStatus(PublishStatus.Published) || this.isArchived()
+    return this.isStatus(PublishStatus.Published)
   }
 
   isArchived(): boolean {
     return this.isStatus(PublishStatus.Archived)
   }
-
 }

@@ -7,6 +7,7 @@ import {SvgHelper, SvgIcon} from "./SvgHelper"
   templateUrl: "./status-pill.component.html"
 })
 export class StatusPillComponent implements OnInit {
+  @Input() status: PublishStatus = PublishStatus.Unarchived
   @Input() publishDate = ""
   @Input() archiveDate = ""
 
@@ -20,14 +21,14 @@ export class StatusPillComponent implements OnInit {
   }
 
   isPublished(): boolean {
-    return !!this.publishDate
+    return !!this.publishDate || this.status === PublishStatus.Published
   }
 
   isArchived(): boolean {
-    return !!this.archiveDate
+    return !!this.archiveDate || this.status === PublishStatus.Archived
   }
 
   isDraft(): boolean {
-    return !this.publishDate
+    return !this.isPublished()
   }
 }

@@ -19,16 +19,4 @@ export class StatusBarComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
-  isPublished(): boolean {
-    return this.status !== PublishStatus.Unarchived
-  }
-
-  isArchived(): boolean {
-    return this.status === PublishStatus.Archived
-  }
-
-  isDraft(): boolean {
-    return this.status === PublishStatus.Unarchived
-  }
 }

@@ -10,6 +10,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
 import {PublishStatus} from "../../PublishStatus";
+import {ApiSkillSummary} from "../../richskill/ApiSkillSummary";
 
 @Component({
   selector: "app-manage-collection",
@@ -33,6 +34,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   uuidParam?: string
 
   showAddToCollection = false
+  showingMultipleConfirm = false
 
   get isPlural(): boolean {
     return (this.results?.skills.length ?? 0) > 1
@@ -136,24 +138,49 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   unarchiveAction(): void {}
   addSkillsAction(): void {}
 
-  removeFromCollection(apiSearch?: ApiSearch): void {
+  removeFromCollection(skill?: ApiSkillSummary): void {
+    this.apiSearch = this.getApiSearch(skill)
     if (this.uuidParam === undefined) {
       return
     }
 
-    const count = (apiSearch?.uuids?.length ?? 0)
-    const msg = count > 1 ? `these ${count} RSDs` : `this RSD`
-    if (confirm(`Are you sure you want to remove ${msg} from this collection?`)) {
-      const update = new ApiSkillListUpdate({remove: apiSearch})
-      this.toastService.showBlockingLoader()
-      this.skillsSaved = this.collectionService.updateSkillsWithResult(this.uuidParam, update)
-      this.skillsSaved.subscribe(result => {
-        this.toastService.showToast("Success!", `Removed ${count} RSD${count > 1 ? "s" : ""} from this collection.`)
-        this.toastService.hideBlockingLoader()
-        this.loadNextPage()
-      })
+    const first = this.getSelectedSkills(skill)?.find(it => true)
 
+    const count = (this.apiSearch?.uuids?.length ?? 0)
+    if (count > 1) {
+      this.showingMultipleConfirm = true
+    } else {
+      if (confirm(`Confirm that you want to remove the following RSD from this collection.\n${first?.skillName}`)) {
+        this.submitSkillRemoval(this.apiSearch)
+      }
     }
 
+
+
+  }
+
+  submitSkillRemoval(apiSearch?: ApiSearch): void {
+    const update = new ApiSkillListUpdate({remove: apiSearch})
+    this.toastService.showBlockingLoader()
+    this.skillsSaved = this.collectionService.updateSkillsWithResult(this.uuidParam!, update)
+    this.skillsSaved.subscribe(result => {
+      this.toastService.showToast("Success!", `You removed 1 RSD from this collection.`)
+      this.toastService.hideBlockingLoader()
+      this.loadNextPage()
+    })
+
+  }
+
+  handleClickConfirmMulti(): boolean {
+    this.submitSkillRemoval(this.apiSearch)
+    this.showingMultipleConfirm = false
+    this.apiSearch = undefined
+    return false
+  }
+
+  handleClickCancel(): boolean {
+    this.showingMultipleConfirm = false
+    this.apiSearch = undefined
+    return false
   }
 }

@@ -1,4 +1,5 @@
 
+<ng-template [ngIf]="!showingMultipleConfirm" [ngIfElse]="multipleConfirm">
 
 <div class="l-stickyBar">
 
@@ -88,3 +89,36 @@
   </div>
 
 </div>
+</ng-template>
+
+<ng-template #multipleConfirm>
+  <div class="l-container t-padding-large t-padding-top">
+    <div class="t-margin-medium t-margin-bottom">
+      <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+
+        <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Confirm that you want to remove {{selectedSkills.length}} RSDs from this collection.</h2>
+
+        <app-accordian closedLabel="View All Skills" openLabel="View Less Skills">
+          <div class="m-skillBackground l-inset t-margin-small t-margin-top">
+            <div class="m-content">
+              <ol>
+                <li *ngFor="let skill of selectedSkills">{{skill.skillName}}</li>
+              </ol>
+            </div>
+          </div>
+        </app-accordian>
+
+      </div>
+    </div>
+
+    <!--    {{render '@l-submit'}}-->
+    <div class="l-submit">
+      <button class="m-button m-button-tertiary" (click)="handleClickCancel()">
+        <span class="m-button-x-text">Cancel</span>
+      </button>
+      <button class="m-button" (click)="handleClickConfirmMulti()">
+        <span class="m-button-x-text">Yes, Remove Skill from Collection</span>
+      </button>
+    </div>
+  </div>
+</ng-template>

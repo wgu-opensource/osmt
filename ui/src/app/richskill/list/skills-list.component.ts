@@ -153,7 +153,7 @@ export class SkillsListComponent {
 
 
   rowActions(): TableActionDefinition[] {
-    return [
+    const actions = [
       new TableActionDefinition({
         label: "Archive RSD",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickArchive(action, skill),
@@ -169,11 +169,19 @@ export class SkillsListComponent {
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickPublish(action, skill),
         visible: (skill?: ApiSkillSummary) => this.publishVisible(skill)
       }),
-      new TableActionDefinition({
+    ]
+    if (this.showAddToCollection) {
+      actions.push(new TableActionDefinition({
         label: "Add to Collection",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
-      }),
-    ]
+      }))
+    } else {
+      actions.push(new TableActionDefinition({
+        label: "Remove from Collection",
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickRemoveCollection(action, skill),
+      }))
+    }
+    return actions
   }
 
   tableActions(): TableActionDefinition[] {
@@ -242,7 +250,7 @@ export class SkillsListComponent {
   }
 
   private handleClickRemoveCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    this.removeFromCollection(this.getApiSearch(skill))
+    this.removeFromCollection(skill)
     return false
   }
 
@@ -312,6 +320,6 @@ export class SkillsListComponent {
     return true
   }
 
-  removeFromCollection(apiSearch?: ApiSearch): void {
+  removeFromCollection(skill?: ApiSkillSummary): void {
   }
 }

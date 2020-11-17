@@ -950,10 +950,7 @@ components:
         add:
           $ref: '#/components/schemas/Search'
         remove:
-          type: array
-          items:
-            type: string
-            format: uuid
+          $ref: '#/components/schemas/Search'
 
     JobCode:
       type: object

@@ -219,14 +219,8 @@ class CollectionRepositoryImpl @Autowired constructor(
 
         val collectionId = this.findByUUID(collectionUuid)!!.id.value
 
-        task.skillListUpdate.remove?.forEach{ skillUuid ->
-            val skillId = richSkillRepository.findByUUID(skillUuid)?.id?.value
-            skillId?.let {
-                modifiedCount += CollectionSkills.delete(collectionId, it)
-            }
-            totalCount += 1
-        }
 
+        //process additions
         val add_skill_dao = {skillDao: RichSkillDescriptorDao? ->
             skillDao?.let {
                 CollectionSkills.create(collectionId, skillDao.id.value)
@@ -251,6 +245,32 @@ class CollectionRepositoryImpl @Autowired constructor(
             }
             totalCount += searchHits.totalHits.toInt()
         }
+
+        // process removals
+        if (!task.skillListUpdate.remove?.uuids.isNullOrEmpty()) {
+
+            task.skillListUpdate.remove?.uuids?.forEach{ skillUuid ->
+                val skillId = richSkillRepository.findByUUID(skillUuid)?.id?.value
+                skillId?.let {
+                    modifiedCount += CollectionSkills.delete(collectionId, it)
+                }
+                totalCount += 1
+            }
+
+        } else if (task.skillListUpdate.remove != null) {
+            val searchHits = searchService.searchRichSkillsByApiSearch(
+                task.skillListUpdate.remove,
+                task.publishStatuses,
+                Pageable.unpaged()
+            )
+            searchHits.forEach { hit ->
+                val skillId = hit.content.id
+                modifiedCount += CollectionSkills.delete(collectionId, skillId)
+            }
+            totalCount += searchHits.totalHits.toInt()
+
+        }
+
 
         return ApiBatchResult(
             success = true,

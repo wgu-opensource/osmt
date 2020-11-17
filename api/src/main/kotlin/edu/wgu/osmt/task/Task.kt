@@ -77,10 +77,10 @@ data class PublishSkillsTask(
 }
 
 data class UpdateCollectionSkillsTask(
-    val collectionUuid: String,
+    val collectionUuid: String = "",
     val skillListUpdate: ApiSkillListUpdate = ApiSkillListUpdate(),
     val publishStatuses: Set<PublishStatus> = setOf(PublishStatus.Unpublished),
-    val userString: String,
+    val userString: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: ApiBatchResult? = null,

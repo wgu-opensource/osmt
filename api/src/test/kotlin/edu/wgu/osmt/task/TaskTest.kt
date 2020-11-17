@@ -4,23 +4,34 @@ import edu.wgu.osmt.BaseDockerizedTest
 import edu.wgu.osmt.SpringTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
 
 class TaskTest : SpringTest(), BaseDockerizedTest {
 
     @Autowired
     lateinit var tms: TaskMessageService
 
+    fun assertTaskSerializes(task: Task) {
+        tms.opsForHash.put(TaskMessageService.taskHashTable, task.uuid, task)
+        val retrieved = tms.opsForHash.get(TaskMessageService.taskHashTable, task.uuid)
+        assertThat(task.uuid).isEqualTo(retrieved?.uuid)
+    }
+
     @Test
-    fun `can serialize and deserialize a task into task hash table`() {
+    fun `can serialize and deserialize a CsvTask`() {
         val csvTask = CsvTask()
-        tms.opsForHash.put(TaskMessageService.taskHashTable, csvTask.uuid, csvTask)
-        val retrieved = tms.opsForHash.get(TaskMessageService.taskHashTable, csvTask.uuid)
-        assertThat(csvTask.uuid).isEqualTo(retrieved?.uuid)
+        assertTaskSerializes(csvTask)
+    }
+
+    @Test
+    fun `can serialize and deserialize a PublishSkillsTask`() {
+        val task = PublishSkillsTask()
+        assertTaskSerializes(task)
+    }
+
+    @Test
+    fun `can serialize and deserialize a UpdateCollectionSkillsTask`() {
+        val task = UpdateCollectionSkillsTask()
+        assertTaskSerializes(task)
     }
 }

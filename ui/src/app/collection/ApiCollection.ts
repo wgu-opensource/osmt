@@ -1,7 +1,6 @@
 import {PublishStatus} from "../PublishStatus"
 import {INamedReference} from "../richskill/ApiSkill"
 import {IStringListUpdate} from "../richskill/ApiSkillUpdate"
-import {IApiSkillSummary} from "../richskill/ApiSkillSummary"
 
 export interface ICollection {
   archiveDate?: Date

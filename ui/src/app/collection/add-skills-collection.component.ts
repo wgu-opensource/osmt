@@ -38,7 +38,7 @@ export class AddSkillsCollectionComponent implements OnInit {
 
   columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
   selectedSkills?: ApiSkillSummary[]
-  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
+  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unarchived, PublishStatus.Published])
 
   constructor(protected router: Router,
               protected titleService: Title,

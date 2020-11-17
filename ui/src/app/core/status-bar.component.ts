@@ -8,7 +8,7 @@ import {PublishStatus} from "../PublishStatus";
 })
 export class StatusBarComponent implements OnInit {
 
-  @Input() status: PublishStatus = PublishStatus.Unpublished
+  @Input() status: PublishStatus = PublishStatus.Unarchived
   @Input() publishDate = ""
   @Input() archiveDate = ""
 
@@ -21,7 +21,7 @@ export class StatusBarComponent implements OnInit {
   }
 
   isPublished(): boolean {
-    return this.status !== PublishStatus.Unpublished
+    return this.status !== PublishStatus.Unarchived
   }
 
   isArchived(): boolean {
@@ -29,6 +29,6 @@ export class StatusBarComponent implements OnInit {
   }
 
   isDraft(): boolean {
-    return this.status === PublishStatus.Unpublished
+    return this.status === PublishStatus.Unarchived
   }
 }

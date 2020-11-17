@@ -1,13 +1,13 @@
-import {Component, Input, OnInit} from "@angular/core";
-import {PublishStatus} from "../PublishStatus";
-import {SvgHelper, SvgIcon} from "./SvgHelper";
+import {Component, Input, OnInit} from "@angular/core"
+import {PublishStatus} from "../PublishStatus"
+import {SvgHelper, SvgIcon} from "./SvgHelper"
 
 @Component({
   selector: "app-status-pill",
   templateUrl: "./status-pill.component.html"
 })
 export class StatusPillComponent implements OnInit {
-  @Input() status: PublishStatus = PublishStatus.Unpublished
+  @Input() status: PublishStatus = PublishStatus.Unarchived
   @Input() publishDate = ""
   @Input() archiveDate = ""
 
@@ -21,7 +21,7 @@ export class StatusPillComponent implements OnInit {
   }
 
   isPublished(): boolean {
-    return this.status !== PublishStatus.Unpublished
+    return this.status !== PublishStatus.Unarchived
   }
 
   isArchived(): boolean {
@@ -29,6 +29,6 @@ export class StatusPillComponent implements OnInit {
   }
 
   isDraft(): boolean {
-    return this.status === PublishStatus.Unpublished
+    return this.status === PublishStatus.Unarchived
   }
 }

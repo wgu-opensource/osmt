@@ -5,7 +5,7 @@ import {HttpClient} from "@angular/common/http"
 import {Observable} from "rxjs"
 import {ApiSkill, ISkill} from "../ApiSkill"
 import {map} from "rxjs/operators"
-import {ApiCollectionSummary, IApiSkillSummary, ICollectionSummary} from "../ApiSkillSummary"
+import {ApiCollectionSummary, ApiSkillSummary, ICollectionSummary} from "../ApiSkillSummary"
 
 export interface ISearch {
   query?: string
@@ -75,8 +75,8 @@ export class ApiSkillListUpdate implements ISkillListUpdate {
 
 export class PaginatedSkills {
   totalCount = 0
-  skills: IApiSkillSummary[] = []
-  constructor(skills: IApiSkillSummary[], totalCount: number) {
+  skills: ApiSkillSummary[] = []
+  constructor(skills: ApiSkillSummary[], totalCount: number) {
     this.skills = skills
     this.totalCount = totalCount
   }

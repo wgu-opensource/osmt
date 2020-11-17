@@ -1,14 +1,14 @@
-import {Component} from "@angular/core";
-import {Observable} from "rxjs";
-import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {PublishStatus} from "../PublishStatus";
-import {ApiCollectionSummary, IApiSkillSummary, ICollectionSummary} from "../richskill/ApiSkillSummary";
-import {ApiBatchResult} from "../richskill/ApiBatchResult";
-import {ApiSortOrder} from "../richskill/ApiSkill";
-import {Router} from "@angular/router";
-import {ToastService} from "../toast/toast.service";
-import {CollectionService} from "./service/collection.service";
-import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
+import {Component} from "@angular/core"
+import {Observable} from "rxjs"
+import {ApiSearch, PaginatedCollections} from "../richskill/service/rich-skill-search.service"
+import {PublishStatus} from "../PublishStatus"
+import {ApiCollectionSummary, ICollectionSummary} from "../richskill/ApiSkillSummary"
+import {ApiBatchResult} from "../richskill/ApiBatchResult"
+import {ApiSortOrder} from "../richskill/ApiSkill"
+import {Router} from "@angular/router"
+import {ToastService} from "../toast/toast.service"
+import {CollectionService} from "./service/collection.service"
+import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
 
 
 @Component({
@@ -23,7 +23,7 @@ export class CollectionsListComponent {
   resultsLoaded: Observable<PaginatedCollections> | undefined
   results: PaginatedCollections | undefined
 
-  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
+  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unarchived, PublishStatus.Published])
   selectedCollections?: ICollectionSummary[]
   skillsSaved?: Observable<ApiBatchResult>
 
@@ -97,11 +97,11 @@ export class CollectionsListComponent {
 
   publishVisible(skill?: ApiCollectionSummary): boolean {
     if (skill !== undefined) {
-      return skill.status === PublishStatus.Unpublished
+      return skill.status === PublishStatus.Unarchived
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
-      const unpublishedSkill = this.selectedCollections?.find(s => s.status === PublishStatus.Unpublished)
+      const unpublishedSkill = this.selectedCollections?.find(s => s.status === PublishStatus.Unarchived)
       return unpublishedSkill !== undefined
     }
   }
@@ -207,19 +207,19 @@ export class CollectionsListComponent {
   }
 
   private handleClickUnarchive(action: TableActionDefinition, skill?: ApiCollectionSummary): boolean {
-    this.submitStatusChange(PublishStatus.Published, "Un-archived", skill)
+    this.submitStatusChange(PublishStatus.Unarchived, skill)
     return false
   }
 
   private handleClickArchive(action: TableActionDefinition, skill?: ApiCollectionSummary): boolean {
-    this.submitStatusChange(PublishStatus.Archived, "Archived", skill)
+    this.submitStatusChange(PublishStatus.Archived, skill)
     return false
   }
 
   private handleClickPublish(action: TableActionDefinition, skill?: ApiCollectionSummary): boolean {
     const plural = (this.selectedUuids(skill)?.length ?? 0) > 1 ? "these collections" : "this collection"
     if (confirm(`Are you sure you want to publish ${plural}?`)) {
-      this.submitStatusChange(PublishStatus.Published, "Published", skill)
+      this.submitStatusChange(PublishStatus.Published, skill)
     }
     return false
   }
@@ -244,13 +244,13 @@ export class CollectionsListComponent {
     return undefined
   }
 
-  submitStatusChange(newStatus: PublishStatus, verb: string, skill?: ApiCollectionSummary): boolean  {
+  submitStatusChange(newStatus: PublishStatus, skill?: ApiCollectionSummary): boolean  {
     const apiSearch = this.getApiSearch(skill)
     if (apiSearch === undefined) {
       return false
     }
 
-    console.log("submit status change", newStatus, apiSearch);
+    console.log("submit status change", newStatus, apiSearch)
     return false
 
     // TODO
@@ -259,7 +259,7 @@ export class CollectionsListComponent {
     this.skillsSaved?.subscribe((result) => {
       if (result !== undefined) {
         const partial = (result.modifiedCount !== result.totalCount)  ? ` of ${result.totalCount}` : ""
-        const message = `${verb} ${result.modifiedCount}${partial} Collection${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
+        const message = `${newStatus} ${result.modifiedCount}${partial} Collection${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
         this.toastService.showToast("Success!", message)
         this.toastService.hideBlockingLoader()
         this.loadNextPage()

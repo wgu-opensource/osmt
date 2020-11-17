@@ -17,13 +17,13 @@ interface PaginationHelpers<T> where T : LongIdTable, T : PublishStatusUpdate<*>
             setOf(PublishStatus.Archived) -> {
                 table.select { table.archiveDate.isNotNull() and (table.archiveDate greater table.publishDate) }
             }
-            setOf(PublishStatus.Unpublished) -> {
+            setOf(PublishStatus.Unarchived) -> {
                 table.select { table.archiveDate.isNull() and (table.publishDate.isNull()) }
             }
-            setOf(PublishStatus.Unpublished, PublishStatus.Archived) -> {
+            setOf(PublishStatus.Unarchived, PublishStatus.Archived) -> {
                 table.select { table.publishDate.isNull() or (table.archiveDate greater table.publishDate) }
             }
-            setOf(PublishStatus.Unpublished, PublishStatus.Published) -> {
+            setOf(PublishStatus.Unarchived, PublishStatus.Published) -> {
                 table.select { table.publishDate.isNull() or (table.publishDate greater table.archiveDate) }
             }
             setOf(PublishStatus.Archived, PublishStatus.Published) -> {

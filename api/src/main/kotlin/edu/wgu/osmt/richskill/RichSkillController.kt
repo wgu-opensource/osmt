@@ -77,7 +77,7 @@ class RichSkillController @Autowired constructor(
         @AuthenticationPrincipal user: Jwt?
     ): ApiSkill? {
         return richSkillRepository.findByUUID(uuid)?.let {
-            if (user == null && it.publishStatus() == PublishStatus.Unpublished) {
+            if (user == null && it.publishStatus() == PublishStatus.Unarchived) {
                 throw ResponseStatusException(HttpStatus.NOT_FOUND)
             }
 
@@ -91,7 +91,7 @@ class RichSkillController @Autowired constructor(
         @AuthenticationPrincipal user: Jwt?
     ): String {
         return richSkillRepository.findByUUID(uuid)?.let {
-            if (user == null && it.publishStatus() == PublishStatus.Unpublished) {
+            if (user == null && it.publishStatus() == PublishStatus.Unarchived) {
                 throw ResponseStatusException(HttpStatus.NOT_FOUND)
             }
 
@@ -105,7 +105,7 @@ class RichSkillController @Autowired constructor(
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<*> {
         return richSkillRepository.findByUUID(uuid)?.let {
-            if (user == null && it.publishStatus() == PublishStatus.Unpublished) {
+            if (user == null && it.publishStatus() == PublishStatus.Unarchived) {
                 throw ResponseStatusException(HttpStatus.NOT_FOUND)
             }
 

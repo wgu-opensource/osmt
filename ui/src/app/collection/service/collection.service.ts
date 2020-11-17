@@ -75,20 +75,20 @@ export class CollectionService extends AbstractService {
   }
 
   getCollectionSkills(
-    uuid: string,
+    collectionUuid: string,
     size?: number,
     from?: number,
     filterByStatuses?: Set<PublishStatus>,
     sort?: ApiSortOrder,
     apiSearch?: ApiSearch): Observable<PaginatedSkills> {
-    const errorMsg = `Could not find skills in collection [${uuid}]`
+    const errorMsg = `Could not find skills in collection [${collectionUuid}]`
     return this.post<ApiSkillSummary[]>({
-      path: `${this.baseServiceUrl}/${uuid}/skills`,
+      path: `${this.baseServiceUrl}/${collectionUuid}/skills`,
       headers: new HttpHeaders({
         Accept: "application/json"
       }),
       params: this.buildTableParams(size, from, filterByStatuses, sort),
-      body: apiSearch ?? new ApiSearch()
+      body: apiSearch ?? new ApiSearch({})
     })
       .pipe(share())
       .pipe(map(({body, headers}) =>
@@ -139,16 +139,16 @@ export class CollectionService extends AbstractService {
       }))
   }
 
-  addSkillsToCollection(collectionUuid: string, apiSearch: ApiSearch): Observable<ApiTaskResult> {
+  updateSkills(collectionUuid: string, skillListUpdate: ApiSkillListUpdate): Observable<ApiTaskResult> {
     return this.post<ITaskResult>({
       path: `api/collections/${collectionUuid}/updateSkills`,
-      body: new ApiSkillListUpdate({add: apiSearch})
+      body: skillListUpdate
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }
 
-  addSkillsWithResult(collectionUuid: string, apiSearch: ApiSearch, pollIntervalMs: number = 1000): Observable<ApiBatchResult> {
-    return this.pollForTaskResult(this.addSkillsToCollection(collectionUuid, apiSearch), pollIntervalMs)
+  updateSkillsWithResult(collectionUuid: string, skillListUpdate: ApiSkillListUpdate, pollIntervalMs: number = 1000): Observable<ApiBatchResult> {
+    return this.pollForTaskResult(this.updateSkills(collectionUuid, skillListUpdate), pollIntervalMs)
   }
 }

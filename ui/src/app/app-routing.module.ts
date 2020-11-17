@@ -16,6 +16,7 @@ import {FormDirtyGuard} from "./core/abstract-form.component";
 import {CollectionsLibraryComponent} from "./table/collections-library.component";
 import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component";
 import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component";
+import {ManageCollectionComponent} from "./collection/detail/manage-collection.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -70,10 +71,10 @@ const routes: Routes = [
     canDeactivate: [FormDirtyGuard]
   },
   // manage collection
-  // {path: "collections/:uuid/manage",
-  //   component: CollectionManageComponent,
-  //   canActivate: [AuthGuard]
-  // },
+  {path: "collections/:uuid/manage",
+    component: ManageCollectionComponent,
+    canActivate: [AuthGuard]
+  },
   // add skills to a collection
   {path: "collections/add-skills",
     component: AddSkillsCollectionComponent,

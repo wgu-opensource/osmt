@@ -38,7 +38,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
       this.route.queryParams.subscribe(params => {
         const query = params.q
         if (query && query.length > 0) {
-          this.handleNewSearch(ApiSearch.factory({query}))
+          this.handleNewSearch(new ApiSearch({query}))
         }
       })
     }

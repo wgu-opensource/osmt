@@ -5,7 +5,12 @@ import {Title} from "@angular/platform-browser";
 import {PublishStatus} from "../PublishStatus";
 import {FormControl, FormGroup} from "@angular/forms";
 import {Observable} from "rxjs";
-import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
+import {
+  ApiSearch,
+  ApiSkillListUpdate,
+  PaginatedCollections,
+  PaginatedSkills
+} from "../richskill/service/rich-skill-search.service";
 import {ApiSortOrder} from "../richskill/ApiSkill";
 import {CollectionService} from "./service/collection.service";
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
@@ -67,7 +72,7 @@ export class AddSkillsCollectionComponent implements OnInit {
       return
     }
 
-    const apiSearch = ApiSearch.factory({query})
+    const apiSearch = new ApiSearch({query})
     this.resultsLoaded = this.collectionService.searchCollections(apiSearch, this.size, this.from, this.selectedFilters, this.columnSort)
     this.resultsLoaded.subscribe((results) => {
       this.setResults(results)
@@ -142,10 +147,11 @@ export class AddSkillsCollectionComponent implements OnInit {
     console.log("chose collection!", collection)
     if (collection?.uuid === undefined) { return false }
 
-    const apiSearch = ApiSearch.factory({uuids: this.selectedSkills?.map(it => it.uuid) })
+    const apiSearch = new ApiSearch({uuids: this.selectedSkills?.map(it => it.uuid) })
+    const update = new ApiSkillListUpdate({add: apiSearch})
 
     this.toastService.showBlockingLoader()
-    this.collectionService.addSkillsWithResult(collection.uuid, apiSearch).subscribe(result => {
+    this.collectionService.updateSkillsWithResult(collection.uuid, update).subscribe(result => {
       const message = `Added ${result.modifiedCount} RSDs to collection`
       this.toastService.showToast("Success!", message)
       this.toastService.hideBlockingLoader()

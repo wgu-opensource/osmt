@@ -233,12 +233,12 @@ export class CollectionsListComponent {
 
   getApiSearch(skill?: ApiCollectionSummary): ApiSearch | undefined {
     if (skill !== undefined) {
-      return ApiSearch.factory({uuids: [skill.uuid]})
+      return new ApiSearch({uuids: [skill.uuid]})
     }
 
     const selected = this.selectedUuids(skill)
     if (selected !== undefined) {
-      return ApiSearch.factory({uuids: selected})
+      return new ApiSearch({uuids: selected})
     }
 
     return undefined

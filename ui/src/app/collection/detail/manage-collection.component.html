@@ -1,0 +1,124 @@
+
+<ng-template [ngIf]="!showingMultipleConfirm" [ngIfElse]="multipleConfirm">
+
+<div class="l-stickyBar">
+
+  <div class="l-stickySidebar l-container t-margin-medium t-margin-bottom">
+
+    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
+      <app-collection-public-detail-card
+        *ngIf="collection"
+        [collection]="collection"
+        [showSkillCount]="false"
+      ></app-collection-public-detail-card>
+    </div>
+
+    <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
+      <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
+        <app-vertical-action-bar
+          [actions]="actionDefinitions()"
+          [data]="this.collection">
+        </app-vertical-action-bar>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="l-container">
+    <!--      {{render '@listheadingsearch'}}-->
+    <div class="t-margin-medium t-margin-bottom">
+      <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
+        <div class="m-text">
+          <svg class="m-text-x-icon t-icon" (click)="clearSearch()"><use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use></svg>
+          <input type="text" placeholder="Search RSDs in this collection" [formControl]="searchForm.controls.search">
+        </div>
+
+        <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
+          {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">RSDs</ng-template><ng-template #singular>RSD</ng-template> found in this collection based on
+          <ng-template [ngIf]="matchingQuery">
+            <span class="t-type-bodyLargeBold t-color-text1">{{matchingQuery[0]}}</span> and
+          </ng-template>
+          your filters.
+          <ng-template [ngIf]="totalCount > 0">
+            Viewing {{firstRecordNo}}-{{lastRecordNo}}.
+          </ng-template>
+        </p>
+      </form>
+    </div>
+
+    <app-filter-controls
+      [selectedFilters]="selectedFilters"
+      (filtersChanged)="handleFiltersChanged($event)"
+    ></app-filter-controls>
+  </div>
+
+
+  <div class="l-container">
+    <ng-template [appLoadingObservables]="[resultsLoaded]">
+
+      <div class="t-margin-medium t-margin-bottom">
+        <app-skill-table
+          *ngIf="!emptyResults"
+          [items]="results.skills"
+          (rowSelected)="handleNewSelection($event)"
+          [currentSort]="columnSort"
+          (columnSorted)="handleHeaderColumnSort($event)"
+          [rowActions]="rowActions()"
+          (selectAllSelected)="handleSelectAll($event)"
+          [selectAllCount]="getSelectAllCount()"
+          [selectAllEnabled]="getSelectAllEnabled()"
+        ></app-skill-table>
+      </div>
+
+      <app-empty-message *ngIf="emptyResults">
+        <p class="m-emptyMessage-x-message">0 RSDs associated with this collection</p>
+      </app-empty-message>
+
+      <app-pagination
+        [currentPage]="currentPageNo"
+        [totalPages]="totalPageCount"
+        (pageClicked)="handlePageClicked($event)"
+      ></app-pagination>
+    </ng-template>
+  </div>
+
+  <div *ngIf="actionsVisible()" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
+    <div class="l-container l-container-tablet">
+      <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
+    </div>
+  </div>
+
+</div>
+</ng-template>
+
+<ng-template #multipleConfirm>
+  <div class="l-container t-padding-large t-padding-top">
+    <div class="t-margin-medium t-margin-bottom">
+      <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+
+        <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Confirm that you want to remove {{selectedSkills.length}} RSDs from this collection.</h2>
+
+        <app-accordian closedLabel="View All Skills" openLabel="View Less Skills">
+          <div class="m-skillBackground l-inset t-margin-small t-margin-top">
+            <div class="m-content">
+              <ol>
+                <li *ngFor="let skill of selectedSkills">{{skill.skillName}}</li>
+              </ol>
+            </div>
+          </div>
+        </app-accordian>
+
+      </div>
+    </div>
+
+    <!--    {{render '@l-submit'}}-->
+    <div class="l-submit">
+      <button class="m-button m-button-tertiary" (click)="handleClickCancel()">
+        <span class="m-button-x-text">Cancel</span>
+      </button>
+      <button class="m-button" (click)="handleClickConfirmMulti()">
+        <span class="m-button-x-text">Yes, Remove Skill from Collection</span>
+      </button>
+    </div>
+  </div>
+</ng-template>

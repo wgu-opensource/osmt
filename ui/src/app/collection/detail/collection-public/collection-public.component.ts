@@ -74,7 +74,7 @@ export class CollectionPublicComponent implements OnInit {
       this.collectionUuid,
       this.size,
       this.from,
-      new Set<PublishStatus>([PublishStatus.Archived, PublishStatus.Unpublished, PublishStatus.Published]),
+      new Set<PublishStatus>([PublishStatus.Archived, PublishStatus.Unarchived, PublishStatus.Published]),
       this.columnSort
     )
     this.resultsLoaded.subscribe(skills => this.setResults(skills))

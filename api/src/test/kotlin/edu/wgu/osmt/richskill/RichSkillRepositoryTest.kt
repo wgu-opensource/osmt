@@ -287,7 +287,7 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRese
         skillDaos.forEach { oldDao ->
             val newDao = richSkillRepository.findById(oldDao.id.value)
             val skill = newDao!!.toModel()
-            assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Unpublished)
+            assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Unarchived)
         }
     }
 
@@ -334,7 +334,7 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRese
                 assertThat(skill.publishDate).isNotNull()
                 assertThat(skill.archiveDate).isNotNull()
             } else {
-                assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Unpublished)
+                assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Unarchived)
                 assertThat(skill.publishDate).isNull()
                 assertThat(skill.archiveDate).isNull()
             }

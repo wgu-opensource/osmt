@@ -28,7 +28,7 @@ object TestObjectHelpers {
     fun collectionDoc(
         id: Long = elasticIdCounter,
         name: String,
-        publishStatus: PublishStatus = PublishStatus.Unpublished,
+        publishStatus: PublishStatus = PublishStatus.Unarchived,
         skillIds: List<String> = listOf(),
         author: String? = null
     ) = CollectionDoc(
@@ -76,7 +76,7 @@ object TestObjectHelpers {
         statement: String,
         category: String? = "default category",
         author: String = authorString,
-        publishStatus: PublishStatus = PublishStatus.Unpublished
+        publishStatus: PublishStatus = PublishStatus.Unarchived
     ): RichSkillDoc {
         val uuid = UUID.randomUUID().toString()
         return RichSkillDoc(
@@ -109,7 +109,7 @@ object TestObjectHelpers {
 
     fun apiSkillUpdateGenerator(name: String? = null,
                                 statement: String? = null,
-                                publishStatus: PublishStatus = PublishStatus.Unpublished,
+                                publishStatus: PublishStatus = PublishStatus.Unarchived,
                                 keywordCount: Int = 3,
                                 certificationCount: Int = 3,
                                 standardCount: Int = 3,

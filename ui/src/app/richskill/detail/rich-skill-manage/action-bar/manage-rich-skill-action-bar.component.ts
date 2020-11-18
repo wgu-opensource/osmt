@@ -70,6 +70,16 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
     })
   }
 
+  handleUnarchive(): void {
+    this.toastService.showBlockingLoader()
+    this.richSkillService.updateSkill(this.skillUuid, {
+      status: PublishStatus.Unarchived
+    }).subscribe(() => {
+      this.reloadSkill.emit()
+      this.toastService.hideBlockingLoader()
+    })
+  }
+
   handlePublish(): void {
     if (!this.published) {
       this.toastService.showBlockingLoader()

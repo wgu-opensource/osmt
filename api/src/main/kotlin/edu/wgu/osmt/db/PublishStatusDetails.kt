@@ -17,7 +17,7 @@ interface PublishStatusUpdate<UpdateObjectType> where UpdateObjectType : UpdateO
             when (it){
                 PublishStatus.Archived -> updateBuilder[archiveDate] =  LocalDateTime.now(ZoneOffset.UTC)
                 PublishStatus.Published -> updateBuilder[publishDate] =  LocalDateTime.now(ZoneOffset.UTC)
-                PublishStatus.Unpublished -> {} // non-op
+                PublishStatus.Unarchived -> {} // non-op
             }
         }
     }
@@ -33,7 +33,7 @@ interface PublishStatusDetails{
             publishDate != null && archiveDate != null -> if (publishDate!!.isAfter(archiveDate)) PublishStatus.Published else PublishStatus.Archived
             publishDate != null -> PublishStatus.Published
             archiveDate != null -> PublishStatus.Archived
-            else -> PublishStatus.Unpublished
+            else -> PublishStatus.Unarchived
         }
     }
 }

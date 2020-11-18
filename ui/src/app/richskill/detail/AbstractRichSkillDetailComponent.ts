@@ -47,7 +47,7 @@ export abstract class AbstractRichSkillDetailComponent implements OnInit {
     return this.richSkill?.skillName ?? ""
   }
   getPublishStatus(): PublishStatus {
-    return this.richSkill?.status ?? PublishStatus.Unpublished
+    return this.richSkill?.status ?? PublishStatus.Unarchived
   }
 
   getSkillUrl(): string {

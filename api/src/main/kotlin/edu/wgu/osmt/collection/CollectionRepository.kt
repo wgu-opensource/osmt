@@ -13,7 +13,6 @@ import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.elasticsearch.EsCollectionRepository
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import edu.wgu.osmt.elasticsearch.SearchService
-import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
@@ -127,8 +126,7 @@ class CollectionRepositoryImpl @Autowired constructor(
         when (updateObject.publishStatus) {
             PublishStatus.Archived -> collectionDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
             PublishStatus.Published -> collectionDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
-            PublishStatus.Unpublished -> {
-            } // non-op
+            PublishStatus.Unarchived -> collectionDao.archiveDate = null
         }
 
         updateObject.name?.let { collectionDao.name = it }

@@ -99,27 +99,27 @@ export class SkillsListComponent {
 
   publishVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.status === PublishStatus.Unarchived
+      return skill.publishDate === undefined
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
-      const unpublishedSkill = this.selectedSkills?.find(s => s.status === PublishStatus.Unarchived)
+      const unpublishedSkill = this.selectedSkills?.find(s => s.publishDate === undefined)
       return unpublishedSkill !== undefined
     }
   }
   archiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.status === PublishStatus.Published
+      return skill.status !== PublishStatus.Archived
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
-      const unarchivedSkills = this.selectedSkills?.find(s => s.status === PublishStatus.Published)
+      const unarchivedSkills = this.selectedSkills?.find(s => s.status !== PublishStatus.Archived)
       return unarchivedSkills !== undefined
     }
   }
   unarchiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.status === PublishStatus.Archived
+      return skill.status !== PublishStatus.Unarchived
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {

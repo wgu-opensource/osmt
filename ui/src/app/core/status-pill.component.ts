@@ -10,6 +10,7 @@ export class StatusPillComponent implements OnInit {
   @Input() status: PublishStatus = PublishStatus.Unarchived
   @Input() publishDate = ""
   @Input() archiveDate = ""
+  @Input() showDates = true
 
   iconUp = SvgHelper.path(SvgIcon.ICON_UP)
   iconArchive = SvgHelper.path(SvgIcon.ARCHIVE)

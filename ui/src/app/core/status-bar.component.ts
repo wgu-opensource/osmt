@@ -11,6 +11,7 @@ export class StatusBarComponent implements OnInit {
   @Input() status: PublishStatus = PublishStatus.Unarchived
   @Input() publishDate = ""
   @Input() archiveDate = ""
+  @Input() showDates = true
 
   iconUp = SvgHelper.path(SvgIcon.ICON_UP)
   archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)

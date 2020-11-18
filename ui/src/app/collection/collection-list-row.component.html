@@ -12,7 +12,7 @@
 
   <td class="m-tableRow-x-actions">
     <ng-template [ngIf]="singleRowAction" [ngIfElse]="dotActions">
-      <div *ngFor="let action in rowActions">
+      <div *ngFor="let action of rowActions">
         <button class="m-buttonSmall">
           <span class="m-buttonSmall-x-text" (click)="handleClick(action)">{{action.label}}</span>
         </button>

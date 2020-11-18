@@ -53,5 +53,5 @@ data class ApiSkillListUpdate(
     val add: ApiSearch? = null,
 
     @JsonProperty("remove")
-    val remove: List<String>? = null
+    val remove: ApiSearch? = null
 )

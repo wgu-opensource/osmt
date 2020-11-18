@@ -17,7 +17,7 @@ import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.collection.Collection
-import edu.wgu.osmt.task.PublishSkillsTask
+import edu.wgu.osmt.task.PublishTask
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -269,7 +269,7 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRese
         val knownDaos = richSkillRepository.createFromApi(knownUpdates, userString)
         assertThat(skillDaos.size + knownDaos.size).isEqualTo(totalSkillCount)
 
-        val batchResult = richSkillRepository.changeStatusesForTask(PublishSkillsTask(
+        val batchResult = richSkillRepository.changeStatusesForTask(PublishTask(
             search=ApiSearch(query=searchQuery),
             publishStatus=PublishStatus.Published,
             userString=userString
@@ -301,7 +301,7 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRese
         val toPublishCount = 3
         val skillDaosToPublish = skillDaos.subList(0, toPublishCount)
 
-        val batchResult = richSkillRepository.changeStatusesForTask(PublishSkillsTask(
+        val batchResult = richSkillRepository.changeStatusesForTask(PublishTask(
             search=ApiSearch(uuids=skillDaosToPublish.map { it.uuid }),
             publishStatus=PublishStatus.Published,
             userString=userString
@@ -317,28 +317,21 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRese
             assertThat(skill.archiveDate).isNull()
         }
 
-        // attempt to archive all the skills, only published ones should get archived
-        val archiveResult = richSkillRepository.changeStatusesForTask(PublishSkillsTask(
+        // attempt to publish all the skills, only un-published ones should get published
+        val archiveResult = richSkillRepository.changeStatusesForTask(PublishTask(
             search=ApiSearch(uuids=skillDaos.map { it.uuid }),
-            publishStatus=PublishStatus.Archived,
+            publishStatus=PublishStatus.Published,
             userString=userString
         ))
 
         assertThat(archiveResult.totalCount).isEqualTo(totalSkillCount)
-        assertThat(archiveResult.modifiedCount).isEqualTo(toPublishCount)
+        assertThat(archiveResult.modifiedCount).isEqualTo(totalSkillCount - toPublishCount)
         skillDaos.forEach { oldDao ->
             val newDao = richSkillRepository.findById(oldDao.id.value)
             val skill = newDao!!.toModel()
-            if (skillDaosToPublish.contains(oldDao)) {
-                assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Archived)
-                assertThat(skill.publishDate).isNotNull()
-                assertThat(skill.archiveDate).isNotNull()
-            } else {
-                assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Unarchived)
-                assertThat(skill.publishDate).isNull()
-                assertThat(skill.archiveDate).isNull()
-            }
-
+            assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Published)
+            assertThat(skill.publishDate).isNotNull()
+            assertThat(skill.archiveDate).isNull()
         }
     }
 }

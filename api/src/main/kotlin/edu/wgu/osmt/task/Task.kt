@@ -21,7 +21,7 @@ import java.util.*
     JsonSubTypes.Type(value = CsvTask::class, name = "CsvTask"),
     JsonSubTypes.Type(value = ApiSearch::class, name = "ApiSearch"),
     JsonSubTypes.Type(value = ApiBatchResult::class, name = "ApiBatchResult"),
-    JsonSubTypes.Type(value = PublishSkillsTask::class, name = "PublishSkillsTask"),
+    JsonSubTypes.Type(value = PublishTask::class, name = "PublishTask"),
     JsonSubTypes.Type(value = ApiSkillListUpdate::class, name = "ApiSkillListUpdate"),
     JsonSubTypes.Type(value = UpdateCollectionSkillsTask::class, name = "UpdateCollectionSkillsTask")
 )
@@ -60,7 +60,12 @@ data class CsvTask(
 }
 
 
-data class PublishSkillsTask(
+enum class AppliesToType {
+    Collection,
+    Skill,
+}
+data class PublishTask(
+    val appliesToType: AppliesToType = AppliesToType.Skill,
     val search: ApiSearch = ApiSearch(),
     val filterByStatus: Set<PublishStatus> = setOf(PublishStatus.Unarchived),
     val publishStatus: PublishStatus = PublishStatus.Published,
@@ -77,10 +82,10 @@ data class PublishSkillsTask(
 }
 
 data class UpdateCollectionSkillsTask(
-    val collectionUuid: String,
+    val collectionUuid: String = "",
     val skillListUpdate: ApiSkillListUpdate = ApiSkillListUpdate(),
     val publishStatuses: Set<PublishStatus> = setOf(PublishStatus.Unarchived),
-    val userString: String,
+    val userString: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: ApiBatchResult? = null,

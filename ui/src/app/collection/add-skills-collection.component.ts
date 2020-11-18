@@ -1,4 +1,5 @@
 import {Component, OnInit} from "@angular/core";
+import {Location} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiCollectionSummary, ApiSkillSummary} from "../richskill/ApiSkillSummary";
 import {Title} from "@angular/platform-browser";
@@ -43,6 +44,7 @@ export class AddSkillsCollectionComponent implements OnInit {
   constructor(protected router: Router,
               protected titleService: Title,
               protected route: ActivatedRoute,
+              protected location: Location,
               protected collectionService: CollectionService,
               protected toastService: ToastService
   ) {
@@ -144,7 +146,6 @@ export class AddSkillsCollectionComponent implements OnInit {
   }
 
   private handleSelectCollection(action: TableActionDefinition, collection?: ApiCollectionSummary): boolean {
-    console.log("chose collection!", collection)
     if (collection?.uuid === undefined) { return false }
 
     const apiSearch = new ApiSearch({uuids: this.selectedSkills?.map(it => it.uuid) })
@@ -152,15 +153,17 @@ export class AddSkillsCollectionComponent implements OnInit {
 
     this.toastService.showBlockingLoader()
     this.collectionService.updateSkillsWithResult(collection.uuid, update).subscribe(result => {
-      const message = `Added ${result.modifiedCount} RSDs to collection`
-      this.toastService.showToast("Success!", message)
-      this.toastService.hideBlockingLoader()
-      this.return()
+      if (result) {
+        const message = `Added ${result.modifiedCount} RSDs to collection`
+        this.toastService.showToast("Success!", message)
+        this.toastService.hideBlockingLoader()
+        this.return()
+      }
     })
     return false
   }
 
   private return(): void {
-
+    this.location.back()
   }
 }

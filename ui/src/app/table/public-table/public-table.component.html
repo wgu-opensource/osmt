@@ -1,11 +1,11 @@
 <table class="l-table">
   <thead>
-  <tr>
+  <tr class="m-tableHeader">
     <th class="t-hidden-tabletMax" scope="col">
       <app-label-with-filter
         label="Category"
         [sortAscending]="getNameSort()"
-        (sortChanged)="sortColumn('category', $event)"
+        (sortChanged)="sortColumn('name', $event)"
       ></app-label-with-filter>
     </th>
 
@@ -13,7 +13,7 @@
       <app-label-with-filter
         label="Rich Skill Descriptor"
         [sortAscending]="getSkillSort()"
-        (sortChanged)="sortColumn('name', $event)"
+        (sortChanged)="sortColumn('skill', $event)"
       ></app-label-with-filter>
     </th>
   </tr>

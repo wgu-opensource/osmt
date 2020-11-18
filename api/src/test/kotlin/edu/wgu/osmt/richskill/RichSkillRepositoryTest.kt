@@ -317,28 +317,21 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRese
             assertThat(skill.archiveDate).isNull()
         }
 
-        // attempt to archive all the skills, only published ones should get archived
+        // attempt to publish all the skills, only un-published ones should get published
         val archiveResult = richSkillRepository.changeStatusesForTask(PublishTask(
             search=ApiSearch(uuids=skillDaos.map { it.uuid }),
-            publishStatus=PublishStatus.Archived,
+            publishStatus=PublishStatus.Published,
             userString=userString
         ))
 
         assertThat(archiveResult.totalCount).isEqualTo(totalSkillCount)
-        assertThat(archiveResult.modifiedCount).isEqualTo(toPublishCount)
+        assertThat(archiveResult.modifiedCount).isEqualTo(totalSkillCount - toPublishCount)
         skillDaos.forEach { oldDao ->
             val newDao = richSkillRepository.findById(oldDao.id.value)
             val skill = newDao!!.toModel()
-            if (skillDaosToPublish.contains(oldDao)) {
-                assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Archived)
-                assertThat(skill.publishDate).isNotNull()
-                assertThat(skill.archiveDate).isNotNull()
-            } else {
-                assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Unarchived)
-                assertThat(skill.publishDate).isNull()
-                assertThat(skill.archiveDate).isNull()
-            }
-
+            assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Published)
+            assertThat(skill.publishDate).isNotNull()
+            assertThat(skill.archiveDate).isNull()
         }
     }
 }

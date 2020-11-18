@@ -39,7 +39,7 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
 
     fun toDoc(embedded: Boolean = false): CollectionDoc {
         return if (embedded) {
-            CollectionDoc(id.value, uuid, name, publishStatus(), null, null, author?.value)
+            CollectionDoc(id.value, uuid, name, publishStatus(), null, null, author?.value, archiveDate, publishDate)
         } else CollectionDoc(
             id.value,
             uuid,
@@ -47,7 +47,9 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             publishStatus(),
             skills.map { it.uuid },
             skills.count().toInt(),
-            author?.value
+            author?.value,
+            archiveDate,
+            publishDate
         )
     }
 }

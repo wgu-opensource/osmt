@@ -46,6 +46,8 @@ export interface ICollectionSummary {
   name: string
   skillCount?: number
   status?: PublishStatus
+  archiveDate?: string
+  publishDate?: string
 }
 
 export class ApiCollectionSummary implements ICollectionSummary {
@@ -54,12 +56,16 @@ export class ApiCollectionSummary implements ICollectionSummary {
   name: string
   skillCount?: number
   status?: PublishStatus
+  archiveDate?: string
+  publishDate?: string
 
-  constructor({id, uuid, name, skillCount, status}: ICollectionSummary)  {
+  constructor({id, uuid, name, skillCount, status, archiveDate, publishDate}: ICollectionSummary)  {
     this.id = id
     this.uuid = uuid
     this.name = name
     this.skillCount = skillCount
     this.status = status
+    this.archiveDate = archiveDate
+    this.publishDate = publishDate
   }
 }

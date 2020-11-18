@@ -2,23 +2,27 @@ import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service";
 import {ApiSkillSummary} from "../ApiSkillSummary";
 import {PublishStatus} from "../../PublishStatus";
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
-import {Component, EventEmitter} from "@angular/core";
+import {Component, ElementRef, EventEmitter, ViewChild} from "@angular/core";
 import {Observable} from "rxjs";
 import {ApiBatchResult} from "../ApiBatchResult";
 import {RichSkillService} from "../service/rich-skill.service";
 import {ToastService} from "../../toast/toast.service";
 import {ApiSortOrder} from "../ApiSkill";
 import {Router} from "@angular/router";
+import {QuickLinksHelper} from "../../core/quick-links-helper";
 
 
 @Component({
   selector: "app-skills-list",
   templateUrl: "./skills-list.component.html"
 })
-export class SkillsListComponent {
+export class SkillsListComponent extends QuickLinksHelper {
 
   from = 0
   size = 50
+
+  @ViewChild("titleHeading") titleElement!: ElementRef
+
 
   resultsLoaded: Observable<PaginatedSkills> | undefined
   results: PaginatedSkills | undefined
@@ -38,6 +42,7 @@ export class SkillsListComponent {
               protected richSkillService: RichSkillService,
               protected toastService: ToastService
   ) {
+    super()
   }
 
   // "abstract" methods to be implemented by a "subclas"
@@ -238,7 +243,8 @@ export class SkillsListComponent {
 
   }
 
-  private handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+  protected handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    this.focusAndScrollIntoView(this.titleElement.nativeElement)
     return false
   }
 

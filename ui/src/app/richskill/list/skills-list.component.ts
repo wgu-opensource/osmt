@@ -1,5 +1,5 @@
 import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service";
-import {ApiSkillSummary, IApiSkillSummary} from "../ApiSkillSummary";
+import {ApiSkillSummary} from "../ApiSkillSummary";
 import {PublishStatus} from "../../PublishStatus";
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
 import {Component, EventEmitter} from "@angular/core";
@@ -23,8 +23,8 @@ export class SkillsListComponent {
   resultsLoaded: Observable<PaginatedSkills> | undefined
   results: PaginatedSkills | undefined
 
-  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
-  selectedSkills?: IApiSkillSummary[]
+  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unarchived, PublishStatus.Published])
+  selectedSkills?: ApiSkillSummary[]
   skillsSaved?: Observable<ApiBatchResult>
 
   columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
@@ -99,27 +99,27 @@ export class SkillsListComponent {
 
   publishVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.status === PublishStatus.Unpublished
+      return skill.publishDate === undefined
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
-      const unpublishedSkill = this.selectedSkills?.find(s => s.status === PublishStatus.Unpublished)
+      const unpublishedSkill = this.selectedSkills?.find(s => s.publishDate === undefined)
       return unpublishedSkill !== undefined
     }
   }
   archiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.status === PublishStatus.Published
+      return skill.status !== PublishStatus.Archived
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
-      const unarchivedSkills = this.selectedSkills?.find(s => s.status === PublishStatus.Published)
+      const unarchivedSkills = this.selectedSkills?.find(s => s.status !== PublishStatus.Archived)
       return unarchivedSkills !== undefined
     }
   }
   unarchiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.status === PublishStatus.Archived
+      return skill.status !== PublishStatus.Unarchived
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
@@ -141,7 +141,7 @@ export class SkillsListComponent {
     this.navigateToPage(newPageNo)
   }
 
-  handleNewSelection(selectedSkills: IApiSkillSummary[]): void {
+  handleNewSelection(selectedSkills: ApiSkillSummary[]): void {
     this.selectedSkills = selectedSkills
   }
 

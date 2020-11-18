@@ -62,7 +62,7 @@ data class CsvTask(
 
 data class PublishSkillsTask(
     val search: ApiSearch = ApiSearch(),
-    val filterByStatus: Set<PublishStatus> = setOf(PublishStatus.Unpublished),
+    val filterByStatus: Set<PublishStatus> = setOf(PublishStatus.Unarchived),
     val publishStatus: PublishStatus = PublishStatus.Published,
     val userString: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
@@ -79,7 +79,7 @@ data class PublishSkillsTask(
 data class UpdateCollectionSkillsTask(
     val collectionUuid: String,
     val skillListUpdate: ApiSkillListUpdate = ApiSkillListUpdate(),
-    val publishStatuses: Set<PublishStatus> = setOf(PublishStatus.Unpublished),
+    val publishStatuses: Set<PublishStatus> = setOf(PublishStatus.Unarchived),
     val userString: String,
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),

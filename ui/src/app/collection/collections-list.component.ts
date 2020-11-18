@@ -1,14 +1,14 @@
-import {Component} from "@angular/core";
-import {Observable} from "rxjs";
-import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {PublishStatus} from "../PublishStatus";
-import {ApiCollectionSummary, IApiSkillSummary, ICollectionSummary} from "../richskill/ApiSkillSummary";
-import {ApiBatchResult} from "../richskill/ApiBatchResult";
-import {ApiSortOrder} from "../richskill/ApiSkill";
-import {Router} from "@angular/router";
-import {ToastService} from "../toast/toast.service";
-import {CollectionService} from "./service/collection.service";
-import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
+import {Component} from "@angular/core"
+import {Observable} from "rxjs"
+import {ApiSearch, PaginatedCollections} from "../richskill/service/rich-skill-search.service"
+import {PublishStatus} from "../PublishStatus"
+import {ApiCollectionSummary, ICollectionSummary} from "../richskill/ApiSkillSummary"
+import {ApiBatchResult} from "../richskill/ApiBatchResult"
+import {ApiSortOrder} from "../richskill/ApiSkill"
+import {Router} from "@angular/router"
+import {ToastService} from "../toast/toast.service"
+import {CollectionService} from "./service/collection.service"
+import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
 
 
 @Component({
@@ -23,7 +23,7 @@ export class CollectionsListComponent {
   resultsLoaded: Observable<PaginatedCollections> | undefined
   results: PaginatedCollections | undefined
 
-  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
+  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unarchived, PublishStatus.Published])
   selectedCollections?: ICollectionSummary[]
   skillsSaved?: Observable<ApiBatchResult>
 
@@ -97,27 +97,27 @@ export class CollectionsListComponent {
 
   publishVisible(skill?: ApiCollectionSummary): boolean {
     if (skill !== undefined) {
-      return skill.status === PublishStatus.Unpublished
+      return skill.publishDate === undefined
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
-      const unpublishedSkill = this.selectedCollections?.find(s => s.status === PublishStatus.Unpublished)
+      const unpublishedSkill = this.selectedCollections?.find(s => s.publishDate === undefined)
       return unpublishedSkill !== undefined
     }
   }
   archiveVisible(skill?: ApiCollectionSummary): boolean {
     if (skill !== undefined) {
-      return skill.status === PublishStatus.Published
+      return skill.status !== PublishStatus.Archived
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
-      const unarchivedSkills = this.selectedCollections?.find(s => s.status === PublishStatus.Published)
+      const unarchivedSkills = this.selectedCollections?.find(s => s.status !== PublishStatus.Archived)
       return unarchivedSkills !== undefined
     }
   }
   unarchiveVisible(skill?: ApiCollectionSummary): boolean {
     if (skill !== undefined) {
-      return skill.status === PublishStatus.Archived
+      return skill.status !== PublishStatus.Unarchived
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
@@ -207,7 +207,7 @@ export class CollectionsListComponent {
   }
 
   private handleClickUnarchive(action: TableActionDefinition, skill?: ApiCollectionSummary): boolean {
-    this.submitStatusChange(PublishStatus.Published, "Un-archived", skill)
+    this.submitStatusChange(PublishStatus.Unarchived, "Un-archived", skill)
     return false
   }
 
@@ -250,7 +250,7 @@ export class CollectionsListComponent {
       return false
     }
 
-    console.log("submit status change", newStatus, apiSearch);
+    console.log("submit status change", newStatus, apiSearch)
     return false
 
     // TODO

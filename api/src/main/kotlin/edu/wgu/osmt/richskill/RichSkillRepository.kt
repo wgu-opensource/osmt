@@ -22,7 +22,6 @@ import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.task.PublishSkillsTask
-import org.jetbrains.exposed.sql.Query
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
@@ -78,20 +77,9 @@ class RichSkillRepositoryImpl @Autowired constructor(
     fun applyUpdate(rsdDao: RichSkillDescriptorDao, updateObject: RsdUpdateObject): Unit {
         rsdDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
         when (updateObject.publishStatus) {
-            PublishStatus.Archived -> {
-                if (rsdDao.publishDate != null) {
-                    rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-                }
-            }
-            PublishStatus.Published -> {
-                if (rsdDao.archiveDate != null) {
-                    rsdDao.archiveDate = null // unarchive
-                } else {
-                    rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
-                }
-            }
-            PublishStatus.Unpublished -> {
-            } // non-op
+            PublishStatus.Published -> rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Archived -> rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Unarchived -> rsdDao.archiveDate = null
         }
         updateObject.name?.let { rsdDao.name = it }
         updateObject.statement?.let { rsdDao.statement = it }

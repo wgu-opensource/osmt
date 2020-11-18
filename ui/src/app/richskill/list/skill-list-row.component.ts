@@ -15,6 +15,7 @@ export class SkillListRowComponent implements OnInit {
   @Input() skill: ApiSkillSummary | null = null
   @Input() isSelected = false
   @Input() id = ""
+  @Input() nextId = ""
 
   @Output() rowSelected = new EventEmitter<ApiSkillSummary>()
 
@@ -30,7 +31,6 @@ export class SkillListRowComponent implements OnInit {
     if (!this.id) {
       throw Error()
     }
-    console.log(JSON.stringify(this.skill))
   }
 
   getFormattedKeywords(): string {
@@ -62,5 +62,15 @@ export class SkillListRowComponent implements OnInit {
 
   isArchived(): boolean {
     return this.isStatus(PublishStatus.Archived)
+  }
+
+  handleClickNext(): boolean {
+    if (!this.nextId) { return false }
+    const target = document.getElementById(this.nextId) as HTMLElement
+    if (!target) { return false }
+
+    target.focus()
+    target.scrollIntoView()
+    return false
   }
 }

@@ -37,4 +37,9 @@ export class SearchService {
     this.latestSearch = apiSearch
     this.searchQuerySource.next(this.latestSearch)
   }
+
+  public clearSearch(): void {
+    this.latestSearch = undefined
+    this.searchQuerySource.next(this.latestSearch)
+  }
 }

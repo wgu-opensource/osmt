@@ -177,10 +177,11 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
       name: this.nonEmptyOrNull(formValue.alignmentText)
     })
 
-    if ((inputAlignment.id || inputAlignment.name) && !firstAlignment?.equals(inputAlignment)) {
+    if (!firstAlignment?.equals(inputAlignment)) {
+      const inputAlignmentDefined = (inputAlignment.id || inputAlignment.name)
       update.alignments = new ApiReferenceListUpdate(
-        [inputAlignment],
-        firstAlignment ? [firstAlignment] : []
+        inputAlignmentDefined ? [inputAlignment] : undefined,
+        firstAlignment ? [firstAlignment] : undefined
       )
     }
 
@@ -190,10 +191,8 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
 
   onSubmit(): void {
     const updateObject = this.updateObject()
-    console.log("do the submit", this.skillForm.value, updateObject)
 
     if (Object.keys(updateObject).length < 1) {
-      console.log("no changes to submit")
       return
     }
 
@@ -264,7 +263,6 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   }
 
   handleFormErrors(errors: unknown): void {
-    console.log("component got errors", errors)
   }
 
   handleClickCancel(): boolean {

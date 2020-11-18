@@ -19,10 +19,10 @@
 
     <th class="m-tableHeader-x-actions" scope="col">
       <!--{{render '@m-tablelabel&#45;&#45;with-choice'}}-->
-      <div class="m-tableLabel" *ngIf="selectAllEnabled">
-        <label class="m-tableLabel-x-text" for="checkbox">Select ({{getSelectAllCount()}})</label>
+      <div class="m-tableLabel">
+        <label class="m-tableLabel-x-text" for="checkbox">Select <ng-template [ngIf]="selectAllEnabled">All ({{getSelectAllCount()}})</ng-template></label>
 
-        <div class="m-tableLabel-x-control">
+        <div class="m-tableLabel-x-control" *ngIf="selectAllEnabled">
           <div class="m-checkbox">
             <input type="checkbox" id="checkbox" name="checkbox" (change)="handleSelectAll($event)">
             <div class="m-checkbox-x-icon">
@@ -46,6 +46,7 @@
       [class.m-tableRow-is-selected]="isSelected(skill)"
 
       app-skill-list-row
+      nextId="table-row-{{i+1}}-name"
       [skill]="skill"
       [isSelected]="isSelected(skill)"
       [rowActions]="rowActions"

@@ -14,12 +14,12 @@
 
   <td>
 
-    <h4 class="t-margin-extraSmall t-margin-bottom">
-      <a class="t-focus t-type-bodyLink" routerLink="/skills/{{skill.uuid}}/manage">{{skill.skillName}}</a>
+    <h4 class="t-margin-extraSmall t-margin-bottom" tabindex="0">
+      <a id="{{id}}-name" class="t-focus t-type-bodyLink" routerLink="/skills/{{skill.uuid}}/manage">{{skill.skillName}}</a>
     </h4>
 
     <div class="m-quickLinks">
-      <a href="#">Next skill</a>
+      <a (click)="handleClickNext()">Next RSD</a>
     </div>
 
     <p class="t-margin-small t-margin-bottom t-color-text3">{{skill.skillStatement}}</p>

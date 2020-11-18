@@ -2,23 +2,27 @@ import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service";
 import {ApiSkillSummary} from "../ApiSkillSummary";
 import {PublishStatus} from "../../PublishStatus";
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
-import {Component, EventEmitter} from "@angular/core";
+import {Component, ElementRef, EventEmitter, ViewChild} from "@angular/core";
 import {Observable} from "rxjs";
 import {ApiBatchResult} from "../ApiBatchResult";
 import {RichSkillService} from "../service/rich-skill.service";
 import {ToastService} from "../../toast/toast.service";
 import {ApiSortOrder} from "../ApiSkill";
 import {Router} from "@angular/router";
+import {QuickLinksHelper} from "../../core/quick-links-helper";
 
 
 @Component({
   selector: "app-skills-list",
   templateUrl: "./skills-list.component.html"
 })
-export class SkillsListComponent {
+export class SkillsListComponent extends QuickLinksHelper {
 
   from = 0
   size = 50
+
+  @ViewChild("titleHeading") titleElement!: ElementRef
+
 
   resultsLoaded: Observable<PaginatedSkills> | undefined
   results: PaginatedSkills | undefined
@@ -38,6 +42,7 @@ export class SkillsListComponent {
               protected richSkillService: RichSkillService,
               protected toastService: ToastService
   ) {
+    super()
   }
 
   // "abstract" methods to be implemented by a "subclas"
@@ -238,7 +243,8 @@ export class SkillsListComponent {
 
   }
 
-  private handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+  protected handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    this.focusAndScrollIntoView(this.titleElement.nativeElement)
     return false
   }
 
@@ -255,19 +261,21 @@ export class SkillsListComponent {
   }
 
   private handleClickUnarchive(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    this.submitStatusChange(PublishStatus.Published, "Un-archived", skill)
+    this.submitStatusChange(PublishStatus.Published, "unarchived", skill)
     return false
   }
 
   private handleClickArchive(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    this.submitStatusChange(PublishStatus.Archived, "Archived", skill)
+    if (confirm(`Check that the selected RSDs aren't included in any published collections, then click "OK" to archive them.`)) {
+      this.submitStatusChange(PublishStatus.Archived, "archived", skill)
+    }
     return false
   }
 
   private handleClickPublish(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
     const plural = (this.selectedUuids(skill)?.length ?? 0) > 1 ? "these RSDs" : "this RSD"
-    if (confirm(`Are you sure you want to publish ${plural}?`)) {
-      this.submitStatusChange(PublishStatus.Published, "Published", skill)
+    if (confirm(`Are you sure you want to publish ${plural}?\nOnce published, an RSD can't be unpublished.`)) {
+      this.submitStatusChange(PublishStatus.Published, "published", skill)
     }
     return false
   }
@@ -303,7 +311,7 @@ export class SkillsListComponent {
     this.skillsSaved.subscribe((result) => {
       if (result !== undefined) {
         const partial = (result.modifiedCount !== result.totalCount)  ? ` of ${result.totalCount}` : ""
-        const message = `${verb} ${result.modifiedCount}${partial} RSD${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
+        const message = `You ${verb} ${result.modifiedCount}${partial} RSD${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
         this.toastService.showToast("Success!", message)
         this.toastService.hideBlockingLoader()
         this.loadNextPage()

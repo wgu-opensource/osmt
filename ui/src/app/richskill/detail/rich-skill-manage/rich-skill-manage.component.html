@@ -3,7 +3,7 @@
 
   <div class="l-stickySidebar l-container">
 
-    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
+    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top" #detailCard>
       <app-detail-card
         [sections]="getCardFormat()"
         [title]="getSkillName()"
@@ -15,6 +15,7 @@
       ></app-detail-card>
     </div>
 
+
     <div class="l-stickySidebar-x-sidebar">
       <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
         <app-manage-skill-action-bar-vertical
@@ -24,6 +25,11 @@
           [published]="getPublishedDate()"
           (reloadSkill)="loadSkill()"
         ></app-manage-skill-action-bar-vertical>
+
+        <nav class="m-quickLinks" aria-labelledby="save-quicklinks">
+          <h3 class="t-visuallyHidden" id="save-quicklinks">Quick Links</h3>
+          <a (click)="focusAndScrollIntoView(detailCard, 'h2')">Back to top</a>
+        </nav>
       </div>
     </div>
 

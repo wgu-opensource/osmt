@@ -183,4 +183,9 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     this.apiSearch = undefined
     return false
   }
+
+  protected handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    this.focusAndScrollIntoView(this.titleElement.nativeElement, "h2")
+    return false
+  }
 }

@@ -8,6 +8,12 @@ export class AbstractSearchComponent {
   })
 
   constructor(protected searchService: SearchService, protected route: ActivatedRoute) {
+    this.searchService.searchQuery$.subscribe(apiSearch => {
+      if (apiSearch === undefined) {
+        this.clearSearch()
+      }
+    })
+
     this.route.queryParams.subscribe(params => {
       const queryString = params.q
       if (queryString && queryString.length > 0) {

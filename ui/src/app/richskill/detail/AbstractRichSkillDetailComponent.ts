@@ -6,9 +6,10 @@ import {IDetailCardSectionData} from "../../detail-card/section/section.componen
 import {formatDate} from "@angular/common"
 import {Observable} from "rxjs"
 import {PublishStatus} from "../../PublishStatus"
+import {QuickLinksHelper} from "../../core/quick-links-helper";
 
 @Component({template: ""})
-export abstract class AbstractRichSkillDetailComponent implements OnInit {
+export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper implements OnInit {
 
   uuidParam: string | null
   richSkill: ApiSkill | null = null
@@ -21,6 +22,7 @@ export abstract class AbstractRichSkillDetailComponent implements OnInit {
     protected route: ActivatedRoute,
     @Inject(LOCALE_ID) protected locale: string
   ) {
+    super()
     this.uuidParam = this.route.snapshot.paramMap.get("uuid")
   }
 

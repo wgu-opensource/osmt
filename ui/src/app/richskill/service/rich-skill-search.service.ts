@@ -120,7 +120,6 @@ export class RichSkillSearchService extends AbstractService {
       body: searchBody
     })
       .pipe(map(({body}) => {
-        console.log(body)
         return this.safeUnwrapBody(body, errorMsg).map(s => new ApiSkill(s))
       }))
   }

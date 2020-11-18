@@ -207,19 +207,19 @@ export class CollectionsListComponent {
   }
 
   private handleClickUnarchive(action: TableActionDefinition, skill?: ApiCollectionSummary): boolean {
-    this.submitStatusChange(PublishStatus.Unarchived, "Un-archived", skill)
+    this.submitStatusChange(PublishStatus.Unarchived, "unarchived", skill)
     return false
   }
 
   private handleClickArchive(action: TableActionDefinition, skill?: ApiCollectionSummary): boolean {
-    this.submitStatusChange(PublishStatus.Archived, "Archived", skill)
+    this.submitStatusChange(PublishStatus.Archived, "archived", skill)
     return false
   }
 
   private handleClickPublish(action: TableActionDefinition, skill?: ApiCollectionSummary): boolean {
     const plural = (this.selectedUuids(skill)?.length ?? 0) > 1 ? "these collections" : "this collection"
-    if (confirm(`Are you sure you want to publish ${plural}?`)) {
-      this.submitStatusChange(PublishStatus.Published, "Published", skill)
+    if (confirm(`Are you sure you want to publish ${plural}?\nOnce published, a collection can't be unpublished.`)) {
+      this.submitStatusChange(PublishStatus.Published, "published", skill)
     }
     return false
   }
@@ -259,7 +259,7 @@ export class CollectionsListComponent {
     this.skillsSaved?.subscribe((result) => {
       if (result !== undefined) {
         const partial = (result.modifiedCount !== result.totalCount)  ? ` of ${result.totalCount}` : ""
-        const message = `${verb} ${result.modifiedCount}${partial} Collection${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
+        const message = `You ${verb} ${result.modifiedCount}${partial} Collection${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
         this.toastService.showToast("Success!", message)
         this.toastService.hideBlockingLoader()
         this.loadNextPage()

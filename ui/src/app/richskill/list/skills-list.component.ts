@@ -261,21 +261,21 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
 
   private handleClickUnarchive(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    this.submitStatusChange(PublishStatus.Published, "Un-archived", skill)
+    this.submitStatusChange(PublishStatus.Published, "unarchived", skill)
     return false
   }
 
   private handleClickArchive(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
     if (confirm(`Check that the selected RSDs aren't included in any published collections, then click "OK" to archive them.`)) {
-      this.submitStatusChange(PublishStatus.Archived, "Archived", skill)
+      this.submitStatusChange(PublishStatus.Archived, "archived", skill)
     }
     return false
   }
 
   private handleClickPublish(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
     const plural = (this.selectedUuids(skill)?.length ?? 0) > 1 ? "these RSDs" : "this RSD"
-    if (confirm(`Are you sure you want to publish ${plural}?`)) {
-      this.submitStatusChange(PublishStatus.Published, "Published", skill)
+    if (confirm(`Are you sure you want to publish ${plural}?\nOnce published, an RSD can't be unpublished.`)) {
+      this.submitStatusChange(PublishStatus.Published, "published", skill)
     }
     return false
   }
@@ -311,7 +311,7 @@ export class SkillsListComponent extends QuickLinksHelper {
     this.skillsSaved.subscribe((result) => {
       if (result !== undefined) {
         const partial = (result.modifiedCount !== result.totalCount)  ? ` of ${result.totalCount}` : ""
-        const message = `${verb} ${result.modifiedCount}${partial} RSD${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
+        const message = `You ${verb} ${result.modifiedCount}${partial} RSD${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
         this.toastService.showToast("Success!", message)
         this.toastService.hideBlockingLoader()
         this.loadNextPage()

@@ -5,7 +5,6 @@ import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers.apiSkillUpdateGenerator
 import edu.wgu.osmt.TestObjectHelpers.assertThatKeywordMatchesNamedReference
-import edu.wgu.osmt.TestObjectHelpers.namedReferenceGenerator
 import edu.wgu.osmt.api.model.ApiReferenceListUpdate
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSkillUpdate
@@ -18,7 +17,7 @@ import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.collection.Collection
-import edu.wgu.osmt.task.PublishSkillsTask
+import edu.wgu.osmt.task.PublishTask
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -270,7 +269,7 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRese
         val knownDaos = richSkillRepository.createFromApi(knownUpdates, userString)
         assertThat(skillDaos.size + knownDaos.size).isEqualTo(totalSkillCount)
 
-        val batchResult = richSkillRepository.changeStatusesForTask(PublishSkillsTask(
+        val batchResult = richSkillRepository.changeStatusesForTask(PublishTask(
             search=ApiSearch(query=searchQuery),
             publishStatus=PublishStatus.Published,
             userString=userString
@@ -302,7 +301,7 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRese
         val toPublishCount = 3
         val skillDaosToPublish = skillDaos.subList(0, toPublishCount)
 
-        val batchResult = richSkillRepository.changeStatusesForTask(PublishSkillsTask(
+        val batchResult = richSkillRepository.changeStatusesForTask(PublishTask(
             search=ApiSearch(uuids=skillDaosToPublish.map { it.uuid }),
             publishStatus=PublishStatus.Published,
             userString=userString
@@ -319,7 +318,7 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRese
         }
 
         // attempt to archive all the skills, only published ones should get archived
-        val archiveResult = richSkillRepository.changeStatusesForTask(PublishSkillsTask(
+        val archiveResult = richSkillRepository.changeStatusesForTask(PublishTask(
             search=ApiSearch(uuids=skillDaos.map { it.uuid }),
             publishStatus=PublishStatus.Archived,
             userString=userString

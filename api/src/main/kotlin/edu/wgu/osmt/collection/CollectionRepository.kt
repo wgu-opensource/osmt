@@ -19,6 +19,8 @@ import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RichSkillDoc
+import edu.wgu.osmt.richskill.RsdUpdateObject
+import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
@@ -65,6 +67,8 @@ interface CollectionRepository {
         task: UpdateCollectionSkillsTask,
         richSkillRepository: RichSkillRepository
     ): ApiBatchResult
+
+    fun changeStatusesForTask(publishTask: PublishTask): ApiBatchResult?
 }
 
 
@@ -313,6 +317,52 @@ class CollectionRepositoryImpl @Autowired constructor(
             publishStatus = collectionUpdate.publishStatus,
             author = authorKeyword?.let { NullableFieldUpdate(it) },
             skills = if (adding.size + removing.size > 0) ListFieldUpdate(adding, removing) else null
+        )
+    }
+
+    override fun changeStatusesForTask(publishTask: PublishTask): ApiBatchResult? {
+        var modifiedCount = 0
+        var totalCount = 0
+
+        val publish_collection = {collectionDao: CollectionDao, task: PublishTask ->
+            val oldStatus = collectionDao.publishStatus()
+            if (oldStatus != task.publishStatus) {
+                val updateObj = CollectionUpdateObject(id = collectionDao.id.value, publishStatus = task.publishStatus)
+                val updatedDao = this.update(updateObj, task.userString)
+                val newStatus = updatedDao?.publishStatus()
+                (newStatus != oldStatus)
+            } else false
+        }
+
+        val handle_collection_dao = {collectionDao: CollectionDao? ->
+            collectionDao?.let {
+                if (publish_collection(it, publishTask)) {
+                    modifiedCount += 1
+                }
+            }
+        }
+
+        if (!publishTask.search.uuids.isNullOrEmpty()) {
+            totalCount = publishTask.search.uuids.size
+            publishTask.search.uuids.forEach { uuid ->
+                handle_collection_dao(this.findByUUID(uuid))
+            }
+        } else {
+            val searchHits = searchService.searchCollectionsByApiSearch(
+                publishTask.search,
+                publishTask.filterByStatus,
+                Pageable.unpaged()
+            )
+            totalCount = searchHits.totalHits.toInt()
+            searchHits.forEach { hit ->
+                handle_collection_dao(this.findById(hit.content.id))
+            }
+        }
+
+        return ApiBatchResult(
+            success = true,
+            modifiedCount = modifiedCount,
+            totalCount = totalCount
         )
     }
 }

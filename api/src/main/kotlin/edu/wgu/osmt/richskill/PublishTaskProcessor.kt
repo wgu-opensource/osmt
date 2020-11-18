@@ -1,9 +1,10 @@
 package edu.wgu.osmt.richskill
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
-import edu.wgu.osmt.task.PublishSkillsTask
+import edu.wgu.osmt.collection.CollectionRepository
+import edu.wgu.osmt.task.AppliesToType
+import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.TaskMessageService
-import edu.wgu.osmt.task.TaskQueueHandler
 import edu.wgu.osmt.task.TaskStatus
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -16,8 +17,8 @@ import javax.transaction.Transactional
 @Component
 @Profile("apiserver")
 @Transactional
-class PublishSkillsTaskProcessor {
-    val logger: Logger = LoggerFactory.getLogger(PublishSkillsTaskProcessor::class.java)
+class PublishTaskProcessor {
+    val logger: Logger = LoggerFactory.getLogger(PublishTaskProcessor::class.java)
 
     @Autowired
     lateinit var taskMessageService: TaskMessageService
@@ -25,21 +26,27 @@ class PublishSkillsTaskProcessor {
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository
 
+    @Autowired
+    lateinit var collectionRepository: CollectionRepository
+
     @RqueueListener(
         value = [TaskMessageService.publishSkills],
         deadLetterQueueListenerEnabled = "true",
         deadLetterQueue = TaskMessageService.deadLetters,
         concurrency = "1"
     )
-    fun publishSkills(publishSkillsTask: PublishSkillsTask) {
-        logger.info("Started processing publish skills task id: ${publishSkillsTask.uuid}")
+    fun process(publishTask: PublishTask) {
+        logger.info("Started processing publish task id: ${publishTask.uuid}")
 
-        val batchResult = richSkillRepository.changeStatusesForTask(publishSkillsTask)
+        val batchResult = when (publishTask.appliesToType) {
+            AppliesToType.Skill -> richSkillRepository.changeStatusesForTask(publishTask)
+            AppliesToType.Collection -> collectionRepository.changeStatusesForTask(publishTask)
+        }
 
         taskMessageService.publishResult(
-            publishSkillsTask.copy(result=batchResult, status=TaskStatus.Ready)
+            publishTask.copy(result=batchResult, status=TaskStatus.Ready)
         )
 
-        logger.info("Task ${publishSkillsTask.uuid} completed")
+        logger.info("Task ${publishTask.uuid} completed")
     }
 }

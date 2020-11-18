@@ -8,10 +8,7 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.*
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
-import edu.wgu.osmt.task.CsvTask
-import edu.wgu.osmt.task.PublishSkillsTask
-import edu.wgu.osmt.task.TaskMessageService
-import edu.wgu.osmt.task.TaskResult
+import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -151,7 +148,7 @@ class RichSkillController @Autowired constructor(
     ): HttpEntity<TaskResult> {
         val filterStatuses = filterByStatus.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val publishStatus = PublishStatus.forApiValue(newStatus) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
-        val task = PublishSkillsTask(search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = readableUsername(user))
+        val task = PublishTask(AppliesToType.Skill, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = readableUsername(user))
         taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
 
         val responseHeaders = HttpHeaders()

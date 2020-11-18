@@ -24,8 +24,8 @@ class TaskTest : SpringTest(), BaseDockerizedTest {
     }
 
     @Test
-    fun `can serialize and deserialize a PublishSkillsTask`() {
-        val task = PublishSkillsTask()
+    fun `can serialize and deserialize a PublishTask`() {
+        val task = PublishTask()
         assertTaskSerializes(task)
     }
 

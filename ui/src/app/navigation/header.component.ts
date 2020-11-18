@@ -34,4 +34,14 @@ export class HeaderComponent extends Whitelabelled implements OnInit {
   get skillsActive(): boolean {
     return !this.collectionsActive
   }
+
+  handleQuicklink(elementId: string): boolean {
+    const el = document.getElementById(elementId) as HTMLElement
+    if (el) {
+      el.focus()
+      el.scrollIntoView()
+    }
+
+    return false
+  }
 }

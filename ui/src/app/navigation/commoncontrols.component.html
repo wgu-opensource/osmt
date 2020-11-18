@@ -6,7 +6,7 @@
         <svg class="m-search-x-icon t-icon">
           <use [attr.xlink:href]="searchIcon"></use>
         </svg>
-        <input class="m-search-x-input" type="text" required [formControl]="searchForm.controls.search">
+        <input id="commoncontrols-search" class="m-search-x-input" type="text" required [formControl]="searchForm.controls.search">
         <div class="m-search-x-controls">
           <div class="m-search-x-clear">
             <button class="m-iconInteractive" type="button" (click)="clearSearch()">

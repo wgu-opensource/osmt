@@ -250,7 +250,7 @@ export class CollectionsListComponent {
       return false
     }
 
-    console.log("submit status change", newStatus, apiSearch)
+    console.log("TODO: submit status change", newStatus, apiSearch)
     return false
 
     // TODO

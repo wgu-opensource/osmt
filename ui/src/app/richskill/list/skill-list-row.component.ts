@@ -30,7 +30,6 @@ export class SkillListRowComponent implements OnInit {
     if (!this.id) {
       throw Error()
     }
-    console.log(JSON.stringify(this.skill))
   }
 
   getFormattedKeywords(): string {

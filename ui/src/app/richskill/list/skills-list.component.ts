@@ -266,7 +266,9 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
 
   private handleClickArchive(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    this.submitStatusChange(PublishStatus.Archived, "Archived", skill)
+    if (confirm(`Check that the selected RSDs aren't included in any published collections, then click "OK" to archive them.`)) {
+      this.submitStatusChange(PublishStatus.Archived, "Archived", skill)
+    }
     return false
   }
 

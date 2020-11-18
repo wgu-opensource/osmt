@@ -177,10 +177,11 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
       name: this.nonEmptyOrNull(formValue.alignmentText)
     })
 
-    if ((inputAlignment.id || inputAlignment.name) && !firstAlignment?.equals(inputAlignment)) {
+    if (!firstAlignment?.equals(inputAlignment)) {
+      const inputAlignmentDefined = (inputAlignment.id || inputAlignment.name)
       update.alignments = new ApiReferenceListUpdate(
-        [inputAlignment],
-        firstAlignment ? [firstAlignment] : []
+        inputAlignmentDefined ? [inputAlignment] : undefined,
+        firstAlignment ? [firstAlignment] : undefined
       )
     }
 

@@ -58,7 +58,11 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
       {
         label: "Alignment",
         bodyHtml: this.richSkill?.alignments
-          ?.map(alignment => `<a class="t-link" target="_blank" href="${alignment.id}">${alignment.name}</a>`)
+          ?.map(alignment => {
+            return (alignment.id)
+              ? `<a class="t-link" target="_blank" href="${alignment.id}">${alignment.name || alignment.id}</a>`
+              : `${alignment.name}`
+          })
           ?.join("") ?? "",
         showIfEmpty: true
       },

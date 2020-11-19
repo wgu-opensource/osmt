@@ -63,3 +63,16 @@ export interface ICollectionUpdate {
   author?: INamedReference,
   skills?: IStringListUpdate
 }
+
+export class ApiCollectionUpdate {
+  name?: string
+  status?: PublishStatus
+  author?: INamedReference
+  skills?: IStringListUpdate
+  constructor({name, status, author, skills}: ICollectionUpdate) {
+    this.name = name
+    this.status = status
+    this.author = author
+    this.skills = skills
+  }
+}

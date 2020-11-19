@@ -41,7 +41,6 @@ data class CollectionUpdateObject(
                     validate(KeywordDao::type).isEqualTo(KeywordTypeEnum.Author)
                 }
             }
-            validate(CollectionUpdateObject::publishStatus).isNotEqualTo(PublishStatus.Unarchived)
         }
     }
     fun compareName(that: CollectionDao): JSONObject? {

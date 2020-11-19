@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core"
-import {ApiCollection} from "../ApiCollection";
+import {ApiCollection, ApiCollectionUpdate} from "../ApiCollection";
 import {ApiSearch, ApiSkillListUpdate} from "../../richskill/service/rich-skill-search.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CollectionService} from "../service/collection.service";
@@ -11,6 +11,7 @@ import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
 import {PublishStatus} from "../../PublishStatus";
 import {ApiSkillSummary} from "../../richskill/ApiSkillSummary";
+import {Observable} from "rxjs";
 
 @Component({
   selector: "app-manage-collection",
@@ -35,6 +36,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
 
   showAddToCollection = false
   showingMultipleConfirm = false
+  collectionSaved?: Observable<ApiCollection>
 
   get isPlural(): boolean {
     return (this.results?.skills.length ?? 0) > 1
@@ -121,11 +123,11 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         callback: () => this.unarchiveAction(),
         visible: () => this.collection?.status === PublishStatus.Archived
       }),
-      new TableActionDefinition({
-        label: "Add Skills to This Collection",
-        icon: this.addIcon,
-        callback: () => this.addSkillsAction(),
-      }),
+      // new TableActionDefinition({
+      //   label: "Add RSDs to This Collection",
+      //   icon: this.addIcon,
+      //   callback: () => this.addSkillsAction(),
+      // }),
     ]
   }
 
@@ -134,8 +136,28 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   }
 
   publishAction(): void {}
-  archiveAction(): void {}
-  unarchiveAction(): void {}
+  archiveAction(): void {
+    this.submitCollectionStatusChange(PublishStatus.Archived, "archived")
+  }
+  unarchiveAction(): void {
+    this.submitCollectionStatusChange(PublishStatus.Unarchived, "unarchived")
+  }
+
+  submitCollectionStatusChange(newStatus: PublishStatus, verb: string): void {
+    if (this.uuidParam === undefined) { return }
+
+    const updateObject = new ApiCollectionUpdate({status: newStatus})
+
+    this.toastService.showBlockingLoader()
+    this.collectionSaved = this.collectionService.updateCollection(this.uuidParam, updateObject)
+    this.collectionSaved.subscribe((collection) => {
+      this.toastService.hideBlockingLoader()
+      this.toastService.showToast("Success!", `You ${verb} the collection ${collection.name}.`)
+      this.collection = collection
+      this.loadNextPage()
+    })
+  }
+
   addSkillsAction(): void {}
 
   removeFromCollection(skill?: ApiSkillSummary): void {

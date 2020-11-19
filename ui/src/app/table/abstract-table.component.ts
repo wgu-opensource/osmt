@@ -59,7 +59,7 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
       } else {
         this.currentSort = ApiSortOrder.NameDesc
       }
-    } else if (column.toLowerCase() === "category") {
+    } else if (column.toLowerCase() === "skill") {
       if (ascending) {
         this.currentSort = ApiSortOrder.SkillAsc
       } else {

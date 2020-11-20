@@ -144,10 +144,11 @@ export class RichSkillService extends AbstractService {
     apiSearch: ApiSearch,
     newStatus: PublishStatus = PublishStatus.Published,
     filterByStatuses?: Set<PublishStatus>,
+    collectionUuid?: string,
     pollIntervalMs: number = 1000,
   ): Observable<ApiBatchResult> {
     return this.pollForTaskResult(
-      this.bulkStatusChange("api/skills/publish", apiSearch, newStatus, filterByStatuses),
+      this.bulkStatusChange("api/skills/publish", apiSearch, newStatus, filterByStatuses, collectionUuid),
       pollIntervalMs
     )
   }

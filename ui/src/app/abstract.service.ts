@@ -136,12 +136,16 @@ export abstract class AbstractService {
     apiSearch: ApiSearch,
     newStatus: PublishStatus = PublishStatus.Published,
     filterByStatuses?: Set<PublishStatus>,
+    collectionUuid?: string
   ): Observable<ApiTaskResult> {
     const params: any = {
       newStatus: newStatus.toString(),
     }
     if (filterByStatuses !== undefined) {
       params.filterByStatus = Array.from(filterByStatuses).map(s => s.toString())
+    }
+    if (collectionUuid !== undefined) {
+      params.collectionUuid = collectionUuid
     }
     return this.post<ITaskResult>({
       path,

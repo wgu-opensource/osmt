@@ -135,7 +135,22 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     this.router.navigate([`/collections/${this.uuidParam}/edit`])
   }
 
-  publishAction(): void {}
+  publishAction(): void {
+    if (this.uuidParam === undefined) { return }
+
+    this.toastService.showBlockingLoader()
+    this.collectionService.collectionReadyToPublish(this.uuidParam).subscribe(ready => {
+      this.toastService.hideBlockingLoader()
+      if (ready) {
+          if (confirm("Confirm that you want to publish the selected collection. Once published, a collection can't be unpublished.")) {
+            this.submitCollectionStatusChange(PublishStatus.Published, "published")
+          }
+      } else {
+        this.router.navigate([`/collections/${this.uuidParam}/publish`])
+      }
+    })
+  }
+
   archiveAction(): void {
     this.submitCollectionStatusChange(PublishStatus.Archived, "archived")
   }

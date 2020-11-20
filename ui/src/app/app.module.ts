@@ -74,6 +74,7 @@ import {CollectionSearchResultsComponent} from "./collection/collection-search-r
 import {PublicRichSkillActionBarComponent} from "./richskill/detail/rich-skill-public/action-bar/public-rich-skill-action-bar.component"
 import {ManageCollectionComponent} from "./collection/detail/manage-collection.component";
 import {VerticalActionBarComponent} from "./core/vertical-action-bar.component";
+import {PublishCollectionComponent} from "./collection/detail/publish-collection.component";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -121,6 +122,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CollectionsLibraryComponent,
     CollectionsListComponent,
     CollectionSearchResultsComponent,
+    PublishCollectionComponent,
 
     DetailCardComponent,
     DetailCardSectionComponent,

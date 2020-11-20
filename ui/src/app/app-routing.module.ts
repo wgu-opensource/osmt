@@ -17,6 +17,7 @@ import {CollectionsLibraryComponent} from "./table/collections-library.component
 import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component";
 import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component";
 import {ManageCollectionComponent} from "./collection/detail/manage-collection.component";
+import {PublishCollectionComponent} from "./collection/detail/publish-collection.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -73,6 +74,11 @@ const routes: Routes = [
   // manage collection
   {path: "collections/:uuid/manage",
     component: ManageCollectionComponent,
+    canActivate: [AuthGuard]
+  },
+  // publish collection guard wizard
+  {path: "collections/:uuid/publish",
+    component: PublishCollectionComponent,
     canActivate: [AuthGuard]
   },
   // add skills to a collection

@@ -163,4 +163,16 @@ export class CollectionService extends AbstractService {
       pollIntervalMs
     )
   }
+
+  collectionReadyToPublish(collectionUuid: string): Observable<boolean> {
+    return new Observable(observer => {
+      const filters = new Set([PublishStatus.Archived, PublishStatus.Unarchived])
+      this.getCollectionSkills(collectionUuid, 1, 0, filters).subscribe(results => {
+        const isReady = results.totalCount === 0
+        observer.next(isReady)
+        observer.complete()
+      })
+    })
+  }
+
 }

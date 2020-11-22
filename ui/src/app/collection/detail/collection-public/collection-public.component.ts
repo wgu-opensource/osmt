@@ -69,6 +69,10 @@ export class CollectionPublicComponent implements OnInit {
     return this.collection?.uuid ?? ""
   }
 
+  get collectionName(): string {
+    return this.collection?.name ?? ""
+  }
+
   loadSkillsInCollection(): void {
     this.resultsLoaded = this.collectionService.getCollectionSkills(
       this.collectionUuid,

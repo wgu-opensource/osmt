@@ -261,7 +261,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
 
   private handleClickUnarchive(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    this.submitStatusChange(PublishStatus.Published, "unarchived", skill)
+    this.submitStatusChange(PublishStatus.Unarchived, "unarchived", skill)
     return false
   }
 

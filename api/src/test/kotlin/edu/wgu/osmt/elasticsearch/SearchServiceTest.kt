@@ -6,9 +6,12 @@ import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers
 import edu.wgu.osmt.TestObjectHelpers.keywordGenerator
+import edu.wgu.osmt.api.model.ApiAdvancedSearch
+import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.db.ListFieldUpdate
+import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.*
@@ -257,5 +260,53 @@ class SearchServiceTest : SpringTest(), HasDatabaseReset, HasElasticsearchReset 
 
         assertThat(collectionSearchResult.searchHits.first().content.uuid).isEqualTo(collection.uuid)
         assertThat(collectionSearchResult.totalHits).isEqualTo(1L)
+    }
+
+    @Test
+    fun `Should allow prefix searches on advanced search job codes`(){
+        (1..100).map {
+            TestObjectHelpers.randomRichSkillDoc().also {
+                searchService.esRichSkillRepository.save(it)
+                searchService.esCollectionRepository.saveAll(it.collections)
+            }
+        }
+
+        val jobCodes = listOf(
+            JobCode.create("10-9999.88").copy(id = TestObjectHelpers.elasticIdCounter)
+        )
+
+        val skillWithJobCodes = TestObjectHelpers.randomRichSkillDoc().copy(jobCodes = jobCodes).also {
+            searchService.esRichSkillRepository.save(it)
+        }
+
+        val searchResult = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(occupations = listOf(
+            ApiNamedReference(name = "10-99")
+        ))))
+
+        assertThat(searchResult.searchHits.first().content.uuid).isEqualTo(skillWithJobCodes.uuid)
+    }
+
+    @Test
+    fun `Should allow prefix searches on keywords`(){
+        (1..100).map {
+            TestObjectHelpers.randomRichSkillDoc().also {
+                searchService.esRichSkillRepository.save(it)
+                searchService.esCollectionRepository.saveAll(it.collections)
+            }
+        }
+
+        val searchingKeywords = listOf("SEL: Interpersonal Communication", "Doing", "Verbal Communication Skills")
+
+        val skillWithKeywords = TestObjectHelpers.randomRichSkillDoc().copy(searchingKeywords = searchingKeywords).also {
+            searchService.esRichSkillRepository.save(it)
+        }
+
+        val searchResult = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(keywords = listOf("doing"))))
+        val searchResult2 = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(keywords = listOf("sel"))))
+        val searchResult3 = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(keywords = listOf("nada"))))
+
+        assertThat(searchResult.searchHits.first().content.uuid).isEqualTo(skillWithKeywords.uuid)
+        assertThat(searchResult2.searchHits.first().content.uuid).isEqualTo(skillWithKeywords.uuid)
+        assertThat(searchResult3.searchHits).isEmpty()
     }
 }

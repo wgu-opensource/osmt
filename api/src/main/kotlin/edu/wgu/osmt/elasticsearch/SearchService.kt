@@ -87,31 +87,31 @@ class SearchService @Autowired constructor(
             // boolQuery.must for logical AND
             // boolQuery.should for logical OR
 
-            skillName?.let { bq.must(matchQuery(RichSkillDoc::name.name, it)) }
-            category?.let { bq.must(matchQuery(RichSkillDoc::category.name, it)) }
-            skillStatement?.let { bq.must(matchQuery(RichSkillDoc::statement.name, it)) }
-            keywords?.let { bq.must(termsQuery(RichSkillDoc::searchingKeywords.name, it)) }
+            skillName?.let { bq.must(matchBoolPrefixQuery(RichSkillDoc::name.name, it)) }
+            category?.let { bq.must(matchBoolPrefixQuery(RichSkillDoc::category.name, it)) }
+            skillStatement?.let { bq.must(matchBoolPrefixQuery(RichSkillDoc::statement.name, it)) }
+            keywords?.map { bq.must(matchBoolPrefixQuery(RichSkillDoc::searchingKeywords.name, it)) }
 
             occupations?.let {
                 it.mapNotNull { it.name }.map { value ->
                     bq.must(
                         boolQuery().should(
-                            termQuery(
+                            matchBoolPrefixQuery(
                                 RichSkillDoc::majorCodes.name,
                                 value
                             )
                         ).should(
-                            termQuery(
+                            matchBoolPrefixQuery(
                                 RichSkillDoc::minorCodes.name,
                                 value
                             )
                         ).should(
-                            termQuery(
+                            matchBoolPrefixQuery(
                                 RichSkillDoc::broadCodes.name,
                                 value
                             )
                         ).should(
-                            prefixQuery(
+                            matchBoolPrefixQuery(
                                 RichSkillDoc::jobRoleCodes.name,
                                 value
                             )
@@ -122,28 +122,28 @@ class SearchService @Autowired constructor(
 
             standards?.let {
                 bq.must(
-                    termsQuery(
+                    matchBoolPrefixQuery(
                         "${RichSkillDoc::standards.name}.${ApiNamedReference::name.name}",
                         it.mapNotNull { it.name })
                 )
             }
             certifications?.let {
                 bq.must(
-                    termsQuery(
+                    matchBoolPrefixQuery(
                         RichSkillDoc::certifications.name,
                         it.mapNotNull { it.name })
                 )
             }
             employers?.let {
                 bq.must(
-                    termsQuery(
+                    matchBoolPrefixQuery(
                         RichSkillDoc::employers.name,
                         it.mapNotNull { it.name })
                 )
             }
             alignments?.let {
                 bq.must(
-                    termsQuery(
+                    matchBoolPrefixQuery(
                         RichSkillDoc::alignments.name,
                         it.mapNotNull { it.name })
                 )

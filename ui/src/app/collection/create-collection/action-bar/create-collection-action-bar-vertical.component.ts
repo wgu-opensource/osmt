@@ -1,5 +1,4 @@
-import { Component } from "@angular/core"
-import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
+import {Component, Input} from "@angular/core"
 import {AbstractCreateCollectionActionbarComponent} from "./abstract-create-collection-actionbar.component"
 
 @Component({
@@ -8,9 +7,11 @@ import {AbstractCreateCollectionActionbarComponent} from "./abstract-create-coll
     <div class="l-actionBarVertical">
 
       <div class="l-actionBarVertical-x-action">
-        <button class="m-button" (click)="handleSave()">
-          <span class="m-button-x-text">Save</span>
-        </button>
+        <app-formfield-submit
+          [formGroup]="collectionForm"
+          [observables]="[collectionSaved]"
+          (errorsOccurred)="handleFormErrors($event)"
+        ></app-formfield-submit>
       </div>
 
       <button class="m-actionBarItem" type="button" (click)="handleCancel()">
@@ -26,10 +27,13 @@ import {AbstractCreateCollectionActionbarComponent} from "./abstract-create-coll
 })
 export class CreateCollectionActionBarVerticalComponent extends AbstractCreateCollectionActionbarComponent {
 
-  cancelIcon = SvgHelper.path(SvgIcon.CANCEL)
+  @Input() collectionForm = undefined
+  @Input() collectionSaved = undefined
 
   constructor() {
     super()
   }
 
+  handleFormErrors(error: any): void {
+  }
 }

@@ -4,13 +4,13 @@ import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms"
 import {AppConfig} from "../../app.config"
 import {CollectionService} from "../service/collection.service"
-import {ActivatedRoute, Router} from "@angular/router";
-import {ApiCollection, ICollectionUpdate} from "../ApiCollection";
-import {Observable} from "rxjs";
-import {ToastService} from "../../toast/toast.service";
-import {Title} from "@angular/platform-browser";
-import {ApiNamedReference, INamedReference} from "../../richskill/ApiSkill";
-import {HasFormGroup} from "../../core/abstract-form.component";
+import {ActivatedRoute, Router} from "@angular/router"
+import {ApiCollection, ICollectionUpdate} from "../ApiCollection"
+import {Observable} from "rxjs"
+import {ToastService} from "../../toast/toast.service"
+import {Title} from "@angular/platform-browser"
+import {ApiNamedReference, INamedReference} from "../../richskill/ApiSkill"
+import {HasFormGroup} from "../../core/abstract-form.component"
 
 @Component({
   selector: "app-create-collection",
@@ -59,7 +59,7 @@ export class CollectionFormComponent implements OnInit, HasFormGroup {
 
   getFormDefinitions(): {[key: string]: AbstractControl} {
     const fields = {
-      collectionName: new FormControl(""),
+      collectionName: new FormControl("", Validators.required),
     }
     if (this.isAuthorEditable()) {
       // @ts-ignore
@@ -106,7 +106,7 @@ export class CollectionFormComponent implements OnInit, HasFormGroup {
     }
   }
 
-  handleSaved(): void {
+  onSubmit(): void {
     const updateObject = this.updateObject()
 
     if (this.collectionUuid) {
@@ -125,5 +125,8 @@ export class CollectionFormComponent implements OnInit, HasFormGroup {
 
   handleCancel(): void {
     this.loc.back()
+  }
+
+  handleFormErrors(errors: unknown): void {
   }
 }

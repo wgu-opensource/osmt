@@ -5,7 +5,7 @@ import {AppConfig} from "../../app.config"
 import {urlValidator} from "../../validators/url.validator"
 import {SearchService} from "../search.service"
 import {ApiAdvancedSearch} from "../../richskill/service/rich-skill-search.service"
-import {INamedReference} from "../../richskill/ApiSkill";
+import {ApiNamedReference, INamedReference} from "../../richskill/ApiSkill";
 
 @Component({
   selector: "app-advanced-search",
@@ -56,7 +56,7 @@ export class AdvancedSearchComponent implements OnInit {
     const form = this.skillForm.value
 
     const skillName: string = form.skillName
-    const author: INamedReference = {name: form.author}
+    const author = this.scrubReference(form.author)
     const skillStatement: string = form.skillStatement
     const category: string = form.category
     const keywords = this.tokenizeString(form.keywords)
@@ -81,6 +81,11 @@ export class AdvancedSearchComponent implements OnInit {
       ...form.alignments && { alignments },
       ...collectionName && { collectionName }
     }
+  }
+
+  scrubReference(value: string): INamedReference | undefined {
+    value = value.trim()
+    return (value.length > 0) ? {name: value} : undefined
   }
 
   prepareNamedReferences(value: string, token: string = ";"): INamedReference[] | undefined {

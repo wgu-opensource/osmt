@@ -4,7 +4,8 @@ import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/form
 import {AppConfig} from "../../app.config"
 import {urlValidator} from "../../validators/url.validator"
 import {SearchService} from "../search.service"
-import {ApiAdvancedSearch, IAdvancedSearch} from "../../richskill/service/rich-skill-search.service"
+import {ApiAdvancedSearch} from "../../richskill/service/rich-skill-search.service"
+import {ApiNamedReference, INamedReference} from "../../richskill/ApiSkill";
 
 @Component({
   selector: "app-advanced-search",
@@ -44,42 +45,60 @@ export class AdvancedSearchComponent implements OnInit {
   }
 
   handleSearchSkills(): void {
-    console.log("Searching skills...")
     this.searchService.advancedSkillSearch(this.collectFieldData())
   }
 
   handleSearchCollections(): void {
-    console.log("Searching collections...")
+    this.searchService.advancedCollectionSearch(this.collectFieldData())
   }
 
   private collectFieldData(): ApiAdvancedSearch {
-    const {
-      skillName,
-      author,
-      skillStatement,
-      category,
-      keywords,
-      standards,
-      certifications,
-      occupations,
-      employers,
-      alignments,
-      collectionName
-    } = this.skillForm.value
+    const form = this.skillForm.value
 
-    return ApiAdvancedSearch.factory({
-      skillName: skillName || undefined,
-      author: author || undefined,
-      skillStatement: skillStatement || undefined,
-      category: category || undefined,
-      keywords: keywords || undefined,
-      standards: standards || undefined,
-      certifications: certifications || undefined,
-      occupations: occupations || undefined,
-      employers: employers || undefined,
-      alignments: alignments || undefined,
-      collectionName: collectionName || undefined
-    })
+    const skillName: string = form.skillName
+    const author = this.scrubReference(form.author)
+    const skillStatement: string = form.skillStatement
+    const category: string = form.category
+    const keywords = this.tokenizeString(form.keywords)
+    const standards = this.prepareNamedReferences(form.standards)
+    const certifications = this.prepareNamedReferences(form.certifications)
+    const occupations = this.prepareNamedReferences(form.occupations)
+    const employers = this.prepareNamedReferences(form.employers)
+    const alignments = this.prepareNamedReferences(form.alignments)
+    const collectionName = form.collectionName
+
+    // if a property would be falsey, then completely omit it
+    return {
+      ...skillName && { skillName },
+      ...author && { author },
+      ...skillStatement && { skillStatement },
+      ...category && { category},
+      ...form.keywords && { keywords },
+      ...form.standards && { standards },
+      ...form.certifications && { certifications },
+      ...form.occupations && { occupations },
+      ...form.employers && { employers },
+      ...form.alignments && { alignments },
+      ...collectionName && { collectionName }
+    }
+  }
+
+  scrubReference(value: string): INamedReference | undefined {
+    value = value.trim()
+    return (value.length > 0) ? {name: value} : undefined
+  }
+
+  prepareNamedReferences(value: string, token: string = ";"): INamedReference[] | undefined {
+    return this.tokenizeString(value, token)?.map(v => ({name: v})) || undefined
+  }
+
+  // used for advance search to tokenize string fields
+  tokenizeString(value: string, token: string = ";"): string[] | undefined {
+    return value
+        .split(token)
+        .map(v => v.trim())
+        .filter(v => v.length > 0)
+      || undefined
   }
 
   showAuthor(): boolean {

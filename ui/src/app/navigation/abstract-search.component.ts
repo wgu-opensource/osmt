@@ -8,6 +8,12 @@ export class AbstractSearchComponent {
   })
 
   constructor(protected searchService: SearchService, protected route: ActivatedRoute) {
+    this.searchService.searchQuery$.subscribe(apiSearch => {
+      if (apiSearch === undefined) {
+        this.clearSearch()
+      }
+    })
+
     this.route.queryParams.subscribe(params => {
       const queryString = params.q
       if (queryString && queryString.length > 0) {
@@ -37,7 +43,9 @@ export class AbstractSearchComponent {
   }
 
   submitCollectionSearch(): boolean {
-    console.log("Search Collections", this.searchQuery)
+    if (this.searchQuery.trim().length > 0) {
+      this.searchService.simpleCollectionSearch(this.searchQuery)
+    }
     return false
   }
 

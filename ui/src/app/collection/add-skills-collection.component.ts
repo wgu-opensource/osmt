@@ -1,14 +1,20 @@
 import {Component, OnInit} from "@angular/core";
+import {Location} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ApiCollectionSummary, ApiSkillSummary} from "../richskill/ApiSkillSummary";
 import {Title} from "@angular/platform-browser";
 import {PublishStatus} from "../PublishStatus";
 import {FormControl, FormGroup} from "@angular/forms";
 import {Observable} from "rxjs";
-import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {ApiSkillSortOrder} from "../richskill/ApiSkill";
+import {
+  ApiSearch,
+  ApiSkillListUpdate,
+  PaginatedCollections,
+  PaginatedSkills
+} from "../richskill/service/rich-skill-search.service";
+import {ApiSortOrder} from "../richskill/ApiSkill";
 import {CollectionService} from "./service/collection.service";
-import {TableActionDefinition} from "../table/has-action-definitions";
+import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
 import {ToastService} from "../toast/toast.service";
 
 @Component({
@@ -31,19 +37,21 @@ export class AddSkillsCollectionComponent implements OnInit {
     return this.searchForm.get("search")?.value ?? ""
   }
 
-  columnSort: ApiSkillSortOrder = ApiSkillSortOrder.CategoryAsc
+  columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
   selectedSkills?: ApiSkillSummary[]
-  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
+  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unarchived, PublishStatus.Published])
 
   constructor(protected router: Router,
               protected titleService: Title,
               protected route: ActivatedRoute,
+              protected location: Location,
               protected collectionService: CollectionService,
               protected toastService: ToastService
   ) {
     this.selectedSkills = this.router.getCurrentNavigation()?.extras.state as ApiSkillSummary[]
     this.titleService.setTitle("Add RSDs to a Collection")
     this.uuidParam = this.route.snapshot.paramMap.get("uuid") || undefined
+
   }
 
   ngOnInit(): void {
@@ -66,7 +74,7 @@ export class AddSkillsCollectionComponent implements OnInit {
       return
     }
 
-    const apiSearch = ApiSearch.factory({query})
+    const apiSearch = new ApiSearch({query})
     this.resultsLoaded = this.collectionService.searchCollections(apiSearch, this.size, this.from, this.selectedFilters, this.columnSort)
     this.resultsLoaded.subscribe((results) => {
       this.setResults(results)
@@ -92,7 +100,7 @@ export class AddSkillsCollectionComponent implements OnInit {
     this.loadNextPage()
   }
 
-  handleHeaderColumnSort(sort: ApiSkillSortOrder): void {
+  handleHeaderColumnSort(sort: ApiSortOrder): void {
     this.columnSort = sort
     this.from = 0
     this.loadNextPage()
@@ -100,7 +108,6 @@ export class AddSkillsCollectionComponent implements OnInit {
 
   protected setResults(results: PaginatedCollections): void {
     this.results = results
-    this.selectedSkills = undefined
   }
 
   get totalCount(): number {
@@ -139,22 +146,24 @@ export class AddSkillsCollectionComponent implements OnInit {
   }
 
   private handleSelectCollection(action: TableActionDefinition, collection?: ApiCollectionSummary): boolean {
-    console.log("chose collection!", collection)
-    if (this.uuidParam === undefined) { return false }
+    if (collection?.uuid === undefined) { return false }
 
-    const apiSearch = ApiSearch.factory({uuids: this.selectedSkills?.map(it => it.uuid) })
+    const apiSearch = new ApiSearch({uuids: this.selectedSkills?.map(it => it.uuid) })
+    const update = new ApiSkillListUpdate({add: apiSearch})
 
     this.toastService.showBlockingLoader()
-    this.collectionService.addSkillsWithResult(this.uuidParam, apiSearch).subscribe(result => {
-      const message = `Added ${result.modifiedCount} skills to collection`
-      this.toastService.showToast("Success!", message)
-      this.toastService.hideBlockingLoader()
-      this.return()
+    this.collectionService.updateSkillsWithResult(collection.uuid, update).subscribe(result => {
+      if (result) {
+        const message = `Added ${result.modifiedCount} RSDs to collection`
+        this.toastService.showToast("Success!", message)
+        this.toastService.hideBlockingLoader()
+        this.return()
+      }
     })
     return false
   }
 
   private return(): void {
-
+    this.location.back()
   }
 }

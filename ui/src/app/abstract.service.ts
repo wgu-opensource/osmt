@@ -4,7 +4,7 @@ import {Observable, Subscription} from "rxjs"
 import {AuthService} from "./auth/auth-service";
 import {ApiTaskResult} from "./task/ApiTaskResult";
 import {PublishStatus} from "./PublishStatus";
-import {ApiSkillSortOrder} from "./richskill/ApiSkill";
+import {ApiSortOrder} from "./richskill/ApiSkill";
 import {ApiBatchResult} from "./richskill/ApiBatchResult";
 
 interface ApiGetParams {
@@ -113,7 +113,7 @@ export abstract class AbstractService {
     size: number | undefined,
     from: number | undefined,
     filterByStatuses?: Set<PublishStatus>,
-    sort?: ApiSkillSortOrder): any {
+    sort?: ApiSortOrder): any {
 
     const params: any = {
       sort

@@ -2,14 +2,13 @@ package edu.wgu.osmt.collection
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.db.PublishStatus
 import org.elasticsearch.common.Nullable
 import org.springframework.data.annotation.Id
-import org.springframework.data.elasticsearch.annotations.Document
-import org.springframework.data.elasticsearch.annotations.Field
+import org.springframework.data.elasticsearch.annotations.*
 import org.springframework.data.elasticsearch.annotations.FieldType.*
-import org.springframework.data.elasticsearch.annotations.InnerField
-import org.springframework.data.elasticsearch.annotations.MultiField
+import java.time.LocalDateTime
 
 /**
  * Elasticsearch representation of a Collection.
@@ -36,6 +35,7 @@ data class CollectionDoc(
     val name: String,
 
     @Field(type = Keyword)
+    @get:JsonProperty("status")
     val publishStatus: PublishStatus,
 
     @Field(type = Keyword)
@@ -50,5 +50,13 @@ data class CollectionDoc(
     @Field(type = Search_As_You_Type)
     @Nullable
     @get:JsonIgnore
-    val author: String?
+    val author: String?,
+
+    @Field(type = Date, format = DateFormat.date_time)
+    @get:JsonProperty("publishDate")
+    val publishDate: LocalDateTime? = null,
+
+    @Field(type = Date, format = DateFormat.date_time)
+    @get:JsonProperty("archiveDate")
+    val archiveDate: LocalDateTime? = null
 )

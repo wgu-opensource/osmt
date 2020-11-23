@@ -113,7 +113,7 @@ class SearchController @Autowired constructor(
             .body(searchHits.map { it.content }.toList())
     }
 
-    @GetMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun collectionSkills(
         uriComponentsBuilder: UriComponentsBuilder,

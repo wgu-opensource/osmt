@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core"
 import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {Observable} from "rxjs"
-import {ApiSkill, ApiSkillSortOrder, ISkill} from "../ApiSkill"
+import {ApiSkill, ApiSortOrder, ISkill} from "../ApiSkill"
 import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate"
@@ -10,7 +10,7 @@ import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service"
 import {PublishStatus} from "../../PublishStatus"
 import {ApiBatchResult} from "../ApiBatchResult"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
-import {ApiSkillSummary, IApiSkillSummary} from "../ApiSkillSummary"
+import {ApiSkillSummary} from "../ApiSkillSummary"
 
 
 @Injectable({
@@ -28,18 +28,18 @@ export class RichSkillService extends AbstractService {
     size: number = 50,
     from: number = 0,
     filterByStatuses: Set<PublishStatus> | undefined,
-    sort: ApiSkillSortOrder | undefined,
+    sort: ApiSortOrder | undefined,
   ): Observable<PaginatedSkills> {
 
     const params = this.buildTableParams(size, from, filterByStatuses, sort)
-    return this.get<IApiSkillSummary[]>({
+    return this.get<ApiSkillSummary[]>({
       path: `${this.serviceUrl}`,
       params,
     })
       .pipe(share())
       .pipe(map(({body, headers}) => {
         return new PaginatedSkills(
-          body?.map(skill => new ApiSkillSummary(skill)) || [],
+          body?.map(skill => skill) || [],
           Number(headers.get("X-Total-Count"))
       )
       }))
@@ -77,7 +77,7 @@ export class RichSkillService extends AbstractService {
 
   getSkillJsonByUuid(uuid: string): Observable<string> {
     if (!uuid) {
-      throw new Error("No uuid provided for single skill csv export")
+      throw new Error("No uuid provided for single skill json export")
     }
     const errorMsg = `Could not find skill by uuid [${uuid}]`
 
@@ -118,16 +118,16 @@ export class RichSkillService extends AbstractService {
 
   searchSkills(
     apiSearch: ApiSearch,
-    size: number | undefined,
-    from: number | undefined,
+    size?: number,
+    from?: number,
     filterByStatuses?: Set<PublishStatus>,
-    sort?: ApiSkillSortOrder,
+    sort?: ApiSortOrder,
   ): Observable<PaginatedSkills> {
     const errorMsg = `Failed to unwrap response for skill search`
 
     const params = this.buildTableParams(size, from, filterByStatuses, sort)
 
-    return this.post<IApiSkillSummary[]>({
+    return this.post<ApiSkillSummary[]>({
       path: "api/search/skills",
       params,
       body: apiSearch,
@@ -135,7 +135,7 @@ export class RichSkillService extends AbstractService {
       .pipe(share())
       .pipe(map(({body, headers}) => {
         const totalCount = Number(headers.get("X-Total-Count"))
-        const skills = body?.map(skill => new ApiSkillSummary(skill)) || []
+        const skills = body?.map(skill => skill) || []
         return new PaginatedSkills(skills, !isNaN(totalCount) ? totalCount : skills.length)
       }))
   }

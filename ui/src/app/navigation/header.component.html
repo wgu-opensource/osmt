@@ -1,3 +1,8 @@
+<nav class="m-quickLinks" aria-labelledby="header-quicklinks">
+  <h3 class="t-visuallyHidden" id="header-quicklinks">Quick Links</h3>
+  <a (click)="handleQuicklink('content')">Skip to content</a>
+  <a (click)="handleQuicklink('commoncontrols-search')">Skip to search</a>
+</nav>
 
 <header aria-labelledby="header-header">
   <h1 class="t-visuallyHidden" id="header-header">Site Header</h1>
@@ -16,13 +21,13 @@
 
       <ul *ngIf="isAuthenticated()" class="m-navBar-x-desktopNav">
         <li>
-          <a class="m-navItem m-navItem-is-active" aria-current="page" routerLink="/skills">Skills Library</a>
+          <a class="m-navItem " [class.m-navItem-is-active]="skillsActive" aria-current="page" routerLink="/skills">Skills Library</a>
         </li>
         <li>
-          <a class="m-navItem" href="#">Collections</a>
+          <a class="m-navItem" [class.m-navItem-is-active]="collectionsActive" routerLink="/collections">Collections</a>
         </li>
         <li>
-          <a class="m-iconInteractive m-iconInteractive-alt" routerLink="/logout">
+          <a class="m-iconInteractive m-iconInteractive-onDark" routerLink="/logout">
             <span class="t-visuallyHidden">Icon Interactive</span>
             <span class="m-iconInteractive-x-icon">
               <svg class="t-icon" aria-hidden="true">

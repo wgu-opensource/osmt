@@ -1,23 +1,13 @@
-import {Component, Input, OnInit} from "@angular/core";
-import {ApiCollectionSummary} from "../richskill/ApiSkillSummary";
-import {TableActionDefinition} from "../table/has-action-definitions";
-import {SvgHelper, SvgIcon} from "../core/SvgHelper";
+import {Component, Input} from "@angular/core";
+import {ICollectionSummary} from "../richskill/ApiSkillSummary";
+import {AbstractTableComponent} from "../table/abstract-table.component";
 
 @Component({
   selector: "app-collection-table",
   templateUrl: "./collection-table.component.html"
 })
-export class CollectionTableComponent implements OnInit {
+export class CollectionTableComponent extends AbstractTableComponent<ICollectionSummary> {
 
-  @Input() collections: ApiCollectionSummary[] = []
-  @Input() rowActions: TableActionDefinition[] = []
-
-  checkIcon = SvgHelper.path(SvgIcon.CHECK)
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
+  @Input() allowSorting = false
 
 }

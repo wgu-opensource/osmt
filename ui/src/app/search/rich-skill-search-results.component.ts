@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {SearchService} from "./search.service";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, NavigationStart, Router} from "@angular/router";
 import {ToastService} from "../toast/toast.service";
 import {SkillsListComponent} from "../richskill/list/skills-list.component";
 import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
@@ -29,6 +29,11 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 ) {
     super(router, richSkillService, toastService)
     this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
+    router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        this.searchService.clearSearch()
+      }
+    })
   }
 
   ngOnInit(): void {
@@ -38,17 +43,17 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
       this.route.queryParams.subscribe(params => {
         const query = params.q
         if (query && query.length > 0) {
-          this.handleNewSearch(ApiSearch.factory({query}))
+          this.handleNewSearch(new ApiSearch({query}))
         }
       })
     }
   }
 
-  private handleNewSearch(apiSearch: ApiSearch): void {
+  private handleNewSearch(apiSearch?: ApiSearch): void {
     this.apiSearch = apiSearch
-    if (this.apiSearch.query !== undefined) {
+    if (this.apiSearch?.query !== undefined) {
       this.matchingQuery = [this.apiSearch.query]
-    } else if (this.apiSearch.advanced !== undefined) {
+    } else if (this.apiSearch?.advanced !== undefined) {
       this.matchingQuery = Object.getOwnPropertyNames(this.apiSearch?.advanced).map((k) => {
         const a: any = this.apiSearch?.advanced
         return a !== undefined ? a[k] : undefined

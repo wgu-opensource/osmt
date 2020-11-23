@@ -2,18 +2,21 @@ import {Router} from "@angular/router"
 import {RichSkillService} from "../../../service/rich-skill.service"
 import {ToastService} from "../../../../toast/toast.service"
 import {formatDate} from "@angular/common"
-import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
+import {Component, Inject, Input, LOCALE_ID, OnInit} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {saveAs} from "file-saver"
 
-@Component({template: ""})
-export abstract class PublicRichSkillActionBarComponent implements OnInit {
+@Component({
+  selector: "app-abstract-public-rich-skill-action-bar",
+  template: ``
+})
+export class PublicRichSkillActionBarComponent implements OnInit {
 
-  abstract skillUuid: string
-  abstract skillName: string
-  abstract skillUrl: string
+  @Input() skillUuid = ""
+  @Input() skillName = ""
+  @Input() skillUrl = ""
 
-  abstract jsonClipboard: string
+  jsonClipboard = ""
 
   duplicateIcon = SvgHelper.path(SvgIcon.DUPLICATE)
   downloadIcon = SvgHelper.path(SvgIcon.DOWNLOAD)
@@ -23,7 +26,7 @@ export abstract class PublicRichSkillActionBarComponent implements OnInit {
     protected router: Router,
     protected richSkillService: RichSkillService,
     protected toastService: ToastService,
-    @Inject(LOCALE_ID) private locale: string
+    @Inject(LOCALE_ID) protected locale: string
   ) {
   }
 
@@ -33,10 +36,10 @@ export abstract class PublicRichSkillActionBarComponent implements OnInit {
   }
 
   onCopyURL(fullPath: HTMLTextAreaElement): void {
-    console.log(`copying ${fullPath.textContent}`)
     fullPath.select()
     document.execCommand("copy")
     fullPath.setSelectionRange(0, 0)
+    this.toastService.showToast("Success!", "URL copied to clipboard")
   }
 
   onDownloadCsv(): void {
@@ -53,11 +56,10 @@ export abstract class PublicRichSkillActionBarComponent implements OnInit {
     this.richSkillService.getSkillJsonByUuid(this.skillUuid)
       .subscribe((json: string) => {
         this.jsonClipboard = json
-        console.log(`copying ${skillJson.textContent}`)
         skillJson.select()
         document.execCommand("copy")
         skillJson.setSelectionRange(0, 0)
-        this.toastService.showToast("Copied", "JSON was successfully copied to the clipboard")
+        this.toastService.showToast("Success!", "JSON copied to clipboard")
       })
   }
 }

@@ -1,14 +1,9 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {OccupationsFormatter} from "../../job-codes/Jobcode"
-import {IApiSkillSummary} from "../ApiSkillSummary"
+import {ApiSkillSummary} from "../ApiSkillSummary"
 import {PublishStatus} from "../../PublishStatus"
-import {TableActionDefinition} from "../../table/has-action-definitions"
-
-export interface SkillWithMetadata {
-  skill: IApiSkillSummary,
-  selected: boolean
-}
+import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -17,11 +12,12 @@ export interface SkillWithMetadata {
 })
 export class SkillListRowComponent implements OnInit {
 
-  @Input() skill: IApiSkillSummary | null = null
+  @Input() skill: ApiSkillSummary | null = null
   @Input() isSelected = false
   @Input() id = ""
+  @Input() nextId = ""
 
-  @Output() rowSelected = new EventEmitter<IApiSkillSummary>()
+  @Output() rowSelected = new EventEmitter<ApiSkillSummary>()
 
   @Input() rowActions: TableActionDefinition[] = []
 
@@ -61,11 +57,20 @@ export class SkillListRowComponent implements OnInit {
   }
 
   isPublished(): boolean {
-    return this.isStatus(PublishStatus.Published) || this.isArchived()
+    return this.isStatus(PublishStatus.Published)
   }
 
   isArchived(): boolean {
     return this.isStatus(PublishStatus.Archived)
   }
 
+  handleClickNext(): boolean {
+    if (!this.nextId) { return false }
+    const target = document.getElementById(this.nextId) as HTMLElement
+    if (!target) { return false }
+
+    target.focus()
+    target.scrollIntoView()
+    return false
+  }
 }

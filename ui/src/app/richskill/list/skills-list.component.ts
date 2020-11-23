@@ -1,41 +1,48 @@
 import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service";
-import {ApiSkillSummary, IApiSkillSummary} from "../ApiSkillSummary";
+import {ApiSkillSummary} from "../ApiSkillSummary";
 import {PublishStatus} from "../../PublishStatus";
-import {TableActionDefinition} from "../../table/has-action-definitions";
-import {Component} from "@angular/core";
+import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
+import {Component, ElementRef, EventEmitter, ViewChild} from "@angular/core";
 import {Observable} from "rxjs";
 import {ApiBatchResult} from "../ApiBatchResult";
 import {RichSkillService} from "../service/rich-skill.service";
 import {ToastService} from "../../toast/toast.service";
-import {ApiSkillSortOrder} from "../ApiSkill";
+import {ApiSortOrder} from "../ApiSkill";
 import {Router} from "@angular/router";
+import {QuickLinksHelper} from "../../core/quick-links-helper";
 
 
 @Component({
   selector: "app-skills-list",
   templateUrl: "./skills-list.component.html"
 })
-export class SkillsListComponent {
+export class SkillsListComponent extends QuickLinksHelper {
 
   from = 0
   size = 50
 
+  @ViewChild("titleHeading") titleElement!: ElementRef
+
+
   resultsLoaded: Observable<PaginatedSkills> | undefined
   results: PaginatedSkills | undefined
 
-  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unpublished, PublishStatus.Published])
-  selectedSkills?: IApiSkillSummary[]
+  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unarchived, PublishStatus.Published])
+  selectedSkills?: ApiSkillSummary[]
   skillsSaved?: Observable<ApiBatchResult>
 
-  columnSort: ApiSkillSortOrder = ApiSkillSortOrder.CategoryAsc
+  columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
 
   showSearchEmptyMessage = false
   showLibraryEmptyMessage = false
+
+  showAddToCollection = true
 
   constructor(protected router: Router,
               protected richSkillService: RichSkillService,
               protected toastService: ToastService
   ) {
+    super()
   }
 
   // "abstract" methods to be implemented by a "subclas"
@@ -91,34 +98,44 @@ export class SkillsListComponent {
   }
 
   actionsVisible(): boolean {
-    return (this.selectedSkills?.length ?? 0) > 0
+    return true
+    // return (this.selectedSkills?.length ?? 0) > 0
   }
 
   publishVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.status === PublishStatus.Unpublished
+      return skill.publishDate === undefined
+    } else if ((this.selectedSkills?.length ?? 0) === 0) {
+      return false
     } else {
-      const unpublishedSkill = this.selectedSkills?.find(s => s.status === PublishStatus.Unpublished)
+      const unpublishedSkill = this.selectedSkills?.find(s => s.publishDate === undefined)
       return unpublishedSkill !== undefined
     }
   }
   archiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.status === PublishStatus.Published
+      return skill.status !== PublishStatus.Archived
+    } else if ((this.selectedSkills?.length ?? 0) === 0) {
+      return false
     } else {
-      const unarchivedSkills = this.selectedSkills?.find(s => s.status === PublishStatus.Published)
+      const unarchivedSkills = this.selectedSkills?.find(s => s.status !== PublishStatus.Archived)
       return unarchivedSkills !== undefined
     }
   }
   unarchiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.status === PublishStatus.Archived
+      return skill.status !== PublishStatus.Unarchived
+    } else if ((this.selectedSkills?.length ?? 0) === 0) {
+      return false
     } else {
       const archivedSkill = this.selectedSkills?.find(s => s.status === PublishStatus.Archived)
       return archivedSkill !== undefined
     }
   }
 
+  addToCollectionVisible(skill?: ApiSkillSummary): boolean {
+    return ((this.selectedSkills?.length ?? 0) > 0)
+  }
 
   handleFiltersChanged(newFilters: Set<PublishStatus>): void {
     this.selectedFilters = newFilters
@@ -129,11 +146,11 @@ export class SkillsListComponent {
     this.navigateToPage(newPageNo)
   }
 
-  handleNewSelection(selectedSkills: IApiSkillSummary[]): void {
+  handleNewSelection(selectedSkills: ApiSkillSummary[]): void {
     this.selectedSkills = selectedSkills
   }
 
-  handleHeaderColumnSort(sort: ApiSkillSortOrder): void {
+  handleHeaderColumnSort(sort: ApiSortOrder): void {
     this.columnSort = sort
     this.from = 0
     this.loadNextPage()
@@ -141,36 +158,45 @@ export class SkillsListComponent {
 
 
   rowActions(): TableActionDefinition[] {
-    return [
+    const actions = [
       new TableActionDefinition({
-        label: "Archive skill",
+        label: "Archive RSD",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickArchive(action, skill),
         visible: (skill?: ApiSkillSummary) => this.archiveVisible(skill)
       }),
       new TableActionDefinition({
-        label: "Unarchive skill",
+        label: "Unarchive RSD",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickUnarchive(action, skill),
         visible: (skill?: ApiSkillSummary) => this.unarchiveVisible(skill)
       }),
       new TableActionDefinition({
-        label: "Publish skill",
+        label: "Publish RSD",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickPublish(action, skill),
         visible: (skill?: ApiSkillSummary) => this.publishVisible(skill)
       }),
-      new TableActionDefinition({
+    ]
+    if (this.showAddToCollection) {
+      actions.push(new TableActionDefinition({
         label: "Add to Collection",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
-      }),
-    ]
+      }))
+    } else {
+      actions.push(new TableActionDefinition({
+        label: "Remove from Collection",
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickRemoveCollection(action, skill),
+      }))
+    }
+    return actions
   }
 
   tableActions(): TableActionDefinition[] {
-    return [
+    const actions = [
       new TableActionDefinition({
         label: "Back to Top",
         icon: "up",
         offset: true,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickBackToTop(action, skill),
+        visible: (skill?: ApiSkillSummary) => true
       }),
 
       new TableActionDefinition({
@@ -193,18 +219,32 @@ export class SkillsListComponent {
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickUnarchive(action, skill),
         visible: (skill?: ApiSkillSummary) => this.unarchiveVisible(skill)
       }),
+    ]
 
-      new TableActionDefinition({
+    if (this.showAddToCollection) {
+      actions.push(new TableActionDefinition({
         label: "Add to Collection",
         icon: "collection",
         primary: true,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
-      }),
-    ]
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
+      }))
+    } else {
+      actions.push(new TableActionDefinition({
+        label: "Remove from Collection",
+        icon: "dismiss",
+        primary: true,
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickRemoveCollection(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
+      }))
+    }
+
+    return actions
 
   }
 
-  private handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+  protected handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    this.focusAndScrollIntoView(this.titleElement.nativeElement)
     return false
   }
 
@@ -215,20 +255,27 @@ export class SkillsListComponent {
     return false
   }
 
+  private handleClickRemoveCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    this.removeFromCollection(skill)
+    return false
+  }
+
   private handleClickUnarchive(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    this.submitStatusChange(PublishStatus.Published, "Un-archived", skill)
+    this.submitStatusChange(PublishStatus.Published, "unarchived", skill)
     return false
   }
 
   private handleClickArchive(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    this.submitStatusChange(PublishStatus.Archived, "Archived", skill)
+    if (confirm(`Check that the selected RSDs aren't included in any published collections, then click "OK" to archive them.`)) {
+      this.submitStatusChange(PublishStatus.Archived, "archived", skill)
+    }
     return false
   }
 
   private handleClickPublish(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
     const plural = (this.selectedUuids(skill)?.length ?? 0) > 1 ? "these RSDs" : "this RSD"
-    if (confirm(`Are you sure you want to publish ${plural}?`)) {
-      this.submitStatusChange(PublishStatus.Published, "Published", skill)
+    if (confirm(`Are you sure you want to publish ${plural}?\nOnce published, an RSD can't be unpublished.`)) {
+      this.submitStatusChange(PublishStatus.Published, "published", skill)
     }
     return false
   }
@@ -242,12 +289,12 @@ export class SkillsListComponent {
 
   getApiSearch(skill?: ApiSkillSummary): ApiSearch | undefined {
     if (skill !== undefined) {
-      return ApiSearch.factory({uuids: [skill.uuid]})
+      return new ApiSearch({uuids: [skill.uuid]})
     }
 
     const selected = this.selectedUuids(skill)
     if (selected !== undefined) {
-      return ApiSearch.factory({uuids: selected})
+      return new ApiSearch({uuids: selected})
     }
 
     return undefined
@@ -259,13 +306,12 @@ export class SkillsListComponent {
       return false
     }
 
-
     this.toastService.showBlockingLoader()
     this.skillsSaved = this.richSkillService.publishSkillsWithResult(apiSearch, newStatus, this.selectedFilters)
     this.skillsSaved.subscribe((result) => {
       if (result !== undefined) {
         const partial = (result.modifiedCount !== result.totalCount)  ? ` of ${result.totalCount}` : ""
-        const message = `${verb} ${result.modifiedCount}${partial} skill${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
+        const message = `You ${verb} ${result.modifiedCount}${partial} RSD${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
         this.toastService.showToast("Success!", message)
         this.toastService.hideBlockingLoader()
         this.loadNextPage()
@@ -276,5 +322,12 @@ export class SkillsListComponent {
 
   getSelectAllCount(): number {
     return this.curPageCount
+  }
+
+  getSelectAllEnabled(): boolean {
+    return true
+  }
+
+  removeFromCollection(skill?: ApiSkillSummary): void {
   }
 }

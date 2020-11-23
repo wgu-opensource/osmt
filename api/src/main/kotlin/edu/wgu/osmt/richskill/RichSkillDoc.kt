@@ -13,6 +13,7 @@ import org.elasticsearch.index.VersionType
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.*
 import org.springframework.data.elasticsearch.annotations.FieldType.*
+import java.time.LocalDateTime
 
 
 /**
@@ -97,7 +98,15 @@ data class RichSkillDoc(
 
     @Field(type = Nested)
     @get:JsonIgnore
-    val collections: List<CollectionDoc> = listOf()
+    val collections: List<CollectionDoc> = listOf(),
+
+    @Field(type = Date, format = DateFormat.date_time)
+    @get:JsonProperty("publishDate")
+    val publishDate: LocalDateTime? = null,
+
+    @Field(type = Date, format = DateFormat.date_time)
+    @get:JsonProperty("archiveDate")
+    val archiveDate: LocalDateTime? = null
 ) {
     @Field(type = Keyword)
     @get:JsonIgnore
@@ -134,7 +143,9 @@ data class RichSkillDoc(
                     .mapNotNull { it.value },
                 employers = dao.keywords.filter { it.type == KeywordTypeEnum.Employer }.mapNotNull { it.value },
                 alignments = dao.keywords.filter { it.type == KeywordTypeEnum.Alignment }.mapNotNull { it.value },
-                collections = dao.collections.map { it.toDoc(embedded = true) }
+                collections = dao.collections.map { it.toDoc(embedded = true) },
+                publishDate = dao.publishDate,
+                archiveDate = dao.archiveDate
             )
         }
     }

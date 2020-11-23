@@ -4,8 +4,8 @@
     <th class="t-hidden-tabletMax" scope="col">
       <app-label-with-filter
         label="Category"
-        [sortAscending]="getCategorySort()"
-        (sortChanged)="sortColumn('category', $event)"
+        [sortAscending]="getNameSort()"
+        (sortChanged)="sortColumn('name', $event)"
       ></app-label-with-filter>
     </th>
 
@@ -13,16 +13,16 @@
       <app-label-with-filter
         label="Rich Skill Descriptor"
         [sortAscending]="getSkillSort()"
-        (sortChanged)="sortColumn('name', $event)"
+        (sortChanged)="sortColumn('skill', $event)"
       ></app-label-with-filter>
     </th>
 
     <th class="m-tableHeader-x-actions" scope="col">
       <!--{{render '@m-tablelabel&#45;&#45;with-choice'}}-->
       <div class="m-tableLabel">
-        <label class="m-tableLabel-x-text" for="checkbox">Action ({{getSelectAllCount()}})</label>
+        <label class="m-tableLabel-x-text" for="checkbox">Select <ng-template [ngIf]="selectAllEnabled">All ({{getSelectAllCount()}})</ng-template></label>
 
-        <div class="m-tableLabel-x-control">
+        <div class="m-tableLabel-x-control" *ngIf="selectAllEnabled">
           <div class="m-checkbox">
             <input type="checkbox" id="checkbox" name="checkbox" (change)="handleSelectAll($event)">
             <div class="m-checkbox-x-icon">
@@ -40,14 +40,15 @@
 
   <tbody>
     <tr
-      *ngFor="let skill of preparedSkills; let i=index"
+      *ngFor="let skill of items; let i=index"
       id="table-row-{{i}}"
       class="m-tableRow"
-      [class.m-tableRow-is-selected]="skill.selected"
+      [class.m-tableRow-is-selected]="isSelected(skill)"
 
       app-skill-list-row
-      [skill]="skill.skill"
-      [isSelected]="skill.selected"
+      nextId="table-row-{{i+1}}-name"
+      [skill]="skill"
+      [isSelected]="isSelected(skill)"
       [rowActions]="rowActions"
       (rowSelected)="onRowToggle($event)"
     ></tr>

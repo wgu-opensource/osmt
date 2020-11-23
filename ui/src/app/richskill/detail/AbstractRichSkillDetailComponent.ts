@@ -6,9 +6,10 @@ import {IDetailCardSectionData} from "../../detail-card/section/section.componen
 import {formatDate} from "@angular/common"
 import {Observable} from "rxjs"
 import {PublishStatus} from "../../PublishStatus"
+import {QuickLinksHelper} from "../../core/quick-links-helper";
 
 @Component({template: ""})
-export abstract class AbstractRichSkillDetailComponent implements OnInit {
+export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper implements OnInit {
 
   uuidParam: string | null
   richSkill: ApiSkill | null = null
@@ -21,15 +22,20 @@ export abstract class AbstractRichSkillDetailComponent implements OnInit {
     protected route: ActivatedRoute,
     @Inject(LOCALE_ID) protected locale: string
   ) {
+    super()
     this.uuidParam = this.route.snapshot.paramMap.get("uuid")
   }
 
   ngOnInit(): void {
-    this.skillLoaded = this.richSkillService.getSkillByUUID(this.uuidParam ?? "")
-    this.skillLoaded.subscribe(skill => { this.richSkill = skill })
+    this.loadSkill()
   }
 
   abstract getCardFormat(): IDetailCardSectionData[]
+
+  loadSkill(): void {
+    this.skillLoaded = this.richSkillService.getSkillByUUID(this.uuidParam ?? "")
+    this.skillLoaded.subscribe(skill => { this.richSkill = skill })
+  }
 
   getAuthor(): string {
     return this.richSkill?.author?.name ?? ""
@@ -43,7 +49,7 @@ export abstract class AbstractRichSkillDetailComponent implements OnInit {
     return this.richSkill?.skillName ?? ""
   }
   getPublishStatus(): PublishStatus {
-    return this.richSkill?.status ?? PublishStatus.Unpublished
+    return this.richSkill?.status ?? PublishStatus.Unarchived
   }
 
   getSkillUrl(): string {

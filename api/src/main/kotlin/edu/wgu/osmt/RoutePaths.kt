@@ -13,8 +13,10 @@ object RoutePaths {
 
     const val COLLECTIONS_PATH = "/api/collections"
     const val COLLECTION_LIST = COLLECTIONS_PATH
+    const val COLLECTION_PUBLISH = "$COLLECTIONS_PATH/publish"
     const val COLLECTION_DETAIL = "${COLLECTIONS_PATH}/{uuid}"
     const val COLLECTION_UPDATE = "${COLLECTION_DETAIL}/update"
+    const val COLLECTION_SKILLS_UPDATE = "${COLLECTION_DETAIL}/updateSkills"
     const val COLLECTION_SKILLS = "${COLLECTION_DETAIL}/skills"
 
     const val TASKS_PATH = "/api/tasks"

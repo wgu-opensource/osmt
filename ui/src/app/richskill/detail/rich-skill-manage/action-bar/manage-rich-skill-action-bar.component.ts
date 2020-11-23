@@ -1,9 +1,10 @@
 import {Router} from "@angular/router"
 import {RichSkillService} from "../../../service/rich-skill.service"
 import {ToastService} from "../../../../toast/toast.service"
-import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
+import {Component, EventEmitter, Inject, LOCALE_ID, OnInit} from "@angular/core"
 import {AppConfig} from "../../../../app.config"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
+import {PublishStatus} from "../../../../PublishStatus"
 
 @Component({template: ""})
 export abstract class ManageRichSkillActionBarComponent implements OnInit {
@@ -12,6 +13,8 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   abstract skillName: string
   abstract archived: string | undefined
   abstract published: string | undefined
+
+  abstract reloadSkill: EventEmitter<void>
 
   // Used in invisible labels to house the data to be added to clipboard
   abstract href: string
@@ -36,7 +39,6 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
     this.href = `${AppConfig.settings.baseApiUrl}${this.router.url}`
     this.richSkillService.getSkillJsonByUuid(this.skillUuid)
       .subscribe( (json: string) => {
-        console.log("got response: " + json )
         this.jsonClipboard = json
       })
   }
@@ -53,7 +55,41 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
     return this.isPublished() ? "../" : "" // TODO Implement
   }
 
-   private isPublished(): boolean {
+  private isPublished(): boolean {
     return !!this.published
-   }
+  }
+
+  handleArchive(): void {
+    this.toastService.showBlockingLoader()
+    this.richSkillService.updateSkill(this.skillUuid, {
+      status: PublishStatus.Archived
+    }).subscribe(() => {
+      this.reloadSkill.emit()
+      this.toastService.hideBlockingLoader()
+    })
+  }
+
+  handleUnarchive(): void {
+    this.toastService.showBlockingLoader()
+    this.richSkillService.updateSkill(this.skillUuid, {
+      status: PublishStatus.Unarchived
+    }).subscribe(() => {
+      this.reloadSkill.emit()
+      this.toastService.hideBlockingLoader()
+    })
+  }
+
+  handlePublish(): void {
+    if (!this.published) {
+      this.toastService.showBlockingLoader()
+      this.richSkillService.updateSkill(this.skillUuid, {
+        status: PublishStatus.Published
+      }).subscribe(() => {
+        this.reloadSkill.emit()
+        this.toastService.hideBlockingLoader()
+      })
+    } else {
+      this.router.navigate([`skills/${this.skillUuid}`])
+    }
+  }
 }

@@ -4,7 +4,7 @@ import {ActivatedRoute} from "@angular/router"
 import {AbstractRichSkillDetailComponent} from "../AbstractRichSkillDetailComponent"
 import {IDetailCardSectionData} from "../../../detail-card/section/section.component"
 import {OccupationsFormatter} from "../../../job-codes/Jobcode"
-import {Title} from "@angular/platform-browser";
+import {Title} from "@angular/platform-browser"
 
 @Component({
   selector: "app-rich-skill-manage",
@@ -58,7 +58,11 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
       {
         label: "Alignment",
         bodyHtml: this.richSkill?.alignments
-          ?.map(alignment => `<a class="t-link" target="_blank" href="${alignment.id}">${alignment.name}</a>`)
+          ?.map(alignment => {
+            return (alignment.id)
+              ? `<a class="t-link" target="_blank" href="${alignment.id}">${alignment.name || alignment.id}</a>`
+              : `${alignment.name}`
+          })
           ?.join("") ?? "",
         showIfEmpty: true
       },

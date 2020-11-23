@@ -46,8 +46,12 @@ export class FormFieldSubmit implements OnInit {
   ngOnInit(): void {
   }
 
+  isEnabled(): boolean {
+    return (this.formGroup.touched || !this.formGroup.pristine) && this.formGroup.valid
+  }
+
   isDisabled(): boolean {
-    return !this.formGroup.touched || !this.formGroup.valid || this.formGroup.pristine
+    return !this.isEnabled()
   }
 
   isProcessing(): boolean {

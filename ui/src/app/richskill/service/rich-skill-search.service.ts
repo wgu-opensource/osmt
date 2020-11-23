@@ -3,63 +3,66 @@ import {AbstractService} from "../../abstract.service"
 import {AuthService} from "../../auth/auth-service"
 import {HttpClient} from "@angular/common/http"
 import {Observable} from "rxjs"
-import {ApiSkill, ISkill} from "../ApiSkill"
+import {ApiSkill, INamedReference, ISkill} from "../ApiSkill"
 import {map} from "rxjs/operators"
-import {ApiCollectionSummary, IApiSkillSummary, ICollectionSummary} from "../ApiSkillSummary"
+import {ApiCollectionSummary, ApiSkillSummary, ICollectionSummary} from "../ApiSkillSummary"
 
 export interface ISearch {
-  query: string | undefined
-  advanced: IAdvancedSearch | undefined
-  uuids: [] | undefined
-}
-
-export interface IAdvancedSearch {
-  skillName: string | undefined
-  collectionName: string | undefined
-  category: string | undefined
-  skillStatement: string | undefined
-  keywords: [] | undefined
-  occupations: [] | undefined
-  standards: []| undefined
-  certifications: [] | undefined
-  employers: [] | undefined
-  alignments: [] | undefined
-  author: string | undefined
+  query?: string
+  advanced?: ApiAdvancedSearch
+  uuids?: string[]
 }
 
 export class ApiSearch implements ISearch {
-  query: string | undefined
-  advanced: IAdvancedSearch | undefined
-  uuids: [] | undefined
+  query?: string
+  advanced?: ApiAdvancedSearch
+  uuids?: string[]
 
-  static factory(options: object): ApiSearch {
-    return Object.assign(new ApiSearch(), options)
+  constructor({query, advanced, uuids}: ISearch) {
+    this.query = query
+    this.advanced = advanced
+    this.uuids = uuids
   }
+
 }
 
-export class ApiAdvancedSearch implements IAdvancedSearch {
-  skillName: string | undefined
-  collectionName: string | undefined
-  category: string | undefined
-  skillStatement: string | undefined
-  keywords: [] | undefined
-  occupations: [] | undefined
-  standards: []| undefined
-  certifications: [] | undefined
-  employers: [] | undefined
-  alignments: [] | undefined
-  author: string | undefined // TODO Doesn't exist yet in api
+export class ApiAdvancedSearch {
+  skillName?: string
+  collectionName?: string
+  category?: string
+  skillStatement?: string
+  keywords?: string[]
+  occupations?: INamedReference[]
+  standards?: INamedReference[]
+  certifications?: INamedReference[]
+  employers?: INamedReference[]
+  alignments?: INamedReference[]
+  author?: INamedReference
 
-  static factory(options: object): ApiAdvancedSearch {
+  static factory(options: ApiAdvancedSearch): ApiAdvancedSearch {
     return Object.assign(new ApiAdvancedSearch(), options)
   }
 }
 
+export interface ISkillListUpdate {
+  add?: ApiSearch
+  remove?: ApiSearch
+}
+export class ApiSkillListUpdate implements ISkillListUpdate {
+  add?: ApiSearch
+  remove?: ApiSearch
+
+  constructor({add, remove}: ISkillListUpdate) {
+    this.add = add
+    this.remove = remove
+  }
+
+}
 
 export class PaginatedSkills {
   totalCount = 0
-  skills: IApiSkillSummary[] = []
-  constructor(skills: IApiSkillSummary[], totalCount: number) {
+  skills: ApiSkillSummary[] = []
+  constructor(skills: ApiSkillSummary[], totalCount: number) {
     this.skills = skills
     this.totalCount = totalCount
   }
@@ -103,7 +106,6 @@ export class RichSkillSearchService extends AbstractService {
       body: searchBody
     })
       .pipe(map(({body}) => {
-        console.log(body)
         return this.safeUnwrapBody(body, errorMsg).map(s => new ApiSkill(s))
       }))
   }

@@ -10,7 +10,7 @@ export class CardDetailTitleComponent implements OnInit {
   @Input() cardType = ""
   @Input() title = ""
   @Input() author = ""
-  @Input() status: PublishStatus = PublishStatus.Unpublished
+  @Input() status: PublishStatus = PublishStatus.Unarchived
   @Input() publishDate = ""
   @Input() archiveDate = ""
 

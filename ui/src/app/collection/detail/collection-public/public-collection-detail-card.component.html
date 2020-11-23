@@ -1,0 +1,16 @@
+<div class="m-skillBackground m-skillBackground-detail m-skillBackground-collection l-skillBackground">
+  <div class="t-margin-extraSmall t-margin-bottom">
+    <div class="m-sectionLabel">Collection</div>
+  </div>
+
+  <h2 class="t-type-heading1 t-margin-extraSmall t-margin-bottom" tabindex="0">{{collectionName}}</h2>
+
+  <div class="t-margin-extraSmall t-margin-bottom">
+    <app-status-bar
+      [status]="status"
+      [archiveDate]="archiveDate"
+      [publishDate]="publishDate"
+    ></app-status-bar>
+  </div>
+  <p *ngIf="showSkillCount" class="t-type-body">{{totalSkills}} RSDs in this collection. Viewing {{indexOfFirstSkill+1}}-{{indexOfLastSkill}}.</p>
+</div>

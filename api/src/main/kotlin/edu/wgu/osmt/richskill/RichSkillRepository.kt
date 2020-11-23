@@ -21,8 +21,7 @@ import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.task.PublishSkillsTask
-import org.jetbrains.exposed.sql.Query
+import edu.wgu.osmt.task.PublishTask
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
@@ -47,7 +46,7 @@ interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
     fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String): RichSkillDescriptorDao?
     fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject
 
-    fun changeStatusesForTask(task: PublishSkillsTask): ApiBatchResult
+    fun changeStatusesForTask(task: PublishTask): ApiBatchResult
 }
 
 @Repository
@@ -78,20 +77,9 @@ class RichSkillRepositoryImpl @Autowired constructor(
     fun applyUpdate(rsdDao: RichSkillDescriptorDao, updateObject: RsdUpdateObject): Unit {
         rsdDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
         when (updateObject.publishStatus) {
-            PublishStatus.Archived -> {
-                if (rsdDao.publishDate != null) {
-                    rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-                }
-            }
-            PublishStatus.Published -> {
-                if (rsdDao.archiveDate != null) {
-                    rsdDao.archiveDate = null // unarchive
-                } else {
-                    rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
-                }
-            }
-            PublishStatus.Unpublished -> {
-            } // non-op
+            PublishStatus.Published -> rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Archived -> rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Unarchived -> rsdDao.archiveDate = null
         }
         updateObject.name?.let { rsdDao.name = it }
         updateObject.statement?.let { rsdDao.statement = it }
@@ -341,11 +329,11 @@ class RichSkillRepositoryImpl @Autowired constructor(
         )
     }
 
-    override fun changeStatusesForTask(publishSkillsTask: PublishSkillsTask): ApiBatchResult {
+    override fun changeStatusesForTask(publishTask: PublishTask): ApiBatchResult {
         var modifiedCount = 0
         var totalCount = 0
 
-        val publish_skill = {skillDao: RichSkillDescriptorDao, task: PublishSkillsTask ->
+        val publish_skill = {skillDao: RichSkillDescriptorDao, task: PublishTask ->
             val oldStatus = skillDao.publishStatus()
             if (oldStatus != task.publishStatus) {
                 val updateObj = RsdUpdateObject(id = skillDao.id.value, publishStatus = task.publishStatus)
@@ -358,21 +346,21 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         val handle_skill_dao = {skillDao: RichSkillDescriptorDao? ->
             skillDao?.let {
-                if (publish_skill(it, publishSkillsTask)) {
+                if (publish_skill(it, publishTask)) {
                     modifiedCount += 1
                 }
             }
         }
 
-        if (!publishSkillsTask.search.uuids.isNullOrEmpty()) {
-            totalCount = publishSkillsTask.search.uuids.size
-            publishSkillsTask.search.uuids.forEach { uuid ->
+        if (!publishTask.search.uuids.isNullOrEmpty()) {
+            totalCount = publishTask.search.uuids.size
+            publishTask.search.uuids.forEach { uuid ->
                 handle_skill_dao(this.findByUUID(uuid))
             }
         } else {
             val searchHits = searchService.searchRichSkillsByApiSearch(
-                publishSkillsTask.search,
-                publishSkillsTask.filterByStatus,
+                publishTask.search,
+                publishTask.filterByStatus,
                 Pageable.unpaged()
             )
             totalCount = searchHits.totalHits.toInt()

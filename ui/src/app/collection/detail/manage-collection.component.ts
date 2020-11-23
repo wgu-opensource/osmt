@@ -99,18 +99,29 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   }
 
   actionDefinitions(): TableActionDefinition[] {
-    return [
+    const actions = [
       new TableActionDefinition({
         label: "Edit Collection Name",
         icon: this.editIcon,
         callback: () => this.editAction()
-      }),
-      new TableActionDefinition({
-        label: "Publish Collection ",
+      })
+    ]
+
+    if (this.collection?.publishDate) {
+      actions.push(new TableActionDefinition({
+        label: "View Published Collection",
+        icon: this.publishIcon,
+        callback: () => this.viewPublishedAction(),
+      }))
+    } else {
+      actions.push(new TableActionDefinition({
+        label: "Publish Collection",
         icon: this.publishIcon,
         callback: () => this.publishAction(),
-        visible: () => this.collection?.status !== PublishStatus.Published
-      }),
+      }))
+    }
+
+    actions.push(
       new TableActionDefinition({
         label: "Archive Collection ",
         icon: this.archiveIcon,
@@ -128,12 +139,19 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       //   icon: this.addIcon,
       //   callback: () => this.addSkillsAction(),
       // }),
-    ]
+    )
+    return actions
   }
 
   editAction(): void {
     this.router.navigate([`/collections/${this.uuidParam}/edit`])
   }
+
+  viewPublishedAction(): void {
+    const url = `/collections/${this.uuidParam}`
+    window.open(url, "_blank")
+  }
+
 
   publishAction(): void {
     if (this.uuidParam === undefined) { return }

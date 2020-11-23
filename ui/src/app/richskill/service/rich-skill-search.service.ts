@@ -37,7 +37,7 @@ export class ApiAdvancedSearch {
   certifications?: INamedReference[]
   employers?: INamedReference[]
   alignments?: INamedReference[]
-  author?: string  // TODO Doesn't exist yet in api
+  author?: INamedReference
 
   static factory(options: ApiAdvancedSearch): ApiAdvancedSearch {
     return Object.assign(new ApiAdvancedSearch(), options)

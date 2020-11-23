@@ -56,15 +56,15 @@ export class AdvancedSearchComponent implements OnInit {
     const form = this.skillForm.value
 
     const skillName: string = form.skillName
-    const author: string = form.author
+    const author: INamedReference = {name: form.author}
     const skillStatement: string = form.skillStatement
     const category: string = form.category
     const keywords = this.tokenizeString(form.keywords)
     const standards = this.prepareNamedReferences(form.standards)
     const certifications = this.prepareNamedReferences(form.certifications)
-    const occupations = this.prepareNamedReferences(form.certifications)
-    const employers = this.prepareNamedReferences(form.certifications)
-    const alignments = this.prepareNamedReferences(form.certifications)
+    const occupations = this.prepareNamedReferences(form.occupations)
+    const employers = this.prepareNamedReferences(form.employers)
+    const alignments = this.prepareNamedReferences(form.alignments)
     const collectionName = form.collectionName
 
     // if a property would be falsey, then completely omit it

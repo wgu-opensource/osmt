@@ -89,7 +89,8 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
         this.toastService.hideBlockingLoader()
       })
     } else {
-      this.router.navigate([`skills/${this.skillUuid}`])
+      const url = `skills/${this.skillUuid}`
+      window.open(url, "_blank")
     }
   }
 }

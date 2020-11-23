@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {forkJoin, Observable} from "rxjs";
-import {FormGroup} from "@angular/forms";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {forkJoin, Observable} from "rxjs"
+import {FormGroup} from "@angular/forms"
 
 @Component({
   selector: "app-formfield-submit",
@@ -46,8 +46,20 @@ export class FormFieldSubmit implements OnInit {
   ngOnInit(): void {
   }
 
+  /*
+  valid | pristine | touched || isEnabled
+  ------+----------+---------++----------
+  0     |  0       | 0       || false
+  0     |  0       | 1       || false
+  0     |  1       | 0       || false
+  0     |  1       | 1       || false
+  1     |  0       | 0       || false
+  1     |  0       | 1       || true <--
+  1     |  1       | 0       || false
+  1     |  1       | 1       || false
+  */
   isEnabled(): boolean {
-    return (this.formGroup.touched || !this.formGroup.pristine) && this.formGroup.valid
+    return this.formGroup.touched && !this.formGroup.pristine && this.formGroup.valid
   }
 
   isDisabled(): boolean {

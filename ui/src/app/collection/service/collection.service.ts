@@ -74,6 +74,22 @@ export class CollectionService extends AbstractService {
       .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg)))
   }
 
+  getCollectionSkillsCsv(uuid: string): Observable<ITaskResult> {
+    if (!uuid) {
+      throw new Error("Invalid collection uuid.")
+    }
+    const errorMsg = `Could not find skills using this collection [${uuid}]`
+
+    return this.get<ITaskResult>({
+      path: `${this.baseServiceUrl}/${uuid}/skills`,
+      headers: new HttpHeaders({
+        Accept: "text/csv"
+      })
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, errorMsg))))
+  }
+
   getCollectionSkills(
     collectionUuid: string,
     size?: number,

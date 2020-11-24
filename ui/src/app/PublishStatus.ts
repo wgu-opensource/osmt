@@ -1,5 +1,7 @@
 export enum PublishStatus {
   Unarchived = "Unarchived",
   Published = "Published",
-  Archived = "Archived"
+  Archived = "Archived",
+  Deleted = "Deleted",
+  Draft = "Draft"
 }

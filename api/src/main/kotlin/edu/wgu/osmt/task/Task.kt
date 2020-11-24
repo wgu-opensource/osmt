@@ -67,7 +67,7 @@ enum class AppliesToType {
 data class PublishTask(
     val appliesToType: AppliesToType = AppliesToType.Skill,
     val search: ApiSearch = ApiSearch(),
-    val filterByStatus: Set<PublishStatus> = setOf(PublishStatus.Unarchived),
+    val filterByStatus: Set<PublishStatus> = setOf(PublishStatus.Draft),
     val publishStatus: PublishStatus = PublishStatus.Published,
     val userString: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
@@ -84,7 +84,7 @@ data class PublishTask(
 data class UpdateCollectionSkillsTask(
     val collectionUuid: String = "",
     val skillListUpdate: ApiSkillListUpdate = ApiSkillListUpdate(),
-    val publishStatuses: Set<PublishStatus> = setOf(PublishStatus.Unarchived),
+    val publishStatuses: Set<PublishStatus> = setOf(PublishStatus.Draft),
     val userString: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),

@@ -1,6 +1,7 @@
 package edu.wgu.osmt.task
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
+import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.config.AppConfig
 import org.jetbrains.exposed.dao.with
 import org.slf4j.Logger
@@ -24,6 +25,9 @@ class TaskQueueHandler {
     lateinit var richSkillRepository: RichSkillRepository
 
     @Autowired
+    lateinit var collectionRepository: CollectionRepository
+
+    @Autowired
     lateinit var appConfig: AppConfig
 
     @RqueueListener(
@@ -32,7 +36,7 @@ class TaskQueueHandler {
         deadLetterQueue = TaskMessageService.deadLetters,
         concurrency = "1"
     )
-    fun csvJobProcessor(csvTask: CsvTask) {
+    fun allSkillsCsvProcessor(csvTask: CsvTask) {
         logger.info("Started processing task id: ${csvTask.uuid}")
 
         val allSkills =
@@ -45,6 +49,29 @@ class TaskQueueHandler {
             csvTask.copy(result = csvString, status = TaskStatus.Ready)
         )
 
+        logger.info("Task ${csvTask.uuid} completed")
+    }
+
+    @RqueueListener(
+        value = [TaskMessageService.skillsForCollectionCsv],
+        deadLetterQueueListenerEnabled = "true",
+        deadLetterQueue = TaskMessageService.deadLetters,
+        concurrency = "1"
+    )
+    fun csvSkillsInCollectionProcessor(csvTask: CsvTask) {
+        logger.info("Started processing task id: ${csvTask.uuid}")
+
+        // csvTask.result holds the collectionUuid when processing
+        val csv = csvTask.result
+            ?.let { collectionRepository.findByUUID(it) }
+            ?.skills
+            ?.with(RichSkillDescriptorDao::collections)
+            ?.map { RichSkillAndCollections.fromDao(it) }
+            ?.let { RichSkillCsvExport(appConfig).toCsv(it) }
+
+        taskMessageService.publishResult(
+            csvTask.copy(result = csv, status = TaskStatus.Ready)
+        )
         logger.info("Task ${csvTask.uuid} completed")
     }
 

@@ -23,8 +23,8 @@ export class FilterControlsComponent implements OnInit {
     }
     this.filtersChanged.emit(this.selectedFilters)
   }
-  onFilterChangeUnpublished(isChecked: boolean): void {
-    return this.onFilterChange(PublishStatus.Unarchived, isChecked)
+  onFilterChangeDraft(isChecked: boolean): void {
+    return this.onFilterChange(PublishStatus.Draft, isChecked)
   }
   onFilterChangePublished(isChecked: boolean): void {
     return this.onFilterChange(PublishStatus.Published, isChecked)
@@ -33,7 +33,7 @@ export class FilterControlsComponent implements OnInit {
     return this.onFilterChange(PublishStatus.Archived, isChecked)
   }
 
-  get isDraftChecked(): boolean | undefined { return this.isStatusChecked(PublishStatus.Unarchived) }
+  get isDraftChecked(): boolean | undefined { return this.isStatusChecked(PublishStatus.Draft) }
   get isPublishedChecked(): boolean | undefined { return this.isStatusChecked(PublishStatus.Published) }
   get isArchivedChecked(): boolean | undefined { return this.isStatusChecked(PublishStatus.Archived) }
   isStatusChecked(status: PublishStatus): boolean | undefined {

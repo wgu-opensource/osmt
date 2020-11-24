@@ -4,6 +4,7 @@ import {SkillsListComponent} from "../list/skills-list.component";
 import {ToastService} from "../../toast/toast.service";
 import {PaginatedSkills} from "../service/rich-skill-search.service";
 import {Router} from "@angular/router";
+import {determineFilters} from "../../PublishStatus";
 
 @Component({
   selector: "app-rich-skills-library",
@@ -31,7 +32,7 @@ export class RichSkillsLibraryComponent extends SkillsListComponent implements O
       return
     }
 
-    this.resultsLoaded = this.richSkillService.getSkills(this.size, this.from, this.selectedFilters, this.columnSort)
+    this.resultsLoaded = this.richSkillService.getSkills(this.size, this.from, determineFilters(this.selectedFilters), this.columnSort)
     this.resultsLoaded.subscribe((results) => {
       this.setResults(results)
     })

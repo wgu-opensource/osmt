@@ -69,12 +69,16 @@ export class CollectionPublicComponent implements OnInit {
     return this.collection?.uuid ?? ""
   }
 
+  get collectionName(): string {
+    return this.collection?.name ?? ""
+  }
+
   loadSkillsInCollection(): void {
     this.resultsLoaded = this.collectionService.getCollectionSkills(
       this.collectionUuid,
       this.size,
       this.from,
-      new Set<PublishStatus>([PublishStatus.Archived, PublishStatus.Unarchived, PublishStatus.Published]),
+      new Set<PublishStatus>([PublishStatus.Archived, PublishStatus.Draft, PublishStatus.Published]),
       this.columnSort
     )
     this.resultsLoaded.subscribe(skills => this.setResults(skills))

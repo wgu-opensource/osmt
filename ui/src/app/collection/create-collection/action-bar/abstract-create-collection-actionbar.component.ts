@@ -1,4 +1,4 @@
-import {Component, OnInit, Output, EventEmitter} from "@angular/core"
+import {Component, OnInit, Output, EventEmitter, Input} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
 
 @Component({
@@ -6,6 +6,9 @@ import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
   template: ""
 })
 export class AbstractCreateCollectionActionbarComponent implements OnInit {
+
+  @Input() collectionForm = undefined
+  @Input() collectionSaved = undefined
 
   @Output() saveClicked = new EventEmitter<void>()
   @Output() cancelClicked = new EventEmitter<void>()

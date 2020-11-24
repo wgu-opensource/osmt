@@ -36,31 +36,6 @@ object RichSkillDescriptorTable : LongIdTable("RichSkillDescriptor"), TableWithU
         onDelete = ReferenceOption.RESTRICT,
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
-
-    // TODO remove and rely on DAO updates
-    override fun updateBuilderApplyFromUpdateObject(
-        updateBuilder: UpdateBuilder<Number>,
-        updateObject: RsdUpdateObject
-    ) {
-        super<TableWithUpdate>.updateBuilderApplyFromUpdateObject(updateBuilder, updateObject)
-        super<PublishStatusUpdate>.updateBuilderApplyFromUpdateObject(updateBuilder, updateObject)
-        updateObject.name?.let { updateBuilder[name] = it }
-        updateObject.statement?.let { updateBuilder[statement] = it }
-        updateObject.category?.let {
-            if (it.t != null) {
-                updateBuilder[category] = EntityID<Long>(it.t.id.value!!, KeywordTable)
-            } else {
-                updateBuilder[category] = null
-            }
-        }
-        updateObject.author?.let {
-            if (it.t != null) {
-                updateBuilder[author] = EntityID<Long>(it.t.id.value!!, KeywordTable)
-            } else {
-                updateBuilder[author] = null
-            }
-        }
-    }
 }
 
 // many-to-many table for RichSkillDescriptor and JobCode relationship

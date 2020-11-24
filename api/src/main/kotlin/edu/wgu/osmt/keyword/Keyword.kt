@@ -66,16 +66,4 @@ object KeywordTable : LongIdTable("Keyword"), TableWithUpdate<KeywordUpdateObj> 
         index(true, keyword_type_enum, value)
         index(true, keyword_type_enum, uri)
     }
-
-    override fun updateBuilderApplyFromUpdateObject(
-        updateBuilder: UpdateBuilder<Number>,
-        updateObject: KeywordUpdateObj
-    ) {
-        super.updateBuilderApplyFromUpdateObject(updateBuilder, updateObject)
-        updateObject.uri?.let{
-            if (it.t == null) updateBuilder[uri] = null
-            else {updateBuilder[uri] = it.t}
-        }
-        updateObject.value?.let{ updateBuilder[value] = it }
-    }
 }

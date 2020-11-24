@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {ApiAdvancedSearch, ApiSearch, IAdvancedSearch} from "../richskill/service/rich-skill-search.service";
+import {ApiAdvancedSearch, ApiSearch} from "../richskill/service/rich-skill-search.service";
 import {Router} from "@angular/router";
 import {Subject} from "rxjs";
 

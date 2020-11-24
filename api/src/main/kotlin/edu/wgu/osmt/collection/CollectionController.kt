@@ -142,5 +142,15 @@ class CollectionController @Autowired constructor(
         return ResponseEntity.status(202).headers(responseHeaders).body(tr)
     }
 
+    @GetMapping(RoutePaths.COLLECTION_SKILLS, produces = ["text/csv"])
+    fun getSkillsForCollectionCsv(
+        @PathVariable uuid: String
+    ): HttpEntity<TaskResult> {
+        val task = CsvTask(result = uuid)
+        val responseHeaders = HttpHeaders().apply { add("Content-Type", MediaType.APPLICATION_JSON_VALUE) }
+        taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
+        val tr = TaskResult.fromTask(task)
+        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
+    }
 
 }

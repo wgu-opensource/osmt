@@ -25,16 +25,6 @@ interface TableWithInsert<T : DatabaseData> : BaseTable {
 
 interface TableWithUpdate<UpdateObjectType : UpdateObject<*>> : BaseTable {
     val updateDate: Column<LocalDateTime>
-
-    fun updateBuilderApplyFromUpdateObject(updateBuilder: UpdateBuilder<Number>, updateObject: UpdateObjectType) {
-        updateBuilder[updateDate] = LocalDateTime.now(ZoneOffset.UTC)
-    }
-}
-
-fun <T, R> T.updateFromObject(updateObject: R): Int where T: LongIdTable, T: TableWithUpdate<R>, R: UpdateObject<*> {
-    return update({ id eq updateObject.id}){
-        updateBuilderApplyFromUpdateObject(it, updateObject)
-    }
 }
 
 fun <T, R> T.insertObject(r: R): Long where T: LongIdTable, T: TableWithInsert<R>, R: DatabaseData{

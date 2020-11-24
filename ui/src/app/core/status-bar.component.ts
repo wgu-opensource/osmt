@@ -8,7 +8,7 @@ import {PublishStatus} from "../PublishStatus";
 })
 export class StatusBarComponent implements OnInit {
 
-  @Input() status: PublishStatus = PublishStatus.Unarchived
+  @Input() status: PublishStatus = PublishStatus.Draft
   @Input() publishDate = ""
   @Input() archiveDate = ""
   @Input() showDates = true

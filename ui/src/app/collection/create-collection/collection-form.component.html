@@ -1,62 +1,70 @@
-<div  class="l-stickyBar">
-  <div class="l-stickySidebar l-container">
-    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
-      <div class="m-skillBackground l-skillBackground">
-        <div class="t-margin-medium t-margin-bottom">
-          <!-- icon message goes here -->
-        </div>
-
-        <div class="t-margin-medium t-margin-bottom">
-
-          <h3 class="m-iconTitle">
-            <div class="m-iconTitle-x-icon">
-              <svg class="t-icon" aria-hidden="true">
-                <use [attr.xlink:href]="iconCollection"></use>
-              </svg>
+<ng-template [appLoadingObservables]="[collectionLoaded]">
+  <form [formGroup]="collectionForm" (ngSubmit)="onSubmit()">
+    <div  class="l-stickyBar">
+      <div class="l-stickySidebar l-container">
+        <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
+          <div class="m-skillBackground l-skillBackground">
+            <div class="t-margin-medium t-margin-bottom">
+              <!-- icon message goes here -->
             </div>
-            <div class="m-iconTitle-x-label">{{pageTitle()}}</div>
-          </h3>
 
+            <div class="t-margin-medium t-margin-bottom">
+
+              <h3 class="m-iconTitle">
+                <div class="m-iconTitle-x-icon">
+                  <svg class="t-icon" aria-hidden="true">
+                    <use [attr.xlink:href]="iconCollection"></use>
+                  </svg>
+                </div>
+                <div class="m-iconTitle-x-label">{{pageTitle()}}</div>
+              </h3>
+
+            </div>
+
+            <app-formfield-textarea
+              [control]="collectionForm.controls.collectionName"
+              name="collectionName"
+              label="New Collection Name"
+              placeholder="Health Open Skills"
+              errorMessage="Name required"
+              [required]="true"
+            ></app-formfield-textarea>
+
+            <app-formfield-text
+              *ngIf="isAuthorEditable()"
+              [control]="collectionForm.controls.author"
+
+              name="author"
+              label="Author"
+              errorMessage="Author required"
+              [required]="true"
+            ></app-formfield-text>
+
+          </div>
         </div>
 
-        <app-formfield-textarea
-          [control]="collectionForm.controls.collectionName"
-          name="collectionName"
-          label="New Collection Name"
-          placeholder="Health Open Skills"
-          [required]="true"
-        ></app-formfield-textarea>
-
-        <app-formfield-text
-          *ngIf="isAuthorEditable()"
-          [control]="collectionForm.controls.author"
-
-          name="author"
-          label="Author"
-          [required]="true"
-        ></app-formfield-text>
+        <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
+          <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
+            <!-- vertical action bar -->
+            <app-create-collection-action-bar-vertical
+              (cancelClicked)="handleCancel()"
+              [collectionSaved]="collectionSaved"
+              [collectionForm]="collectionForm"
+            ></app-create-collection-action-bar-vertical>
+          </div>
+        </div>
 
       </div>
-    </div>
 
-    <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
-      <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
-        <!-- vertical action bar -->
-        <app-create-collection-action-bar-vertical
-          (saveClicked)="handleSaved()"
+      <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
+        <!-- Horizontal action bar -->
+        <app-create-collection-action-bar-horizontal
           (cancelClicked)="handleCancel()"
-        ></app-create-collection-action-bar-vertical>
+          [collectionForm]="collectionForm"
+          [collectionSaved]="collectionSaved"
+        ></app-create-collection-action-bar-horizontal>
       </div>
+
     </div>
-
-  </div>
-
-  <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
-    <!-- Horizontal action bar -->
-    <app-create-collection-action-bar-horizontal
-      (saveClicked)="handleSaved()"
-      (cancelClicked)="handleCancel()"
-    ></app-create-collection-action-bar-horizontal>
-  </div>
-
-</div>
+  </form>
+</ng-template>

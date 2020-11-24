@@ -1,6 +1,5 @@
-import {Component} from "@angular/core"
+import {Component, Input} from "@angular/core"
 import {AbstractCreateCollectionActionbarComponent} from "./abstract-create-collection-actionbar.component"
-import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
 
 @Component({
   selector: "app-create-collection-action-bar-horizontal",
@@ -14,13 +13,12 @@ import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
         <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
       </button>
 
-      <button class="m-actionBarItemHorizontal" type="button" (click)="handleSave()">
-      <svg class="m-actionBarItemHorizontal-x-icon t-icon">
-        <use [attr.xlink:href]="checkOutlineIcon"></use>
-      </svg>
-      <span class="m-actionBarItemHorizontal-x-label">Save</span>
-      <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
-      </button>
+      <app-formfield-submit
+        [formGroup]="collectionForm"
+        [observables]="[collectionSaved]"
+        (errorsOccurred)="handleFormErrors($event)"
+        [mobileView]="true"
+      ></app-formfield-submit>
     </nav>
   `
 })
@@ -28,5 +26,8 @@ export class CreateCollectionActionBarHorizontalComponent extends AbstractCreate
 
   constructor() {
     super()
+  }
+
+  handleFormErrors(error: any): void {
   }
 }

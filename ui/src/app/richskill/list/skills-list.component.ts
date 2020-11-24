@@ -31,7 +31,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   selectedSkills?: ApiSkillSummary[]
   skillsSaved?: Observable<ApiBatchResult>
 
-  columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
+  columnSort: ApiSortOrder = ApiSortOrder.NameAsc
 
   showSearchEmptyMessage = false
   showLibraryEmptyMessage = false

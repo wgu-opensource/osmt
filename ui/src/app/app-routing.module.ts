@@ -95,6 +95,8 @@ const routes: Routes = [
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},
   {path: "collections/:uuid", component: CollectionPublicComponent},
+  {path: "api/skills/:uuid", component: RichSkillPublicComponent},
+  {path: "api/collections/:uuid", component: CollectionPublicComponent},
 
   /* AUTHENTICATION REDIRECTS */
   {path: "login", component: LoginComponent},  // redirect to oauth login

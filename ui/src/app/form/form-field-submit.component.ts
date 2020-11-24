@@ -1,21 +1,35 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {forkJoin, Observable} from "rxjs"
 import {FormGroup} from "@angular/forms"
+import {SvgHelper, SvgIcon} from "../core/SvgHelper"
 
 @Component({
   selector: "app-formfield-submit",
   templateUrl: "./form-field-submit.component.html"
 })
 export class FormFieldSubmit implements OnInit {
+
+  @Input() mobileView = false
+
   @Input() label = "Save"
   @Input() formGroup: FormGroup = new FormGroup({})
 
   @Output() errorsOccurred = new EventEmitter()
 
+  checkOutlineIcon = SvgHelper.path(SvgIcon.CHECK_OUTLINE)
+
   private _processing = false
 
   private _observables: Array<Observable<unknown>> = []
   @Input() set observables(value: Array<Observable<unknown>>) {
+    const noObservables = value
+      .filter(v => !!v)
+      .length <= 0
+
+    if (noObservables) {
+      return
+    }
+
     this._observables = value.filter(o => o !== null)
     if (this._observables.length > 0) {
       this._processing = true

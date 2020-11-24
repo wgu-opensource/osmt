@@ -51,7 +51,6 @@ import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.
 import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-horizontal-action-bar.component"
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
 import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
-import {StatusPillComponent} from "./core/status-pill.component"
 import {DotsMenuComponent} from "./table/skills-library-table/dots-menu.component"
 import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component"
 import {CollectionTableComponent} from "./collection/collection-table.component"
@@ -67,14 +66,14 @@ import {CollectionPublicHorizontalActionBarComponent} from "./collection/detail/
 import {CollectionPublicVerticalActionBarComponent} from "./collection/detail/collection-public/action-bar/vertical/collection-public-vertical-action-bar.component"
 import {CollectionPublicActionBarComponent} from "./collection/detail/collection-public/action-bar/collection-public-action-bar.component"
 import {PublicTableComponent} from "./table/public-table/public-table.component"
-import {FormDirtyGuard} from "./core/abstract-form.component";
-import {CollectionsLibraryComponent} from "./table/collections-library.component";
-import {CollectionsListComponent} from "./collection/collections-list.component";
-import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component";
+import {FormDirtyGuard} from "./core/abstract-form.component"
+import {CollectionsLibraryComponent} from "./table/collections-library.component"
+import {CollectionsListComponent} from "./collection/collections-list.component"
+import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component"
 import {PublicRichSkillActionBarComponent} from "./richskill/detail/rich-skill-public/action-bar/public-rich-skill-action-bar.component"
-import {ManageCollectionComponent} from "./collection/detail/manage-collection.component";
-import {VerticalActionBarComponent} from "./core/vertical-action-bar.component";
-import {PublishCollectionComponent} from "./collection/detail/publish-collection.component";
+import {ManageCollectionComponent} from "./collection/detail/manage-collection.component"
+import {VerticalActionBarComponent} from "./core/vertical-action-bar.component"
+import {PublishCollectionComponent} from "./collection/detail/publish-collection.component"
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -145,7 +144,6 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AdvancedSearchVerticalActionBarComponent,
     AdvancedSearchHorizontalActionBarComponent,
     AbstractAdvancedSearchActionBarComponent,
-    StatusPillComponent,
     DotsMenuComponent,
     AbstractAdvancedSearchActionBarComponent,
     CollectionFormComponent,

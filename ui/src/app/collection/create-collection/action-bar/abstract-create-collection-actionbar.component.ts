@@ -1,5 +1,6 @@
 import {Component, OnInit, Output, EventEmitter, Input} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: "app-create-collection-action-bar",
@@ -7,22 +8,22 @@ import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
 })
 export class AbstractCreateCollectionActionbarComponent implements OnInit {
 
-  @Input() collectionForm = undefined
+  @Input() collectionForm: FormControl | undefined = undefined
   @Input() collectionSaved = undefined
 
-  @Output() saveClicked = new EventEmitter<void>()
   @Output() cancelClicked = new EventEmitter<void>()
+  @Output() scrollToTopClicked = new EventEmitter<void>()
 
   checkOutlineIcon = SvgHelper.path(SvgIcon.CHECK_OUTLINE)
   cancelIcon = SvgHelper.path(SvgIcon.CANCEL)
 
   constructor() { }
 
-  ngOnInit(): void {
+  get formValid(): boolean {
+    return this.collectionForm?.valid ?? false
   }
 
-  handleSave(): void {
-    this.saveClicked.emit()
+  ngOnInit(): void {
   }
 
   handleCancel(): void {

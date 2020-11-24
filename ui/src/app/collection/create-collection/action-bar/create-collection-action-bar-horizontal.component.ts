@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core"
+import {Component} from "@angular/core"
 import {AbstractCreateCollectionActionbarComponent} from "./abstract-create-collection-actionbar.component"
 
 @Component({
@@ -19,6 +19,10 @@ import {AbstractCreateCollectionActionbarComponent} from "./abstract-create-coll
         (errorsOccurred)="handleFormErrors($event)"
         [mobileView]="true"
       ></app-formfield-submit>
+      <div class="m-quickLinks" aria-labelledby="save-quicklinks">
+        <h3 class="t-visuallyHidden" id="save-quicklinks">Quick Links</h3>
+        <a (click)="scrollToTopClicked.emit()">Back to top</a>
+      </div>
     </nav>
   `
 })

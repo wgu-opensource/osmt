@@ -10,6 +10,7 @@ import {ToastService} from "../../toast/toast.service";
 import {ApiSortOrder} from "../ApiSkill";
 import {Router} from "@angular/router";
 import {QuickLinksHelper} from "../../core/quick-links-helper";
+import {ExtrasSelectedSkillsState} from "../../collection/add-skills-collection.component";
 
 
 @Component({
@@ -249,9 +250,13 @@ export class SkillsListComponent extends QuickLinksHelper {
     return false
   }
 
-  private handleClickAddCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+  protected handleClickAddCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    const selection = this.getSelectedSkills(skill)
     this.router.navigate(["/collections/add-skills"], {
-      state: this.getSelectedSkills(skill)
+      state: {
+        selectedSkills: selection,
+        totalCount: selection?.length ?? 0
+      } as ExtrasSelectedSkillsState
     })
     return false
   }

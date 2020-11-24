@@ -108,18 +108,19 @@ export class PublishCollectionComponent implements OnInit {
   }
 
   handleClickConfirmRemove(): boolean {
-    this.skillsSaved = this.collectionService.updateSkillsWithResult(this.uuidParam!, new ApiSkillListUpdate({
-      remove: new ApiSearch({
-        advanced: ApiAdvancedSearch.factory({
-          status: PublishStatus.Archived
-        })
-      })
-    }))
-    this.skillsSaved.subscribe(result => {
-      if (!result) { return }
-
-      this.nextState()
-    })
+    // TODO
+    // this.skillsSaved = this.collectionService.updateSkillsWithResult(this.uuidParam!, new ApiSkillListUpdate({
+    //   remove: new ApiSearch({
+    //     advanced: ApiAdvancedSearch.factory({
+    //       status: PublishStatus.Archived
+    //     })
+    //   })
+    // }))
+    // this.skillsSaved.subscribe(result => {
+    //   if (!result) { return }
+    //
+    //   this.nextState()
+    // })
     return false
   }
 

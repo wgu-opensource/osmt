@@ -7,6 +7,8 @@ import {ToastService} from "../toast/toast.service";
 import {SkillsListComponent} from "../richskill/list/skills-list.component";
 import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
 import {determineFilters} from "../PublishStatus";
+import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
+import {ExtrasSelectedSkillsState} from "../collection/add-skills-collection.component";
 
 
 @Component({
@@ -85,5 +87,16 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 
   getSelectAllCount(): number {
     return this.totalCount
+  }
+
+  handleClickAddCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    this.router.navigate(["/collections/add-skills"], {
+      state: {
+        selectedSkills: this.getSelectedSkills(skill),
+        totalCount: this.totalCount,
+        search: this.apiSearch
+      } as ExtrasSelectedSkillsState
+    })
+    return false
   }
 }

@@ -5,22 +5,23 @@
     <div class="l-container l-container-mobile">
 
 <!--      {{render '@listheading'}}-->
-      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Add RSD<ng-template [ngIf]="isPlural">s</ng-template> to a Collection</h2>
+      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Add {{state.totalCount}} RSD<ng-template [ngIf]="isPlural">s</ng-template> to a Collection</h2>
 
       <ng-template [ngIf]="isPlural" [ngIfElse]="singleSkillSummary">
         <app-accordian closedLabel="View All Skills" openLabel="View Less Skills">
           <div class="m-skillBackground l-inset t-margin-small t-margin-top">
             <div class="m-content">
               <ol>
-                <li *ngFor="let skill of selectedSkills">{{skill.skillName}}</li>
+                <li *ngFor="let skill of state?.selectedSkills">{{skill.skillName}}</li>
               </ol>
+              <p *ngIf="state?.search">and {{state?.totalCount - state?.selectedSkills.length}} more...</p>
             </div>
           </div>
         </app-accordian>
       </ng-template>
 
       <ng-template #singleSkillSummary>
-        <p *ngIf="selectedSkills && selectedSkills.length > 0" class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">Skill: {{selectedSkills[0].skillName}}</p>
+        <p *ngIf="state.selectedSkills && state.selectedSkills.length > 0" class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">Skill: {{state.selectedSkills[0].skillName}}</p>
       </ng-template>
 
 <!--      {{render '@listheadingsearch'}}-->

@@ -17,6 +17,12 @@ import {CollectionService} from "./service/collection.service";
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
 import {ToastService} from "../toast/toast.service";
 
+export interface ExtrasSelectedSkillsState {
+  selectedSkills: ApiSkillSummary[]
+  totalCount: number
+  search?: ApiSearch
+}
+
 @Component({
   selector: "app-add-skills-collection",
   templateUrl: "./add-skills-collection.component.html"
@@ -37,8 +43,9 @@ export class AddSkillsCollectionComponent implements OnInit {
     return this.searchForm.get("search")?.value ?? ""
   }
 
+  state?: ExtrasSelectedSkillsState
+
   columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
-  selectedSkills?: ApiSkillSummary[]
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published])
 
   constructor(protected router: Router,
@@ -48,14 +55,14 @@ export class AddSkillsCollectionComponent implements OnInit {
               protected collectionService: CollectionService,
               protected toastService: ToastService
   ) {
-    this.selectedSkills = this.router.getCurrentNavigation()?.extras.state as ApiSkillSummary[]
+    this.state = this.router.getCurrentNavigation()?.extras.state as ExtrasSelectedSkillsState
     this.titleService.setTitle("Add RSDs to a Collection")
     this.uuidParam = this.route.snapshot.paramMap.get("uuid") || undefined
 
   }
 
   ngOnInit(): void {
-    if ((this.selectedSkills?.length ?? 0) < 1) {
+    if ((this.state?.selectedSkills?.length ?? 0) < 1) {
       this.router.navigate(["/"])
     }
   }
@@ -82,7 +89,7 @@ export class AddSkillsCollectionComponent implements OnInit {
   }
 
   get isPlural(): boolean {
-    return (this.selectedSkills?.length ?? 0) > 1
+    return (this.state?.selectedSkills?.length ?? 0) > 1
   }
 
   clearSearch(): boolean {
@@ -148,8 +155,9 @@ export class AddSkillsCollectionComponent implements OnInit {
   private handleSelectCollection(action: TableActionDefinition, collection?: ApiCollectionSummary): boolean {
     if (collection?.uuid === undefined) { return false }
 
-    const apiSearch = new ApiSearch({uuids: this.selectedSkills?.map(it => it.uuid) })
-    const update = new ApiSkillListUpdate({add: apiSearch})
+    const update = new ApiSkillListUpdate({
+      add: (this.state?.search !== undefined) ? this.state?.search : new ApiSearch({uuids: this.state?.selectedSkills?.map(it => it.uuid) })
+    })
 
     this.toastService.showBlockingLoader()
     this.collectionService.updateSkillsWithResult(collection.uuid, update).subscribe(result => {

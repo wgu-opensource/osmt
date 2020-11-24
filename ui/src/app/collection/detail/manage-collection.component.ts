@@ -37,6 +37,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   showAddToCollection = false
   showingMultipleConfirm = false
   collectionSaved?: Observable<ApiCollection>
+  selectAllChecked: boolean = false
 
   get isPlural(): boolean {
     return (this.results?.skills.length ?? 0) > 1
@@ -79,6 +80,14 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     return this.totalCount
   }
 
+  handleSelectAll(selectAllChecked: boolean): boolean {
+    this.selectAllChecked = selectAllChecked
+    return false
+  }
+
+  get selectedCount(): number {
+    return this.selectAllChecked ? this.totalCount : (this.selectedSkills?.length ?? 0)
+  }
 
   public get searchQuery(): string {
     return this.searchForm.get("search")?.value ?? ""
@@ -198,16 +207,27 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
 
   addSkillsAction(): void {}
 
-  removeFromCollection(skill?: ApiSkillSummary): void {
-    this.apiSearch = this.getApiSearch(skill)
-    if (this.uuidParam === undefined) {
-      return
+
+  getApiSearch(skill?: ApiSkillSummary): ApiSearch | undefined {
+    if (this.selectAllChecked) {
+      return new ApiSearch({
+        query: this.searchQuery
+      })
+    } else {
+      return super.getApiSearch(skill)
     }
+  }
+
+  removeFromCollection(skill?: ApiSkillSummary): void {
+    if (this.uuidParam === undefined) { return }
+
+    this.apiSearch = this.getApiSearch(skill)
 
     const first = this.getSelectedSkills(skill)?.find(it => true)
 
     const count = (this.apiSearch?.uuids?.length ?? 0)
-    if (count > 1) {
+
+    if (count > 1 || this.selectAllChecked) {
       this.showingMultipleConfirm = true
     } else {
       if (confirm(`Confirm that you want to remove the following RSD from this collection.\n${first?.skillName}`)) {
@@ -224,9 +244,11 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     this.toastService.showBlockingLoader()
     this.skillsSaved = this.collectionService.updateSkillsWithResult(this.uuidParam!, update)
     this.skillsSaved.subscribe(result => {
-      this.toastService.showToast("Success!", `You removed 1 RSD from this collection.`)
-      this.toastService.hideBlockingLoader()
-      this.loadNextPage()
+      if (result) {
+        this.toastService.showToast("Success!", `You removed ${result.modifiedCount} RSD${result.modifiedCount > 1 ? "s" : ""} from this collection.`)
+        this.toastService.hideBlockingLoader()
+        this.loadNextPage()
+      }
     })
 
   }

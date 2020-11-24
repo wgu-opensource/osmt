@@ -26,6 +26,9 @@ export class CollectionFormComponent implements OnInit, HasFormGroup {
   collectionSaved?: Observable<ApiCollection>
 
   iconCollection = SvgHelper.path(SvgIcon.COLLECTION)
+  get nameLabel(): string {
+    return this.collectionUuid ? "Collection Name" : "New Collection Name"
+  }
 
   constructor(
     private collectionService: CollectionService,

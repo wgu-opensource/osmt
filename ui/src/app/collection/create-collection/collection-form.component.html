@@ -5,10 +5,6 @@
         <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
           <div class="m-skillBackground l-skillBackground">
             <div class="t-margin-medium t-margin-bottom">
-              <!-- icon message goes here -->
-            </div>
-
-            <div class="t-margin-medium t-margin-bottom">
 
               <h3 class="m-iconTitle">
                 <div class="m-iconTitle-x-icon">
@@ -24,7 +20,7 @@
             <app-formfield-textarea
               [control]="collectionForm.controls.collectionName"
               name="collectionName"
-              label="New Collection Name"
+              [label]="nameLabel"
               placeholder="Health Open Skills"
               errorMessage="Name required"
               [required]="true"

@@ -112,7 +112,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   actionDefinitions(): TableActionDefinition[] {
     const actions = [
       new TableActionDefinition({
-        label: "Edit Collection Name",
+        label: "Edit Name and Author",
         icon: this.editIcon,
         callback: () => this.editAction()
       })

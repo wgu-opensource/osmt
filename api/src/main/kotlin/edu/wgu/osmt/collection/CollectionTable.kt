@@ -25,21 +25,7 @@ object CollectionTable: TableWithUpdate<CollectionUpdateObject>, PublishStatusUp
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
 
-    override fun updateBuilderApplyFromUpdateObject(
-        updateBuilder: UpdateBuilder<Number>,
-        updateObject: CollectionUpdateObject
-    ) {
-        super<TableWithUpdate>.updateBuilderApplyFromUpdateObject(updateBuilder, updateObject)
-        super<PublishStatusUpdate>.updateBuilderApplyFromUpdateObject(updateBuilder, updateObject)
-        updateObject.name?.let { updateBuilder[name] = it }
-        updateObject.author?.let {
-            if (it.t != null) {
-                updateBuilder[author] = EntityID<Long>(it.t.id.value!!, KeywordTable)
-            } else {
-                updateBuilder[author] = null
-            }
-        }
-    }
+
 }
 
 object CollectionSkills : Table("CollectionSkills") {

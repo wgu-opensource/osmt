@@ -127,6 +127,11 @@ class CollectionRepositoryImpl @Autowired constructor(
             PublishStatus.Archived -> collectionDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
             PublishStatus.Published -> collectionDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
             PublishStatus.Unarchived -> collectionDao.archiveDate = null
+            PublishStatus.Deleted -> {
+                if (collectionDao.publishDate == null){
+                    collectionDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+                }
+            }
         }
 
         updateObject.name?.let { collectionDao.name = it }

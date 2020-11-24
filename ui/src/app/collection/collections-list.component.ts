@@ -1,7 +1,7 @@
 import {Component} from "@angular/core"
 import {Observable} from "rxjs"
 import {ApiSearch, PaginatedCollections} from "../richskill/service/rich-skill-search.service"
-import {PublishStatus} from "../PublishStatus"
+import {checkArchived, determineFilters, PublishStatus} from "../PublishStatus"
 import {ApiCollectionSummary, ICollectionSummary} from "../richskill/ApiSkillSummary"
 import {ApiBatchResult} from "../richskill/ApiBatchResult"
 import {ApiSortOrder} from "../richskill/ApiSkill"
@@ -23,7 +23,7 @@ export class CollectionsListComponent {
   resultsLoaded: Observable<PaginatedCollections> | undefined
   results: PaginatedCollections | undefined
 
-  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unarchived, PublishStatus.Published])
+  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published])
   selectedCollections?: ICollectionSummary[]
   skillsSaved?: Observable<ApiBatchResult>
 
@@ -107,21 +107,21 @@ export class CollectionsListComponent {
   }
   archiveVisible(skill?: ApiCollectionSummary): boolean {
     if (skill !== undefined) {
-      return skill.status !== PublishStatus.Archived
+      return !checkArchived(skill)
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
-      const unarchivedSkills = this.selectedCollections?.find(s => s.status !== PublishStatus.Archived)
+      const unarchivedSkills = this.selectedCollections?.find(s => !checkArchived(s))
       return unarchivedSkills !== undefined
     }
   }
   unarchiveVisible(skill?: ApiCollectionSummary): boolean {
     if (skill !== undefined) {
-      return skill.status !== PublishStatus.Unarchived
+      return checkArchived(skill)
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
-      const archivedSkill = this.selectedCollections?.find(s => s.status === PublishStatus.Archived)
+      const archivedSkill = this.selectedCollections?.find(checkArchived)
       return archivedSkill !== undefined
     }
   }
@@ -255,7 +255,7 @@ export class CollectionsListComponent {
 
     // TODO
     this.toastService.showBlockingLoader()
-    // this.skillsSaved = this.collectionService.publishCollectionsWithResult(apiSearch, newStatus, this.selectedFilters)
+    // this.skillsSaved = this.collectionService.publishCollectionsWithResult(apiSearch, newStatus, determineFilters(this.selectedFilters))
     this.skillsSaved?.subscribe((result) => {
       if (result !== undefined) {
         const partial = (result.modifiedCount !== result.totalCount)  ? ` of ${result.totalCount}` : ""

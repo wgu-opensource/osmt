@@ -9,7 +9,7 @@ import {RichSkillService} from "../../richskill/service/rich-skill.service";
 import {FormControl, FormGroup} from "@angular/forms";
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
-import {PublishStatus} from "../../PublishStatus";
+import {determineFilters, PublishStatus} from "../../PublishStatus";
 import {ApiSkillSummary} from "../../richskill/ApiSkillSummary";
 
 @Component({
@@ -26,7 +26,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   unarchiveIcon = SvgHelper.path(SvgIcon.UNARCHIVE)
   addIcon = SvgHelper.path(SvgIcon.ADD)
 
-  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unarchived, PublishStatus.Published, PublishStatus.Archived])
+  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published, PublishStatus.Archived])
 
   searchForm = new FormGroup({
     search: new FormControl("")
@@ -66,7 +66,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       this.collection.uuid,
       this.size,
       this.from,
-      this.selectedFilters,
+      determineFilters(this.selectedFilters),
       this.columnSort,
       this.apiSearch
     )

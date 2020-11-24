@@ -4,6 +4,7 @@ import {ToastService} from "../toast/toast.service";
 import {PaginatedCollections} from "../richskill/service/rich-skill-search.service";
 import {CollectionService} from "../collection/service/collection.service";
 import {CollectionsListComponent} from "../collection/collections-list.component";
+import {determineFilters} from "../PublishStatus";
 
 @Component({
   selector: "app-collections-library",
@@ -30,7 +31,7 @@ export class CollectionsLibraryComponent extends CollectionsListComponent implem
       return
     }
 
-    this.resultsLoaded = this.collectionService.getCollections(this.size, this.from, this.selectedFilters, this.columnSort)
+    this.resultsLoaded = this.collectionService.getCollections(this.size, this.from, determineFilters(this.selectedFilters), this.columnSort)
     this.resultsLoaded.subscribe((results) => {
       this.setResults(results)
     })

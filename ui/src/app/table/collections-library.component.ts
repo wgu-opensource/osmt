@@ -11,7 +11,7 @@ import {determineFilters} from "../PublishStatus";
   templateUrl: "../collection/collections-list.component.html"
 })
 export class CollectionsLibraryComponent extends CollectionsListComponent implements OnInit {
-  title = "Collections Library"
+  title = "Collections"
 
   constructor(
     protected router: Router,

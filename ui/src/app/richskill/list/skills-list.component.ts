@@ -1,8 +1,8 @@
 import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service";
 import {ApiSkillSummary} from "../ApiSkillSummary";
-import {PublishStatus} from "../../PublishStatus";
+import {checkArchived, determineFilters, PublishStatus} from "../../PublishStatus";
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
-import {Component, ElementRef, EventEmitter, ViewChild} from "@angular/core";
+import {Component, ElementRef, ViewChild} from "@angular/core";
 import {Observable} from "rxjs";
 import {ApiBatchResult} from "../ApiBatchResult";
 import {RichSkillService} from "../service/rich-skill.service";
@@ -27,7 +27,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   resultsLoaded: Observable<PaginatedSkills> | undefined
   results: PaginatedSkills | undefined
 
-  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Unarchived, PublishStatus.Published])
+  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published])
   selectedSkills?: ApiSkillSummary[]
   skillsSaved?: Observable<ApiBatchResult>
 
@@ -114,21 +114,22 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
   archiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.status !== PublishStatus.Archived
+      return !checkArchived(skill)
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
-      const unarchivedSkills = this.selectedSkills?.find(s => s.status !== PublishStatus.Archived)
+      const unarchivedSkills = this.selectedSkills?.find(s => !checkArchived(s))
       return unarchivedSkills !== undefined
     }
   }
+
   unarchiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.status !== PublishStatus.Unarchived
+      return checkArchived(skill)
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
-      const archivedSkill = this.selectedSkills?.find(s => s.status === PublishStatus.Archived)
+      const archivedSkill = this.selectedSkills?.find(checkArchived)
       return archivedSkill !== undefined
     }
   }
@@ -307,7 +308,7 @@ export class SkillsListComponent extends QuickLinksHelper {
     }
 
     this.toastService.showBlockingLoader()
-    this.skillsSaved = this.richSkillService.publishSkillsWithResult(apiSearch, newStatus, this.selectedFilters)
+    this.skillsSaved = this.richSkillService.publishSkillsWithResult(apiSearch, newStatus, determineFilters(this.selectedFilters))
     this.skillsSaved.subscribe((result) => {
       if (result !== undefined) {
         const partial = (result.modifiedCount !== result.totalCount)  ? ` of ${result.totalCount}` : ""

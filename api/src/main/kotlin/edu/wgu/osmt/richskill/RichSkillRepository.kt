@@ -80,6 +80,11 @@ class RichSkillRepositoryImpl @Autowired constructor(
             PublishStatus.Published -> rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
             PublishStatus.Archived -> rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
             PublishStatus.Unarchived -> rsdDao.archiveDate = null
+            PublishStatus.Deleted -> {
+                if (rsdDao.publishDate == null){
+                    rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+                }
+            }
         }
         updateObject.name?.let { rsdDao.name = it }
         updateObject.statement?.let { rsdDao.statement = it }

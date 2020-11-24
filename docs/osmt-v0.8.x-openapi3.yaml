@@ -1076,9 +1076,12 @@ components:
     PublishStatus:
       type: string
       enum:
-        - Unpublished
+        - Unarchived
+        - Draft
         - Published
         - Archived
+        - Deleted
+
     SortOrder:
       type: string
       enum:

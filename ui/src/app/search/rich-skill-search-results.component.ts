@@ -6,6 +6,7 @@ import {ActivatedRoute, NavigationStart, Router} from "@angular/router";
 import {ToastService} from "../toast/toast.service";
 import {SkillsListComponent} from "../richskill/list/skills-list.component";
 import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
+import {determineFilters} from "../PublishStatus";
 
 
 @Component({
@@ -69,7 +70,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
     }
 
     if (this.apiSearch !== undefined) {
-      this.resultsLoaded = this.richSkillService.searchSkills(this.apiSearch, this.size, this.from, this.selectedFilters, this.columnSort)
+      this.resultsLoaded = this.richSkillService.searchSkills(this.apiSearch, this.size, this.from, determineFilters(this.selectedFilters), this.columnSort)
       this.resultsLoaded.subscribe(results => this.setResults(results))
     }
   }

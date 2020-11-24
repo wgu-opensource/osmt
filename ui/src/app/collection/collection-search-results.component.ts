@@ -8,6 +8,7 @@ import {ToastService} from "../toast/toast.service";
 import {SearchService} from "../search/search.service";
 import {CollectionService} from "./service/collection.service";
 import {ApiSkillSummary, ICollectionSummary} from "../richskill/ApiSkillSummary";
+import {determineFilters} from "../PublishStatus";
 
 @Component({
   selector: "app-collection-search-results",
@@ -74,7 +75,7 @@ export class CollectionSearchResultsComponent extends CollectionsListComponent i
         this.apiSearch,
         this.size,
         this.from,
-        this.selectedFilters,
+        determineFilters(this.selectedFilters),
         this.columnSort)
       this.resultsLoaded.subscribe(results => this.setResults(results))
     }

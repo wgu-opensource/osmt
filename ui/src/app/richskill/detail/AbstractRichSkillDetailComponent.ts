@@ -49,7 +49,7 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
     return this.richSkill?.skillName ?? ""
   }
   getPublishStatus(): PublishStatus {
-    return this.richSkill?.status ?? PublishStatus.Unarchived
+    return this.richSkill?.status ?? PublishStatus.Draft
   }
 
   getSkillUrl(): string {

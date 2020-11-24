@@ -182,7 +182,7 @@ export class CollectionService extends AbstractService {
 
   collectionReadyToPublish(collectionUuid: string): Observable<boolean> {
     return new Observable(observer => {
-      const filters = new Set([PublishStatus.Archived, PublishStatus.Unarchived])
+      const filters = new Set([PublishStatus.Archived, PublishStatus.Draft])
       this.getCollectionSkills(collectionUuid, 1, 0, filters).subscribe(results => {
         const isReady = results.totalCount === 0
         observer.next(isReady)

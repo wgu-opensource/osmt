@@ -2,10 +2,12 @@ import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common
 import {AppConfig} from "./app.config"
 import {Observable, Subscription} from "rxjs"
 import {AuthService} from "./auth/auth-service";
-import {ApiTaskResult} from "./task/ApiTaskResult";
+import {ApiTaskResult, ITaskResult} from "./task/ApiTaskResult";
 import {PublishStatus} from "./PublishStatus";
 import {ApiSortOrder} from "./richskill/ApiSkill";
 import {ApiBatchResult} from "./richskill/ApiBatchResult";
+import {ApiSearch} from "./richskill/service/rich-skill-search.service";
+import {map, share} from "rxjs/operators";
 
 interface ApiGetParams {
   path: string,
@@ -126,5 +128,31 @@ export abstract class AbstractService {
     if (sort !== undefined) { params.sort = sort.toString()}
 
     return params
+  }
+
+
+  bulkStatusChange(
+    path: string,
+    apiSearch: ApiSearch,
+    newStatus: PublishStatus = PublishStatus.Published,
+    filterByStatuses?: Set<PublishStatus>,
+    collectionUuid?: string
+  ): Observable<ApiTaskResult> {
+    const params: any = {
+      newStatus: newStatus.toString(),
+    }
+    if (filterByStatuses !== undefined) {
+      params.filterByStatus = Array.from(filterByStatuses).map(s => s.toString())
+    }
+    if (collectionUuid !== undefined) {
+      params.collectionUuid = collectionUuid
+    }
+    return this.post<ITaskResult>({
+      path,
+      params,
+      body: apiSearch
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }
 }

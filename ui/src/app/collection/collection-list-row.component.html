@@ -7,7 +7,12 @@
   <td>{{collection.skillCount}}</td>
 
   <td>
-    <app-status-bar [status]="collection.status"></app-status-bar>
+    <app-status-bar
+      [status]="collection.status"
+      [archiveDate]="collection.archiveDate"
+      [publishDate]="collection.publishDate"
+      [showDates]="false"
+    ></app-status-bar>
   </td>
 
   <td class="m-tableRow-x-actions">

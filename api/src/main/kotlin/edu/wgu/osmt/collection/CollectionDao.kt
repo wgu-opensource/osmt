@@ -38,18 +38,16 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
     }
 
     fun toDoc(embedded: Boolean = false): CollectionDoc {
-        return if (embedded) {
-            CollectionDoc(id.value, uuid, name, publishStatus(), null, null, author?.value, archiveDate, publishDate)
-        } else CollectionDoc(
-            id.value,
-            uuid,
-            name,
-            publishStatus(),
-            skills.map { it.uuid },
-            skills.count().toInt(),
-            author?.value,
-            archiveDate,
-            publishDate
+        return CollectionDoc(
+            id = id.value,
+            uuid = uuid,
+            name = name,
+            publishStatus = publishStatus(),
+            skillIds = if (embedded) null else skills.map { it.uuid },
+            skillCount = if (embedded) null else skills.count().toInt(),
+            author = author?.value,
+            archiveDate = archiveDate,
+            publishDate = publishDate
         )
     }
 }

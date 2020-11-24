@@ -140,32 +140,16 @@ export class RichSkillService extends AbstractService {
       }))
   }
 
-  publishSkills(
-    apiSearch: ApiSearch,
-    newStatus: PublishStatus = PublishStatus.Published,
-    filterByStatuses?: Set<PublishStatus>,
-  ): Observable<ApiTaskResult> {
-    const params: any = {
-      newStatus: newStatus.toString(),
-    }
-    if (filterByStatuses !== undefined) {
-      params.filterByStatus = Array.from(filterByStatuses).map(s => s.toString())
-    }
-    return this.post<ITaskResult>({
-      path: "api/skills/publish",
-      params,
-      body: apiSearch
-    })
-      .pipe(share())
-      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
-  }
-
   publishSkillsWithResult(
     apiSearch: ApiSearch,
     newStatus: PublishStatus = PublishStatus.Published,
     filterByStatuses?: Set<PublishStatus>,
+    collectionUuid?: string,
     pollIntervalMs: number = 1000,
   ): Observable<ApiBatchResult> {
-    return this.pollForTaskResult(this.publishSkills(apiSearch, newStatus, filterByStatuses), pollIntervalMs)
+    return this.pollForTaskResult(
+      this.bulkStatusChange("api/skills/publish", apiSearch, newStatus, filterByStatuses, collectionUuid),
+      pollIntervalMs
+    )
   }
 }

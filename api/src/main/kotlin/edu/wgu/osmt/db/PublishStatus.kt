@@ -16,7 +16,7 @@ enum class PublishStatus(val apiValue: String) {
     Draft(DRAFT);
 
     companion object {
-        const val DEFAULT_API_PUBLISH_STATUS_SET = "${UNARCHIVED},${PUBLISHED}"
+        const val DEFAULT_API_PUBLISH_STATUS_SET = "${DRAFT},${PUBLISHED}"
         val publishStatusSet = values().toSet()
 
         fun forApiValue(apiValue: String) = values().find { it.apiValue.toLowerCase() == apiValue.toLowerCase() }

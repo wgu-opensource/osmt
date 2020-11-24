@@ -25,7 +25,7 @@ export class CollectionsListComponent {
 
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published])
   selectedCollections?: ICollectionSummary[]
-  skillsSaved?: Observable<ApiBatchResult>
+  collectionsSaved?: Observable<ApiBatchResult>
 
   columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
 
@@ -250,13 +250,9 @@ export class CollectionsListComponent {
       return false
     }
 
-    console.log("TODO: submit status change", newStatus, apiSearch)
-    return false
-
-    // TODO
     this.toastService.showBlockingLoader()
-    // this.skillsSaved = this.collectionService.publishCollectionsWithResult(apiSearch, newStatus, determineFilters(this.selectedFilters))
-    this.skillsSaved?.subscribe((result) => {
+    this.collectionsSaved = this.collectionService.publishCollectionsWithResult(apiSearch, newStatus, determineFilters(this.selectedFilters))
+    this.collectionsSaved?.subscribe((result) => {
       if (result !== undefined) {
         const partial = (result.modifiedCount !== result.totalCount)  ? ` of ${result.totalCount}` : ""
         const message = `You ${verb} ${result.modifiedCount}${partial} Collection${(result.totalCount ?? 0) > 1 ? "s" : ""}.`

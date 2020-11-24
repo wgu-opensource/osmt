@@ -54,9 +54,9 @@ export class CollectionsListComponent {
 
   get collectionCountLabel(): string {
     if (this.totalCount > 0)  {
-      return `${this.totalCount} Collection${this.curPageCount > 1 ? "s" : ""}`
+      return `${this.totalCount} collection${this.curPageCount > 1 ? "s" : ""}`
     }
-    return `0 Collections`
+    return `0 collections`
   }
 
   get totalCount(): number {

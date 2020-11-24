@@ -90,7 +90,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   }
 
   public get searchQuery(): string {
-    return this.searchForm.get("search")?.value ?? ""
+    return this.searchForm.get("search")?.value.trim() ?? ""
   }
   clearSearch(): boolean {
     this.searchForm.reset()
@@ -100,17 +100,19 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     return false
   }
   handleDefaultSubmit(): boolean {
-    this.apiSearch = new ApiSearch({query: this.searchQuery})
-    this.matchingQuery = [this.searchQuery]
-    this.from = 0
-    this.loadNextPage()
+    if (this.searchQuery.length > 0) {
+      this.apiSearch = new ApiSearch({query: this.searchQuery})
+      this.matchingQuery = [this.searchQuery]
+      this.from = 0
+      this.loadNextPage()
+    }
     return false
   }
 
   actionDefinitions(): TableActionDefinition[] {
     const actions = [
       new TableActionDefinition({
-        label: "Edit Collection Name",
+        label: "Edit Name and Author",
         icon: this.editIcon,
         callback: () => this.editAction()
       })

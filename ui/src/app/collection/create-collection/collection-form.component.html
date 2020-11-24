@@ -48,18 +48,20 @@
             <!-- vertical action bar -->
             <app-create-collection-action-bar-vertical
               (cancelClicked)="handleCancel()"
+              (scrollToTopClicked)="scrollToTop()"
+              (showMissingFields)="handleClickMissingFields()"
               [collectionSaved]="collectionSaved"
               [collectionForm]="collectionForm"
             ></app-create-collection-action-bar-vertical>
           </div>
         </div>
-
       </div>
 
       <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
         <!-- Horizontal action bar -->
         <app-create-collection-action-bar-horizontal
           (cancelClicked)="handleCancel()"
+          (scrollToTopClicked)="scrollToTop()"
           [collectionForm]="collectionForm"
           [collectionSaved]="collectionSaved"
         ></app-create-collection-action-bar-horizontal>

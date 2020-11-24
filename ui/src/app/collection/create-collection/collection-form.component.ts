@@ -127,6 +127,44 @@ export class CollectionFormComponent implements OnInit, HasFormGroup {
     this.loc.back()
   }
 
-  handleFormErrors(errors: unknown): void {
+  focusFormField(fieldName: string): boolean {
+    const containerId = `formfield-container-${fieldName}`
+    const el = document.getElementById(containerId)
+    if (el) {
+      el.scrollIntoView()
+
+      const fieldId = `formfield-${fieldName}`
+      const field = document.getElementById(fieldId)
+      if (field) {
+        field.focus()
+      }
+      return true
+    }
+    return false
+  }
+
+  scrollToTop(): boolean {
+    this.focusFormField("collectionName")
+    return false
+  }
+
+  scrollToTopHidden(): boolean {
+    const form = this.collectionForm
+    if (!form) {
+      return false
+    }
+
+    return !(form.touched && !form.pristine && form.valid)
+  }
+
+  handleClickMissingFields(): boolean {
+    this.collectionForm.markAllAsTouched()
+    for (const fieldName of ["collectionName", "author"]) {
+      const control = this.collectionForm.controls[fieldName]
+      if (control && !control.valid) {
+        return this.focusFormField(fieldName)
+      }
+    }
+    return false
   }
 }

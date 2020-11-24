@@ -61,6 +61,10 @@ export class AddSkillsCollectionComponent implements OnInit {
 
   }
 
+  get addingCount(): number {
+    return this.state?.totalCount ?? 0
+  }
+
   ngOnInit(): void {
     if ((this.state?.selectedSkills?.length ?? 0) < 1) {
       this.router.navigate(["/"])
@@ -89,7 +93,7 @@ export class AddSkillsCollectionComponent implements OnInit {
   }
 
   get isPlural(): boolean {
-    return (this.state?.selectedSkills?.length ?? 0) > 1
+    return this.addingCount > 1
   }
 
   clearSearch(): boolean {

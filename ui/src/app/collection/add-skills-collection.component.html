@@ -5,7 +5,7 @@
     <div class="l-container l-container-mobile">
 
 <!--      {{render '@listheading'}}-->
-      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Add {{state.totalCount}} RSD<ng-template [ngIf]="isPlural">s</ng-template> to a Collection</h2>
+      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Add {{addingCount}} RSD<ng-template [ngIf]="isPlural">s</ng-template> to a Collection</h2>
 
       <ng-template [ngIf]="isPlural" [ngIfElse]="singleSkillSummary">
         <app-accordian closedLabel="View All Skills" openLabel="View Less Skills">

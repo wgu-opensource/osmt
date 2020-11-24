@@ -309,4 +309,26 @@ class SearchServiceTest : SpringTest(), HasDatabaseReset, HasElasticsearchReset 
         assertThat(searchResult2.searchHits.first().content.uuid).isEqualTo(skillWithKeywords.uuid)
         assertThat(searchResult3.searchHits).isEmpty()
     }
+
+    @Test
+    fun `Should allow advanced searches with lists`(){
+        val keywords = listOf("red", "orange", "yellow", "green", "blue", "indigo", "violet")
+
+        val richSkill1 = TestObjectHelpers.randomRichSkillDoc().copy(standards = keywords)
+        val richSkill2 = TestObjectHelpers.randomRichSkillDoc().copy(certifications = keywords)
+        val richSkill3 = TestObjectHelpers.randomRichSkillDoc().copy(employers = keywords)
+        val richSkill4 = TestObjectHelpers.randomRichSkillDoc().copy(alignments = keywords)
+
+        searchService.esRichSkillRepository.saveAll(listOf(richSkill1,richSkill2,richSkill3,richSkill4))
+
+        val result1 = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(standards = listOf(ApiNamedReference(name = "red"), ApiNamedReference(name = "orange")))))
+        val result2 = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(certifications = listOf(ApiNamedReference(name = "yellow"), ApiNamedReference(name = "green")))))
+        val result3 = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(employers = listOf(ApiNamedReference(name = "blue"), ApiNamedReference(name = "indigo")))))
+        val result4 = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(alignments = listOf(ApiNamedReference(name = "violet")))))
+
+        assertThat(result1.searchHits.first().content.uuid).isEqualTo(richSkill1.uuid)
+        assertThat(result2.searchHits.first().content.uuid).isEqualTo(richSkill2.uuid)
+        assertThat(result3.searchHits.first().content.uuid).isEqualTo(richSkill3.uuid)
+        assertThat(result4.searchHits.first().content.uuid).isEqualTo(richSkill4.uuid)
+    }
 }

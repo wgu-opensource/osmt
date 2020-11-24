@@ -120,33 +120,28 @@ class SearchService @Autowired constructor(
                 }
             }
 
-            standards?.let {
-                bq.must(
-                    matchBoolPrefixQuery(
-                        "${RichSkillDoc::standards.name}.${ApiNamedReference::name.name}",
-                        it.mapNotNull { it.name })
-                )
+            standards?.let { it ->
+                it.mapNotNull { it.name }.map { s ->
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::standards.name, s))
+                }
             }
-            certifications?.let {
-                bq.must(
-                    matchBoolPrefixQuery(
-                        RichSkillDoc::certifications.name,
-                        it.mapNotNull { it.name })
-                )
+
+            certifications?.let { it ->
+                it.mapNotNull { it.name }.map { s ->
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::certifications.name, s))
+                }
             }
-            employers?.let {
-                bq.must(
-                    matchBoolPrefixQuery(
-                        RichSkillDoc::employers.name,
-                        it.mapNotNull { it.name })
-                )
+
+            employers?.let { it ->
+                it.mapNotNull { it.name }.map { s ->
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::employers.name, s))
+                }
             }
-            alignments?.let {
-                bq.must(
-                    matchBoolPrefixQuery(
-                        RichSkillDoc::alignments.name,
-                        it.mapNotNull { it.name })
-                )
+
+            alignments?.let { it ->
+                it.mapNotNull { it.name }.map { s ->
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::alignments.name, s))
+                }
             }
         }
     }

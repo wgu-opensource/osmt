@@ -5,7 +5,6 @@ import {AbstractCreateCollectionActionbarComponent} from "./abstract-create-coll
   selector: "app-create-collection-action-bar-vertical",
   template: `
     <div class="l-actionBarVertical">
-
       <div class="l-actionBarVertical-x-action">
         <app-formfield-submit
           [formGroup]="collectionForm"
@@ -26,9 +25,6 @@ import {AbstractCreateCollectionActionbarComponent} from "./abstract-create-coll
   `
 })
 export class CreateCollectionActionBarVerticalComponent extends AbstractCreateCollectionActionbarComponent {
-
-  @Input() collectionForm = undefined
-  @Input() collectionSaved = undefined
 
   constructor() {
     super()

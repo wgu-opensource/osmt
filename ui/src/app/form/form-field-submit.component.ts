@@ -22,6 +22,14 @@ export class FormFieldSubmit implements OnInit {
 
   private _observables: Array<Observable<unknown>> = []
   @Input() set observables(value: Array<Observable<unknown>>) {
+    const noObservables = value
+      .filter(v => !!v)
+      .length <= 0
+
+    if (noObservables) {
+      return
+    }
+
     this._observables = value.filter(o => o !== null)
     if (this._observables.length > 0) {
       this._processing = true

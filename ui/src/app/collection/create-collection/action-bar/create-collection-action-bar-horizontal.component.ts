@@ -24,9 +24,6 @@ import {AbstractCreateCollectionActionbarComponent} from "./abstract-create-coll
 })
 export class CreateCollectionActionBarHorizontalComponent extends AbstractCreateCollectionActionbarComponent {
 
-  @Input() collectionForm = undefined
-  @Input() collectionSaved = undefined
-
   constructor() {
     super()
   }

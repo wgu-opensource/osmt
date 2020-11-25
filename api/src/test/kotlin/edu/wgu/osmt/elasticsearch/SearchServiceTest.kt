@@ -6,12 +6,9 @@ import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers
 import edu.wgu.osmt.TestObjectHelpers.keywordGenerator
-import edu.wgu.osmt.api.model.ApiAdvancedSearch
-import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.db.ListFieldUpdate
-import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.*
@@ -233,102 +230,5 @@ class SearchServiceTest : SpringTest(), HasDatabaseReset, HasElasticsearchReset 
 
         assertThat(allResultsCollectionIds).isEqualTo((skillsWCollectionIds + nonCollectionSkills).map { it.uuid }
             .toSet())
-    }
-
-    @Test
-    fun `Should match on partial word queries`(){
-        var collection = TestObjectHelpers.randomCollectionDoc().copy(name = "A collection that questions the ability to perform partial query matches")
-        val skill = TestObjectHelpers.randomRichSkillDoc().copy(name = "A skill that questions the ability to perform partial query matches", collections = listOf(collection))
-        collection = collection.copy(skillIds = listOf(skill.uuid))
-
-        var otherCollections = (1..20).map{TestObjectHelpers.randomCollectionDoc()}
-        val otherSkills = (1..100).map {TestObjectHelpers.randomRichSkillDoc().copy(collections = otherCollections)}
-        otherCollections = otherCollections.map{it.copy(skillIds = otherSkills.map{it.uuid})}
-
-
-
-        searchService.esRichSkillRepository.saveAll(listOf(skill) + otherSkills)
-        searchService.esCollectionRepository.saveAll(listOf(collection) + otherCollections)
-
-
-        val skillSearchResult = searchService.searchRichSkillsByApiSearch(ApiSearch(query = "quest"))
-        val collectionSearchResult = searchService.searchCollectionsByApiSearch(ApiSearch(query = "quest"))
-
-
-        assertThat(skillSearchResult.searchHits.first().content.uuid).isEqualTo(skill.uuid)
-        assertThat(skillSearchResult.totalHits).isEqualTo(1L)
-
-        assertThat(collectionSearchResult.searchHits.first().content.uuid).isEqualTo(collection.uuid)
-        assertThat(collectionSearchResult.totalHits).isEqualTo(1L)
-    }
-
-    @Test
-    fun `Should allow prefix searches on advanced search job codes`(){
-        (1..100).map {
-            TestObjectHelpers.randomRichSkillDoc().also {
-                searchService.esRichSkillRepository.save(it)
-                searchService.esCollectionRepository.saveAll(it.collections)
-            }
-        }
-
-        val jobCodes = listOf(
-            JobCode.create("10-9999.88").copy(id = TestObjectHelpers.elasticIdCounter)
-        )
-
-        val skillWithJobCodes = TestObjectHelpers.randomRichSkillDoc().copy(jobCodes = jobCodes).also {
-            searchService.esRichSkillRepository.save(it)
-        }
-
-        val searchResult = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(occupations = listOf(
-            ApiNamedReference(name = "10-99")
-        ))))
-
-        assertThat(searchResult.searchHits.first().content.uuid).isEqualTo(skillWithJobCodes.uuid)
-    }
-
-    @Test
-    fun `Should allow prefix searches on keywords`(){
-        (1..100).map {
-            TestObjectHelpers.randomRichSkillDoc().also {
-                searchService.esRichSkillRepository.save(it)
-                searchService.esCollectionRepository.saveAll(it.collections)
-            }
-        }
-
-        val searchingKeywords = listOf("SEL: Interpersonal Communication", "Doing", "Verbal Communication Skills")
-
-        val skillWithKeywords = TestObjectHelpers.randomRichSkillDoc().copy(searchingKeywords = searchingKeywords).also {
-            searchService.esRichSkillRepository.save(it)
-        }
-
-        val searchResult = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(keywords = listOf("doing"))))
-        val searchResult2 = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(keywords = listOf("sel"))))
-        val searchResult3 = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(keywords = listOf("nada"))))
-
-        assertThat(searchResult.searchHits.first().content.uuid).isEqualTo(skillWithKeywords.uuid)
-        assertThat(searchResult2.searchHits.first().content.uuid).isEqualTo(skillWithKeywords.uuid)
-        assertThat(searchResult3.searchHits).isEmpty()
-    }
-
-    @Test
-    fun `Should allow advanced searches with lists`(){
-        val keywords = listOf("red", "orange", "yellow", "green", "blue", "indigo", "violet")
-
-        val richSkill1 = TestObjectHelpers.randomRichSkillDoc().copy(standards = keywords)
-        val richSkill2 = TestObjectHelpers.randomRichSkillDoc().copy(certifications = keywords)
-        val richSkill3 = TestObjectHelpers.randomRichSkillDoc().copy(employers = keywords)
-        val richSkill4 = TestObjectHelpers.randomRichSkillDoc().copy(alignments = keywords)
-
-        searchService.esRichSkillRepository.saveAll(listOf(richSkill1,richSkill2,richSkill3,richSkill4))
-
-        val result1 = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(standards = listOf(ApiNamedReference(name = "red"), ApiNamedReference(name = "orange")))))
-        val result2 = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(certifications = listOf(ApiNamedReference(name = "yellow"), ApiNamedReference(name = "green")))))
-        val result3 = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(employers = listOf(ApiNamedReference(name = "blue"), ApiNamedReference(name = "indigo")))))
-        val result4 = searchService.searchRichSkillsByApiSearch(ApiSearch(advanced = ApiAdvancedSearch(alignments = listOf(ApiNamedReference(name = "violet")))))
-
-        assertThat(result1.searchHits.first().content.uuid).isEqualTo(richSkill1.uuid)
-        assertThat(result2.searchHits.first().content.uuid).isEqualTo(richSkill2.uuid)
-        assertThat(result3.searchHits.first().content.uuid).isEqualTo(richSkill3.uuid)
-        assertThat(result4.searchHits.first().content.uuid).isEqualTo(richSkill4.uuid)
     }
 }

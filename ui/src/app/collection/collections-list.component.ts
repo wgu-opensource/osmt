@@ -27,7 +27,7 @@ export class CollectionsListComponent {
   selectedCollections?: ICollectionSummary[]
   collectionsSaved?: Observable<ApiBatchResult>
 
-  columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
+  columnSort: ApiSortOrder = ApiSortOrder.NameAsc
 
   showSearchEmptyMessage = false
   showLibraryEmptyMessage = false

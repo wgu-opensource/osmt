@@ -51,7 +51,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers(HttpMethod.POST,  "/api/collections").authenticated()
             .antMatchers(HttpMethod.POST,  "/api/collections/*/update").authenticated()
             .antMatchers(HttpMethod.GET,  "/api/collections/*").authenticated()
+            //public endpoints
             .antMatchers(HttpMethod.GET,  "/api/skills/*").permitAll()
+            .antMatchers(HttpMethod.GET,  "/api/collections/*").permitAll()
+            .antMatchers(HttpMethod.GET,  "/api/collections/*/skills").permitAll()
             .antMatchers("/**").permitAll()
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
             .and().oauth2Login().successHandler(redirectToFrontend)

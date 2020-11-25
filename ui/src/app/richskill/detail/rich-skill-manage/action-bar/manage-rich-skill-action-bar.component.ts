@@ -5,6 +5,8 @@ import {Component, EventEmitter, Inject, LOCALE_ID, OnInit} from "@angular/core"
 import {AppConfig} from "../../../../app.config"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {PublishStatus} from "../../../../PublishStatus"
+import {ExtrasSelectedSkillsState} from "../../../../collection/add-skills-collection.component";
+import {ApiSkillSummary} from "../../../ApiSkillSummary";
 
 @Component({template: ""})
 export abstract class ManageRichSkillActionBarComponent implements OnInit {
@@ -44,6 +46,22 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   }
 
   onAddToCollection(): void {
+    const fakeSummary = new ApiSkillSummary({
+      id: "",
+      skillName: this.skillName,
+      skillStatement: "",
+      uuid: this.skillUuid,
+      status: PublishStatus.Draft,
+      category: "",
+      keywords: [],
+      occupations: []
+    })
+    this.router.navigate(["/collections/add-skills"], {
+      state: {
+        selectedSkills: [fakeSummary],
+        totalCount: 1
+      } as ExtrasSelectedSkillsState
+    })
 
   }
 

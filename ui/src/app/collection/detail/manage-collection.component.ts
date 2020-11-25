@@ -137,13 +137,13 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         label: "Archive Collection ",
         icon: this.archiveIcon,
         callback: () => this.archiveAction(),
-        visible: () => this.collection?.status !== PublishStatus.Archived
+        visible: () => this.collection?.status !== PublishStatus.Archived && this.collection?.status !== PublishStatus.Deleted
       }),
       new TableActionDefinition({
         label: "Un-archive Collection ",
         icon: this.unarchiveIcon,
         callback: () => this.unarchiveAction(),
-        visible: () => this.collection?.status === PublishStatus.Archived
+        visible: () => this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted
       }),
       // new TableActionDefinition({
       //   label: "Add RSDs to This Collection",

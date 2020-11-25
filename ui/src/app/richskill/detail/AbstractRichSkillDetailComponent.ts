@@ -3,10 +3,10 @@ import {RichSkillService} from "../service/rich-skill.service"
 import {ActivatedRoute} from "@angular/router"
 import {ApiSkill, INamedReference} from "../ApiSkill"
 import {IDetailCardSectionData} from "../../detail-card/section/section.component"
-import {formatDate} from "@angular/common"
 import {Observable} from "rxjs"
 import {PublishStatus} from "../../PublishStatus"
 import {QuickLinksHelper} from "../../core/quick-links-helper";
+import {dateformat} from "../../core/DateHelper";
 
 @Component({template: ""})
 export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper implements OnInit {
@@ -58,22 +58,14 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
 
   getPublishedDate(): string {
     return this.richSkill?.publishDate
-      ? this.getDateFormat(this.richSkill?.publishDate)
+      ? dateformat(this.richSkill?.publishDate, this.locale)
       : ""
   }
 
   getArchivedDate(): string {
     return this.richSkill?.archiveDate
-      ? this.getDateFormat(this.richSkill?.archiveDate)
+      ? dateformat(this.richSkill?.archiveDate, this.locale)
       : ""
-  }
-
-  getDateFormat(date?: Date): string {
-    if (date) {
-      return formatDate(date, "MMM dd yyyy", this.locale)
-    } else {
-      return ""
-    }
   }
 
   joinKeywords(): string {

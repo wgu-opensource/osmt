@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS `AuditLog`
     `entityId`      bigint(20)   NOT NULL,
     `changedFields` text         NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci AUTO_INCREMENT = 5;
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 5;
 
 --
 -- Table structure for table `JobCode`
@@ -53,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `JobCode`
     `url`          varchar(1024) DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `idx_JobCode_code` (`code`)
-) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE = InnoDB;
 
 --
 -- Table structure for table `Keyword`
@@ -71,15 +72,15 @@ CREATE TABLE IF NOT EXISTS `Keyword`
     KEY `idx_Keyword_uri` (`keyword_type_enum`, `uri`),
 
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
-
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `PublishStatus`
 (
     `id`   bigint(20)  NOT NULL,
     `name` varchar(64) NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1;
 
 --
 -- Dumping data for table `PublishStatus`
@@ -119,7 +120,8 @@ CREATE TABLE IF NOT EXISTS `RichSkillDescriptor`
     CONSTRAINT `fk_RichSkillDescriptor_cat_id_id` FOREIGN KEY (`cat_id`) REFERENCES `Keyword` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT `fk_RichSkillDescriptor_author_id_id` FOREIGN KEY (`author_id`) REFERENCES `Keyword` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT `fk_RichSkillDescriptor_publish_status_id_id` FOREIGN KEY (`publish_status_id`) REFERENCES `PublishStatus` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 3;
 
 
 --
@@ -135,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `RichSkillJobCodes`
     KEY `fk_RichSkillJobCodes_jobcode_id_id` (`jobcode_id`),
     CONSTRAINT `fk_RichSkillJobCodes_jobcode_id_id` FOREIGN KEY (`jobcode_id`) REFERENCES `JobCode` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_RichSkillJobCodes_richskill_id_id` FOREIGN KEY (`richskill_id`) REFERENCES `RichSkillDescriptor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE = InnoDB;
 
 --
 -- Table structure for table `RichSkillKeywords`
@@ -150,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `RichSkillKeywords`
     KEY `fk_RichSkillKeywords_keyword_id_id` (`keyword_id`),
     CONSTRAINT `fk_RichSkillKeywords_keyword_id_id` FOREIGN KEY (`keyword_id`) REFERENCES `Keyword` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_RichSkillKeywords_richskill_id_id` FOREIGN KEY (`richskill_id`) REFERENCES `RichSkillDescriptor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `Collection`
 (
@@ -162,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `Collection`
     `author_id`    BIGINT      NULL,
     CONSTRAINT fk_Collection_author_id_id
         FOREIGN KEY (author_id) REFERENCES Keyword (id) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS CollectionSkills
 (
@@ -171,10 +173,9 @@ CREATE TABLE IF NOT EXISTS CollectionSkills
     CONSTRAINT PK_CollectionSkills_c_rs PRIMARY KEY (collection_id, skill_id),
     CONSTRAINT fk_CollectionSkills_collection_id_id FOREIGN KEY (collection_id) REFERENCES Collection (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_CollectionSkills_skill_id_id FOREIGN KEY (skill_id) REFERENCES RichSkillDescriptor (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE = InnoDB;
 
 CALL createIndexIfNotExist('CollectionSkills', 'CollectionSkills_collection_id', 'collection_id');
 CALL createIndexIfNotExist('CollectionSkills', 'CollectionSkills_skill_id', 'skill_id');
 #CREATE INDEX CollectionSkills_collection_id ON CollectionSkills (collection_id);
 #CREATE INDEX CollectionSkills_skill_id ON CollectionSkills (skill_id);
-

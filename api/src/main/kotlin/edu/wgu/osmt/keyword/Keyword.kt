@@ -26,11 +26,10 @@ data class Keyword(
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     override val updateDate: LocalDateTime,
 
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Text)
     val type: KeywordTypeEnum,
 
     @Nullable
-    @Field(type = FieldType.Search_As_You_Type)
     val value: String? = null,
 
     @Nullable

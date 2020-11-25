@@ -40,21 +40,18 @@ data class RichSkillDoc(
 
     @MultiField(
         mainField = Field(type = Text),
-        otherFields = [
-            InnerField(suffix = "", type = Search_As_You_Type),
-            InnerField(suffix = "keyword", type = Keyword)
-        ]
+        otherFields = [InnerField(suffix = "keyword", type = Keyword)]
     )
     @get:JsonProperty("skillName")
     val name: String,
 
-    @Field(type = Search_As_You_Type)
+    @Field
     @get:JsonProperty("skillStatement")
     val statement: String,
 
     @Nullable
     @MultiField(
-        mainField = Field(type = Search_As_You_Type),
+        mainField = Field(type = Text),
         otherFields = [InnerField(suffix = "keyword", type = Keyword)]
     )
     @get:JsonProperty
@@ -62,7 +59,7 @@ data class RichSkillDoc(
 
     @Nullable
     @MultiField(
-        mainField = Field(type = Search_As_You_Type),
+        mainField = Field(type = Text),
         otherFields = [InnerField(suffix = "keyword", type = Keyword)]
     )
     @get:JsonIgnore
@@ -72,27 +69,27 @@ data class RichSkillDoc(
     @get:JsonProperty("status")
     val publishStatus: PublishStatus,
 
-    @Field(type = Search_As_You_Type)
+    @Field(type = Text)
     @get:JsonProperty("keywords")
     val searchingKeywords: List<String> = listOf(),
 
-    @Field(type = Nested)
+    @Field(type = Object)
     @get:JsonProperty("occupations")
     val jobCodes: List<JobCode> = listOf(),
 
-    @Field(type = Search_As_You_Type)
+    @Field(type = Text)
     @get:JsonIgnore
     val standards: List<String> = listOf(),
 
-    @Field(type = Search_As_You_Type)
+    @Field(type = Text)
     @get:JsonIgnore
     val certifications: List<String> = listOf(),
 
-    @Field(type = Search_As_You_Type)
+    @Field(type = Text)
     @get:JsonIgnore
     val employers: List<String> = listOf(),
 
-    @Field(type = Search_As_You_Type)
+    @Field(type = Text)
     @get:JsonIgnore
     val alignments: List<String> = listOf(),
 
@@ -108,23 +105,6 @@ data class RichSkillDoc(
     @get:JsonProperty("archiveDate")
     val archiveDate: LocalDateTime? = null
 ) {
-    @Field(type = Keyword)
-    @get:JsonIgnore
-    val majorCodes: List<String> = jobCodes.mapNotNull { it.majorCode }.distinct()
-
-    @Field(type = Keyword)
-    @get:JsonIgnore
-    val minorCodes: List<String> = jobCodes.mapNotNull { it.minorCode }.distinct()
-
-    @Field(type = Keyword)
-    @get:JsonIgnore
-    val broadCodes: List<String> = jobCodes.mapNotNull { it.broadCode }.distinct()
-
-    @Field(type = Keyword)
-    @get:JsonIgnore
-    val jobRoleCodes: List<String> = jobCodes.mapNotNull { it.jobRoleCode ?: it.code }.distinct()
-
-
     companion object {
         fun fromDao(dao: RichSkillDescriptorDao, appConfig: AppConfig): RichSkillDoc {
             return RichSkillDoc(

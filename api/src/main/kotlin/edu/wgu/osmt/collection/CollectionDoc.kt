@@ -27,10 +27,7 @@ data class CollectionDoc(
 
     @MultiField(
         mainField = Field(type = Text),
-        otherFields = [
-            InnerField(suffix = "", type = Search_As_You_Type),
-            InnerField(suffix = "keyword", type = Keyword)
-        ]
+        otherFields = [InnerField(suffix = "keyword", type = Keyword)]
     )
     val name: String,
 
@@ -47,7 +44,7 @@ data class CollectionDoc(
     @Nullable
     val skillCount: Int?,
 
-    @Field(type = Search_As_You_Type)
+    @Field
     @Nullable
     @get:JsonIgnore
     val author: String?,

@@ -32,30 +32,53 @@ class SearchService @Autowired constructor(
     fun collectionPropertiesMultiMatch(query: String): MultiMatchQueryBuilder {
         val fields = arrayOf(
             CollectionDoc::name.name,
+            "${CollectionDoc::name.name}._2gram",
+            "${CollectionDoc::name.name}._3gram",
             CollectionDoc::author.name
         )
 
-        return multiMatchQuery(query, *fields)
+        return multiMatchQuery(query, *fields).type(MultiMatchQueryBuilder.Type.BOOL_PREFIX)
     }
 
     fun richSkillPropertiesMultiMatch(query: String): MultiMatchQueryBuilder {
         val fields = arrayOf(
-            RichSkillDoc::name.name,
-            RichSkillDoc::category.name,
+            "${RichSkillDoc::name.name}",
+            "${RichSkillDoc::name.name}._2gram",
+            "${RichSkillDoc::name.name}._3gram",
             RichSkillDoc::statement.name,
+            "${RichSkillDoc::statement.name}._2gram",
+            "${RichSkillDoc::statement.name}._3gram",
+            RichSkillDoc::category.name,
+            "${RichSkillDoc::category.name}._2gram",
+            "${RichSkillDoc::category.name}._3gram",
             RichSkillDoc::searchingKeywords.name,
-            "${RichSkillDoc::jobCodes.name}.${JobCode::code.name}",
+            "${RichSkillDoc::searchingKeywords.name}._2gram",
+            "${RichSkillDoc::searchingKeywords.name}._3gram",
+            RichSkillDoc::majorCodes.name,
+            RichSkillDoc::minorCodes.name,
+            RichSkillDoc::broadCodes.name,
+            "${RichSkillDoc::jobRoleCodes.name}",
             RichSkillDoc::standards.name,
+            "${RichSkillDoc::standards.name}._2gram",
+            "${RichSkillDoc::standards.name}._3gram",
             RichSkillDoc::certifications.name,
+            "${RichSkillDoc::certifications.name}._2gram",
+            "${RichSkillDoc::certifications.name}._3gram",
             RichSkillDoc::employers.name,
+            "${RichSkillDoc::employers.name}._2gram",
+            "${RichSkillDoc::employers.name}._3gram",
             RichSkillDoc::alignments.name,
-            RichSkillDoc::author.name
+            "${RichSkillDoc::alignments.name}._2gram",
+            "${RichSkillDoc::alignments.name}._3gram",
+            RichSkillDoc::author.name,
+            "${RichSkillDoc::author.name}._2gram",
+            "${RichSkillDoc::author.name}._3gram"
         )
 
         return multiMatchQuery(
             query,
             *fields
-        )
+        ).type(MultiMatchQueryBuilder.Type.BOOL_PREFIX)
     }
 
     // Query clauses for Rich Skill properties
@@ -64,52 +87,61 @@ class SearchService @Autowired constructor(
             // boolQuery.must for logical AND
             // boolQuery.should for logical OR
 
-            skillName?.let { bq.must(matchQuery(RichSkillDoc::name.name, it)) }
-            category?.let { bq.must(matchQuery(RichSkillDoc::category.name, it)) }
-            skillStatement?.let { bq.must(matchQuery(RichSkillDoc::statement.name, it)) }
-            keywords?.let { bq.must(termsQuery(RichSkillDoc::searchingKeywords.name, it)) }
+            skillName?.let { bq.must(matchBoolPrefixQuery(RichSkillDoc::name.name, it)) }
+            category?.let { bq.must(matchBoolPrefixQuery(RichSkillDoc::category.name, it)) }
+            skillStatement?.let { bq.must(matchBoolPrefixQuery(RichSkillDoc::statement.name, it)) }
+            keywords?.map { bq.must(matchBoolPrefixQuery(RichSkillDoc::searchingKeywords.name, it)) }
 
             occupations?.let {
-                bq.must(
-                    boolQuery().should(
-                        termsQuery(
-                            "${RichSkillDoc::jobCodes.name}.${JobCode::name.name}",
-                            it.mapNotNull { it.name })
-                    ).should(
-                        termsQuery(
-                            "${RichSkillDoc::jobCodes.name}.${JobCode::code.name}",
-                            it.mapNotNull { it.name })
+                it.mapNotNull { it.name }.map { value ->
+                    bq.must(
+                        boolQuery().should(
+                            matchBoolPrefixQuery(
+                                RichSkillDoc::majorCodes.name,
+                                value
+                            )
+                        ).should(
+                            matchBoolPrefixQuery(
+                                RichSkillDoc::minorCodes.name,
+                                value
+                            )
+                        ).should(
+                            matchBoolPrefixQuery(
+                                RichSkillDoc::broadCodes.name,
+                                value
+                            )
+                        ).should(
+                            matchBoolPrefixQuery(
+                                RichSkillDoc::jobRoleCodes.name,
+                                value
+                            )
+                        )
                     )
-                )
+                }
             }
 
-            standards?.let {
-                bq.must(
-                    termsQuery(
-                        "${RichSkillDoc::standards.name}.${ApiNamedReference::name.name}",
-                        it.mapNotNull { it.name })
-                )
+            standards?.let { it ->
+                it.mapNotNull { it.name }.map { s ->
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::standards.name, s))
+                }
             }
-            certifications?.let {
-                bq.must(
-                    termsQuery(
-                        RichSkillDoc::certifications.name,
-                        it.mapNotNull { it.name })
-                )
+
+            certifications?.let { it ->
+                it.mapNotNull { it.name }.map { s ->
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::certifications.name, s))
+                }
             }
-            employers?.let {
-                bq.must(
-                    termsQuery(
-                        RichSkillDoc::employers.name,
-                        it.mapNotNull { it.name })
-                )
+
+            employers?.let { it ->
+                it.mapNotNull { it.name }.map { s ->
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::employers.name, s))
+                }
             }
-            alignments?.let {
-                bq.must(
-                    termsQuery(
-                        RichSkillDoc::alignments.name,
-                        it.mapNotNull { it.name })
-                )
+
+            alignments?.let { it ->
+                it.mapNotNull { it.name }.map { s ->
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::alignments.name, s))
+                }
             }
         }
     }
@@ -159,7 +191,15 @@ class SearchService @Autowired constructor(
                 bq.must(
                     nestedQuery(
                         RichSkillDoc::collections.name,
-                        boolQuery().must(matchQuery("collections.name", apiSearch.advanced.collectionName)),
+                        boolQuery().must(
+                            multiMatchQuery(
+                                apiSearch.advanced.collectionName, *listOf(
+                                    "collections.name",
+                                    "collections.name._2gram",
+                                    "collections.name._3gram"
+                                ).toTypedArray()
+                            ).type(MultiMatchQueryBuilder.Type.BOOL_PREFIX)
+                        ),
                         ScoreMode.Avg
                     ).innerHit(InnerHitBuilder())
                 )
@@ -255,7 +295,7 @@ class SearchService @Autowired constructor(
                     )
                 )
             }
-        } else if (!collectionId.isNullOrBlank()){
+        } else if (!collectionId.isNullOrBlank()) {
             bq.must(
                 nestedQuery(
                     RichSkillDoc::collections.name,

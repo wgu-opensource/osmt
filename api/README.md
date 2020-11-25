@@ -105,7 +105,7 @@ Note, BLS codes should be imported before O*NET codes
     ```
 
 ## Elasticsearch indexing
-After the initial import, it is necessary to run spring boot with the `reindex` profile to generate Elasticsearch documents. Where `<environment profile>` in the following examples can be `dev`,`review` or ommited for production. 
+After the initial import, it is necessary to run spring boot with the `reindex` profile to generate Elasticsearch index mappings and documents. Where `<environment profile>` in the following examples can be `dev`,`review` or omitted for production. 
 
 Via the compiled jar:
 ```
@@ -116,3 +116,12 @@ Via mvn:
 ```
 mvn -DSpring.profiles.active=<environment profile>,reindex
 ```
+
+### Reindex after changes to Elasticsearch `@Document` index classes
+If changes are made to @Document annotated classes, the indexes need to be deleted and re-indexed. 
+* Delete all of the indices in Elasticsearch by executing the following:
+    ```
+    curl -X DELETE "http://<elasticsearch host>:<elasticsearch port>/*" 
+    ``` 
+    Where `host` and `port` represent the Elasticsearch server you are targetting, e.g. `localhost:9200` 
+* Run the reindex command from above to generate the new mappings and documents

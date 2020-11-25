@@ -2,6 +2,7 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.BaseDockerizedTest
 import edu.wgu.osmt.HasDatabaseReset
+import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers.apiSkillUpdateGenerator
 import edu.wgu.osmt.TestObjectHelpers.assertThatKeywordMatchesNamedReference
@@ -17,6 +18,7 @@ import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.elasticsearch.SearchService
 import edu.wgu.osmt.task.PublishTask
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -25,13 +27,16 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Transactional
-class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseReset  {
+class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset  {
 
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository
 
     @Autowired
     lateinit var keywordRepository: KeywordRepository
+
+    @Autowired
+    override lateinit var searchService: SearchService
 
     val userString = "unittestuser"
 

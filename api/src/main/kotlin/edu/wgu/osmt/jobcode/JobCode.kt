@@ -20,32 +20,42 @@ data class JobCode(
     override val creationDate: LocalDateTime,
 
     @MultiField(
-        mainField = Field(type = FieldType.Search_As_You_Type),
-        otherFields = [InnerField(suffix = "keyword", type = FieldType.Keyword)]
+        mainField = Field(type = FieldType.Text),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)]
     )
     val major: String? = null,             // bls major category name
 
     @MultiField(
-        mainField = Field(type = FieldType.Search_As_You_Type),
-        otherFields = [InnerField(suffix = "keyword", type = FieldType.Keyword)]
+        mainField = Field(type = FieldType.Text),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)]
     )
     val minor: String? = null,             // bls minor category name
 
     @MultiField(
-        mainField = Field(type = FieldType.Search_As_You_Type),
-        otherFields = [InnerField(suffix = "keyword", type = FieldType.Keyword)]
+        mainField = Field(type = FieldType.Text),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)]
     )
     val broad: String? = null,             // bls broad category name
 
     @MultiField(
-        mainField = Field(type = FieldType.Search_As_You_Type),
-        otherFields = [InnerField(suffix = "keyword", type = FieldType.Keyword)]
+        mainField = Field(type = FieldType.Text),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)]
     )
     val detailed: String? = null,          // bls detailed (for o*net level codes -- blank for bls detailed)
 
     @MultiField(
-        mainField = Field(type = FieldType.Search_As_You_Type),
-        otherFields = [InnerField(suffix = "keyword", type = FieldType.Keyword)]
+        mainField = Field(type = FieldType.Text),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)]
     )
     val code: String,                           // bls detailed code or a o*net code: XX-XXXX or XX-XXXX.XX
 

@@ -702,7 +702,69 @@ paths:
       tags:
         - Tasks
 
+  /api/search/jobcode:
+    get:
+      tags:
+        - Search
+      summary: Search for JobCodes
+      description: Return JobCodes that match the provided query
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JobCode'
 
+
+
+  /api/search/keyword:
+    get:
+      tags:
+        - Search
+      summary: Search for keyword like objects
+      description: Return matching keywords
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+        - in: query
+          name: type
+          description: Enum value of KeywordType
+          schema:
+            $ref: '#/components/schemas/KeywordType'
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type:
+                    string
 
 components:
   securitySchemes:
@@ -1142,6 +1204,16 @@ components:
               field:
                 type: string
 
+    KeywordType:
+      type: string
+      enum:
+        - category
+        - keyword
+        - standard
+        - certification
+        - alignment
+        - employer
+        - author
 
 
 

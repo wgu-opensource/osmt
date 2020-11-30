@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from "@angular/core"
 import {ActivatedRoute, Router} from "@angular/router"
 import {RichSkillService} from "../../../richskill/service/rich-skill.service"
 import {ToastService} from "../../../toast/toast.service"
-import {ApiCollection} from "../../ApiCollection";
+import {ApiCollection} from "../../ApiCollection"
 
 @Component({
   selector: "app-collection-public-detail-card",

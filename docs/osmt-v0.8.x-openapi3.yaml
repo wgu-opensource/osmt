@@ -713,6 +713,7 @@ paths:
           name: query
           schema:
             type: string
+          required: true
       responses:
         '200':
           description: OK
@@ -743,11 +744,14 @@ paths:
           name: query
           schema:
             type: string
+          required: true
         - in: query
           name: type
           description: Enum value of KeywordType
           schema:
             $ref: '#/components/schemas/KeywordType'
+          required: true
+
       responses:
         '200':
           description: OK

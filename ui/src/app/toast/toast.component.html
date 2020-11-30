@@ -14,9 +14,16 @@
 </ng-template>
 
 <ng-template [ngIf]="loaderVisible">
-  <div class="PUI-overlay">
-    <div class="PUI-overlay-content">
-      <app-loading></app-loading>
+
+  <div class="l-loader">
+    <div class="l-loader-x-loader">
+      <div class="m-loader">
+        <div class="m-loader-x-body">
+          <div class="m-loader-x-spinner"></div>
+          <p class="m-loader-x-message">{{loaderMessage}}</p>
+        </div>
+      </div>
     </div>
   </div>
+
 </ng-template>

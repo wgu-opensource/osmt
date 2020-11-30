@@ -9,6 +9,8 @@ export class ToastComponent implements OnInit {
   message?: ToastMessage
   loaderVisible: boolean = false
 
+  get loaderMessage(): string { return "" }
+
   constructor(toastService: ToastService) {
     toastService.subject.subscribe((msg) => {
       this.message = msg

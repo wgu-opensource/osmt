@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core"
+import { Location } from "@angular/common"
 import {Whitelabelled} from "../../whitelabel"
 import {AuthService} from "../auth/auth-service"
 import {ActivatedRoute, Router} from "@angular/router"
@@ -11,7 +12,7 @@ import {AppConfig} from "../app.config"
 export class HeaderComponent extends Whitelabelled implements OnInit {
   menuExpanded: boolean = false
 
-  constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) {
+  constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, private location: Location) {
     super()
   }
 
@@ -20,6 +21,12 @@ export class HeaderComponent extends Whitelabelled implements OnInit {
 
   isAuthenticated(): boolean {
     return this.authService.isAuthenticated()
+  }
+
+  showPublicNavbar(): boolean {
+    const url = this.location.path()
+    const pattern = /(api\/)?(skills|collections)\/[^/]+$/   // exclude public canonical URL paths
+    return !this.isAuthenticated() || url.match(pattern) !== null
   }
 
   handleClickMenu(): boolean {

@@ -31,7 +31,7 @@ class CollectionController @Autowired constructor(
 ): HasAllPaginated<CollectionDoc> {
 
     override val allPaginatedPath: String = RoutePaths.COLLECTIONS_PATH
-    override val sortOrderCompanion = SkillSortEnum.Companion
+    override val sortOrderCompanion = CollectionSortEnum.Companion
 
     @GetMapping(RoutePaths.COLLECTIONS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody

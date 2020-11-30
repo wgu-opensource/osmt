@@ -40,19 +40,24 @@ data class RichSkillDoc(
 
     @MultiField(
         mainField = Field(type = Text),
-        otherFields = [InnerField(suffix = "keyword", type = Keyword)]
+        otherFields = [
+            InnerField(suffix = "", type = Search_As_You_Type),
+            InnerField(suffix = "keyword", type = Keyword)
+        ]
     )
     @get:JsonProperty("skillName")
     val name: String,
 
-    @Field
+    @Field(type = Search_As_You_Type)
     @get:JsonProperty("skillStatement")
     val statement: String,
 
     @Nullable
     @MultiField(
         mainField = Field(type = Text),
-        otherFields = [InnerField(suffix = "keyword", type = Keyword)]
+        otherFields = [
+            InnerField(suffix = "", type = Search_As_You_Type),
+            InnerField(suffix = "keyword", type = Keyword)]
     )
     @get:JsonProperty
     val category: String? = null,
@@ -60,7 +65,9 @@ data class RichSkillDoc(
     @Nullable
     @MultiField(
         mainField = Field(type = Text),
-        otherFields = [InnerField(suffix = "keyword", type = Keyword)]
+        otherFields = [
+            InnerField(suffix = "", type = Search_As_You_Type),
+            InnerField(suffix = "keyword", type = Keyword)]
     )
     @get:JsonIgnore
     val author: String? = null,
@@ -69,27 +76,27 @@ data class RichSkillDoc(
     @get:JsonProperty("status")
     val publishStatus: PublishStatus,
 
-    @Field(type = Text)
+    @Field(type = Search_As_You_Type)
     @get:JsonProperty("keywords")
     val searchingKeywords: List<String> = listOf(),
 
-    @Field(type = Object)
+    @Field(type = Nested)
     @get:JsonProperty("occupations")
     val jobCodes: List<JobCode> = listOf(),
 
-    @Field(type = Text)
+    @Field(type = Search_As_You_Type)
     @get:JsonIgnore
     val standards: List<String> = listOf(),
 
-    @Field(type = Text)
+    @Field(type = Search_As_You_Type)
     @get:JsonIgnore
     val certifications: List<String> = listOf(),
 
-    @Field(type = Text)
+    @Field(type = Search_As_You_Type)
     @get:JsonIgnore
     val employers: List<String> = listOf(),
 
-    @Field(type = Text)
+    @Field(type = Search_As_You_Type)
     @get:JsonIgnore
     val alignments: List<String> = listOf(),
 
@@ -105,6 +112,23 @@ data class RichSkillDoc(
     @get:JsonProperty("archiveDate")
     val archiveDate: LocalDateTime? = null
 ) {
+    @Field(type = Keyword)
+    @get:JsonIgnore
+    val majorCodes: List<String> = jobCodes.mapNotNull { it.majorCode }.distinct()
+
+    @Field(type = Keyword)
+    @get:JsonIgnore
+    val minorCodes: List<String> = jobCodes.mapNotNull { it.minorCode }.distinct()
+
+    @Field(type = Keyword)
+    @get:JsonIgnore
+    val broadCodes: List<String> = jobCodes.mapNotNull { it.broadCode }.distinct()
+
+    @Field(type = Keyword)
+    @get:JsonIgnore
+    val jobRoleCodes: List<String> = jobCodes.mapNotNull { it.jobRoleCode ?: it.code }.distinct()
+
+
     companion object {
         fun fromDao(dao: RichSkillDescriptorDao, appConfig: AppConfig): RichSkillDoc {
             return RichSkillDoc(

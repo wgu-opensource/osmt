@@ -43,14 +43,14 @@ Example:
 | ---                       | ---                                                     |
 | import                    | runs the batch import process, expects `--csv=` argument and `--import-type=` argument | 
 | apiserver                 | runs the api server                                     |
-| oauth2-okta               | includes required configuration for oauth2 oidc with Okta|
+| oauth2-okta               | includes required configuration for OAuth2 OIDC with Okta|
 | reindex                   | runs the Elasticsearch re-index process |
 
 For example to run the import component with a dev configuration, set active profiles by passing a JVM argument like so:
 `-Dspring-boot.run.profiles=dev,import`
 
 ### OAuth2 
-An example profile and Spring Boot components (edu.wgu.osmt.security.SecurityConfig) are provided to support oauth2 with Okta. To use a different provider, create a separate Spring Boot profile to contain the configuration. 
+An example profile and Spring Boot components (edu.wgu.osmt.security.SecurityConfig) are provided to support OAuth2 with Okta. To use a different provider, create a separate Spring Boot profile to contain the configuration.  
 Additional Spring Boot components may also be required to support the chosen provider.
 
 #### Okta configuration

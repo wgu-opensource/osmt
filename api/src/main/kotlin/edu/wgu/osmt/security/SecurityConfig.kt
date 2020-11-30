@@ -24,10 +24,14 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
-
+/**
+ * Security configurations
+ * - to enable another OAuth provider, include the profile name in place of `OTHER-OAUTH-PROFILE`
+ *   in the @Profile annotation
+ */
 @Configuration
 @EnableWebSecurity
-@Profile("oauth2-okta")
+@Profile("oauth2-okta | OTHER-OAUTH-PROFILE")
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired

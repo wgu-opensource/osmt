@@ -19,7 +19,7 @@
 
       <div class="m-navBar-x-tagline">{{whitelabel.toolNameLong}}</div>
 
-      <ul *ngIf="isAuthenticated()" class="m-navBar-x-desktopNav">
+      <ul *ngIf="!showPublicNavbar()" class="m-navBar-x-desktopNav">
         <li>
           <a class="m-navItem " [class.m-navItem-is-active]="skillsActive" aria-current="page" routerLink="/skills">Skills Library</a>
         </li>

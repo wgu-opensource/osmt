@@ -74,6 +74,7 @@ import {PublicRichSkillActionBarComponent} from "./richskill/detail/rich-skill-p
 import {ManageCollectionComponent} from "./collection/detail/manage-collection.component"
 import {VerticalActionBarComponent} from "./core/vertical-action-bar.component"
 import {PublishCollectionComponent} from "./collection/detail/publish-collection.component"
+import {BlockingLoaderComponent} from "./core/blocking-loader.component";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -158,7 +159,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CollectionPublicActionBarComponent,
     PublicRichSkillActionBarComponent,
     ManageCollectionComponent,
-    VerticalActionBarComponent
+    VerticalActionBarComponent,
+    BlockingLoaderComponent
   ],
   imports: [
     BrowserModule,

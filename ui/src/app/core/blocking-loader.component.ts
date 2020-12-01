@@ -11,7 +11,7 @@ import {Router} from "@angular/router";
 })
 export class BlockingLoaderComponent implements OnInit {
 
-  private loaderVisible = true
+  @Input() loaderVisible = false
 
   @Input() message?: string
   get messageVisible(): boolean {

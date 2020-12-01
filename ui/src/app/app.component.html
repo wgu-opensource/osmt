@@ -2,8 +2,10 @@
 
 <app-toast></app-toast>
 
-<div id="content" tabindex="0">
-  <router-outlet></router-outlet>
-</div>
+<app-blocking-loader [loaderVisible]="blockingLoaderVisible">
+  <div id="content" tabindex="0">
+    <router-outlet></router-outlet>
+  </div>
+</app-blocking-loader>
 
 <app-footer></app-footer>

@@ -41,6 +41,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     canDeactivate: [FormDirtyGuard]
   },
+  // clone skill
+  {path: "skills/:uuid/duplicate",
+    component: RichSkillFormComponent,
+    canActivate: [AuthGuard],
+    canDeactivate: [FormDirtyGuard]
+  },
   // manage skill
   {path: "skills/:uuid/manage",
     component: RichSkillManageComponent,

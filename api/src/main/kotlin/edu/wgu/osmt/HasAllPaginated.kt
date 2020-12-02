@@ -4,6 +4,7 @@ import edu.wgu.osmt.api.model.SortOrder
 import edu.wgu.osmt.api.model.SortOrderCompanion
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.*
+import edu.wgu.osmt.richskill.RichSkillSearchService
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
@@ -27,7 +28,7 @@ interface HasAllPaginated<T> {
 
     fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = false, defaultValue = SearchService.DEFAULT_PAGESIZE.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = RichSkillSearchService.DEFAULT_PAGESIZE.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
         @RequestParam(
             required = false,

@@ -3,7 +3,7 @@ package edu.wgu.osmt
 import edu.wgu.osmt.auditlog.AuditLogTable
 import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.collection.CollectionTable
-import edu.wgu.osmt.elasticsearch.SearchService
+import edu.wgu.osmt.elasticsearch.*
 import edu.wgu.osmt.keyword.KeywordTable
 import edu.wgu.osmt.richskill.RichSkillDescriptorTable
 import edu.wgu.osmt.richskill.RichSkillJobCodes
@@ -13,9 +13,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Component
 import org.springframework.test.context.ActiveProfiles
@@ -59,11 +57,16 @@ interface HasDatabaseReset {
 
 @Component
 interface HasElasticsearchReset {
-    val searchService: SearchService
+    val esRichSkillRepository: EsRichSkillRepository
+    val esCollectionRepository: EsCollectionRepository
+    val esKeywordRepository: EsKeywordRepository
+    val esJobCodeRepository: EsJobCodeRepository
 
     @BeforeEach
     fun resetElasticsearch(): Unit {
-        searchService.esRichSkillRepository.deleteAll()
-        searchService.esCollectionRepository.deleteAll()
+        esRichSkillRepository.deleteAll()
+        esCollectionRepository.deleteAll()
+        esKeywordRepository.deleteAll()
+        esJobCodeRepository.deleteAll()
     }
 }

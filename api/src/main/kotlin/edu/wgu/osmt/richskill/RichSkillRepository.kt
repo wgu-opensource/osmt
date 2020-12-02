@@ -15,7 +15,6 @@ import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.*
 import edu.wgu.osmt.elasticsearch.EsCollectionRepository
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
-import edu.wgu.osmt.elasticsearch.SearchService
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordDao
@@ -58,7 +57,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
     val collectionRepository: CollectionRepository,
     val esRichSkillRepository: EsRichSkillRepository,
     val esCollectionRepository: EsCollectionRepository,
-    val searchService: SearchService,
+    val richSkillSearchService: RichSkillSearchService,
     val appConfig: AppConfig
 ) :
     RichSkillRepository {
@@ -363,7 +362,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
                 handle_skill_dao(this.findByUUID(uuid))
             }
         } else {
-            val searchHits = searchService.searchRichSkillsByApiSearch(
+            val searchHits = richSkillSearchService.byApiSearch(
                 publishTask.search,
                 publishTask.filterByStatus,
                 Pageable.unpaged()

@@ -5,10 +5,16 @@ import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.CollectionSortEnum
 import edu.wgu.osmt.api.model.SkillSortEnum
 import edu.wgu.osmt.collection.CollectionDoc
+import edu.wgu.osmt.collection.CollectionSearchService
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.elasticsearch.SearchService.Companion.DEFAULT_PAGESIZE
+import edu.wgu.osmt.richskill.RichSkillSearchService.Companion.DEFAULT_PAGESIZE
+import edu.wgu.osmt.jobcode.JobCode
+import edu.wgu.osmt.jobcode.JobCodeSearchService
+import edu.wgu.osmt.keyword.KeywordSearchService
+import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDoc
+import edu.wgu.osmt.richskill.RichSkillSearchService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -22,7 +28,10 @@ import org.springframework.web.util.UriComponentsBuilder
 @Controller
 @Transactional
 class SearchController @Autowired constructor(
-    val elasticsearchService: SearchService,
+    val richSkillSearchService: RichSkillSearchService,
+    val collectionSearchService: CollectionSearchService,
+    val keywordSearchService: KeywordSearchService,
+    val jobCodeSearchService: JobCodeSearchService,
     val appConfig: AppConfig
 ) {
 
@@ -44,7 +53,7 @@ class SearchController @Autowired constructor(
         val pageable = OffsetPageable(from, size, sortEnum.sort)
 
         val searchHits =
-            elasticsearchService.searchCollectionsByApiSearch(apiSearch, publishStatuses, pageable)
+            collectionSearchService.byApiSearch(apiSearch, publishStatuses, pageable)
 
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", searchHits.totalHits.toString())
@@ -84,7 +93,7 @@ class SearchController @Autowired constructor(
         val sortEnum = SkillSortEnum.forValueOrDefault(sort)
         val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum.sort)
 
-        val searchHits = elasticsearchService.searchRichSkillsByApiSearch(
+        val searchHits = richSkillSearchService.byApiSearch(
             apiSearch,
             publishStatuses,
             pageable,
@@ -128,6 +137,29 @@ class SearchController @Autowired constructor(
         @RequestBody apiSearch: ApiSearch
     ): HttpEntity<List<RichSkillDoc>> {
         return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch)
+    }
+
+    @GetMapping(RoutePaths.SEARCH_JOBCODES_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun searchJobCodes(
+        uriComponentsBuilder: UriComponentsBuilder,
+        @RequestParam(required = true) query: String
+    ): HttpEntity<List<JobCode>> {
+        val searchResults = jobCodeSearchService.jobCodeTypeAheadSearch(query)
+
+        return ResponseEntity.status(200).body(searchResults.map { it.content }.toList())
+    }
+
+    @GetMapping(RoutePaths.SEARCH_KEYWORDS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun searchKeywords(
+        uriComponentsBuilder: UriComponentsBuilder,
+        @RequestParam(required = true) query: String,
+        @RequestParam(required = true) type: String
+    ): HttpEntity<List<String>> {
+        val searchResults = keywordSearchService.keywordTypeAheadSearch(query, KeywordTypeEnum.valueOf(type.toLowerCase().capitalize()))
+
+        return ResponseEntity.status(200).body(searchResults.mapNotNull { it.content.value }.toList())
     }
 }
 

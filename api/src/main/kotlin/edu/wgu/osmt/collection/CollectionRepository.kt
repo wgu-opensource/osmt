@@ -12,13 +12,12 @@ import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.elasticsearch.EsCollectionRepository
 import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
-import edu.wgu.osmt.elasticsearch.SearchService
+import edu.wgu.osmt.richskill.RichSkillSearchService
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RichSkillDoc
-import edu.wgu.osmt.richskill.RsdUpdateObject
 import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.jetbrains.exposed.sql.SizedIterable
@@ -78,7 +77,8 @@ class CollectionRepositoryImpl @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
     val esRichSkillRepository: EsRichSkillRepository,
     val esCollectionRepository: EsCollectionRepository,
-    val searchService: SearchService,
+    val richSkillSearchService: RichSkillSearchService,
+    val collectionSearchService: CollectionSearchService,
     val appConfig: AppConfig
 ) : CollectionRepository {
     override val table = CollectionTable
@@ -251,7 +251,7 @@ class CollectionRepositoryImpl @Autowired constructor(
             }
             totalCount += task.skillListUpdate.add?.uuids?.size ?: 0
         } else if (task.skillListUpdate.add != null) {
-            val searchHits = searchService.searchRichSkillsByApiSearch(
+            val searchHits = richSkillSearchService.byApiSearch(
                 task.skillListUpdate.add,
                 task.publishStatuses,
                 Pageable.unpaged()
@@ -270,7 +270,7 @@ class CollectionRepositoryImpl @Autowired constructor(
                 totalCount += 1
             }
         } else if (task.skillListUpdate.remove != null) {
-            val searchHits = searchService.searchRichSkillsByApiSearch(
+            val searchHits = richSkillSearchService.byApiSearch(
                 task.skillListUpdate.remove,
                 task.publishStatuses,
                 Pageable.unpaged()
@@ -351,7 +351,7 @@ class CollectionRepositoryImpl @Autowired constructor(
                 handle_collection_dao(this.findByUUID(uuid))
             }
         } else {
-            val searchHits = searchService.searchCollectionsByApiSearch(
+            val searchHits = collectionSearchService.byApiSearch(
                 publishTask.search,
                 publishTask.filterByStatus,
                 Pageable.unpaged()

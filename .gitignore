@@ -1,5 +1,9 @@
 /api/src/main/resources/ui/
 
+*.versionsBackup
+
+# OSX metadata
+**/.DS_Store
 
 ### IntelliJ IDEA ###
 .idea

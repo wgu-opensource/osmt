@@ -1,10 +1,10 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.collection.CollectionDao
+import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.db.OutputsModel
-import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.db.PublishStatusDao
+import edu.wgu.osmt.db.PublishStatusDetails
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordTypeEnum
@@ -14,11 +14,15 @@ import org.jetbrains.exposed.dao.id.EntityID
 import java.time.LocalDateTime
 import java.util.*
 
-class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<RichSkillDescriptor> {
+class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<RichSkillDescriptor>,
+    PublishStatusDetails {
     companion object : LongEntityClass<RichSkillDescriptorDao>(RichSkillDescriptorTable)
 
     var creationDate: LocalDateTime by RichSkillDescriptorTable.creationDate
     var updateDate: LocalDateTime by RichSkillDescriptorTable.updateDate
+
+    override var publishDate: LocalDateTime? by RichSkillDescriptorTable.publishDate
+    override var archiveDate: LocalDateTime? by RichSkillDescriptorTable.archiveDate
 
     var uuid: String by RichSkillDescriptorTable.uuid
     var name: String by RichSkillDescriptorTable.name
@@ -31,23 +35,24 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
 
     var category by KeywordDao optionalReferencedOn RichSkillDescriptorTable.category
 
-    var publishStatus by PublishStatusDao referencedOn RichSkillDescriptorTable.publishStatus
-
     var collections by CollectionDao via CollectionSkills
 
     override fun toModel(): RichSkillDescriptor {
-        return RichSkillDescriptor(
+        val rsd = RichSkillDescriptor(
             id = id.value,
             creationDate = creationDate,
             updateDate = updateDate,
-            uuid = UUID.fromString(uuid),
+            uuid = uuid,
             name = name,
             statement = statement,
             jobCodes = jobCodes.map { it.toModel() },
             keywords = keywords.map { it.toModel() },
             category = category?.toModel(),
             author = author?.toModel(),
-            publishStatus = PublishStatus.valueOf(publishStatus.name)
+            archiveDate = archiveDate,
+            publishDate = publishDate,
+            collectionIds = collections.map { it.id.value }.toSet()
         )
+        return rsd
     }
 }

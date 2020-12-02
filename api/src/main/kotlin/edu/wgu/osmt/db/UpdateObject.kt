@@ -6,7 +6,7 @@ import net.minidev.json.JSONObject
 import kotlin.reflect.KProperty0
 
 interface UpdateObject<T> {
-    val id: Long
+    val id: Long?
 
     val comparisonList: List<(t: T) -> JSONObject?>
 
@@ -44,6 +44,10 @@ interface UpdateObject<T> {
         comparisonList.forEach { it(that)?.let { jsonObj.add(it) } }
         return jsonObj
     }
+}
+
+interface HasPublishStatus{
+    val publishStatus: PublishStatus?
 }
 
 

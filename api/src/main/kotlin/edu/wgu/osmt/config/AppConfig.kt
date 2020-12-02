@@ -9,20 +9,28 @@ import org.springframework.stereotype.Component
 
 @Component
 @ConfigurationProperties(prefix = "app", ignoreInvalidFields = true)
-class AppConfig {
-
+class AppConfig(
     @Value("\${app.baseDomain}")
-    lateinit var baseDomain: String
+    val baseDomain: String,
 
     @Value("\${app.baseUrl}")
-    lateinit var baseUrl: String
+    val baseUrl: String,
 
     @Value("\${app.defaultAuthorName}")
-    lateinit var defaultAuthorName: String
+    val defaultAuthorName: String,
 
     @Value("\${app.defaultAuthorUri}")
-    lateinit var defaultAuthorUri: String
+    val defaultAuthorUri: String,
 
+    @Value("\${app.defaultCreatorUri}")
+    val defaultCreatorUri: String,
+
+    @Value("\${app.frontendUrl}")
+    val frontendUrl: String,
+
+    @Value("\${app.loginSuccessRedirectUrl}")
+    val loginSuccessRedirectUrl: String
+) {
     @Autowired
     lateinit var environment: Environment
 

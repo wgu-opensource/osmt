@@ -1,0 +1,101 @@
+import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
+import {RichSkillService} from "../service/rich-skill.service"
+import {ActivatedRoute} from "@angular/router"
+import {ApiSkill, INamedReference} from "../ApiSkill"
+import {IDetailCardSectionData} from "../../detail-card/section/section.component"
+import {Observable} from "rxjs"
+import {PublishStatus} from "../../PublishStatus"
+import {QuickLinksHelper} from "../../core/quick-links-helper";
+import {dateformat} from "../../core/DateHelper";
+
+@Component({template: ""})
+export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper implements OnInit {
+
+  uuidParam: string | null
+  richSkill: ApiSkill | null = null
+  loading = true
+
+  skillLoaded: Observable<ApiSkill> | null = null
+
+  constructor(
+    protected richSkillService: RichSkillService,
+    protected route: ActivatedRoute,
+    @Inject(LOCALE_ID) protected locale: string
+  ) {
+    super()
+    this.uuidParam = this.route.snapshot.paramMap.get("uuid")
+  }
+
+  ngOnInit(): void {
+    this.loadSkill()
+  }
+
+  abstract getCardFormat(): IDetailCardSectionData[]
+
+  loadSkill(): void {
+    this.skillLoaded = this.richSkillService.getSkillByUUID(this.uuidParam ?? "")
+    this.skillLoaded.subscribe(skill => { this.richSkill = skill })
+  }
+
+  getAuthor(): string {
+    return this.richSkill?.author?.name ?? ""
+  }
+
+  getSkillUuid(): string {
+    return this.richSkill?.uuid ?? ""
+  }
+
+  getSkillName(): string {
+    return this.richSkill?.skillName ?? ""
+  }
+  getPublishStatus(): PublishStatus {
+    return this.richSkill?.status ?? PublishStatus.Draft
+  }
+
+  getSkillUrl(): string {
+    return this.richSkill?.id ?? ""
+  }
+
+  getPublishedDate(): string {
+    return this.richSkill?.publishDate
+      ? dateformat(this.richSkill?.publishDate, this.locale)
+      : ""
+  }
+
+  getArchivedDate(): string {
+    return this.richSkill?.archiveDate
+      ? dateformat(this.richSkill?.archiveDate, this.locale)
+      : ""
+  }
+
+  joinKeywords(): string {
+    const keywords = this.richSkill?.keywords || []
+    return this.joinList("; ", keywords)
+  }
+
+  joinEmployers(): string {
+    const employers = this.richSkill?.employers || []
+    return this.joinGenericKeywords("; ", employers)
+  }
+
+  private joinList(delimeter: string, list: string[]): string {
+    return list
+      .filter(item => item)
+      .join(delimeter)
+  }
+
+  private joinGenericKeywords(delimeter: string, keywords: INamedReference[]): string {
+    const filteredList: string[] = keywords
+      .map(keyword => (keyword.name ? keyword.name : keyword.id) as string)
+
+    return this.joinList(delimeter, filteredList)
+  }
+
+  protected formatAssociatedCollections(): string {
+    return this.richSkill?.collections
+      ?.map(standard => `<div>${standard}</div>`)
+      ?.join("<br>")
+      ?? ""
+
+  }
+}

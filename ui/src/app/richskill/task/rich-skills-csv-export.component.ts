@@ -1,13 +1,12 @@
 import { Component, OnInit } from "@angular/core"
 import { TaskService } from "../../task/task-service"
-import { ITaskResponse } from "../../task/TaskInProgress"
-import { saveAs } from 'file-saver';
+import { ITaskResult } from "../../task/ApiTaskResult"
+import { saveAs } from "file-saver"
 
 
 @Component({
   selector: "app-richskills-csv-export",
-  templateUrl: "./rich-skills-csv-export.component.html",
-  styleUrls: ["./rich-skills-csv-export.component.css"]
+  templateUrl: "./rich-skills-csv-export.component.html"
 })
 export class RichSkillsCsvExportComponent implements OnInit {
 
@@ -26,9 +25,7 @@ export class RichSkillsCsvExportComponent implements OnInit {
     }
 
     this.taskService.getTaskResultsIfComplete(this.taskUuidInProgress)
-      .subscribe(response => {
-        const { body, status } = response
-
+      .subscribe(({body, status}) => {
         if (status === 200) {
           this.csvExport = body as string
           this.taskUuidInProgress = undefined
@@ -46,7 +43,7 @@ export class RichSkillsCsvExportComponent implements OnInit {
   startDownloadTask(): void {
     this.csvExport = undefined
 
-    this.taskService.startAllSkillsCsvTask().subscribe((taskStarted: ITaskResponse) => {
+    this.taskService.startAllSkillsCsvTask().subscribe((taskStarted: ITaskResult) => {
       this.taskUuidInProgress = taskStarted.uuid
       this.intervalHandle = setInterval(() => this.pollCsv(), 1000)
     })

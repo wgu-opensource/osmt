@@ -6,19 +6,20 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.2.RELEASE</version>
+        <version>2.3.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>edu.wgu.osmt</groupId>
     <artifactId>osmt-parent</artifactId>
-    <version>0.5.2</version>
+    <version>0.9.2</version>
     <packaging>pom</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
+        <elasticsearch.version>7.9.2</elasticsearch.version>
     </properties>
 
     <modules>

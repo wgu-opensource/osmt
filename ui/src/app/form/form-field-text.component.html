@@ -1,0 +1,13 @@
+<app-formfield
+  [control]="control"
+  [label]="label"
+  [placeholder]="placeholder"
+  [errorMessage]="errorMessage"
+  [helpMessage]="helpMessage"
+  [required]="required"
+  [name]="name"
+>
+  <div class="m-text" [class.m-text-is-error]="isError()">
+    <input [formControl]="control" type="text" [attr.placeholder]="includePlaceholder ? placeholder : null" id="formfield-{{name}}">
+  </div>
+</app-formfield>

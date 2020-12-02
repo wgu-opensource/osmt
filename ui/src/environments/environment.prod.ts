@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  baseApiUrl: "",
+  loginUrl: "/oauth2/authorization/okta"
 }

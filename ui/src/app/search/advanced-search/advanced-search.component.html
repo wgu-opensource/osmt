@@ -1,0 +1,130 @@
+<form [formGroup]="skillForm" (ngSubmit)="handleSearchSkills()" class="l-stickyBar">
+
+  <div class="l-stickySidebar l-container">
+
+    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
+      <div class="m-skillBackground l-skillBackground">
+        <div class="t-margin-medium t-margin-bottom">
+
+          <h3 class="m-iconTitle">
+            <div class="m-iconTitle-x-icon">
+              <svg class="t-icon" aria-hidden="true">
+                <use [attr.xlink:href]="iconSearch"></use>
+              </svg>
+            </div>
+            <div class="m-iconTitle-x-label">Advanced Search</div>
+          </h3>
+          {{getSemicolonHelpMessage()}}
+
+        </div>
+
+        <app-formfield-text
+          [control]="skillForm.controls.skillName"
+          name="skillName"
+          label="RSD Name"
+          [required]="false"
+        >
+        </app-formfield-text>
+
+        <app-formfield-text *ngIf="showAuthor()"
+          [control]="skillForm.controls.author"
+          name="author"
+          label="Author"
+          [required]="false"
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.skillStatement"
+          name="skillStatement"
+          label="Skill Statement"
+          [required]="false"
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.category"
+          name="category"
+          label="Category"
+          [required]="false"
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.keywords"
+          name="keywords"
+          label="Keywords"
+          [required]="false"
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.standards"
+          name="standards"
+          label="Standards"
+          [required]="false"
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.certifications"
+          name="certifications"
+          label="Certifications"
+          [required]="false"
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.occupations"
+          name="occupations"
+          label="Occupations"
+          [required]="false"
+          [helpMessage]="getOccupationHelpMessage()"
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.employers"
+          name="employers"
+          label="Employers"
+          [required]="false"
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.alignments"
+          name="alignments"
+          label="Alignment"
+          [required]="false"
+        >
+        </app-formfield-text>
+
+        <app-formfield-text
+          [control]="skillForm.controls.collectionName"
+          name="collectionName"
+          label="Collection Name"
+          [required]="false"
+        >
+        </app-formfield-text>
+      </div>
+    </div>
+
+    <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
+      <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
+        <app-advanced-search-vertical-action-bar
+          (searchCollectionsClicked)="handleSearchCollections()"
+          (searchSkillsClicked)="handleSearchSkills()"
+        ></app-advanced-search-vertical-action-bar>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
+    <app-advanced-search-horizontal-action-bar
+      (searchSkillsClicked)="handleSearchSkills()"
+      (searchCollectionsClicked)="handleSearchCollections()"
+    ></app-advanced-search-horizontal-action-bar>
+  </div>
+
+</form>

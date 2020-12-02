@@ -1,0 +1,59 @@
+<table class="l-table">
+  <thead>
+  <tr class="m-tableHeader">
+    <th class="t-hidden-tabletMax" scope="col">
+      <app-label-with-filter
+        label="Category"
+        [sortAscending]="getNameSort()"
+        (sortChanged)="sortColumn('name', $event)"
+      ></app-label-with-filter>
+    </th>
+
+    <th class="t-hidden-tabletMax" scope="col">
+      <app-label-with-filter
+        label="Rich Skill Descriptor"
+        [sortAscending]="getSkillSort()"
+        (sortChanged)="sortColumn('skill', $event)"
+      ></app-label-with-filter>
+    </th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <tr class="m-tableRow" id="row1" *ngFor="let skill of items; let i = index">
+
+    <th class="m-tableRow-x-header" scope="row" id="row{{i}}-header" *ngIf="!!skill">
+
+      <div class="t-hidden-tabletMax">{{skill.category}}</div>
+      <div class="t-hidden-tabletMin">
+        <div class="m-inlineHeading">
+          <h5 class="m-inlineHeading-x-heading">Category:</h5>
+          <p class="m-inlineHeading-x-text">{{skill.category}}</p>
+        </div>
+      </div>
+
+    </th>
+
+    <td class="m-tableRow-x-body">
+
+      <h4 class="t-margin-extraSmall t-margin-bottom">
+        <a class="t-focus t-type-bodyLink" routerLink="/skills/{{skill.uuid}}">{{skill.skillName}}</a>
+      </h4>
+
+      <div class="m-quickLinks">
+        <a href="#">TODO Next skill</a>
+      </div>
+
+      <p class="t-margin-small t-margin-bottom">{{skill.skillStatement}}</p>
+      <div class="l-flex" *ngIf="isArchived(skill)">
+        <svg class="t-icon" aria-hidden="true">
+          <use [attr.xlink:href]="archiveIcon"></use>
+        </svg>
+        <span class="t-type-body">
+      Archived
+      </span>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>

@@ -1,0 +1,39 @@
+
+  <app-formfield
+    [label]="label"
+    [placeholder]="placeholder"
+    [errorMessage]="errorMessage"
+    [helpMessage]="helpMessage"
+    [required]="required"
+    [name]="name"
+  >
+
+    <div *ngFor="let collection of this.allCollections" class="m-link" [class.m-link-strikethrough]="removingCollection(collection)">
+      <a class="m-link-x-link" href="#">{{collection}}</a>
+
+      <div class="m-link-x-button">
+        <button class="m-button m-button-form" (click)="handleClickIcon(collection)">
+          <div class="m-button-x-icon">
+            <div class="l-iconTransition" [class.l-iconTransition-is-toggled]="removingCollection(collection)">
+              <svg class="l-iconTransition-x-icon t-icon">
+                <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
+              </svg>
+
+              <svg class="l-iconTransition-x-replace t-icon">
+                <use xlink:href="/assets/images/svg-defs.svg#icon-add"></use>
+              </svg>
+            </div>
+          </div>
+          <span class="m-button-x-text t-visuallyHidden">{{collection}}</span>
+        </button>
+
+      </div>
+    </div>
+
+
+    <app-empty-message *ngIf="allCollections.length < 1" isForm="true">
+      This RSD is not included in any collections.
+    </app-empty-message>
+
+  </app-formfield>
+

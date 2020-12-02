@@ -1,0 +1,15 @@
+<div class="m-skillBackground m-skillBackground-detail l-skillBackground">
+  <app-card-detail-title
+    [title]="title"
+    [status]="status"
+    [publishDate]="publishDate"
+    [archiveDate]="archiveDate"
+    [cardType]="titleLabel"
+    [author]="author">
+  </app-card-detail-title>
+  <div class="t-margin-medium t-margin-bottom" *ngFor="let section of sections">
+    <app-detail-card-section
+      [data]="section"
+      *ngIf="section.bodyHtml || section.showIfEmpty"
+    ></app-detail-card-section>
+  </div>

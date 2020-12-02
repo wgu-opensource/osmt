@@ -1,0 +1,65 @@
+<ng-template [appLoadingObservables]="[collectionLoaded, skillsLoaded]">
+  <div class="l-container t-margin-large t-margin-top">
+
+    <div class="l-container l-container-mobile">
+      <div class="t-margin-small t-margin-bottom">
+        <button class="m-buttonText" (click)="handleClickCancel()">
+          <span class="m-buttonText-x-icon">
+              <svg class="t-icon" aria-hidden="true">
+                  <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
+              </svg>
+          </span>
+          <span class="m-buttonText-x-text">Back</span>
+        </button>
+      </div>
+
+      <!--      {{render '@listheading'}}-->
+      <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+        <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Collection contains {{verb}} RSDs</h2>
+        <p class="t-type-bodyLarge t-color-text3">
+          The collection
+          <span class="t-type-bodyLargeBold t-color-text1">{{collection?.name}}</span>
+          contains {{collection.skills.length}} RSDs; {{blockingSkills.totalCount}} of those RSDs are {{verb}}:
+        </p>
+      </div>
+
+    </div>
+
+    <div class="m-skillBackground l-inset t-margin-medium t-margin-bottom">
+      <div class="m-content">
+        <ol>
+          <li *ngFor="let skill of blockingSkills.skills"><a routerLink="/skills/{{skill.uuid}}/manage">{{skill.skillName}}</a></li>
+        </ol>
+
+        <div class="l-flex l-flex-alignTop">
+          <svg class="t-icon" aria-hidden="true">
+            <use xlink:href="/assets/images/svg-defs.svg#icon-warning"></use>
+          </svg>
+          <span *ngIf="checkingArchived" class="t-type-body">You must unarchive these RSDs or remove them from the collection before you can publish the collection.</span>
+          <span *ngIf="checkingDraft" class="t-type-body">You must publish these RSDs before you can publish the collection.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="l-container l-container-mobile">
+
+      <!--      {{render '@l-submit&#45;&#45;with-twomain'}}-->
+      <div class="l-submit">
+        <button class="m-button" (click)="handleClickCancel()">
+          <span class="m-button-x-text">Cancel</span>
+        </button>
+        <button *ngIf="checkingArchived" class="m-button m-button-tertiary" (click)="handleClickConfirmRemove()">
+          <span class="m-button-x-text">Remove RSDs from Collection</span>
+        </button>
+        <button *ngIf="checkingArchived" class="m-button m-button-tertiary" (click)="handleClickConfirmUnarchive()">
+          <span class="m-button-x-text">Unarchive RSDs in Collection</span>
+        </button>
+        <button *ngIf="checkingDraft" class="m-button m-button-tertiary" (click)="handleClickConfirmPublish()">
+          <span class="m-button-x-text">Yes, Publish RSDs and Collection</span>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</ng-template>

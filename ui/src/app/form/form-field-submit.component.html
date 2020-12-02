@@ -1,0 +1,15 @@
+<div *ngIf="isProcessing()" class="PUI lds-dual-ring">Loading...</div>
+<div *ngIf="!mobileView; else mobile">
+  <button *ngIf="!isProcessing()" class="m-button t-width-100" [disabled]="isDisabled()" type="submit">
+    <span class="m-button-x-text">{{label}}</span>
+  </button>
+</div>
+<ng-template #mobile>
+  <button class="m-actionBarItemHorizontal" type="submit" [disabled]="isDisabled()">
+    <svg class="m-actionBarItemHorizontal-x-icon t-icon">
+      <use [attr.xlink:href]="checkOutlineIcon"></use>
+    </svg>
+    <span class="m-actionBarItemHorizontal-x-label">Save</span>
+    <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
+  </button>
+</ng-template>

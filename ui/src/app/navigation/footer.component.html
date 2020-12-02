@@ -1,0 +1,25 @@
+
+<footer class="l-container" aria-labelledby="header-footer">
+
+  <h2 class="t-visuallyHidden" id="header-footer">Site Footer</h2>
+
+  <hr class="m-rule t-margin-medium">
+
+  <div class="t-margin-large t-margin-bottom">
+    <!--{{render '@m-footer'}}-->
+    <div class="m-footer">
+
+      <div class="m-footer-x-copyright">
+        <p>{{whitelabel.licensePrimary}}</p>
+        <p>{{whitelabel.licenseSecondary}}</p>
+      </div>
+
+      <div class="m-footer-x-tagline">
+        <p>{{whitelabel.poweredBy}}  <a [href]="whitelabel.poweredByUrl">{{whitelabel.poweredByLabel}}</a>.</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</footer>

@@ -1,0 +1,24 @@
+<div class="l-statusbar">
+  <div class="l-statusbar-x-container">
+    <div *ngIf="isPublished()" class="m-status m-status-published">
+      <div class="m-status-x-icon">
+        <svg class="t-icon" aria-hidden="true">
+          <use [attr.xlink:href]="iconUp"></use>
+        </svg>
+      </div>
+      <div class="m-status-x-label">Published<ng-template [ngIf]="showDates"> {{publishDate}}</ng-template></div>
+    </div>
+
+    <div *ngIf="isDraft()" class="m-status">
+      <div class="m-status-x-icon"></div>
+      <div class="m-status-x-label">Draft</div>
+    </div>
+
+    <div *ngIf="isArchived()" class="l-flex ">
+      <svg class="t-icon" aria-hidden="true">
+        <use [attr.xlink:href]="iconArchive"></use>
+      </svg>
+      <span class="t-type-body">Archived<ng-template [ngIf]="showDates"> {{archiveDate}}</ng-template></span>
+    </div>  </div>
+</div>
+

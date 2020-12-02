@@ -10,7 +10,6 @@ class JobCodeDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<JobCode> {
     companion object : LongEntityClass<JobCodeDao>(JobCodeTable)
 
     var creationDate by JobCodeTable.creationDate
-    var updateDate by JobCodeTable.updateDate
 
     var major by JobCodeTable.major
     var minor by JobCodeTable.minor
@@ -28,7 +27,6 @@ class JobCodeDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<JobCode> {
         JobCode(
             id = id.value,
             creationDate = creationDate,
-            updateDate = updateDate,
             major = major,
             minor = minor,
             broad = broad,
@@ -39,5 +37,4 @@ class JobCodeDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<JobCode> {
             framework = framework,
             url = url
         )
-
 }

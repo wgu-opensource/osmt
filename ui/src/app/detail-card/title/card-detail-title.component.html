@@ -1,0 +1,16 @@
+<div class="t-margin-extraSmall t-margin-bottom">
+  <div class="m-sectionLabel">{{cardType}}</div>
+</div>
+<h2 class="t-type-heading1 t-margin-extraSmall t-margin-bottom" tabindex="0">{{title}}</h2>
+<div class="t-margin-medium t-margin-bottom">
+  <p class="t-type-body">Author: {{author}}</p>
+</div>
+
+<div class="t-margin-medium t-margin-bottom">
+  <app-status-bar
+    [status]="status"
+    [publishDate]="publishDate"
+    [archiveDate]="archiveDate"
+  ></app-status-bar>
+</div>
+

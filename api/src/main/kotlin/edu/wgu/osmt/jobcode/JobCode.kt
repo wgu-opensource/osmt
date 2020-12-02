@@ -1,32 +1,92 @@
 package edu.wgu.osmt.jobcode
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import edu.wgu.osmt.csv.HasCodeHierarchy
 import edu.wgu.osmt.db.DatabaseData
-import edu.wgu.osmt.db.HasUpdateDate
-import edu.wgu.osmt.db.NullableFieldUpdate
-import edu.wgu.osmt.db.UpdateObject
-import net.minidev.json.JSONObject
-import org.springframework.data.elasticsearch.annotations.Document
+import org.elasticsearch.common.Nullable
+import org.springframework.data.elasticsearch.annotations.*
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-
-@Document(indexName = "jobCode", createIndex = true)
+@Document(indexName = "jobcode_v1", createIndex = true)
 data class JobCode(
+    @Field
+    @Nullable
+    @JsonIgnore
     override val id: Long?,
-    override val creationDate: LocalDateTime,
-    override val updateDate: LocalDateTime,
 
+    @JsonIgnore
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    override val creationDate: LocalDateTime,
+
+    @MultiField(
+        mainField = Field(type = FieldType.Text),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)]
+    )
     val major: String? = null,             // bls major category name
+
+    @MultiField(
+        mainField = Field(type = FieldType.Text),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)]
+    )
     val minor: String? = null,             // bls minor category name
+
+    @MultiField(
+        mainField = Field(type = FieldType.Text),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)]
+    )
     val broad: String? = null,             // bls broad category name
+
+    @MultiField(
+        mainField = Field(type = FieldType.Text),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)]
+    )
     val detailed: String? = null,          // bls detailed (for o*net level codes -- blank for bls detailed)
 
+    @MultiField(
+        mainField = Field(type = FieldType.Text),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)]
+    )
     val code: String,                           // bls detailed code or a o*net code: XX-XXXX or XX-XXXX.XX
+
+    @Field(type = FieldType.Search_As_You_Type)
     val name: String? = null,                   // human readable label
+
+    @Field(type = FieldType.Search_As_You_Type)
     val description: String? = null,
+
+    @Field(type = FieldType.Search_As_You_Type)
     val framework: String? = null,               // e.g.: "bls" or "o*net"
+
+    @Field
     val url: String? = null                     // e.g.: "http://onetonline/an/example/of/a/jobcode/canonicalUri"
-) : DatabaseData, HasUpdateDate {
+) : DatabaseData {
+
+    @Field
+    @Nullable
+    val majorCode: String? = JobCodeBreakout.majorCode(code)
+
+    @Field
+    @Nullable
+    val minorCode: String? = JobCodeBreakout.minorCode(code)
+
+    @Field
+    @Nullable
+    val broadCode: String? = JobCodeBreakout.broadCode(code)
+
+    @Field
+    @Nullable
+    val jobRoleCode: String? = JobCodeBreakout.jobRoleCode(code)
 
     companion object {
         fun create(code: String): JobCode {
@@ -34,90 +94,8 @@ data class JobCode(
             return JobCode(
                 id = null,
                 creationDate = now,
-                updateDate = now,
                 code = code
             )
         }
     }
-}
-
-data class JobCodeUpdate(
-    override val id: Long,
-    val major: NullableFieldUpdate<String>?,
-    val minor: NullableFieldUpdate<String>?,
-    val broad: NullableFieldUpdate<String>?,
-    val detailed: NullableFieldUpdate<String>?,
-    val code: String?,
-    val name: NullableFieldUpdate<String>?,
-    val description: NullableFieldUpdate<String>?,
-    val framework: NullableFieldUpdate<String>?,
-    val url: NullableFieldUpdate<String>?
-) : UpdateObject<JobCode> {
-
-    fun compareMajor(that: JobCode): JSONObject? {
-        return major?.let {
-            compare(that::major, it::t, stringOutput)
-        }
-    }
-
-    fun compareMinor(that: JobCode): JSONObject? {
-        return minor?.let {
-            compare(that::minor, it::t, stringOutput)
-        }
-    }
-
-    fun compareBroad(that: JobCode): JSONObject? {
-        return broad?.let {
-            compare(that::broad, it::t, stringOutput)
-        }
-    }
-
-    fun compareDetailed(that: JobCode): JSONObject? {
-        return detailed?.let {
-            compare(that::detailed, it::t, stringOutput)
-        }
-    }
-
-    fun compareCode(that: JobCode): JSONObject? {
-        return code?.let {
-            compare(that::code, this::code)
-        }
-    }
-
-    fun compareName(that: JobCode): JSONObject? {
-        return name?.let {
-            compare(that::name, it::t, stringOutput)
-        }
-    }
-
-    fun compareDescription(that: JobCode): JSONObject? {
-        return description?.let {
-            compare(that::description, it::t, stringOutput)
-        }
-    }
-
-    fun compareFramework(that: JobCode): JSONObject? {
-        return framework?.let {
-            compare(that::framework, it::t, stringOutput)
-        }
-    }
-
-    fun compareUrl(that: JobCode): JSONObject? {
-        return url?.let {
-            compare(that::url, it::t, stringOutput)
-        }
-    }
-
-    override val comparisonList: List<(t: JobCode) -> JSONObject?> =
-        listOf(
-            ::compareMajor,
-            ::compareMinor,
-            ::compareBroad,
-            ::compareDetailed,
-            ::compareCode,
-            ::compareName,
-            ::compareDescription,
-            ::compareFramework,
-            ::compareUrl
-        )
 }

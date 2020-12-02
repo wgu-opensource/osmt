@@ -1,5 +1,9 @@
-<h1>{{title}}</h1>
+<app-header></app-header>
 
-<app-richskills-csv-export></app-richskills-csv-export>
+<app-toast></app-toast>
 
-<router-outlet></router-outlet>
+<div id="content" tabindex="0">
+  <router-outlet></router-outlet>
+</div>
+
+<app-footer></app-footer>

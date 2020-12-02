@@ -1,0 +1,16 @@
+<div class="t-margin-medium t-margin-bottom">
+
+  <div class="m-field" id="formfield-container-{{name}}">
+    <label *ngIf="required" for="formfield-{{name}}">{{label}} (Required)</label>
+    <label *ngIf="!required" for="formfield-{{name}}">{{label}}</label>
+
+    <p *ngIf="helpMessage" class="m-field-x-note">{{helpMessage}}</p>
+
+    <div class="m-field-x-input">
+      <ng-content></ng-content>
+    </div>
+
+    <p *ngIf="errorMessage && isError()" class="m-field-x-error">{{errorMessage}}</p>
+  </div>
+
+</div>

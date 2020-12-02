@@ -1,0 +1,76 @@
+<div class="l-stickyBar">
+
+  <div class="l-container t-padding-large t-padding-top">
+
+    <div class="l-container l-container-mobile">
+
+<!--      {{render '@listheading'}}-->
+      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Add {{addingCount}} RSD<ng-template [ngIf]="isPlural">s</ng-template> to a Collection</h2>
+
+      <ng-template [ngIf]="isPlural" [ngIfElse]="singleSkillSummary">
+        <app-accordian closedLabel="View All Skills" openLabel="View Less Skills">
+          <div class="m-skillBackground l-inset t-margin-small t-margin-top">
+            <div class="m-content">
+              <ol>
+                <li *ngFor="let skill of state?.selectedSkills">{{skill.skillName}}</li>
+              </ol>
+              <p *ngIf="state?.search">and {{state?.totalCount - state?.selectedSkills.length}} more...</p>
+            </div>
+          </div>
+        </app-accordian>
+      </ng-template>
+
+      <ng-template #singleSkillSummary>
+        <p *ngIf="state.selectedSkills && state.selectedSkills.length > 0" class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">Skill: {{state.selectedSkills[0].skillName}}</p>
+      </ng-template>
+
+<!--      {{render '@listheadingsearch'}}-->
+      <div class="t-margin-medium t-margin-bottom">
+        <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
+        <div class="m-text">
+          <svg class="m-text-x-icon t-icon" (click)="clearSearch()"><use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use></svg>
+          <input type="text" placeholder="Search Collections" [formControl]="searchForm.controls.search">
+        </div>
+
+        <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
+          {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">collections contain</ng-template><ng-template #singular>collection containing</ng-template> the search term
+          <span class="t-type-bodyLargeBold t-color-text1">{{searchQuery}}</span>.
+          <ng-template [ngIf]="totalCount > 0">
+            Viewing {{firstRecordNo}}-{{lastRecordNo}}.
+          </ng-template>
+        </p>
+        </form>
+      </div>
+
+      <app-filter-controls
+        [selectedFilters]="selectedFilters"
+        (filtersChanged)="handleFiltersChanged($event)"
+      ></app-filter-controls>
+
+    </div>
+
+    <div class="t-margin-medium t-margin-bottom">
+      <ng-template [appLoadingObservables]="[resultsLoaded]">
+        <app-collection-table
+          *ngIf="!emptyResults"
+          [items]="results.collections"
+          [rowActions]="rowActions()"
+          [selectAllEnabled]="false"
+        ></app-collection-table>
+
+        <app-empty-message *ngIf="emptyResults">
+          <p class="m-emptyMessage-x-message">What collection needs this skill?</p>
+        </app-empty-message>
+      </ng-template>
+    </div>
+
+    <app-pagination
+      [currentPage]="currentPageNo"
+      [totalPages]="totalPageCount"
+      (pageClicked)="handlePageClicked($event)"
+    ></app-pagination>
+
+  </div>
+
+
+</div>

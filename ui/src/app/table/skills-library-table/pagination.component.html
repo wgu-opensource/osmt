@@ -1,0 +1,31 @@
+<div class="m-pagination" *ngIf="this.totalPages > 1">
+
+  <button class="m-buttonIcon" type="button" [attr.disabled]="isPrevDisabled()" (click)="handleClickPrev()">
+    <span class="m-buttonIcon-x-icon">
+      <svg class="t-icon" aria-hidden="true">
+        <use xlink:href="/assets/images/svg-defs.svg#icon-prev"></use>
+      </svg>
+    </span>
+    <span class="t-visuallyHidden">Previous</span>
+  </button>
+
+  <p class="m-pagination-x-total">{{currentPage}} of {{totalPages}}</p>
+
+  <div class="m-pagination-x-pages">
+    <ng-template ngFor let-pageNo [ngForOf]="pageNumbers()">
+      <button *ngIf="!isEllipsis(pageNo)" class="m-buttonSmall m-buttonSmall-secondary" [class.m-buttonSmall-is-active]="isCurrentPage(pageNo)" type="button" (click)="handleClick(pageNo)"><span>{{pageNo}}</span></button>
+      <p *ngIf="isEllipsis(pageNo)" class="m-pagination-x-gap">&hellip;</p>
+    </ng-template>
+
+  </div>
+
+  <button class="m-buttonIcon" type="button" [attr.disabled]="isNextDisabled()" (click)="handleClickNext()">
+    <span class="m-buttonIcon-x-icon">
+      <svg class="t-icon" aria-hidden="true">
+        <use xlink:href="/assets/images/svg-defs.svg#icon-next"></use>
+      </svg>
+    </span>
+    <span class="t-visuallyHidden">Next</span>
+  </button>
+
+</div>

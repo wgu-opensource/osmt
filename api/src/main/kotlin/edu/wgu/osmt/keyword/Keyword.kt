@@ -1,31 +1,39 @@
 package edu.wgu.osmt.keyword
 
-import com.fasterxml.jackson.annotation.JsonView
 import edu.wgu.osmt.db.*
-import edu.wgu.osmt.richskill.RichSkillView
 import net.minidev.json.JSONObject
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.`java-time`.datetime
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import org.springframework.data.elasticsearch.annotations.DateFormat
+import org.springframework.data.elasticsearch.annotations.Document
+import org.springframework.data.elasticsearch.annotations.Field
+import org.springframework.data.elasticsearch.annotations.FieldType
 import java.time.LocalDateTime
+import org.elasticsearch.common.Nullable
+import org.springframework.data.annotation.Id
 
+@Document(indexName = "keyword", createIndex = true)
 data class Keyword(
-    @field:JsonView(RichSkillView.PrivateDetailView::class)
+    @Id
+    @Nullable
     override val id: Long?,
 
-    @field:JsonView(RichSkillView.PrivateDetailView::class)
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     override val creationDate: LocalDateTime,
 
-    @field:JsonView(RichSkillView.PrivateDetailView::class)
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
     override val updateDate: LocalDateTime,
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
+    @Field(type = FieldType.Keyword)
     val type: KeywordTypeEnum,
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
+    @Nullable
+    @Field(type = FieldType.Search_As_You_Type)
     val value: String? = null,
 
-    @field:JsonView(RichSkillView.PublicDetailView::class)
+    @Nullable
     val uri: String? = null
 ) : DatabaseData, HasUpdateDate {
 }
@@ -44,8 +52,7 @@ data class KeywordUpdateObj(override val id: Long, val value: String?, val uri: 
     override val comparisonList: List<(t: Keyword) -> JSONObject?> = listOf(::compareValue, ::compareUri)
 }
 
-object KeywordTable : TableWithUpdateMapper<KeywordUpdateObj>, LongIdTable("Keyword") {
-    override val table: LongIdTable = this
+object KeywordTable : LongIdTable("Keyword"), TableWithUpdate<KeywordUpdateObj> {
     override val creationDate = datetime("creationDate")
     override val updateDate = datetime("updateDate")
     val value: Column<String?> = varchar("value", 768).nullable()

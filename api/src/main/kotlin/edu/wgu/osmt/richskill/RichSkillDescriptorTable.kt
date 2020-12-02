@@ -1,7 +1,7 @@
 package edu.wgu.osmt.richskill
 
-import edu.wgu.osmt.db.PublishStatusTable
-import edu.wgu.osmt.db.TableWithUpdateMapper
+import edu.wgu.osmt.db.TableWithUpdate
+import edu.wgu.osmt.db.PublishStatusUpdate
 import edu.wgu.osmt.jobcode.JobCodeTable
 import edu.wgu.osmt.keyword.KeywordTable
 import org.jetbrains.exposed.dao.id.EntityID
@@ -9,13 +9,18 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.`java-time`.datetime
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import java.time.LocalDateTime
 
 
-object RichSkillDescriptorTable : TableWithUpdateMapper<RsdUpdateObject>, LongIdTable("RichSkillDescriptor") {
-    override val table = this
+object RichSkillDescriptorTable : LongIdTable("RichSkillDescriptor"), TableWithUpdate<RsdUpdateObject>,
+    PublishStatusUpdate<RsdUpdateObject> {
 
     override val creationDate = datetime("creationDate")
     override val updateDate = datetime("updateDate")
+
+    override val archiveDate: Column<LocalDateTime?> = datetime("archiveDate").nullable()
+    override val publishDate: Column<LocalDateTime?> = datetime("publishDate").nullable()
+
     val uuid = varchar("uuid", 36).uniqueIndex()
     val name = text("name")
     val statement = text("statement")
@@ -31,35 +36,6 @@ object RichSkillDescriptorTable : TableWithUpdateMapper<RsdUpdateObject>, LongId
         onDelete = ReferenceOption.RESTRICT,
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
-    val publishStatus = reference(
-        "publish_status_id",
-        PublishStatusTable,
-        onDelete = ReferenceOption.RESTRICT,
-        onUpdate = ReferenceOption.CASCADE
-    )
-
-    override fun updateBuilderApplyFromUpdateObject(
-        updateBuilder: UpdateBuilder<Number>,
-        updateObject: RsdUpdateObject
-    ) {
-        super.updateBuilderApplyFromUpdateObject(updateBuilder, updateObject)
-        updateObject.name?.let { updateBuilder[name] = it }
-        updateObject.statement?.let { updateBuilder[statement] = it }
-        updateObject.category?.let {
-            if (it.t != null) {
-                updateBuilder[category] = EntityID<Long>(it.t.id!!, KeywordTable)
-            } else {
-                updateBuilder[category] = null
-            }
-        }
-        updateObject.author?.let {
-            if (it.t != null) {
-                updateBuilder[author] = EntityID<Long>(it.t.id!!, KeywordTable)
-            } else {
-                updateBuilder[author] = null
-            }
-        }
-    }
 }
 
 // many-to-many table for RichSkillDescriptor and JobCode relationship
@@ -79,7 +55,7 @@ object RichSkillJobCodes : Table("RichSkillJobCodes") {
     override val primaryKey = PrimaryKey(richSkillId, jobCodeId, name = "PK_RichSkillJobCodes_rs_jc")
 
     fun create(richSkillId: Long, jobCodeId: Long) {
-        insert {
+        insertIgnore {
             it[this.richSkillId] = EntityID(richSkillId, RichSkillDescriptorTable)
             it[this.jobCodeId] = EntityID(jobCodeId, JobCodeTable)
         }
@@ -108,7 +84,7 @@ object RichSkillKeywords : Table("RichSkillKeywords") {
     override val primaryKey = PrimaryKey(richSkillId, keywordId, name = "PK_RichSkillKeywords_rs_kw")
 
     fun create(richSkillId: Long, keywordId: Long) {
-        insert {
+        insertIgnore {
             it[this.richSkillId] = EntityID(richSkillId, RichSkillDescriptorTable)
             it[this.keywordId] = EntityID(keywordId, KeywordTable)
         }

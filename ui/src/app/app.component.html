@@ -1,11 +1,13 @@
-<app-header></app-header>
-
-<app-toast></app-toast>
 
 <app-blocking-loader [loaderVisible]="blockingLoaderVisible">
+  <app-header></app-header>
+
+  <app-toast></app-toast>
+
   <div id="content" tabindex="0">
     <router-outlet></router-outlet>
   </div>
+
+  <app-footer></app-footer>
 </app-blocking-loader>
 
-<app-footer></app-footer>

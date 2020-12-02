@@ -1,9 +1,8 @@
-import {Component, Inject, Input, LOCALE_ID, OnInit} from "@angular/core"
+import {Component, Input, OnInit} from "@angular/core"
 import {ActivatedRoute, Router} from "@angular/router"
 import {RichSkillService} from "../../../richskill/service/rich-skill.service"
 import {ToastService} from "../../../toast/toast.service"
-import {ApiCollection} from "../../ApiCollection";
-import {dateformat} from "../../../core/DateHelper";
+import {ApiCollection} from "../../ApiCollection"
 
 @Component({
   selector: "app-collection-public-detail-card",
@@ -20,8 +19,7 @@ export class PublicCollectionDetailCardComponent implements OnInit {
   constructor(protected router: Router,
               protected route: ActivatedRoute,
               protected richSkillService: RichSkillService,
-              protected toastService: ToastService,
-              @Inject(LOCALE_ID) protected locale: string
+              protected toastService: ToastService
   ) {
   }
 
@@ -36,12 +34,12 @@ export class PublicCollectionDetailCardComponent implements OnInit {
     return this.collection?.status
   }
 
-  get archiveDate(): string | undefined {
-    return dateformat(this.collection?.archiveDate, this.locale)
+  get archiveDate(): Date | undefined {
+    return this.collection?.archiveDate
   }
 
-  get publishDate(): string | undefined {
-    return dateformat(this.collection?.publishDate, this.locale)
+  get publishDate(): Date | undefined {
+    return this.collection?.publishDate
   }
 
   get collectionName(): string {

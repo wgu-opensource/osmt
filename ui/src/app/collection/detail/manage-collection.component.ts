@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core"
+import {Component, OnInit, ViewChild} from "@angular/core"
 import {ApiCollection, ApiCollectionUpdate} from "../ApiCollection";
 import {ApiSearch, ApiSkillListUpdate} from "../../richskill/service/rich-skill-search.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -12,12 +12,16 @@ import {TableActionDefinition} from "../../table/skills-library-table/has-action
 import {determineFilters, PublishStatus} from "../../PublishStatus";
 import {ApiSkillSummary} from "../../richskill/ApiSkillSummary";
 import {Observable} from "rxjs";
+import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component";
 
 @Component({
   selector: "app-manage-collection",
   templateUrl: "./manage-collection.component.html"
 })
 export class ManageCollectionComponent extends SkillsListComponent implements OnInit {
+
+  @ViewChild(TableActionBarComponent) tableActionBar!: TableActionBarComponent
+
   collection?: ApiCollection
   apiSearch?: ApiSearch
 
@@ -271,5 +275,9 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   protected handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
     this.focusAndScrollIntoView(this.titleElement.nativeElement, "h2")
     return false
+  }
+
+  focusActionBar(): void {
+    this.tableActionBar.focus()
   }
 }

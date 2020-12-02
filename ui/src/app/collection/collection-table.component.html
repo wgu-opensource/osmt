@@ -69,11 +69,11 @@
     [class.m-tableRow-is-selected]="isSelected(collection)"
 
     app-collection-list-row
-    #appTableRow
     [collection]="collection"
     [isSelected]="isSelected(collection)"
     [rowActions]="rowActions"
     (rowSelected)="onRowToggle($event)"
+    (focusActionBar)="focusActionBar.emit()"
   ></tr>
   </tbody>
 </table>

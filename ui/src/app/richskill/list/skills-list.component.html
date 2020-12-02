@@ -31,13 +31,14 @@
         <app-skill-table
           *ngIf="!emptyResults"
           [items]="results.skills"
-          (rowSelected)="handleNewSelection($event)"
           [currentSort]="columnSort"
-          (columnSorted)="handleHeaderColumnSort($event)"
           [rowActions]="rowActions()"
-          (selectAllSelected)="handleSelectAll($event)"
           [selectAllCount]="getSelectAllCount()"
           [selectAllEnabled]="getSelectAllEnabled()"
+          (rowSelected)="handleNewSelection($event)"
+          (columnSorted)="handleHeaderColumnSort($event)"
+          (selectAllSelected)="handleSelectAll($event)"
+          (focusActionBar)="focusActionBar()"
         ></app-skill-table>
 
         <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">

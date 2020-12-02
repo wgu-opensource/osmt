@@ -11,12 +11,11 @@ import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionSearchService
+import edu.wgu.osmt.collection.EsCollectionRepository
 import edu.wgu.osmt.db.ListFieldUpdate
-import edu.wgu.osmt.elasticsearch.EsCollectionRepository
-import edu.wgu.osmt.elasticsearch.EsJobCodeRepository
-import edu.wgu.osmt.elasticsearch.EsKeywordRepository
-import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
+import edu.wgu.osmt.jobcode.EsJobCodeRepository
 import edu.wgu.osmt.jobcode.JobCode
+import edu.wgu.osmt.keyword.EsKeywordRepository
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import org.assertj.core.api.Assertions.assertThat
@@ -28,7 +27,7 @@ import java.util.*
 
 @Transactional
 class RichSkillSearchServiceTest @Autowired constructor(
-    override val esRichSkillRepository: EsRichSkillRepository,
+    override val richSkillEsRepo: RichSkillEsRepo,
     override val esCollectionRepository: EsCollectionRepository,
     override val esKeywordRepository: EsKeywordRepository,
     override val esJobCodeRepository: EsJobCodeRepository
@@ -41,10 +40,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
     lateinit var keywordRepository: KeywordRepository
 
     @Autowired
-    lateinit var richSkillSearchService: RichSkillSearchService
-
-    @Autowired
-    lateinit var collectionSearchService: CollectionSearchService
+    lateinit var collectionEsRepo: EsCollectionRepository
 
     val authorString = "unit-test-author"
 
@@ -68,7 +64,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
             ), BatchImportRichSkill.user
         )?.toModel()!!
 
-        val elasticModel = richSkillSearchService.esRichSkillRepository.findByUuid(rsd.uuid, Pageable.unpaged())
+        val elasticModel = richSkillEsRepo.findByUuid(rsd.uuid, Pageable.unpaged())
         val esRetrieved = elasticModel.content.first()
 
         assertThat(esRetrieved.uuid).isEqualTo(rsd.uuid)
@@ -110,7 +106,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
         val updateResult = richSkillRepository.update(updateObject, "test-user")
 
         val elasticModel =
-            richSkillSearchService.esRichSkillRepository.findByUuid(updateResult?.uuid.toString(), Pageable.unpaged())
+            richSkillEsRepo.findByUuid(updateResult?.uuid.toString(), Pageable.unpaged())
         val esRetrieved = elasticModel.content.first()
 
         assertThat(esRetrieved.uuid).isEqualTo(rsd.uuid)
@@ -122,11 +118,11 @@ class RichSkillSearchServiceTest @Autowired constructor(
 
 
     fun queryCollectionHits(query: String): List<CollectionDoc> {
-        return collectionSearchService.byApiSearch(ApiSearch(query)).searchHits.map { it.content }
+        return collectionEsRepo.byApiSearch(ApiSearch(query)).searchHits.map { it.content }
     }
 
     fun queryRichSkillHits(query: String): List<RichSkillDoc> {
-        return richSkillSearchService.byApiSearch(ApiSearch(query)).searchHits.map { it.content }
+        return richSkillEsRepo.byApiSearch(ApiSearch(query)).searchHits.map { it.content }
     }
 
     @Test
@@ -134,7 +130,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
         // generate random documents to insert
         (1..100).map {
             TestObjectHelpers.randomRichSkillDoc().also {
-                esRichSkillRepository.save(it)
+                richSkillEsRepo.save(it)
                 esCollectionRepository.saveAll(it.collections)
             }
         }
@@ -145,7 +141,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
             it.copy(collections = cs + collectionDoc)
         }.also {
             esCollectionRepository.saveAll(it.collections)
-            esRichSkillRepository.save(it)
+            richSkillEsRepo.save(it)
         }
 
         fun assertAgainstCollectionDoc(cs: List<CollectionDoc>) {
@@ -156,10 +152,10 @@ class RichSkillSearchServiceTest @Autowired constructor(
         }
 
         val searchByCollectionName =
-            collectionSearchService.byApiSearch(ApiSearch(query = "orange")).searchHits.map { it.content }
+            collectionEsRepo.byApiSearch(ApiSearch(query = "orange")).searchHits.map { it.content }
 
         val searchByCollectionAuthor =
-            collectionSearchService.byApiSearch(ApiSearch(query = "purple")).searchHits.map { it.content }
+            collectionEsRepo.byApiSearch(ApiSearch(query = "purple")).searchHits.map { it.content }
 
         assertThat(searchByCollectionName[0].uuid).isEqualTo(collectionDoc.uuid)
         assertThat(searchByCollectionAuthor[0].uuid).isEqualTo(collectionDoc.uuid)
@@ -182,7 +178,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
         // generate random documents to insert
         (1..100).map {
             TestObjectHelpers.randomRichSkillDoc().also {
-                esRichSkillRepository.save(it)
+                richSkillEsRepo.save(it)
                 esCollectionRepository.saveAll(it.collections)
             }
         }
@@ -195,7 +191,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
         }
 
         esCollectionRepository.saveAll(richSkillDoc.collections)
-        esRichSkillRepository.save(richSkillDoc)
+        richSkillEsRepo.save(richSkillDoc)
 
         assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.name))
         assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.author!!))
@@ -209,7 +205,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
         assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.certifications[richSkillDoc.certifications.indices.random()]))
         assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.employers[richSkillDoc.employers.indices.random()]))
 
-        val searchByCollectionName = richSkillSearchService.byApiSearch(
+        val searchByCollectionName = richSkillEsRepo.byApiSearch(
             ApiSearch(query = richSkillDoc.collections[0].name)
         ).searchHits.map { it.content }
 
@@ -231,12 +227,12 @@ class RichSkillSearchServiceTest @Autowired constructor(
         }
 
         esCollectionRepository.save(associatedCollection)
-        esRichSkillRepository.saveAll(skillsWCollectionIds + nonCollectionSkills)
+        richSkillEsRepo.saveAll(skillsWCollectionIds + nonCollectionSkills)
 
         val collectionRelatedResults =
-            richSkillSearchService.byApiSearch(apiSearch = ApiSearch(), collectionId = associatedCollection.uuid)
+            richSkillEsRepo.byApiSearch(apiSearch = ApiSearch(), collectionId = associatedCollection.uuid)
 
-        val allResults = richSkillSearchService.byApiSearch(apiSearch = ApiSearch())
+        val allResults = richSkillEsRepo.byApiSearch(apiSearch = ApiSearch())
 
         val collectionRelatedSkillIds = collectionRelatedResults.searchHits.map { it.content.uuid }.toSet()
         val allResultsCollectionIds = allResults.searchHits.map { it.content.uuid }.toSet()
@@ -261,12 +257,12 @@ class RichSkillSearchServiceTest @Autowired constructor(
         val otherSkills = (1..100).map { TestObjectHelpers.randomRichSkillDoc().copy(collections = otherCollections) }
         otherCollections = otherCollections.map { it.copy(skillIds = otherSkills.map { it.uuid }) }
 
-        esRichSkillRepository.saveAll(listOf(skill) + otherSkills)
+        richSkillEsRepo.saveAll(listOf(skill) + otherSkills)
         esCollectionRepository.saveAll(listOf(collection) + otherCollections)
 
 
-        val skillSearchResult = richSkillSearchService.byApiSearch(ApiSearch(query = "quest"))
-        val collectionSearchResult = collectionSearchService.byApiSearch(ApiSearch(query = "quest"))
+        val skillSearchResult = richSkillEsRepo.byApiSearch(ApiSearch(query = "quest"))
+        val collectionSearchResult = collectionEsRepo.byApiSearch(ApiSearch(query = "quest"))
 
 
         assertThat(skillSearchResult.searchHits.first().content.uuid).isEqualTo(skill.uuid)
@@ -280,7 +276,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
     fun `Should allow prefix searches on advanced search job codes`() {
         (1..100).map {
             TestObjectHelpers.randomRichSkillDoc().also {
-                esRichSkillRepository.save(it)
+                richSkillEsRepo.save(it)
                 esCollectionRepository.saveAll(it.collections)
             }
         }
@@ -290,10 +286,10 @@ class RichSkillSearchServiceTest @Autowired constructor(
         )
 
         val skillWithJobCodes = TestObjectHelpers.randomRichSkillDoc().copy(jobCodes = jobCodes).also {
-            esRichSkillRepository.save(it)
+            richSkillEsRepo.save(it)
         }
 
-        val searchResult = richSkillSearchService.byApiSearch(
+        val searchResult = richSkillEsRepo.byApiSearch(
             ApiSearch(
                 advanced = ApiAdvancedSearch(
                     occupations = listOf(
@@ -310,7 +306,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
     fun `Should allow prefix searches on keywords`() {
         (1..100).map {
             TestObjectHelpers.randomRichSkillDoc().also {
-                esRichSkillRepository.save(it)
+                richSkillEsRepo.save(it)
                 esCollectionRepository.saveAll(it.collections)
             }
         }
@@ -319,15 +315,15 @@ class RichSkillSearchServiceTest @Autowired constructor(
 
         val skillWithKeywords =
             TestObjectHelpers.randomRichSkillDoc().copy(searchingKeywords = searchingKeywords).also {
-                esRichSkillRepository.save(it)
+                richSkillEsRepo.save(it)
             }
 
         val searchResult =
-            richSkillSearchService.byApiSearch(ApiSearch(advanced = ApiAdvancedSearch(keywords = listOf("doing"))))
+            richSkillEsRepo.byApiSearch(ApiSearch(advanced = ApiAdvancedSearch(keywords = listOf("doing"))))
         val searchResult2 =
-            richSkillSearchService.byApiSearch(ApiSearch(advanced = ApiAdvancedSearch(keywords = listOf("sel"))))
+            richSkillEsRepo.byApiSearch(ApiSearch(advanced = ApiAdvancedSearch(keywords = listOf("sel"))))
         val searchResult3 =
-            richSkillSearchService.byApiSearch(ApiSearch(advanced = ApiAdvancedSearch(keywords = listOf("nada"))))
+            richSkillEsRepo.byApiSearch(ApiSearch(advanced = ApiAdvancedSearch(keywords = listOf("nada"))))
 
         assertThat(searchResult.searchHits.first().content.uuid).isEqualTo(skillWithKeywords.uuid)
         assertThat(searchResult2.searchHits.first().content.uuid).isEqualTo(skillWithKeywords.uuid)
@@ -343,9 +339,9 @@ class RichSkillSearchServiceTest @Autowired constructor(
         val richSkill3 = TestObjectHelpers.randomRichSkillDoc().copy(employers = keywords)
         val richSkill4 = TestObjectHelpers.randomRichSkillDoc().copy(alignments = keywords)
 
-        esRichSkillRepository.saveAll(listOf(richSkill1, richSkill2, richSkill3, richSkill4))
+        richSkillEsRepo.saveAll(listOf(richSkill1, richSkill2, richSkill3, richSkill4))
 
-        val result1 = richSkillSearchService.byApiSearch(
+        val result1 = richSkillEsRepo.byApiSearch(
             ApiSearch(
                 advanced = ApiAdvancedSearch(
                     standards = listOf(
@@ -355,7 +351,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
                 )
             )
         )
-        val result2 = richSkillSearchService.byApiSearch(
+        val result2 = richSkillEsRepo.byApiSearch(
             ApiSearch(
                 advanced = ApiAdvancedSearch(
                     certifications = listOf(
@@ -365,7 +361,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
                 )
             )
         )
-        val result3 = richSkillSearchService.byApiSearch(
+        val result3 = richSkillEsRepo.byApiSearch(
             ApiSearch(
                 advanced = ApiAdvancedSearch(
                     employers = listOf(
@@ -375,7 +371,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
                 )
             )
         )
-        val result4 = richSkillSearchService.byApiSearch(
+        val result4 = richSkillEsRepo.byApiSearch(
             ApiSearch(
                 advanced = ApiAdvancedSearch(
                     alignments = listOf(ApiNamedReference(name = "violet"))

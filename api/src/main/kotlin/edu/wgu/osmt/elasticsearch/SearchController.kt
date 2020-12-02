@@ -6,16 +6,17 @@ import edu.wgu.osmt.api.model.CollectionSortEnum
 import edu.wgu.osmt.api.model.SkillSortEnum
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionSearchService
+import edu.wgu.osmt.collection.EsCollectionRepository
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.richskill.RichSkillSearchService.Companion.DEFAULT_PAGESIZE
+import edu.wgu.osmt.jobcode.EsJobCodeRepository
 import edu.wgu.osmt.jobcode.JobCode
-import edu.wgu.osmt.jobcode.JobCodeSearchService
-import edu.wgu.osmt.keyword.KeywordSearchService
+import edu.wgu.osmt.keyword.EsKeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
+import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillDoc
-import edu.wgu.osmt.richskill.RichSkillSearchService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -28,18 +29,20 @@ import org.springframework.web.util.UriComponentsBuilder
 @Controller
 @Transactional
 class SearchController @Autowired constructor(
-    val richSkillSearchService: RichSkillSearchService,
-    val collectionSearchService: CollectionSearchService,
-    val keywordSearchService: KeywordSearchService,
-    val jobCodeSearchService: JobCodeSearchService,
+    val esKeywordRepository: EsKeywordRepository,
+    val richSkillEsRepo: RichSkillEsRepo,
+    val esCollectionRepository: EsCollectionRepository,
     val appConfig: AppConfig
 ) {
+    @Autowired
+    @Lazy
+    lateinit var esJobCodeRepository: EsJobCodeRepository
 
     @PostMapping(RoutePaths.SEARCH_COLLECTIONS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCollections(
         uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = 50.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
         @RequestParam(
             required = false,
@@ -53,7 +56,7 @@ class SearchController @Autowired constructor(
         val pageable = OffsetPageable(from, size, sortEnum.sort)
 
         val searchHits =
-            collectionSearchService.byApiSearch(apiSearch, publishStatuses, pageable)
+            esCollectionRepository.byApiSearch(apiSearch, publishStatuses, pageable)
 
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", searchHits.totalHits.toString())
@@ -79,7 +82,7 @@ class SearchController @Autowired constructor(
     @ResponseBody
     fun searchSkills(
         uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = 50.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
         @RequestParam(
             required = false,
@@ -93,7 +96,7 @@ class SearchController @Autowired constructor(
         val sortEnum = SkillSortEnum.forValueOrDefault(sort)
         val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum.sort)
 
-        val searchHits = richSkillSearchService.byApiSearch(
+        val searchHits = richSkillEsRepo.byApiSearch(
             apiSearch,
             publishStatuses,
             pageable,
@@ -126,7 +129,7 @@ class SearchController @Autowired constructor(
     @ResponseBody
     fun collectionSkills(
         uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = false, defaultValue = DEFAULT_PAGESIZE.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = 50.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
         @RequestParam(
             required = false,
@@ -145,7 +148,7 @@ class SearchController @Autowired constructor(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = true) query: String
     ): HttpEntity<List<JobCode>> {
-        val searchResults = jobCodeSearchService.jobCodeTypeAheadSearch(query)
+        val searchResults = esJobCodeRepository.typeAheadSearch(query)
 
         return ResponseEntity.status(200).body(searchResults.map { it.content }.toList())
     }
@@ -157,7 +160,7 @@ class SearchController @Autowired constructor(
         @RequestParam(required = true) query: String,
         @RequestParam(required = true) type: String
     ): HttpEntity<List<String>> {
-        val searchResults = keywordSearchService.keywordTypeAheadSearch(query, KeywordTypeEnum.valueOf(type.toLowerCase().capitalize()))
+        val searchResults = esKeywordRepository.typeAheadSearch(query, KeywordTypeEnum.valueOf(type.toLowerCase().capitalize()))
 
         return ResponseEntity.status(200).body(searchResults.mapNotNull { it.content.value }.toList())
     }

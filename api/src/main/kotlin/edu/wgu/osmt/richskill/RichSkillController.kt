@@ -5,7 +5,6 @@ import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.elasticsearch.*
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
 import edu.wgu.osmt.task.*
@@ -24,9 +23,12 @@ import org.springframework.web.util.UriComponentsBuilder
 class RichSkillController @Autowired constructor(
     val richSkillRepository: RichSkillRepository,
     val taskMessageService: TaskMessageService,
-    override val elasticRepository: EsRichSkillRepository,
+    val richSkillEsRepo: RichSkillEsRepo,
     val appConfig: AppConfig
 ): HasAllPaginated<RichSkillDoc> {
+
+    override val elasticRepository = richSkillEsRepo
+
     val keywordDao = KeywordDao.Companion
 
     override val allPaginatedPath: String = RoutePaths.SKILLS_PATH

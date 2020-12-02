@@ -10,11 +10,9 @@ import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.elasticsearch.EsCollectionRepository
-import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
-import edu.wgu.osmt.richskill.RichSkillSearchService
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
+import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RichSkillDoc
@@ -23,6 +21,7 @@ import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -73,14 +72,16 @@ interface CollectionRepository {
 @Repository
 @Transactional
 class CollectionRepositoryImpl @Autowired constructor(
-    val keywordRepository: KeywordRepository,
     val auditLogRepository: AuditLogRepository,
-    val esRichSkillRepository: EsRichSkillRepository,
+    val richSkillEsRepo: RichSkillEsRepo,
     val esCollectionRepository: EsCollectionRepository,
-    val richSkillSearchService: RichSkillSearchService,
-    val collectionSearchService: CollectionSearchService,
     val appConfig: AppConfig
 ) : CollectionRepository {
+
+    @Autowired
+    @Lazy
+    lateinit var keywordRepository: KeywordRepository
+
     override val table = CollectionTable
     override val dao = CollectionDao.Companion
 
@@ -163,7 +164,7 @@ class CollectionRepositoryImpl @Autowired constructor(
 
             // reindex elastic search documents
             esCollectionRepository.save(it.toDoc())
-            esRichSkillRepository.saveAll(it.skills.map { skill -> RichSkillDoc.fromDao(skill, appConfig) })
+            richSkillEsRepo.saveAll(it.skills.map { skill -> RichSkillDoc.fromDao(skill, appConfig) })
         }
 
         changes?.let { it ->
@@ -232,14 +233,14 @@ class CollectionRepositoryImpl @Autowired constructor(
         val add_skill_dao = {skillDao: RichSkillDescriptorDao? ->
             skillDao?.let {
                 CollectionSkills.create(collectionId, skillDao.id.value)
-                esRichSkillRepository.save(RichSkillDoc.fromDao(it, appConfig))
+                richSkillEsRepo.save(RichSkillDoc.fromDao(it, appConfig))
                 modifiedCount += 1
             }
         }
         val remove_skill_dao = {skillDao: RichSkillDescriptorDao? ->
             skillDao?.let {
                 CollectionSkills.delete(collectionId, it.id.value)
-                esRichSkillRepository.save(RichSkillDoc.fromDao(it, appConfig))
+                richSkillEsRepo.save(RichSkillDoc.fromDao(it, appConfig))
                 modifiedCount += 1
             }
         }
@@ -251,7 +252,7 @@ class CollectionRepositoryImpl @Autowired constructor(
             }
             totalCount += task.skillListUpdate.add?.uuids?.size ?: 0
         } else if (task.skillListUpdate.add != null) {
-            val searchHits = richSkillSearchService.byApiSearch(
+            val searchHits = richSkillEsRepo.byApiSearch(
                 task.skillListUpdate.add,
                 task.publishStatuses,
                 Pageable.unpaged()
@@ -270,7 +271,7 @@ class CollectionRepositoryImpl @Autowired constructor(
                 totalCount += 1
             }
         } else if (task.skillListUpdate.remove != null) {
-            val searchHits = richSkillSearchService.byApiSearch(
+            val searchHits = richSkillEsRepo.byApiSearch(
                 task.skillListUpdate.remove,
                 task.publishStatuses,
                 Pageable.unpaged()
@@ -351,7 +352,7 @@ class CollectionRepositoryImpl @Autowired constructor(
                 handle_collection_dao(this.findByUUID(uuid))
             }
         } else {
-            val searchHits = collectionSearchService.byApiSearch(
+            val searchHits = esCollectionRepository.byApiSearch(
                 publishTask.search,
                 publishTask.filterByStatus,
                 Pageable.unpaged()

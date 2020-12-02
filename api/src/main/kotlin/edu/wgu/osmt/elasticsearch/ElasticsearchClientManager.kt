@@ -19,7 +19,7 @@ import java.util.*
 
 
 @Configuration
-@EnableElasticsearchRepositories("edu.wgu.osmt.elasticsearch")
+@EnableElasticsearchRepositories(*["edu.wgu.osmt.elasticsearch"])
 class ElasticsearchClientManager {
     @Autowired
     lateinit var esConfig: EsConfig

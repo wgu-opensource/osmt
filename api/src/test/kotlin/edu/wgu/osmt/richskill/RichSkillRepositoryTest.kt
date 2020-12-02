@@ -18,7 +18,9 @@ import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.collection.Collection
-import edu.wgu.osmt.elasticsearch.*
+import edu.wgu.osmt.collection.EsCollectionRepository
+import edu.wgu.osmt.jobcode.EsJobCodeRepository
+import edu.wgu.osmt.keyword.EsKeywordRepository
 import edu.wgu.osmt.task.PublishTask
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -28,7 +30,7 @@ import java.util.*
 
 @Transactional
 class RichSkillRepositoryTest @Autowired constructor(
-    override val esRichSkillRepository: EsRichSkillRepository,
+    override val richSkillEsRepo: RichSkillEsRepo,
     override val esCollectionRepository: EsCollectionRepository,
     override val esKeywordRepository: EsKeywordRepository,
     override val esJobCodeRepository: EsJobCodeRepository
@@ -39,9 +41,6 @@ class RichSkillRepositoryTest @Autowired constructor(
 
     @Autowired
     lateinit var keywordRepository: KeywordRepository
-
-    @Autowired
-    lateinit var richSkillSearchService: RichSkillSearchService
 
     val userString = "unittestuser"
 

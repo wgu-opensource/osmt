@@ -4,17 +4,20 @@ import edu.wgu.osmt.elasticsearch.OffsetPageable
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.sort.SortBuilders
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
-import org.springframework.stereotype.Service
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
-@Service
-class JobCodeSearchService  @Autowired constructor(
-    val elasticsearchRestTemplate: ElasticsearchRestTemplate
-){
+interface CustomJobCodeRepository{
+    val elasticSearchTemplate: ElasticsearchRestTemplate
+    fun typeAheadSearch(query: String): SearchHits<JobCode>
+}
 
-    fun jobCodeTypeAheadSearch(query: String): SearchHits<JobCode> {
+class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate): CustomJobCodeRepository{
+    override fun typeAheadSearch(query: String): SearchHits<JobCode> {
         val limitedPageable = OffsetPageable(0, 10, null)
         val bq = QueryBuilders.boolQuery()
 
@@ -37,6 +40,13 @@ class JobCodeSearchService  @Autowired constructor(
                 )
         ).minimumShouldMatch(1)
 
-        return elasticsearchRestTemplate.search(nsq.build(), JobCode::class.java)
+        return elasticSearchTemplate.search(nsq.build(), JobCode::class.java)
     }
 }
+
+@Configuration
+@EnableElasticsearchRepositories("edu.wgu.osmt.jobcode")
+class JobCodeEsRepoConfig
+
+
+interface EsJobCodeRepository : ElasticsearchRepository<JobCode, Int>, CustomJobCodeRepository

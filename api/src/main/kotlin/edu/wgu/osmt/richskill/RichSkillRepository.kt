@@ -11,10 +11,9 @@ import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.collection.CollectionSkills
+import edu.wgu.osmt.collection.EsCollectionRepository
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.*
-import edu.wgu.osmt.elasticsearch.EsCollectionRepository
-import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordDao
@@ -24,6 +23,7 @@ import edu.wgu.osmt.task.PublishTask
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -52,15 +52,21 @@ interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
 @Transactional
 class RichSkillRepositoryImpl @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
-    val jobCodeRepository: JobCodeRepository,
-    val keywordRepository: KeywordRepository,
     val collectionRepository: CollectionRepository,
-    val esRichSkillRepository: EsRichSkillRepository,
+    val richSkillEsRepo: RichSkillEsRepo,
     val esCollectionRepository: EsCollectionRepository,
-    val richSkillSearchService: RichSkillSearchService,
     val appConfig: AppConfig
 ) :
     RichSkillRepository {
+
+    @Autowired
+    @Lazy
+    lateinit var jobCodeRepository: JobCodeRepository
+
+    @Autowired
+    @Lazy
+    lateinit var keywordRepository: KeywordRepository
+
     override val dao = RichSkillDescriptorDao.Companion
     override val table = RichSkillDescriptorTable
 
@@ -158,7 +164,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         }
         daoObject?.let {
             esCollectionRepository.saveAll(it.collections.map { it.toDoc() })
-            esRichSkillRepository.save(RichSkillDoc.fromDao(it, appConfig))
+            richSkillEsRepo.save(RichSkillDoc.fromDao(it, appConfig))
         }
         return daoObject
     }
@@ -362,7 +368,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
                 handle_skill_dao(this.findByUUID(uuid))
             }
         } else {
-            val searchHits = richSkillSearchService.byApiSearch(
+            val searchHits = richSkillEsRepo.byApiSearch(
                 publishTask.search,
                 publishTask.filterByStatus,
                 Pageable.unpaged()

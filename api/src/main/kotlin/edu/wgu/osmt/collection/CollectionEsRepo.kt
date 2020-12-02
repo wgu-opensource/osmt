@@ -1,8 +1,8 @@
 package edu.wgu.osmt.collection
 
 import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillDoc
 import org.apache.lucene.search.join.ScoreMode
@@ -11,21 +11,22 @@ import org.elasticsearch.index.query.InnerHitBuilder
 import org.elasticsearch.index.query.MultiMatchQueryBuilder
 import org.elasticsearch.index.query.QueryBuilders
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Configuration
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
-import org.springframework.stereotype.Service
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
+import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
-@Service
-class CollectionSearchService @Autowired constructor(
-    val richSkillEsRepo: RichSkillEsRepo,
-    val esCollectionRepository: EsCollectionRepository,
-    val elasticsearchRestTemplate: ElasticsearchRestTemplate,
-    val appConfig: AppConfig
-){
+
+interface CustomCollectionQueries : FindsAllByPublishStatus<CollectionDoc> {
+    val richSkillEsRepo: RichSkillEsRepo
+
+    fun collectionPropertiesMultiMatch(query: String): MultiMatchQueryBuilder
     fun byApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
@@ -34,6 +35,29 @@ class CollectionSearchService @Autowired constructor(
             50,
             Sort.by("name.keyword").descending()
         )
+    ): SearchHits<CollectionDoc>
+}
+
+class CustomCollectionQueriesImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate, override val richSkillEsRepo: RichSkillEsRepo) :
+    CustomCollectionQueries {
+
+    override val javaClass = CollectionDoc::class.java
+
+    override fun collectionPropertiesMultiMatch(query: String): MultiMatchQueryBuilder {
+        val fields = arrayOf(
+            CollectionDoc::name.name,
+            "${CollectionDoc::name.name}._2gram",
+            "${CollectionDoc::name.name}._3gram",
+            CollectionDoc::author.name
+        )
+
+        return QueryBuilders.multiMatchQuery(query, *fields).type(MultiMatchQueryBuilder.Type.BOOL_PREFIX)
+    }
+
+    override fun byApiSearch(
+        apiSearch: ApiSearch,
+        publishStatus: Set<PublishStatus>,
+        pageable: Pageable
     ): SearchHits<CollectionDoc> {
         val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(Pageable.unpaged())
         val bq = QueryBuilders.boolQuery()
@@ -58,9 +82,9 @@ class CollectionSearchService @Autowired constructor(
             )
 
             // search on collection specific properties
-            collectionMultiPropertyResults = elasticsearchRestTemplate.search(
+            collectionMultiPropertyResults = elasticSearchTemplate.search(
                 NativeSearchQueryBuilder().withQuery(
-                    QueryBuilders.boolQuery().should(esCollectionRepository.collectionPropertiesMultiMatch(apiSearch.query))
+                    QueryBuilders.boolQuery().should(collectionPropertiesMultiMatch(apiSearch.query))
                 ).withPageable(Pageable.unpaged()).withFilter(filter).build(), CollectionDoc::class.java
             ).searchHits.map { it.content.uuid }
 
@@ -102,13 +126,13 @@ class CollectionSearchService @Autowired constructor(
             )
         }
 
-        val results = elasticsearchRestTemplate.search(nsq.build(), RichSkillDoc::class.java)
+        val results = elasticSearchTemplate.search(nsq.build(), RichSkillDoc::class.java)
 
         val innerHitCollectionUuids =
             results.searchHits.mapNotNull { it.getInnerHits("collections")?.searchHits?.mapNotNull { it.content as CollectionDoc } }
                 .flatten().map { it.uuid }.distinct()
 
-        return elasticsearchRestTemplate.search(
+        return elasticSearchTemplate.search(
             NativeSearchQueryBuilder().withQuery(
                 QueryBuilders.termsQuery(
                     "_id",
@@ -117,4 +141,19 @@ class CollectionSearchService @Autowired constructor(
             ).withFilter(filter).withPageable(pageable).build(), CollectionDoc::class.java
         )
     }
+}
+
+@Configuration
+@EnableElasticsearchRepositories("edu.wgu.osmt.collection")
+class CollectionEsRepoConfig
+
+interface EsCollectionRepository : ElasticsearchRepository<CollectionDoc, Int>, CustomCollectionQueries {
+    fun findByUuid(uuid: String, pageable: Pageable): Page<CollectionDoc>
+
+    fun findAllByUuidIn(
+        uuids: List<String>,
+        pageable: Pageable
+    ): Page<CollectionDoc>
+
+    fun findByName(q: String, pageable: Pageable = PageRequest.of(0, 50)): Page<CollectionDoc>
 }

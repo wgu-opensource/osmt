@@ -3,8 +3,11 @@ package edu.wgu.osmt
 import edu.wgu.osmt.auditlog.AuditLogTable
 import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.collection.CollectionTable
-import edu.wgu.osmt.elasticsearch.*
+import edu.wgu.osmt.collection.EsCollectionRepository
+import edu.wgu.osmt.jobcode.EsJobCodeRepository
+import edu.wgu.osmt.keyword.EsKeywordRepository
 import edu.wgu.osmt.keyword.KeywordTable
+import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillDescriptorTable
 import edu.wgu.osmt.richskill.RichSkillJobCodes
 import edu.wgu.osmt.richskill.RichSkillKeywords
@@ -57,14 +60,14 @@ interface HasDatabaseReset {
 
 @Component
 interface HasElasticsearchReset {
-    val esRichSkillRepository: EsRichSkillRepository
+    val richSkillEsRepo: RichSkillEsRepo
     val esCollectionRepository: EsCollectionRepository
     val esKeywordRepository: EsKeywordRepository
     val esJobCodeRepository: EsJobCodeRepository
 
     @BeforeEach
     fun resetElasticsearch(): Unit {
-        esRichSkillRepository.deleteAll()
+        richSkillEsRepo.deleteAll()
         esCollectionRepository.deleteAll()
         esKeywordRepository.deleteAll()
         esJobCodeRepository.deleteAll()

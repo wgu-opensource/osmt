@@ -702,7 +702,7 @@ paths:
       tags:
         - Tasks
 
-  /api/search/jobcode:
+  /api/search/jobcodes:
     get:
       tags:
         - Search
@@ -733,7 +733,7 @@ paths:
 
 
 
-  /api/search/keyword:
+  /api/search/keywords:
     get:
       tags:
         - Search

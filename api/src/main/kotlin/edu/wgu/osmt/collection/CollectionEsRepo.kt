@@ -1,5 +1,6 @@
 package edu.wgu.osmt.collection
 
+import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
@@ -32,7 +33,7 @@ interface CustomCollectionQueries : FindsAllByPublishStatus<CollectionDoc> {
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
         pageable: Pageable = PageRequest.of(
             0,
-            50,
+            PaginationDefaults.size,
             Sort.by("name.keyword").descending()
         )
     ): SearchHits<CollectionDoc>
@@ -147,7 +148,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(override val elasticSea
 @EnableElasticsearchRepositories("edu.wgu.osmt.collection")
 class CollectionEsRepoConfig
 
-interface EsCollectionRepository : ElasticsearchRepository<CollectionDoc, Int>, CustomCollectionQueries {
+interface CollectionEsRepo : ElasticsearchRepository<CollectionDoc, Int>, CustomCollectionQueries {
     fun findByUuid(uuid: String, pageable: Pageable): Page<CollectionDoc>
 
     fun findAllByUuidIn(
@@ -155,5 +156,5 @@ interface EsCollectionRepository : ElasticsearchRepository<CollectionDoc, Int>, 
         pageable: Pageable
     ): Page<CollectionDoc>
 
-    fun findByName(q: String, pageable: Pageable = PageRequest.of(0, 50)): Page<CollectionDoc>
+    fun findByName(q: String, pageable: Pageable = PageRequest.of(0, PaginationDefaults.size)): Page<CollectionDoc>
 }

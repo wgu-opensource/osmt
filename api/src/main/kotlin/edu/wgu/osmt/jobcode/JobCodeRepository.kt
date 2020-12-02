@@ -32,7 +32,7 @@ class JobCodeRepositoryImpl: JobCodeRepository {
 
     @Autowired
     @Lazy
-    lateinit var esJobCodeRepository: EsJobCodeRepository
+    lateinit var jobCodeEsRepo: JobCodeEsRepo
 
     val dao = JobCodeDao.Companion
     override val table = JobCodeTable
@@ -60,6 +60,6 @@ class JobCodeRepositoryImpl: JobCodeRepository {
             creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.code = code
             this.framework = framework
-        }.also { esJobCodeRepository.save(it.toModel()) }
+        }.also { jobCodeEsRepo.save(it.toModel()) }
     }
 }

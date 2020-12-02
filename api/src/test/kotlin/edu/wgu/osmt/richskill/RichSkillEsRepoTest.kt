@@ -5,17 +5,15 @@ import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers
-import edu.wgu.osmt.TestObjectHelpers.keywordGenerator
+import edu.wgu.osmt.TestObjectHelpers.keywordsGenerator
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.collection.CollectionDoc
-import edu.wgu.osmt.collection.CollectionSearchService
-import edu.wgu.osmt.collection.EsCollectionRepository
+import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.db.ListFieldUpdate
-import edu.wgu.osmt.jobcode.EsJobCodeRepository
+import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.jobcode.JobCode
-import edu.wgu.osmt.keyword.EsKeywordRepository
+import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import org.assertj.core.api.Assertions.assertThat
@@ -26,21 +24,14 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Transactional
-class RichSkillSearchServiceTest @Autowired constructor(
+class RichSkillEsRepoTest @Autowired constructor(
     override val richSkillEsRepo: RichSkillEsRepo,
-    override val esCollectionRepository: EsCollectionRepository,
-    override val esKeywordRepository: EsKeywordRepository,
-    override val esJobCodeRepository: EsJobCodeRepository
+    override val collectionEsRepo: CollectionEsRepo,
+    override val keywordEsRepo: KeywordEsRepo,
+    override val jobCodeEsRepo: JobCodeEsRepo,
+    val richSkillRepository: RichSkillRepository,
+    val keywordRepository: KeywordRepository
 ) : SpringTest(), HasDatabaseReset, HasElasticsearchReset {
-
-    @Autowired
-    lateinit var richSkillRepository: RichSkillRepository
-
-    @Autowired
-    lateinit var keywordRepository: KeywordRepository
-
-    @Autowired
-    lateinit var collectionEsRepo: EsCollectionRepository
 
     val authorString = "unit-test-author"
 
@@ -49,8 +40,8 @@ class RichSkillSearchServiceTest @Autowired constructor(
         val name = UUID.randomUUID().toString()
         val statement = UUID.randomUUID().toString()
 
-        val keywords = keywordGenerator(10, KeywordTypeEnum.Keyword)
-        val employers = keywordGenerator(10, KeywordTypeEnum.Employer)
+        val keywords = keywordsGenerator(10, KeywordTypeEnum.Keyword)
+        val employers = keywordsGenerator(10, KeywordTypeEnum.Employer)
 
         val allKeywords = keywords + employers
 
@@ -75,8 +66,8 @@ class RichSkillSearchServiceTest @Autowired constructor(
         val name = UUID.randomUUID().toString()
         val statement = UUID.randomUUID().toString()
 
-        val keywords = keywordGenerator(10, KeywordTypeEnum.Keyword)
-        val employers = keywordGenerator(10, KeywordTypeEnum.Employer)
+        val keywords = keywordsGenerator(10, KeywordTypeEnum.Keyword)
+        val employers = keywordsGenerator(10, KeywordTypeEnum.Employer)
 
         val allKeywords = keywords + employers
 
@@ -94,7 +85,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
         val newStatement = UUID.randomUUID().toString()
 
         val keywordToRemove = allKeywordDao.get(0)
-        val keywordToAdd = keywordGenerator(1, KeywordTypeEnum.Keyword)[0]
+        val keywordToAdd = keywordsGenerator(1, KeywordTypeEnum.Keyword)[0]
         val keywordToAddDao = keywordRepository.create(keywordToAdd.type, keywordToAdd.value)
 
         val updateObject = RsdUpdateObject(
@@ -116,61 +107,8 @@ class RichSkillSearchServiceTest @Autowired constructor(
         assertThat(esRetrieved.statement).isEqualTo(newStatement)
     }
 
-
-    fun queryCollectionHits(query: String): List<CollectionDoc> {
-        return collectionEsRepo.byApiSearch(ApiSearch(query)).searchHits.map { it.content }
-    }
-
     fun queryRichSkillHits(query: String): List<RichSkillDoc> {
         return richSkillEsRepo.byApiSearch(ApiSearch(query)).searchHits.map { it.content }
-    }
-
-    @Test
-    fun `Should be able to query collections across multiple fields`() {
-        // generate random documents to insert
-        (1..100).map {
-            TestObjectHelpers.randomRichSkillDoc().also {
-                richSkillEsRepo.save(it)
-                esCollectionRepository.saveAll(it.collections)
-            }
-        }
-
-        val collectionDoc = TestObjectHelpers.collectionDoc(name = "Name with Orange in it", author = "Ronald Purple")
-        val elasticRichSkillDoc = TestObjectHelpers.randomRichSkillDoc().let {
-            val cs = it.collections
-            it.copy(collections = cs + collectionDoc)
-        }.also {
-            esCollectionRepository.saveAll(it.collections)
-            richSkillEsRepo.save(it)
-        }
-
-        fun assertAgainstCollectionDoc(cs: List<CollectionDoc>) {
-            cs.map {
-                assertThat(it.uuid).isIn(elasticRichSkillDoc.collections.map { it.uuid })
-            }
-            //assertThat(elasticRichSkillDoc.collections.map { it.uuid }).contains(*cs.map { it.uuid }.toTypedArray())
-        }
-
-        val searchByCollectionName =
-            collectionEsRepo.byApiSearch(ApiSearch(query = "orange")).searchHits.map { it.content }
-
-        val searchByCollectionAuthor =
-            collectionEsRepo.byApiSearch(ApiSearch(query = "purple")).searchHits.map { it.content }
-
-        assertThat(searchByCollectionName[0].uuid).isEqualTo(collectionDoc.uuid)
-        assertThat(searchByCollectionAuthor[0].uuid).isEqualTo(collectionDoc.uuid)
-
-        // assertions by rich skill properties
-        val results1 = queryCollectionHits(elasticRichSkillDoc.name)
-        assertAgainstCollectionDoc(results1)
-        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.author!!))
-        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.statement))
-        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.searchingKeywords[elasticRichSkillDoc.searchingKeywords.indices.random()]))
-        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.category!!))
-        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.jobCodes[elasticRichSkillDoc.jobCodes.indices.random()].code))
-        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.standards[elasticRichSkillDoc.standards.indices.random()]))
-        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.certifications[elasticRichSkillDoc.certifications.indices.random()]))
-        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.employers[elasticRichSkillDoc.employers.indices.random()]))
     }
 
     @Test
@@ -179,7 +117,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
         (1..100).map {
             TestObjectHelpers.randomRichSkillDoc().also {
                 richSkillEsRepo.save(it)
-                esCollectionRepository.saveAll(it.collections)
+                collectionEsRepo.saveAll(it.collections)
             }
         }
 
@@ -190,7 +128,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
             assertThat(rsds[0].uuid).isEqualTo(richSkillDoc.uuid)
         }
 
-        esCollectionRepository.saveAll(richSkillDoc.collections)
+        collectionEsRepo.saveAll(richSkillDoc.collections)
         richSkillEsRepo.save(richSkillDoc)
 
         assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.name))
@@ -226,7 +164,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
             TestObjectHelpers.randomRichSkillDoc()
         }
 
-        esCollectionRepository.save(associatedCollection)
+        collectionEsRepo.save(associatedCollection)
         richSkillEsRepo.saveAll(skillsWCollectionIds + nonCollectionSkills)
 
         val collectionRelatedResults =
@@ -258,7 +196,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
         otherCollections = otherCollections.map { it.copy(skillIds = otherSkills.map { it.uuid }) }
 
         richSkillEsRepo.saveAll(listOf(skill) + otherSkills)
-        esCollectionRepository.saveAll(listOf(collection) + otherCollections)
+        collectionEsRepo.saveAll(listOf(collection) + otherCollections)
 
 
         val skillSearchResult = richSkillEsRepo.byApiSearch(ApiSearch(query = "quest"))
@@ -277,7 +215,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
         (1..100).map {
             TestObjectHelpers.randomRichSkillDoc().also {
                 richSkillEsRepo.save(it)
-                esCollectionRepository.saveAll(it.collections)
+                collectionEsRepo.saveAll(it.collections)
             }
         }
 
@@ -307,7 +245,7 @@ class RichSkillSearchServiceTest @Autowired constructor(
         (1..100).map {
             TestObjectHelpers.randomRichSkillDoc().also {
                 richSkillEsRepo.save(it)
-                esCollectionRepository.saveAll(it.collections)
+                collectionEsRepo.saveAll(it.collections)
             }
         }
 

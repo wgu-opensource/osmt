@@ -4,7 +4,6 @@ import edu.wgu.osmt.elasticsearch.OffsetPageable
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.sort.SortBuilders
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Configurable
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
 import org.springframework.data.elasticsearch.core.SearchHits
@@ -49,4 +48,4 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
 @EnableElasticsearchRepositories("edu.wgu.osmt.keyword")
 class KeywordEsRepoConfig
 
-interface EsKeywordRepository : ElasticsearchRepository<Keyword, Int>, CustomKeywordRepository
+interface KeywordEsRepo : ElasticsearchRepository<Keyword, Int>, CustomKeywordRepository

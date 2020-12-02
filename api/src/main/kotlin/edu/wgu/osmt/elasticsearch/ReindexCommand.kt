@@ -1,11 +1,11 @@
 package edu.wgu.osmt.elasticsearch
 
 import edu.wgu.osmt.collection.CollectionRepository
-import edu.wgu.osmt.collection.EsCollectionRepository
+import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.jobcode.EsJobCodeRepository
+import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.jobcode.JobCodeRepository
-import edu.wgu.osmt.keyword.EsKeywordRepository
+import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillDoc
@@ -36,13 +36,13 @@ class ReindexCommand: CommandLineRunner {
     lateinit var richSkillEsRepo: RichSkillEsRepo
 
     @Autowired
-    lateinit var esCollectionRepository: EsCollectionRepository
+    lateinit var collectionEsRepo: CollectionEsRepo
 
     @Autowired
-    lateinit var esJobCodeRepository: EsJobCodeRepository
+    lateinit var jobCodeEsRepo: JobCodeEsRepo
 
     @Autowired
-    lateinit var esKeywordRepository: EsKeywordRepository
+    lateinit var keywordEsRepo: KeywordEsRepo
 
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository
@@ -67,17 +67,17 @@ class ReindexCommand: CommandLineRunner {
 
             logger.info("Re-indexing Collections")
             collectionRepository.findAll().map{
-                esCollectionRepository.save(it.toDoc())
+                collectionEsRepo.save(it.toDoc())
             }
 
             logger.info("Re-indexing Keywords")
             keywordRepository.findAll().map{
-                esKeywordRepository.save(it.toModel())
+                keywordEsRepo.save(it.toModel())
             }
 
             logger.info("Re-indexing JobCodes")
             jobCodeRepository.findAll().map{
-                esJobCodeRepository.save(it.toModel())
+                jobCodeEsRepo.save(it.toModel())
             }
         }
 

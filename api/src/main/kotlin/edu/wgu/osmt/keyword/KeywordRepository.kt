@@ -47,7 +47,7 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
 
     @Autowired
     @Lazy
-    lateinit var esKeywordRepository: EsKeywordRepository
+    lateinit var keywordEsRepo: KeywordEsRepo
 
     override val dao = KeywordDao.Companion
     override val table = KeywordTable
@@ -85,6 +85,6 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
             this.type = type
             this.value = value
             this.uri = uri
-        }.also { esKeywordRepository.save(it.toModel()) } else null
+        }.also { keywordEsRepo.save(it.toModel()) } else null
     }
 }

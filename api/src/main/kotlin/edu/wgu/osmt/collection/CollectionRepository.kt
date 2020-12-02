@@ -74,7 +74,7 @@ interface CollectionRepository {
 class CollectionRepositoryImpl @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
     val richSkillEsRepo: RichSkillEsRepo,
-    val esCollectionRepository: EsCollectionRepository,
+    val collectionEsRepo: CollectionEsRepo,
     val appConfig: AppConfig
 ) : CollectionRepository {
 
@@ -163,7 +163,7 @@ class CollectionRepositoryImpl @Autowired constructor(
             applyUpdate(it, updateObject)
 
             // reindex elastic search documents
-            esCollectionRepository.save(it.toDoc())
+            collectionEsRepo.save(it.toDoc())
             richSkillEsRepo.saveAll(it.skills.map { skill -> RichSkillDoc.fromDao(skill, appConfig) })
         }
 
@@ -285,7 +285,7 @@ class CollectionRepositoryImpl @Autowired constructor(
 
         // update affected elasticsearch indexes
         this.findByUUID(collectionUuid)?.let {
-            esCollectionRepository.save(it.toDoc())
+            collectionEsRepo.save(it.toDoc())
         }
 
         return ApiBatchResult(
@@ -352,7 +352,7 @@ class CollectionRepositoryImpl @Autowired constructor(
                 handle_collection_dao(this.findByUUID(uuid))
             }
         } else {
-            val searchHits = esCollectionRepository.byApiSearch(
+            val searchHits = collectionEsRepo.byApiSearch(
                 publishTask.search,
                 publishTask.filterByStatus,
                 Pageable.unpaged()

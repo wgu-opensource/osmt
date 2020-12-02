@@ -11,7 +11,7 @@ import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.collection.CollectionSkills
-import edu.wgu.osmt.collection.EsCollectionRepository
+import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.*
 import edu.wgu.osmt.jobcode.JobCodeDao
@@ -54,7 +54,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
     val collectionRepository: CollectionRepository,
     val richSkillEsRepo: RichSkillEsRepo,
-    val esCollectionRepository: EsCollectionRepository,
+    val collectionEsRepo: CollectionEsRepo,
     val appConfig: AppConfig
 ) :
     RichSkillRepository {
@@ -163,7 +163,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
                 )
         }
         daoObject?.let {
-            esCollectionRepository.saveAll(it.collections.map { it.toDoc() })
+            collectionEsRepo.saveAll(it.collections.map { it.toDoc() })
             richSkillEsRepo.save(RichSkillDoc.fromDao(it, appConfig))
         }
         return daoObject

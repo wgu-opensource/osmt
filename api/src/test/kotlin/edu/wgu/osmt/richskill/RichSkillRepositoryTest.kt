@@ -18,9 +18,9 @@ import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.collection.Collection
-import edu.wgu.osmt.collection.EsCollectionRepository
-import edu.wgu.osmt.jobcode.EsJobCodeRepository
-import edu.wgu.osmt.keyword.EsKeywordRepository
+import edu.wgu.osmt.collection.CollectionEsRepo
+import edu.wgu.osmt.jobcode.JobCodeEsRepo
+import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.task.PublishTask
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -31,9 +31,9 @@ import java.util.*
 @Transactional
 class RichSkillRepositoryTest @Autowired constructor(
     override val richSkillEsRepo: RichSkillEsRepo,
-    override val esCollectionRepository: EsCollectionRepository,
-    override val esKeywordRepository: EsKeywordRepository,
-    override val esJobCodeRepository: EsJobCodeRepository
+    override val collectionEsRepo: CollectionEsRepo,
+    override val keywordEsRepo: KeywordEsRepo,
+    override val jobCodeEsRepo: JobCodeEsRepo
 ) : SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset  {
 
     @Autowired

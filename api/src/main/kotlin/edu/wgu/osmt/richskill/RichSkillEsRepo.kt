@@ -1,5 +1,6 @@
 package edu.wgu.osmt.richskill
 
+import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.db.PublishStatus
@@ -220,6 +221,6 @@ class RichSkillEsRepoConfig
 interface RichSkillEsRepo : ElasticsearchRepository<RichSkillDoc, Int>, CustomRichSkillQueries {
     fun findByUuid(
         uuid: String,
-        pageable: Pageable = PageRequest.of(0, 50, Sort.by("name.keyword").descending())
+        pageable: Pageable = PageRequest.of(0, PaginationDefaults.size, Sort.by("name.keyword").descending())
     ): Page<RichSkillDoc>
 }

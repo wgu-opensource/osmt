@@ -24,7 +24,7 @@ object RoutePaths {
 
     const val SEARCH_JOBCODES_PATH = "$SEARCH_PATH/jobcodes"
 
-    const val SEARCH_KEYWORDS_PATH = "$SEARCH_PATH/keyword"
+    const val SEARCH_KEYWORDS_PATH = "$SEARCH_PATH/keywords"
 
     object QueryParams {
         const val FROM = "from"

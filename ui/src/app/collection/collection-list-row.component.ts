@@ -34,4 +34,14 @@ export class CollectionListRowComponent implements OnInit {
     action.fire(this.collection)
     return false
   }
+
+  focusFirstColumnInRow(): boolean {
+    const ref = document.getElementById(`${this.id}-header-name`)
+    if (ref) {
+      ref.focus()
+      return true
+    } else {
+      return false
+    }
+  }
 }

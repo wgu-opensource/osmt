@@ -11,6 +11,7 @@ import {ApiSortOrder} from "../ApiSkill";
 import {Router} from "@angular/router";
 import {QuickLinksHelper} from "../../core/quick-links-helper";
 import {ExtrasSelectedSkillsState} from "../../collection/add-skills-collection.component";
+import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component";
 
 
 @Component({
@@ -23,6 +24,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   size = 50
 
   @ViewChild("titleHeading") titleElement!: ElementRef
+  @ViewChild(TableActionBarComponent) tableActionBar!: TableActionBarComponent
 
 
   resultsLoaded: Observable<PaginatedSkills> | undefined
@@ -335,5 +337,9 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
 
   removeFromCollection(skill?: ApiSkillSummary): void {
+  }
+
+  focusActionBar(): void {
+    this.tableActionBar.focus()
   }
 }

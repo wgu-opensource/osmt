@@ -16,10 +16,10 @@ export class SkillListRowComponent implements OnInit {
   @Input() isSelected = false
   @Input() id = ""
   @Input() nextId = ""
+  @Input() rowActions: TableActionDefinition[] = []
 
   @Output() rowSelected = new EventEmitter<ApiSkillSummary>()
-
-  @Input() rowActions: TableActionDefinition[] = []
+  @Output() focusActionBar = new EventEmitter<void>()
 
   upIcon = SvgHelper.path(SvgIcon.ICON_UP)
   checkIcon = SvgHelper.path(SvgIcon.CHECK)

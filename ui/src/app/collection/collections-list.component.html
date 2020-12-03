@@ -39,6 +39,7 @@
           (selectAllSelected)="handleSelectAll($event)"
           [selectAllCount]="getSelectAllCount()"
           [selectAllEnabled]="getSelectAllEnabled()"
+          (focusActionBar)="focusActionBar()"
         ></app-collection-table>
 
         <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">

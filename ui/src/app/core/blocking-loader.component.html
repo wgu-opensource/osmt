@@ -1,0 +1,19 @@
+
+
+<div *ngIf="loaderVisible; else justContent" class="l-loader">
+  <div class="l-loader-x-loader">
+    <div class="m-loader">
+      <div class="m-loader-x-body">
+        <div class="m-loader-x-spinner"></div>
+        <p *ngIf="messageVisible" class="m-loader-x-message">{{message}}</p>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+</div>
+
+<ng-template #justContent>
+  <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+</ng-template>
+
+<ng-template #contentTemplate><ng-content></ng-content></ng-template>

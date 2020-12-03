@@ -22,7 +22,7 @@
           </div>
 
           <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
-            {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">RSDs contain</ng-template><ng-template #singular>RSD containing</ng-template> the search term
+            {{totalCount}} <ng-template [ngIf]="results?.skills.length > 1" [ngIfElse]="singular">RSDs contain</ng-template><ng-template #singular>RSD containing</ng-template> the search term
             <span class="t-type-bodyLargeBold t-color-text1">{{searchQuery}}</span>.
             <ng-template [ngIf]="totalCount > 0">
               Viewing {{firstRecordNo}}-{{lastRecordNo}}.
@@ -43,12 +43,18 @@
         <app-skill-table
           *ngIf="!emptyResults"
           [items]="results.skills"
+          [currentSort]="columnSort"
+          [selectAllEnabled]="true"
           [rowActions]="rowActions()"
-          [selectAllEnabled]="false"
+          [selectAllCount]="totalCount"
+          (rowSelected)="handleNewSelection($event)"
+          (columnSorted)="handleHeaderColumnSort($event)"
+          (selectAllSelected)="handleSelectAll($event)"
+          (focusActionBar)="focusActionBar()"
         ></app-skill-table>
 
         <app-empty-message *ngIf="emptyResults">
-          <p class="m-emptyMessage-x-message">What collection needs this skill?</p>
+          <p class="m-emptyMessage-x-message">Use search to find and select RSDs to add.</p>
         </app-empty-message>
       </app-blocking-loader>
     </div>
@@ -61,6 +67,11 @@
 
   </div>
 
+  <div *ngIf="actionsVisible()" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
+    <div class="l-container l-container-tablet">
+      <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
+    </div>
+  </div>
 
 </div>
 

@@ -1,9 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {Observable} from "rxjs";
-import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
+import {ApiSearch, ApiSkillListUpdate, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
 import {FormControl, FormGroup} from "@angular/forms";
-import {ApiSortOrder} from "../richskill/ApiSkill";
-import {PublishStatus} from "../PublishStatus";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Title} from "@angular/platform-browser";
 import {Location} from "@angular/common";
@@ -13,41 +11,38 @@ import {ApiCollection} from "./ApiCollection";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
 import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
+import {SkillsListComponent} from "../richskill/list/skills-list.component";
+import {ApiTaskResult} from "../task/ApiTaskResult";
 
 @Component({
   selector: "app-collection-skill-search",
   templateUrl: "./collection-skill-search.component.html"
 })
-export class CollectionSkillSearchComponent implements OnInit {
+export class CollectionSkillSearchComponent extends SkillsListComponent implements OnInit {
   uuidParam?: string
   collection?: ApiCollection
 
-  from = 0
-  size = 50
-
   collectionLoaded?: Observable<ApiCollection>
-  resultsLoaded: Observable<PaginatedSkills> | undefined
-  results: PaginatedSkills | undefined
+  collectionUpdated?: Observable<ApiTaskResult>
 
   searchForm = new FormGroup({
     search: new FormControl("")
   })
+  multiplePagesSelected: boolean = false
 
   public get searchQuery(): string {
     return this.searchForm.get("search")?.value ?? ""
   }
-
-  columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
-  selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published])
 
   constructor(protected router: Router,
               protected titleService: Title,
               protected route: ActivatedRoute,
               protected location: Location,
               protected collectionService: CollectionService,
-              protected skillService: RichSkillService,
+              protected richSkillService: RichSkillService,
               protected toastService: ToastService
   ) {
+    super(router, richSkillService, toastService)
     this.titleService.setTitle("Add RSDs to Collection")
     this.uuidParam = this.route.snapshot.paramMap.get("uuid") || undefined
     if (this.uuidParam != null) {
@@ -76,12 +71,8 @@ export class CollectionSkillSearchComponent implements OnInit {
     }
 
     const apiSearch = new ApiSearch({query})
-    this.resultsLoaded = this.skillService.searchSkills(apiSearch, this.size, this.from, this.selectedFilters, this.columnSort)
+    this.resultsLoaded = this.richSkillService.searchSkills(apiSearch, this.size, this.from, this.selectedFilters, this.columnSort)
     this.resultsLoaded.subscribe(it => this.setResults(it))
-  }
-
-  protected setResults(results: PaginatedSkills): void {
-    this.results = results
   }
 
   clearSearch(): boolean {
@@ -89,64 +80,59 @@ export class CollectionSkillSearchComponent implements OnInit {
     return false
   }
 
-  handleFiltersChanged(newFilters: Set<PublishStatus>): void {
-    this.selectedFilters = newFilters
-    this.loadNextPage()
-  }
-
-  handlePageClicked(newPageNo: number): void {
-    this.from = (newPageNo - 1) * this.size
-    this.loadNextPage()
-  }
-
-  handleHeaderColumnSort(sort: ApiSortOrder): void {
-    this.columnSort = sort
-    this.from = 0
-    this.loadNextPage()
-  }
-
-  get totalCount(): number {
-    return this.results?.totalCount ?? 0
-  }
-
-  get curPageCount(): number {
-    return this.results?.skills.length ?? 0
-  }
-
-  get emptyResults(): boolean {
-    return this.curPageCount < 1
-  }
-
-  get isPlural(): boolean {
-    return this.totalCount > 1
-  }
-
-  get firstRecordNo(): number {
-    return this.from + 1
-  }
-  get lastRecordNo(): number {
-    return Math.min(this.from + this.curPageCount, this.totalCount)
-  }
-
-  get totalPageCount(): number {
-    return Math.ceil(this.totalCount / this.size)
-  }
-  get currentPageNo(): number {
-    return Math.floor(this.from / this.size) + 1
-  }
-
   rowActions(): TableActionDefinition[] {
     return [
       new TableActionDefinition({
         label: "Add to Collection",
-        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleSelectSkill(action, skill),
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
       })
     ]
   }
 
-  private handleSelectSkill(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    console.log("selected skill", skill)
+  actionsVisible(): boolean {
+    return this.results !== undefined
+  }
+
+  tableActions(): TableActionDefinition[] {
+    return [
+      new TableActionDefinition({
+        label: "Back to Top",
+        icon: "up",
+        offset: true,
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickBackToTop(action, skill),
+      }),
+      new TableActionDefinition({
+        label: "Add to Collection",
+        icon: "collection",
+        primary: true,
+        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
+      })
+    ]
+  }
+
+  protected handleClickAddCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    const apiSearch = this.getApiSearch(skill)
+    const selectedCount = this.multiplePagesSelected ? this.totalCount : this.selectedSkills?.length ?? 1
+
+    this.toastService.showBlockingLoader()
+    this.collectionUpdated = this.collectionService.updateSkills(this.uuidParam!, new ApiSkillListUpdate({add: apiSearch}))
+    this.collectionUpdated.subscribe(result => {
+      if (result) {
+        this.toastService.hideBlockingLoader()
+        const message = `You added ${selectedCount} RSD${selectedCount ? "s" : ""} to the collection ${this.collection?.name}.`
+        this.toastService.showToast("Success!", message)
+      }
+    })
 
     return false
+  }
+
+  getApiSearch(skill?: ApiSkillSummary): ApiSearch | undefined {
+    return (this.multiplePagesSelected) ? new ApiSearch({query: this.searchQuery}) : super.getApiSearch(skill)
+  }
+
+  handleSelectAll(selectAllChecked: boolean): void {
+    this.multiplePagesSelected = this.totalPageCount > 1
   }
 }

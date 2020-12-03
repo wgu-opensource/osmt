@@ -28,7 +28,7 @@
           placeholder="Health Education Development"
           [includePlaceholder]="!this.skillUuid"
           required="true"
-          errorMessage="Name required"
+          [errorMessage]="nameErrorMessage()"
         >
         </app-formfield-text>
 

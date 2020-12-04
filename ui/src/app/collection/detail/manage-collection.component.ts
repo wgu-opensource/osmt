@@ -149,11 +149,11 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         callback: () => this.unarchiveAction(),
         visible: () => this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted
       }),
-      // new TableActionDefinition({
-      //   label: "Add RSDs to This Collection",
-      //   icon: this.addIcon,
-      //   callback: () => this.addSkillsAction(),
-      // }),
+      new TableActionDefinition({
+        label: "Add RSDs to This Collection",
+        icon: this.addIcon,
+        callback: () => this.addSkillsAction(),
+      }),
     )
     return actions
   }
@@ -211,7 +211,9 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     })
   }
 
-  addSkillsAction(): void {}
+  addSkillsAction(): void {
+    this.router.navigate([`/collections/${this.collection?.uuid}/add-skills`])
+  }
 
 
   getApiSearch(skill?: ApiSkillSummary): ApiSearch | undefined {

@@ -138,21 +138,26 @@
 
     <div class="l-stickySidebar-x-sidebar">
       <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
-        <!-- @l-actionbarvertical--with-message -->
         <div class="l-actionBarVertical">
-          <div class="t-hidden-desktopMax">
-            <div class="l-actionBarVertical-x-action">
-              <app-formfield-submit
-                [formGroup]="skillForm"
-                [observables]="[skillSaved]"
-                (errorsOccurred)="handleFormErrors($event)"
-              ></app-formfield-submit>
-            </div>
 
-            <nav class="m-quickLinks" aria-labelledby="save-quicklinks">
-              <h3 class="t-visuallyHidden" id="save-quicklinks">Quick Links</h3>
-              <a (click)="scrollToTop()">Back to top</a>
-            </nav>
+          <div class="l-actionBarVertical-x-message" *ngIf="!skillForm.valid">
+            <p>Additional information required before you can save. Go to <a class="t-type-bodyLink t-link" (click)="handleClickMissingFields()">first required missing field</a>.</p>
+          </div>
+
+          <div class="l-actionBarVertical-x-action">
+            <app-formfield-submit
+              [formGroup]="skillForm"
+              [observables]="[skillSaved]"
+              (errorsOccurred)="handleFormErrors($event)"
+            ></app-formfield-submit>
+          </div>
+
+          <nav class="m-quickLinks" aria-labelledby="save-quicklinks">
+            <h3 class="t-visuallyHidden" id="save-quicklinks">Quick Links</h3>
+            <a (click)="scrollToTop()">Back to top</a>
+          </nav>
+
+          <div class="l-actionBarVertical-x-items">
 
             <a class="m-actionBarItem" (click)="handleClickCancel()">
               <span class="m-actionBarItem-x-icon">
@@ -162,10 +167,7 @@
               </span>
               <span class="m-actionBarItem-x-text">Cancel</span>
             </a>
-          </div>
 
-          <div class="m-actionBartVertical-x-message" *ngIf="!skillForm.valid">
-            <p>Additional information required before you can save. Go to <a class="t-type-bodyLink t-link" (click)="handleClickMissingFields()">first required missing field</a>.</p>
           </div>
 
         </div>

@@ -28,7 +28,7 @@ To override specific properties with JVM arguments when developing with Maven, p
 
 Example:  
  ```
- mvn -Dspring-boot.run.profiles=dev,apiserver,oauth \
+ mvn -Dspring-boot.run.profiles=dev,apiserver,oauth2-okta \
  -Dspring-boot.run.jvmArguments="-Dspring.flyway.enabled=false" \
  spring-boot:run
 ```
@@ -43,14 +43,18 @@ Example:
 | ---                       | ---                                                     |
 | import                    | runs the batch import process, expects `--csv=` argument and `--import-type=` argument | 
 | apiserver                 | runs the api server                                     |
-| oauth2                    | includes required configuration for oauth2 oidc with okta|
+| oauth2-okta               | includes required configuration for OAuth2 OIDC with Okta|
 | reindex                   | runs the Elasticsearch re-index process |
 
 For example to run the import component with a dev configuration, set active profiles by passing a JVM argument like so:
 `-Dspring-boot.run.profiles=dev,import`
 
-### OAuth2 Okta configuration
-To use okta as your OAuth2 provider you will need to provide the following properties when running the application. These can be found in your okta server configuration.
+### OAuth2 
+An example profile and Spring Boot components (edu.wgu.osmt.security.SecurityConfig) are provided to support OAuth2 with Okta. To use a different provider, create a separate Spring Boot profile to contain the configuration.  
+Additional Spring Boot components may also be required to support the chosen provider.
+
+#### Okta configuration
+To use Okta as your OAuth2 provider, include `oauth2-okta` in the list of Spring Boot profiles. You will need to provide the following properties when running the application. These can be found in your Okta server configuration.
  * okta.oauth2.clientId      
  * okta.oauth2.clientSecret
  * okta.oauth2.audience

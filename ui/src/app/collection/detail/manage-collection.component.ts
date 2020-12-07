@@ -171,22 +171,17 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   publishAction(): void {
     if (this.uuidParam === undefined) { return }
 
-    // TODO: once OSMT-326 is complete, re-enable publishing guards
-    if (confirm("Confirm that you want to publish the selected collection. Once published, a collection can't be unpublished.")) {
-      this.submitCollectionStatusChange(PublishStatus.Published, "published")
-    }
-
-    // this.toastService.showBlockingLoader()
-    // this.collectionService.collectionReadyToPublish(this.uuidParam).subscribe(ready => {
-    //   this.toastService.hideBlockingLoader()
-    //   if (ready) {
-    //       if (confirm("Confirm that you want to publish the selected collection. Once published, a collection can't be unpublished.")) {
-    //         this.submitCollectionStatusChange(PublishStatus.Published, "published")
-    //       }
-    //   } else {
-    //     this.router.navigate([`/collections/${this.uuidParam}/publish`])
-    //   }
-    // })
+    this.toastService.showBlockingLoader()
+    this.collectionService.collectionReadyToPublish(this.uuidParam).subscribe(ready => {
+      this.toastService.hideBlockingLoader()
+      if (ready) {
+          if (confirm("Confirm that you want to publish the selected collection. Once published, a collection can't be unpublished.")) {
+            this.submitCollectionStatusChange(PublishStatus.Published, "published")
+          }
+      } else {
+        this.router.navigate([`/collections/${this.uuidParam}/publish`])
+      }
+    })
   }
 
   archiveAction(): void {

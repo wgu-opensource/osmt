@@ -266,6 +266,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
 
+  /api/skills/{uuid}/log:
+    parameters:
+      - name: uuid
+        in: path
+        description: uuid of skill
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: size
+        description: number of skills to return per page
+        schema:
+          type: number
+          default: 50
+      - in: query
+        name: from
+        description: zero-indexed offset from beginning of records
+        schema:
+          type: number
+          default: 0
+      - in: query
+        name: sort
+        schema:
+          $ref: '#/components/schemas/SortOrder'
+    get:
+      tags:
+        - Skills
+      summary: Retrieve skill log
+      description: Retrieve the audit log entries of a skill
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SkillAuditLog'
+
+
   /api/skills/publish:
     post:
       tags:
@@ -535,6 +575,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+
+  /api/collections/{uuid}/log:
+    parameters:
+      - name: uuid
+        in: path
+        description: uuid of a collection
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: size
+        description: number of skills to return per page
+        schema:
+          type: number
+          default: 50
+      - in: query
+        name: from
+        description: zero-indexed offset from beginning of records
+        schema:
+          type: number
+          default: 0
+      - in: query
+        name: sort
+        schema:
+          $ref: '#/components/schemas/SortOrder'
+    get:
+      tags:
+        - Skills
+      summary: Retrieve collection log
+      description: Retrieve the audit log entries of a collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CollectionAuditLog'
 
   /api/collections/{uuid}/skills:
     post:
@@ -1218,6 +1297,14 @@ components:
         - alignment
         - employer
         - author
+
+    # TODO add in properties
+    SkillAuditLog:
+      type: object
+
+    # TODO add in properties
+    CollectionAuditLog:
+      type: object
 
 
 

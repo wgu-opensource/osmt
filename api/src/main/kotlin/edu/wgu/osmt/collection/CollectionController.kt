@@ -3,6 +3,8 @@ package edu.wgu.osmt.collection
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.auditlog.AuditLog
+import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.*
@@ -26,6 +28,7 @@ class CollectionController @Autowired constructor(
     val collectionRepository: CollectionRepository,
     val richSkillRepository: RichSkillRepository,
     val taskMessageService: TaskMessageService,
+    val auditLogRepository: AuditLogRepository,
     override val elasticRepository: EsCollectionRepository,
     val appConfig: AppConfig
 ): HasAllPaginated<CollectionDoc> {
@@ -151,6 +154,16 @@ class CollectionController @Autowired constructor(
         taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
         val tr = TaskResult.fromTask(task)
         return ResponseEntity.status(202).headers(responseHeaders).body(tr)
+    }
+
+    @GetMapping(RoutePaths.COLLECTION_AUDIT_LOG, produces = ["application/json"])
+    fun collectionAuditLog(
+        @PathVariable uuid: String,
+        size: Int,
+        from: Int,
+        sort: String?
+    ): HttpEntity<String> {
+        return ResponseEntity.status(200).body("")
     }
 
 }

@@ -147,7 +147,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         changes?.let { it ->
             if (it.isNotEmpty())
-                auditLogRepository.insert(
+                auditLogRepository.create(
                     AuditLog.fromAtomicOp(
                         table,
                         updateObject.id,

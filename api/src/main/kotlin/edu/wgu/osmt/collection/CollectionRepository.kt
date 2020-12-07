@@ -18,7 +18,6 @@ import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RichSkillDoc
-import edu.wgu.osmt.richskill.RsdUpdateObject
 import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.jetbrains.exposed.sql.SizedIterable
@@ -168,7 +167,7 @@ class CollectionRepositoryImpl @Autowired constructor(
 
         changes?.let { it ->
             if (it.isNotEmpty())
-                auditLogRepository.insert(
+                auditLogRepository.create(
                     AuditLog.fromAtomicOp(
                         table,
                         updateObject.id,

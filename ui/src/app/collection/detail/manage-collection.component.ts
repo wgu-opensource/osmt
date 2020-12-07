@@ -242,9 +242,6 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         this.submitSkillRemoval(this.apiSearch)
       }
     }
-
-
-
   }
 
   submitSkillRemoval(apiSearch?: ApiSearch): void {

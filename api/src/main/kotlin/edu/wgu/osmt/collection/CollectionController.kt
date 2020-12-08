@@ -5,6 +5,7 @@ import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
+import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.*
@@ -159,11 +160,15 @@ class CollectionController @Autowired constructor(
     @GetMapping(RoutePaths.COLLECTION_AUDIT_LOG, produces = ["application/json"])
     fun collectionAuditLog(
         @PathVariable uuid: String,
-        size: Int,
-        from: Int,
+        @RequestParam(required = false, defaultValue = SearchService.DEFAULT_PAGESIZE.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = "0") from: Int,
         sort: String?
-    ): HttpEntity<String> {
-        return ResponseEntity.status(200).body("")
-    }
+    ): HttpEntity<List<AuditLog>> {
+        val pageable = OffsetPageable(from, size, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateAsc.apiValue).sort)
 
+        val collection = collectionRepository.findByUUID(uuid)
+
+        val sizedIterable = auditLogRepository.findByTableAndId(CollectionTable.tableName, entityId = collection!!.id.value, offsetPageable = pageable)
+        return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
+    }
 }

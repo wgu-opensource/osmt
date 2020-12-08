@@ -1,5 +1,6 @@
 package edu.wgu.osmt.richskill
 
+import edu.wgu.osmt.auditlog.Change
 import edu.wgu.osmt.db.*
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
@@ -76,7 +77,7 @@ data class RsdUpdateObject(
     val jobCodes: ListFieldUpdate<JobCodeDao>? = null,
     val collections: ListFieldUpdate<CollectionDao>? = null,
     override val publishStatus: PublishStatus? = null
-) : UpdateObject<RichSkillDescriptorDao>, HasPublishStatus {
+) : UpdateObject<RichSkillDescriptorDao>, HasPublishStatus, Compares<RichSkillDescriptorDao> {
 
     init {
         validate(this) {
@@ -93,77 +94,113 @@ data class RsdUpdateObject(
         }
     }
 
-    fun compareName(that: RichSkillDescriptorDao): JSONObject? {
+    fun compareName(that: RichSkillDescriptorDao): Change? {
         return name?.let {
-            compare(that::name, this::name, stringOutput)
+            change(that::name.name, that.name, it)
         }
     }
 
-    fun compareStatement(that: RichSkillDescriptorDao): JSONObject? {
+    fun compareStatement(that: RichSkillDescriptorDao): Change? {
         return statement?.let {
-            compare(that::statement, this::statement, stringOutput)
+            change(that::statement.name, that.statement, it)
         }
     }
 
-    fun compareCategory(that: RichSkillDescriptorDao): JSONObject? {
+    fun compareCategory(that: RichSkillDescriptorDao): Change? {
         return category?.let {
             if (that.category?.value?.let { id } != it.t?.id?.value) {
-                jsonUpdateStatement(that::category.name, that.category?.let { it.value }, it.t?.value)
+                change(that::category.name, that.category?.let { it.value }, it.t?.value)
             } else null
         }
     }
 
-    fun compareAuthor(that: RichSkillDescriptorDao): JSONObject? {
+    fun compareAuthor(that: RichSkillDescriptorDao): Change? {
         return author?.let {
             if (that.author?.value?.let { id } != it.t?.id?.value) {
-                jsonUpdateStatement(that::author.name, that.author?.value?.let { it }, it.t?.value)
+                change(that::author.name, that.author?.value?.let { it }, it.t?.value)
             } else null
         }
     }
 
-    fun comparePublishStatus(that: RichSkillDescriptorDao): JSONObject? {
+    fun comparePublishStatus(that: RichSkillDescriptorDao): Change? {
         return publishStatus?.let {
-            jsonUpdateStatement(that::publishStatus.name, that.publishStatus().name, it.name)
+            change(that::publishStatus.name, that.publishStatus().name, it.name)
         }
     }
 
-    fun compareKeywords(that: RichSkillDescriptorDao): JSONObject? {
-        val added = keywords?.add?.map { mutableMapOf("id" to it.id.value, "value" to it.value, "type" to it.type) }
-        val removed = keywords?.remove?.map { mutableMapOf("id" to it.id.value, "value" to it.value, "type" to it.type) }
-        val addedPair = added?.let { "added" to it }
-        val removedPair = removed?.let { "removed" to it }
-        val operationsList = listOfNotNull(addedPair, removedPair).toTypedArray()
+    private fun compareKeyword(that: RichSkillDescriptorDao, keywordTypeEnum: KeywordTypeEnum): Change? {
+        val added = keywords?.add?.filter { it.type == keywordTypeEnum }?.mapNotNull { it.value }
+        val removed = keywords?.remove?.filter { it.type == keywordTypeEnum }?.mapNotNull { it.value }
 
-        return if (added?.isNotEmpty() == true or (removed?.isNotEmpty() == true)) {
-            JSONObject(mutableMapOf(that::keywords.name to mutableMapOf(*operationsList)))
+        val adjusted = that.keywords.filter { it.type == keywordTypeEnum }.mapNotNull { it.value }.toMutableList()
+        removed?.map { removedDao -> adjusted.remove(removedDao) }
+        added?.map { addedDao -> adjusted.add(addedDao) }
+
+        val oldKeywords = that.keywords.filter { it.type == keywordTypeEnum }.mapNotNull { it.value }.let{ if (it.isEmpty()){null} else {it} }
+
+        return if (!added.isNullOrEmpty() || !removed.isNullOrEmpty()) {
+            change(
+                keywordTypeEnum.displayName,
+                oldKeywords?.joinToString(delimiter),
+                adjusted.joinToString(delimiter)
+            )
         } else {
             null
         }
     }
 
-    fun compareCollections(that: RichSkillDescriptorDao): JSONObject? {
-        val added = collections?.add?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
-        val removed = collections?.remove?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
-        val addedPair = added?.let { "added" to it }
-        val removedPair = removed?.let { "removed" to it }
-        val operationsList = listOfNotNull(addedPair, removedPair).toTypedArray()
+    fun compareSearchingKeywords(that: RichSkillDescriptorDao): Change? {
+        return compareKeyword(that, KeywordTypeEnum.Keyword)
+    }
 
-        return if (added?.isNotEmpty() == true or (removed?.isNotEmpty() == true)) {
-            JSONObject(mutableMapOf(that::collections.name to mutableMapOf(*operationsList)))
+    fun compareStandards(that: RichSkillDescriptorDao): Change? {
+        return compareKeyword(that, KeywordTypeEnum.Standard)
+    }
+
+    fun compareCertifications(that: RichSkillDescriptorDao): Change? {
+        return compareKeyword(that, KeywordTypeEnum.Certification)
+    }
+
+    fun compareAlignments(that: RichSkillDescriptorDao): Change? {
+        return compareKeyword(that, KeywordTypeEnum.Alignment)
+    }
+
+    fun compareEmployers(that: RichSkillDescriptorDao): Change? {
+        return compareKeyword(that, KeywordTypeEnum.Employer)
+    }
+
+    fun compareCollections(that: RichSkillDescriptorDao): Change? {
+        val added = collections?.add
+        val removed = collections?.remove
+
+        val adjusted = that.collections.toMutableList()
+        removed?.map { removedDao -> adjusted.remove(removedDao) }
+        added?.map { addedDao -> adjusted.add(addedDao) }
+
+        return if (!added.isNullOrEmpty() || !added.isNullOrEmpty()) {
+            change(
+                that::collections.name,
+                that.collections.map { it.name }.joinToString(delimiter),
+                adjusted.map { it.name }.joinToString(delimiter)
+            )
         } else {
             null
         }
     }
 
-    override val comparisonList: List<(t: RichSkillDescriptorDao) -> JSONObject?> =
+    override val comparisonList: List<(t: RichSkillDescriptorDao) -> Change?> =
         listOf(
             ::compareName,
             ::compareStatement,
             ::compareCategory,
             ::compareAuthor,
             ::comparePublishStatus,
-            ::compareKeywords,
-            ::compareCollections
+            ::compareCollections,
+            ::compareSearchingKeywords,
+            ::compareStandards,
+            ::compareCertifications,
+            ::compareAlignments,
+            ::compareEmployers
         )
 }
 

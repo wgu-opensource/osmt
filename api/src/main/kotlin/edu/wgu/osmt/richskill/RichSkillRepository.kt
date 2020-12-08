@@ -1,5 +1,6 @@
 package edu.wgu.osmt.richskill
 
+import com.google.gson.Gson
 import edu.wgu.osmt.api.FormValidationException
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiReferenceListUpdate
@@ -151,7 +152,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
                     AuditLog.fromAtomicOp(
                         table,
                         updateObject.id,
-                        it.toString(),
+                        Gson().toJson(it),
                         user,
                         AuditOperationType.Update
                     )
@@ -185,6 +186,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
         val updateWithIdAndAuthor = updateObject.copy(
             id = newRsd.id.value
         )
+
+        auditLogRepository.create(AuditLog.fromAtomicOp(table, newRsd.id.value, Gson().toJson(AuditLog.skillInitial(newRsd)), user, AuditOperationType.Insert))
 
         return update(updateWithIdAndAuthor, user)
     }

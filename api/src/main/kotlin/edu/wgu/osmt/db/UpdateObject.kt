@@ -1,14 +1,24 @@
 package edu.wgu.osmt.db
 
+import edu.wgu.osmt.auditlog.Change
 import edu.wgu.osmt.keyword.Keyword
 import net.minidev.json.JSONArray
-import net.minidev.json.JSONObject
+import org.jetbrains.exposed.dao.LongEntity
 import kotlin.reflect.KProperty0
 
 interface UpdateObject<T> {
     val id: Long?
+}
 
-    val comparisonList: List<(t: T) -> JSONObject?>
+interface HasPublishStatus {
+    val publishStatus: PublishStatus?
+}
+
+interface Compares<T> where T : LongEntity {
+    val delimiter: String
+        get() = "; "
+
+    val comparisonList: List<(t: T) -> Change?>
 
     val stringOutput: (String?) -> String?
         get() = { s: String? -> s }
@@ -16,38 +26,32 @@ interface UpdateObject<T> {
     val keywordOutput: (Keyword?) -> String?
         get() = { k: Keyword? -> k?.value }
 
-    fun <R : String?> compare(
-        thatProp: KProperty0<R>,
-        thisProp: KProperty0<R>
-    ): JSONObject? {
-        return compare(thatProp, thisProp, stringOutput)
+    fun <R : String?> change(
+        old: KProperty0<R>,
+        new: KProperty0<R>
+    ): Change? {
+        return change(old, new, stringOutput)
     }
 
-    fun <R : Any?> compare(
-        thatProp: KProperty0<R>,
-        thisProp: KProperty0<R>,
+    fun <R : Any?> change(
+        old: KProperty0<R>,
+        new: KProperty0<R>,
         outputR: (R) -> String?
-    ): JSONObject? {
-        return if (thisProp.get() != thatProp.get()) jsonUpdateStatement(
-            thatProp.name,
-            outputR(thatProp.get()),
-            outputR(thisProp.get())
+    ): Change? {
+        return if (outputR(new.get()) != outputR(old.get())) Change(
+            old.name,
+            outputR(old.get()),
+            outputR(new.get())
         ) else null
     }
 
-    fun jsonUpdateStatement(fieldName: String, oldValue: String?, newValue: String?): JSONObject {
-        return JSONObject(mutableMapOf(fieldName to mutableMapOf("old" to oldValue, "new" to newValue)))
+    fun change(name: String, old: String?, new: String?): Change? {
+        return if (old != new) {
+            Change(name, old, new)
+        } else null
     }
 
-    fun diff(that: T): JSONArray {
-        val jsonObj = JSONArray()
-        comparisonList.forEach { it(that)?.let { jsonObj.add(it) } }
-        return jsonObj
+    fun diff(that: T): List<Change> {
+        return comparisonList.mapNotNull { it(that) }
     }
 }
-
-interface HasPublishStatus{
-    val publishStatus: PublishStatus?
-}
-
-

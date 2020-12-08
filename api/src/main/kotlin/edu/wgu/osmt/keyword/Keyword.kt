@@ -1,11 +1,9 @@
 package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.db.*
-import net.minidev.json.JSONObject
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.`java-time`.datetime
-import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.springframework.data.elasticsearch.annotations.DateFormat
 import org.springframework.data.elasticsearch.annotations.Document
 import org.springframework.data.elasticsearch.annotations.Field
@@ -39,18 +37,7 @@ data class Keyword(
 }
 
 data class KeywordUpdateObj(override val id: Long, val value: String?, val uri: NullableFieldUpdate<String>?) :
-    UpdateObject<Keyword> {
-
-    fun compareValue(that: Keyword): JSONObject? = compare(that::value, this::value, stringOutput)
-
-    fun compareUri(that: Keyword): JSONObject? {
-        return uri?.let {
-            compare(that::uri, it::t, stringOutput)
-        }
-    }
-
-    override val comparisonList: List<(t: Keyword) -> JSONObject?> = listOf(::compareValue, ::compareUri)
-}
+    UpdateObject<Keyword>
 
 object KeywordTable : LongIdTable("Keyword"), TableWithUpdate<KeywordUpdateObj> {
     override val creationDate = datetime("creationDate")

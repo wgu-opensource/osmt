@@ -1,5 +1,6 @@
 package edu.wgu.osmt.collection
 
+import com.google.gson.Gson
 import edu.wgu.osmt.api.FormValidationException
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
@@ -116,6 +117,9 @@ class CollectionRepositoryImpl @Autowired constructor(
         val updateWithIdAndAuthor = updateObject.copy(
             id = newCollection.id.value
         )
+
+        auditLogRepository.create(AuditLog.fromAtomicOp(table, newCollection.id.value, Gson().toJson(AuditLog.collectionInitial(newCollection)), user, AuditOperationType.Insert))
+
         return update(updateWithIdAndAuthor, user)
     }
 
@@ -171,7 +175,7 @@ class CollectionRepositoryImpl @Autowired constructor(
                     AuditLog.fromAtomicOp(
                         table,
                         updateObject.id,
-                        it.toString(),
+                        Gson().toJson(it),
                         user,
                         AuditOperationType.Update
                     )

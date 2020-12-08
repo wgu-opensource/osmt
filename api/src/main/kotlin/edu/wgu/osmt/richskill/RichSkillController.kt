@@ -3,6 +3,10 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.auditlog.AuditLog
+import edu.wgu.osmt.auditlog.AuditLogRepository
+import edu.wgu.osmt.auditlog.AuditLogSortEnum
+import edu.wgu.osmt.collection.CollectionTable
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.*
@@ -25,6 +29,7 @@ class RichSkillController @Autowired constructor(
     val richSkillRepository: RichSkillRepository,
     val taskMessageService: TaskMessageService,
     override val elasticRepository: EsRichSkillRepository,
+    val auditLogRepository: AuditLogRepository,
     val appConfig: AppConfig
 ): HasAllPaginated<RichSkillDoc> {
     val keywordDao = KeywordDao.Companion
@@ -155,5 +160,20 @@ class RichSkillController @Autowired constructor(
         responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         val tr = TaskResult.fromTask(task)
         return ResponseEntity.status(202).headers(responseHeaders).body(tr)
+    }
+
+    @GetMapping(RoutePaths.SKILL_AUDIT_LOG, produces = ["application/json"])
+    fun skillAuditLog(
+        @PathVariable uuid: String,
+        @RequestParam(required = false, defaultValue = SearchService.DEFAULT_PAGESIZE.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = "0") from: Int,
+        sort: String?
+    ): HttpEntity<List<AuditLog>> {
+        val pageable = OffsetPageable(from, size, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateAsc.apiValue).sort)
+
+        val skill = richSkillRepository.findByUUID(uuid)
+
+        val sizedIterable = auditLogRepository.findByTableAndId(RichSkillDescriptorTable.tableName, entityId = skill!!.id.value, offsetPageable = pageable)
+        return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
     }
 }

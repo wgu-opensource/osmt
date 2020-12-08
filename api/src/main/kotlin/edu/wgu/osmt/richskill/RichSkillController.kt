@@ -144,11 +144,22 @@ class RichSkillController @Autowired constructor(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) filterByStatus: List<String>,
+        @RequestParam(
+            required = false,
+            defaultValue = ""
+        ) collectionUuid: String,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         val filterStatuses = filterByStatus.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val publishStatus = PublishStatus.forApiValue(newStatus) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
-        val task = PublishTask(AppliesToType.Skill, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = readableUsername(user))
+        val task = PublishTask(
+            AppliesToType.Skill,
+            search,
+            filterByStatus=filterStatuses,
+            publishStatus = publishStatus,
+            userString = readableUsername(user),
+            collectionUuid = if (collectionUuid.isNullOrBlank()) null else collectionUuid
+        )
         taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
 
         val responseHeaders = HttpHeaders()

@@ -366,7 +366,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
             val searchHits = searchService.searchRichSkillsByApiSearch(
                 publishTask.search,
                 publishTask.filterByStatus,
-                Pageable.unpaged()
+                Pageable.unpaged(),
+                publishTask.collectionUuid
             )
             totalCount = searchHits.totalHits.toInt()
             searchHits.forEach { hit ->

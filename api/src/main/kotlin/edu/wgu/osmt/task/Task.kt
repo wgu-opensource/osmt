@@ -70,6 +70,7 @@ data class PublishTask(
     val filterByStatus: Set<PublishStatus> = setOf(PublishStatus.Draft),
     val publishStatus: PublishStatus = PublishStatus.Published,
     val userString: String = "",
+    val collectionUuid: String? = null,
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: ApiBatchResult? = null,

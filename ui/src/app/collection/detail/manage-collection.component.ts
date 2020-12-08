@@ -30,6 +30,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)
   unarchiveIcon = SvgHelper.path(SvgIcon.UNARCHIVE)
   addIcon = SvgHelper.path(SvgIcon.ADD)
+  searchIcon = SvgHelper.path(SvgIcon.SEARCH)
 
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published, PublishStatus.Archived])
 

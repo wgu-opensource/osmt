@@ -40,6 +40,7 @@
 
     <div class="t-margin-medium t-margin-bottom">
       <app-blocking-loader [observables]="[resultsLoaded]">
+      <p class="t-visuallyHidden">Select one or more RSDs in the table, or select all in the table heading, then use the action menu to publish, archive, unarchive, or add the selected RSDs to a collection. </p>
         <app-skill-table
           *ngIf="!emptyResults"
           [items]="results.skills"

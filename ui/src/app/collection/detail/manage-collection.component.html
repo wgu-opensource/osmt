@@ -29,7 +29,7 @@
     <div class="t-margin-medium t-margin-bottom">
       <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
         <div class="m-text">
-          <svg class="m-text-x-icon t-icon" (click)="clearSearch()"><use xlink:href="/assets/images/svg-defs.svg#icon-search"></use></svg>
+          <svg aria-hidden="true" class="m-text-x-icon t-icon" (click)="clearSearch()"><use [attr.xlink:href]="searchIcon"></use></svg>
           <input type="text" placeholder="Search RSDs in this collection" [formControl]="searchForm.controls.search">
         </div>
 
@@ -57,6 +57,7 @@
     <ng-template [appLoadingObservables]="[resultsLoaded]">
 
       <div class="t-margin-medium t-margin-bottom">
+        <p class="t-visuallyHidden">Select one or more RSDs in the table, or select all in the table heading, then use the action menu to publish, archive, unarchive, or add the selected RSDs to a collection. </p>
         <app-skill-table
           *ngIf="!emptyResults"
           [items]="results.skills"

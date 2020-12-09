@@ -16,7 +16,7 @@ class AuditLogRepositoryTest @Autowired constructor(val auditLogRepository: Audi
 
     @Test
     fun `can insert a collection audit log`(){
-        val auditLog = AuditLog.Companion.fromAtomicOp(CollectionTable, 1L, "{}", "test user", AuditOperationType.Insert)
+        val auditLog = AuditLog.Companion.fromAtomicOp(CollectionTable, 1L, listOf(), "test user", AuditOperationType.Insert)
         auditLogRepository.create(auditLog)
         val result: SizedIterable<AuditLogDao> = auditLogRepository.findByTableAndId(auditLog.tableName, auditLog.entityId)
         assertThat(result.first().entityId).isEqualTo(auditLog.entityId)
@@ -24,7 +24,7 @@ class AuditLogRepositoryTest @Autowired constructor(val auditLogRepository: Audi
 
     @Test
     fun `can insert a skill audit log`(){
-        val auditLog = AuditLog.Companion.fromAtomicOp(RichSkillDescriptorTable, 1L, "{}", "test user", AuditOperationType.Insert)
+        val auditLog = AuditLog.Companion.fromAtomicOp(RichSkillDescriptorTable, 1L, listOf(), "test user", AuditOperationType.Insert)
         auditLogRepository.create(auditLog)
         val result: SizedIterable<AuditLogDao> = auditLogRepository.findByTableAndId(auditLog.tableName, auditLog.entityId)
         assertThat(result.first().entityId).isEqualTo(auditLog.entityId)

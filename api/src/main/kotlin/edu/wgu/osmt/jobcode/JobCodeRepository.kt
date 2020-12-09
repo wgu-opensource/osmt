@@ -51,10 +51,10 @@ class JobCodeRepositoryImpl @Autowired constructor(val esJobCodeRepository: EsJo
     }
 
     override fun create(code: String, framework: String?): JobCodeDao {
-        return dao.new {
+        return dao.new({
             creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.code = code
             this.framework = framework
-        }.also { esJobCodeRepository.save(it.toModel()) }
+        }).also { esJobCodeRepository.save(it.toModel()) }
     }
 }

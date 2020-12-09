@@ -1,6 +1,5 @@
 package edu.wgu.osmt.richskill
 
-import com.google.gson.Gson
 import edu.wgu.osmt.api.FormValidationException
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiReferenceListUpdate
@@ -25,6 +24,7 @@ import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.task.PublishTask
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
@@ -66,11 +66,6 @@ class RichSkillRepositoryImpl @Autowired constructor(
     override val dao = RichSkillDescriptorDao.Companion
     override val table = RichSkillDescriptorTable
 
-    val richSkillKeywordTable = RichSkillKeywords
-    val richSkillJobCodeTable = RichSkillJobCodes
-    val richSkillCollectionTable = CollectionSkills
-
-
     override fun findAll() = dao.all()
 
     override fun findById(id: Long) = dao.findById(id)
@@ -82,7 +77,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
             PublishStatus.Archived -> rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
             PublishStatus.Unarchived -> rsdDao.archiveDate = null
             PublishStatus.Deleted -> {
-                if (rsdDao.publishDate == null){
+                if (rsdDao.publishDate == null) {
                     rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
                 }
             }
@@ -105,46 +100,22 @@ class RichSkillRepositoryImpl @Autowired constructor(
         }
 
         // update keywords
-        updateObject.keywords?.let {
-
-            it.add?.forEach { keyword ->
-                richSkillKeywordTable.create(richSkillId = updateObject.id!!, keywordId = keyword.id.value)
-            }
-
-            it.remove?.forEach { keyword ->
-                richSkillKeywordTable.delete(richSkillId = updateObject.id!!, keywordId = keyword.id.value)
-            }
-        }
+        updateObject.applyKeywords()
 
         // update jobcodes
-        updateObject.jobCodes?.let {
-            it.add?.forEach { jobCode ->
-                richSkillJobCodeTable.create(richSkillId = updateObject.id!!, jobCodeId = jobCode.id.value)
-            }
-            it.remove?.forEach { jobCode ->
-                richSkillJobCodeTable.delete(richSkillId = updateObject.id!!, jobCodeId = jobCode.id.value!!)
-            }
-        }
+        updateObject.applyJobCodes()
 
         // update collections
-        updateObject.collections?.let {
-            it.add?.forEach { collection ->
-                richSkillCollectionTable.create(
-                    collectionId = collection.id.value!!,
-                    skillId = updateObject.id!!
-                )
-            }
-            it.remove?.forEach { collection ->
-                richSkillCollectionTable.delete(collectionId = collection.id.value!!, skillId = updateObject.id!!)
-            }
-        }
+        updateObject.applyCollections()
     }
 
     override fun update(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao? {
         val daoObject = dao.findById(updateObject.id!!)
-        val changes = daoObject?.let { updateObject.diff(it) }
+        val old = daoObject?.toModel()
 
         daoObject?.let { applyUpdate(it, updateObject) }
+
+        val changes = daoObject?.toModel()?.diff(old)
 
         changes?.let { it ->
             if (it.isNotEmpty())
@@ -152,7 +123,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
                     AuditLog.fromAtomicOp(
                         table,
                         updateObject.id,
-                        Gson().toJson(it),
+                        it,
                         user,
                         AuditOperationType.Update
                     )
@@ -181,15 +152,24 @@ class RichSkillRepositoryImpl @Autowired constructor(
             this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
             this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.uuid = UUID.randomUUID().toString()
+            this.author = updateObject.author?.t
         }
 
-        val updateWithIdAndAuthor = updateObject.copy(
-            id = newRsd.id.value
+        updateObject.copy(id = newRsd.id.value).applyCollections().applyJobCodes().applyKeywords()
+
+        newRsd.refresh()
+
+        auditLogRepository.create(
+            AuditLog.fromAtomicOp(
+                table,
+                newRsd.id.value,
+                newRsd.toModel().diff(null),
+                user,
+                AuditOperationType.Insert
+            )
         )
 
-        auditLogRepository.create(AuditLog.fromAtomicOp(table, newRsd.id.value, Gson().toJson(AuditLog.skillInitial(newRsd)), user, AuditOperationType.Insert))
-
-        return update(updateWithIdAndAuthor, user)
+        return newRsd
     }
 
     override fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao> {
@@ -341,7 +321,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         var modifiedCount = 0
         var totalCount = 0
 
-        val publish_skill = {skillDao: RichSkillDescriptorDao, task: PublishTask ->
+        val publish_skill = { skillDao: RichSkillDescriptorDao, task: PublishTask ->
             val oldStatus = skillDao.publishStatus()
             if (oldStatus != task.publishStatus) {
                 val updateObj = RsdUpdateObject(id = skillDao.id.value, publishStatus = task.publishStatus)
@@ -352,7 +332,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         }
 
-        val handle_skill_dao = {skillDao: RichSkillDescriptorDao? ->
+        val handle_skill_dao = { skillDao: RichSkillDescriptorDao? ->
             skillDao?.let {
                 if (publish_skill(it, publishTask)) {
                     modifiedCount += 1

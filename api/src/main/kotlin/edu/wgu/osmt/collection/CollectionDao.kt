@@ -8,7 +8,6 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import java.time.LocalDateTime
-import java.util.*
 
 class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collection>, PublishStatusDetails {
     companion object : LongEntityClass<CollectionDao>(CollectionTable)

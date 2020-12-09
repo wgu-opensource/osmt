@@ -1,22 +1,22 @@
 package edu.wgu.osmt.richskill
 
-import edu.wgu.osmt.auditlog.Change
+import edu.wgu.osmt.auditlog.*
 import edu.wgu.osmt.db.*
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import net.minidev.json.JSONObject
 import org.valiktor.functions.isEqualTo
 import org.valiktor.validate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import org.valiktor.functions.validate
 import java.util.*
-import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.collection.CollectionDao
+import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
-import org.valiktor.functions.isNotEqualTo
+import kotlin.reflect.KProperty1
 
 data class RichSkillDescriptor(
     override val id: Long?,
@@ -31,7 +31,7 @@ data class RichSkillDescriptor(
     val author: Keyword? = null,
     override val archiveDate: LocalDateTime? = null,
     override val publishDate: LocalDateTime? = null,
-    val collectionIds: Set<Long> = setOf()
+    val collections: List<Collection> = listOf()
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
 
     // Keyword collections
@@ -67,6 +67,44 @@ data class RichSkillDescriptor(
     }
 }
 
+fun RichSkillDescriptor.diff(old: RichSkillDescriptor?): List<Change> {
+    val new = this
+
+    old?.let { if (it.uuid != new.uuid) throw Exception("Tried to compare different UUIDs, ${it.uuid} != ${new.uuid}") }
+
+    val comparisons: List<Comparison<*>> = listOf(
+        Comparison(RichSkillDescriptor::name.name, RichSkillDescriptorComparisons::compareName, old, new),
+        Comparison(RichSkillDescriptor::statement.name, RichSkillDescriptorComparisons::compareStatement, old, new),
+        Comparison(RichSkillDescriptor::category.name, RichSkillDescriptorComparisons::compareCategory, old, new),
+        Comparison(RichSkillDescriptor::author.name, RichSkillDescriptorComparisons::compareAuthor, old, new),
+        Comparison(
+            RichSkillDescriptor::publishStatus.name,
+            RichSkillDescriptorComparisons::comparePublishStatus,
+            old,
+            new
+        ),
+        Comparison(
+            RichSkillDescriptor::certifications.name,
+            RichSkillDescriptorComparisons::compareCertifications,
+            old,
+            new
+        ),
+        Comparison(RichSkillDescriptor::standards.name, RichSkillDescriptorComparisons::compareStandards, old, new),
+        Comparison(RichSkillDescriptor::alignments.name, RichSkillDescriptorComparisons::compareAlignments, old, new),
+        Comparison(RichSkillDescriptor::employers.name, RichSkillDescriptorComparisons::compareEmployers, old, new),
+        Comparison(
+            RichSkillDescriptor::searchingKeywords.name,
+            RichSkillDescriptorComparisons::compareSearchingKeywords,
+            old,
+            new
+        ),
+        Comparison(RichSkillDescriptor::jobCodes.name, RichSkillDescriptorComparisons::compareJobCodes, old, new),
+        Comparison(RichSkillDescriptor::collections.name, RichSkillDescriptorComparisons::compareCollections, old, new)
+    )
+
+    return comparisons.mapNotNull { it.compare() }
+}
+
 data class RsdUpdateObject(
     override val id: Long? = null,
     val name: String? = null,
@@ -77,7 +115,7 @@ data class RsdUpdateObject(
     val jobCodes: ListFieldUpdate<JobCodeDao>? = null,
     val collections: ListFieldUpdate<CollectionDao>? = null,
     override val publishStatus: PublishStatus? = null
-) : UpdateObject<RichSkillDescriptorDao>, HasPublishStatus, Compares<RichSkillDescriptorDao> {
+) : UpdateObject<RichSkillDescriptorDao>, HasPublishStatus {
 
     init {
         validate(this) {
@@ -94,114 +132,100 @@ data class RsdUpdateObject(
         }
     }
 
-    fun compareName(that: RichSkillDescriptorDao): Change? {
-        return name?.let {
-            change(that::name.name, that.name, it)
+    fun applyKeywords(): RsdUpdateObject {
+        keywords?.let {
+            it.add?.forEach { keyword ->
+                RichSkillKeywords.create(richSkillId = id!!, keywordId = keyword.id.value)
+            }
+
+            it.remove?.forEach { keyword ->
+                RichSkillKeywords.delete(richSkillId = id!!, keywordId = keyword.id.value)
+            }
         }
+        return copy(keywords = null)
     }
 
-    fun compareStatement(that: RichSkillDescriptorDao): Change? {
-        return statement?.let {
-            change(that::statement.name, that.statement, it)
+    fun applyJobCodes(): RsdUpdateObject {
+        jobCodes?.let {
+            it.add?.forEach { jobCode ->
+                RichSkillJobCodes.create(richSkillId = id!!, jobCodeId = jobCode.id.value)
+            }
+            it.remove?.forEach { jobCode ->
+                RichSkillJobCodes.delete(richSkillId = id!!, jobCodeId = jobCode.id.value)
+            }
         }
+        return copy(jobCodes = null)
     }
 
-    fun compareCategory(that: RichSkillDescriptorDao): Change? {
-        return category?.let {
-            if (that.category?.value?.let { id } != it.t?.id?.value) {
-                change(that::category.name, that.category?.let { it.value }, it.t?.value)
-            } else null
+    fun applyCollections(): RsdUpdateObject {
+        collections?.let {
+            it.add?.forEach { collection ->
+                CollectionSkills.create(
+                    collectionId = collection.id.value,
+                    skillId = id!!
+                )
+            }
+            it.remove?.forEach { collection ->
+                CollectionSkills.delete(collectionId = collection.id.value, skillId = id!!)
+            }
         }
+        return copy(collections = null)
     }
-
-    fun compareAuthor(that: RichSkillDescriptorDao): Change? {
-        return author?.let {
-            if (that.author?.value?.let { id } != it.t?.id?.value) {
-                change(that::author.name, that.author?.value?.let { it }, it.t?.value)
-            } else null
-        }
-    }
-
-    fun comparePublishStatus(that: RichSkillDescriptorDao): Change? {
-        return publishStatus?.let {
-            change(that::publishStatus.name, that.publishStatus().name, it.name)
-        }
-    }
-
-    private fun compareKeyword(that: RichSkillDescriptorDao, keywordTypeEnum: KeywordTypeEnum): Change? {
-        val added = keywords?.add?.filter { it.type == keywordTypeEnum }?.mapNotNull { it.value }
-        val removed = keywords?.remove?.filter { it.type == keywordTypeEnum }?.mapNotNull { it.value }
-
-        val adjusted = that.keywords.filter { it.type == keywordTypeEnum }.mapNotNull { it.value }.toMutableList()
-        removed?.map { removedDao -> adjusted.remove(removedDao) }
-        added?.map { addedDao -> adjusted.add(addedDao) }
-
-        val oldKeywords = that.keywords.filter { it.type == keywordTypeEnum }.mapNotNull { it.value }.let{ if (it.isEmpty()){null} else {it} }
-
-        return if (!added.isNullOrEmpty() || !removed.isNullOrEmpty()) {
-            change(
-                keywordTypeEnum.displayName,
-                oldKeywords?.joinToString(delimiter),
-                adjusted.joinToString(delimiter)
-            )
-        } else {
-            null
-        }
-    }
-
-    fun compareSearchingKeywords(that: RichSkillDescriptorDao): Change? {
-        return compareKeyword(that, KeywordTypeEnum.Keyword)
-    }
-
-    fun compareStandards(that: RichSkillDescriptorDao): Change? {
-        return compareKeyword(that, KeywordTypeEnum.Standard)
-    }
-
-    fun compareCertifications(that: RichSkillDescriptorDao): Change? {
-        return compareKeyword(that, KeywordTypeEnum.Certification)
-    }
-
-    fun compareAlignments(that: RichSkillDescriptorDao): Change? {
-        return compareKeyword(that, KeywordTypeEnum.Alignment)
-    }
-
-    fun compareEmployers(that: RichSkillDescriptorDao): Change? {
-        return compareKeyword(that, KeywordTypeEnum.Employer)
-    }
-
-    fun compareCollections(that: RichSkillDescriptorDao): Change? {
-        val added = collections?.add
-        val removed = collections?.remove
-
-        val adjusted = that.collections.toMutableList()
-        removed?.map { removedDao -> adjusted.remove(removedDao) }
-        added?.map { addedDao -> adjusted.add(addedDao) }
-
-        return if (!added.isNullOrEmpty() || !added.isNullOrEmpty()) {
-            change(
-                that::collections.name,
-                that.collections.map { it.name }.joinToString(delimiter),
-                adjusted.map { it.name }.joinToString(delimiter)
-            )
-        } else {
-            null
-        }
-    }
-
-    override val comparisonList: List<(t: RichSkillDescriptorDao) -> Change?> =
-        listOf(
-            ::compareName,
-            ::compareStatement,
-            ::compareCategory,
-            ::compareAuthor,
-            ::comparePublishStatus,
-            ::compareCollections,
-            ::compareSearchingKeywords,
-            ::compareStandards,
-            ::compareCertifications,
-            ::compareAlignments,
-            ::compareEmployers
-        )
 }
 
+object RichSkillDescriptorComparisons {
+    fun keywordsCompare(
+        receiver: RichSkillDescriptor,
+        kproperty: KProperty1<RichSkillDescriptor, List<Keyword>>
+    ): String? {
+        return kproperty.call(receiver).mapNotNull { it.value }.nullIfEmpty()?.joinToString(DELIMITER)
+    }
 
+    fun compareName(r: RichSkillDescriptor): String {
+        return r.name
+    }
+
+    fun compareStatement(r: RichSkillDescriptor): String {
+        return r.statement
+    }
+
+    fun compareCategory(r: RichSkillDescriptor): String? {
+        return r.category?.value
+    }
+
+    fun compareAuthor(r: RichSkillDescriptor): String? {
+        return r.author?.value
+    }
+
+    fun comparePublishStatus(r: RichSkillDescriptor): String {
+        return r.publishStatus().name
+    }
+
+    fun compareCertifications(receiver: RichSkillDescriptor): String? {
+        return keywordsCompare(receiver, RichSkillDescriptor::certifications)
+    }
+
+    fun compareStandards(receiver: RichSkillDescriptor): String? {
+        return keywordsCompare(receiver, RichSkillDescriptor::standards)
+    }
+
+    fun compareAlignments(receiver: RichSkillDescriptor): String? {
+        return keywordsCompare(receiver, RichSkillDescriptor::alignments)
+    }
+
+    fun compareEmployers(receiver: RichSkillDescriptor): String? {
+        return keywordsCompare(receiver, RichSkillDescriptor::employers)
+    }
+
+    fun compareSearchingKeywords(receiver: RichSkillDescriptor): String? {
+        return keywordsCompare(receiver, RichSkillDescriptor::searchingKeywords)
+    }
+
+    fun compareJobCodes(r: RichSkillDescriptor): String? {
+        return r.jobCodes.mapNotNull { it.code }.nullIfEmpty()?.joinToString(DELIMITER)
+    }
+
+    fun compareCollections(r: RichSkillDescriptor): String?{
+        return r.collections.mapNotNull{it.name}.nullIfEmpty()?.joinToString(DELIMITER)
+    }
+}

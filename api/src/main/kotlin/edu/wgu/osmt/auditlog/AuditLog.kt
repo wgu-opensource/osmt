@@ -1,14 +1,15 @@
 package edu.wgu.osmt.auditlog
 
-import com.google.gson.Gson
-import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.db.DatabaseData
-import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import org.jetbrains.exposed.sql.Table
 import org.springframework.security.oauth2.core.user.OAuth2User
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+
+
+fun <T> List<T>.nullIfEmpty(): List<T>? {
+    return if (this.isEmpty()) null else this
+}
 
 enum class AuditOperationType {
     Insert,
@@ -21,7 +22,19 @@ data class Change(
     val fieldName: String,
     val old: String?,
     val new: String?
-)
+) {
+    companion object {
+        fun maybeChange(
+            fieldName: String,
+            old: String?,
+            new: String?
+        ): Change? {
+            return if (old != new) {
+                Change(fieldName, old, new)
+            } else null
+        }
+    }
+}
 
 data class AuditLog(
     override val id: Long?,
@@ -30,7 +43,7 @@ data class AuditLog(
     val tableName: String,
     val entityId: Long,
     val user: String,
-    val changedFields: String
+    val changedFields: List<Change>
 ) : DatabaseData {
 
     companion object {
@@ -38,7 +51,7 @@ data class AuditLog(
         fun fromAtomicOp(
             table: Table,
             entityId: Long,
-            changes: String,
+            changes: List<Change>,
             user: String,
             opType: AuditOperationType
         ): AuditLog {
@@ -56,56 +69,11 @@ data class AuditLog(
         fun fromAtomicOp(
             table: Table,
             entityId: Long,
-            changes: String,
+            changes: List<Change>,
             user: OAuth2User,
             opType: AuditOperationType
         ): AuditLog {
             return fromAtomicOp(table, entityId, changes, user.name.toString(), opType)
-        }
-
-        fun skillInitial(dao: RichSkillDescriptorDao): List<Change> {
-            return listOf(
-                Change(dao::creationDate.name, null, dao.creationDate.toString()),
-                Change(dao::uuid.name, null, dao.uuid),
-                Change(dao::name.name, null, dao.name),
-                Change(dao::statement.name, null, dao.statement),
-                Change(dao::author.name, null, dao.author?.value),
-                Change(dao::jobCodes.name, null, dao.jobCodes.map { it.code }.joinToString { ";" }),
-                Change(dao::category.name, null, dao.category?.value),
-                Change(dao::collections.name, null, dao.collections.map { it.name }.joinToString { ";" }),
-
-                // keywords
-                Change(
-                    "keywords",
-                    null,
-                    dao.keywords.filter { it.type == KeywordTypeEnum.Keyword }.joinToString { ";" }),
-                Change(
-                    "standards",
-                    null,
-                    dao.keywords.filter { it.type == KeywordTypeEnum.Standard }.joinToString { ";" }),
-                Change(
-                    "certifications",
-                    null,
-                    dao.keywords.filter { it.type == KeywordTypeEnum.Certification }.joinToString { ";" }),
-                Change(
-                    "alignments",
-                    null,
-                    dao.keywords.filter { it.type == KeywordTypeEnum.Alignment }.joinToString { ";" }),
-                Change(
-                    "employers",
-                    null,
-                    dao.keywords.filter { it.type == KeywordTypeEnum.Employer }.joinToString { ";" })
-            )
-        }
-
-        fun collectionInitial(dao: CollectionDao): List<Change> {
-            return listOf(
-                Change(dao::creationDate.name, null, dao.creationDate.toString()),
-                Change(dao::uuid.name, null, dao.uuid),
-                Change(dao::name.name, null, dao.updateDate.toString()),
-                Change(dao::author.name, null, dao.author?.value),
-                Change(dao::skills.name, null, dao.skills.map { it.name }.joinToString { ";" })
-            )
         }
     }
 }

@@ -1,9 +1,12 @@
 package edu.wgu.osmt.auditlog
 
+import com.google.common.reflect.TypeToken
+import com.google.gson.Gson
 import edu.wgu.osmt.db.OutputsModel
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
+import kotlin.reflect.typeOf
 
 class AuditLogDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<AuditLog> {
     companion object : LongEntityClass<AuditLogDao>(AuditLogTable)
@@ -16,6 +19,8 @@ class AuditLogDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<AuditLog> {
     var changedFields by AuditLogTable.changedFields
 
     override fun toModel(): AuditLog {
-        return AuditLog(id.value, creationDate, operationType, targetTableName, entityId, user, changedFields)
+        val turnsType = object : TypeToken<List<Change>>() {}.type
+        val deserializedChanges = Gson().fromJson<List<Change>>(changedFields, turnsType)
+        return AuditLog(id.value, creationDate, operationType, targetTableName, entityId, user, deserializedChanges)
     }
 }

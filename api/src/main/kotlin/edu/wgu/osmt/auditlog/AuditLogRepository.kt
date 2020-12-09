@@ -1,5 +1,6 @@
 package edu.wgu.osmt.auditlog
 
+import com.google.gson.Gson
 import edu.wgu.osmt.api.model.SkillSortEnum
 import edu.wgu.osmt.api.model.SortOrder as SortOrder
 import edu.wgu.osmt.api.model.SortOrderCompanion
@@ -42,7 +43,7 @@ class AuditLogRepositoryImpl @Autowired constructor(appConfig: AppConfig) : Audi
         val auditLog = dao.new {
             this.entityId = auditLog.entityId
             this.creationDate = auditLog.creationDate
-            this.changedFields = auditLog.changedFields
+            this.changedFields = Gson().toJson(auditLog.changedFields)
             this.operationType = auditLog.operationType
             this.targetTableName = auditLog.tableName
             this.user = auditLog.user

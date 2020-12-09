@@ -1,6 +1,5 @@
 package edu.wgu.osmt.db
 
-import edu.wgu.osmt.auditlog.AuditLogTable
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.SortOrder

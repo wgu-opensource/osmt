@@ -3,7 +3,7 @@ package edu.wgu.osmt.db
 import org.jetbrains.exposed.sql.Column
 import java.time.LocalDateTime
 
-interface PublishStatusUpdate<UpdateObjectType> where UpdateObjectType : UpdateObject<*>, UpdateObjectType: HasPublishStatus {
+interface PublishStatusUpdate<UpdateObjectType> where UpdateObjectType : UpdateObject<*>, UpdateObjectType: HasPublishStatus<*> {
     val archiveDate: Column<LocalDateTime?>
     val publishDate: Column<LocalDateTime?>
 }
@@ -20,4 +20,9 @@ interface PublishStatusDetails{
             else -> PublishStatus.Draft
         }
     }
+}
+
+interface MutablePublishStatusDetails: PublishStatusDetails{
+    override var publishDate: LocalDateTime?
+    override var archiveDate: LocalDateTime?
 }

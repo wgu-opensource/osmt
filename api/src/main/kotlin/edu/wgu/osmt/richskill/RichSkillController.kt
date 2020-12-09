@@ -164,12 +164,9 @@ class RichSkillController @Autowired constructor(
 
     @GetMapping(RoutePaths.SKILL_AUDIT_LOG, produces = ["application/json"])
     fun skillAuditLog(
-        @PathVariable uuid: String,
-        @RequestParam(required = false, defaultValue = SearchService.DEFAULT_PAGESIZE.toString()) size: Int,
-        @RequestParam(required = false, defaultValue = "0") from: Int,
-        sort: String?
+        @PathVariable uuid: String
     ): HttpEntity<List<AuditLog>> {
-        val pageable = OffsetPageable(from, size, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateAsc.apiValue).sort)
+        val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateAsc.apiValue).sort)
 
         val skill = richSkillRepository.findByUUID(uuid)
 

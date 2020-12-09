@@ -115,7 +115,7 @@ data class RsdUpdateObject(
     val jobCodes: ListFieldUpdate<JobCodeDao>? = null,
     val collections: ListFieldUpdate<CollectionDao>? = null,
     override val publishStatus: PublishStatus? = null
-) : UpdateObject<RichSkillDescriptorDao>, HasPublishStatus {
+) : UpdateObject<RichSkillDescriptorDao>, HasPublishStatus<RichSkillDescriptorDao> {
 
     init {
         validate(this) {
@@ -130,6 +130,31 @@ data class RsdUpdateObject(
                 }
             }
         }
+    }
+
+    override fun applyToDao(dao: RichSkillDescriptorDao): Unit {
+        dao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
+
+        applyPublishStatus(dao)
+        name?.let { dao.name = it }
+        statement?.let { dao.statement = it }
+        category?.let {
+            if (it.t != null) {
+                dao.category = it.t
+            } else {
+                dao.category = null
+            }
+        }
+        author?.let {
+            if (it.t != null) {
+                dao.author = it.t
+            } else {
+                dao.author = null
+            }
+        }
+        applyKeywords()
+        applyJobCodes()
+        applyCollections()
     }
 
     fun applyKeywords(): RsdUpdateObject {

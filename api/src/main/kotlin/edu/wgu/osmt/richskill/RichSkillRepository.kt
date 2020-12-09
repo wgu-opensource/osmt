@@ -70,50 +70,11 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
     override fun findById(id: Long) = dao.findById(id)
 
-    fun applyUpdate(rsdDao: RichSkillDescriptorDao, updateObject: RsdUpdateObject): Unit {
-        rsdDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
-        when (updateObject.publishStatus) {
-            PublishStatus.Published -> rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
-            PublishStatus.Archived -> rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-            PublishStatus.Unarchived -> rsdDao.archiveDate = null
-            PublishStatus.Deleted -> {
-                if (rsdDao.publishDate == null) {
-                    rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-                }
-            }
-        }
-        updateObject.name?.let { rsdDao.name = it }
-        updateObject.statement?.let { rsdDao.statement = it }
-        updateObject.category?.let {
-            if (it.t != null) {
-                rsdDao.category = it.t
-            } else {
-                rsdDao.category = null
-            }
-        }
-        updateObject.author?.let {
-            if (it.t != null) {
-                rsdDao.author = it.t
-            } else {
-                rsdDao.author = null
-            }
-        }
-
-        // update keywords
-        updateObject.applyKeywords()
-
-        // update jobcodes
-        updateObject.applyJobCodes()
-
-        // update collections
-        updateObject.applyCollections()
-    }
-
     override fun update(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao? {
         val daoObject = dao.findById(updateObject.id!!)
         val old = daoObject?.toModel()
 
-        daoObject?.let { applyUpdate(it, updateObject) }
+        daoObject?.let { updateObject.applyToDao(it) }
 
         val changes = daoObject?.toModel()?.diff(old)
 
@@ -153,11 +114,15 @@ class RichSkillRepositoryImpl @Autowired constructor(
             this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.uuid = UUID.randomUUID().toString()
             this.author = updateObject.author?.t
+            this.category = updateObject.category?.t
         }
 
-        updateObject.copy(id = newRsd.id.value).applyCollections().applyJobCodes().applyKeywords()
+        updateObject.copy(id = newRsd.id.value).applyToDao(newRsd)
 
-        newRsd.refresh()
+        newRsd.let {
+            esCollectionRepository.saveAll(it.collections.map { it.toDoc() })
+            esRichSkillRepository.save(RichSkillDoc.fromDao(it, appConfig))
+        }
 
         auditLogRepository.create(
             AuditLog.fromAtomicOp(

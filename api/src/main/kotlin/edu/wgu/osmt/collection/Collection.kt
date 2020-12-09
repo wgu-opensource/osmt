@@ -33,7 +33,7 @@ data class CollectionUpdateObject(
     val author: NullableFieldUpdate<KeywordDao>? = null,
     val skills: ListFieldUpdate<RichSkillDescriptorDao>? = null,
     override val publishStatus: PublishStatus? = null
-) : UpdateObject<CollectionDao>, HasPublishStatus {
+) : UpdateObject<CollectionDao>, HasPublishStatus<CollectionDao> {
     init {
         validate(this) {
             validate(CollectionUpdateObject::author).validate {
@@ -44,18 +44,19 @@ data class CollectionUpdateObject(
         }
     }
 
-    fun applyPublishStatus(dao: CollectionDao): CollectionUpdateObject{
-        when (publishStatus) {
-            PublishStatus.Archived -> dao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-            PublishStatus.Published -> dao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
-            PublishStatus.Unarchived -> dao.archiveDate = null
-            PublishStatus.Deleted -> {
-                if (dao.publishDate == null){
-                    dao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-                }
+    override fun applyToDao(dao: CollectionDao): Unit{
+        dao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
+        applyPublishStatus(dao)
+        name?.let { dao.name = it }
+
+        author?.let {
+            if (it.t != null) {
+                dao.author = it.t
+            } else {
+                dao.author = null
             }
         }
-        return copy(publishStatus = null)
+        applySkills()
     }
 
     fun applySkills(): CollectionUpdateObject{

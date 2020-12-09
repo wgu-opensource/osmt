@@ -2,6 +2,7 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionSkills
+import edu.wgu.osmt.db.MutablePublishStatusDetails
 import edu.wgu.osmt.db.OutputsModel
 import edu.wgu.osmt.db.PublishStatusDetails
 import edu.wgu.osmt.jobcode.JobCodeDao
@@ -12,7 +13,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import java.time.LocalDateTime
 
 class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<RichSkillDescriptor>,
-    PublishStatusDetails {
+    MutablePublishStatusDetails {
     companion object : LongEntityClass<RichSkillDescriptorDao>(RichSkillDescriptorTable)
 
     var creationDate: LocalDateTime by RichSkillDescriptorTable.creationDate

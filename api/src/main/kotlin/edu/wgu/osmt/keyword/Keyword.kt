@@ -37,7 +37,13 @@ data class Keyword(
 }
 
 data class KeywordUpdateObj(override val id: Long, val value: String?, val uri: NullableFieldUpdate<String>?) :
-    UpdateObject<Keyword>
+    UpdateObject<KeywordDao> {
+
+    override fun applyToDao(dao: KeywordDao) {
+        value?.let{dao.value = it}
+        uri?.let{dao.value = it.t}
+    }
+}
 
 object KeywordTable : LongIdTable("Keyword"), TableWithUpdate<KeywordUpdateObj> {
     override val creationDate = datetime("creationDate")

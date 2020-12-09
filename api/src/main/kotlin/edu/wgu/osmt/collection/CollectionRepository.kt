@@ -113,7 +113,12 @@ class CollectionRepositoryImpl @Autowired constructor(
             this.author = updateObject.author?.t
         }
 
-        updateObject.copy(id = newCollection.id.value).applySkills().applyPublishStatus(newCollection)
+        updateObject.copy(id = newCollection.id.value).applyToDao(newCollection)
+
+        newCollection.let{
+            esCollectionRepository.save(it.toDoc())
+            esRichSkillRepository.saveAll(it.skills.map { skill -> RichSkillDoc.fromDao(skill, appConfig) })
+        }
 
         auditLogRepository.create(
             AuditLog.fromAtomicOp(
@@ -128,24 +133,6 @@ class CollectionRepositoryImpl @Autowired constructor(
         return newCollection
     }
 
-    fun applyUpdate(collectionDao: CollectionDao, updateObject: CollectionUpdateObject): Unit {
-        collectionDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
-
-        updateObject.applyPublishStatus(collectionDao)
-
-        updateObject.name?.let { collectionDao.name = it }
-
-        updateObject.author?.let {
-            if (it.t != null) {
-                collectionDao.author = it.t
-            } else {
-                collectionDao.author = null
-            }
-        }
-
-        updateObject.applySkills()
-    }
-
     override fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao? {
         val daoObject = dao.findById(updateObject.id!!)
         val oldObject = daoObject?.toModel()
@@ -154,16 +141,17 @@ class CollectionRepositoryImpl @Autowired constructor(
         val oldSkills = skillDaos?.map { it.uuid to it.toModel() }?.toMap()
 
         daoObject?.let {
-            applyUpdate(it, updateObject)
+            updateObject.applyToDao(it)
 
             // reindex elastic search documents
             esCollectionRepository.save(it.toDoc())
             esRichSkillRepository.saveAll(it.skills.map { skill -> RichSkillDoc.fromDao(skill, appConfig) })
         }
 
-        val collectionChanges = daoObject?.toModel()?.diff(oldObject)
+        val (publishStatusChanges, otherChanges) = daoObject?.toModel()?.diff(oldObject)
+            ?.partition { it.fieldName == "publishStatus" } ?: (null to null)
 
-        // catch collection/skill relationship changes and generate audit log
+        // catch collection/skill relationship changes and generate audit log(s)
         skillDaos?.map { skillDao ->
             val oldSkill = oldSkills?.get(skillDao.uuid)
             val skillChange = skillDao.toModel().diff(oldSkill)
@@ -180,7 +168,7 @@ class CollectionRepositoryImpl @Autowired constructor(
             }
         }
 
-        collectionChanges?.let { it ->
+        otherChanges?.let { it ->
             if (it.isNotEmpty())
                 auditLogRepository.create(
                     AuditLog.fromAtomicOp(
@@ -192,6 +180,20 @@ class CollectionRepositoryImpl @Autowired constructor(
                     )
                 )
         }
+
+        publishStatusChanges?.let { it ->
+            if (it.isNotEmpty())
+                auditLogRepository.create(
+                    AuditLog.fromAtomicOp(
+                        table,
+                        updateObject.id,
+                        it,
+                        user,
+                        AuditOperationType.PublishStatusChange
+                    )
+                )
+        }
+
         return daoObject
     }
 
@@ -228,9 +230,11 @@ class CollectionRepositoryImpl @Autowired constructor(
         }
 
         val collectionUpdateObject = collectionUpdateObjectFromApi(collectionUpdate, richSkillRepository)
+
         val updateObjectWithId = collectionUpdateObject.copy(
             id = existingCollectionId
         )
+
         return update(updateObjectWithId, user)
     }
 

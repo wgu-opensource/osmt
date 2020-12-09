@@ -1,5 +1,6 @@
 package edu.wgu.osmt.auditlog
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import edu.wgu.osmt.db.DatabaseData
 import org.jetbrains.exposed.sql.Table
 import org.springframework.security.oauth2.core.user.OAuth2User
@@ -14,7 +15,6 @@ fun <T> List<T>.nullIfEmpty(): List<T>? {
 enum class AuditOperationType {
     Insert,
     Update,
-    Delete,
     PublishStatusChange
 }
 
@@ -37,12 +37,21 @@ data class Change(
 }
 
 data class AuditLog(
+    @JsonIgnore
     override val id: Long?,
+
     override val creationDate: LocalDateTime,
+
     val operationType: String,
+
+    @JsonIgnore
     val tableName: String,
+
+    @JsonIgnore
     val entityId: Long,
+
     val user: String,
+
     val changedFields: List<Change>
 ) : DatabaseData {
 

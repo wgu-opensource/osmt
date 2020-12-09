@@ -81,6 +81,11 @@ import {
   FieldMappingSelectComponent,
   FieldMappingTableComponent
 } from "./richskill/import/field-mapping-table.component";
+import {
+  ImportPreviewTableComponent,
+  InlineHeadingComponent,
+  NamedReferenceComponent
+} from "./richskill/import/import-preview-table.component";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -170,7 +175,10 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CollectionSkillSearchComponent,
     BatchImportComponent,
     FieldMappingTableComponent,
-    FieldMappingSelectComponent
+    FieldMappingSelectComponent,
+    ImportPreviewTableComponent,
+    InlineHeadingComponent,
+    NamedReferenceComponent
   ],
   imports: [
     BrowserModule,

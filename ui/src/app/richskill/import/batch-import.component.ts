@@ -5,6 +5,8 @@ import {RichSkillService} from "../service/rich-skill.service";
 import {ToastService} from "../../toast/toast.service";
 import {Location} from "@angular/common";
 import {Papa, ParseResult} from "ngx-papaparse";
+import {ApiNamedReference, ApiSkill} from "../ApiSkill"
+import {ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate";
 
 
 export enum ImportStep {
@@ -18,6 +20,14 @@ export const importSkillHeaders: {[p: string]: string} = {
   skillName: "RSD Name",
   skillStatement: "Skill Statement",
   category: "Category",
+  keywords: "Keywords",
+  author: "Author",
+  standards: "Standards",
+  certifications: "Certifications",
+  occupations: "Occupations",
+  employers: "Employers",
+  alignmentName: "Alignment Name",
+  alignmentUrl: "Alignment URL",
 }
 
 
@@ -193,6 +203,32 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     }
 
     return words[0]
+  }
+
+  skillsFromResults(): ApiSkillUpdate[] {
+    const skillUpdates = this.parseResults?.data.map((row: { [x: string]: string; }) => {
+      // tslint:disable-next-line:no-any
+      const newSkill: {[s: string]: any} = {}
+
+      Object.keys(row).forEach(uploadedKey => {
+        const fieldName = this.fieldMappings?.[uploadedKey]
+        const value: string = row[uploadedKey].trim()
+        if (fieldName !== undefined && value) {
+
+          if (["author"].indexOf(fieldName) !== -1) {
+            newSkill[fieldName] = new ApiNamedReference({name: value})
+          }
+          else if (fieldName.endsWith("s")) {
+            newSkill[fieldName] = new ApiStringListUpdate(value.split(";").map(it => it.trim()))
+          } else {
+            newSkill[fieldName] = value
+          }
+        }
+      })
+
+      return newSkill
+    }).filter((it: IRichSkillUpdate) => it.skillName && it.skillStatement).map((it: IRichSkillUpdate) => new ApiSkillUpdate(it))
+    return skillUpdates
   }
 }
 

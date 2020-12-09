@@ -1,0 +1,58 @@
+<table class="l-table">
+  <thead>
+  <tr class="m-tableHeader l-rowCollapse">
+    <th class="t-hidden-tabletMin" scope="col" colspan="2">Rich Skill Descriptor</th>
+    <th class="m-tableHeader-x-min t-hidden-tabletMax" scope="col">Rich Skill Descriptor</th>
+    <th class="t-hidden-tabletMax" scope="col">Category</th>
+    <th class="t-hidden-tabletMax" scope="col">Rich Skill Descriptor</th>
+  </tr>
+
+  <tr class="m-tableHeader">
+    <td class="t-hidden-tabletMin" colspan="2">
+      <span class="m-tableLabel"><span class="m-tableLabel-x-text">Rich Skill Descriptor</span></span>
+    </td>
+
+    <td class="m-tableHeader-x-min t-hidden-tabletMax">
+      <span class="t-visuallyHidden">Hidden label</span>
+    </td>
+
+    <td class="t-hidden-tabletMax">
+      <span class="m-tableLabel"><span class="m-tableLabel-x-text">Category</span></span>
+    </td>
+
+    <td class="t-hidden-tabletMax">
+      <span class="m-tableLabel"><span class="m-tableLabel-x-text">Rich Skill Descriptor</span></span>
+    </td>
+  </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let skill of skills; let index=index" class="m-tableRow">
+      <th class="m-tableRow-x-min" scope="row" id="import-preview-row-{{index}}">
+        <span class="t-type-bodyBold">{{index+1}}.</span>
+      </th>
+
+      <td>
+        <div class="t-hidden-tabletMax">{{skill.category}}</div>
+        <div class="t-hidden-tabletMin">
+          <!--{{render '@m-inlineheading'}}-->
+          <div class="m-inlineHeading">
+            <p class="m-inlineHeading-x-heading">Category:</p>
+            <p class="m-inlineHeading-x-text">{{skill.category}}</p>
+          </div>
+        </div>
+      </td>
+
+      <td>
+        <p class="t-margin-extraSmall t-margin-bottom">{{skill.skillName}}</p>
+
+        <p class="t-margin-small t-margin-bottom t-color-text3">{{skill.skillStatement}}</p>
+
+        <app-inline-heading *ngIf="skill.author" heading="Author:"><app-named-reference [ref]="skill.author"></app-named-reference></app-inline-heading>
+        <app-inline-heading *ngIf="skill.keywords" heading="Keywords:">{{skill.keywords.add?.join("; ")}}</app-inline-heading>
+
+      </td>
+
+    </tr>
+  </tbody>
+</table>

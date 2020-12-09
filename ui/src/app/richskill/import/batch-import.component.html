@@ -25,6 +25,26 @@
   </div>
 
   <div class="t-margin-medium t-margin-bottom">
+    <div *ngIf="!isUploadStep()" class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+      <!--{{render '@m-fileupload'}}-->
+      <div class="m-fileUpload">
+        <label for="file-upload">
+            <span class="m-fileUpload-x-fileLabel">
+              <span class="m-fileUpload-x-icon">
+                <svg class="t-icon" aria-hidden="true">
+                  <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
+                </svg>
+              </span>
+              <span class="m-fileUpload-x-fileText">File: {{uploadedFile}}</span>
+            </span>
+          <span class="m-fileUpload-x-actionText">Change File</span>
+        </label>
+
+        <input class="t-visuallyHidden" type="file" (change)="handleFileChange($event)" id="file-upload">
+      </div>
+    </div>
+
+
     <!-- STEP 1: Upload File -->
     <ng-template [ngIf]="isUploadStep()">
       <div class="m-dragDrop" [class.m-dragDrop-is-error]="uploadedFileError">
@@ -54,25 +74,6 @@
     <!-- STEP 2: Map Fields -->
     <ng-template [ngIf]="isMappingStep()">
 
-      <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
-        <!--{{render '@m-fileupload'}}-->
-        <div class="m-fileUpload">
-          <label for="file-upload">
-            <span class="m-fileUpload-x-fileLabel">
-              <span class="m-fileUpload-x-icon">
-                <svg class="t-icon" aria-hidden="true">
-                  <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
-                </svg>
-              </span>
-              <span class="m-fileUpload-x-fileText">File: {{uploadedFile}}</span>
-            </span>
-            <span class="m-fileUpload-x-actionText">Change File</span>
-          </label>
-
-          <input class="t-visuallyHidden" type="file" (change)="handleFileChange($event)" id="file-upload">
-        </div>
-      </div>
-
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
         <div class="t-margin-medium t-margin-bottom">
           <h3 class="t-type-bodyLargeBold t-color-text1 t-margin-extraSmall t-margin-bottom">{{recordCount}} records total</h3>
@@ -100,19 +101,29 @@
       </div>
 
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
-
         <app-field-mapping-table
           [uploadedHeaders]="uploadedHeaders()"
           (fieldMappingChanged)="handleMappingChanged($event)"
         ></app-field-mapping-table>
       </div>
-
     </ng-template>
 
+    <!-- STEP 3: Review -->
     <ng-template [ngIf]="isReviewStep()">
-      <p>review step goes here...</p>
+      <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
+        <div class="t-margin-medium t-margin-bottom">
+          <h3 class="t-type-bodyLargeBold t-color-text1 t-margin-extraSmall t-margin-bottom">Validation results</h3>
+          <p class="t-color-text1">{{recordCount}} RSDs are ready to import.</p>
+        </div>
+
+        <app-import-preview-table [skills]="skillsFromResults()"></app-import-preview-table>
+
+
+
+      </div>
     </ng-template>
 
+    <!-- Step 4: Success -->
     <ng-template [ngIf]="isSuccessStep()">
       <p>success step goes here...</p>
     </ng-template>

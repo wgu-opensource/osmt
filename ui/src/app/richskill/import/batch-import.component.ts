@@ -23,7 +23,6 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   currentStep: ImportStep = ImportStep.UploadFile
 
-  fileInput: FormControl = new FormControl("")
   uploadedFile: any;
   uploadedFileError: boolean = false
 
@@ -79,6 +78,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
       case ImportStep.ReviewRecords: return "Cancel Import"
       default: return "Cancel"
     }
+  }
+
+  get recordCount(): number {
+    return this.parseResults?.data?.length ?? 0
   }
 
   handleClickNext(): boolean {

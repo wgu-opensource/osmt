@@ -1,17 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {importSkillHeaders} from "./batch-import.component";
 
 
-const skillHeaders = {
-  skillName: "RSD Name",
-  skillStatement: "Skill Statement",
-  category: "Category",
-}
-
-export interface MappingChanged {
+interface MappingChanged {
   uploadedHeader: string
   property: string
 }
-
 
 @Component({
   selector: "app-field-mapping-table",
@@ -53,7 +47,7 @@ export class FieldMappingSelectComponent {
   @Output() mappingChanged = new EventEmitter<MappingChanged>()
 
   get headers(): any {
-    return skillHeaders
+    return importSkillHeaders
   }
 
   handleChange($event: Event): void {

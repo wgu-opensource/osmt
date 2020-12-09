@@ -4,9 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {RichSkillService} from "../service/rich-skill.service";
 import {ToastService} from "../../toast/toast.service";
 import {Location} from "@angular/common";
-import {FormControl} from "@angular/forms";
 import {Papa, ParseResult} from "ngx-papaparse";
-import {MappingChanged} from "./field-mapping-table.component";
 
 
 export enum ImportStep {
@@ -15,6 +13,13 @@ export enum ImportStep {
   ReviewRecords = 3,
   Success = 4
 }
+
+export const importSkillHeaders: {[p: string]: string} = {
+  skillName: "RSD Name",
+  skillStatement: "Skill Statement",
+  category: "Category",
+}
+
 
 @Component({
   selector: "app-batch-import",
@@ -99,7 +104,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   isStepValid(): boolean {
     switch (this.currentStep) {
       case ImportStep.UploadFile: return this.parseResults !== undefined
-      case ImportStep.FieldMapping: return this.fieldMappings !== undefined && this.isMappingValid()
+      case ImportStep.FieldMapping: return this.isMappingValid()
       default: return true
     }
   }
@@ -107,7 +112,15 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   isMappingValid(): boolean {
     if (this.fieldMappings === undefined) { return false }
     const mapped = Object.values(this.fieldMappings)
-    return (mapped.indexOf("skillName") !== -1 && mapped.indexOf("skillStatement") !== -1)
+    if (mapped.indexOf("skillName") === -1 || mapped.indexOf("skillStatement") === -1) {
+      return false
+    }
+
+    if ((this.duplicateMappings()?.length ?? 0) > 0) {
+      return false
+    }
+
+    return true
   }
 
   handleFileChange($event: Event): void {
@@ -172,7 +185,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   }
 
   duplicateFieldNames(): string {
-    const words = this.duplicateMappings()?.map(it => `"${it}"`)
+    const words = this.duplicateMappings()?.map(it => `"${importSkillHeaders[it]}"`)
     if (words === undefined) { return "" }
 
     if (words.length > 1) {

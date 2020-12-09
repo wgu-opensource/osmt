@@ -59,12 +59,12 @@
         <div class="m-fileUpload">
           <label for="file-upload">
             <span class="m-fileUpload-x-fileLabel">
-                <span class="m-fileUpload-x-icon">
-                    <svg class="t-icon" aria-hidden="true">
-                        <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
-                    </svg>
-                </span>
-                <span class="m-fileUpload-x-fileText">File: {{uploadedFile}}</span>
+              <span class="m-fileUpload-x-icon">
+                <svg class="t-icon" aria-hidden="true">
+                  <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
+                </svg>
+              </span>
+              <span class="m-fileUpload-x-fileText">File: {{uploadedFile}}</span>
             </span>
             <span class="m-fileUpload-x-actionText">Change File</span>
           </label>
@@ -78,20 +78,33 @@
           <h3 class="t-type-bodyLargeBold t-color-text1 t-margin-extraSmall t-margin-bottom">{{recordCount}} records total</h3>
           <p class="t-color-text1">Properties have been mapped from the CSV file as shown. Correct any errors and map any undetected fields.</p>
         </div>
-        <!--{{render '@accordion'}}-->
+
+        <div *ngIf="hasMappingError" class="l-container t-margin-medium">
+          <div class="m-inlineMessage m-inlineMessage-error">
+            <div class="m-inlineMessage-x-icon">
+              <svg class="t-icon" aria-hidden="true">
+                <use xlink:href="/assets/images/svg-defs.svg#icon-error"></use>
+              </svg>
+            </div>
+            <div class="m-inlineMessage-x-title">You've mapped multiple properties to {{duplicateFieldNames()}} which can accept only one.</div>
+            <div class="m-inlineMessage-x-message">Update your selections before continuing.</div>
+          </div>
+        </div>
 
         <app-accordian closedLabel="Property Definitions" openLabel="Property Definitions">
           <div class="m-skillBackground l-inset t-margin-small t-margin-top">
             field info...
           </div>
         </app-accordian>
+
       </div>
 
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
-        <div class="t-margin-medium t-margin-bottom">
-          <h3 class="t-type-bodyLargeBold t-color-text1 t-margin-extraSmall t-margin-bottom">Map Fields</h3>
-        </div>
-        mapping table...
+
+        <app-field-mapping-table
+          [uploadedHeaders]="uploadedHeaders()"
+          (fieldMappingChanged)="handleMappingChanged($event)"
+        ></app-field-mapping-table>
       </div>
 
     </ng-template>

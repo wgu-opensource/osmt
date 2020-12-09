@@ -6,6 +6,7 @@ import {ToastService} from "../../toast/toast.service";
 import {Location} from "@angular/common";
 import {FormControl} from "@angular/forms";
 import {Papa, ParseResult} from "ngx-papaparse";
+import {MappingChanged} from "./field-mapping-table.component";
 
 
 export enum ImportStep {
@@ -30,6 +31,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     "text/csv",
   ]
   parseResults?: ParseResult
+  fieldMappings?: {[p: string]: string}
 
   constructor(protected router: Router,
               protected richSkillService: RichSkillService,
@@ -97,21 +99,25 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   isStepValid(): boolean {
     switch (this.currentStep) {
       case ImportStep.UploadFile: return this.parseResults !== undefined
+      case ImportStep.FieldMapping: return this.fieldMappings !== undefined && this.isMappingValid()
       default: return true
     }
   }
 
+  isMappingValid(): boolean {
+    if (this.fieldMappings === undefined) { return false }
+    const mapped = Object.values(this.fieldMappings)
+    return (mapped.indexOf("skillName") !== -1 && mapped.indexOf("skillStatement") !== -1)
+  }
+
   handleFileChange($event: Event): void {
     const target = $event.target as HTMLInputElement
-
-    console.log("file changed", $event, target.files)
 
     if (target.files && target.files.length > 0) {
       const file = target.files[0]
 
       this.uploadedFile = file.name
 
-      console.log("file type", file.type)
       if (this.acceptableFileTypes.indexOf(file.type) === -1) {
         this.uploadedFile = "The file you select must be CSV format."
         this.uploadedFileError = true
@@ -123,7 +129,6 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         complete: (results) => {
           this.uploadedFileError = false
           this.parseResults = results
-          console.log("parsed", results)
         }
       })
     }
@@ -134,6 +139,47 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
       return 1
     }
     return 0
+  }
+
+  uploadedHeaders(): string[] {
+    const data = this.parseResults?.data
+    if (!data || data.length < 1) { return [] }
+    return Object.keys(data[0])
+  }
+
+  handleMappingChanged(fieldMappings: {[p: string]: string}): void {
+    this.fieldMappings = fieldMappings
+
+  }
+
+  get hasMappingError(): boolean {
+    return (this.duplicateMappings()?.length  ?? 0) > 0
+  }
+
+  duplicateMappings(): string[] | undefined {
+    if (this.fieldMappings !== undefined) {
+      const count: {[key: string]: number} = {}
+      Object.values(this.fieldMappings).forEach(it => {
+        count[it] = (count[it] ?? 0) + 1
+      })
+      const duplicates: string[] = Object.entries(count).filter(it => it[1] > 1).map(it => it[0])
+      if (duplicates.length > 0) {
+        return duplicates
+      }
+    }
+
+    return undefined
+  }
+
+  duplicateFieldNames(): string {
+    const words = this.duplicateMappings()?.map(it => `"${it}"`)
+    if (words === undefined) { return "" }
+
+    if (words.length > 1) {
+      return `${words.slice(0, -1).join(", ")}, and ${words.slice(-1)}`
+    }
+
+    return words[0]
   }
 }
 

@@ -77,6 +77,10 @@ import {PublishCollectionComponent} from "./collection/detail/publish-collection
 import {BlockingLoaderComponent} from "./core/blocking-loader.component";
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component";
 import {BatchImportComponent} from "./richskill/import/batch-import.component";
+import {
+  FieldMappingSelectComponent,
+  FieldMappingTableComponent
+} from "./richskill/import/field-mapping-table.component";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -164,7 +168,9 @@ export function initializeApp(appConfig: AppConfig): () => void {
     VerticalActionBarComponent,
     BlockingLoaderComponent,
     CollectionSkillSearchComponent,
-    BatchImportComponent
+    BatchImportComponent,
+    FieldMappingTableComponent,
+    FieldMappingSelectComponent
   ],
   imports: [
     BrowserModule,

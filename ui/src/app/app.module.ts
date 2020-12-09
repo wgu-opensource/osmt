@@ -76,6 +76,7 @@ import {VerticalActionBarComponent} from "./core/vertical-action-bar.component"
 import {PublishCollectionComponent} from "./collection/detail/publish-collection.component"
 import {BlockingLoaderComponent} from "./core/blocking-loader.component";
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component";
+import {BatchImportComponent} from "./richskill/import/batch-import.component";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -162,7 +163,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     ManageCollectionComponent,
     VerticalActionBarComponent,
     BlockingLoaderComponent,
-    CollectionSkillSearchComponent
+    CollectionSkillSearchComponent,
+    BatchImportComponent
   ],
   imports: [
     BrowserModule,

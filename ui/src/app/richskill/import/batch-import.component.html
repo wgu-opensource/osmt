@@ -1,0 +1,66 @@
+<div class="l-container t-margin-large t-margin-top">
+
+  <div class="l-container l-container-mobile">
+
+    <div class="t-margin-small t-margin-bottom">
+      <!--{{render '@m-buttontext&#45;&#45;with-icon'}}-->
+      <button class="m-buttonText" (click)="handleClickCancel()">
+          <span class="m-buttonText-x-icon">
+              <svg class="t-icon" aria-hidden="true">
+                  <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
+              </svg>
+          </span>
+        <span class="m-buttonText-x-text">Back</span>
+      </button>
+    </div>
+
+    <!--{{render '@listheading'}}-->
+    <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Batch Import</h2>
+      <p class="t-type-bodyLarge t-color-text3">
+        <span class="t-type-bodyLargeBold t-color-text1">Step {{currentStep}}:</span> {{stepName(currentStep)}}
+      </p>
+    </div>
+
+  </div>
+
+  <div class="t-margin-medium t-margin-bottom">
+    <ng-template [ngIf]="isUploadStep()">
+      <p>upload goes here...</p>
+    </ng-template>
+
+    <ng-template [ngIf]="isMappingStep()">
+      <p>mapping step goes here...</p>
+    </ng-template>
+
+    <ng-template [ngIf]="isReviewStep()">
+      <p>review step goes here...</p>
+    </ng-template>
+
+    <ng-template [ngIf]="isSuccessStep()">
+      <p>success step goes here...</p>
+    </ng-template>
+  </div>
+
+  <div class="l-container l-container-mobile">
+    <!--{{render '@l-submit&#45;&#45;with-twomain'}}-->
+    <div *ngIf="!isSuccessStep()" class="l-submit">
+      <button class="m-button" [attr.disabled]="!isStepValid() ? '' : null" (click)="handleClickNext()">
+        <span class="m-button-x-text">{{nextButtonLabel}}</span>
+      </button>
+      <button class="m-button m-button-tertiary" (click)="handleClickCancel()">
+        <span class="m-button-x-text">{{cancelButtonLabel}}</span>
+      </button>
+    </div>
+
+    <div *ngIf="isSuccessStep()" class="l-submit">
+      <button class="m-button" (click)="resetState()">
+        <span class="m-button-x-text">Import More RSDs</span>
+      </button>
+      <button class="m-button" routerLink="/skills">
+        <span class="m-button-x-text">View RSD Library</span>
+      </button>
+    </div>
+  </div>
+
+</div>

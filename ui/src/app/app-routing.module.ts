@@ -19,6 +19,7 @@ import {CollectionPublicComponent} from "./collection/detail/collection-public/c
 import {ManageCollectionComponent} from "./collection/detail/manage-collection.component";
 import {PublishCollectionComponent} from "./collection/detail/publish-collection.component";
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component";
+import {BatchImportComponent} from "./richskill/import/batch-import.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -56,6 +57,11 @@ const routes: Routes = [
   // skills library
   {path: "skills",
     component: RichSkillsLibraryComponent,
+    canActivate: [AuthGuard],
+  },
+  // batch import
+  {path: "skills/import",
+    component: BatchImportComponent,
     canActivate: [AuthGuard],
   },
 

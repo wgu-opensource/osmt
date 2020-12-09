@@ -4,6 +4,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {RichSkillService} from "../service/rich-skill.service";
 import {ToastService} from "../../toast/toast.service";
 import {Location} from "@angular/common";
+import {FormControl} from "@angular/forms";
+import {Papa, ParseResult} from "ngx-papaparse";
 
 
 export enum ImportStep {
@@ -21,11 +23,21 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   currentStep: ImportStep = ImportStep.UploadFile
 
+  fileInput: FormControl = new FormControl("")
+  uploadedFile: any;
+  uploadedFileError: boolean = false
+
+  acceptableFileTypes = [
+    "text/csv",
+  ]
+  parseResults?: ParseResult
+
   constructor(protected router: Router,
               protected richSkillService: RichSkillService,
               protected toastService: ToastService,
               protected route: ActivatedRoute,
-              protected location: Location
+              protected location: Location,
+              protected papa: Papa
   ) {
     super()
   }
@@ -35,6 +47,9 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   resetState(): void {
     this.currentStep = ImportStep.UploadFile
+    this.uploadedFile = undefined
+    this.uploadedFileError = false
+    this.parseResults = undefined
   }
 
   stepName(stepNo: ImportStep): string {
@@ -77,7 +92,45 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   }
 
   isStepValid(): boolean {
-    return true
+    switch (this.currentStep) {
+      case ImportStep.UploadFile: return this.parseResults !== undefined
+      default: return true
+    }
+  }
+
+  handleFileChange($event: Event): void {
+    const target = $event.target as HTMLInputElement
+
+    console.log("file changed", $event, target.files)
+
+    if (target.files && target.files.length > 0) {
+      const file = target.files[0]
+
+      this.uploadedFile = file.name
+
+      console.log("file type", file.type)
+      if (this.acceptableFileTypes.indexOf(file.type) === -1) {
+        this.uploadedFile = "The file you select must be CSV format."
+        this.uploadedFileError = true
+        return
+      }
+
+      this.papa.parse(file, {
+        header: true,
+        complete: (results) => {
+          this.uploadedFileError = false
+          this.parseResults = results
+          console.log("parsed", results)
+        }
+      })
+    }
+  }
+
+  get uploadedFileCount(): number {
+    if (this.uploadedFile) {
+      return 1
+    }
+    return 0
   }
 }
 

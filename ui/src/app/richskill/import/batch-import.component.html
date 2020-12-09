@@ -26,7 +26,28 @@
 
   <div class="t-margin-medium t-margin-bottom">
     <ng-template [ngIf]="isUploadStep()">
-      <p>upload goes here...</p>
+      <div class="m-dragDrop" [class.m-dragDrop-is-error]="uploadedFileError">
+        <label for="dragdrop">
+          <span class="m-dragDrop-x-spinner"></span>
+          <span class="m-dragDrop-x-icon">
+            <!--{{render '@m-countericon'}}-->
+            <div class="m-counterIcon">
+              <div class="m-iconWithFrame">
+                  <svg class="t-icon" aria-hidden="true">
+                      <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
+                  </svg>
+              </div>
+              <div class="m-counterIcon-x-counter">
+                  <div class="m-counter"><span>{{uploadedFileCount}}</span></div>
+              </div>
+            </div>
+          </span>
+          <span class="m-dragDrop-x-message" *ngIf="uploadedFile">{{uploadedFile}}</span>
+          <span class="m-dragDrop-x-label" *ngIf="!uploadedFile">Drag and drop your CSV file, or <span class="m-dragtdrop-x-labelInteractive">Select a file to upload</span></span>
+          <span class="m-dragDrop-x-label" *ngIf="uploadedFile"><span class="m-dragtdrop-x-labelInteractive">Change file</span></span>
+        </label>
+        <input class="t-visuallyHidden" type="file" [formControl]="fileInput" (change)="handleFileChange($event)" id="dragdrop">
+      </div>
     </ng-template>
 
     <ng-template [ngIf]="isMappingStep()">

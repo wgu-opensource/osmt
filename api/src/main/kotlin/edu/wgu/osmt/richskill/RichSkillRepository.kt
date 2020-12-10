@@ -10,7 +10,6 @@ import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionRepository
-import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.*
 import edu.wgu.osmt.elasticsearch.EsCollectionRepository
@@ -24,7 +23,6 @@ import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.task.PublishTask
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository

@@ -76,6 +76,38 @@ paths:
                 items:
                   $ref: '#/components/schemas/SkillSummary'
 
+  /api/search/skills/similarity:
+    post:
+      tags:
+        - Search
+      summary:  Find similar skills
+      description: Returns skills with similar statement fields
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Similarity'
+
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SkillSummary'
+
+
   /api/skills:
     get:
       summary: Get all skills
@@ -110,7 +142,7 @@ paths:
         '200':
           description: OK
           headers:
-            Link: 
+            Link:
               $ref: '#/components/headers/Link'
             X-Total-Count:
               $ref: '#/components/headers/XTotalCount'
@@ -132,7 +164,6 @@ paths:
                 type: string
                 example: >-
                   id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
-
                   https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac, RichSkillDescriptor, "https://osmt.example.com/organization", "Document Saving", "The learner copies and saves documents to their local machine.", "https://skillsource.example.com/base-skills/simple-compuhacking", "documents, file operations, computer basics", "Productivity Software", "13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
         '202':
           description: Accepted
@@ -185,10 +216,10 @@ paths:
         required: true
         schema:
           type: string
-    get: 
+    get:
       tags:
         - Skills
-      summary: Retrieve a skill 
+      summary: Retrieve a skill
       description: >-
         Return the full information about a Rich Skill Descriptor
       responses:
@@ -196,7 +227,7 @@ paths:
           description: OK
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/Skill'
             text/html:
               schema:
@@ -224,7 +255,7 @@ paths:
           description: OK
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/TaskResult'
         '400':
           description: Bad Request
@@ -257,7 +288,7 @@ paths:
           description: OK
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/Skill'
         '400':
           description: Bad Request
@@ -265,6 +296,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+
+  /api/skills/{uuid}/log:
+    parameters:
+      - name: uuid
+        in: path
+        description: uuid of skill
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Skills
+      summary: Retrieve skill log
+      description: Retrieve the audit log entries of a skill
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+
 
   /api/skills/publish:
     post:
@@ -417,7 +472,7 @@ paths:
         '200':
           description: OK
           headers:
-            Link: 
+            Link:
               $ref: '#/components/headers/Link'
             X-Total-Count:
               $ref: '#/components/headers/XTotalCount'
@@ -482,7 +537,7 @@ paths:
           description: OK
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/Collection'
             text/csv:
               schema:
@@ -500,7 +555,7 @@ paths:
           description: OK
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/TaskResult'
 
   /api/collections/{uuid}/update:
@@ -515,7 +570,7 @@ paths:
       tags:
         - Collections
       summary: Update a collection
-      description: Update an existing collection 
+      description: Update an existing collection
       requestBody:
         required: true
         content:
@@ -527,7 +582,7 @@ paths:
           description: OK
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/Collection'
         '400':
           description: Bad Request
@@ -535,6 +590,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+
+  /api/collections/{uuid}/log:
+    parameters:
+      - name: uuid
+        in: path
+        description: uuid of a collection
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Skills
+      summary: Retrieve collection log
+      description: Retrieve the audit log entries of a collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
 
   /api/collections/{uuid}/skills:
     post:
@@ -767,8 +845,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type:
-                    string
+                  $ref: '#/components/schemas/NamedReference'
 
 components:
   securitySchemes:
@@ -776,9 +853,9 @@ components:
       type: http
       scheme: bearer
   headers:
-    Link: 
+    Link:
       description: |
-        Links to related resources in 
+        Links to related resources in
         [RFC 5988](https://tools.ietf.org/html/rfc5988#section-5) format.
         This will include a link with relation type `next` or `prev` if present.
       schema:
@@ -834,7 +911,7 @@ components:
             type: string
         keywords:
           type: array
-          items: 
+          items:
             type: string
         alignments:
           type: array
@@ -1030,7 +1107,7 @@ components:
     CollectionUpdate:
       type: object
       properties:
-        name: 
+        name:
           type: string
         status:
           $ref: '#/components/schemas/PublishStatus'
@@ -1119,6 +1196,8 @@ components:
           type: string
         skillStatement:
           type: string
+        author:
+          type: string
         keywords:
           type: array
           items:
@@ -1164,7 +1243,7 @@ components:
     TaskResult:
       type: object
       properties:
-        href: 
+        href:
           type: string
           format: uri
         uuid:
@@ -1219,6 +1298,35 @@ components:
         - employer
         - author
 
+    Change:
+      type: object
+      properties:
+        fieldName:
+          type: string
+        old:
+          type: string
+        new:
+          type: string
 
+    AuditLog:
+      type: object
+      properties:
+        creationDate:
+          type: string
+          format: date-time
+        operationType:
+          type: string
+          enum: ["Insert", "Update", "PublishStatusChange"]
+        user:
+          type: string
+        changedFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/Change'
 
-
+    Similarity:
+      type: object
+      properties:
+        statement:
+          type: string
+          required: true

@@ -1093,8 +1093,22 @@ components:
           type: string
         framework:
           type: string
+        level:
+          $ref: '#/components/schemas/JobCodeLevel'
+        parents:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobCode'
       required:
         - code
+    JobCodeLevel:
+      type: string
+      enum:
+        - onet
+        - detailed
+        - broad
+        - minor
+        - major
 
     Search:
       type: object

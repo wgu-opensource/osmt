@@ -1,6 +1,7 @@
 package edu.wgu.osmt.api.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 
@@ -33,11 +34,13 @@ data class ApiJobCode(
     val code: String,
     val id: String? = null,
     val name: String? = null,
-    val framework: String? = null
+    val framework: String? = null,
+    val level: JobCodeLevel? = null,
+    val parents: List<ApiJobCode>? = null
 ) {
     companion object factory {
-        fun fromJobCode(jobCode: JobCode): ApiJobCode {
-            return ApiJobCode(code=jobCode.code, name=jobCode.name, id=jobCode.url, framework=jobCode.framework)
+        fun fromJobCode(jobCode: JobCode, level: JobCodeLevel? = null, parents: List<ApiJobCode>? = null): ApiJobCode {
+            return ApiJobCode(code=jobCode.code, name=jobCode.name, id=jobCode.url, framework=jobCode.framework, level=level, parents=parents)
         }
     }
 }

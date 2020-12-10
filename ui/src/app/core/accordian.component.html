@@ -14,7 +14,7 @@
     <span class="m-buttonText-x-text">{{triggerLabel}}</span>
   </button>
 
-  <div class="l-accordion-x-content t-margin-small t-margin-bottom" #content [attr.inert]="isExpanded ? false : ''">
+  <div class="l-accordion-x-content t-margin-small t-margin-bottom" #content [attr.inert]="isExpanded ? false : ''" [attr.aria-hidden]="!isExpanded">
     <ng-content></ng-content>
   </div>
 

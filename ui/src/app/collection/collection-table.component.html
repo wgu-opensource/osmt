@@ -55,6 +55,10 @@
               </div>
             </div>
           </div>
+          <nav class="m-quickLinks" aria-labelledby="save-quicklinks">
+            <h3 class="t-visuallyHidden" id="save-quicklinks">Quick Links</h3>
+            <a class="t-visuallyHidden" (click)="focusActionBar.emit()">Actions menu.</a>
+          </nav>
         </div>
       </th>
 
@@ -69,11 +73,11 @@
     [class.m-tableRow-is-selected]="isSelected(collection)"
 
     app-collection-list-row
-    #appTableRow
     [collection]="collection"
     [isSelected]="isSelected(collection)"
     [rowActions]="rowActions"
     (rowSelected)="onRowToggle($event)"
+    (focusActionBar)="focusActionBar.emit()"
   ></tr>
   </tbody>
 </table>

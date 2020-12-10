@@ -27,7 +27,8 @@
     ></app-filter-controls>
 
     <div class="t-margin-medium t-margin-bottom">
-      <ng-template [appLoadingObservables]="[resultsLoaded]">
+      <app-blocking-loader [observables]="[resultsLoaded]">
+      <p class="t-visuallyHidden">Select one or more collections in the table, or select all in the table heading, then use the action menu to publish, archive, or unarchive the selected collections.</p>
         <app-collection-table
           *ngIf="!emptyResults"
           [allowSorting]="true"
@@ -39,6 +40,7 @@
           (selectAllSelected)="handleSelectAll($event)"
           [selectAllCount]="getSelectAllCount()"
           [selectAllEnabled]="getSelectAllEnabled()"
+          (focusActionBar)="focusActionBar()"
         ></app-collection-table>
 
         <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">
@@ -54,7 +56,7 @@
         <app-empty-message *ngIf="emptyResults && !showSearchEmptyMessage">
           <p class="m-emptyMessage-x-message">No collections found. Try adjusting your filters.</p>
         </app-empty-message>
-      </ng-template>
+      </app-blocking-loader>
     </div>
 
     <app-pagination

@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, ElementRef, OnInit, ViewChild} from "@angular/core";
 import {HasActionDefinitions} from "./has-action-definitions";
 
 
@@ -8,6 +8,8 @@ import {HasActionDefinitions} from "./has-action-definitions";
 })
 export class TableActionBarComponent extends HasActionDefinitions implements OnInit {
 
+  @ViewChild("collectionDetailTableActionBar") actionBar!: ElementRef
+
   constructor() {
     super()
   }
@@ -15,4 +17,7 @@ export class TableActionBarComponent extends HasActionDefinitions implements OnI
   ngOnInit(): void {
   }
 
+  focus(): void {
+    this.actionBar.nativeElement.focus()
+  }
 }

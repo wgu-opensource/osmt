@@ -1,6 +1,5 @@
-<div *ngIf="isProcessing()" class="PUI lds-dual-ring">Loading...</div>
 <div *ngIf="!mobileView; else mobile">
-  <button *ngIf="!isProcessing()" class="m-button t-width-100" [disabled]="isDisabled()" type="submit">
+  <button class="m-button t-width-100" [class.m-button-is-loading]="isProcessing()" [disabled]="isDisabled()" type="submit">
     <span class="m-button-x-text">{{label}}</span>
   </button>
 </div>

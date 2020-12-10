@@ -9,7 +9,7 @@ import {CollectionListRowComponent} from "./collection-list-row.component"
 })
 export class CollectionTableComponent extends AbstractTableComponent<ICollectionSummary> implements AfterViewInit {
 
-  @ViewChildren("appTableRow") rowReferences: QueryList<CollectionListRowComponent> | undefined = undefined
+  @ViewChildren(CollectionListRowComponent) rowReferences: QueryList<CollectionListRowComponent> | undefined = undefined
 
   @Input() allowSorting = false
 

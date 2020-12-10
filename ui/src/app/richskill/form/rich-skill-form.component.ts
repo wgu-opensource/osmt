@@ -12,6 +12,7 @@ import { IJobCode } from "src/app/job-codes/Jobcode";
 import {ToastService} from "../../toast/toast.service";
 import {Title} from "@angular/platform-browser";
 import {HasFormGroup} from "../../core/abstract-form.component";
+import {notACopyValidator} from "../../validators/not-a-copy.validator";
 
 
 @Component({
@@ -25,6 +26,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
 
   skillLoaded: Observable<ApiSkill> | null = null
   skillSaved: Observable<ApiSkill> | null = null
+  isDuplicating: boolean = false
 
   constructor(
     private fb: FormBuilder,
@@ -41,6 +43,8 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   ngOnInit(): void {
     this.skillUuid = this.route.snapshot.paramMap.get("uuid")
 
+    this.isDuplicating = window.location.pathname.endsWith("/duplicate")
+
     if (this.skillUuid) {
       this.skillLoaded = this.richSkillService.getSkillByUUID(this.skillUuid)
       this.skillLoaded.subscribe(skill => { this.setSkill(skill) })
@@ -53,9 +57,13 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     return `${this.existingSkill != null ? "Edit" : "Create"} Rich Skill Descriptor`
   }
 
+  nameErrorMessage(): string {
+    return this.skillForm.get("skillName")?.hasError("notACopy") ? "Name is still a copy" : "Name is required"
+  }
+
   getFormDefinitions(): {[key: string]: AbstractControl} {
     const fields = {
-      skillName: new FormControl("", Validators.required),
+      skillName: new FormControl("", notACopyValidator),
       skillStatement: new FormControl("", Validators.required),
       category: new FormControl(""),
       keywords: new FormControl(""),
@@ -122,43 +130,43 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     const formValue = this.skillForm.value
 
     const inputName = this.nonEmptyOrNull(formValue.skillName)
-    if (inputName && this.existingSkill?.skillName !== inputName) {
+    if (inputName && (this.isDuplicating || this.existingSkill?.skillName !== inputName)) {
       update.skillName = inputName
     }
 
     const inputStatement = this.nonEmptyOrNull(formValue.skillStatement)
-    if (inputStatement && this.existingSkill?.skillStatement !== inputStatement) {
+    if (inputStatement && (this.isDuplicating || this.existingSkill?.skillStatement !== inputStatement)) {
       update.skillStatement = inputStatement
     }
 
     if (AppConfig.settings.editableAuthor) {
       const author = this.parseAuthor(formValue.author)
-      if (!this.existingSkill || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
+      if (!this.existingSkill || this.isDuplicating || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
           update.author = author
       }
     }
 
     const inputCategory = this.nonEmptyOrNull(formValue.category)
-    if (this.existingSkill?.category !== inputCategory) {
+    if (this.isDuplicating || this.existingSkill?.category !== inputCategory) {
       update.category = inputCategory ?? ""
     }
 
     const collectionsDiff = this.diffStringList(formValue.collections, this.existingSkill?.collections)
-    if (collectionsDiff) { update.collections = collectionsDiff }
+    if (this.isDuplicating || collectionsDiff) { update.collections = collectionsDiff }
 
     const keywordDiff = this.diffStringList(this.splitTextarea(formValue.keywords), this.existingSkill?.keywords)
-    if (keywordDiff) { update.keywords = keywordDiff }
+    if (this.isDuplicating || keywordDiff) { update.keywords = keywordDiff }
 
     const occupationsDiff = this.diffStringList(
       this.splitTextarea(formValue.occupations),
       this.existingSkill?.occupations?.map(it => this.stringFromJobCode(it))
     )
-    if (occupationsDiff) { update.occupations = occupationsDiff }
+    if (this.isDuplicating || occupationsDiff) { update.occupations = occupationsDiff }
 
     // tslint:disable-next-line:variable-name
     const _handle_ref_list = (formFieldValue: string, fieldName: string, existing?: INamedReference[]) => {
       const diff = this.diffReferenceList(this.splitTextarea(formFieldValue), existing)
-      if (diff) { // @ts-ignore
+      if (this.isDuplicating || diff) { // @ts-ignore
         update[fieldName] = diff
       }
     }
@@ -177,7 +185,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
       name: this.nonEmptyOrNull(formValue.alignmentText)
     })
 
-    if (!firstAlignment?.equals(inputAlignment)) {
+    if (this.isDuplicating || !firstAlignment?.equals(inputAlignment)) {
       const inputAlignmentDefined = (inputAlignment.id || inputAlignment.name)
       update.alignments = new ApiReferenceListUpdate(
         inputAlignmentDefined ? [inputAlignment] : undefined,
@@ -196,7 +204,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
       return
     }
 
-    if (this.skillUuid) {
+    if (this.skillUuid && !this.isDuplicating) {
       this.skillSaved = this.richSkillService.updateSkill(this.skillUuid, updateObject)
     } else {
       this.skillSaved = this.richSkillService.createSkill(updateObject)
@@ -243,7 +251,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     const firstAlignment: INamedReference | undefined = skill.alignments?.find(it => true)
 
     const fields = {
-      skillName: skill.skillName,
+      skillName: (this.isDuplicating ? "Copy of " : "") + skill.skillName,
       skillStatement: skill.skillStatement,
       category: skill.category ?? "",
       keywords: skill.keywords?.join("; ") ?? "",

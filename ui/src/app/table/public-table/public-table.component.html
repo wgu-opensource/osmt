@@ -40,10 +40,6 @@
         <a class="t-focus t-type-bodyLink" routerLink="/skills/{{skill.uuid}}">{{skill.skillName}}</a>
       </h4>
 
-      <div class="m-quickLinks">
-        <a href="#">TODO Next skill</a>
-      </div>
-
       <p class="t-margin-small t-margin-bottom">{{skill.skillStatement}}</p>
       <div class="l-flex" *ngIf="isArchived(skill)">
         <svg class="t-icon" aria-hidden="true">

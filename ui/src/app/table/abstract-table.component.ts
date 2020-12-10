@@ -22,6 +22,7 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
 
   @Output() rowSelected: EventEmitter<SummaryT[]> = new EventEmitter<SummaryT[]>()
   @Output() selectAllSelected = new EventEmitter<boolean>()
+  @Output() focusActionBar = new EventEmitter<void>()
 
   selectedItems: Set<SummaryT> = new Set()
 

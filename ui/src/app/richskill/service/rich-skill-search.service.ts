@@ -1,11 +1,5 @@
-import {Injectable} from "@angular/core"
-import {AbstractService} from "../../abstract.service"
-import {AuthService} from "../../auth/auth-service"
-import {HttpClient} from "@angular/common/http"
-import {Observable} from "rxjs"
-import {ApiSkill, INamedReference, ISkill} from "../ApiSkill"
-import {map} from "rxjs/operators"
-import {ApiCollectionSummary, ApiSkillSummary, ICollectionSummary} from "../ApiSkillSummary"
+import {INamedReference} from "../ApiSkill"
+import {ApiCollectionSummary, ApiSkillSummary} from "../ApiSkillSummary"
 
 export interface ISearch {
   query?: string
@@ -74,39 +68,5 @@ export class PaginatedCollections {
   constructor(collections: ApiCollectionSummary[], totalCount: number) {
     this.collections = collections
     this.totalCount = totalCount
-  }
-}
-
-@Injectable({
-  providedIn: "root"
-})
-export class RichSkillSearchService extends AbstractService {
-
-  constructor(httpClient: HttpClient, authService: AuthService) {
-    super(httpClient, authService)
-  }
-
-  searchSkills(
-    size: number,
-    from: number,
-    status: string[],
-    sort: string,
-    searchBody: Partial<ApiSearch>
-  ): Observable<ApiSkill[]> | null {
-    const errorMsg = `Failed to unwrap response for skill search`
-
-    return this.post<ISkill[]>({
-      path: "api/search/skills",
-      params: {
-        size: size.toString(),
-        from: from.toString(),
-        status,
-        sort
-      },
-      body: searchBody
-    })
-      .pipe(map(({body}) => {
-        return this.safeUnwrapBody(body, errorMsg).map(s => new ApiSkill(s))
-      }))
   }
 }

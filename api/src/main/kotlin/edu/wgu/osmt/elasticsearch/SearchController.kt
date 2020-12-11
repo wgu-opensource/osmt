@@ -2,6 +2,7 @@ package edu.wgu.osmt.elasticsearch
 
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
+import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.CollectionSortEnum
 import edu.wgu.osmt.api.model.SkillSortEnum
@@ -16,13 +17,11 @@ import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillDoc
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 
 @Controller
@@ -156,10 +155,11 @@ class SearchController @Autowired constructor(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = true) query: String,
         @RequestParam(required = true) type: String
-    ): HttpEntity<List<String>> {
-        val searchResults = keywordEsRepo.typeAheadSearch(query, KeywordTypeEnum.valueOf(type.toLowerCase().capitalize()))
+    ): HttpEntity<List<ApiNamedReference>> {
+        val keywordType = KeywordTypeEnum.forApiValue(type) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        val searchResults = keywordEsRepo.typeAheadSearch(query, keywordType)
 
-        return ResponseEntity.status(200).body(searchResults.mapNotNull { it.content.value }.toList())
+        return ResponseEntity.status(200).body(searchResults.map { ApiNamedReference.fromKeyword(it.content) }.toList())
     }
 }
 

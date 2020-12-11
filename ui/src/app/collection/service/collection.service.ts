@@ -155,17 +155,26 @@ export class CollectionService extends AbstractService {
       }))
   }
 
-  updateSkills(collectionUuid: string, skillListUpdate: ApiSkillListUpdate): Observable<ApiTaskResult> {
+  updateSkills(collectionUuid: string,
+               skillListUpdate: ApiSkillListUpdate,
+               filterByStatuses?: Set<PublishStatus>
+  ): Observable<ApiTaskResult> {
+    const params = this.buildTableParams(undefined, undefined, filterByStatuses, undefined)
     return this.post<ITaskResult>({
       path: `api/collections/${collectionUuid}/updateSkills`,
+      params,
       body: skillListUpdate
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }
 
-  updateSkillsWithResult(collectionUuid: string, skillListUpdate: ApiSkillListUpdate, pollIntervalMs: number = 1000): Observable<ApiBatchResult> {
-    return this.pollForTaskResult(this.updateSkills(collectionUuid, skillListUpdate), pollIntervalMs)
+  updateSkillsWithResult(collectionUuid: string,
+                         skillListUpdate: ApiSkillListUpdate,
+                         filterByStatus?: Set<PublishStatus>,
+                         pollIntervalMs: number = 1000
+  ): Observable<ApiBatchResult> {
+    return this.pollForTaskResult(this.updateSkills(collectionUuid, skillListUpdate, filterByStatus), pollIntervalMs)
   }
 
   publishCollectionsWithResult(

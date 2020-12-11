@@ -10,11 +10,10 @@ import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionRepository
+import edu.wgu.osmt.collection.CollectionSkills
+import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.*
-import edu.wgu.osmt.elasticsearch.EsCollectionRepository
-import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
-import edu.wgu.osmt.elasticsearch.SearchService
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordDao
@@ -24,6 +23,7 @@ import edu.wgu.osmt.task.PublishTask
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -52,15 +52,21 @@ interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
 @Transactional
 class RichSkillRepositoryImpl @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
-    val jobCodeRepository: JobCodeRepository,
-    val keywordRepository: KeywordRepository,
     val collectionRepository: CollectionRepository,
-    val esRichSkillRepository: EsRichSkillRepository,
-    val esCollectionRepository: EsCollectionRepository,
-    val searchService: SearchService,
+    val richSkillEsRepo: RichSkillEsRepo,
+    val collectionEsRepo: CollectionEsRepo,
     val appConfig: AppConfig
 ) :
     RichSkillRepository {
+
+    @Autowired
+    @Lazy
+    lateinit var jobCodeRepository: JobCodeRepository
+
+    @Autowired
+    @Lazy
+    lateinit var keywordRepository: KeywordRepository
+
     override val dao = RichSkillDescriptorDao.Companion
     override val table = RichSkillDescriptorTable
 
@@ -89,8 +95,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
                 )
         }
         daoObject?.let {
-            esCollectionRepository.saveAll(it.collections.map { it.toDoc() })
-            esRichSkillRepository.save(RichSkillDoc.fromDao(it, appConfig))
+            collectionEsRepo.saveAll(it.collections.map { it.toDoc() })
+            richSkillEsRepo.save(RichSkillDoc.fromDao(it, appConfig))
         }
         return daoObject
     }
@@ -118,8 +124,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
         updateObject.copy(id = newRsd.id.value).applyToDao(newRsd)
 
         newRsd.let {
-            esCollectionRepository.saveAll(it.collections.map { it.toDoc() })
-            esRichSkillRepository.save(RichSkillDoc.fromDao(it, appConfig))
+            collectionEsRepo.saveAll(it.collections.map { it.toDoc() })
+            richSkillEsRepo.save(RichSkillDoc.fromDao(it, appConfig))
         }
 
         auditLogRepository.create(
@@ -309,10 +315,11 @@ class RichSkillRepositoryImpl @Autowired constructor(
                 handle_skill_dao(this.findByUUID(uuid))
             }
         } else {
-            val searchHits = searchService.searchRichSkillsByApiSearch(
+            val searchHits = richSkillEsRepo.byApiSearch(
                 publishTask.search,
                 publishTask.filterByStatus,
-                Pageable.unpaged()
+                Pageable.unpaged(),
+                publishTask.collectionUuid
             )
             totalCount = searchHits.totalHits.toInt()
             searchHits.forEach { hit ->

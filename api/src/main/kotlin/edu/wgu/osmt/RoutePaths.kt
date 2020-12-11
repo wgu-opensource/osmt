@@ -26,6 +26,9 @@ object RoutePaths {
     const val TASKS_PATH = "/api/tasks"
     const val TASK_DETAIL = "${TASKS_PATH}/{uuid}"
 
+    const val SEARCH_JOBCODES_PATH = "$SEARCH_PATH/jobcodes"
+
+    const val SEARCH_KEYWORDS_PATH = "$SEARCH_PATH/keywords"
 
     object QueryParams {
         const val FROM = "from"

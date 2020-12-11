@@ -1,4 +1,4 @@
-<div>
+<div aria-hidden="true">
   <button #triggerButton (click)="handleClickTrigger()"
     class="m-iconInteractive" type="button" aria-haspopup="true" [attr.aria-expanded]="isOpen" aria-labelledby="tableRow-header">
     <span class="t-visuallyHidden">More</span>
@@ -11,7 +11,12 @@
   </button>
 
   <div #actionMenu
-       class="m-selectMenu" role="menu" [class.m-selectMenu-is-active]="isOpen" [attr.inert]="!isOpen ? '' : null">
+       class="m-selectMenu"
+       role="menu"
+       [class.m-selectMenu-is-active]="isOpen"
+       [attr.inert]="!isOpen ? '' : null"
+       [attr.aria-hidden]="!isOpen"
+  >
     <div class="m-selectMenu-x-content">
       <h6 *ngIf="title !== undefined" class="t-type-small">{{title}}</h6>
       <button *ngFor="let action of visibleActions(data)" class="m-buttonText" type="button" role="menuitem" (click)="handleClickAction(action)">

@@ -30,9 +30,11 @@ class CollectionController @Autowired constructor(
     val richSkillRepository: RichSkillRepository,
     val taskMessageService: TaskMessageService,
     val auditLogRepository: AuditLogRepository,
-    override val elasticRepository: EsCollectionRepository,
+    val collectionEsRepo: CollectionEsRepo,
     val appConfig: AppConfig
 ): HasAllPaginated<CollectionDoc> {
+
+    override val elasticRepository = collectionEsRepo
 
     override val allPaginatedPath: String = RoutePaths.COLLECTIONS_PATH
     override val sortOrderCompanion = CollectionSortEnum.Companion

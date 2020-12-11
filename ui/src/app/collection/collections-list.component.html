@@ -28,6 +28,7 @@
 
     <div class="t-margin-medium t-margin-bottom">
       <app-blocking-loader [observables]="[resultsLoaded]">
+      <p class="t-visuallyHidden">Select one or more collections in the table, or select all in the table heading, then use the action menu to publish, archive, or unarchive the selected collections.</p>
         <app-collection-table
           *ngIf="!emptyResults"
           [allowSorting]="true"

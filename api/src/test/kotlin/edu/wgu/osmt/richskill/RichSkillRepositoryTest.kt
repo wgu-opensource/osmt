@@ -10,15 +10,19 @@ import edu.wgu.osmt.api.model.ApiReferenceListUpdate
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.api.model.ApiStringListUpdate
+import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.collection.CollectionEsRepo
+import edu.wgu.osmt.collection.CollectionRepository
+import edu.wgu.osmt.collection.CollectionUpdateObject
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
+import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.Keyword
+import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.collection.Collection
-import edu.wgu.osmt.elasticsearch.SearchService
 import edu.wgu.osmt.task.PublishTask
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -27,16 +31,21 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Transactional
-class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset  {
+class RichSkillRepositoryTest @Autowired constructor(
+    override val richSkillEsRepo: RichSkillEsRepo,
+    override val collectionEsRepo: CollectionEsRepo,
+    override val keywordEsRepo: KeywordEsRepo,
+    override val jobCodeEsRepo: JobCodeEsRepo
+) : SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset  {
 
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository
 
     @Autowired
-    lateinit var keywordRepository: KeywordRepository
+    lateinit var collectionRepository: CollectionRepository
 
     @Autowired
-    override lateinit var searchService: SearchService
+    lateinit var keywordRepository: KeywordRepository
 
     val userString = "unittestuser"
 
@@ -294,6 +303,68 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRese
             val skill = newDao!!.toModel()
             assertThat(skill.publishStatus()).isEqualTo(PublishStatus.Draft)
         }
+    }
+
+    @Test
+    fun `should be able to bulk publish some skills within a collection`() {
+        val archivedCount = 2
+        val publishedCount = 2
+        val draftCount = 2
+        val deletedCount = 2
+        val includedCount = archivedCount+publishedCount+draftCount+deletedCount
+        val notIncludedCount = 10
+
+        val archivedSkills = (1..archivedCount).toList().flatMap {
+            richSkillRepository.createFromApi(listOf(apiSkillUpdateGenerator(publishStatus=PublishStatus.Published)), userString).map { skillDao ->
+                richSkillRepository.update(RsdUpdateObject(id=skillDao.id.value, publishStatus=PublishStatus.Archived), userString)
+            }.filterNotNull()
+        }
+        val publishedSkills = (1..publishedCount).toList().flatMap {
+            richSkillRepository.createFromApi(listOf(apiSkillUpdateGenerator(publishStatus=PublishStatus.Published)), userString)
+        }
+        val draftSkills = (1..draftCount).toList().flatMap {
+            richSkillRepository.createFromApi(listOf(apiSkillUpdateGenerator(publishStatus=PublishStatus.Draft)), userString)
+        }
+
+        // make skills that are draft+archived
+        val deletedSkills = (1..deletedCount).toList().flatMap {
+            richSkillRepository.createFromApi(listOf(apiSkillUpdateGenerator(publishStatus=PublishStatus.Draft)), userString).map { skillDao ->
+                richSkillRepository.update(RsdUpdateObject(id=skillDao.id.value, publishStatus=PublishStatus.Archived), userString)
+            }.filterNotNull()
+        }
+
+        val extraSkills = (1..notIncludedCount).toList().flatMap {
+            richSkillRepository.createFromApi(listOf(apiSkillUpdateGenerator(publishStatus=PublishStatus.Draft)), userString)
+        }
+
+        publishedSkills.forEach { assertThat(it.publishStatus()).isEqualTo(PublishStatus.Published) }
+        archivedSkills.forEach { assertThat(it.publishStatus()).isEqualTo(PublishStatus.Archived) }
+        draftSkills.forEach { assertThat(it.publishStatus()).isEqualTo(PublishStatus.Draft) }
+        deletedSkills.forEach { assertThat(it.publishStatus()).isEqualTo(PublishStatus.Deleted) }
+
+        // create collection
+        val collectionDao = collectionRepository.create(UUID.randomUUID().toString(), userString)
+        val collection = collectionDao?.toModel()
+        assertThat(collection).isNotNull
+
+        // add skills to collection
+        collectionRepository.update(CollectionUpdateObject(
+            id=collection!!.id!!,
+            skills=ListFieldUpdate(add=(archivedSkills+publishedSkills+draftSkills+deletedSkills))
+        ), userString)
+
+        // publish all draft skills in collection
+        val publishTask = PublishTask(
+            search=ApiSearch(),
+            publishStatus=PublishStatus.Published,
+            filterByStatus=setOf(PublishStatus.Draft),
+            collectionUuid=collection.uuid,
+            userString=userString
+        )
+
+        val batchResult = richSkillRepository.changeStatusesForTask(publishTask)
+        assertThat(batchResult.totalCount).isEqualTo(draftCount)
+        assertThat(batchResult.modifiedCount).isEqualTo(draftCount)
     }
 
     @Test

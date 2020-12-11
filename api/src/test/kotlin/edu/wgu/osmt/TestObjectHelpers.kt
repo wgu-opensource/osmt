@@ -50,7 +50,7 @@ object TestObjectHelpers {
     }
 
     fun randomJobCode(): JobCode {
-        return JobCode(elasticIdCounter, code = randomString(), creationDate = LocalDateTime.now(ZoneOffset.UTC))
+        return JobCode(elasticIdCounter, code = randomString(), name= randomString(), creationDate = LocalDateTime.now(ZoneOffset.UTC))
     }
 
     fun randomRichSkillDoc(): RichSkillDoc {
@@ -92,11 +92,14 @@ object TestObjectHelpers {
         )
     }
 
-    fun keywordGenerator(n: Int, type: KeywordTypeEnum): List<Keyword> {
+    fun keyword(value: String, type: KeywordTypeEnum): Keyword{
+        return Keyword(elasticIdCounter, LocalDateTime.now(ZoneOffset.UTC), LocalDateTime.now(ZoneOffset.UTC), type, value, null)
+    }
+    fun keywordsGenerator(n: Int, type: KeywordTypeEnum): List<Keyword> {
         val keywords = (0..n).toList().map {
             val chars = "abcdefghijklmnopqrstuvwxyz"
             val word = Random().ints(10, 0, chars.length).asSequence().map(chars::get).joinToString("").capitalize()
-            Keyword(null, LocalDateTime.now(ZoneOffset.UTC), LocalDateTime.now(ZoneOffset.UTC), type, word, null)
+            keyword(word,type)
         }
         return keywords
     }

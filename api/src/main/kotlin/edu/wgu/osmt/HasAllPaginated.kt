@@ -27,7 +27,7 @@ interface HasAllPaginated<T> {
 
     fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = false, defaultValue = SearchService.DEFAULT_PAGESIZE.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
         @RequestParam(
             required = false,
@@ -62,4 +62,8 @@ interface HasAllPaginated<T> {
         return ResponseEntity.status(200).headers(responseHeaders)
             .body(searchHits.map { it.content }.toList())
     }
+}
+
+object PaginationDefaults {
+    const val size: Int = 50
 }

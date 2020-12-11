@@ -17,4 +17,8 @@ enum class KeywordTypeEnum {
 
 
     open val displayName: String = this.name
+
+    companion object {
+        fun forApiValue(apiValue: String) = KeywordTypeEnum.values().find { it.name.toLowerCase() == apiValue.toLowerCase() }
+    }
 }

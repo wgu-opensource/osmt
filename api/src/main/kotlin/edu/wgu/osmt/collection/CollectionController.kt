@@ -5,7 +5,6 @@ import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.elasticsearch.*
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.security.OAuth2Helper
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
@@ -26,9 +25,11 @@ class CollectionController @Autowired constructor(
     val collectionRepository: CollectionRepository,
     val richSkillRepository: RichSkillRepository,
     val taskMessageService: TaskMessageService,
-    override val elasticRepository: EsCollectionRepository,
+    val collectionEsRepo: CollectionEsRepo,
     val appConfig: AppConfig
 ): HasAllPaginated<CollectionDoc> {
+
+    override val elasticRepository = collectionEsRepo
 
     override val allPaginatedPath: String = RoutePaths.COLLECTIONS_PATH
     override val sortOrderCompanion = CollectionSortEnum.Companion

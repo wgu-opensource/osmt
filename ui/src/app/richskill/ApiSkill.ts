@@ -23,6 +23,17 @@ export class ApiNamedReference implements INamedReference {
   }
 }
 
+export enum KeywordType {
+  Category = "category",
+  Keyword = "keyword",
+  Standard = "standard",
+  Certification = "certification",
+  Alignment = "alignment",
+  Employer = "employer",
+  Author = "author"
+}
+
+
 export interface ISkill {
   id: string
   uuid: string

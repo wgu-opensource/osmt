@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {ApiSkill, INamedReference} from "../ApiSkill";
 import {ApiSkillUpdate} from "../ApiSkillUpdate";
+import {AuditedImportSkill} from "./batch-import.component";
 
 
 @Component({
@@ -9,7 +10,7 @@ import {ApiSkillUpdate} from "../ApiSkillUpdate";
 })
 export class ImportPreviewTableComponent implements OnInit {
 
-  @Input() skills: ApiSkillUpdate[] = []
+  @Input() skills: AuditedImportSkill[] = []
 
   ngOnInit(): void {
     console.log("skills", this.skills)
@@ -52,4 +53,21 @@ export class NamedReferenceComponent {
   get hasOnlyName(): boolean {
     return this.ref?.id === undefined && this.ref?.name !== undefined
   }
+}
+
+
+@Component({
+  selector: "app-inline-error",
+  template: `
+    <p class="m-tableRow-x-message">
+      <span class="m-tableRow-x-messageIcon">
+        <svg class="t-icon" aria-hidden="true">
+          <use xlink:href="/assets/images/svg-defs.svg#icon-error"></use>
+        </svg>
+      </span>
+      <span class="m-tableRow-x-messageText">{{message}}</span>
+    </p>`
+})
+export class InlineErrorComponent {
+  @Input() message: string = ""
 }

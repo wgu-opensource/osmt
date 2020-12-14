@@ -82,7 +82,7 @@ import {
   FieldMappingTableComponent
 } from "./richskill/import/field-mapping-table.component";
 import {
-  ImportPreviewTableComponent,
+  ImportPreviewTableComponent, InlineErrorComponent,
   InlineHeadingComponent,
   NamedReferenceComponent
 } from "./richskill/import/import-preview-table.component";
@@ -178,7 +178,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     FieldMappingSelectComponent,
     ImportPreviewTableComponent,
     InlineHeadingComponent,
-    NamedReferenceComponent
+    NamedReferenceComponent,
+    InlineErrorComponent
   ],
   imports: [
     BrowserModule,

@@ -5,7 +5,7 @@ import {RichSkillService} from "../service/rich-skill.service";
 import {ToastService} from "../../toast/toast.service";
 import {Location} from "@angular/common";
 import {Papa, ParseResult} from "ngx-papaparse";
-import {ApiNamedReference, ApiSkill} from "../ApiSkill"
+import {ApiNamedReference} from "../ApiSkill"
 import {ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate";
 
 
@@ -31,6 +31,24 @@ export const importSkillHeaders: {[p: string]: string} = {
 }
 
 
+export class AuditedImportSkill {
+  skill: ApiSkillUpdate
+  missing: string[]
+
+  constructor(skill: ApiSkillUpdate, missing: string[]) {
+    this.skill = skill
+    this.missing = missing
+  }
+
+  get nameMissing(): boolean { return !this.skill.skillName }
+  get statementMissing(): boolean { return !this.skill.skillStatement }
+  get authorMissing(): boolean { return !this.skill.author }
+
+  get isError(): boolean {
+    return this.nameMissing || this.statementMissing
+  }
+}
+
 @Component({
   selector: "app-batch-import",
   templateUrl: "./batch-import.component.html"
@@ -47,6 +65,9 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   ]
   parseResults?: ParseResult
   fieldMappings?: {[p: string]: string}
+  previewSkills?: ApiSkillUpdate[]
+  auditedSkills?: AuditedImportSkill[]
+  importedSkills?: AuditedImportSkill[]
 
   constructor(protected router: Router,
               protected richSkillService: RichSkillService,
@@ -103,6 +124,14 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   handleClickNext(): boolean {
     this.currentStep += 1
+    switch (this.currentStep) {
+      case ImportStep.ReviewRecords:
+        this.auditRecords()
+        break
+      case ImportStep.Success:
+        this.submitRecords()
+        break
+    }
     return false
   }
 
@@ -134,6 +163,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   }
 
   handleFileChange($event: Event): void {
+    if (this.currentStep !== ImportStep.UploadFile)  {
+      this.resetState()
+    }
+
     const target = $event.target as HTMLInputElement
 
     if (target.files && target.files.length > 0) {
@@ -227,8 +260,36 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
       })
 
       return newSkill
-    }).filter((it: IRichSkillUpdate) => it.skillName && it.skillStatement).map((it: IRichSkillUpdate) => new ApiSkillUpdate(it))
+    }).map((it: IRichSkillUpdate) => new ApiSkillUpdate(it))
     return skillUpdates
+  }
+
+  private auditRecords(): void {
+    this.previewSkills = this.skillsFromResults()
+    this.auditedSkills = this.previewSkills.map(skill => {
+      const required = ["skillName", "skillStatement"]
+      // @ts-ignore
+      const missing = required.filter(it => skill[it] === undefined)
+      return new AuditedImportSkill(skill, missing)
+    })
+  }
+
+  private submitRecords(): void {
+    if (this.auditedSkills === undefined) {
+      return
+    }
+
+    this.importedSkills = this.auditedSkills?.filter(it => !it.isError)
+    const skillUpdates = this.importedSkills.map(it => it.skill)
+
+    this.toastService.showBlockingLoader()
+    this.richSkillService.createSkills(skillUpdates).subscribe(results => {
+      if (results) {
+        this.toastService.hideBlockingLoader()
+        console.log("success!", results.length)
+      }
+    })
+
   }
 }
 

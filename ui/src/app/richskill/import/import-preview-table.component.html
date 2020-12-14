@@ -27,30 +27,32 @@
   </thead>
 
   <tbody>
-    <tr *ngFor="let skill of skills; let index=index" class="m-tableRow">
+    <tr *ngFor="let review of skills; let index=index" class="m-tableRow" [class.m-tableRow-is-error]="review.isError">
       <th class="m-tableRow-x-min" scope="row" id="import-preview-row-{{index}}">
         <span class="t-type-bodyBold">{{index+1}}.</span>
       </th>
 
       <td>
-        <div class="t-hidden-tabletMax">{{skill.category}}</div>
+        <div class="t-hidden-tabletMax">{{review.skill.category}}</div>
         <div class="t-hidden-tabletMin">
           <!--{{render '@m-inlineheading'}}-->
           <div class="m-inlineHeading">
             <p class="m-inlineHeading-x-heading">Category:</p>
-            <p class="m-inlineHeading-x-text">{{skill.category}}</p>
+            <p class="m-inlineHeading-x-text">{{review.skill.category}}</p>
           </div>
         </div>
       </td>
 
       <td>
-        <p class="t-margin-extraSmall t-margin-bottom">{{skill.skillName}}</p>
+        <p *ngIf="!review.nameMissing; else nameMissing" class="t-margin-extraSmall t-margin-bottom">{{review.skill.skillName}}</p>
+        <ng-template #nameMissing><app-inline-error message="RSD name required"></app-inline-error></ng-template>
 
-        <p class="t-margin-small t-margin-bottom t-color-text3">{{skill.skillStatement}}</p>
+        <p *ngIf="!review.statementMissing; else statementMissing" class="t-margin-small t-margin-bottom t-color-text3">{{review.skill.skillStatement}}</p>
+        <ng-template #statementMissing><app-inline-error message="Skill statement required"></app-inline-error></ng-template>
 
-        <app-inline-heading *ngIf="skill.author" heading="Author:"><app-named-reference [ref]="skill.author"></app-named-reference></app-inline-heading>
-        <app-inline-heading *ngIf="skill.keywords" heading="Keywords:">{{skill.keywords.add?.join("; ")}}</app-inline-heading>
+        <app-inline-heading *ngIf="review.skill.author" heading="Author:"><app-named-reference [ref]="review.skill.author"></app-named-reference></app-inline-heading>
 
+        <app-inline-heading *ngIf="review.skill.keywords" heading="Keywords:">{{review.skill.keywords.add?.join("; ")}}</app-inline-heading>
       </td>
 
     </tr>

@@ -25,7 +25,7 @@
   </div>
 
   <div class="t-margin-medium t-margin-bottom">
-    <div *ngIf="!isUploadStep()" class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+    <div *ngIf="!(isUploadStep() || isSuccessStep())" class="l-container l-container-mobile t-margin-medium t-margin-bottom">
       <!--{{render '@m-fileupload'}}-->
       <div class="m-fileUpload">
         <label for="file-upload">
@@ -116,16 +116,26 @@
           <p class="t-color-text1">{{recordCount}} RSDs are ready to import.</p>
         </div>
 
-        <app-import-preview-table [skills]="skillsFromResults()"></app-import-preview-table>
-
-
-
+        <app-import-preview-table [skills]="auditedSkills"></app-import-preview-table>
       </div>
     </ng-template>
 
     <!-- Step 4: Success -->
     <ng-template [ngIf]="isSuccessStep()">
-      <p>success step goes here...</p>
+      <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
+
+        <div class="m-inlineMessage">
+          <div class="m-inlineMessage-x-icon">
+            <svg class="t-icon" aria-hidden="true">
+              <use xlink:href="/assets/images/svg-defs.svg#icon-check-outline"></use>
+            </svg>
+          </div>
+          <div class="m-inlineMessage-x-title">Success!</div>
+          <div class="m-inlineMessage-x-message">You added {{importedSkills.length}} RSDs to the library.</div>
+        </div>
+      </div>
+
+      <app-import-preview-table [skills]="importedSkills"></app-import-preview-table>
     </ng-template>
   </div>
 

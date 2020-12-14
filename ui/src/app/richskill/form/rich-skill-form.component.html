@@ -20,7 +20,6 @@
           </h3>
         </div>
 
-
         <app-formfield-text
           [control]="skillForm.controls.skillName"
           name="skillName"
@@ -51,14 +50,15 @@
           errorMessage="Skill statement required"
         ></app-formfield-textarea>
 
-        <app-formfield-text
+        <app-form-field-search-select
           [control]="skillForm.controls.category"
           label="Category"
           name="category"
           placeholder="Health Education"
           [includePlaceholder]="!this.skillUuid"
           helpMessage="An industry-recognized, general term that represents a broad group of related RSDs."
-        ></app-formfield-text>
+          type="category"
+        ></app-form-field-search-select>
 
         <app-formfield-textarea
           [control]="skillForm.controls.keywords"

@@ -76,7 +76,8 @@ import {VerticalActionBarComponent} from "./core/vertical-action-bar.component"
 import {PublishCollectionComponent} from "./collection/detail/publish-collection.component"
 import {BlockingLoaderComponent} from "./core/blocking-loader.component"
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component"
-import { FormFieldSearchSelectComponent } from "./form/form-field-search-select/form-field-search-select.component"
+import {FormFieldSearchSelectComponent} from "./form/form-field-search-select/single-select/form-field-search-select.component"
+import {FormFieldSearchMultiSelectComponent} from "./form/form-field-search-select/mulit-select/form-field-search-multi-select.component"
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -164,7 +165,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     VerticalActionBarComponent,
     BlockingLoaderComponent,
     CollectionSkillSearchComponent,
-    FormFieldSearchSelectComponent
+    FormFieldSearchSelectComponent,
+    FormFieldSearchMultiSelectComponent
   ],
   imports: [
     BrowserModule,

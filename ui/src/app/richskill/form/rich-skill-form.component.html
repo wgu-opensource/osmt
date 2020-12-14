@@ -57,7 +57,7 @@
           placeholder="Health Education"
           [includePlaceholder]="!this.skillUuid"
           helpMessage="An industry-recognized, general term that represents a broad group of related RSDs."
-          type="category"
+          [keywordType]="keywordType.Category"
         ></app-form-field-search-select>
 
         <app-formfield-textarea
@@ -69,14 +69,16 @@
           helpMessage="Related terms that help users search for and find an RSD."
         ></app-formfield-textarea>
 
-        <app-formfield-textarea
+        <app-form-field-search-multi-select
           [control]="skillForm.controls.standards"
           label="Standards"
           name="standards"
           placeholder="Health Education Standards"
           [includePlaceholder]="!this.skillUuid"
           helpMessage="Names of professional standards that define skill mastery, sourced from industry-recognized frameworks."
-        ></app-formfield-textarea>
+          [keywordType]="keywordType.Standard"
+          (currentSelection)="handleStandardsTypeAheadResults($event)"
+        ></app-form-field-search-multi-select>
 
         <app-formfield-textarea
           [control]="skillForm.controls.certifications"

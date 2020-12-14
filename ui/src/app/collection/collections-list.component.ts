@@ -258,7 +258,7 @@ export class CollectionsListComponent {
     this.collectionsSaved?.subscribe((result) => {
       if (result !== undefined) {
         const partial = (result.modifiedCount !== result.totalCount)  ? ` of ${result.totalCount}` : ""
-        const message = `You ${verb} ${result.modifiedCount}${partial} Collection${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
+        const message = `You ${verb} ${result.modifiedCount}${partial} collection${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
         this.toastService.showToast("Success!", message)
         this.toastService.hideBlockingLoader()
         this.loadNextPage()

@@ -36,6 +36,10 @@ data class Change(
     }
 }
 
+fun List<Change>.findByFieldName(fieldName: String): Change? {
+    return this.find{it.fieldName == fieldName}
+}
+
 data class AuditLog(
     @JsonIgnore
     override val id: Long?,

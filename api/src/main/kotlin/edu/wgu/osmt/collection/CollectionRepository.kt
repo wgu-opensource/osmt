@@ -6,7 +6,6 @@ import edu.wgu.osmt.api.model.ApiCollectionUpdate
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
-import edu.wgu.osmt.auditlog.nullIfEmpty
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.config.AppConfig
@@ -140,9 +139,10 @@ class CollectionRepositoryImpl @Autowired constructor(
     override fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao? {
         val daoObject = dao.findById(updateObject.id!!)
         val oldObject = daoObject?.toModel()
+        val currentSkillDaos = daoObject?.skills?.toList().orEmpty()
 
-        val skillDaos = (updateObject.skills?.add.orEmpty() + updateObject.skills?.remove.orEmpty()).nullIfEmpty()
-        val oldSkills = skillDaos?.map { it.uuid to it.toModel() }?.toMap()
+        val skillDaosToTrack = (updateObject.skills?.add.orEmpty() + updateObject.skills?.remove.orEmpty() + currentSkillDaos).distinct()
+        val oldSkills = skillDaosToTrack.map { it.uuid to it.toModel() }.toMap()
 
         daoObject?.let {
             updateObject.applyToDao(it)
@@ -156,8 +156,8 @@ class CollectionRepositoryImpl @Autowired constructor(
             ?.partition { it.fieldName == "publishStatus" } ?: (null to null)
 
         // catch collection/skill relationship changes and generate audit log(s)
-        skillDaos?.map { skillDao ->
-            val oldSkill = oldSkills?.get(skillDao.uuid)
+        skillDaosToTrack?.map { skillDao ->
+            val oldSkill = oldSkills.get(skillDao.uuid)
             val skillChange = skillDao.toModel().diff(oldSkill)
             if (skillChange.isNotEmpty()) {
                 auditLogRepository.create(

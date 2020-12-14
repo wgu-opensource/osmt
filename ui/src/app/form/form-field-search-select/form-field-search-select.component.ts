@@ -2,7 +2,8 @@ import {Component, Input, OnInit} from "@angular/core"
 import {FormField} from "../form-field.component"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {Subscription} from "rxjs"
-import {SearchService} from "../../search/search.service"
+import {KeywordSearchService} from "../../richskill/service/keyword-search.service"
+import {KeywordType} from "../../richskill/ApiSkill"
 
 @Component({
   selector: "app-form-field-search-select",
@@ -10,7 +11,7 @@ import {SearchService} from "../../search/search.service"
 })
 export class FormFieldSearchSelectComponent extends FormField implements OnInit {
 
-  @Input() type!: "category" | "standard" | "certification" | "alignment" | "employer" | "author"
+  @Input() type!: KeywordType
 
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)
   iconDismiss = SvgHelper.path(SvgIcon.DISMISS)
@@ -20,7 +21,7 @@ export class FormFieldSearchSelectComponent extends FormField implements OnInit 
   results!: string[] | undefined
 
   constructor(
-    private searchService: SearchService
+    private searchService: KeywordSearchService
   ) {
     super()
   }
@@ -40,9 +41,9 @@ export class FormFieldSearchSelectComponent extends FormField implements OnInit 
       this.queryInProgress.unsubscribe() // unsub to existing query first
     }
 
-    this.queryInProgress = this.searchService.searchForKeyword(text, this.type)
+    this.queryInProgress = this.searchService.searchKeywords(this.type, text)
       .subscribe(searchResults => {
-        this.results = searchResults
+        this.results = searchResults.filter(r => !!r && !!r.name).map(r => r.name as string)
         this.currentlyLoading = false
       })
   }

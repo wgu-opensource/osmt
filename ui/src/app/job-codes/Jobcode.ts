@@ -2,8 +2,25 @@
 export interface IJobCode {
   name?: string
   code: string
-  id: number
-  framework: string
+  id?: number
+  framework?: string
+  level?: string
+  parents?: IJobCode[]
+}
+
+export class ApiJobCode implements IJobCode {
+  code: string = ""
+  name?: string
+  id?: number
+  framework?: string
+  level?: string
+  parents?: IJobCode[]
+
+  constructor(o?: IJobCode) {
+    if (o !== undefined) {
+      Object.assign(this, o)
+    }
+  }
 }
 
 export class JobCodeBreakout {

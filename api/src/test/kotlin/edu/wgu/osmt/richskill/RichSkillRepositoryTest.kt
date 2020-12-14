@@ -6,18 +6,23 @@ import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers.apiSkillUpdateGenerator
 import edu.wgu.osmt.TestObjectHelpers.assertThatKeywordMatchesNamedReference
-import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.api.model.ApiReferenceListUpdate
+import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.ApiSkillUpdate
+import edu.wgu.osmt.api.model.ApiStringListUpdate
+import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.collection.CollectionEsRepo
+import edu.wgu.osmt.collection.CollectionRepository
+import edu.wgu.osmt.collection.CollectionUpdateObject
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
+import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.Keyword
+import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.collection.Collection
-import edu.wgu.osmt.collection.CollectionRepository
-import edu.wgu.osmt.collection.CollectionUpdateObject
-import edu.wgu.osmt.elasticsearch.SearchService
 import edu.wgu.osmt.task.PublishTask
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -26,7 +31,12 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Transactional
-class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset  {
+class RichSkillRepositoryTest @Autowired constructor(
+    override val richSkillEsRepo: RichSkillEsRepo,
+    override val collectionEsRepo: CollectionEsRepo,
+    override val keywordEsRepo: KeywordEsRepo,
+    override val jobCodeEsRepo: JobCodeEsRepo
+) : SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset  {
 
     @Autowired
     lateinit var richSkillRepository: RichSkillRepository
@@ -36,9 +46,6 @@ class RichSkillRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRese
 
     @Autowired
     lateinit var keywordRepository: KeywordRepository
-
-    @Autowired
-    override lateinit var searchService: SearchService
 
     val userString = "unittestuser"
 

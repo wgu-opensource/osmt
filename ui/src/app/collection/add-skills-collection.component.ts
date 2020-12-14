@@ -166,7 +166,7 @@ export class AddSkillsCollectionComponent implements OnInit {
     this.toastService.showBlockingLoader()
     this.collectionService.updateSkillsWithResult(collection.uuid, update).subscribe(result => {
       if (result) {
-        const message = `Added ${result.modifiedCount} RSDs to collection`
+        const message = `You added ${result.modifiedCount} RSDs to the collection.`
         this.toastService.showToast("Success!", message)
         this.toastService.hideBlockingLoader()
         this.return()

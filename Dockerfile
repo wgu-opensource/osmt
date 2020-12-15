@@ -1,18 +1,18 @@
 ################
 ## BASE IMAGE ##
 ################
-FROM centos:centos8.2.2004 as osmt-base
+FROM centos:centos8.3.2011 as osmt-base
 
 LABEL Maintainer="Francisco Gray, <fgray@concentricsky.com>"
 LABEL Version="1.0"
 
-ENV JAVA_VERSION=11.0.8.10
+ENV JAVA_VERSION=11.0.9.11
 ENV JAVA_HOME=/etc/alternatives/jre
 ENV USER=osmt
 ENV BASE_DIR=/opt/${USER}
 
 # Install EPEL / Useful packages /
-RUN /usr/bin/yum install -y https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/e/epel-release-8-8.el8.noarch.rpm \
+RUN /usr/bin/yum install -y https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/e/epel-release-8-9.el8.noarch.rpm \
     && /usr/bin/yum update -y \
     && /usr/bin/yum remove -y java-1.8.0-openjdk* \
     && /usr/bin/yum install -y curl java-11-openjdk-headless-${JAVA_VERSION} wget
@@ -34,7 +34,7 @@ RUN /usr/sbin/useradd -r -d ${BASE_DIR} -s /bin/bash ${USER} -k /etc/skel -m -U 
 FROM osmt-base as build
 
 ENV JAVA_HOME=/etc/alternatives/jre
-ENV JAVA_VERSION=11.0.8.10
+ENV JAVA_VERSION=11.0.9.11
 ENV M2_VERSION=3.6.3
 ENV M2_HOME=/usr/local/maven
 ENV PATH=${M2_HOME}/bin:${PATH}
@@ -54,6 +54,8 @@ RUN tar -xf apache-maven-${M2_VERSION}-bin.tar.gz \
 
 # Copy in source code.
 COPY --chown=${USER}:${USER} ./ ${BASE_DIR}/build/
+# Copy in .npmrc file to auth to registry.npmjs.org
+COPY --chown=${USER}:${USER} ./.npmrc ${BASE_DIR}
 
 WORKDIR ${BASE_DIR}/build
 
@@ -67,7 +69,7 @@ RUN mvn clean package -Dmaven.test.skip.exec
 FROM osmt-base
 
 ENV JAVA_HOME=/etc/alternatives/jre
-ENV JAVA_VERSION=11.0.8.10
+ENV JAVA_VERSION=11.0.9.11
 ENV USER=osmt
 ENV BASE_DIR=/opt/${USER}
 

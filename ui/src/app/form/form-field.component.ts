@@ -8,15 +8,20 @@ import {AbstractControl, FormControl} from "@angular/forms";
 })
 export class FormField implements OnInit {
 
-  @Input() control: FormControl = new FormControl()
-  @Input() label: string = ""
-  @Input() placeholder: string = ""
-  @Input() errorMessage: string = ""
-  @Input() helpMessage: string = ""
-  @Input() required: boolean = false
-  @Input() name: string = ""
+  @Input() control = new FormControl()
+  @Input() label = ""
+  @Input() placeholder = ""
+  @Input() includePlaceholder = true
+  @Input() errorMessage = ""
+  @Input() helpMessage = ""
+  @Input() required = false
+  @Input() name = ""
 
   constructor() {
+  }
+
+  get valueFromControl(): string {
+    return this.control.value
   }
 
   ngOnInit(): void {

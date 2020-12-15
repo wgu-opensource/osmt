@@ -8,7 +8,7 @@
       <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Add {{addingCount}} RSD<ng-template [ngIf]="isPlural">s</ng-template> to a Collection</h2>
 
       <ng-template [ngIf]="isPlural" [ngIfElse]="singleSkillSummary">
-        <app-accordian closedLabel="View All Skills" openLabel="View Less Skills">
+        <app-accordian closedLabel="View RSDs" openLabel="Hide RSDs">
           <div class="m-skillBackground l-inset t-margin-small t-margin-top">
             <div class="m-content">
               <ol>
@@ -21,7 +21,7 @@
       </ng-template>
 
       <ng-template #singleSkillSummary>
-        <p *ngIf="state.selectedSkills && state.selectedSkills.length > 0" class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">Skill: {{state.selectedSkills[0].skillName}}</p>
+        <p *ngIf="state && state.selectedSkills && state.selectedSkills.length > 0" class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">RSD: {{state.selectedSkills[0].skillName}}</p>
       </ng-template>
 
 <!--      {{render '@listheadingsearch'}}-->
@@ -33,8 +33,8 @@
         </div>
 
         <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
-          {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">collections contain</ng-template><ng-template #singular>collection containing</ng-template> the search term
-          <span class="t-type-bodyLargeBold t-color-text1">{{searchQuery}}</span>.
+          {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">collections</ng-template><ng-template #singular>collection</ng-template> found based on
+          <span class="t-type-bodyLargeBold t-color-text1">{{searchQuery}}</span> and your filters.
           <ng-template [ngIf]="totalCount > 0">
             Viewing {{firstRecordNo}}-{{lastRecordNo}}.
           </ng-template>
@@ -60,7 +60,8 @@
         ></app-collection-table>
 
         <app-empty-message *ngIf="emptyResults">
-          <p class="m-emptyMessage-x-message">What collection needs this skill?</p>
+          <p *ngIf="results === undefined" class="m-emptyMessage-x-message">Search for and select a collection.</p>
+          <p *ngIf="results !== undefined" class="m-emptyMessage-x-message">No collections found. Try modifying your search terms or filters.</p>
         </app-empty-message>
       </app-blocking-loader>
     </div>

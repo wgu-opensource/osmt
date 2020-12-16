@@ -1,4 +1,4 @@
-import {Component, OnInit, Output, EventEmitter, OnDestroy} from "@angular/core"
+import {Component, EventEmitter, OnDestroy, OnInit, Output} from "@angular/core"
 import {KeywordSearchService} from "../../../richskill/service/keyword-search.service"
 import {AbstractFormFieldSearchSelectComponent} from "../abstract-form-field-search-select.component"
 
@@ -16,6 +16,24 @@ export class FormFieldSearchMultiSelectComponent extends AbstractFormFieldSearch
     super(searchService)
   }
 
+  ngOnInit(): void {
+    super.ngOnInit()
+    this.performInitialSearchAndPopulation()
+  }
+
+  performInitialSearchAndPopulation(): void {
+    const value = this.control.value as string
+    this.control.setValue("")
+    this.internalSelectedResults = value.split(";").map(s => s.trim())
+    this.emitCurrentSelection()
+  }
+
+  get showResults(): boolean {
+    const isEmpty = this.valueFromControl?.trim()?.length <= 0
+    const isDirty = this.control.dirty
+    return isDirty && !isEmpty && this.results !== undefined
+  }
+
   isResultSelected(result: string): boolean {
     return !!this.internalSelectedResults.find(value => value === result)
   }
@@ -24,12 +42,15 @@ export class FormFieldSearchMultiSelectComponent extends AbstractFormFieldSearch
     if (!this.isResultSelected(result)) {
       this.internalSelectedResults.push(result)
     }
-    this.currentSelection.emit(this.internalSelectedResults)
+    this.emitCurrentSelection()
   }
 
   unselectResult(result: string): void {
     this.internalSelectedResults = this.internalSelectedResults.filter(r => r !== result)
-    console.log(`Removing result... remaining ${this.internalSelectedResults}`)
+    this.emitCurrentSelection()
+  }
+
+  private emitCurrentSelection(): void {
     this.currentSelection.emit(this.internalSelectedResults)
   }
 }

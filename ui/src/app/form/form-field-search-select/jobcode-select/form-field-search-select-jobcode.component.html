@@ -54,8 +54,13 @@
 
           <!-- Results -->
           <div class="m-selectMenu-x-content" *ngIf="results && results.length > 0; else emptyResults">
-            <button class="m-buttonText" *ngFor="let r of results" type="button" (click)="selectResult(r)">
-              <span class="m-buttonText-x-text">{{r}}</span>
+            <button class="m-buttonText" *ngFor="let r of results" type="button" (click)="selectResult(r)" [disabled]="isResultSelected(r)">
+              <span class="m-buttonText-x-icon" *ngIf="isResultSelected(r)">
+                <svg class="t-icon" aria-hidden="true">
+                  <use [attr.xlink:href]="iconDismiss"></use>
+                </svg>
+              </span>
+              <span class="m-buttonText-x-text">{{joinNameAndCode(r)}}</span>
             </button>
           </div>
 
@@ -68,6 +73,19 @@
             </div>
           </ng-template>
         </div>
+      </div>
+      <div class="l-searchSelect-x-items">
+
+        <!-- Currently selected results -->
+        <button class="m-inputItem" *ngFor="let r of internalSelectedResults" (click)="unselectResult(r)">
+          <span class="m-inputItem-x-text"><span class="t-visuallyHidden">Remove </span>{{joinNameAndCode(r)}}</span>
+          <span class="m-inputItem-x-icon">
+            <svg class="t-icon" aria-hidden="true">
+              <use [attr.xlink:href]="iconDismiss"></use>
+            </svg>
+          </span>
+        </button>
+
       </div>
     </ng-template>
   </div>

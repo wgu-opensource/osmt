@@ -30,6 +30,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
 
   // Type ahead storage to append to the field on submit
   selectedStandards: string[] = []
+  selectedJobCodes: string[] = []
 
   // This allows this enum's constants to be used in the template
   keywordType = KeywordType
@@ -163,6 +164,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     const keywordDiff = this.diffStringList(this.splitTextarea(formValue.keywords), this.existingSkill?.keywords)
     if (this.isDuplicating || keywordDiff) { update.keywords = keywordDiff }
 
+    formValue.occupations = [formValue.occupations, ...this.selectedJobCodes].join("; ")
     const occupationsDiff = this.diffStringList(
       this.splitTextarea(formValue.occupations),
       this.existingSkill?.occupations?.map(it => this.stringFromJobCode(it))
@@ -251,7 +253,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   }
 
   stringFromJobCode(jobcode?: IJobCode): string {
-    return jobcode?.name ?? jobcode?.code ?? ""
+    return jobcode?.code ?? ""
   }
 
   setSkill(skill: ApiSkill): void {
@@ -340,6 +342,11 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
 
   handleStandardsTypeAheadResults(standards: string[]): void {
     this.selectedStandards = standards
+  }
+
+  handleJobCodesTypeAheadResults(jobCodes: string[]): void {
+    this.selectedJobCodes = jobCodes
+    console.log(jobCodes)
   }
 }
 

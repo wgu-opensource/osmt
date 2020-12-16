@@ -89,6 +89,7 @@ import {
 } from "./richskill/import/import-preview-table.component"
 import {FormFieldSearchSelectComponent} from "./form/form-field-search-select/single-select/form-field-search-select.component"
 import {FormFieldSearchMultiSelectComponent} from "./form/form-field-search-select/mulit-select/form-field-search-multi-select.component"
+import { FormFieldSearchSelectJobcodeComponent } from "./form/form-field-search-select/jobcode-select/form-field-search-select-jobcode.component"
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -184,7 +185,9 @@ export function initializeApp(appConfig: AppConfig): () => void {
     NamedReferenceComponent,
     InlineErrorComponent,
     FormFieldSearchSelectComponent,
-    FormFieldSearchMultiSelectComponent  ],
+    FormFieldSearchMultiSelectComponent,
+    FormFieldSearchSelectJobcodeComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,

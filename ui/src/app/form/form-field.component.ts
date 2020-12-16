@@ -24,6 +24,10 @@ export class FormField implements OnInit {
     return this.control.value
   }
 
+  clearField(): void {
+    this.control.setValue("")
+  }
+
   ngOnInit(): void {
   }
 

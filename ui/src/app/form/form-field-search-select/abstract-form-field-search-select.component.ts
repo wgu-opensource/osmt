@@ -21,7 +21,7 @@ export abstract class AbstractFormFieldSearchSelectComponent extends FormField i
   results!: string[] | undefined
 
   protected constructor(
-    private searchService: KeywordSearchService
+    protected searchService: KeywordSearchService
   ) {
     super()
   }

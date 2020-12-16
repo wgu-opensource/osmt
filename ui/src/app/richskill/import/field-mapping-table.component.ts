@@ -35,10 +35,19 @@ export class FieldMappingTableComponent implements OnInit {
 
 @Component({
   selector: "app-field-mapping-select",
-  template: `<select class="PUI" (change)="handleChange($event)">
-    <option value="">Select Property</option>
-    <option *ngFor="let item of headers | keyvalue" [value]="item.key">{{item.value}}</option>
-  </select>`
+  template: `
+    <div class="m-select m-select-fieldMap">
+      <select class="m-select-x-select" (change)="handleChange($event)">
+        <option value="">Select Property</option>
+        <option *ngFor="let item of headers | keyvalue" [value]="item.key">{{item.value}}</option>
+      </select>
+      <div class="m-select-x-icon">
+        <svg class="t-icon" aria-hidden="true">
+          <use xlink:href="/assets/images/svg-defs.svg#icon-chevron"></use>
+        </svg>
+      </div>
+     </div>
+  `
 })
 export class FieldMappingSelectComponent {
 

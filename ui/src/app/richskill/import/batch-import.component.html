@@ -1,0 +1,184 @@
+<div class="l-container t-margin-large t-margin-top">
+
+  <div class="l-container l-container-mobile">
+
+    <div class="t-margin-small t-margin-bottom">
+      <!--{{render '@m-buttontext&#45;&#45;with-icon'}}-->
+      <button class="m-buttonText" (click)="handleClickCancel()">
+          <span class="m-buttonText-x-icon">
+              <svg class="t-icon" aria-hidden="true">
+                  <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
+              </svg>
+          </span>
+        <span class="m-buttonText-x-text">Back</span>
+      </button>
+    </div>
+
+    <!--{{render '@listheading'}}-->
+    <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Batch Import</h2>
+      <p class="t-type-bodyLarge t-color-text3">
+        <span class="t-type-bodyLargeBold t-color-text1">Step {{currentStep}}:</span> {{stepName(currentStep)}}
+      </p>
+    </div>
+
+  </div>
+
+  <app-blocking-loader [observables]="[stepLoaded]">
+  <div class="t-margin-medium t-margin-bottom">
+    <div *ngIf="!(isUploadStep() || isSuccessStep())" class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+      <!--{{render '@m-fileupload'}}-->
+      <div class="m-fileUpload">
+        <label for="file-upload">
+            <span class="m-fileUpload-x-fileLabel">
+              <span class="m-fileUpload-x-icon">
+                <svg class="t-icon" aria-hidden="true">
+                  <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
+                </svg>
+              </span>
+              <span class="m-fileUpload-x-fileText">File: {{uploadedFile}}</span>
+            </span>
+          <span class="m-fileUpload-x-actionText">Change File</span>
+        </label>
+
+        <input class="t-visuallyHidden" type="file" (change)="handleFileChange($event)" id="file-upload">
+      </div>
+    </div>
+
+
+    <!-- STEP 1: Upload File -->
+    <ng-template [ngIf]="isUploadStep()">
+      <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
+      <div class="m-dragDrop" [class.m-dragDrop-is-error]="uploadedFileError">
+        <label for="dragdrop">
+          <span class="m-dragDrop-x-spinner"></span>
+          <span class="m-dragDrop-x-icon">
+            <!--{{render '@m-countericon'}}-->
+            <div class="m-counterIcon">
+              <div class="m-iconWithFrame">
+                  <svg class="t-icon" aria-hidden="true">
+                      <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
+                  </svg>
+              </div>
+              <div class="m-counterIcon-x-counter">
+                  <div class="m-counter"><span>{{uploadedFileCount}}</span></div>
+              </div>
+            </div>
+          </span>
+          <span class="m-dragDrop-x-message" *ngIf="uploadedFile">{{uploadedFile}}</span>
+          <span class="m-dragDrop-x-label" *ngIf="!uploadedFile">Drag and drop your CSV file, or <span class="m-dragtdrop-x-labelInteractive">Select a file to upload</span></span>
+          <span class="m-dragDrop-x-label" *ngIf="uploadedFile"><span class="m-dragtdrop-x-labelInteractive">Change file</span></span>
+        </label>
+        <input class="t-visuallyHidden" type="file" (change)="handleFileChange($event)" id="dragdrop">
+      </div>
+      </div>
+
+        <div class="m-content">
+          <p>
+          <a download href="/assets/osmt-batch-import-example.csv">Download the sample CSV file</a> to help configure your data correctly.
+          </p>
+        </div>
+    </ng-template>
+
+    <!-- STEP 2: Map Fields -->
+    <ng-template [ngIf]="isMappingStep()">
+
+      <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
+        <div class="t-margin-medium t-margin-bottom">
+          <h3 class="t-type-bodyLargeBold t-color-text1 t-margin-extraSmall t-margin-bottom">{{recordCount}} records total</h3>
+          <p class="t-color-text1">Properties have been mapped from the CSV file as shown. Correct any errors and map any undetected fields.</p>
+        </div>
+
+        <div *ngIf="hasMappingError" class="l-container t-margin-medium">
+          <div class="m-inlineMessage m-inlineMessage-error">
+            <div class="m-inlineMessage-x-icon">
+              <svg class="t-icon" aria-hidden="true">
+                <use xlink:href="/assets/images/svg-defs.svg#icon-error"></use>
+              </svg>
+            </div>
+            <div class="m-inlineMessage-x-title">You've mapped multiple properties to {{duplicateFieldNames()}} which can accept only one.</div>
+            <div class="m-inlineMessage-x-message">Update your selections before continuing.</div>
+          </div>
+        </div>
+
+        <app-accordian closedLabel="Property Definitions" openLabel="Property Definitions">
+          <div class="m-skillBackground l-inset t-margin-small t-margin-top">
+            <p><strong>RSD Name (required):</strong> The name of the rich skill descriptor — for example, Policies and Procedures.</p>
+            <p><strong>Skill Statement (required):</strong> A description of the applied capabilities and/or behaviors of an individual for a given task, occupation, or need.</p>
+            <p><strong>Category:</strong> An industry-recognized, general term that represents a broad group of related RSDs.</p>
+            <p><strong>Keywords:</strong> Related terms that help users search for and find an RSD, separated by a semicolon.</p>
+            <p><strong>Author:</strong> The individual or organization primarily responsible for the content of this RSD. Note: Author may not appear in the list of mapped fields, depending on your organization's settings.</p>
+            <p><strong>Standards:</strong> Names of standards that define skill mastery, sourced from industry-recognized frameworks.</p>
+            <p><strong>Certifications:</strong> Related academic and professional credentials that support career advancement.</p>
+            <p><strong>Occupations:</strong> Related job codes from the U.S. Bureau of Labor Statistics (BLS) or the Occupational Information Network (O*NET), separated by a semicolon.</p>
+            <p><strong>Employers:</strong> Employers who require this RSD for a given job; doesn't display in public view. </p>
+            <p><strong>Alignment Name:</strong> The industry-recognized framework or data that aligns with this RSD, from a source such as Emsi, Burning Glass, LinkedIn, or Workday.</p>
+            <p><strong>Alignment URL:</strong> The unique web address that holds alignment details.</p>
+            <p><strong>Do Not Import:</strong> Select this option for any property you don't want to import from the CSV file.</p>
+          </div>
+        </app-accordian>
+
+      </div>
+
+      <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
+        <app-field-mapping-table
+          [uploadedHeaders]="uploadedHeaders()"
+          (fieldMappingChanged)="handleMappingChanged($event)"
+        ></app-field-mapping-table>
+      </div>
+    </ng-template>
+
+    <!-- STEP 3: Review -->
+    <ng-template [ngIf]="isReviewStep()">
+      <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
+        <div class="t-margin-medium t-margin-bottom">
+          <h3 class="t-type-bodyLargeBold t-color-text1 t-margin-extraSmall t-margin-bottom">Validation results</h3>
+          <p class="t-color-text1">{{validCount}} RSD<ng-template [ngIf]="validCount > 1" [ngIfElse]="singular">s are</ng-template><ng-template #singular> is</ng-template> ready to import.</p>
+        </div>
+
+        <app-import-preview-table [skills]="auditedSkills"></app-import-preview-table>
+      </div>
+    </ng-template>
+
+    <!-- Step 4: Success -->
+    <ng-template [ngIf]="isSuccessStep()">
+      <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
+
+        <div class="m-inlineMessage">
+          <div class="m-inlineMessage-x-icon">
+            <svg class="t-icon" aria-hidden="true">
+              <use xlink:href="/assets/images/svg-defs.svg#icon-check-outline"></use>
+            </svg>
+          </div>
+          <div class="m-inlineMessage-x-title">Success!</div>
+          <div class="m-inlineMessage-x-message">You added {{importedSkills.length}} RSD{{importedSkills.length > 1 ? "s" : ""}} to the library.</div>
+        </div>
+      </div>
+
+      <app-import-preview-table [skills]="importedSkills"></app-import-preview-table>
+    </ng-template>
+  </div>
+  </app-blocking-loader>
+
+  <div class="l-container l-container-mobile">
+    <!--{{render '@l-submit&#45;&#45;with-twomain'}}-->
+    <div *ngIf="!isSuccessStep()" class="l-submit">
+      <button class="m-button" [attr.disabled]="!isStepValid() ? '' : null" (click)="handleClickNext()">
+        <span class="m-button-x-text">{{nextButtonLabel}}</span>
+      </button>
+      <button class="m-button m-button-tertiary" (click)="handleClickCancel()">
+        <span class="m-button-x-text">{{cancelButtonLabel}}</span>
+      </button>
+    </div>
+
+    <div *ngIf="isSuccessStep()" class="l-submit">
+      <button class="m-button" (click)="resetState()">
+        <span class="m-button-x-text">Import More RSDs</span>
+      </button>
+      <button class="m-button" routerLink="/skills">
+        <span class="m-button-x-text">View RSD Library</span>
+      </button>
+    </div>
+  </div>
+
+</div>

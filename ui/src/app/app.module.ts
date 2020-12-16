@@ -74,9 +74,20 @@ import {PublicRichSkillActionBarComponent} from "./richskill/detail/rich-skill-p
 import {ManageCollectionComponent} from "./collection/detail/manage-collection.component"
 import {VerticalActionBarComponent} from "./core/vertical-action-bar.component"
 import {PublishCollectionComponent} from "./collection/detail/publish-collection.component"
-import {BlockingLoaderComponent} from "./core/blocking-loader.component"
-import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component"
-import { FormFieldSearchSelectComponent } from "./form/form-field-search-select/form-field-search-select.component"
+import {BlockingLoaderComponent} from "./core/blocking-loader.component";
+import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component";
+import {BatchImportComponent} from "./richskill/import/batch-import.component";
+import {
+  FieldMappingSelectComponent,
+  FieldMappingTableComponent
+} from "./richskill/import/field-mapping-table.component";
+import {
+  ImportPreviewTableComponent,
+  InlineErrorComponent,
+  InlineHeadingComponent,
+  NamedReferenceComponent
+} from "./richskill/import/import-preview-table.component";
+import {FormFieldSearchSelectComponent} from "./form/form-field-search-select/form-field-search-select.component"
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -164,6 +175,13 @@ export function initializeApp(appConfig: AppConfig): () => void {
     VerticalActionBarComponent,
     BlockingLoaderComponent,
     CollectionSkillSearchComponent,
+    BatchImportComponent,
+    FieldMappingTableComponent,
+    FieldMappingSelectComponent,
+    ImportPreviewTableComponent,
+    InlineHeadingComponent,
+    NamedReferenceComponent,
+    InlineErrorComponent,
     FormFieldSearchSelectComponent
   ],
   imports: [

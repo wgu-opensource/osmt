@@ -96,13 +96,17 @@ export class RichSkillService extends AbstractService {
   }
 
   createSkill(updateObject: ApiSkillUpdate): Observable<ApiSkill> {
+    return this.createSkills([updateObject]).pipe(map(it => it[0]))
+  }
+
+  createSkills(updateObjects: ApiSkillUpdate[]): Observable<ApiSkill[]> {
     const errorMsg = `Error creating skill`
     return this.post<ISkill[]>({
       path: this.serviceUrl,
-      body: [updateObject]
+      body: updateObjects
     })
       .pipe(share())
-      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiSkill(s))[0]))
+      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiSkill(s))))
   }
 
   updateSkill(uuid: string, updateObject: ApiSkillUpdate): Observable<ApiSkill> {

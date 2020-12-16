@@ -7,6 +7,8 @@ import {Location} from "@angular/common";
 import {Papa, ParseResult} from "ngx-papaparse";
 import {ApiNamedReference} from "../ApiSkill"
 import {ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate";
+import {Observable} from "rxjs";
+import {PaginatedSkills} from "../service/rich-skill-search.service";
 
 
 export enum ImportStep {
@@ -57,6 +59,8 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   currentStep: ImportStep = ImportStep.UploadFile
 
+  stepLoaded?: Observable<ImportStep>
+
   uploadedFile: any;
   uploadedFileError: boolean = false
 
@@ -77,6 +81,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
               protected papa: Papa
   ) {
     super()
+    this.resetState()
   }
 
   ngOnInit(): void {
@@ -125,7 +130,15 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     return this.auditedSkills?.filter(it => !it.isError)?.length ?? 0
   }
 
+  showStepLoader(): void {
+    this.stepLoaded = new Observable<ImportStep>(observer => {})
+  }
+  hideStepLoader(): void {
+    this.stepLoaded = undefined
+  }
+
   handleClickNext(): boolean {
+    this.showStepLoader()
     this.currentStep += 1
     switch (this.currentStep) {
       case ImportStep.ReviewRecords:
@@ -135,6 +148,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         this.submitRecords()
         break
     }
+    this.hideStepLoader()
     return false
   }
 
@@ -285,11 +299,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     this.importedSkills = this.auditedSkills?.filter(it => !it.isError)
     const skillUpdates = this.importedSkills.map(it => it.skill)
 
-    this.toastService.showBlockingLoader()
+    this.showStepLoader()
     this.richSkillService.createSkills(skillUpdates).subscribe(results => {
       if (results) {
-        this.toastService.hideBlockingLoader()
-        console.log("success!", results.length)
+        this.hideStepLoader()
       }
     })
 

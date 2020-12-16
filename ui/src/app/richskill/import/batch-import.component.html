@@ -24,6 +24,7 @@
 
   </div>
 
+  <app-blocking-loader [observables]="[stepLoaded]">
   <div class="t-margin-medium t-margin-bottom">
     <div *ngIf="!(isUploadStep() || isSuccessStep())" class="l-container l-container-mobile t-margin-medium t-margin-bottom">
       <!--{{render '@m-fileupload'}}-->
@@ -138,6 +139,7 @@
       <app-import-preview-table [skills]="importedSkills"></app-import-preview-table>
     </ng-template>
   </div>
+  </app-blocking-loader>
 
   <div class="l-container l-container-mobile">
     <!--{{render '@l-submit&#45;&#45;with-twomain'}}-->

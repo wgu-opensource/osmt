@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {ApiSkill, INamedReference} from "../ApiSkill";
-import {ApiSkillUpdate} from "../ApiSkillUpdate";
+import {INamedReference} from "../ApiSkill";
 import {AuditedImportSkill} from "./batch-import.component";
 
 
@@ -13,7 +12,6 @@ export class ImportPreviewTableComponent implements OnInit {
   @Input() skills: AuditedImportSkill[] = []
 
   ngOnInit(): void {
-    console.log("skills", this.skills)
   }
 
 }

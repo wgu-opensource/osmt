@@ -54,8 +54,6 @@ RUN tar -xf apache-maven-${M2_VERSION}-bin.tar.gz \
 
 # Copy in source code.
 COPY --chown=${USER}:${USER} ./ ${BASE_DIR}/build/
-# Copy in .npmrc file to auth to registry.npmjs.org
-COPY --chown=${USER}:${USER} ./.npmrc ${BASE_DIR}
 
 WORKDIR ${BASE_DIR}/build
 

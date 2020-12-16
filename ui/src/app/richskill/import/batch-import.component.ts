@@ -121,6 +121,9 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   get recordCount(): number {
     return this.parseResults?.data?.length ?? 0
   }
+  get validCount(): number {
+    return this.auditedSkills?.filter(it => !it.isError)?.length ?? 0
+  }
 
   handleClickNext(): boolean {
     this.currentStep += 1

@@ -39,6 +39,10 @@ pipeline {
         sh """
           set +x
           docker login --username ${dockerhubCredentials_USR} --password ${dockerhubCredentials_PSW}
+          npm_credentials=`printf "${npm_credentials_USR}:${npm_credentials_PSW}" | base64`
+          echo "registry=https://registry.npmjs.org" > .npmrc
+          echo "_auth=${npm_credentials}" >> .npmrc
+          echo "email=osmt+infrastructure@concentricsky.com" >> .npmrc
           set -x
           pwd
           docker build . \

@@ -132,7 +132,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   }
 
   updateObject(): ApiSkillUpdate {
-    const update = new ApiSkillUpdate()
+    const update = new ApiSkillUpdate({})
     const formValue = this.skillForm.value
 
     const inputName = this.nonEmptyOrNull(formValue.skillName)

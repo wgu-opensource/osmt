@@ -68,7 +68,7 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
       },
       {
         label: "Collections With This RSD",
-        bodyHtml: this.formatAssociatedCollections(),
+        bodyHtml: this.formatAssociatedCollections(true),
         showIfEmpty: false
       },
     ]

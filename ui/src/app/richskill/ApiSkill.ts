@@ -33,6 +33,18 @@ export enum KeywordType {
   Author = "author"
 }
 
+export interface IUuidReference {
+  uuid: string
+  name?: string
+}
+export class ApiUuidReference implements IUuidReference {
+  uuid: string = ""
+  name?: string
+
+  constructor(it: IUuidReference) {
+    Object.assign(this, it)
+  }
+}
 
 export interface ISkill {
   id: string
@@ -46,7 +58,7 @@ export interface ISkill {
   skillName: string
   skillStatement: string
   category?: string
-  collections: string[]
+  collections: IUuidReference[]
   keywords: string[]
   alignments: INamedReference[]
   standards: INamedReference[]
@@ -68,7 +80,7 @@ export class ApiSkill {
   skillName: string
   skillStatement: string
   category?: string
-  collections: string[]
+  collections: IUuidReference[]
   keywords: string[]
   alignments: INamedReference[]
   standards: INamedReference[]

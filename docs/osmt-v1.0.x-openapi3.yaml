@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 1.0.0
+  version: 1.0.1
   title: OSMT API
   description: API for the Open Skills Management Toolset
 security:
@@ -920,7 +920,7 @@ components:
         collections:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/UuidReference'
         keywords:
           type: array
           items:
@@ -1137,6 +1137,17 @@ components:
           format: uri
         name:
           type: string
+
+    UuidReference:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+        - uuid
 
     ReferenceListUpdate:
       type: object

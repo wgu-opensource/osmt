@@ -1,7 +1,7 @@
 import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
 import {RichSkillService} from "../service/rich-skill.service"
 import {ActivatedRoute} from "@angular/router"
-import {ApiSkill, INamedReference} from "../ApiSkill"
+import {ApiSkill, ApiUuidReference, INamedReference} from "../ApiSkill"
 import {IDetailCardSectionData} from "../../detail-card/section/section.component"
 import {Observable} from "rxjs"
 import {PublishStatus} from "../../PublishStatus"
@@ -91,9 +91,12 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
     return this.joinList(delimeter, filteredList)
   }
 
-  protected formatAssociatedCollections(): string {
+  protected formatAssociatedCollections(isAuthorized: boolean): string {
+    const targetUrl = (it: ApiUuidReference) => {
+      return `/collections/${it.uuid}${isAuthorized ? "/manage" : ""}`
+    }
     return this.richSkill?.collections
-      ?.map(standard => `<div>${standard}</div>`)
+      ?.map(it => `<div><a class="t-link" href="${targetUrl(it)}">${it.name}</a></div>`)
       ?.join("<br>")
       ?? ""
 

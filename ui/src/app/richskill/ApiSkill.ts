@@ -35,11 +35,11 @@ export enum KeywordType {
 
 export interface IUuidReference {
   uuid: string
-  name?: string
+  name: string
 }
 export class ApiUuidReference implements IUuidReference {
   uuid: string = ""
-  name?: string
+  name: string = ""
 
   constructor(it: IUuidReference) {
     Object.assign(this, it)

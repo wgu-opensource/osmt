@@ -63,7 +63,7 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
       // },
       {
         label: "Collections With This RSD",
-        bodyHtml: this.formatAssociatedCollections(),
+        bodyHtml: this.formatAssociatedCollections(false),
         showIfEmpty: false
       },
     ]

@@ -4,7 +4,7 @@ import {Location} from "@angular/common";
 import {ActivatedRoute, ActivatedRouteSnapshot, CanDeactivate, Router, RouterStateSnapshot} from "@angular/router";
 import {RichSkillService} from "../service/rich-skill.service";
 import {Observable} from "rxjs";
-import {ApiNamedReference, INamedReference, ApiSkill} from "../ApiSkill";
+import {ApiNamedReference, INamedReference, ApiSkill, IUuidReference} from "../ApiSkill";
 import {ApiStringListUpdate, IStringListUpdate, ApiSkillUpdate, ApiReferenceListUpdate} from "../ApiSkillUpdate";
 import {AppConfig} from "../../app.config";
 import {urlValidator} from "../../validators/url.validator";
@@ -82,6 +82,14 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     return fields
   }
 
+  diffUuidList(words: string[], collections?: IUuidReference[]): ApiStringListUpdate | undefined {
+    const existing: Set<string> = new Set<string>(collections?.map(it => it.name))
+    const provided = new Set(words)
+    const removing = [...existing].filter(x => !provided.has(x))
+    const adding = [...provided].filter(x => !existing.has(x))
+    return (removing.length > 0 || adding.length > 0) ? new ApiStringListUpdate(adding, removing) : undefined
+  }
+
   diffStringList(words: string[], keywords?: string[]): ApiStringListUpdate | undefined {
     const existing = new Set(keywords)
     const provided = new Set(words)
@@ -98,7 +106,6 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     const adding = [...provided].filter(x => !existing.has(x)).map(it => this.namedReferenceForString(it))
       .filter(it => it).map(it => it as ApiNamedReference)
     return (removing.length > 0 || adding.length > 0) ? new ApiReferenceListUpdate(adding, removing) : undefined
-
   }
 
 
@@ -151,7 +158,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
       update.category = inputCategory ?? ""
     }
 
-    const collectionsDiff = this.diffStringList(formValue.collections, this.existingSkill?.collections)
+    const collectionsDiff = this.diffUuidList(formValue.collections, this.existingSkill?.collections)
     if (this.isDuplicating || collectionsDiff) { update.collections = collectionsDiff }
 
     const keywordDiff = this.diffStringList(this.splitTextarea(formValue.keywords), this.existingSkill?.keywords)
@@ -256,7 +263,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
       category: skill.category ?? "",
       keywords: skill.keywords?.join("; ") ?? "",
       standards: skill.standards?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
-      collections: skill.collections?.slice() ?? [],
+      collections: skill.collections?.map(it => it.name) ?? [],
       certifications: skill.certifications?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
       occupations: skill.occupations?.map(it => this.stringFromJobCode(it)).join("; ") ?? "",
       employers: skill.employers?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",

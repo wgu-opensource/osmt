@@ -105,8 +105,8 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
         get() = rsd.employers.map { ApiNamedReference.fromKeyword(it) }
 
     @get:JsonProperty
-    val collections: List<String>
-        get() = cs.map { it.name }
+    val collections: List<ApiUuidReference>
+        get() = cs.map { ApiUuidReference.fromCollection(it) }
 
     companion object {
         fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkill{

@@ -88,6 +88,7 @@ import {
   NamedReferenceComponent
 } from "./richskill/import/import-preview-table.component";
 import {FormFieldSearchSelectComponent} from "./form/form-field-search-select/form-field-search-select.component"
+import {SkillAuditLogComponent} from "./richskill/detail/skill-audit-log.component";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -182,7 +183,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     InlineHeadingComponent,
     NamedReferenceComponent,
     InlineErrorComponent,
-    FormFieldSearchSelectComponent
+    FormFieldSearchSelectComponent,
+    SkillAuditLogComponent
   ],
   imports: [
     BrowserModule,

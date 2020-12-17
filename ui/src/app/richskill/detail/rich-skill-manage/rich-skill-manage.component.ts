@@ -22,13 +22,9 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent i
     titleService.setTitle("Manage Rich Skill Descriptor")
   }
 
+
   ngOnInit(): void {
     super.ngOnInit()
-    if (this.uuidParam) {
-      this.richSkillService.auditLog(this.uuidParam).subscribe(results => {
-        console.log("audit log results", results)
-      })
-    }
   }
 
   getCardFormat(): IDetailCardSectionData[] {

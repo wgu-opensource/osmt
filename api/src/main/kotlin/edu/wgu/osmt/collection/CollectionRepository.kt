@@ -153,10 +153,10 @@ class CollectionRepositoryImpl @Autowired constructor(
         }
 
         val (publishStatusChanges, otherChanges) = daoObject?.toModel()?.diff(oldObject)
-            ?.partition { it.fieldName == "publishStatus" } ?: (null to null)
+            ?.partition { it.fieldName == Collection::publishStatus.name } ?: (null to null)
 
         // catch collection/skill relationship changes and generate audit log(s)
-        skillDaosToTrack?.map { skillDao ->
+        skillDaosToTrack.map { skillDao ->
             val oldSkill = oldSkills.get(skillDao.uuid)
             val skillChange = skillDao.toModel().diff(oldSkill)
             if (skillChange.isNotEmpty()) {

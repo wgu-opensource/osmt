@@ -18,20 +18,27 @@ export enum ImportStep {
   Success = 4
 }
 
-export const importSkillHeaders: {[p: string]: string} = {
-  skillName: "RSD Name",
-  skillStatement: "Skill Statement",
-  category: "Category",
-  keywords: "Keywords",
-  author: "Author",
-  standards: "Standards",
-  certifications: "Certifications",
-  occupations: "Occupations",
-  employers: "Employers",
-  alignmentName: "Alignment Name",
-  alignmentUrl: "Alignment URL",
-}
 
+export const importSkillHeaderOrder = [
+  {field: "skillName", label: "RSD Name"},
+  {field: "author", label: "Author"},
+  {field: "skillStatement", label: "Skill Statement"},
+  {field: "category", label: "Category"},
+  {field: "keywords", label: "Keywords"},
+  {field: "standards", label: "Standards"},
+  {field: "certifications", label: "Certifications"},
+  {field: "occupations", label: "Occupations"},
+  {field: "employers", label: "Employers"},
+  {field: "alignmentName", label: "Alignment Name"},
+  {field: "alignmentUrl", label: "Alignment URL"},
+]
+
+
+export const importSkillHeaders: {[p: string]: string} =
+ importSkillHeaderOrder.reduce((acc: {[p: string]: string}, it) => {
+   acc[it.field] = it.label
+   return acc
+ }, {})
 
 export class AuditedImportSkill {
   skill: ApiSkillUpdate

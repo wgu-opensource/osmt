@@ -16,20 +16,20 @@ class RichSkillCsvExport(
             return arrayOf(
                 CsvColumn("Canonical URL") { it.rs.canonicalUrl(appConfig.baseUrl) },
                 CsvColumn("RSD Name") { it.rs.name },
+                CsvColumn("Author") { it.rs.author?.value ?: "" },
                 CsvColumn("Skill Statement") { it.rs.statement },
                 CsvColumn("Category") { it.rs.category?.value ?: "" },
-                CsvColumn("Author") { it.rs.author?.value ?: "" },
-                CsvColumn("Collections") { it.collections.map {it.name}.joinToString(listDelimeter) },
                 CsvColumn("Keywords") { it.rs.searchingKeywords.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },
-                CsvColumn("Major Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::majorCode) },
-                CsvColumn("Minor Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::minorCode) },
-                CsvColumn("Broad Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::broadCode) },
-                CsvColumn("Detailed Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::detailedCode) },
-                CsvColumn("Job Roles") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::jobRoleCode) },
                 CsvColumn("Standards") { it.rs.standards.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },
                 CsvColumn("Certifications") { it.rs.certifications.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },
-                CsvColumn("Alignment Title") { it.rs.alignments.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },
-                CsvColumn("Alignment") { it.rs.alignments.map { keyword -> keyword.uri ?: "" }.joinToString(listDelimeter) }
+                CsvColumn("Occupation Major Groups") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::majorCode) },
+                CsvColumn("Occupation Minor Groups") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::minorCode) },
+                CsvColumn("Broad Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::broadCode) },
+                CsvColumn("Detailed Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::detailedCode) },
+                CsvColumn("O*Net Job Codes") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::jobRoleCode) },
+                CsvColumn("Employers") { it.collections.map {it.name}.joinToString(listDelimeter) },
+                CsvColumn("Alignment Name") { it.rs.alignments.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },
+                CsvColumn("Alignment URL") { it.rs.alignments.map { keyword -> keyword.uri ?: "" }.joinToString(listDelimeter) }
             )
         )
     }

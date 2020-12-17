@@ -1,21 +1,19 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.collection.CollectionDao
-import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionSkills
+import edu.wgu.osmt.db.MutablePublishStatusDetails
 import edu.wgu.osmt.db.OutputsModel
 import edu.wgu.osmt.db.PublishStatusDetails
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
-import edu.wgu.osmt.keyword.KeywordTypeEnum
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import java.time.LocalDateTime
-import java.util.*
 
 class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<RichSkillDescriptor>,
-    PublishStatusDetails {
+    MutablePublishStatusDetails {
     companion object : LongEntityClass<RichSkillDescriptorDao>(RichSkillDescriptorTable)
 
     var creationDate: LocalDateTime by RichSkillDescriptorTable.creationDate
@@ -45,13 +43,13 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
             uuid = uuid,
             name = name,
             statement = statement,
-            jobCodes = jobCodes.map { it.toModel() },
-            keywords = keywords.map { it.toModel() },
+            jobCodes = jobCodes.map { it.toModel() }.sortedBy { it.code },
+            keywords = keywords.map { it.toModel() }.sortedBy { it.id!! },
             category = category?.toModel(),
             author = author?.toModel(),
             archiveDate = archiveDate,
             publishDate = publishDate,
-            collectionIds = collections.map { it.id.value }.toSet()
+            collections = collections.map { it.toModel() }.toList().sortedBy { it.name }
         )
         return rsd
     }

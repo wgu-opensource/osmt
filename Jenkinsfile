@@ -39,8 +39,6 @@ pipeline {
         sh """
           set +x
           docker login --username ${dockerhubCredentials_USR} --password ${dockerhubCredentials_PSW}
-          set -x
-          pwd
           docker build . \
             -t concentricsky/${projectName}:${gitLabel}
         """

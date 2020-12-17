@@ -70,98 +70,44 @@ class RichSkillRepositoryImpl @Autowired constructor(
     override val dao = RichSkillDescriptorDao.Companion
     override val table = RichSkillDescriptorTable
 
-    val richSkillKeywordTable = RichSkillKeywords
-    val richSkillJobCodeTable = RichSkillJobCodes
-    val richSkillCollectionTable = CollectionSkills
-
-
     override fun findAll() = dao.all()
 
     override fun findById(id: Long) = dao.findById(id)
 
-    fun applyUpdate(rsdDao: RichSkillDescriptorDao, updateObject: RsdUpdateObject): Unit {
-        rsdDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
-        when (updateObject.publishStatus) {
-            PublishStatus.Published -> rsdDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
-            PublishStatus.Archived -> rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-            PublishStatus.Unarchived -> rsdDao.archiveDate = null
-            PublishStatus.Deleted -> {
-                if (rsdDao.publishDate == null){
-                    rsdDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-                }
-            }
-        }
-        updateObject.name?.let { rsdDao.name = it }
-        updateObject.statement?.let { rsdDao.statement = it }
-        updateObject.category?.let {
-            if (it.t != null) {
-                rsdDao.category = it.t
-            } else {
-                rsdDao.category = null
-            }
-        }
-        updateObject.author?.let {
-            if (it.t != null) {
-                rsdDao.author = it.t
-            } else {
-                rsdDao.author = null
-            }
-        }
-
-        // update keywords
-        updateObject.keywords?.let {
-
-            it.add?.forEach { keyword ->
-                richSkillKeywordTable.create(richSkillId = updateObject.id!!, keywordId = keyword.id.value)
-            }
-
-            it.remove?.forEach { keyword ->
-                richSkillKeywordTable.delete(richSkillId = updateObject.id!!, keywordId = keyword.id.value)
-            }
-        }
-
-        // update jobcodes
-        updateObject.jobCodes?.let {
-            it.add?.forEach { jobCode ->
-                richSkillJobCodeTable.create(richSkillId = updateObject.id!!, jobCodeId = jobCode.id.value)
-            }
-            it.remove?.forEach { jobCode ->
-                richSkillJobCodeTable.delete(richSkillId = updateObject.id!!, jobCodeId = jobCode.id.value!!)
-            }
-        }
-
-        // update collections
-        updateObject.collections?.let {
-            it.add?.forEach { collection ->
-                richSkillCollectionTable.create(
-                    collectionId = collection.id.value!!,
-                    skillId = updateObject.id!!
-                )
-            }
-            it.remove?.forEach { collection ->
-                richSkillCollectionTable.delete(collectionId = collection.id.value!!, skillId = updateObject.id!!)
-            }
-        }
-    }
-
     override fun update(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao? {
         val daoObject = dao.findById(updateObject.id!!)
-        val changes = daoObject?.let { updateObject.diff(it) }
+        val old = daoObject?.toModel()
 
-        daoObject?.let { applyUpdate(it, updateObject) }
+        daoObject?.let { updateObject.applyToDao(it) }
 
-        changes?.let { it ->
+        val (publishStatusChanges, otherChanges) = daoObject?.toModel()?.diff(old)?.partition{it.fieldName == RichSkillDescriptor::publishStatus.name} ?: (null to null)
+
+        otherChanges?.let { it ->
             if (it.isNotEmpty())
-                auditLogRepository.insert(
+                auditLogRepository.create(
                     AuditLog.fromAtomicOp(
                         table,
                         updateObject.id,
-                        it.toString(),
+                        it,
                         user,
                         AuditOperationType.Update
                     )
                 )
         }
+
+        publishStatusChanges?.let { it ->
+            if (it.isNotEmpty())
+                auditLogRepository.create(
+                    AuditLog.fromAtomicOp(
+                        table,
+                        updateObject.id,
+                        it,
+                        user,
+                        AuditOperationType.PublishStatusChange
+                    )
+                )
+        }
+
         daoObject?.let {
             collectionEsRepo.saveAll(it.collections.map { it.toDoc() })
             richSkillEsRepo.save(RichSkillDoc.fromDao(it, appConfig))
@@ -185,13 +131,28 @@ class RichSkillRepositoryImpl @Autowired constructor(
             this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
             this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.uuid = UUID.randomUUID().toString()
+            this.author = updateObject.author?.t
+            this.category = updateObject.category?.t
         }
 
-        val updateWithIdAndAuthor = updateObject.copy(
-            id = newRsd.id.value
+        updateObject.copy(id = newRsd.id.value).applyToDao(newRsd)
+
+        newRsd.let {
+            collectionEsRepo.saveAll(it.collections.map { it.toDoc() })
+            richSkillEsRepo.save(RichSkillDoc.fromDao(it, appConfig))
+        }
+
+        auditLogRepository.create(
+            AuditLog.fromAtomicOp(
+                table,
+                newRsd.id.value,
+                newRsd.toModel().diff(null),
+                user,
+                AuditOperationType.Insert
+            )
         )
 
-        return update(updateWithIdAndAuthor, user)
+        return newRsd
     }
 
     override fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao> {
@@ -343,7 +304,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         var modifiedCount = 0
         var totalCount = 0
 
-        val publish_skill = {skillDao: RichSkillDescriptorDao, task: PublishTask ->
+        val publish_skill = { skillDao: RichSkillDescriptorDao, task: PublishTask ->
             val oldStatus = skillDao.publishStatus()
             if (oldStatus != task.publishStatus) {
                 val updateObj = RsdUpdateObject(id = skillDao.id.value, publishStatus = task.publishStatus)
@@ -354,7 +315,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         }
 
-        val handle_skill_dao = {skillDao: RichSkillDescriptorDao? ->
+        val handle_skill_dao = { skillDao: RichSkillDescriptorDao? ->
             skillDao?.let {
                 if (publish_skill(it, publishTask)) {
                     modifiedCount += 1

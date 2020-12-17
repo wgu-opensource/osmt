@@ -1,53 +1,31 @@
 package edu.wgu.osmt.db
 
-import edu.wgu.osmt.keyword.Keyword
-import net.minidev.json.JSONArray
-import net.minidev.json.JSONObject
-import kotlin.reflect.KProperty0
+import org.jetbrains.exposed.dao.LongEntity
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
-interface UpdateObject<T> {
+interface UpdateObject<T: LongEntity> {
     val id: Long?
 
-    val comparisonList: List<(t: T) -> JSONObject?>
-
-    val stringOutput: (String?) -> String?
-        get() = { s: String? -> s }
-
-    val keywordOutput: (Keyword?) -> String?
-        get() = { k: Keyword? -> k?.value }
-
-    fun <R : String?> compare(
-        thatProp: KProperty0<R>,
-        thisProp: KProperty0<R>
-    ): JSONObject? {
-        return compare(thatProp, thisProp, stringOutput)
-    }
-
-    fun <R : Any?> compare(
-        thatProp: KProperty0<R>,
-        thisProp: KProperty0<R>,
-        outputR: (R) -> String?
-    ): JSONObject? {
-        return if (thisProp.get() != thatProp.get()) jsonUpdateStatement(
-            thatProp.name,
-            outputR(thatProp.get()),
-            outputR(thisProp.get())
-        ) else null
-    }
-
-    fun jsonUpdateStatement(fieldName: String, oldValue: String?, newValue: String?): JSONObject {
-        return JSONObject(mutableMapOf(fieldName to mutableMapOf("old" to oldValue, "new" to newValue)))
-    }
-
-    fun diff(that: T): JSONArray {
-        val jsonObj = JSONArray()
-        comparisonList.forEach { it(that)?.let { jsonObj.add(it) } }
-        return jsonObj
-    }
+    fun applyToDao(dao: T): Unit
 }
 
-interface HasPublishStatus{
+
+
+interface HasPublishStatus<T: MutablePublishStatusDetails> {
     val publishStatus: PublishStatus?
+
+    fun applyPublishStatus(dao: T): Unit {
+        when (publishStatus) {
+            PublishStatus.Archived -> dao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+            PublishStatus.Published -> dao.publishDate = LocalDateTime.now(ZoneOffset.UTC) // TODO this behavior won't allow "publishing" (though the date is set) if an archive date is still present see PublishStatusDetails#publishStatus
+            PublishStatus.Unarchived -> dao.archiveDate = null
+            PublishStatus.Deleted -> {
+                if (dao.publishDate == null){
+                    dao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+                }
+            }
+            else -> {} // draft is non-op
+        }
+    }
 }
-
-

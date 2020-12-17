@@ -24,7 +24,7 @@ export class FormFieldSearchMultiSelectComponent extends AbstractFormFieldSearch
   performInitialSearchAndPopulation(): void {
     const value = this.control.value as string
     this.control.setValue("")
-    this.internalSelectedResults = value.split(";").map(s => s.trim())
+    this.internalSelectedResults = value.split(";").map(s => s.trim()).filter(s => s.length > 0)
     this.emitCurrentSelection()
   }
 

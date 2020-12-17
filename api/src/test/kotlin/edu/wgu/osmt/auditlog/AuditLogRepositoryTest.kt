@@ -203,6 +203,9 @@ class AuditLogRepositoryTest @Autowired constructor(
             auditLogRepository.findByTableAndId(RichSkillDescriptorTable.tableName, skill.id.value).map { it.toModel() }
                 .filter { it.operationType == AuditOperationType.Update.name }.sortedBy { it.creationDate }
 
+        val publishStatusLogs = auditLogRepository.findByTableAndId(RichSkillDescriptorTable.tableName, skill.id.value).map { it.toModel() }
+            .filter { it.operationType == AuditOperationType.PublishStatusChange.name }.sortedBy { it.creationDate }
+
         val firstUpdateLog = updateLogs.get(0)
         val secondUpdateLog = updateLogs.get(1)
 
@@ -299,6 +302,14 @@ class AuditLogRepositoryTest @Autowired constructor(
                 RichSkillDescriptor::collections.name,
                 updatedResult?.collections?.map { it.name }?.joinToString(DELIMITER),
                 null
+            )
+        )
+
+        assertThat(publishStatusLogs.get(0).changedFields.findByFieldName(RichSkillDescriptor::publishStatus.name)).isEqualTo(
+            Change(
+                RichSkillDescriptor::publishStatus.name,
+                PublishStatus.Draft.name,
+                PublishStatus.Published.name
             )
         )
     }

@@ -80,9 +80,9 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         daoObject?.let { updateObject.applyToDao(it) }
 
-        val changes = daoObject?.toModel()?.diff(old)
+        val (publishStatusChanges, otherChanges) = daoObject?.toModel()?.diff(old)?.partition{it.fieldName == RichSkillDescriptor::publishStatus.name} ?: (null to null)
 
-        changes?.let { it ->
+        otherChanges?.let { it ->
             if (it.isNotEmpty())
                 auditLogRepository.create(
                     AuditLog.fromAtomicOp(
@@ -94,6 +94,20 @@ class RichSkillRepositoryImpl @Autowired constructor(
                     )
                 )
         }
+
+        publishStatusChanges?.let { it ->
+            if (it.isNotEmpty())
+                auditLogRepository.create(
+                    AuditLog.fromAtomicOp(
+                        table,
+                        updateObject.id,
+                        it,
+                        user,
+                        AuditOperationType.PublishStatusChange
+                    )
+                )
+        }
+
         daoObject?.let {
             collectionEsRepo.saveAll(it.collections.map { it.toDoc() })
             richSkillEsRepo.save(RichSkillDoc.fromDao(it, appConfig))

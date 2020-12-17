@@ -56,10 +56,10 @@ class JobCodeRepositoryImpl: JobCodeRepository {
     }
 
     override fun create(code: String, framework: String?): JobCodeDao {
-        return dao.new {
+        return dao.new({
             creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.code = code
             this.framework = framework
-        }.also { jobCodeEsRepo.save(it.toModel()) }
+        }).also { jobCodeEsRepo.save(it.toModel()) }
     }
 }

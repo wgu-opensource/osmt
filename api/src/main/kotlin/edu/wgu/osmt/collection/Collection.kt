@@ -1,16 +1,17 @@
 package edu.wgu.osmt.collection
 
+import edu.wgu.osmt.auditlog.Change
+import edu.wgu.osmt.auditlog.Comparison
 import edu.wgu.osmt.db.*
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
-import net.minidev.json.JSONObject
 import org.valiktor.functions.isEqualTo
-import org.valiktor.functions.isNotEqualTo
 import org.valiktor.functions.validate
 import org.valiktor.validate
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 data class Collection(
     override val id: Long?,
@@ -24,7 +25,6 @@ data class Collection(
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
 
     fun canonicalUrl(baseUrl: String): String = "$baseUrl/api/collections/${uuid}"
-
 }
 
 data class CollectionUpdateObject(
@@ -33,7 +33,7 @@ data class CollectionUpdateObject(
     val author: NullableFieldUpdate<KeywordDao>? = null,
     val skills: ListFieldUpdate<RichSkillDescriptorDao>? = null,
     override val publishStatus: PublishStatus? = null
-) : UpdateObject<CollectionDao>, HasPublishStatus {
+) : UpdateObject<CollectionDao>, HasPublishStatus<CollectionDao> {
     init {
         validate(this) {
             validate(CollectionUpdateObject::author).validate {
@@ -43,41 +43,60 @@ data class CollectionUpdateObject(
             }
         }
     }
-    fun compareName(that: CollectionDao): JSONObject? {
-        return name?.let {
-            compare(that::name, this::name, stringOutput)
+
+    override fun applyToDao(dao: CollectionDao): Unit{
+        dao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
+        applyPublishStatus(dao)
+        name?.let { dao.name = it }
+
+        author?.let {
+            if (it.t != null) {
+                dao.author = it.t
+            } else {
+                dao.author = null
+            }
         }
+        applySkills()
     }
 
-    fun compareAuthor(that: CollectionDao): JSONObject? {
-        return author?.let {
-            if (that.author?.value?.let { id } != it.t?.id?.value) {
-                jsonUpdateStatement(that::author.name, that.author?.let { it.value }, it.t?.value)
-            } else null
+    fun applySkills(): CollectionUpdateObject{
+        skills?.let {
+            it.add?.forEach { skill ->
+                CollectionSkills.create(collectionId = id!!, skillId = skill.id.value)
+            }
+            it.remove?.forEach { skill ->
+                CollectionSkills.delete(collectionId = id!!, skillId = skill.id.value)
+            }
         }
+        return copy(skills = null)
+    }
+}
+
+fun Collection.diff(old: Collection?): List<Change> {
+    val new = this
+
+    old?.let{if (it.uuid != new.uuid) throw Exception("Tried to compare different UUIDs, ${it.uuid} != ${new.uuid}")}
+
+    val comparisons: List<Comparison<*>> = listOf(
+        Comparison(Collection::name.name, CollectionComparison::compareName, old, new),
+        Comparison(Collection::author.name, CollectionComparison::compareAuthor, old, new),
+        Comparison(Collection::publishStatus.name, CollectionComparison::comparePublishStatus, old, new)
+    )
+
+    return comparisons.mapNotNull { it.compare() }
+}
+
+object CollectionComparison {
+    fun compareName(c: Collection): String {
+        return c.name
     }
 
-    fun comparePublishStatus(that: CollectionDao): JSONObject?{
-        return publishStatus?.let{
-            jsonUpdateStatement(::publishStatus.name, that.publishStatus().name, it.name)
-        }
+    fun compareAuthor(c: Collection): String? {
+        return c.author?.value
     }
 
-    fun compareSkills(that: CollectionDao): JSONObject? {
-        val added = skills?.add?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
-        val removed = skills?.remove?.map { mutableMapOf("id" to it.id.value, "name" to it.name) }
-        val addedPair = added?.let { "added" to it }
-        val removedPair = removed?.let { "removed" to it }
-        val operationsList = listOfNotNull(addedPair, removedPair).toTypedArray()
-
-        return if (added?.isNotEmpty() == true or (removed?.isNotEmpty() == true)) {
-            JSONObject(mutableMapOf(that::skills.name to mutableMapOf(*operationsList)))
-        } else {
-            null
-        }
+    fun comparePublishStatus(c: Collection): String {
+        return c.publishStatus().name
     }
-
-    override val comparisonList: List<(t: CollectionDao) -> JSONObject?> =
-        listOf(::compareName, ::compareAuthor, ::comparePublishStatus, ::compareSkills)
 }
 

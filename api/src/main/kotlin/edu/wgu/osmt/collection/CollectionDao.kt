@@ -1,16 +1,15 @@
 package edu.wgu.osmt.collection
 
+import edu.wgu.osmt.db.MutablePublishStatusDetails
 import edu.wgu.osmt.db.OutputsModel
-import edu.wgu.osmt.db.PublishStatusDetails
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import java.time.LocalDateTime
-import java.util.*
 
-class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collection>, PublishStatusDetails {
+class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collection>, MutablePublishStatusDetails {
     companion object : LongEntityClass<CollectionDao>(CollectionTable)
 
     var creationDate by CollectionTable.creationDate

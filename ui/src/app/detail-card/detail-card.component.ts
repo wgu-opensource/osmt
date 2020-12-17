@@ -15,7 +15,6 @@ export class DetailCardComponent implements OnInit {
   @Input() publishDate = ""
   @Input() archiveDate = ""
   @Input() status = PublishStatus.Draft
-  @Input() uuid?: string
 
   constructor() { }
 

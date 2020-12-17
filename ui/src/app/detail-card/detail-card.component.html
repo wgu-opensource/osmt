@@ -13,11 +13,4 @@
       *ngIf="section.bodyHtml || section.showIfEmpty"
     ></app-detail-card-section>
   </div>
-  <div *ngIf="uuid" class="t-margin-medium t-margin-bottom">
-    <app-audit-log
-      [skillUuid]="uuid"
-      closedLabel="View Audit Log"
-      openLabel="Hide Audit Log">
-    </app-audit-log>
-  </div>
 </div>

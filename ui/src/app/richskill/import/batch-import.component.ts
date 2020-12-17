@@ -40,6 +40,12 @@ export const importSkillHeaders: {[p: string]: string} =
    return acc
  }, {})
 
+export const importSkillHeadersReverse: {[p: string]: string} =
+  importSkillHeaderOrder.reduce((acc: {[p: string]: string}, it) => {
+    acc[it.label.toLowerCase()] = it.field
+    return acc
+  }, {})
+
 export class AuditedImportSkill {
   skill: ApiSkillUpdate
   missing: string[]
@@ -148,6 +154,9 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     this.showStepLoader()
     this.currentStep += 1
     switch (this.currentStep) {
+      case ImportStep.FieldMapping:
+        this.initializeMapping()
+        break
       case ImportStep.ReviewRecords:
         this.auditRecords()
         break
@@ -286,6 +295,18 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
       return newSkill
     }).map((it: IRichSkillUpdate) => new ApiSkillUpdate(it))
     return skillUpdates
+  }
+
+  private initializeMapping(): void {
+    const mappings: {[s: string]: string} = {}
+    this.uploadedHeaders().forEach(it => {
+      const fieldName = importSkillHeadersReverse[it.toLowerCase()]
+      if (fieldName) {
+        mappings[it] = fieldName
+      }
+    })
+
+    this.handleMappingChanged(mappings)
   }
 
   private auditRecords(): void {

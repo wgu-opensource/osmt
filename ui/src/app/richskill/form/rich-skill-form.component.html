@@ -133,6 +133,13 @@
 
 
       </div>
+      <div class="t-margin-medium t-margin-top">
+        <app-audit-log *ngIf="this.skillUuid"
+                       [skillUuid]="this.skillUuid"
+                       closedLabel="View Audit Log"
+                       openLabel="Hide Audit Log">
+        </app-audit-log>
+      </div>
     </div>
 
 

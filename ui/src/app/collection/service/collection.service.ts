@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {AuthService} from "../../auth/auth-service"
 import {AbstractService} from "../../abstract.service"
 import {PublishStatus} from "../../PublishStatus"
-import {ApiSortOrder} from "../../richskill/ApiSkill"
+import {ApiAuditLog, ApiSortOrder, IAuditLog} from "../../richskill/ApiSkill"
 import {
   ApiSearch,
   ApiSkillListUpdate,
@@ -200,4 +200,15 @@ export class CollectionService extends AbstractService {
     })
   }
 
+  auditLog(
+    uuid?: string
+  ): Observable<ApiAuditLog[]> {
+    return this.get<IAuditLog[]>({
+      path: `${this.baseServiceUrl}/${uuid}/log`
+    })
+      .pipe(share())
+      .pipe(map(({body, headers}) => {
+        return body?.map(it => new ApiAuditLog(it)) || []
+      }))
+  }
 }

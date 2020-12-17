@@ -14,10 +14,10 @@
     ></app-detail-card-section>
   </div>
   <div *ngIf="uuid" class="t-margin-medium t-margin-bottom">
-    <app-skill-audit-log
-      [uuid]="uuid"
+    <app-audit-log
+      [skillUuid]="uuid"
       closedLabel="View Audit Log"
       openLabel="Hide Audit Log">
-    </app-skill-audit-log>
+    </app-audit-log>
   </div>
 </div>

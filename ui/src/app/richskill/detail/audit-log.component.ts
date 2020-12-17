@@ -4,14 +4,16 @@ import {AccordianComponent} from "../../core/accordian.component";
 import {ApiAuditLog, AuditOperationType} from "../ApiSkill";
 import {Observable} from "rxjs";
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
+import {CollectionService} from "../../collection/service/collection.service";
 
 
 @Component({
-  selector: "app-skill-audit-log",
-  templateUrl: "./skill-audit-log.component.html"
+  selector: "app-audit-log",
+  templateUrl: "./audit-log.component.html"
 })
-export class SkillAuditLogComponent extends AccordianComponent {
-  @Input() uuid!: string
+export class AuditLogComponent extends AccordianComponent {
+  @Input() skillUuid?: string
+  @Input() collectionUuid?: string
 
   resultsLoaded?: Observable<ApiAuditLog[]>
   results?: ApiAuditLog[]
@@ -22,7 +24,10 @@ export class SkillAuditLogComponent extends AccordianComponent {
   publishIcon = SvgHelper.path(SvgIcon.PUBLISH)
   archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)
 
-  constructor(protected richSkillService: RichSkillService) {
+  constructor(
+    protected richSkillService: RichSkillService,
+    protected collectionService: CollectionService
+  ) {
     super()
   }
 
@@ -33,11 +38,19 @@ export class SkillAuditLogComponent extends AccordianComponent {
     }
   }
 
+  fetchLog(): Observable<ApiAuditLog[]> | undefined {
+    if (this.skillUuid) {
+      return this.richSkillService.auditLog(this.skillUuid)
+    }
+    else if (this.collectionUuid) {
+      return this.collectionService.auditLog(this.collectionUuid)
+    }
+    return undefined
+  }
+
   fetch(): void {
-    console.log("fetching")
-    this.resultsLoaded = this.richSkillService.auditLog(this.uuid)
-    this.resultsLoaded.subscribe(results => {
-      console.log("audit log results", results)
+    this.resultsLoaded = this.fetchLog()
+    this.resultsLoaded?.subscribe(results => {
       this.results = results
     })
   }

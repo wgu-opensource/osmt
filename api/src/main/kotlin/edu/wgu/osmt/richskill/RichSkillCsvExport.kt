@@ -15,9 +15,9 @@ class RichSkillCsvExport(
         return arrayOf(
             return arrayOf(
                 CsvColumn("Canonical URL") { it.rs.canonicalUrl(appConfig.baseUrl) },
-                CsvColumn("Skill Name") { it.rs.name },
+                CsvColumn("RSD Name") { it.rs.name },
                 CsvColumn("Skill Statement") { it.rs.statement },
-                CsvColumn("Skill Category") { it.rs.category?.value ?: "" },
+                CsvColumn("Category") { it.rs.category?.value ?: "" },
                 CsvColumn("Author") { it.rs.author?.value ?: "" },
                 CsvColumn("Collections") { it.collections.map {it.name}.joinToString(listDelimeter) },
                 CsvColumn("Keywords") { it.rs.searchingKeywords.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },

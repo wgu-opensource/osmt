@@ -159,4 +159,8 @@ export class ApiAuditLog {
     this.user = user
     this.changedFields = changedFields
   }
+  
+  isPublishStatusChange(): boolean {
+    return this.operationType === AuditOperationType.PublishStatusChange
+  }
 }

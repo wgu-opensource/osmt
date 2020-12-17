@@ -32,25 +32,27 @@
             </div>
           </div>
 
-          <div class="l-entry-x-category" *ngFor="let change of entry.changedFields">
-            <!--{{render '@entrycategory'}} -->
-            <div class="t-margin-small t-margin-bottom">
-              <!-- {{render '@m-sectionlabel&#45;&#45;shadow'}} -->
-              <div class="m-sectionLabel m-sectionLabel-shadow">{{change.fieldName}}</div>
-            </div>
-            <div class="t-margin-small t-margin-bottom">
-              <!-- {{render '@entryitem&#45;&#45;changed-from'}} -->
-              <h6 class="t-type-smallBoldCaps t-margin-extraSmall t-margin-bottom">Changed From</h6>
-              <p *ngIf="change.old" class="t-type-bodyStrikethrough t-color-text3">{{change.old}}<p>
-              <p *ngIf="!change.old">&mdash;</p>
-            </div>
-            <div class="t-margin-small t-margin-bottom">
-              <!-- {{render '@entryitem'}} -->
-              <h6 class="t-type-smallBoldCaps t-margin-extraSmall t-margin-bottom">Changed To</h6>
-              <p>{{change.new}}</p>
-            </div>
+          <ng-template [ngIf]="!entry.isPublishStatusChange()">
+            <div class="l-entry-x-category" *ngFor="let change of entry.changedFields">
+              <!--{{render '@entrycategory'}} -->
+              <div class="t-margin-small t-margin-bottom">
+                <!-- {{render '@m-sectionlabel&#45;&#45;shadow'}} -->
+                <div class="m-sectionLabel m-sectionLabel-shadow">{{change.fieldName}}</div>
+              </div>
+              <div class="t-margin-small t-margin-bottom">
+                <!-- {{render '@entryitem&#45;&#45;changed-from'}} -->
+                <h6 class="t-type-smallBoldCaps t-margin-extraSmall t-margin-bottom">Changed From</h6>
+                <p *ngIf="change.old" class="t-type-bodyStrikethrough t-color-text3">{{change.old}}<p>
+                <p *ngIf="!change.old">&mdash;</p>
+              </div>
+              <div class="t-margin-small t-margin-bottom">
+                <!-- {{render '@entryitem'}} -->
+                <h6 class="t-type-smallBoldCaps t-margin-extraSmall t-margin-bottom">Changed To</h6>
+                <p>{{change.new}}</p>
+              </div>
 
-          </div>
+            </div>
+          </ng-template>
 
           <div class="l-entry-x-rule">
             <hr class="m-rule" />

@@ -5,6 +5,7 @@ import {ApiAuditLog, AuditOperationType} from "../ApiSkill";
 import {Observable} from "rxjs";
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
 import {CollectionService} from "../../collection/service/collection.service";
+import {PublishStatus} from "../../PublishStatus";
 
 
 @Component({
@@ -23,6 +24,8 @@ export class AuditLogComponent extends AccordianComponent {
   editIcon = SvgHelper.path(SvgIcon.EDIT)
   publishIcon = SvgHelper.path(SvgIcon.PUBLISH)
   archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)
+  unarchiveIcon = SvgHelper.path(SvgIcon.UNARCHIVE)
+  dismissIcon = SvgHelper.path(SvgIcon.DISMISS)
 
   constructor(
     protected richSkillService: RichSkillService,
@@ -59,15 +62,27 @@ export class AuditLogComponent extends AccordianComponent {
     switch (entry.operationType) {
       case AuditOperationType.Insert: return this.editIcon
       case AuditOperationType.Update: return this.editIcon
-      case AuditOperationType.PublishStatusChange: return this.publishIcon
+      case AuditOperationType.PublishStatusChange: switch (entry.changedFields[0]?.new) {
+        case PublishStatus.Published: return entry.changedFields[0]?.old === "Archived" ? this.unarchiveIcon : this.publishIcon
+        case PublishStatus.Archived: return this.archiveIcon
+        case PublishStatus.Unarchived: return this.unarchiveIcon
+        case PublishStatus.Deleted: return this.archiveIcon
+        case PublishStatus.Draft: return this.unarchiveIcon
+        default: return this.publishIcon
+      }
     }
   }
 
   labelForEntry(entry: ApiAuditLog): string {
     switch (entry.operationType) {
-      case AuditOperationType.Insert:
+      case AuditOperationType.Insert: return "Created"
       case AuditOperationType.Update: return "Edited"
-      case AuditOperationType.PublishStatusChange: return this.publishIcon
+      case AuditOperationType.PublishStatusChange: switch (entry.changedFields[0]?.new) {
+        case PublishStatus.Deleted: return "Archived"
+        case PublishStatus.Draft: return "Unarchived"
+        case PublishStatus.Published: return entry.changedFields[0]?.old === "Archived" ? "Unarchived" : "Published"
+        default: return entry.changedFields[0]?.new
+      }
     }
   }
 }

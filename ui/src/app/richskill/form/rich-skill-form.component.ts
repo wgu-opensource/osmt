@@ -31,6 +31,9 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   // Type ahead storage to append to the field on submit
   selectedStandards: string[] = []
   selectedJobCodes: string[] = []
+  selectedKeywords: string[] = []
+  selectedCertifications: string[] = []
+  selectedEmployers: string[] = []
 
   // This allows this enum's constants to be used in the template
   keywordType = KeywordType
@@ -143,6 +146,9 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     const update = new ApiSkillUpdate({})
     const formValue = this.skillForm.value
 
+    // pre-populate type-ahead values into field
+    this.populateTypeAheadFieldsWithResults()
+
     const inputName = this.nonEmptyOrNull(formValue.skillName)
     if (inputName && (this.isDuplicating || this.existingSkill?.skillName !== inputName)) {
       update.skillName = inputName
@@ -171,7 +177,6 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     const keywordDiff = this.diffStringList(this.splitTextarea(formValue.keywords), this.existingSkill?.keywords)
     if (this.isDuplicating || keywordDiff) { update.keywords = keywordDiff }
 
-    formValue.occupations = [formValue.occupations, ...this.selectedJobCodes].join("; ")
     const occupationsDiff = this.diffStringList(
       this.splitTextarea(formValue.occupations),
       this.existingSkill?.occupations?.map(it => this.stringFromJobCode(it))
@@ -186,9 +191,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
       }
     }
 
-    formValue.standards = [formValue.standards, ...this.selectedStandards].join("; ")
     _handle_ref_list(formValue.standards, "standards", this.existingSkill?.standards)
-
     _handle_ref_list(formValue.certifications, "certifications", this.existingSkill?.certifications)
     _handle_ref_list(formValue.employers, "employers", this.existingSkill?.employers)
 
@@ -347,13 +350,33 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     return false
   }
 
+  populateTypeAheadFieldsWithResults(): void {
+    const formValue = this.skillForm.value
+    formValue.standards = [formValue.standards, ...this.selectedStandards].join("; ")
+    formValue.occupations = [formValue.occupations, ...this.selectedJobCodes].join("; ")
+    formValue.keywords = [formValue.keywords, ...this.selectedKeywords].join("; ")
+    formValue.certifications = [formValue.certifications, ...this.selectedCertifications].join("; ")
+    formValue.employers = [formValue.employers, ...this.selectedEmployers].join("; ")
+}
+
   handleStandardsTypeAheadResults(standards: string[]): void {
     this.selectedStandards = standards
   }
 
   handleJobCodesTypeAheadResults(jobCodes: string[]): void {
     this.selectedJobCodes = jobCodes
-    console.log(jobCodes)
+  }
+
+  handleKeywordTypeAheadResults(keywords: string[]): void {
+    this.selectedKeywords = keywords
+  }
+
+  handleCertificationTypeAheadResults(certifications: string[]): void {
+    this.selectedCertifications = certifications
+  }
+
+  handleEmployersTypeAheadResults(employers: string[]): void {
+    this.selectedEmployers = employers
   }
 }
 

@@ -6,7 +6,7 @@ import {ToastService} from "../../toast/toast.service";
 import {Location} from "@angular/common";
 import {Papa, ParseResult} from "ngx-papaparse";
 import {ApiNamedReference} from "../ApiSkill"
-import {ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate";
+import {ApiReferenceListUpdate, ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate";
 import {Observable} from "rxjs";
 import {PaginatedSkills} from "../service/rich-skill-search.service";
 
@@ -18,20 +18,33 @@ export enum ImportStep {
   Success = 4
 }
 
-export const importSkillHeaders: {[p: string]: string} = {
-  skillName: "RSD Name",
-  skillStatement: "Skill Statement",
-  category: "Category",
-  keywords: "Keywords",
-  author: "Author",
-  standards: "Standards",
-  certifications: "Certifications",
-  occupations: "Occupations",
-  employers: "Employers",
-  alignmentName: "Alignment Name",
-  alignmentUrl: "Alignment URL",
-}
 
+export const importSkillHeaderOrder = [
+  {field: "skillName", label: "RSD Name"},
+  {field: "author", label: "Author"},
+  {field: "skillStatement", label: "Skill Statement"},
+  {field: "category", label: "Category"},
+  {field: "keywords", label: "Keywords"},
+  {field: "standards", label: "Standards"},
+  {field: "certifications", label: "Certifications"},
+  {field: "occupations", label: "Occupations"},
+  {field: "employers", label: "Employers"},
+  {field: "alignmentName", label: "Alignment Name"},
+  {field: "alignmentUrl", label: "Alignment URL"},
+]
+
+
+export const importSkillHeaders: {[p: string]: string} =
+ importSkillHeaderOrder.reduce((acc: {[p: string]: string}, it) => {
+   acc[it.field] = it.label
+   return acc
+ }, {})
+
+export const importSkillHeadersReverse: {[p: string]: string} =
+  importSkillHeaderOrder.reduce((acc: {[p: string]: string}, it) => {
+    acc[it.label.toLowerCase()] = it.field
+    return acc
+  }, {})
 
 export class AuditedImportSkill {
   skill: ApiSkillUpdate
@@ -141,6 +154,9 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     this.showStepLoader()
     this.currentStep += 1
     switch (this.currentStep) {
+      case ImportStep.FieldMapping:
+        this.initializeMapping()
+        break
       case ImportStep.ReviewRecords:
         this.auditRecords()
         break
@@ -153,7 +169,18 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   }
 
   handleClickCancel(): boolean {
-    this.location.back()
+    const newStep = this.currentStep - 1
+    switch (this.currentStep) {
+      case ImportStep.FieldMapping:
+      case ImportStep.ReviewRecords: {
+        this.currentStep -= 1
+        break
+      }
+      case ImportStep.UploadFile:
+      default:
+        this.location.back()
+        break
+    }
     return false
   }
 
@@ -179,15 +206,29 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     return true
   }
 
+  handleFileDrop($event: DragEvent): boolean {
+    if (($event.dataTransfer?.files?.length ?? 0) > 0) {
+      this.changeFile($event.dataTransfer?.files[0])
+    }
+    return false
+  }
+  handleFileDrag($event: DragEvent): boolean {
+    $event.preventDefault()
+    return false
+  }
+
   handleFileChange($event: Event): void {
-    if (this.currentStep !== ImportStep.UploadFile)  {
+    if (this.currentStep !== ImportStep.UploadFile) {
       this.resetState()
     }
 
     const target = $event.target as HTMLInputElement
-
     if (target.files && target.files.length > 0) {
-      const file = target.files[0]
+      this.changeFile(target.files[0])
+    }
+  }
+
+  changeFile(file: any): void {
 
       this.uploadedFile = file.name
 
@@ -204,7 +245,6 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
           this.parseResults = results
         }
       })
-    }
   }
 
   get uploadedFileCount(): number {
@@ -215,9 +255,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   }
 
   uploadedHeaders(): string[] {
-    const data = this.parseResults?.data
-    if (!data || data.length < 1) { return [] }
-    return Object.keys(data[0])
+    return this.parseResults?.meta.fields ?? []
   }
 
   handleMappingChanged(fieldMappings: {[p: string]: string}): void {
@@ -236,6 +274,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         count[it] = (count[it] ?? 0) + 1
       })
       const duplicates: string[] = Object.entries(count).filter(it => it[1] > 1).map(it => it[0])
+        .filter(it => it !== undefined && it !== "occupations")
       if (duplicates.length > 0) {
         return duplicates
       }
@@ -260,6 +299,9 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
       // tslint:disable-next-line:no-any
       const newSkill: {[s: string]: any} = {}
 
+      const alignmentHolder: {[s: string]: string} = {}
+      const jobcodes: string[] = []
+
       Object.keys(row).forEach(uploadedKey => {
         const fieldName = this.fieldMappings?.[uploadedKey]
         const value: string = row[uploadedKey].trim()
@@ -268,17 +310,48 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
           if (["author"].indexOf(fieldName) !== -1) {
             newSkill[fieldName] = new ApiNamedReference({name: value})
           }
-          else if (fieldName.endsWith("s")) {
+          else if (["standards", "certifications", "employers"].indexOf(fieldName) !== -1) {
+            newSkill[fieldName] = new ApiReferenceListUpdate(
+              value.split(";").map(it => ApiNamedReference.fromString(it)).filter(it => it !== undefined).map(it => it as ApiNamedReference)
+            )
+          }
+          else if (["keywords"].indexOf(fieldName) !== -1) {
             newSkill[fieldName] = new ApiStringListUpdate(value.split(";").map(it => it.trim()))
+          } else if (fieldName === "occupations") {
+            jobcodes.push(...value.split(";").map(it => it.trim()))
+          } else if (fieldName === "alignmentUrl") {
+            alignmentHolder.id = value.trim()
+          } else if (fieldName === "alignmentName") {
+            alignmentHolder.name = value.trim()
           } else {
             newSkill[fieldName] = value
           }
         }
       })
 
+      if (jobcodes.length > 0) {
+        newSkill.occupations = new ApiStringListUpdate(jobcodes)
+      }
+
+      if (alignmentHolder.id || alignmentHolder.name) {
+        newSkill.alignments = new ApiReferenceListUpdate([new ApiNamedReference(alignmentHolder)])
+      }
+
       return newSkill
     }).map((it: IRichSkillUpdate) => new ApiSkillUpdate(it))
     return skillUpdates
+  }
+
+  private initializeMapping(): void {
+    const mappings: {[s: string]: string} = {}
+    this.uploadedHeaders().forEach(it => {
+      const fieldName = importSkillHeadersReverse[it.toLowerCase()]
+      if (fieldName) {
+        mappings[it] = fieldName
+      }
+    })
+
+    this.handleMappingChanged(mappings)
   }
 
   private auditRecords(): void {
@@ -307,5 +380,6 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     })
 
   }
+
 }
 

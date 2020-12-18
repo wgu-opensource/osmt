@@ -30,7 +30,7 @@
         <div class="m-fieldMapText">{{head}}</div>
       </th>
       <td scope="row">
-        <app-field-mapping-select [data]="head" (mappingChanged)="handleMappingChanged($event)"></app-field-mapping-select>
+        <app-field-mapping-select [value]="currentMappings[head]" [data]="head" (mappingChanged)="handleMappingChanged($event)"></app-field-mapping-select>
       </td>
     </tr>
   </tbody>

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {importSkillHeaders} from "./batch-import.component";
+import {importSkillHeaderOrder, importSkillHeaders} from "./batch-import.component";
 
 
 interface MappingChanged {
@@ -16,7 +16,7 @@ export class FieldMappingTableComponent implements OnInit {
   @Input() uploadedHeaders: string[] = []
   @Output() fieldMappingChanged = new EventEmitter<{[p: string]: string}>()
 
-  currentMappings: {[p: string]: string} = {}
+  @Input() currentMappings: {[p: string]: string} = {}
 
   ngOnInit(): void {
   }
@@ -39,7 +39,7 @@ export class FieldMappingTableComponent implements OnInit {
     <div class="m-select m-select-fieldMap">
       <select class="m-select-x-select" (change)="handleChange($event)">
         <option value="">Select Property</option>
-        <option *ngFor="let item of headers | keyvalue" [value]="item.key">{{item.value}}</option>
+        <option *ngFor="let item of headers" [value]="item.field" [attr.selected]="value === item.field ? '' : null">{{item.label}}</option>
         <option value="">Do not Import</option>
       </select>
       <div class="m-select-x-icon">
@@ -53,11 +53,11 @@ export class FieldMappingTableComponent implements OnInit {
 export class FieldMappingSelectComponent {
 
   @Input() data: string = ""
-
+  @Input() value: string = ""
   @Output() mappingChanged = new EventEmitter<MappingChanged>()
 
-  get headers(): any {
-    return importSkillHeaders
+  get headers(): {field: string, label: string}[] {
+    return importSkillHeaderOrder
   }
 
   handleChange($event: Event): void {

@@ -169,7 +169,18 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   }
 
   handleClickCancel(): boolean {
-    this.location.back()
+    const newStep = this.currentStep - 1
+    switch (this.currentStep) {
+      case ImportStep.FieldMapping:
+      case ImportStep.ReviewRecords: {
+        this.currentStep -= 1
+        break
+      }
+      case ImportStep.UploadFile:
+      default:
+        this.location.back()
+        break
+    }
     return false
   }
 

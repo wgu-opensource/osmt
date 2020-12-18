@@ -2,12 +2,12 @@
 
   <div class="l-container l-container-mobile">
 
-    <div class="t-margin-small t-margin-bottom">
+    <div *ngIf="!isSuccessStep()" class="t-margin-small t-margin-bottom">
       <!--{{render '@m-buttontext&#45;&#45;with-icon'}}-->
       <button class="m-buttonText" (click)="handleClickCancel()">
           <span class="m-buttonText-x-icon">
               <svg class="t-icon" aria-hidden="true">
-                  <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
+                  <use xlink:href="/assets/images/svg-defs.svg#icon-back"></use>
               </svg>
           </span>
         <span class="m-buttonText-x-text">Back</span>

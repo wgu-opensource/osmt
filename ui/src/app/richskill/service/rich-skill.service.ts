@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core"
 import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {Observable} from "rxjs"
-import {ApiSkill, ApiSortOrder, ISkill} from "../ApiSkill"
+import {ApiAuditLog, ApiSkill, ApiSortOrder, IAuditLog, ISkill} from "../ApiSkill"
 import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate"
@@ -155,5 +155,17 @@ export class RichSkillService extends AbstractService {
       this.bulkStatusChange("api/skills/publish", apiSearch, newStatus, filterByStatuses, collectionUuid),
       pollIntervalMs
     )
+  }
+
+  auditLog(
+    skillUuid?: string
+  ): Observable<ApiAuditLog[]> {
+    return this.get<IAuditLog[]>({
+      path: `${this.serviceUrl}/${skillUuid}/log`
+    })
+      .pipe(share())
+      .pipe(map(({body, headers}) => {
+        return body?.map(it => new ApiAuditLog(it)) || []
+      }))
   }
 }

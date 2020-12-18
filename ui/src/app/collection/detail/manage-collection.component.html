@@ -82,6 +82,14 @@
         (pageClicked)="handlePageClicked($event)"
       ></app-pagination>
     </ng-template>
+
+    <div *ngIf="collection" class="t-padding-medium t-padding-top">
+      <app-audit-log
+        [collectionUuid]="collection.uuid"
+        closedLabel="View Audit Log"
+        openLabel="Hide Audit Log">
+      </app-audit-log>
+    </div>
   </div>
 
   <div *ngIf="actionsVisible()" class="l-stickyBar-x-bar t-padding-medium t-padding-top">

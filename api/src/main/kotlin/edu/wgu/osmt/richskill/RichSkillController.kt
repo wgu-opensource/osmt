@@ -179,7 +179,7 @@ class RichSkillController @Autowired constructor(
     fun skillAuditLog(
         @PathVariable uuid: String
     ): HttpEntity<List<AuditLog>> {
-        val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateAsc.apiValue).sort)
+        val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateDesc.apiValue).sort)
 
         val skill = richSkillRepository.findByUUID(uuid)
 

@@ -37,6 +37,14 @@
             ></app-formfield-text>
 
           </div>
+
+          <div class="t-margin-medium t-margin-top" *ngIf="this.collectionUuid">
+            <app-audit-log [collectionUuid]="this.collectionUuid"
+                           closedLabel="View Audit Log"
+                           openLabel="Hide Audit Log">
+            </app-audit-log>
+          </div>
+
         </div>
 
         <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">

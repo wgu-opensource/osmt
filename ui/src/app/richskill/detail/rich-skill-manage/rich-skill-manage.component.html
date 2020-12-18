@@ -13,6 +13,14 @@
         [archiveDate]="getArchivedDate()"
         [publishDate]="getPublishedDate()"
       ></app-detail-card>
+
+      <div *ngIf="uuidParam" class="t-margin-medium t-margin-top">
+        <app-audit-log
+          [skillUuid]="uuidParam"
+          closedLabel="View Audit Log"
+          openLabel="Hide Audit Log">
+        </app-audit-log>
+      </div>
     </div>
 
 

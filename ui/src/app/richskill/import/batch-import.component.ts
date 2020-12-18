@@ -206,15 +206,29 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     return true
   }
 
+  handleFileDrop($event: DragEvent): boolean {
+    if (($event.dataTransfer?.files?.length ?? 0) > 0) {
+      this.changeFile($event.dataTransfer?.files[0])
+    }
+    return false
+  }
+  handleFileDrag($event: DragEvent): boolean {
+    $event.preventDefault()
+    return false
+  }
+
   handleFileChange($event: Event): void {
-    if (this.currentStep !== ImportStep.UploadFile)  {
+    if (this.currentStep !== ImportStep.UploadFile) {
       this.resetState()
     }
 
     const target = $event.target as HTMLInputElement
-
     if (target.files && target.files.length > 0) {
-      const file = target.files[0]
+      this.changeFile(target.files[0])
+    }
+  }
+
+  changeFile(file: any): void {
 
       this.uploadedFile = file.name
 
@@ -231,7 +245,6 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
           this.parseResults = results
         }
       })
-    }
   }
 
   get uploadedFileCount(): number {
@@ -367,5 +380,6 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     })
 
   }
+
 }
 

@@ -49,7 +49,8 @@
     <!-- STEP 1: Upload File -->
     <ng-template [ngIf]="isUploadStep()">
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
-      <div class="m-dragDrop" [class.m-dragDrop-is-error]="uploadedFileError">
+        <div class="m-dragDrop" [class.m-dragDrop-is-error]="uploadedFileError"
+             (drop)="handleFileDrop($event)" (dragover)="handleFileDrag($event)">
         <label for="dragdrop">
           <span class="m-dragDrop-x-spinner"></span>
           <span class="m-dragDrop-x-icon">

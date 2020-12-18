@@ -21,6 +21,7 @@ import java.time.LocalDateTime
  * Also corresponds to `SkillSummary` API response object
  */
 @Document(indexName = "richskill_v1", createIndex = true, versionType = VersionType.EXTERNAL)
+@Setting(settingPath = "/elasticsearch/english_stemmer.json")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class RichSkillDoc(
     @Field(name = "db_id")
@@ -39,7 +40,7 @@ data class RichSkillDoc(
     val uri: String,
 
     @MultiField(
-        mainField = Field(type = Text),
+        mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "keyword", type = Keyword)
@@ -54,7 +55,7 @@ data class RichSkillDoc(
 
     @Nullable
     @MultiField(
-        mainField = Field(type = Text),
+        mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "keyword", type = Keyword)]
@@ -64,7 +65,7 @@ data class RichSkillDoc(
 
     @Nullable
     @MultiField(
-        mainField = Field(type = Text),
+        mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "keyword", type = Keyword)]

@@ -2,10 +2,8 @@ package edu.wgu.osmt.elasticsearch
 
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
-import edu.wgu.osmt.api.model.ApiNamedReference
-import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.CollectionSortEnum
-import edu.wgu.osmt.api.model.SkillSortEnum
+import edu.wgu.osmt.api.GeneralApiException
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
@@ -160,6 +158,24 @@ class SearchController @Autowired constructor(
         val searchResults = keywordEsRepo.typeAheadSearch(query, keywordType)
 
         return ResponseEntity.status(200).body(searchResults.map { ApiNamedReference.fromKeyword(it.content) }.toList())
+    }
+
+    @PostMapping(RoutePaths.SEARCH_SIMILAR_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun searchSimilarSkills(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<ApiSkillSummary>> {
+        val hits = richSkillEsRepo.findSimilar(apiSimilaritySearch).toList()
+        return ResponseEntity.status(200).body(hits.map{ApiSkillSummary.fromDoc(it.content)})
+    }
+
+    @PostMapping(RoutePaths.SEARCH_SIMILARITIES, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun similarSkillWarnings(@RequestBody(required = true) similarities: Array<ApiSimilaritySearch>): HttpEntity<List<Boolean>> {
+        val arrayLimit = 100
+        if (similarities.count() > arrayLimit){
+            throw GeneralApiException("Request contained more than $arrayLimit objects", HttpStatus.BAD_REQUEST)
+        }
+        val hits = similarities.map{richSkillEsRepo.findSimilar(it).count() > 0}
+        return ResponseEntity.status(200).body(hits)
     }
 }
 

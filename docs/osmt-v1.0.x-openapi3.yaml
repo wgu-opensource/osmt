@@ -106,6 +106,39 @@ paths:
                 items:
                   $ref: '#/components/schemas/SkillSummary'
 
+  /api/search/skills/similarities:
+    post:
+      tags:
+        - Search
+      summary: Check skill statements for similar existing skills
+      description: Returns array of boolean values that signify if a duplicate is found for a statement in the request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Similarity'
+
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: boolean
+
 
   /api/skills:
     get:

@@ -600,7 +600,7 @@ paths:
           type: string
     get:
       tags:
-        - Skills
+        - Collections
       summary: Retrieve collection log
       description: Retrieve the audit log entries of a collection
       responses:

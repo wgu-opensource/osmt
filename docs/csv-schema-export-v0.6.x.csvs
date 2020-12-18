@@ -4,21 +4,21 @@ version 1.1
 @ignoreColumnNameCase
 
 Canonical URL:          notEmpty
-Skill Name:             notEmpty
+RSD Name:               notEmpty
 Skill Statement:        notEmpty
-Skill Category:         @optional
+Category:               @optional
 Author:                 @optional
 Collections:            @optional   // multiple items can be separated by ";"
 Keywords:               @optional   // multiple items can be separated by ";"
-Major Occupations:      @optional   // multiple items can be separated by ";"
-Minor Occupations:      @optional   // multiple items can be separated by ";"
+Occupation Major Groups:      @optional   // multiple items can be separated by ";"
+Occupation Minor Groups:      @optional   // multiple items can be separated by ";"
 Broad Occupations:      @optional   // multiple items can be separated by ";"
 Detailed Occupations:   @optional   // multiple items can be separated by ";"
-Job Roles:              @optional   // multiple items can be separated by ";"
+O*Net Job Codes:        @optional   // multiple items can be separated by ";"
 Standards:              @optional   // multiple items can be separated by ";"
 Certifications:         @optional   // multiple items can be separated by ";"
 Employers:              @optional   // multiple items can be separated by ";"
-Alignment Title:        @optional
-Alignment:              regex("^http") @optional
+Alignment Name:         @optional
+Alignment URL:          regex("^http") @optional
 
 

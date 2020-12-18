@@ -2,12 +2,12 @@
 
   <div class="l-container l-container-mobile">
 
-    <div class="t-margin-small t-margin-bottom">
+    <div *ngIf="!isSuccessStep()" class="t-margin-small t-margin-bottom">
       <!--{{render '@m-buttontext&#45;&#45;with-icon'}}-->
       <button class="m-buttonText" (click)="handleClickCancel()">
           <span class="m-buttonText-x-icon">
               <svg class="t-icon" aria-hidden="true">
-                  <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
+                  <use xlink:href="/assets/images/svg-defs.svg#icon-back"></use>
               </svg>
           </span>
         <span class="m-buttonText-x-text">Back</span>
@@ -49,7 +49,8 @@
     <!-- STEP 1: Upload File -->
     <ng-template [ngIf]="isUploadStep()">
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
-      <div class="m-dragDrop" [class.m-dragDrop-is-error]="uploadedFileError">
+        <div class="m-dragDrop" [class.m-dragDrop-is-error]="uploadedFileError"
+             (drop)="handleFileDrop($event)" (dragover)="handleFileDrag($event)">
         <label for="dragdrop">
           <span class="m-dragDrop-x-spinner"></span>
           <span class="m-dragDrop-x-icon">
@@ -104,10 +105,10 @@
         <app-accordian closedLabel="Property Definitions" openLabel="Property Definitions">
           <div class="m-skillBackground l-inset t-margin-small t-margin-top">
             <p><strong>RSD Name (required):</strong> The name of the rich skill descriptor — for example, Policies and Procedures.</p>
+            <p><strong>Author:</strong> The individual or organization primarily responsible for the content of this RSD. Note: Author may not appear in the list of mapped fields, depending on your organization's settings.</p>
             <p><strong>Skill Statement (required):</strong> A description of the applied capabilities and/or behaviors of an individual for a given task, occupation, or need.</p>
             <p><strong>Category:</strong> An industry-recognized, general term that represents a broad group of related RSDs.</p>
             <p><strong>Keywords:</strong> Related terms that help users search for and find an RSD, separated by a semicolon.</p>
-            <p><strong>Author:</strong> The individual or organization primarily responsible for the content of this RSD. Note: Author may not appear in the list of mapped fields, depending on your organization's settings.</p>
             <p><strong>Standards:</strong> Names of standards that define skill mastery, sourced from industry-recognized frameworks.</p>
             <p><strong>Certifications:</strong> Related academic and professional credentials that support career advancement.</p>
             <p><strong>Occupations:</strong> Related job codes from the U.S. Bureau of Labor Statistics (BLS) or the Occupational Information Network (O*NET), separated by a semicolon.</p>
@@ -122,6 +123,7 @@
 
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
         <app-field-mapping-table
+          [currentMappings]="fieldMappings"
           [uploadedHeaders]="uploadedHeaders()"
           (fieldMappingChanged)="handleMappingChanged($event)"
         ></app-field-mapping-table>

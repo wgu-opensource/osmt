@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
+import java.time.LocalDateTime
 
 @Controller
 @Transactional
@@ -143,7 +144,6 @@ class SearchController @Autowired constructor(
         @RequestParam(required = true) query: String
     ): HttpEntity<List<JobCode>> {
         val searchResults = jobCodeEsRepo.typeAheadSearch(query)
-
         return ResponseEntity.status(200).body(searchResults.map { it.content }.toList())
     }
 

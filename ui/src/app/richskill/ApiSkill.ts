@@ -18,6 +18,19 @@ export class ApiNamedReference implements INamedReference {
     this.name = reference.name
   }
 
+  static fromString(textValue: string): ApiNamedReference | undefined {
+    const val: string = textValue.trim()
+    if (val.length < 1) {
+      return undefined
+    }
+
+    if (val.indexOf("://") !== -1) {
+      return new ApiNamedReference({id: val})
+    } else {
+      return new ApiNamedReference({name: val})
+    }
+  }
+
   equals(other: ApiNamedReference): boolean {
     return this.id === other.id && this.name === other.name
   }
@@ -127,3 +140,40 @@ export enum ApiSortOrder {
   NameDesc = "name.desc"
 }
 
+
+export enum AuditOperationType {
+  Insert = "Insert",
+  Update = "Update",
+  PublishStatusChange = "PublishStatusChange"
+}
+
+export interface IChange {
+  fieldName: string
+  old: string
+  new: string
+}
+
+export interface IAuditLog {
+  creationDate: string
+  operationType: AuditOperationType
+  user: string
+  changedFields: IChange[]
+}
+
+export class ApiAuditLog {
+  creationDate: Date
+  operationType: AuditOperationType
+  user: string
+  changedFields: IChange[]
+
+  constructor({creationDate, operationType, user, changedFields}: IAuditLog) {
+    this.creationDate = new Date(creationDate)
+    this.operationType = operationType
+    this.user = user
+    this.changedFields = changedFields
+  }
+  
+  isPublishStatusChange(): boolean {
+    return this.operationType === AuditOperationType.PublishStatusChange
+  }
+}

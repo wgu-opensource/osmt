@@ -1,12 +1,11 @@
-import {Injectable} from "@angular/core";
-import {AbstractService} from "../../abstract.service";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../auth/auth-service";
-import {Observable} from "rxjs";
-import {ApiNamedReference, ApiSkill, INamedReference, ISkill, KeywordType} from "../ApiSkill";
-import {map} from "rxjs/operators";
-import {ApiSearch} from "./rich-skill-search.service";
-import {ApiJobCode, IJobCode} from "../../job-codes/Jobcode";
+import {Injectable} from "@angular/core"
+import {AbstractService} from "../../abstract.service"
+import {HttpClient} from "@angular/common/http"
+import {AuthService} from "../../auth/auth-service"
+import {Observable} from "rxjs"
+import {ApiNamedReference, INamedReference, KeywordType} from "../ApiSkill"
+import {map} from "rxjs/operators"
+import {ApiJobCode, IJobCode} from "../../job-codes/Jobcode"
 
 @Injectable({
   providedIn: "root"

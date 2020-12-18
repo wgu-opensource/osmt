@@ -1,4 +1,4 @@
-import {Component, Inject, LOCALE_ID} from "@angular/core"
+import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
 import {RichSkillService} from "../../service/rich-skill.service"
 import {ActivatedRoute} from "@angular/router"
 import {AbstractRichSkillDetailComponent} from "../AbstractRichSkillDetailComponent"
@@ -10,7 +10,7 @@ import {Title} from "@angular/platform-browser"
   selector: "app-rich-skill-manage",
   templateUrl: "./rich-skill-manage.component.html"
 })
-export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
+export class RichSkillManageComponent extends AbstractRichSkillDetailComponent implements OnInit {
 
   constructor(
     richSkillService: RichSkillService,
@@ -20,6 +20,11 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
   ) {
     super(richSkillService, route, locale)
     titleService.setTitle("Manage Rich Skill Descriptor")
+  }
+
+
+  ngOnInit(): void {
+    super.ngOnInit()
   }
 
   getCardFormat(): IDetailCardSectionData[] {

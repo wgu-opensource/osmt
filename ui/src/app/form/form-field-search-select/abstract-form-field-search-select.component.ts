@@ -1,17 +1,17 @@
-import {Component, Input, OnInit} from "@angular/core"
-import {FormField} from "../form-field.component"
+import {Component, Inject, Input, OnDestroy, OnInit} from "@angular/core"
+import {INamedReference, KeywordType} from "../../richskill/ApiSkill"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {Subscription} from "rxjs"
 import {KeywordSearchService} from "../../richskill/service/keyword-search.service"
-import {KeywordType} from "../../richskill/ApiSkill"
+import {FormField} from "../form-field.component"
 
 @Component({
-  selector: "app-form-field-search-select",
-  templateUrl: "./form-field-search-select.component.html"
+  selector: "app-abstract-form-field-search-select",
+  template: ``
 })
-export class FormFieldSearchSelectComponent extends FormField implements OnInit {
+export abstract class AbstractFormFieldSearchSelectComponent extends FormField implements OnInit, OnDestroy {
 
-  @Input() type!: KeywordType
+  @Input() keywordType!: KeywordType
 
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)
   iconDismiss = SvgHelper.path(SvgIcon.DISMISS)
@@ -20,8 +20,8 @@ export class FormFieldSearchSelectComponent extends FormField implements OnInit 
   currentlyLoading = false
   results!: string[] | undefined
 
-  constructor(
-    private searchService: KeywordSearchService
+  protected constructor(
+    protected searchService: KeywordSearchService
   ) {
     super()
   }
@@ -30,31 +30,32 @@ export class FormFieldSearchSelectComponent extends FormField implements OnInit 
     this.control.valueChanges.subscribe(next => { this.performSearch(next) })
   }
 
+  ngOnDestroy(): void {
+    this.queryInProgress?.unsubscribe()
+  }
+
+  abstract selectResult(result: string): void
+  abstract isResultSelected(result: string): boolean
+
   get currentCategory(): string {
     return this.control.value
   }
 
   performSearch(text: string): void {
+    if (!text || !this.keywordType) {
+      return // no search to perform
+    }
     this.currentlyLoading = true
 
     if (this.queryInProgress) {
       this.queryInProgress.unsubscribe() // unsub to existing query first
     }
 
-    this.queryInProgress = this.searchService.searchKeywords(this.type, text)
+    this.queryInProgress = this.searchService.searchKeywords(this.keywordType, text)
       .subscribe(searchResults => {
         this.results = searchResults.filter(r => !!r && !!r.name).map(r => r.name as string)
         this.currentlyLoading = false
       })
-  }
-
-  selectResult(result: string): void {
-    this.control.setValue(result, {emitEvent: false})
-    this.results = undefined
-  }
-
-  isResultSelected(result: string): boolean {
-    return this.valueFromControl === result
   }
 
   get showResults(): boolean {

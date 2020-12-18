@@ -57,53 +57,62 @@
           placeholder="Health Education"
           [includePlaceholder]="!this.skillUuid"
           helpMessage="An industry-recognized, general term that represents a broad group of related RSDs."
-          type="category"
+          [keywordType]="keywordType.Category"
         ></app-form-field-search-select>
 
-        <app-formfield-textarea
+        <app-form-field-search-multi-select
           [control]="skillForm.controls.keywords"
           label="Keywords"
           name="keywords"
           placeholder="Health Education; Education Program Development; Heath Instruction; Health Outcome Improvement; Health Education Design"
           [includePlaceholder]="!this.skillUuid"
           helpMessage="Related terms that help users search for and find an RSD."
-        ></app-formfield-textarea>
+          [keywordType]="keywordType.Keyword"
+          (currentSelection)="handleKeywordTypeAheadResults($event)"
+        ></app-form-field-search-multi-select>
 
-        <app-formfield-textarea
+        <app-form-field-search-multi-select
           [control]="skillForm.controls.standards"
           label="Standards"
           name="standards"
           placeholder="Health Education Standards"
           [includePlaceholder]="!this.skillUuid"
           helpMessage="Names of professional standards that define skill mastery, sourced from industry-recognized frameworks."
-        ></app-formfield-textarea>
+          [keywordType]="keywordType.Standard"
+          (currentSelection)="handleStandardsTypeAheadResults($event)"
+        ></app-form-field-search-multi-select>
 
-        <app-formfield-textarea
+        <app-form-field-search-multi-select
           [control]="skillForm.controls.certifications"
           label="Certifications"
           name="certifications"
           placeholder="Health Education Specialist (Society for Public Health Education)"
           [includePlaceholder]="!this.skillUuid"
           helpMessage="Related academic and professional certifications that support career advancement."
-        ></app-formfield-textarea>
+          [keywordType]="keywordType.Certification"
+          (currentSelection)="handleCertificationTypeAheadResults($event)"
+        ></app-form-field-search-multi-select>
 
-        <app-formfield-textarea
+        <app-form-field-search-select-jobcode
           [control]="skillForm.controls.occupations"
           label="Occupations"
           name="occupations"
           placeholder="29-1071; 11-9111; 25-1072; 29-1141; 29-1171"
           [includePlaceholder]="!this.skillUuid"
           helpMessage="Related job codes from the U.S. Bureau of Labor Statistics (BLS) or the Occupational Information Network (O*NET)."
-        ></app-formfield-textarea>
+          (currentSelection)="handleJobCodesTypeAheadResults($event)"
+        ></app-form-field-search-select-jobcode>
 
-        <app-formfield-text
+        <app-form-field-search-multi-select
           [control]="skillForm.controls.employers"
           label="Employers"
           name="employers"
           placeholder="Lakeview Hospital"
           [includePlaceholder]="!this.skillUuid"
           helpMessage="Employers who require this skill for a given job. Employers are not visible in the public view of an RSD."
-        ></app-formfield-text>
+          [keywordType]="keywordType.Employer"
+          (currentSelection)="handleEmployersTypeAheadResults($event)"
+        ></app-form-field-search-multi-select>
 
         <app-formfield-text
           [control]="skillForm.controls.alignmentText"

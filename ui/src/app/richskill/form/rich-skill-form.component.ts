@@ -1,18 +1,18 @@
 import {Component, Injectable, OnInit} from "@angular/core"
-import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Location} from "@angular/common";
-import {ActivatedRoute, ActivatedRouteSnapshot, CanDeactivate, Router, RouterStateSnapshot} from "@angular/router";
-import {RichSkillService} from "../service/rich-skill.service";
-import {Observable} from "rxjs";
-import {ApiNamedReference, INamedReference, ApiSkill, IUuidReference} from "../ApiSkill";
-import {ApiStringListUpdate, IStringListUpdate, ApiSkillUpdate, ApiReferenceListUpdate} from "../ApiSkillUpdate";
-import {AppConfig} from "../../app.config";
-import {urlValidator} from "../../validators/url.validator";
-import { IJobCode } from "src/app/job-codes/Jobcode";
-import {ToastService} from "../../toast/toast.service";
-import {Title} from "@angular/platform-browser";
-import {HasFormGroup} from "../../core/abstract-form.component";
-import {notACopyValidator} from "../../validators/not-a-copy.validator";
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms"
+import {Location} from "@angular/common"
+import {ActivatedRoute, ActivatedRouteSnapshot, CanDeactivate, Router, RouterStateSnapshot} from "@angular/router"
+import {RichSkillService} from "../service/rich-skill.service"
+import {Observable} from "rxjs"
+import {ApiNamedReference, INamedReference, ApiSkill, KeywordType, IUuidReference} from "../ApiSkill"
+import {ApiStringListUpdate, IStringListUpdate, ApiSkillUpdate, ApiReferenceListUpdate} from "../ApiSkillUpdate"
+import {AppConfig} from "../../app.config"
+import {urlValidator} from "../../validators/url.validator"
+import { IJobCode } from "src/app/job-codes/Jobcode"
+import {ToastService} from "../../toast/toast.service"
+import {Title} from "@angular/platform-browser"
+import {HasFormGroup} from "../../core/abstract-form.component"
+import {notACopyValidator} from "../../validators/not-a-copy.validator"
 
 
 @Component({
@@ -26,7 +26,17 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
 
   skillLoaded: Observable<ApiSkill> | null = null
   skillSaved: Observable<ApiSkill> | null = null
-  isDuplicating: boolean = false
+  isDuplicating = false
+
+  // Type ahead storage to append to the field on submit
+  selectedStandards: string[] = []
+  selectedJobCodes: string[] = []
+  selectedKeywords: string[] = []
+  selectedCertifications: string[] = []
+  selectedEmployers: string[] = []
+
+  // This allows this enum's constants to be used in the template
+  keywordType = KeywordType
 
   constructor(
     private fb: FormBuilder,
@@ -136,6 +146,9 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     const update = new ApiSkillUpdate({})
     const formValue = this.skillForm.value
 
+    // pre-populate type-ahead values into field
+    this.populateTypeAheadFieldsWithResults()
+
     const inputName = this.nonEmptyOrNull(formValue.skillName)
     if (inputName && (this.isDuplicating || this.existingSkill?.skillName !== inputName)) {
       update.skillName = inputName
@@ -177,6 +190,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
         update[fieldName] = diff
       }
     }
+
     _handle_ref_list(formValue.standards, "standards", this.existingSkill?.standards)
     _handle_ref_list(formValue.certifications, "certifications", this.existingSkill?.certifications)
     _handle_ref_list(formValue.employers, "employers", this.existingSkill?.employers)
@@ -249,7 +263,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   }
 
   stringFromJobCode(jobcode?: IJobCode): string {
-    return jobcode?.name ?? jobcode?.code ?? ""
+    return jobcode?.code ?? ""
   }
 
   setSkill(skill: ApiSkill): void {
@@ -334,6 +348,35 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   scrollToTop(): boolean {
     this.focusFormField("skillName")
     return false
+  }
+
+  populateTypeAheadFieldsWithResults(): void {
+    const formValue = this.skillForm.value
+    formValue.standards = [formValue.standards, ...this.selectedStandards].join("; ")
+    formValue.occupations = [formValue.occupations, ...this.selectedJobCodes].join("; ")
+    formValue.keywords = [formValue.keywords, ...this.selectedKeywords].join("; ")
+    formValue.certifications = [formValue.certifications, ...this.selectedCertifications].join("; ")
+    formValue.employers = [formValue.employers, ...this.selectedEmployers].join("; ")
+}
+
+  handleStandardsTypeAheadResults(standards: string[]): void {
+    this.selectedStandards = standards
+  }
+
+  handleJobCodesTypeAheadResults(jobCodes: string[]): void {
+    this.selectedJobCodes = jobCodes
+  }
+
+  handleKeywordTypeAheadResults(keywords: string[]): void {
+    this.selectedKeywords = keywords
+  }
+
+  handleCertificationTypeAheadResults(certifications: string[]): void {
+    this.selectedCertifications = certifications
+  }
+
+  handleEmployersTypeAheadResults(employers: string[]): void {
+    this.selectedEmployers = employers
   }
 }
 

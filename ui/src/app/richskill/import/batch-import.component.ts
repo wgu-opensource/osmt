@@ -6,7 +6,7 @@ import {ToastService} from "../../toast/toast.service";
 import {Location} from "@angular/common";
 import {Papa, ParseResult} from "ngx-papaparse";
 import {ApiNamedReference} from "../ApiSkill"
-import {ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate";
+import {ApiReferenceListUpdate, ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate";
 import {Observable} from "rxjs";
 import {PaginatedSkills} from "../service/rich-skill-search.service";
 
@@ -231,9 +231,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   }
 
   uploadedHeaders(): string[] {
-    const data = this.parseResults?.data
-    if (!data || data.length < 1) { return [] }
-    return Object.keys(data[0])
+    return this.parseResults?.meta.fields ?? []
   }
 
   handleMappingChanged(fieldMappings: {[p: string]: string}): void {
@@ -276,6 +274,8 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
       // tslint:disable-next-line:no-any
       const newSkill: {[s: string]: any} = {}
 
+      const alignmentHolder: {[s: string]: string} = {}
+
       Object.keys(row).forEach(uploadedKey => {
         const fieldName = this.fieldMappings?.[uploadedKey]
         const value: string = row[uploadedKey].trim()
@@ -284,13 +284,25 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
           if (["author"].indexOf(fieldName) !== -1) {
             newSkill[fieldName] = new ApiNamedReference({name: value})
           }
-          else if (fieldName.endsWith("s")) {
+          else if (["standards", "certifications", "employers"].indexOf(fieldName) !== -1) {
+            newSkill[fieldName] = new ApiReferenceListUpdate(
+              value.split(";").map(it => ApiNamedReference.fromString(it)).filter(it => it !== undefined).map(it => it as ApiNamedReference)
+            )
+          }
+          else if (["keywords", "occupations"].indexOf(fieldName) !== -1) {
             newSkill[fieldName] = new ApiStringListUpdate(value.split(";").map(it => it.trim()))
+          } else if (fieldName === "alignmentUrl") {
+            alignmentHolder.id = value.trim()
+          } else if (fieldName === "alignmentName") {
+            alignmentHolder.name = value.trim()
           } else {
             newSkill[fieldName] = value
           }
         }
       })
+      if (alignmentHolder.id || alignmentHolder.name) {
+        newSkill.alignments = [alignmentHolder]
+      }
 
       return newSkill
     }).map((it: IRichSkillUpdate) => new ApiSkillUpdate(it))

@@ -113,19 +113,6 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     return textValue.split(";").map(it => it.trim())
   }
 
-  parseAuthor(textValue: string): ApiNamedReference | undefined {
-    const val: string = textValue.trim()
-    if (val.length < 1) {
-      return undefined
-    }
-
-    if (val.indexOf("://") !== -1) {
-      return new ApiNamedReference({id: val})
-    } else {
-      return new ApiNamedReference({name: val})
-    }
-  }
-
   nonEmptyOrNull(s?: string): string | undefined {
     const val: string | undefined = s?.trim()
     if (val === undefined) { return undefined }
@@ -147,7 +134,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     }
 
     if (AppConfig.settings.editableAuthor) {
-      const author = this.parseAuthor(formValue.author)
+      const author = ApiNamedReference.fromString(formValue.author)
       if (!this.existingSkill || this.isDuplicating || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
           update.author = author
       }

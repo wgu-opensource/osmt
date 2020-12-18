@@ -18,6 +18,19 @@ export class ApiNamedReference implements INamedReference {
     this.name = reference.name
   }
 
+  static fromString(textValue: string): ApiNamedReference | undefined {
+    const val: string = textValue.trim()
+    if (val.length < 1) {
+      return undefined
+    }
+
+    if (val.indexOf("://") !== -1) {
+      return new ApiNamedReference({id: val})
+    } else {
+      return new ApiNamedReference({name: val})
+    }
+  }
+
   equals(other: ApiNamedReference): boolean {
     return this.id === other.id && this.name === other.name
   }

@@ -1,6 +1,5 @@
-import {Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output} from "@angular/core"
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
-import {OccupationsFormatter} from "../../job-codes/Jobcode"
 import {ApiSkillSummary} from "../ApiSkillSummary"
 import {PublishStatus} from "../../PublishStatus"
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
@@ -38,7 +37,9 @@ export class SkillListRowComponent implements OnInit {
   }
 
   getFormattedOccupations(): string {
-    return new OccupationsFormatter(this.skill?.occupations ?? []).detailedGroups()
+    console.log(`\n\n${JSON.stringify(this.skill)}\n\n`)
+    console.log(`\n\n${this.skill?.occupations?.map(o => JSON.stringify(o)).join("\n")}`)
+    return (this.skill?.occupations?.filter(o => !!o.detailed).map(o => o.detailed) ?? []).join("; ")
   }
 
   selected(): void {

@@ -5,11 +5,12 @@ import {ApiSkill, ApiUuidReference, INamedReference} from "../ApiSkill"
 import {IDetailCardSectionData} from "../../detail-card/section/section.component"
 import {Observable} from "rxjs"
 import {PublishStatus} from "../../PublishStatus"
-import {QuickLinksHelper} from "../../core/quick-links-helper";
-import {dateformat} from "../../core/DateHelper";
+import {QuickLinksHelper} from "../../core/quick-links-helper"
+import {dateformat} from "../../core/DateHelper"
 
-@Component({template: ""})
+@Component({template: ``})
 export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper implements OnInit {
+
 
   uuidParam: string | null
   richSkill: ApiSkill | null = null

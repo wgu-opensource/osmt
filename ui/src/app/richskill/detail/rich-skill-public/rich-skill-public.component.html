@@ -41,3 +41,18 @@
     </ng-template>
   </ng-template>
 </ng-template>
+
+<!-- This is injected into the detail card occupations section -->
+<ng-template #occupationsTemplate>
+  <div>
+    <app-occupations-card-section
+      [codes]="this.richSkill?.occupations"
+      [isCollapsed]="isOccupationsCollapsed"
+    ></app-occupations-card-section>
+    <div class="t-margin-extraSmall t-margin-top">
+      <button class="t-link" type="button" (click)="isOccupationsCollapsed = !isOccupationsCollapsed">
+        <span>View {{isOccupationsCollapsed ? "All" : "Fewer"}} Groups</span>
+      </button>
+    </div>
+  </div>
+</ng-template>

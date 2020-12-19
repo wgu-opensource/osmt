@@ -10,7 +10,7 @@
   <div class="t-margin-medium t-margin-bottom" *ngFor="let section of sections">
     <app-detail-card-section
       [data]="section"
-      *ngIf="section.bodyHtml || section.showIfEmpty"
+      *ngIf="section.bodyString || section.bodyTemplate || section.showIfEmpty"
     ></app-detail-card-section>
   </div>
 </div>

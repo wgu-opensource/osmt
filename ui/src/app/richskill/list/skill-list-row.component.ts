@@ -37,8 +37,6 @@ export class SkillListRowComponent implements OnInit {
   }
 
   getFormattedOccupations(): string {
-    console.log(`\n\n${JSON.stringify(this.skill)}\n\n`)
-    console.log(`\n\n${this.skill?.occupations?.map(o => JSON.stringify(o)).join("\n")}`)
     return (this.skill?.occupations?.filter(o => !!o.detailed).map(o => o.detailed) ?? []).join("; ")
   }
 

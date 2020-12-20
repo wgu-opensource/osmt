@@ -1,0 +1,55 @@
+<div *ngIf="isVisible" class="t-margin-small t-margin-top">
+  <!--{{render '@m-checker'}}-->
+
+  <!-- searching or results came back with no matches -->
+  <div *ngIf="isSearching || isAffirmative; else similarMatchesTmpl"
+    class="m-checker"
+       [class.m-checker-is-searching]="isSearching"
+       [class.m-checker-is-affirmative]="isAffirmative">
+    <div class="m-checker-x-spinner"></div>
+    <div class="m-checker-x-affirmative">
+      <svg>
+        <use xlink:href="/assets/images/svg-defs.svg#icon-check-outline"></use>
+      </svg>
+    </div>
+    <p *ngIf="isSearching" class="m-checker-x-message">{{searchingMessage}}</p>
+    <p *ngIf="isAffirmative" class="m-checker-x-message">{{affirmativeMessage}}</p>
+  </div>
+
+  <ng-template #similarMatchesTmpl>
+
+    <ng-template [ngIf]="hasSingleMatch" [ngIfElse]="multipleMatchesTmpl">
+      <p class="t-type-small">{{similarMessage}}</p>
+
+      <div class="t-margin-extraSmall t-margin-top" *ngFor="let skill of similarSkills.slice(0,1)">
+        <!--{{render '@m-interactivetext&#45;&#45;small-with-iconleft'}}-->
+        <a class="m-interactiveText m-interactiveText-small" routerLink="/skills/{{skill.uuid}}/manage" target="_blank">
+          <span class="m-interactiveText-x-icon">
+            <svg class="t-icon"><use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use></svg>
+          </span>
+          <span class="m-interactiveText-x-text">{{skill.skillName}}</span>
+        </a>
+      </div>
+    </ng-template>
+
+    <ng-template #multipleMatchesTmpl>
+      <app-accordian [closedLabel]="similarMessage" [openLabel]="similarMessage">
+        <div class="m-skillBackground l-inset t-margin-small t-margin-top">
+          <div class="t-margin-extraSmall t-margin-top" *ngFor="let skill of similarSkills">
+            <!--{{render '@m-interactivetext&#45;&#45;small-with-iconleft'}}-->
+            <a class="m-interactiveText m-interactiveText-small" routerLink="/skills/{{skill.uuid}}/manage" target="_blank">
+              <span class="m-interactiveText-x-icon">
+                <svg class="t-icon"><use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use></svg>
+              </span>
+              <span class="m-interactiveText-x-text">{{skill.skillName}}</span>
+            </a>
+          </div>
+
+        </div>
+      </app-accordian>
+
+    </ng-template>
+
+  </ng-template>
+</div>
+

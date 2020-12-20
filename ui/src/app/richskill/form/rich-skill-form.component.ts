@@ -66,6 +66,12 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     }
 
     this.titleService.setTitle(this.pageTitle())
+
+    this.skillForm.controls.skillStatement.valueChanges.subscribe(newStatement => {
+      if (this.searchingSimilarity !== undefined) {
+        this.searchingSimilarity = undefined
+      }
+    })
   }
 
   pageTitle(): string {

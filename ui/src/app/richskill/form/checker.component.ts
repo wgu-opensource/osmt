@@ -9,8 +9,10 @@ import {ApiSkillSummary} from "../ApiSkillSummary";
 export class CheckerComponent implements OnInit {
 
   @Input() searchingMessage = "Checking for skill statement similarity …"
-  @Input() similarMessage = "RSDs contain skill statements that are very similar to those already in the library."
-  @Input() affirmativeMessage = "No similar skill statements found in library."
+  @Input() neutralMessage = "Similarity: —"
+  @Input() similarMultipleMessage = "RSDs contain skill statements that are very similar to those already in the library."
+  @Input() similarSingleMessage = "Skill statement is very similar to one already in the library."
+  @Input() affirmativeMessage = "Skill statement OK."
   @Input() similarSkills?: ApiSkillSummary[]
   @Input() searching?: boolean
 
@@ -18,8 +20,8 @@ export class CheckerComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  get isVisible(): boolean {
-    return this.searching !== undefined
+  get isNeutral(): boolean {
+    return this.searching === undefined
   }
 
   get isSearching(): boolean {

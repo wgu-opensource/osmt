@@ -54,6 +54,7 @@
             helpMessage='A description of the applied capabilities and/or behaviors of an individual for a given task, occupation, or need. The recommended format, to support interoperability and the common use of RSDs across organizations, is a predicate and context. Optionally, a skill statement may include a subject, such as "The employee ..." '
             errorMessage="Skill statement required"
             (blur)="handleStatementBlur($event)"
+            [isWarning]="hasStatementWarning"
           ></app-formfield-textarea>
 
           <app-checker

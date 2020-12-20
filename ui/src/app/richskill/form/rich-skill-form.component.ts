@@ -380,6 +380,10 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
       this.searchingSimilarity = false
     })
   }
+
+  get hasStatementWarning(): boolean {
+    return (this.similarSkills?.length ?? -1) > 0
+  }
 }
 
 

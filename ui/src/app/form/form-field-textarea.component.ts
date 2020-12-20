@@ -16,7 +16,11 @@ import {Subject} from "rxjs";
       [required]="required"
       [name]="name"
     >
-      <div class="m-text" [class.m-text-is-error]="isError()">
+      <div class="m-text"
+           [class.m-text-is-error]="isError()"
+           [class.m-text-is-warning]="isWarning"
+      >
+
         <textarea id="formfield-{{name}}"
                   [formControl]="control" [attr.placeholder]="includePlaceholder ? placeholder : null"
                   (blur)="blur.next($event)"
@@ -27,6 +31,7 @@ import {Subject} from "rxjs";
 export class FormFieldTextArea extends FormField implements OnInit {
 
   @Output() blur = new Subject<FocusEvent>()
+  @Input() isWarning: boolean = false
 
   constructor() {
     super()

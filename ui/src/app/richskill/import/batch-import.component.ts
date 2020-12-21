@@ -49,10 +49,12 @@ export const importSkillHeadersReverse: {[p: string]: string} =
 export class AuditedImportSkill {
   skill: ApiSkillUpdate
   missing: string[]
+  similar: boolean
 
-  constructor(skill: ApiSkillUpdate, missing: string[]) {
+  constructor(skill: ApiSkillUpdate, missing: string[], similar: boolean = false) {
     this.skill = skill
     this.missing = missing
+    this.similar = similar
   }
 
   get nameMissing(): boolean { return !this.skill.skillName }
@@ -61,6 +63,9 @@ export class AuditedImportSkill {
 
   get isError(): boolean {
     return this.nameMissing || this.statementMissing
+  }
+  get isWarning(): boolean {
+    return this.similar
   }
 }
 
@@ -85,6 +90,14 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   previewSkills?: ApiSkillUpdate[]
   auditedSkills?: AuditedImportSkill[]
   importedSkills?: AuditedImportSkill[]
+
+  searchingSimilarity?: boolean
+  similarSkills?: boolean[]
+  importSimilarSkills: boolean = false
+
+  get similarSkillCount(): number {
+    return (this.similarSkills?.filter(it => it).length ?? 0)
+  }
 
   constructor(protected router: Router,
               protected richSkillService: RichSkillService,
@@ -140,7 +153,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     return this.parseResults?.data?.length ?? 0
   }
   get validCount(): number {
-    return this.auditedSkills?.filter(it => !it.isError)?.length ?? 0
+    return this.auditedSkills?.filter(it => !it.isError && (this.importSimilarSkills || !it.similar))?.length ?? 0
   }
 
   showStepLoader(): void {
@@ -356,11 +369,20 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   private auditRecords(): void {
     this.previewSkills = this.skillsFromResults()
-    this.auditedSkills = this.previewSkills.map(skill => {
-      const required = ["skillName", "skillStatement"]
-      // @ts-ignore
-      const missing = required.filter(it => skill[it] === undefined)
-      return new AuditedImportSkill(skill, missing)
+
+    this.searchingSimilarity = true
+    const statements: string[] = this.previewSkills.map(it => it.skillStatement).map(it => it ?? "")
+    this.richSkillService.similaritiesCheck(statements).subscribe(results => {
+      this.searchingSimilarity = false
+      this.similarSkills = results
+
+      this.auditedSkills = this.previewSkills?.map((skill, idx) => {
+        const required = ["skillName", "skillStatement"]
+        // @ts-ignore
+        const missing = required.filter(it => skill[it] === undefined)
+        const similar = results[idx] ?? false
+        return new AuditedImportSkill(skill, missing, similar)
+      })
     })
   }
 
@@ -369,7 +391,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
       return
     }
 
-    this.importedSkills = this.auditedSkills?.filter(it => !it.isError)
+    this.importedSkills = this.auditedSkills?.filter(it => !it.isError && (this.importSimilarSkills || !it.similar))
     const skillUpdates = this.importedSkills.map(it => it.skill)
 
     this.showStepLoader()
@@ -381,5 +403,8 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   }
 
+  handleSimilarityOk(importSimilar: boolean): void {
+    this.importSimilarSkills = importSimilar
+  }
 }
 

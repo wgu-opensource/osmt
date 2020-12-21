@@ -86,6 +86,10 @@ data class JobCode(
 
     @Field
     @Nullable
+    val detailedCode: String? = JobCodeBreakout.detailedCode(code)
+
+    @Field
+    @Nullable
     val jobRoleCode: String? = JobCodeBreakout.jobRoleCode(code)
 
     companion object {

@@ -1,5 +1,3 @@
-<div class="t-margin-medium t-margin-bottom">
-
   <div class="m-field" id="formfield-container-{{name}}">
     <label *ngIf="required" for="formfield-{{name}}">{{label}} (Required)</label>
     <label *ngIf="!required" for="formfield-{{name}}">{{label}}</label>
@@ -12,5 +10,3 @@
 
     <p *ngIf="errorMessage && isError()" class="m-field-x-error">{{errorMessage}}</p>
   </div>
-
-</div>

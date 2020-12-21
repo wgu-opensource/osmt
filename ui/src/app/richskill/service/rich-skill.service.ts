@@ -10,7 +10,7 @@ import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service"
 import {PublishStatus} from "../../PublishStatus"
 import {ApiBatchResult} from "../ApiBatchResult"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
-import {ApiSkillSummary} from "../ApiSkillSummary"
+import {ApiSkillSummary, ISkillSummary} from "../ApiSkillSummary"
 
 
 @Injectable({
@@ -161,11 +161,33 @@ export class RichSkillService extends AbstractService {
     skillUuid?: string
   ): Observable<ApiAuditLog[]> {
     return this.get<IAuditLog[]>({
-      path: `${this.serviceUrl}/${skillUuid}/log`
+      path: `${this.serviceUrl}/${skillUuid}/log`,
     })
       .pipe(share())
       .pipe(map(({body, headers}) => {
         return body?.map(it => new ApiAuditLog(it)) || []
+      }))
+  }
+
+  similarityCheck(statement: string): Observable<ApiSkillSummary[]> {
+    return this.post<ISkillSummary[]>({
+      path: "api/search/skills/similarity",
+      body: {statement}
+    })
+      .pipe(share())
+      .pipe(map(({body, headers}) => {
+        return body?.map(it => new ApiSkillSummary(it)) || []
+      }))
+  }
+
+  similaritiesCheck(statements: string[]): Observable<boolean[]> {
+    return this.post<boolean[]>({
+      path: "api/search/skills/similarities",
+      body: statements.map(statement => ({statement}))
+    })
+      .pipe(share())
+      .pipe(map(({body, headers}) => {
+        return body || []
       }))
   }
 }

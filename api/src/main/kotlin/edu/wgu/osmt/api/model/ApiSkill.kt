@@ -91,8 +91,8 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
                 listOf(
                     jobCode.majorCode?.let { ApiJobCode(code=it, name=jobCode.major, level=JobCodeLevel.Major) },
                     jobCode.minorCode?.let { ApiJobCode(code=it, name=jobCode.minor, level=JobCodeLevel.Minor) },
-                    jobCode.broadCode?.let { ApiJobCode(code=it, name=jobCode.broad, level=JobCodeLevel.Broad) }
-//                    jobCode.detailedCode?.let { ApiJobCode(code=it, name=jobCode.detailed, level=JobCodeLevel.Detailed) }
+                    jobCode.broadCode?.let { ApiJobCode(code=it, name=jobCode.broad, level=JobCodeLevel.Broad) },
+                    jobCode.detailedCode?.let { ApiJobCode(code=it, name=jobCode.detailed, level=JobCodeLevel.Detailed) }
                 ).filterNotNull()
             }.flatten().distinct()
             return rsd.jobCodes.map { jobCode ->

@@ -16,6 +16,7 @@ import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.*
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.jobcode.JobCodeRepository
+import edu.wgu.osmt.jobcode.JobCodeTable
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
@@ -46,6 +47,8 @@ interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
     fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject
 
     fun changeStatusesForTask(task: PublishTask): ApiBatchResult
+
+    fun containingJobCode(jobCode: String): SizedIterable<RichSkillDescriptorDao>
 }
 
 @Repository
@@ -80,7 +83,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         daoObject?.let { updateObject.applyToDao(it) }
 
-        val (publishStatusChanges, otherChanges) = daoObject?.toModel()?.diff(old)?.partition{it.fieldName == RichSkillDescriptor::publishStatus.name} ?: (null to null)
+        val (publishStatusChanges, otherChanges) = daoObject?.toModel()?.diff(old)
+            ?.partition { it.fieldName == RichSkillDescriptor::publishStatus.name } ?: (null to null)
 
         otherChanges?.let { it ->
             if (it.isNotEmpty())
@@ -348,5 +352,12 @@ class RichSkillRepositoryImpl @Autowired constructor(
         )
     }
 
+    override fun containingJobCode(jobCode: String): SizedIterable<RichSkillDescriptorDao> {
+        val query = RichSkillDescriptorTable.innerJoin(RichSkillJobCodes).innerJoin(JobCodeTable)
+            .slice(RichSkillDescriptorTable.columns).select {
+            JobCodeTable.code eq jobCode
+        }
+        return RichSkillDescriptorDao.wrapRows(query)
+    }
 }
 

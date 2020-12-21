@@ -1,9 +1,6 @@
 package edu.wgu.osmt.richskill
 
-import edu.wgu.osmt.BaseDockerizedTest
-import edu.wgu.osmt.HasDatabaseReset
-import edu.wgu.osmt.HasElasticsearchReset
-import edu.wgu.osmt.SpringTest
+import edu.wgu.osmt.*
 import edu.wgu.osmt.TestObjectHelpers.apiSkillUpdateGenerator
 import edu.wgu.osmt.TestObjectHelpers.assertThatKeywordMatchesNamedReference
 import edu.wgu.osmt.api.model.ApiReferenceListUpdate
@@ -409,5 +406,18 @@ class RichSkillRepositoryTest @Autowired constructor(
             assertThat(skill.publishDate).isNotNull()
             assertThat(skill.archiveDate).isNull()
         }
+    }
+
+    @Test
+    fun `should find rich skills by jobcode`(){
+        val jobCode = TestObjectHelpers.randomJobCode()
+        val skillUpdate = apiSkillUpdateGenerator().copy(occupations = ApiStringListUpdate(add = listOf(jobCode.code)))
+        val noiseSkillCount = 10
+        val noiseSkillUpdates = (1..noiseSkillCount).toList().map { apiSkillUpdateGenerator() }
+        richSkillRepository.createFromApi(noiseSkillUpdates, userString)
+        val skillDao = richSkillRepository.createFromApi(listOf(skillUpdate), userString).first()
+
+        val result = richSkillRepository.containingJobCode(jobCode.code)
+        assertThat(result.first().uuid).isEqualTo(skillDao.uuid)
     }
 }

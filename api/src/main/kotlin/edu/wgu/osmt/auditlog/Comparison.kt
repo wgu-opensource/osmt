@@ -4,10 +4,10 @@ import kotlin.reflect.*
 
 const val DELIMITER = "; "
 
-data class Comparison<R>(val fieldName: String, val function: KFunction1<R, String?>, val old: R?, val new: R) {
+data class Comparison<R>(val fieldName: String, val function: KFunction1<R, String?>, val old: R?, val new: R?) {
     fun compare(): Change? {
-        val oldValue: String? = old?.let { function.call(it) }
-        val newValue: String? = function.call(new)
+        val oldValue: String? = old?.let { function(it) }
+        val newValue: String? = new?.let { function(it) }
         return if (oldValue != newValue) {
             Change.maybeChange(fieldName, oldValue, newValue)
         } else null

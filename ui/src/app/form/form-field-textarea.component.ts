@@ -1,6 +1,7 @@
-import {Component, Input, OnInit} from "@angular/core"
+import {Component, Input, OnInit, Output} from "@angular/core"
 import {AbstractControl, FormControl} from "@angular/forms";
 import {FormField} from "./form-field.component";
+import {Subject} from "rxjs";
 
 
 @Component({
@@ -15,12 +16,22 @@ import {FormField} from "./form-field.component";
       [required]="required"
       [name]="name"
     >
-      <div class="m-text" [class.m-text-is-error]="isError()">
-        <textarea [formControl]="control" [attr.placeholder]="includePlaceholder ? placeholder : null" id="formfield-{{name}}"></textarea>
+      <div class="m-text"
+           [class.m-text-is-error]="isError()"
+           [class.m-text-is-warning]="isWarning"
+      >
+
+        <textarea id="formfield-{{name}}"
+                  [formControl]="control" [attr.placeholder]="includePlaceholder ? placeholder : null"
+                  (blur)="blur.next($event)"
+        ></textarea>
       </div>
     </app-formfield>`
 })
 export class FormFieldTextArea extends FormField implements OnInit {
+
+  @Output() blur = new Subject<FocusEvent>()
+  @Input() isWarning: boolean = false
 
   constructor() {
     super()

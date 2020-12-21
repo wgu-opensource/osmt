@@ -13,6 +13,7 @@ import {ToastService} from "../../toast/toast.service"
 import {Title} from "@angular/platform-browser"
 import {HasFormGroup} from "../../core/abstract-form.component"
 import {notACopyValidator} from "../../validators/not-a-copy.validator"
+import {ApiSkillSummary} from "../ApiSkillSummary";
 
 
 @Component({
@@ -38,6 +39,10 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   // This allows this enum's constants to be used in the template
   keywordType = KeywordType
 
+  // for skill statement similarity checking
+  searchingSimilarity?: boolean
+  similarSkills?: ApiSkillSummary[]
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -61,6 +66,12 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     }
 
     this.titleService.setTitle(this.pageTitle())
+
+    this.skillForm.controls.skillStatement.valueChanges.subscribe(newStatement => {
+      if (this.searchingSimilarity !== undefined) {
+        this.searchingSimilarity = undefined
+      }
+    })
   }
 
   pageTitle(): string {
@@ -276,6 +287,11 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
       fields.author = this.stringFromNamedReference(skill.author)
     }
     this.skillForm.setValue(fields)
+
+
+    if (skill.skillStatement) {
+      this.checkForStatementSimilarity(skill.skillStatement)
+    }
   }
 
   handleFormErrors(errors: unknown): void {
@@ -364,6 +380,24 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
 
   handleEmployersTypeAheadResults(employers: string[]): void {
     this.selectedEmployers = employers
+  }
+
+  handleStatementBlur($event: FocusEvent): void {
+    const statement = this.skillForm.controls.skillStatement.value
+
+    this.checkForStatementSimilarity(statement)
+  }
+
+  checkForStatementSimilarity(statement: string): void {
+    this.searchingSimilarity = true
+    this.richSkillService.similarityCheck(statement).subscribe(results => {
+      this.similarSkills = results
+      this.searchingSimilarity = false
+    })
+  }
+
+  get hasStatementWarning(): boolean {
+    return (this.similarSkills?.length ?? -1) > 0
   }
 }
 

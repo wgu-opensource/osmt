@@ -3,10 +3,13 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.ApiSimilaritySearch
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
+import edu.wgu.osmt.elasticsearch.OffsetPageable
 import org.apache.lucene.search.join.ScoreMode
 import org.elasticsearch.index.query.BoolQueryBuilder
+import org.elasticsearch.index.query.MatchPhraseQueryBuilder
 import org.elasticsearch.index.query.MultiMatchQueryBuilder
 import org.elasticsearch.index.query.QueryBuilders
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,6 +33,7 @@ interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
         pageable: Pageable = Pageable.unpaged(),
         collectionId: String? = null
     ): SearchHits<RichSkillDoc>
+    fun findSimilar(apiSimilaritySearch: ApiSimilaritySearch): SearchHits<RichSkillDoc>
 }
 
 class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :
@@ -209,6 +213,14 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             )
         }
 
+        return elasticSearchTemplate.search(nsq.build(), RichSkillDoc::class.java)
+    }
+
+    override fun findSimilar(apiSimilaritySearch: ApiSimilaritySearch): SearchHits<RichSkillDoc> {
+        val limitedPageable = OffsetPageable(0, 10, null)
+        val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(
+            MatchPhraseQueryBuilder(RichSkillDoc::statement.name, apiSimilaritySearch.statement).slop(4)
+        )
         return elasticSearchTemplate.search(nsq.build(), RichSkillDoc::class.java)
     }
 }

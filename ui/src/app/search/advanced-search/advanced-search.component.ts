@@ -56,7 +56,7 @@ export class AdvancedSearchComponent implements OnInit {
     const form = this.skillForm.value
 
     const skillName: string = form.skillName
-    const author = this.scrubReference(form.author)
+    const author = form.author
     const skillStatement: string = form.skillStatement
     const category: string = form.category
     const keywords = this.tokenizeString(form.keywords)

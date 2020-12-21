@@ -48,6 +48,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
             skillName?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::name.name, it)) }
             category?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::category.name, it)) }
+            author?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::author.name, it)) }
             skillStatement?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::statement.name, it)) }
             keywords?.map { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::searchingKeywords.name, it)) }
 

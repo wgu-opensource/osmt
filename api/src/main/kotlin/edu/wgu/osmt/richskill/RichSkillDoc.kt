@@ -70,7 +70,7 @@ data class RichSkillDoc(
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "keyword", type = Keyword)]
     )
-    @get:JsonIgnore
+    @get:JsonProperty("author")
     val author: String? = null,
 
     @Field(type = Keyword)

@@ -29,6 +29,9 @@ data class ApiAdvancedSearch(
     @JsonProperty("skillStatement")
     val skillStatement: String? = null,
 
+    @JsonProperty("author")
+    val author: String? = null,
+
     @JsonProperty("keywords")
     val keywords: List<String>? = null,
 

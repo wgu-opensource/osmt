@@ -31,7 +31,7 @@ export class ApiAdvancedSearch {
   certifications?: INamedReference[]
   employers?: INamedReference[]
   alignments?: INamedReference[]
-  author?: INamedReference
+  author?: string
 
   static factory(options: ApiAdvancedSearch): ApiAdvancedSearch {
     return Object.assign(new ApiAdvancedSearch(), options)

@@ -34,7 +34,7 @@
     </ng-template>
 
     <ng-template #multipleMatchesTmpl>
-      <app-accordian [closedLabel]="similarMultipleMessage" [openLabel]="similarMultipleMessage">
+      <app-accordian *ngIf="showAccordion" [closedLabel]="similarMultipleMessage" [openLabel]="similarMultipleMessage">
         <div class="m-skillBackground l-inset t-margin-small t-margin-top">
           <div class="t-margin-extraSmall t-margin-top" *ngFor="let skill of similarSkills">
             <!--{{render '@m-interactivetext&#45;&#45;small-with-iconleft'}}-->

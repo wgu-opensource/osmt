@@ -16,6 +16,9 @@ export class CheckerComponent implements OnInit {
   @Input() similarSkills?: ApiSkillSummary[]
   @Input() searching?: boolean
 
+  @Input() showAccordion = true
+
+
 
   ngOnInit(): void {
   }

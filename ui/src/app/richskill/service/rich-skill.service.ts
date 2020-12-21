@@ -179,4 +179,15 @@ export class RichSkillService extends AbstractService {
         return body?.map(it => new ApiSkillSummary(it)) || []
       }))
   }
+
+  similaritiesCheck(statements: string[]): Observable<boolean[]> {
+    return this.post<boolean[]>({
+      path: "api/search/skills/similarities",
+      body: statements.map(statement => ({statement}))
+    })
+      .pipe(share())
+      .pipe(map(({body, headers}) => {
+        return body || []
+      }))
+  }
 }

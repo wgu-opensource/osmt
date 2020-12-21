@@ -143,7 +143,7 @@ paths:
   /api/skills:
     get:
       summary: Get all skills
-      description: Return all skills in the library
+      description: Returns paginated list of all skills in the library
       parameters:
         - in: query
           name: size
@@ -178,12 +178,6 @@ paths:
               $ref: '#/components/headers/Link'
             X-Total-Count:
               $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
 
           content:
             application/json:
@@ -191,18 +185,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Skill'
-            text/csv:
-              schema:
-                type: string
-                example: >-
-                  id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
-                  https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac, RichSkillDescriptor, "https://osmt.example.com/organization", "Document Saving", "The learner copies and saves documents to their local machine.", "https://skillsource.example.com/base-skills/simple-compuhacking", "documents, file operations, computer basics", "Productivity Software", "13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
-        '202':
-          description: Accepted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskResult'
       tags:
         - Skills
     post:

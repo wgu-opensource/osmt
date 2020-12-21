@@ -1,7 +1,12 @@
 package edu.wgu.osmt.csv
 
 import com.opencsv.bean.CsvBindByName
+import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.jobcode.JobCodeRepository
+import edu.wgu.osmt.richskill.RichSkillDoc
+import edu.wgu.osmt.richskill.RichSkillEsRepo
+import edu.wgu.osmt.richskill.RichSkillRepository
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -23,6 +28,18 @@ class BlsImport : CsvImport<BlsJobCode> {
 
     @Autowired
     private lateinit var jobCodeRepository: JobCodeRepository
+
+    @Autowired
+    private lateinit var jobCodeEsRepo: JobCodeEsRepo
+
+    @Autowired
+    private lateinit var richSkillRepository: RichSkillRepository
+
+    @Autowired
+    private lateinit var richSkillEsRepo: RichSkillEsRepo
+
+    @Autowired
+    private lateinit var appConfig: AppConfig
 
     override fun handleRows(rows: List<BlsJobCode>) {
         val detailed = rows.filter { it.socGroup == "Detailed" }
@@ -56,9 +73,16 @@ class BlsImport : CsvImport<BlsJobCode> {
             jobCode?.let {
                 it.name = row.socTitle
                 it.description = row.socDefinition
+                it.detailed = row.socTitle
                 broadTitle.let { broad -> it.broad = broad }
                 minorTitle.let { minor -> it.minor = minor }
                 majorTitle.let { major -> it.major = major }
+            }.also {
+                jobCode?.let { jobCodeEsRepo.save(it.toModel()) }
+                jobCode?.let {
+                    richSkillRepository.containingJobCode(it.code)
+                        .map { dao -> richSkillEsRepo.save(RichSkillDoc.fromDao(dao, appConfig)) }
+                }
             }
         }
     }

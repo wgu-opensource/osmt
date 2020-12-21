@@ -201,20 +201,17 @@ paths:
               items:
                 $ref: '#/components/schemas/SkillUpdate'
       responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Skill'
         '202':
           description: Accepted
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskResult'
+          links:
+            CreateSkillResults:
+              operationRef: '/api/results/skills/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
         '400':
           description: Bad Request
           content:
@@ -1345,9 +1342,8 @@ components:
           type: string
           enum: ["Processing","Ready"]
       example:
-        href: "/tasks/3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        href: "/results/batch/3fa85f64-5717-4562-b3fc-2c963f66afa6"
         uuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-        content-type: "text/csv"
         status: "Processing"
 
     BatchResult:

@@ -777,6 +777,8 @@ paths:
       summary: Retrieve the results of a CSV task
       description: Return the results of a previously requested task
       responses:
+        '404':
+          description: NOT READY
         '200':
           description: OK
           content:
@@ -801,6 +803,8 @@ paths:
       summary: Retrieve the batch results of a task
       description: Return the results of a previously requested batch task
       responses:
+        '404':
+          description: NOT READY
         '200':
           description: OK
           content:
@@ -822,6 +826,8 @@ paths:
       summary: Retrieve the results of a create skills task
       description: Return the results of a previously requested skill creation task
       responses:
+        '404':
+          description: NOT READY
         '200':
           description: OK
           content:

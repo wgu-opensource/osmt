@@ -703,9 +703,7 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/SkillListUpdate'
+              $ref: '#/components/schemas/SkillListUpdate'
       responses:
         '202':
           description: Accepted

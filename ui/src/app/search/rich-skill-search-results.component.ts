@@ -99,4 +99,9 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
     })
     return false
   }
+
+
+  protected onlyDraftsSelected(skill?: ApiSkillSummary): boolean {
+    return !this.multiplePagesSelected || super.onlyDraftsSelected(skill)
+  }
 }

@@ -27,7 +27,6 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
   }
 
   getCardFormat(): IDetailCardSectionData[] {
-    console.log(`? ${this.occupationsTemplate}`)
     return [
       {
         label: "Skill Statement",

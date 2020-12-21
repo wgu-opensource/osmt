@@ -87,7 +87,8 @@ import {
 import {FormFieldSearchSelectComponent} from "./form/form-field-search-select/single-select/form-field-search-select.component"
 import {FormFieldSearchMultiSelectComponent} from "./form/form-field-search-select/mulit-select/form-field-search-multi-select.component"
 import {FormFieldSearchSelectJobcodeComponent} from "./form/form-field-search-select/jobcode-select/form-field-search-select-jobcode.component"
-import {AuditLogComponent} from "./richskill/detail/audit-log.component";
+import {AuditLogComponent} from "./richskill/detail/audit-log.component"
+import {OccupationsCardSectionComponent} from "./richskill/detail/occupations-card-section/occupations-card-section.component"
 import {CheckerComponent} from "./richskill/form/checker.component";
 
 export function initializeApp(appConfig: AppConfig): () => void {
@@ -187,6 +188,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     FormFieldSearchMultiSelectComponent,
     FormFieldSearchSelectJobcodeComponent,
     AuditLogComponent,
+    OccupationsCardSectionComponent,
     CheckerComponent
   ],
   imports: [

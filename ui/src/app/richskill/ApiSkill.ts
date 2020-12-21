@@ -1,4 +1,4 @@
-import {IJobCode, JobCodeBreakout, OccupationsFormatter} from "../job-codes/Jobcode"
+import {IJobCode} from "../job-codes/Jobcode"
 import {PublishStatus} from "../PublishStatus"
 
 
@@ -172,7 +172,7 @@ export class ApiAuditLog {
     this.user = user
     this.changedFields = changedFields
   }
-  
+
   isPublishStatusChange(): boolean {
     return this.operationType === AuditOperationType.PublishStatusChange
   }

@@ -1082,6 +1082,8 @@ components:
           $ref: '#/components/schemas/StringListUpdate'
         keywords:
           $ref: '#/components/schemas/StringListUpdate'
+        standards:
+          $ref: '#/components/schemas/ReferenceListUpdate'
         alignments:
           $ref: '#/components/schemas/ReferenceListUpdate'
         certifications:

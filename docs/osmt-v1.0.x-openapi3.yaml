@@ -685,6 +685,65 @@ paths:
                 items:
                   $ref: '#/components/schemas/SkillSummary'
 
+  /api/collections/{uuid}/csv:
+    post:
+      tags:
+        - Collections
+      summary: Retrieve the skills in a collection as a CSV
+      description: Retrieve the skills that belong to the collection in CSV format
+      parameters:
+        - name: uuid
+          in: path
+          description: uuid of a collection
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: size
+          description: number of skills to return per page
+          schema:
+            type: number
+            default: 50
+        - in: query
+          name: from
+          description: zero-indexed offset from beginning of records
+          schema:
+            type: number
+            default: 0
+        - in: query
+          name: status
+          schema:
+            default:
+              - Unpublished
+              - Published
+            type: array
+            items:
+              $ref: '#/components/schemas/PublishStatus'
+        - in: query
+          name: sort
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Search'
+      responses:
+        '202':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          links:
+            CollectionCsvResults:
+              operationRef: '/api/results/text/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
+
   /api/collections/{uuid}/updateSkills:
     post:
       tags:

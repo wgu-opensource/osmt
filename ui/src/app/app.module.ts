@@ -90,6 +90,8 @@ import {FormFieldSearchSelectJobcodeComponent} from "./form/form-field-search-se
 import {AuditLogComponent} from "./richskill/detail/audit-log.component"
 import {OccupationsCardSectionComponent} from "./richskill/detail/occupations-card-section/occupations-card-section.component"
 import {CheckerComponent} from "./richskill/form/checker.component";
+import {SystemMessageComponent} from "./core/system-message.component";
+import {LogoutComponent} from "./auth/logout.component";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -107,6 +109,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     FooterComponent,
     SkillCollectionsDisplayComponent,
     ToastComponent,
+    SystemMessageComponent,
+    LogoutComponent,
 
     // Rich skill form
     RichSkillFormComponent,
@@ -189,7 +193,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     FormFieldSearchSelectJobcodeComponent,
     AuditLogComponent,
     OccupationsCardSectionComponent,
-    CheckerComponent
+    CheckerComponent,
   ],
   imports: [
     BrowserModule,

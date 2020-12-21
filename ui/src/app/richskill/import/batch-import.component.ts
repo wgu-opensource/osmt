@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, ElementRef, OnInit, ViewChild} from "@angular/core";
 import {QuickLinksHelper} from "../../core/quick-links-helper";
 import {ActivatedRoute, Router} from "@angular/router";
 import {RichSkillService} from "../service/rich-skill.service";
@@ -74,6 +74,8 @@ export class AuditedImportSkill {
   templateUrl: "./batch-import.component.html"
 })
 export class BatchImportComponent extends QuickLinksHelper implements OnInit {
+
+  @ViewChild("stepHeading") stepHeadingRef!: ElementRef
 
   currentStep: ImportStep = ImportStep.UploadFile
 
@@ -163,7 +165,9 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     this.stepLoaded = undefined
   }
 
+
   handleClickNext(): boolean {
+    this.focusAndScrollIntoView(this.stepHeadingRef.nativeElement)
     this.showStepLoader()
     this.currentStep += 1
     switch (this.currentStep) {

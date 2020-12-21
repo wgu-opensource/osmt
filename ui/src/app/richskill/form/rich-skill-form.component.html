@@ -20,118 +20,148 @@
           </h3>
         </div>
 
-        <app-formfield-text
-          [control]="skillForm.controls.skillName"
-          name="skillName"
-          label="RSD Name"
-          placeholder="Health Education Development"
-          [includePlaceholder]="!this.skillUuid"
-          required="true"
-          [errorMessage]="nameErrorMessage()"
-        >
-        </app-formfield-text>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text
+            [control]="skillForm.controls.skillName"
+            name="skillName"
+            label="RSD Name"
+            placeholder="Health Education Development"
+            [includePlaceholder]="!this.skillUuid"
+            required="true"
+            [errorMessage]="nameErrorMessage()"
+          >
+          </app-formfield-text>
+        </div>
 
-        <app-formfield-text *ngIf="showAuthor()"
-          [control]="skillForm.controls.author"
-          name="author"
-          label="Author"
-          required="true"
-          errorMessage="Author required"
-        ></app-formfield-text>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text *ngIf="showAuthor()"
+            [control]="skillForm.controls.author"
+            name="author"
+            label="Author"
+            required="true"
+            errorMessage="Author required"
+          ></app-formfield-text>
+        </div>
 
-        <app-formfield-textarea
-          [control]="skillForm.controls.skillStatement"
-          required="true"
-          name="skillStatement"
-          label="Skill Statement"
-          placeholder="Develop education programs to improve health outcomes for patient populations."
-          [includePlaceholder]="!this.skillUuid"
-          helpMessage='A description of the applied capabilities and/or behaviors of an individual for a given task, occupation, or need. The recommended format, to support interoperability and the common use of RSDs across organizations, is a predicate and context. Optionally, a skill statement may include a subject, such as "The employee ..." '
-          errorMessage="Skill statement required"
-        ></app-formfield-textarea>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-textarea
+            [control]="skillForm.controls.skillStatement"
+            required="true"
+            name="skillStatement"
+            label="Skill Statement"
+            placeholder="Develop education programs to improve health outcomes for patient populations."
+            [includePlaceholder]="!this.skillUuid"
+            helpMessage='A description of the applied capabilities and/or behaviors of an individual for a given task, occupation, or need. The recommended format, to support interoperability and the common use of RSDs across organizations, is a predicate and context. Optionally, a skill statement may include a subject, such as "The employee ..." '
+            errorMessage="Skill statement required"
+            (blur)="handleStatementBlur($event)"
+            [isWarning]="hasStatementWarning"
+          ></app-formfield-textarea>
 
-        <app-form-field-search-select
-          [control]="skillForm.controls.category"
-          label="Category"
-          name="category"
-          placeholder="Health Education"
-          [includePlaceholder]="!this.skillUuid"
-          helpMessage="An industry-recognized, general term that represents a broad group of related RSDs."
-          [keywordType]="keywordType.Category"
-        ></app-form-field-search-select>
+          <app-checker
+            [searching]="searchingSimilarity"
+            [similarSkills]="similarSkills"></app-checker>
 
-        <app-form-field-search-multi-select
-          [control]="skillForm.controls.keywords"
-          label="Keywords"
-          name="keywords"
-          placeholder="Health Education; Education Program Development; Heath Instruction; Health Outcome Improvement; Health Education Design"
-          [includePlaceholder]="!this.skillUuid"
-          helpMessage="Related terms that help users search for and find an RSD."
-          [keywordType]="keywordType.Keyword"
-          (currentSelection)="handleKeywordTypeAheadResults($event)"
-        ></app-form-field-search-multi-select>
+        </div>
 
-        <app-form-field-search-multi-select
-          [control]="skillForm.controls.standards"
-          label="Standards"
-          name="standards"
-          placeholder="Health Education Standards"
-          [includePlaceholder]="!this.skillUuid"
-          helpMessage="Names of professional standards that define skill mastery, sourced from industry-recognized frameworks."
-          [keywordType]="keywordType.Standard"
-          (currentSelection)="handleStandardsTypeAheadResults($event)"
-        ></app-form-field-search-multi-select>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-form-field-search-select
+            [control]="skillForm.controls.category"
+            label="Category"
+            name="category"
+            placeholder="Health Education"
+            [includePlaceholder]="!this.skillUuid"
+            helpMessage="An industry-recognized, general term that represents a broad group of related RSDs."
+            [keywordType]="keywordType.Category"
+          ></app-form-field-search-select>
+        </div>
 
-        <app-form-field-search-multi-select
-          [control]="skillForm.controls.certifications"
-          label="Certifications"
-          name="certifications"
-          placeholder="Health Education Specialist (Society for Public Health Education)"
-          [includePlaceholder]="!this.skillUuid"
-          helpMessage="Related academic and professional certifications that support career advancement."
-          [keywordType]="keywordType.Certification"
-          (currentSelection)="handleCertificationTypeAheadResults($event)"
-        ></app-form-field-search-multi-select>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-form-field-search-multi-select
+            [control]="skillForm.controls.keywords"
+            label="Keywords"
+            name="keywords"
+            placeholder="Health Education; Education Program Development; Heath Instruction; Health Outcome Improvement; Health Education Design"
+            [includePlaceholder]="!this.skillUuid"
+            helpMessage="Related terms that help users search for and find an RSD."
+            [keywordType]="keywordType.Keyword"
+            (currentSelection)="handleKeywordTypeAheadResults($event)"
+          ></app-form-field-search-multi-select>
+        </div>
 
-        <app-form-field-search-select-jobcode
-          [control]="skillForm.controls.occupations"
-          label="Occupations"
-          name="occupations"
-          placeholder="29-1071; 11-9111; 25-1072; 29-1141; 29-1171"
-          [includePlaceholder]="!this.skillUuid"
-          helpMessage="Related job codes from the U.S. Bureau of Labor Statistics (BLS) or the Occupational Information Network (O*NET)."
-          (currentSelection)="handleJobCodesTypeAheadResults($event)"
-        ></app-form-field-search-select-jobcode>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-form-field-search-multi-select
+            [control]="skillForm.controls.standards"
+            label="Standards"
+            name="standards"
+            placeholder="Health Education Standards"
+            [includePlaceholder]="!this.skillUuid"
+            helpMessage="Names of professional standards that define skill mastery, sourced from industry-recognized frameworks."
+            [keywordType]="keywordType.Standard"
+            (currentSelection)="handleStandardsTypeAheadResults($event)"
+          ></app-form-field-search-multi-select>
+        </div>
 
-        <app-form-field-search-multi-select
-          [control]="skillForm.controls.employers"
-          label="Employers"
-          name="employers"
-          placeholder="Lakeview Hospital"
-          [includePlaceholder]="!this.skillUuid"
-          helpMessage="Employers who require this skill for a given job. Employers are not visible in the public view of an RSD."
-          [keywordType]="keywordType.Employer"
-          (currentSelection)="handleEmployersTypeAheadResults($event)"
-        ></app-form-field-search-multi-select>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-form-field-search-multi-select
+            [control]="skillForm.controls.certifications"
+            label="Certifications"
+            name="certifications"
+            placeholder="Health Education Specialist (Society for Public Health Education)"
+            [includePlaceholder]="!this.skillUuid"
+            helpMessage="Related academic and professional certifications that support career advancement."
+            [keywordType]="keywordType.Certification"
+            (currentSelection)="handleCertificationTypeAheadResults($event)"
+          ></app-form-field-search-multi-select>
+        </div>
 
-        <app-formfield-text
-          [control]="skillForm.controls.alignmentText"
-          label="Alignment Name"
-          name="alignmentText"
-          placeholder="Health Education"
-          [includePlaceholder]="!this.skillUuid"
-          helpMessage="The industry-recognized framework or data that aligns with this RSD, from a source such as Emsi, Burning Glass, LinkedIn, or Workday."
-        ></app-formfield-text>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-form-field-search-select-jobcode
+            [control]="skillForm.controls.occupations"
+            label="Occupations"
+            name="occupations"
+            placeholder="29-1071; 11-9111; 25-1072; 29-1141; 29-1171"
+            [includePlaceholder]="!this.skillUuid"
+            helpMessage="Related job codes from the U.S. Bureau of Labor Statistics (BLS) or the Occupational Information Network (O*NET)."
+            (currentSelection)="handleJobCodesTypeAheadResults($event)"
+          ></app-form-field-search-select-jobcode>
+        </div>
 
-        <app-formfield-text
-          [control]="skillForm.controls.alignmentUrl"
-          label="Alignment URL"
-          name="alignmentUrl"
-          placeholder="https://skills.emsidata.com/skills/KS124MT6ZDZLF0M8JM6X"
-          [includePlaceholder]="!this.skillUuid"
-          helpMessage="The unique web address that holds alignment details."
-          errorMessage="Alignment URL not valid"
-        ></app-formfield-text>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-form-field-search-multi-select
+            [control]="skillForm.controls.employers"
+            label="Employers"
+            name="employers"
+            placeholder="Lakeview Hospital"
+            [includePlaceholder]="!this.skillUuid"
+            helpMessage="Employers who require this skill for a given job. Employers are not visible in the public view of an RSD."
+            [keywordType]="keywordType.Employer"
+            (currentSelection)="handleEmployersTypeAheadResults($event)"
+          ></app-form-field-search-multi-select>
+        </div>
+
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text
+            [control]="skillForm.controls.alignmentText"
+            label="Alignment Name"
+            name="alignmentText"
+            placeholder="Health Education"
+            [includePlaceholder]="!this.skillUuid"
+            helpMessage="The industry-recognized framework or data that aligns with this RSD, from a source such as Emsi, Burning Glass, LinkedIn, or Workday."
+          ></app-formfield-text>
+        </div>
+
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text
+            [control]="skillForm.controls.alignmentUrl"
+            label="Alignment URL"
+            name="alignmentUrl"
+            placeholder="https://skills.emsidata.com/skills/KS124MT6ZDZLF0M8JM6X"
+            [includePlaceholder]="!this.skillUuid"
+            helpMessage="The unique web address that holds alignment details."
+            errorMessage="Alignment URL not valid"
+          ></app-formfield-text>
+        </div>
+
 
         <app-skill-collections-display
           *ngIf="this.skillUuid"

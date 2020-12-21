@@ -3,6 +3,7 @@ package edu.wgu.osmt.api
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import edu.wgu.osmt.api.model.ApiError
 import edu.wgu.osmt.api.model.ApiFieldError
+import org.springframework.core.annotation.Order
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,7 +19,19 @@ import javax.servlet.http.HttpServletResponse
 
 class FormValidationException(override val message: String, val errors:List<ApiFieldError>): Exception(message)
 
+class GeneralApiException(override val message: String, val status: HttpStatus): Exception(message)
 
+@Order(value = 0)
+@ControllerAdvice
+class GeneralApiExceptionHandler : ResponseEntityExceptionHandler() {
+    @ExceptionHandler(GeneralApiException::class)
+    fun handleGeneralApiError(ex: GeneralApiException): ResponseEntity<Any> {
+        val apiError = ApiError(ex.message)
+        return ResponseEntity(apiError, ex.status)
+    }
+}
+
+@Order(value = 1)
 @ControllerAdvice
 class ApiErrorHandler : ResponseEntityExceptionHandler() {
 

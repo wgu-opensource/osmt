@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
-import { HttpClient } from "@angular/common/http"
-import { DefaultAppConfig, IAppConfig } from "./models/app-config.model"
+import {DefaultAppConfig, IAppConfig} from "./models/app-config.model"
 import { environment } from "../environments/environment"
+import {HttpClient} from "@angular/common/http"
 
 @Injectable()
 export class AppConfig {
@@ -12,13 +12,21 @@ export class AppConfig {
 
   }
 
-  load(): Promise<void> {
-    return new Promise<void>( (resolve) => {
-      AppConfig.settings = new DefaultAppConfig()
-      AppConfig.settings.baseApiUrl = environment.baseApiUrl
-      AppConfig.settings.loginUrl = environment.loginUrl
-      resolve()
-    })
+  load(): Promise<object> {
+    const baseUrl = environment.baseApiUrl
+    const loginUrl = environment.loginUrl
 
+    return this.http.get(`${baseUrl}/whitelabel/whitelabel.json`)
+      .toPromise()
+      .then(value => {
+        AppConfig.settings = value as IAppConfig
+        AppConfig.settings.baseApiUrl = baseUrl
+        AppConfig.settings.loginUrl = loginUrl
+
+        return value
+      }).catch(reason => {
+        AppConfig.settings = new DefaultAppConfig()
+        return reason
+      })
   }
 }

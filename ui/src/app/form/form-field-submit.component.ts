@@ -60,20 +60,9 @@ export class FormFieldSubmit implements OnInit {
   ngOnInit(): void {
   }
 
-  /*
-  valid | pristine | touched || isEnabled
-  ------+----------+---------++----------
-  0     |  0       | 0       || false
-  0     |  0       | 1       || false
-  0     |  1       | 0       || false
-  0     |  1       | 1       || false
-  1     |  0       | 0       || false
-  1     |  0       | 1       || true <--
-  1     |  1       | 0       || false
-  1     |  1       | 1       || false
-  */
   isEnabled(): boolean {
-    return this.formGroup.touched && !this.formGroup.pristine && this.formGroup.valid
+    const {touched, valid, pristine, dirty} = this.formGroup
+    return (touched || dirty) && !pristine && valid
   }
 
   isDisabled(): boolean {

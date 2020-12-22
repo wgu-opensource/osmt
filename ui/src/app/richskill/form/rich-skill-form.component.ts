@@ -13,7 +13,7 @@ import {ToastService} from "../../toast/toast.service"
 import {Title} from "@angular/platform-browser"
 import {HasFormGroup} from "../../core/abstract-form.component"
 import {notACopyValidator} from "../../validators/not-a-copy.validator"
-import {ApiSkillSummary} from "../ApiSkillSummary";
+import {ApiSkillSummary} from "../ApiSkillSummary"
 
 
 @Component({

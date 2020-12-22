@@ -62,10 +62,15 @@ object JobCodeBreakout {
 
     fun minorCode(code: String): String? {
         val mlp = minorLeadingPart(code)
-        return mlp.takeIf{ isValidInt(it)}?.let{ leadingPart ->
+        val mp  = minorPart(code)
+        return mlp.takeIf { isValidInt(it) }?.let { leadingPart ->
             val major = "${majorPart(code)}"
-            val minor = "${leadingPart}000"
-            minorExceptionMapping.getOrDefault("$major-$minor", "$major-$minor")
+            val minorLeading = "${leadingPart}000"
+            if ( minorRuleExceptions.contains("${major}-${mp}00") ){
+                "${major}-${mp}00"
+            } else {
+                "${major}-${minorLeading}"
+            }
         }
     }
 
@@ -84,9 +89,9 @@ object JobCodeBreakout {
      * Exceptions to inferring minor code rules
      * see https://www.bls.gov/soc/2018/soc_2018_class_and_coding_structure.pdf, pg. 3
      */
-    val minorExceptionMapping = listOf(
-        "15-1000" to "15-1200",
-        "31-1000" to "31-1100",
-        "51-5000" to "51-5100"
-    ).toMap()
+    val minorRuleExceptions = listOf(
+        "15-1200",
+        "31-1100",
+        "51-5100"
+    )
 }

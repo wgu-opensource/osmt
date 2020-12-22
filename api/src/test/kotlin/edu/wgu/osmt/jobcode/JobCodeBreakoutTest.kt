@@ -113,13 +113,13 @@ internal class JobCodeBreakoutTest {
         val code2 = "15-1210.01"
         val code3 = "51-5132.00"
 
-        val normalMinorCode = "29-1125"
+        val normalMinorCode = "31-1331"
 
         val expectedMinor = "31-1100"
         val expectedMinor2 = "15-1200"
         val expectedMinor3= "51-5100"
 
-        val expectedNormalMinorCode = "29-1000"
+        val expectedNormalMinorCode = "31-1000"
 
         val minorResult = JobCodeBreakout.minorCode(code)
         val minorResult2 = JobCodeBreakout.minorCode(code2)

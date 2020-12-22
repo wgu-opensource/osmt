@@ -84,7 +84,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
 
   getFormDefinitions(): {[key: string]: AbstractControl} {
     const fields = {
-      skillName: new FormControl("", notACopyValidator),
+      skillName: new FormControl("", Validators.compose([Validators.required, notACopyValidator])),
       skillStatement: new FormControl("", Validators.required),
       category: new FormControl(""),
       keywords: new FormControl(""),

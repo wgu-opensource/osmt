@@ -106,4 +106,29 @@ internal class JobCodeBreakoutTest {
         assert(detailedResult == expectedDetailed) { "Wrong detailed code.  Expected=[$expectedDetailed] Actual=[$detailedResult]" }
         assert(jobRoleResult == expectedJobRole) { "Wrong job role code.  Expected=[null] Actual=[$jobRoleResult]" }
     }
+
+    @Test
+    fun minorExceptionGroupsTest() {
+        val code = "31-1110"
+        val code2 = "15-1210.01"
+        val code3 = "51-5132.00"
+
+        val normalMinorCode = "29-1125"
+
+        val expectedMinor = "31-1100"
+        val expectedMinor2 = "15-1200"
+        val expectedMinor3= "51-5100"
+
+        val expectedNormalMinorCode = "29-1000"
+
+        val minorResult = JobCodeBreakout.minorCode(code)
+        val minorResult2 = JobCodeBreakout.minorCode(code2)
+        val minorResult3 = JobCodeBreakout.minorCode(code3)
+        val normalMinorResult = JobCodeBreakout.minorCode(normalMinorCode)
+
+        assert(expectedMinor == minorResult)
+        assert(expectedMinor2 == minorResult2)
+        assert(expectedMinor3 == minorResult3)
+        assert(expectedNormalMinorCode == normalMinorResult)
+    }
 }

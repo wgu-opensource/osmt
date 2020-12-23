@@ -113,23 +113,6 @@ data class RichSkillDoc(
     @get:JsonProperty("archiveDate")
     val archiveDate: LocalDateTime? = null
 ) {
-    @Field(type = Keyword)
-    @get:JsonIgnore
-    val majorCodes: List<String> = jobCodes.mapNotNull { it.majorCode }.distinct()
-
-    @Field(type = Keyword)
-    @get:JsonIgnore
-    val minorCodes: List<String> = jobCodes.mapNotNull { it.minorCode }.distinct()
-
-    @Field(type = Keyword)
-    @get:JsonIgnore
-    val broadCodes: List<String> = jobCodes.mapNotNull { it.broadCode }.distinct()
-
-    @Field(type = Keyword)
-    @get:JsonIgnore
-    val jobRoleCodes: List<String> = jobCodes.mapNotNull { it.jobRoleCode ?: it.code }.distinct()
-
-
     companion object {
         fun fromDao(dao: RichSkillDescriptorDao, appConfig: AppConfig): RichSkillDoc {
             return RichSkillDoc(

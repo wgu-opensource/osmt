@@ -220,7 +220,7 @@ class RichSkillEsRepoTest @Autowired constructor(
         }
 
         val jobCodes = listOf(
-            JobCode.create("10-9999.88").copy(id = TestObjectHelpers.elasticIdCounter)
+            TestObjectHelpers.randomJobCode().copy(code = "10-9999.88", id = TestObjectHelpers.elasticIdCounter)
         )
 
         val skillWithJobCodes = TestObjectHelpers.randomRichSkillDoc().copy(jobCodes = jobCodes).also {

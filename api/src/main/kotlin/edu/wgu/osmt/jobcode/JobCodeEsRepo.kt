@@ -1,6 +1,8 @@
 package edu.wgu.osmt.jobcode
 
 import edu.wgu.osmt.elasticsearch.OffsetPageable
+import org.elasticsearch.index.query.BoolQueryBuilder
+import org.elasticsearch.index.query.DisMaxQueryBuilder
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.index.query.QueryBuilders.*
 import org.elasticsearch.search.sort.SortBuilders
@@ -19,31 +21,68 @@ interface CustomJobCodeRepository {
 
 class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :
     CustomJobCodeRepository {
+
     override fun typeAheadSearch(query: String): SearchHits<JobCode> {
         val limitedPageable = OffsetPageable(0, 10, null)
-        val bq = QueryBuilders.boolQuery()
+        val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
 
         val nsq: NativeSearchQueryBuilder =
-            NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(bq).withSort(SortBuilders.scoreSort())
-
-        bq.must(
-            boolQuery()
-                .must(existsQuery(JobCode::name.name))
-                .should(
-                    matchBoolPrefixQuery(
-                        JobCode::code.name,
-                        query
-                    ).minimumShouldMatch("2")
-                )
-                .should(
-                    matchPhraseQuery(
-                        JobCode::code.name,
-                        query
-                    ).boost(5f)
-                ).minimumShouldMatch(1)
-        )
+            NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(disjunctionQuery)
+                .withSort(SortBuilders.scoreSort())
 
         return elasticSearchTemplate.search(nsq.build(), JobCode::class.java)
+    }
+}
+
+object JobCodeQueries {
+    fun multiPropertySearch(query: String, parentDocPath: String? = null): BoolQueryBuilder {
+        val disjunctionQuery = disMaxQuery()
+        val path = parentDocPath?.let { "${it}." } ?: ""
+        disjunctionQuery.innerQueries().addAll(
+            listOf(
+                matchPhrasePrefixQuery(
+                    "${path}${JobCode::code.name}",
+                    query
+                ),
+                matchPhrasePrefixQuery(
+                    "${path}${JobCode::minor.name}",
+                    query
+                ),
+                matchPhrasePrefixQuery(
+                    "${path}${JobCode::minorCode.name}",
+                    query
+                ),
+                matchPhrasePrefixQuery(
+                    "${path}${JobCode::detailed.name}",
+                    query
+                ),
+                matchPhrasePrefixQuery(
+                    "${path}${JobCode::detailedCode.name}",
+                    query
+                ),
+                matchPhrasePrefixQuery(
+                    "${path}${JobCode::major.name}",
+                    query
+                ),
+                matchPhrasePrefixQuery(
+                    "${path}${JobCode::majorCode.name}",
+                    query
+                ),
+                matchPhrasePrefixQuery(
+                    "${path}${JobCode::broad.name}",
+                    query
+                ),
+                matchPhrasePrefixQuery(
+                    "${path}${JobCode::broadCode.name}",
+                    query
+                ),
+                matchPhrasePrefixQuery(
+                    "${path}${JobCode::description.name}",
+                    query
+                )
+            )
+        )
+        return boolQuery().must(existsQuery("${path}${JobCode::name.name}")).must(disjunctionQuery)
     }
 }
 

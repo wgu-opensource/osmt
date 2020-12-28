@@ -72,6 +72,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(override val elasticSea
         if (!apiSearch.query.isNullOrBlank()) {
             // Search against rich skill properties
             bq.must(richSkillEsRepo.richSkillPropertiesMultiMatch(apiSearch.query))
+            bq.should(richSkillEsRepo.occupationQueries(apiSearch.query))
 
             // always include inner collection object with rich skill search hits
             bq.must(

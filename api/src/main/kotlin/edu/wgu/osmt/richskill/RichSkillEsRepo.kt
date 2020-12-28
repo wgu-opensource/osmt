@@ -7,11 +7,11 @@ import edu.wgu.osmt.api.model.ApiSimilaritySearch
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
+import edu.wgu.osmt.jobcode.CustomJobCodeRepositoryImpl
+import edu.wgu.osmt.jobcode.JobCode
+import edu.wgu.osmt.jobcode.JobCodeQueries
 import org.apache.lucene.search.join.ScoreMode
-import org.elasticsearch.index.query.BoolQueryBuilder
-import org.elasticsearch.index.query.MatchPhraseQueryBuilder
-import org.elasticsearch.index.query.MultiMatchQueryBuilder
-import org.elasticsearch.index.query.QueryBuilders
+import org.elasticsearch.index.query.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.Page
@@ -33,12 +33,24 @@ interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
         pageable: Pageable = Pageable.unpaged(),
         collectionId: String? = null
     ): SearchHits<RichSkillDoc>
+
     fun findSimilar(apiSimilaritySearch: ApiSimilaritySearch): SearchHits<RichSkillDoc>
+
+    fun occupationQueries(query: String): NestedQueryBuilder
 }
 
 class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :
     CustomRichSkillQueries {
     override val javaClass = RichSkillDoc::class.java
+
+    override fun occupationQueries(query: String): NestedQueryBuilder {
+        val jobCodePath = RichSkillDoc::jobCodes.name
+        return QueryBuilders.nestedQuery(
+            jobCodePath,
+            JobCodeQueries.multiPropertySearch(query, jobCodePath),
+            ScoreMode.Max
+        )
+    }
 
     // Query clauses for Rich Skill properties
     override fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch) {
@@ -55,27 +67,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             occupations?.let {
                 it.mapNotNull { it.name }.map { value ->
                     bq.must(
-                        QueryBuilders.boolQuery().should(
-                            QueryBuilders.matchBoolPrefixQuery(
-                                RichSkillDoc::majorCodes.name,
-                                value
-                            )
-                        ).should(
-                            QueryBuilders.matchBoolPrefixQuery(
-                                RichSkillDoc::minorCodes.name,
-                                value
-                            )
-                        ).should(
-                            QueryBuilders.matchBoolPrefixQuery(
-                                RichSkillDoc::broadCodes.name,
-                                value
-                            )
-                        ).should(
-                            QueryBuilders.matchBoolPrefixQuery(
-                                RichSkillDoc::jobRoleCodes.name,
-                                value
-                            )
-                        )
+                        occupationQueries(value)
                     )
                 }
             }
@@ -120,10 +112,6 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             RichSkillDoc::searchingKeywords.name,
             "${RichSkillDoc::searchingKeywords.name}._2gram",
             "${RichSkillDoc::searchingKeywords.name}._3gram",
-            RichSkillDoc::majorCodes.name,
-            RichSkillDoc::minorCodes.name,
-            RichSkillDoc::broadCodes.name,
-            "${RichSkillDoc::jobRoleCodes.name}",
             RichSkillDoc::standards.name,
             "${RichSkillDoc::standards.name}._2gram",
             "${RichSkillDoc::standards.name}._3gram",
@@ -165,6 +153,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
             if (collectionId.isNullOrBlank()) {
                 bq.should(richSkillPropertiesMultiMatch(apiSearch.query))
+                bq.should(occupationQueries(apiSearch.query))
                 bq.should(
                     QueryBuilders.nestedQuery(
                         RichSkillDoc::collections.name,
@@ -174,6 +163,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 )
             } else {
                 bq.must(richSkillPropertiesMultiMatch(apiSearch.query))
+                bq.should(occupationQueries(apiSearch.query))
                 bq.must(
                     QueryBuilders.nestedQuery(
                         RichSkillDoc::collections.name,

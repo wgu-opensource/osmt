@@ -160,7 +160,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     if (AppConfig.settings.editableAuthor) {
       const author = ApiNamedReference.fromString(formValue.author)
       if (!this.existingSkill || this.isDuplicating || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
-          update.author = author
+        update.author = author
       }
     }
 
@@ -360,7 +360,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     formValue.keywords = [formValue.keywords, ...this.selectedKeywords].join("; ")
     formValue.certifications = [formValue.certifications, ...this.selectedCertifications].join("; ")
     formValue.employers = [formValue.employers, ...this.selectedEmployers].join("; ")
-}
+  }
 
   handleStandardsTypeAheadResults(standards: string[]): void {
     this.selectedStandards = standards
@@ -391,7 +391,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   checkForStatementSimilarity(statement: string): void {
     this.searchingSimilarity = true
     this.richSkillService.similarityCheck(statement).subscribe(results => {
-      this.similarSkills = results
+      this.similarSkills = results?.filter(s => this.existingSkill?.uuid !== s.uuid)
       this.searchingSimilarity = false
     })
   }

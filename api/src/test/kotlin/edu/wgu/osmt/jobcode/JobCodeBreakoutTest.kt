@@ -37,7 +37,7 @@ internal class JobCodeBreakoutTest {
         val code = "11-1110"
 
         val expectedMajor = "11-0000"
-        val expectedMinor = "11-1100"
+        val expectedMinor = "11-1000"
         val expectedBroad = "11-1110"
 
         // Execute
@@ -61,7 +61,7 @@ internal class JobCodeBreakoutTest {
         val code = "1-1111.11"
 
         val expectedMajor = "1-0000"
-        val expectedMinor = "1-1100"
+        val expectedMinor = "1-1000"
         val expectedBroad = "1-1110"
         val expectedDetailed = "1-1111"
         val expectedJobRole = "1-1111.11"
@@ -87,7 +87,7 @@ internal class JobCodeBreakoutTest {
         val code = "11.1111.11"
 
         val expectedMajor = "11-0000"
-        val expectedMinor = "11-1100"
+        val expectedMinor = "11-1000"
         val expectedBroad = "11-1110"
         val expectedDetailed = "11-1111"
         val expectedJobRole = "11-1111.11"

@@ -355,11 +355,11 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
 
   populateTypeAheadFieldsWithResults(): void {
     const formValue = this.skillForm.value
-    formValue.standards = [formValue.standards, ...this.selectedStandards].join("; ")
-    formValue.occupations = [formValue.occupations, ...this.selectedJobCodes].join("; ")
-    formValue.keywords = [formValue.keywords, ...this.selectedKeywords].join("; ")
-    formValue.certifications = [formValue.certifications, ...this.selectedCertifications].join("; ")
-    formValue.employers = [formValue.employers, ...this.selectedEmployers].join("; ")
+    formValue.standards = this.selectedStandards.join("; ")
+    formValue.occupations = this.selectedJobCodes.join("; ")
+    formValue.keywords = this.selectedKeywords.join("; ")
+    formValue.certifications = this.selectedCertifications.join("; ")
+    formValue.employers = this.selectedEmployers.join("; ")
   }
 
   handleStandardsTypeAheadResults(standards: string[]): void {

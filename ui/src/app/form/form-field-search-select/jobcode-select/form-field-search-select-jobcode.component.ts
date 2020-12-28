@@ -1,9 +1,9 @@
-import {Component, Output, EventEmitter, OnInit, OnDestroy} from "@angular/core"
+import {Component, Output, EventEmitter, OnInit, OnDestroy, Input} from "@angular/core"
 import {KeywordSearchService} from "../../../richskill/service/keyword-search.service"
 import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
 import {FormField} from "../../form-field.component"
 import {Subscription} from "rxjs"
-import {ApiJobCode} from "../../../job-codes/Jobcode"
+import {ApiJobCode, IJobCode} from "../../../job-codes/Jobcode"
 
 
 @Component({
@@ -12,6 +12,7 @@ import {ApiJobCode} from "../../../job-codes/Jobcode"
 })
 export class FormFieldSearchSelectJobcodeComponent extends FormField implements OnInit, OnDestroy {
 
+  @Input() existing?: IJobCode[]
 
   @Output() currentSelection = new EventEmitter<string[]>()
 
@@ -23,7 +24,6 @@ export class FormFieldSearchSelectJobcodeComponent extends FormField implements 
 
   results!: ApiJobCode[] | undefined
 
-  initialSearchComplete = false
   internalSelectedResults: ApiJobCode[] = []
 
   constructor(protected searchService: KeywordSearchService) {
@@ -42,7 +42,7 @@ export class FormFieldSearchSelectJobcodeComponent extends FormField implements 
   get showResults(): boolean {
     const isEmpty = this.valueFromControl?.trim()?.length <= 0
     const isDirty = this.control.dirty
-    return this.initialSearchComplete && isDirty && !isEmpty && this.results !== undefined
+    return isDirty && !isEmpty && this.results !== undefined
   }
 
   isResultSelected(result: ApiJobCode): boolean {
@@ -50,15 +50,11 @@ export class FormFieldSearchSelectJobcodeComponent extends FormField implements 
   }
 
   performInitialSearchAndPopulation(): void {
-    const value = this.control.value as string
-    const codes = value.split(";").map(s => s.trim())
-
-    this.queryInProgress = this.searchService.searchJobcodes(value).subscribe(searchResults => {
-      this.internalSelectedResults = searchResults.filter(r => codes.find(c => c === r.code))
+    if (this.existing) {
+      this.internalSelectedResults = this.existing.map(it => new ApiJobCode(it))
       this.control.setValue("")
       this.emitCurrentSelection()
-      this.initialSearchComplete = true
-    })
+    }
   }
 
   // This component calls a different api than the others, otherwise is just another search field with multi-select

@@ -38,7 +38,7 @@
               </span>
               <span class="m-fileUpload-x-fileText">File: {{uploadedFile}}</span>
             </span>
-          <span class="m-fileUpload-x-actionText">Change File</span>
+          <span class="m-fileUpload-x-actionText">Change file</span>
         </label>
 
         <input class="t-visuallyHidden" type="file" (change)="handleFileChange($event)" id="file-upload">
@@ -51,27 +51,27 @@
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
         <div class="m-dragDrop" [class.m-dragDrop-is-error]="uploadedFileError"
              (drop)="handleFileDrop($event)" (dragover)="handleFileDrag($event)">
-        <label for="dragdrop">
-          <span class="m-dragDrop-x-spinner"></span>
-          <span class="m-dragDrop-x-icon">
-            <!--{{render '@m-countericon'}}-->
-            <div class="m-counterIcon">
-              <div class="m-iconWithFrame">
-                  <svg class="t-icon" aria-hidden="true">
-                      <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
-                  </svg>
+          <label for="dragdrop">
+            <span class="m-dragDrop-x-spinner"></span>
+            <span class="m-dragDrop-x-icon">
+              <!--{{render '@m-countericon'}}-->
+              <div class="m-counterIcon">
+                <div class="m-iconWithFrame">
+                    <svg class="t-icon" aria-hidden="true">
+                        <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
+                    </svg>
+                </div>
+                <div class="m-counterIcon-x-counter">
+                    <div class="m-counter"><span>{{uploadedFileCount}}</span></div>
+                </div>
               </div>
-              <div class="m-counterIcon-x-counter">
-                  <div class="m-counter"><span>{{uploadedFileCount}}</span></div>
-              </div>
-            </div>
-          </span>
-          <span class="m-dragDrop-x-message" *ngIf="uploadedFile">{{uploadedFile}}</span>
-          <span class="m-dragDrop-x-label" *ngIf="!uploadedFile">Drag and drop your CSV file, or <span class="m-dragtdrop-x-labelInteractive">Select a file to upload</span></span>
-          <span class="m-dragDrop-x-label" *ngIf="uploadedFile"><span class="m-dragtdrop-x-labelInteractive">Change file</span></span>
-        </label>
-        <input class="t-visuallyHidden" type="file" (change)="handleFileChange($event)" id="dragdrop">
-      </div>
+            </span>
+            <span class="m-dragDrop-x-message" *ngIf="uploadedFile">{{uploadedFile}}</span>
+            <span class="m-dragDrop-x-label" *ngIf="!uploadedFile">Drag and drop a CSV file or <span class="m-dragtdrop-x-labelInteractive">select a file to upload</span></span>
+            <span class="m-dragDrop-x-label" *ngIf="uploadedFile"><span class="m-dragtdrop-x-labelInteractive">Change file</span></span>
+          </label>
+          <input class="t-visuallyHidden" type="file" (change)="handleFileChange($event)" id="dragdrop" aria-label="select a file to upload">
+        </div>
       </div>
 
         <div class="m-content">
@@ -115,7 +115,7 @@
             <p><strong>Employers:</strong> Employers who require this RSD for a given job; doesn't display in public view. </p>
             <p><strong>Alignment Name:</strong> The industry-recognized framework or data that aligns with this RSD, from a source such as Emsi, Burning Glass, LinkedIn, or Workday.</p>
             <p><strong>Alignment URL:</strong> The unique web address that holds alignment details.</p>
-            <p><strong>Do Not Import:</strong> Select this option for any property you don't want to import from the CSV file.</p>
+            <p><strong>Do not Import:</strong> Select this option for any property you don't want to import from the CSV file.</p>
           </div>
         </app-accordian>
 

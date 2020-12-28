@@ -84,6 +84,7 @@ export class FormFieldSearchSelectJobcodeComponent extends FormField implements 
 
   unselectResult(result: ApiJobCode): void {
     this.internalSelectedResults = this.internalSelectedResults.filter(r => r !== result)
+    this.control.markAsDirty()
     this.emitCurrentSelection()
   }
 

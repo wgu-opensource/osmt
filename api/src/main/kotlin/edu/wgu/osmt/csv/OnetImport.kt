@@ -52,17 +52,17 @@ class OnetImport : CsvImport<OnetJobCode> {
             val detailed = row.detailed()?.let { jobCodeRepository.findBlsCode(it) }
 
             // Optimization, only fetch these if detailed failed
-            val broad = detailed ?: row.broad()?.let { jobCodeRepository.findBlsCode(it) }
-            val major = detailed ?: row.major()?.let { jobCodeRepository.findBlsCode(it) }
-            val minor = detailed ?: row.minor()?.let { jobCodeRepository.findBlsCode(it) }
+            val broad = detailed?.broad ?: row.broad()?.let { jobCodeRepository.findBlsCode(it) }?.broad
+            val major = detailed?.major ?: row.major()?.let { jobCodeRepository.findBlsCode(it) }?.major
+            val minor = detailed?.minor ?: row.minor()?.let { jobCodeRepository.findBlsCode(it) }?.minor
 
             jobCode?.let {
                 it.name = row.title
                 it.description = row.description
                 it.detailed = detailed?.name
-                it.broad = detailed?.broad ?: broad?.broad
-                it.minor = detailed?.minor ?: minor?.minor
-                it.major = detailed?.major ?: major?.major
+                it.broad = broad
+                it.minor = minor
+                it.major = major
                 it.framework = JobCodeRepository.`O*NET_FRAMEWORK`
             }.also {
                 jobCode?.let { jobCodeEsRepo.save(it.toModel()) }

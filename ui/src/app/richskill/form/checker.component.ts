@@ -10,7 +10,7 @@ export class CheckerComponent implements OnInit {
 
   @Input() searchingMessage = "Checking for skill statement similarity …"
   @Input() neutralMessage = "Similarity: —"
-  @Input() similarMultipleMessage = "RSDs contain skill statements that are very similar to those already in the library."
+  @Input() similarMultipleMessage = "Skill statement is very similar to those in multiple RSDs."
   @Input() similarSingleMessage = "Skill statement is very similar to one already in the library."
   @Input() affirmativeMessage = "Skill statement OK."
   @Input() similarSkills?: ApiSkillSummary[]

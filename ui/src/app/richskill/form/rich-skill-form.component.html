@@ -117,6 +117,7 @@
         <div class="t-margin-medium t-margin-bottom">
           <app-form-field-search-select-jobcode
             [control]="skillForm.controls.occupations"
+            [existing]="existingSkill?.occupations"
             label="Occupations"
             name="occupations"
             placeholder="29-1071; 11-9111; 25-1072; 29-1141; 29-1171"

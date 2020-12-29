@@ -8,6 +8,8 @@ import {ApiSortOrder} from "./richskill/ApiSkill";
 import {ApiBatchResult} from "./richskill/ApiBatchResult";
 import {ApiSearch} from "./richskill/service/rich-skill-search.service";
 import {map, share} from "rxjs/operators";
+import {Router} from "@angular/router";
+import {Location} from "@angular/common";
 
 interface ApiGetParams {
   path: string,
@@ -20,7 +22,25 @@ interface ApiGetParams {
 
 export abstract class AbstractService {
 
-  constructor(protected httpClient: HttpClient, protected authService: AuthService) {
+  constructor(protected httpClient: HttpClient,
+              protected authService: AuthService,
+              protected router: Router,
+              protected location: Location
+  )
+  {
+  }
+
+  redirectToLogin(error: any): void {
+    const status: number = error?.status ?? 500
+    if (status === 401) {
+      this.authService.logout()
+      const returnPath = this.location.path(true)
+      this.router.navigate(["/login"], {queryParams: {return: returnPath}})
+      return
+    }
+    else if (status === 0) {
+      this.authService.setServerIsDown(true)
+    }
   }
 
   /**
@@ -34,16 +54,20 @@ export abstract class AbstractService {
    * @param params Json blob defining path params
    */
   get<T>({path, headers, params}: ApiGetParams): Observable<HttpResponse<T>> {
-    return this.httpClient.get<T>(this.buildUrl(path), {
+    const observable = this.httpClient.get<T>(this.buildUrl(path), {
       headers: this.wrapHeaders(headers),
       params,
       observe: "response"})
+    observable.subscribe(() => {}, (err) => { this.redirectToLogin(err) })
+    return observable
   }
   post<T>({path, headers, params, body}: ApiGetParams): Observable<HttpResponse<T>> {
-    return this.httpClient.post<T>(this.buildUrl(path), body, {
+    const observable =  this.httpClient.post<T>(this.buildUrl(path), body, {
       headers: this.wrapHeaders(headers),
       params,
       observe: "response"})
+    observable.subscribe(() => {}, (err) => { this.redirectToLogin(err) })
+    return observable
   }
 
   protected safeUnwrapBody<T>(body: T | null, failureMessage: string): T {

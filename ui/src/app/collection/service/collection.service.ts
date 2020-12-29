@@ -16,6 +16,8 @@ import {map, share} from "rxjs/operators"
 import {ApiBatchResult} from "../../richskill/ApiBatchResult"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
 import {ApiCollection, ICollection, ICollectionUpdate} from "../ApiCollection"
+import {Router} from "@angular/router";
+import {Location} from "@angular/common";
 
 @Injectable({
   providedIn: "root"
@@ -24,8 +26,8 @@ export class CollectionService extends AbstractService {
 
   private baseServiceUrl = "api/collections"
 
-  constructor(httpClient: HttpClient, authService: AuthService) {
-    super(httpClient, authService)
+  constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
+    super(httpClient, authService, router, location)
   }
 
   getCollections(

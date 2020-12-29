@@ -31,7 +31,7 @@ export class LoadingObservablesDirective {
     if (filtered.length > 0) {
       forkJoin(filtered).subscribe( a =>
         () => {},
-        error => { this.showError(error) },
+        () => {},
         () => { this.showTemplate() },
       )
     } else {
@@ -44,24 +44,7 @@ export class LoadingObservablesDirective {
     this.viewContainer.createEmbeddedView(this.template)
   }
 
-  private showError(error: any): void {
-    const status: number = error?.status ?? 500
-    console.log("Loading Error!", status, error)
-    if (status === 401) {
-      this.authService.logout()
-      const returnPath = this.location.path(true)
-      this.router.navigate(["/login"], {queryParams: {return: returnPath}})
-      return
-    }
 
-    const factory = this.componentResolver.resolveComponentFactory(ServerErrorComponent)
-    this.viewContainer.clear()
-    const componentRef: ComponentRef<ServerErrorComponent> = this.viewContainer.createComponent<ServerErrorComponent>(factory)
-    componentRef.instance.status = status
-    if (status === 0) {
-      this.authService.setServerIsDown(true)
-    }
-  }
 
   private showLoadingAnimation(): void {
     const factory = this.componentResolver.resolveComponentFactory(LoadingComponent)

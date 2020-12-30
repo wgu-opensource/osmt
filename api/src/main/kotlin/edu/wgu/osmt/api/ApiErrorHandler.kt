@@ -63,9 +63,4 @@ class ApiErrorHandler : ResponseEntityExceptionHandler() {
         return ResponseEntity(apiError, ex.status)
     }
 
-    @ExceptionHandler(Exception::class)
-    fun handleResponseStatus(ex: Exception, request: HttpServletRequest?, response: HttpServletResponse?): ResponseEntity<Any> {
-        val apiError = ApiError(ex.message ?: "500 INTERNAL_SERVER_ERROR")
-        return ResponseEntity(apiError, HttpStatus.INTERNAL_SERVER_ERROR)
-    }
 }

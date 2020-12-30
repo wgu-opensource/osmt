@@ -31,7 +31,7 @@ export class LoadingObservablesDirective {
     if (filtered.length > 0) {
       forkJoin(filtered).subscribe( a =>
         () => {},
-        () => {},
+        error => { this.showError(error) },
         () => { this.showTemplate() },
       )
     } else {
@@ -44,7 +44,15 @@ export class LoadingObservablesDirective {
     this.viewContainer.createEmbeddedView(this.template)
   }
 
-
+  private showError(error: any): void {
+    const status: number = error?.status ?? 500
+    if (status === 500 || status === 404) {
+      const factory = this.componentResolver.resolveComponentFactory(ServerErrorComponent)
+      this.viewContainer.clear()
+      const componentRef: ComponentRef<ServerErrorComponent> = this.viewContainer.createComponent<ServerErrorComponent>(factory)
+      componentRef.instance.status = status
+    }
+  }
 
   private showLoadingAnimation(): void {
     const factory = this.componentResolver.resolveComponentFactory(LoadingComponent)

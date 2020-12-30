@@ -33,8 +33,8 @@ export class AppComponent extends Whitelabelled implements OnInit {
   }
 
   watchForIdle(): void {
-    this.idle.setIdle(15)
-    this.idle.setTimeout(this.whitelabel.idleTimeoutInSeconds - 15)
+    this.idle.setIdle(this.whitelabel.idleTimeoutInSeconds)
+    this.idle.setTimeout(1)
     this.idle.setInterrupts(DEFAULT_INTERRUPTSOURCES)
 
     this.idle.onTimeout.subscribe(() => {

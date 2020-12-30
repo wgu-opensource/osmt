@@ -33,7 +33,7 @@
         </div>
 
         <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
-          {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">collections</ng-template><ng-template #singular>collection</ng-template> found based on
+          {{totalCount}} <ng-template [ngIf]="totalCount > 1" [ngIfElse]="singular">collections</ng-template><ng-template #singular>collection</ng-template> found based on
           <span class="t-type-bodyLargeBold t-color-text1">{{searchQuery}}</span> and your filters.
           <ng-template [ngIf]="totalCount > 0">
             Viewing {{firstRecordNo}}-{{lastRecordNo}}.

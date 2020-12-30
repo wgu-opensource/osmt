@@ -92,6 +92,7 @@ import {OccupationsCardSectionComponent} from "./richskill/detail/occupations-ca
 import {CheckerComponent} from "./richskill/form/checker.component";
 import {SystemMessageComponent} from "./core/system-message.component";
 import {LogoutComponent} from "./auth/logout.component";
+import {NgIdleKeepaliveModule} from "@ng-idle/keepalive";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -196,6 +197,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CheckerComponent,
   ],
   imports: [
+    NgIdleKeepaliveModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,

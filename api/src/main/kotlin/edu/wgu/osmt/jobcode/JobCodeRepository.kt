@@ -19,6 +19,7 @@ interface JobCodeRepository {
     fun findByCodeOrCreate(code: String, framework: String? = null): JobCodeDao
     fun findBlsCode(code: String): JobCodeDao?
     fun create(code: String, framework: String? = null): JobCodeDao
+    fun onetsByDetailCode(detailedCode: String): SizedIterable<JobCodeDao>
 
     companion object {
         const val BLS_FRAMEWORK = "bls"
@@ -56,10 +57,23 @@ class JobCodeRepositoryImpl: JobCodeRepository {
     }
 
     override fun create(code: String, framework: String?): JobCodeDao {
-        return dao.new({
+        val maybeDetailed = JobCodeBreakout.detailedCode(code).let{ findBlsCode(code) }
+        return dao.new {
             creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.code = code
             this.framework = framework
-        }).also { jobCodeEsRepo.save(it.toModel()) }
+            maybeDetailed?.let { detailed ->
+                {
+                    this.detailed = detailed.detailed
+                    this.broad = detailed.broad
+                    this.major = detailed.major
+                    this.minor = detailed.minor
+                }
+            }
+        }.also { jobCodeEsRepo.save(it.toModel()) }
+    }
+
+    override fun onetsByDetailCode(detailedCode: String): SizedIterable<JobCodeDao> {
+        return table.select {table.code regexp "${detailedCode}.[0-90-9]"}.let{dao.wrapRows(it)}
     }
 }

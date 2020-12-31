@@ -8,7 +8,7 @@ import {ApiSortOrder} from "./richskill/ApiSkill";
 import {ApiBatchResult} from "./richskill/ApiBatchResult";
 import {ApiSearch} from "./richskill/service/rich-skill-search.service";
 import {map, share} from "rxjs/operators";
-import {Router} from "@angular/router";
+import {DefaultUrlSerializer, Router, UrlSerializer} from "@angular/router";
 import {Location} from "@angular/common";
 
 interface ApiGetParams {
@@ -34,8 +34,7 @@ export abstract class AbstractService {
     const status: number = error?.status ?? 500
     if (status === 401) {
       this.authService.logout()
-      const returnPath = this.location.path(true)
-      this.router.navigate(["/login"], {queryParams: {return: returnPath}})
+      window.open("/login?return=autoclose", "_blank")
       return
     }
     else if (status === 0) {

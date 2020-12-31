@@ -87,15 +87,14 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
     @get:JsonProperty
     val occupations: List<ApiJobCode>
         get() {
-            val parents = rsd.jobCodes.map { jobCode ->
-                listOf(
+            return rsd.jobCodes.map { jobCode ->
+                val parents = listOfNotNull(
                     jobCode.major.let {jobCode.majorCode?.let { ApiJobCode(code=it, name=jobCode.major, level=JobCodeLevel.Major) }},
                     jobCode.minor.let{jobCode.minorCode?.let { ApiJobCode(code=it, name=jobCode.minor, level=JobCodeLevel.Minor) }},
                     jobCode.broad?.let {jobCode.broadCode?.let { ApiJobCode(code=it, name=jobCode.broad, level=JobCodeLevel.Broad) }},
                     jobCode.detailed?.let {jobCode.detailedCode?.let { ApiJobCode(code=it, name=jobCode.detailed, level=JobCodeLevel.Detailed) }}
-                ).filterNotNull()
-            }.flatten().distinct()
-            return rsd.jobCodes.map { jobCode ->
+                ).distinct()
+
                 ApiJobCode.fromJobCode(jobCode, parents=parents)
             }
         }

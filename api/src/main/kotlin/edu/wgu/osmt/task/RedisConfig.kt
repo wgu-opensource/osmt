@@ -11,6 +11,10 @@ import org.springframework.data.redis.serializer.RedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer
+import org.springframework.session.data.redis.config.ConfigureRedisAction
+
+
+
 
 
 @Configuration
@@ -19,6 +23,11 @@ class RedisConfig: AbstractHttpSessionApplicationInitializer(){
 
     @Value("\${redis.uri}")
     lateinit var redisUri: String
+
+    @Bean
+    fun configureRedisAction(): ConfigureRedisAction {
+        return ConfigureRedisAction.NO_OP
+    }
 
     @Bean
     fun redisConnectionFactory(): LettuceConnectionFactory {

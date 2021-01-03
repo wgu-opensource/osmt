@@ -57,7 +57,9 @@ export abstract class AbstractService {
       headers: this.wrapHeaders(headers),
       params,
       observe: "response"})
-    observable.subscribe(() => {}, (err) => { this.redirectToLogin(err) })
+    observable
+      .pipe(share())
+      .subscribe(() => {}, (err) => { this.redirectToLogin(err) })
     return observable
   }
   post<T>({path, headers, params, body}: ApiGetParams): Observable<HttpResponse<T>> {
@@ -65,7 +67,9 @@ export abstract class AbstractService {
       headers: this.wrapHeaders(headers),
       params,
       observe: "response"})
-    observable.subscribe(() => {}, (err) => { this.redirectToLogin(err) })
+    observable
+      .pipe(share())
+      .subscribe(() => {}, (err) => { this.redirectToLogin(err) })
     return observable
   }
 

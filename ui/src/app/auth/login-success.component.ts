@@ -18,6 +18,10 @@ export class LoginSuccessComponent implements OnInit {
       this.authService.storeToken(token)
     })
     const returnRoute = this.authService.popReturn()
-    this.router.navigate([returnRoute ?? ""])
+    if (returnRoute === "autoclose") {
+      window.close()
+    } else {
+      this.router.navigate([returnRoute ?? ""])
+    }
   }
 }

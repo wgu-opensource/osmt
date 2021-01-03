@@ -11,6 +11,8 @@ import {PublishStatus} from "../../PublishStatus"
 import {ApiBatchResult} from "../ApiBatchResult"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
 import {ApiSkillSummary, ISkillSummary} from "../ApiSkillSummary"
+import {Router} from "@angular/router";
+import {Location} from "@angular/common";
 
 
 @Injectable({
@@ -18,8 +20,8 @@ import {ApiSkillSummary, ISkillSummary} from "../ApiSkillSummary"
 })
 export class RichSkillService extends AbstractService {
 
-  constructor(httpClient: HttpClient, authService: AuthService) {
-    super(httpClient, authService)
+  constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
+    super(httpClient, authService, router, location)
   }
 
   private serviceUrl = "api/skills"

@@ -12,6 +12,7 @@ export interface IAppConfig {
   poweredBy: string
   poweredByUrl: string
   poweredByLabel: string
+  idleTimeoutInSeconds: number
 }
 
 // Default configuration
@@ -29,4 +30,5 @@ export class DefaultAppConfig implements IAppConfig {
   poweredBy = "Powered by the"
   poweredByUrl = "https://rsd.osmt.dev"
   poweredByLabel = "Open Skills Network"
+  idleTimeoutInSeconds = 15 * 60
 }

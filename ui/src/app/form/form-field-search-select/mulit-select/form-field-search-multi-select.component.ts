@@ -56,6 +56,8 @@ export class FormFieldSearchMultiSelectComponent extends AbstractFormFieldSearch
   }
 
   handleKeyDownEnter($event: any): boolean {
+    this.selectResult(this.valueFromControl)
+    this.clearField()
     return false
   }
 }

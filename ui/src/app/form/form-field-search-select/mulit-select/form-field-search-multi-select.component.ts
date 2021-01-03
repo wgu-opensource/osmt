@@ -54,4 +54,8 @@ export class FormFieldSearchMultiSelectComponent extends AbstractFormFieldSearch
   private emitCurrentSelection(): void {
     this.currentSelection.emit(this.internalSelectedResults)
   }
+
+  handleKeyDownEnter($event: any): boolean {
+    return false
+  }
 }

@@ -15,7 +15,7 @@
           <use [attr.xlink:href]="iconSearch"></use>
         </svg>
 
-        <input [formControl]="control" [required]="required" class="m-search-x-input" type="text" placeholder="Search">
+        <input (keydown.enter)="handleKeyDownEnter($event)" [formControl]="control" [required]="required" class="m-search-x-input" type="text" placeholder="Search">
 
         <div class="m-search-x-controls">
           <div class="m-search-x-clear">

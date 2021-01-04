@@ -23,7 +23,7 @@
 
           <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
             {{totalCount}} <ng-template [ngIf]="results?.skills.length > 1" [ngIfElse]="singular">RSDs contain</ng-template><ng-template #singular>RSD containing</ng-template> the search term
-            <span class="t-type-bodyLargeBold t-color-text1">{{searchQuery}}</span>.
+            <span class="t-type-bodyLargeBold t-type-text1">{{searchQuery}}</span>.
             <ng-template [ngIf]="totalCount > 0">
               Viewing {{firstRecordNo}}-{{lastRecordNo}}.
             </ng-template>

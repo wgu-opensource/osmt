@@ -75,6 +75,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   }
 
   pageTitle(): string {
+    if (this.isDuplicating) { return "Edit Copy of RSD" }
     return `${this.existingSkill != null ? "Edit" : "Create"} Rich Skill Descriptor`
   }
 

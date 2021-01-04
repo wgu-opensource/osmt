@@ -56,9 +56,8 @@ export abstract class AbstractService {
     const observable = this.httpClient.get<T>(this.buildUrl(path), {
       headers: this.wrapHeaders(headers),
       params,
-      observe: "response"})
+      observe: "response"}).pipe(share())
     observable
-      .pipe(share())
       .subscribe(() => {}, (err) => { this.redirectToLogin(err) })
     return observable
   }
@@ -66,9 +65,8 @@ export abstract class AbstractService {
     const observable =  this.httpClient.post<T>(this.buildUrl(path), body, {
       headers: this.wrapHeaders(headers),
       params,
-      observe: "response"})
+      observe: "response"}).pipe(share())
     observable
-      .pipe(share())
       .subscribe(() => {}, (err) => { this.redirectToLogin(err) })
     return observable
   }

@@ -52,7 +52,9 @@
         <div class="m-dragDrop" [class.m-dragDrop-is-error]="uploadedFileError"
              (drop)="handleFileDrop($event)" (dragover)="handleFileDrag($event)">
           <label for="dragdrop">
-            <span class="m-dragDrop-x-spinner"></span>
+            <span class="m-dragDrop-x-loader">
+              <span class="m-loaderGraphic m-loaderGraphic-large"></span>
+            </span>
             <span class="m-dragDrop-x-icon">
               <!--{{render '@m-countericon'}}-->
               <div class="m-counterIcon">

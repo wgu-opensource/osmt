@@ -46,7 +46,8 @@ describe("AppConfig", () => {
         publicSkillTitle: "",
         toolName: "",
         toolNameLong: "",
-        loginUrl: ""
+        loginUrl: "",
+        idleTimeoutInSeconds: 300
       }
 
       environment.baseApiUrl = expectedApiUrl

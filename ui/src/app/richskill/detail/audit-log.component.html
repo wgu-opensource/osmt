@@ -27,7 +27,9 @@
               </svg>
               <div>
                 <h5 class="t-type-bodyBold">{{labelForEntry(entry)}} {{entry.creationDate | date:'mediumDate'}}</h5>
-                <p class="t-type-small">{{entry.user}}</p>
+                <p class="t-type-small">
+                  <span class="t-visuallyHidden">by</span> {{entry.user}}
+                </p>
               </div>
             </div>
           </div>
@@ -37,13 +39,16 @@
               <!--{{render '@entrycategory'}} -->
               <div class="t-margin-small t-margin-bottom">
                 <!-- {{render '@m-sectionlabel&#45;&#45;shadow'}} -->
-                <div class="m-sectionLabel m-sectionLabel-shadow">{{change.fieldName}}</div>
+                <div class="m-sectionLabel m-sectionLabel-shadow">{{visibleFieldName(change.fieldName)}}</div>
               </div>
               <div class="t-margin-small t-margin-bottom">
                 <!-- {{render '@entryitem&#45;&#45;changed-from'}} -->
                 <h6 class="t-type-smallBoldCaps t-margin-extraSmall t-margin-bottom">Changed From</h6>
-                <p *ngIf="change.old" class="t-type-bodyStrikethrough t-color-text3">{{change.old}}<p>
-                <p *ngIf="!change.old">&mdash;</p>
+                <p *ngIf="change.old" class="t-type-bodyStrikethrough t-type-text3">{{change.old}}<p>
+                <p *ngIf="!change.old">
+                  <span aria-hidden="true">&mdash;</span>
+                  <span class="t-visuallyHidden">Empty</span>
+                </p>
               </div>
               <div class="t-margin-small t-margin-bottom">
                 <!-- {{render '@entryitem'}} -->

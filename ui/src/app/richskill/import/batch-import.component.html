@@ -17,8 +17,8 @@
     <!--{{render '@listheading'}}-->
     <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
       <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Batch Import</h2>
-      <p class="t-type-bodyLarge t-color-text3" #stepHeading>
-        <span class="t-type-bodyLargeBold t-color-text1">Step {{currentStep}}:</span> {{stepName(currentStep)}}
+      <p class="t-type-bodyLarge t-type-text3" #stepHeading>
+        <span class="t-type-bodyLargeBold t-type-text1">Step {{currentStep}}:</span> {{stepName(currentStep)}}
       </p>
     </div>
 
@@ -52,7 +52,9 @@
         <div class="m-dragDrop" [class.m-dragDrop-is-error]="uploadedFileError"
              (drop)="handleFileDrop($event)" (dragover)="handleFileDrag($event)">
           <label for="dragdrop">
-            <span class="m-dragDrop-x-spinner"></span>
+            <span class="m-dragDrop-x-loader">
+              <span class="m-loaderGraphic m-loaderGraphic-large"></span>
+            </span>
             <span class="m-dragDrop-x-icon">
               <!--{{render '@m-countericon'}}-->
               <div class="m-counterIcon">
@@ -86,8 +88,8 @@
 
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
         <div class="t-margin-medium t-margin-bottom">
-          <h3 class="t-type-bodyLargeBold t-color-text1 t-margin-extraSmall t-margin-bottom">{{recordCount}} records total</h3>
-          <p class="t-color-text1">Properties have been mapped from the CSV file as shown. Correct any errors and map any undetected fields.</p>
+          <h3 class="t-type-bodyLargeBold t-type-text1 t-margin-extraSmall t-margin-bottom">{{recordCount}} records total</h3>
+          <p class="t-type-text1">Properties have been mapped from the CSV file as shown. Correct any errors and map any undetected fields.</p>
         </div>
 
         <div *ngIf="hasMappingError" class="l-container t-margin-medium">
@@ -115,7 +117,7 @@
             <p><strong>Employers:</strong> Employers who require this RSD for a given job; doesn't display in public view. </p>
             <p><strong>Alignment Name:</strong> The industry-recognized framework or data that aligns with this RSD, from a source such as Emsi, Burning Glass, LinkedIn, or Workday.</p>
             <p><strong>Alignment URL:</strong> The unique web address that holds alignment details.</p>
-            <p><strong>Do not Import:</strong> Select this option for any property you don't want to import from the CSV file.</p>
+            <p><strong>Do Not Import:</strong> Select this option for any property you don't want to import from the CSV file.</p>
           </div>
         </app-accordian>
 
@@ -134,8 +136,8 @@
     <ng-template [ngIf]="isReviewStep()">
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
         <div class="t-margin-medium t-margin-bottom">
-          <h3 class="t-type-bodyLargeBold t-color-text1 t-margin-extraSmall t-margin-bottom">Validation results</h3>
-          <p class="t-color-text1">{{validCount}} RSD<ng-template [ngIf]="validCount > 1" [ngIfElse]="singular">s are</ng-template><ng-template #singular> is</ng-template> ready to import.</p>
+          <h3 class="t-type-bodyLargeBold t-type-text1 t-margin-extraSmall t-margin-bottom">Validation results</h3>
+          <p class="t-type-text1">{{validCount}} RSD<ng-template [ngIf]="validCount > 1" [ngIfElse]="singular">s are</ng-template><ng-template #singular> is</ng-template> ready to import.</p>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">

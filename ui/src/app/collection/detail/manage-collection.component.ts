@@ -145,7 +145,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         visible: () => this.collection?.status !== PublishStatus.Archived && this.collection?.status !== PublishStatus.Deleted
       }),
       new TableActionDefinition({
-        label: "Un-archive Collection ",
+        label: "Unarchive Collection ",
         icon: this.unarchiveIcon,
         callback: () => this.unarchiveAction(),
         visible: () => this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted

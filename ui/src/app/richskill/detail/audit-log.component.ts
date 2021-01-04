@@ -85,4 +85,16 @@ export class AuditLogComponent extends AccordianComponent {
       }
     }
   }
+
+  visibleFieldName(fieldName: string): string {
+    switch (fieldName.toLowerCase()) {
+      case "statement": return "Skill Statement"
+      case "publishstatus": return "Publish Status"
+      case "searchingkeywords": return "Keywords"
+      case "alignments": return "Alignment"
+      case "jobcodes": return "Occupations"
+      default: return fieldName
+    }
+
+  }
 }

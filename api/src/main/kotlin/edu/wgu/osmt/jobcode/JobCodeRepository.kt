@@ -43,6 +43,7 @@ class JobCodeRepositoryImpl: JobCodeRepository {
     override fun findById(id: Long): JobCodeDao? = dao.findById(id)
 
     override fun findByCode(code: String): JobCodeDao? {
+        if (code.isBlank()) return null
         return table.select { table.code eq code }.firstOrNull()?.let { dao.wrapRow(it) }
     }
 

@@ -7,12 +7,12 @@
 <!--    {{render '@listheading'}}-->
     <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
       <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom" tabindex="0" #titleHeading>{{title}}</h2>
-      <p class="t-type-bodyLarge t-color-text3">
+      <p class="t-type-bodyLarge t-type-text3">
         {{skillCountLabel}}
         found based on
         <ng-template [ngIf]="matchingQuery !== undefined">
           <ng-template ngFor let-q [ngForOf]="matchingQuery" let-last="last">
-            <span class="t-type-bodyLargeBold t-color-text1">{{q}}</span><ng-template [ngIf]="!last">, </ng-template> and
+            <span class="t-type-bodyLargeBold t-type-text1">{{q}}</span><ng-template [ngIf]="!last">, </ng-template> and
           </ng-template>
         </ng-template>
         your filters.

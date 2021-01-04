@@ -1,10 +1,10 @@
 <table class="l-table">
   <thead>
-  <tr class="m-tableHeader l-rowCollapse">
-    <th class="t-hidden-tabletMin" scope="col" colspan="2">Rich Skill Descriptor</th>
-    <th class="m-tableHeader-x-min t-hidden-tabletMax" scope="col">Rich Skill Descriptor</th>
-    <th class="t-hidden-tabletMax" scope="col">Category</th>
-    <th class="t-hidden-tabletMax" scope="col">Rich Skill Descriptor</th>
+  <tr class="m-tableHeader m-tableHeader-bare">
+    <th class="t-hidden-tabletMin" scope="col" colspan="2"><span class="t-visuallyHidden">Rich Skill Descriptor</span></th>
+    <th class="m-tableHeader-x-min t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Rich Skill Descriptor</span></th>
+    <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Category</span></th>
+    <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Rich Skill Descriptor</span></th>
   </tr>
 
   <tr class="m-tableHeader">
@@ -52,7 +52,7 @@
 
         <app-inline-error *ngIf="review.isWarning" message="Skill statement is very similar to one already in the library."></app-inline-error>
 
-        <p *ngIf="!review.statementMissing; else statementMissing" class="t-margin-small t-margin-bottom t-color-text3">{{review.skill.skillStatement}}</p>
+        <p *ngIf="!review.statementMissing; else statementMissing" class="t-margin-small t-margin-bottom t-type-text3">{{review.skill.skillStatement}}</p>
         <ng-template #statementMissing><app-inline-error message="Skill statement required"></app-inline-error></ng-template>
 
         <app-inline-heading *ngIf="review.skill.author" heading="Author:"><app-named-reference [ref]="review.skill.author"></app-named-reference></app-inline-heading>

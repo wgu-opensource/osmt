@@ -27,7 +27,9 @@
               </svg>
               <div>
                 <h5 class="t-type-bodyBold">{{labelForEntry(entry)}} {{entry.creationDate | date:'mediumDate'}}</h5>
-                <p class="t-type-small">{{entry.user}}</p>
+                <p class="t-type-small">
+                  <span class="t-visuallyHidden">by</span> {{entry.user}}
+                </p>
               </div>
             </div>
           </div>

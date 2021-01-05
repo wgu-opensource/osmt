@@ -1,8 +1,7 @@
-import { Component, Inject, LOCALE_ID } from "@angular/core"
+import {Component, Inject, LOCALE_ID, TemplateRef, ViewChild} from "@angular/core"
 import { RichSkillService } from "../../service/rich-skill.service"
 import { ActivatedRoute } from "@angular/router"
 import {AbstractRichSkillDetailComponent} from "../AbstractRichSkillDetailComponent"
-import {OccupationsFormatter} from "../../../job-codes/Jobcode"
 import {IDetailCardSectionData} from "../../../detail-card/section/section.component"
 
 @Component({
@@ -10,6 +9,12 @@ import {IDetailCardSectionData} from "../../../detail-card/section/section.compo
   templateUrl: "./rich-skill-public.component.html"
 })
 export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
+
+  isOccupationsCollapsed = true
+
+  // tslint:disable-next-line:no-any
+  @ViewChild("occupationsTemplate", {read: TemplateRef}) occupationsTemplate!: TemplateRef<any>
+
   constructor(
     richSkillService: RichSkillService,
     route: ActivatedRoute,
@@ -22,32 +27,32 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
     return [
       {
         label: "Skill Statement",
-        bodyHtml: this.richSkill?.skillStatement ?? "",
+        bodyString: this.richSkill?.skillStatement ?? "",
         showIfEmpty: false
       }, {
         label: "Category",
-        bodyHtml: this.richSkill?.category ?? "",
+        bodyString: this.richSkill?.category ?? "",
         showIfEmpty: false
       }, {
         label: "Keywords",
-        bodyHtml: this.richSkill?.keywords?.join("; ") ?? "",
+        bodyString: this.richSkill?.keywords?.join("; ") ?? "",
         showIfEmpty: false
       },
       {
         label: "Standards",
-        bodyHtml: this.richSkill?.standards?.map(({name}) => name)?.join("; ") ?? "",
+        bodyString: this.richSkill?.standards?.map(({name}) => name)?.join("; ") ?? "",
         showIfEmpty: false
       }, {
         label: "Certifications",
-        bodyHtml: this.richSkill?.certifications?.map(({name}) => name)?.join("; ") ?? "",
+        bodyString: this.richSkill?.certifications?.map(({name}) => name)?.join("; ") ?? "",
         showIfEmpty: false
       }, {
         label: "Occupations",
-        bodyHtml: new OccupationsFormatter(this.richSkill?.occupations ?? []).html(),
+        bodyTemplate: this.occupationsTemplate,
         showIfEmpty: false
       }, {
         label: "Alignment",
-        bodyHtml: this.richSkill?.alignments
+        bodyString: this.richSkill?.alignments
           ?.map(alignment => {
             return (alignment.id)
               ? `<a class="t-link" target="_blank" href="${alignment.id}">${alignment.name || alignment.id}</a>`
@@ -63,7 +68,7 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
       // },
       {
         label: "Collections With This RSD",
-        bodyHtml: this.formatAssociatedCollections(),
+        bodyString: this.formatAssociatedCollections(false),
         showIfEmpty: false
       },
     ]

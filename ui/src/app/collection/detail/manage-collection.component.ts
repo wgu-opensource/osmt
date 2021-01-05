@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core"
+import {Component, OnInit, ViewChild} from "@angular/core"
 import {ApiCollection, ApiCollectionUpdate} from "../ApiCollection";
 import {ApiSearch, ApiSkillListUpdate} from "../../richskill/service/rich-skill-search.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -12,12 +12,16 @@ import {TableActionDefinition} from "../../table/skills-library-table/has-action
 import {determineFilters, PublishStatus} from "../../PublishStatus";
 import {ApiSkillSummary} from "../../richskill/ApiSkillSummary";
 import {Observable} from "rxjs";
+import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component";
 
 @Component({
   selector: "app-manage-collection",
   templateUrl: "./manage-collection.component.html"
 })
 export class ManageCollectionComponent extends SkillsListComponent implements OnInit {
+
+  @ViewChild(TableActionBarComponent) tableActionBar!: TableActionBarComponent
+
   collection?: ApiCollection
   apiSearch?: ApiSearch
 
@@ -26,6 +30,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)
   unarchiveIcon = SvgHelper.path(SvgIcon.UNARCHIVE)
   addIcon = SvgHelper.path(SvgIcon.ADD)
+  searchIcon = SvgHelper.path(SvgIcon.SEARCH)
 
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published, PublishStatus.Archived])
 
@@ -112,7 +117,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   actionDefinitions(): TableActionDefinition[] {
     const actions = [
       new TableActionDefinition({
-        label: "Edit Name and Author",
+        label: "Edit Collection Name",
         icon: this.editIcon,
         callback: () => this.editAction()
       })
@@ -140,16 +145,16 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         visible: () => this.collection?.status !== PublishStatus.Archived && this.collection?.status !== PublishStatus.Deleted
       }),
       new TableActionDefinition({
-        label: "Un-archive Collection ",
+        label: "Unarchive Collection ",
         icon: this.unarchiveIcon,
         callback: () => this.unarchiveAction(),
         visible: () => this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted
       }),
-      // new TableActionDefinition({
-      //   label: "Add RSDs to This Collection",
-      //   icon: this.addIcon,
-      //   callback: () => this.addSkillsAction(),
-      // }),
+      new TableActionDefinition({
+        label: "Add RSDs to This Collection",
+        icon: this.addIcon,
+        callback: () => this.addSkillsAction(),
+      }),
     )
     return actions
   }
@@ -167,22 +172,17 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   publishAction(): void {
     if (this.uuidParam === undefined) { return }
 
-    // TODO: once OSMT-326 is complete, re-enable publishing guards
-    if (confirm("Confirm that you want to publish the selected collection. Once published, a collection can't be unpublished.")) {
-      this.submitCollectionStatusChange(PublishStatus.Published, "published")
-    }
-
-    // this.toastService.showBlockingLoader()
-    // this.collectionService.collectionReadyToPublish(this.uuidParam).subscribe(ready => {
-    //   this.toastService.hideBlockingLoader()
-    //   if (ready) {
-    //       if (confirm("Confirm that you want to publish the selected collection. Once published, a collection can't be unpublished.")) {
-    //         this.submitCollectionStatusChange(PublishStatus.Published, "published")
-    //       }
-    //   } else {
-    //     this.router.navigate([`/collections/${this.uuidParam}/publish`])
-    //   }
-    // })
+    this.toastService.showBlockingLoader()
+    this.collectionService.collectionReadyToPublish(this.uuidParam).subscribe(ready => {
+      this.toastService.hideBlockingLoader()
+      if (ready) {
+          if (confirm("Confirm that you want to publish the selected collection. Once published, a collection can't be unpublished.")) {
+            this.submitCollectionStatusChange(PublishStatus.Published, "published")
+          }
+      } else {
+        this.router.navigate([`/collections/${this.uuidParam}/publish`])
+      }
+    })
   }
 
   archiveAction(): void {
@@ -207,7 +207,9 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     })
   }
 
-  addSkillsAction(): void {}
+  addSkillsAction(): void {
+    this.router.navigate([`/collections/${this.collection?.uuid}/add-skills`])
+  }
 
 
   getApiSearch(skill?: ApiSkillSummary): ApiSearch | undefined {
@@ -236,9 +238,6 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         this.submitSkillRemoval(this.apiSearch)
       }
     }
-
-
-
   }
 
   submitSkillRemoval(apiSearch?: ApiSearch): void {
@@ -271,5 +270,9 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   protected handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
     this.focusAndScrollIntoView(this.titleElement.nativeElement, "h2")
     return false
+  }
+
+  focusActionBar(): void {
+    this.tableActionBar.focus()
   }
 }

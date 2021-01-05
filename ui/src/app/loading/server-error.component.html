@@ -1,7 +1,15 @@
-<div class="PUI">
+  <app-system-message *ngIf="status === 404"
+                      title="We couldn't find the page you wanted"
+                      body="Please go back, check the URL, and try again. (404: not found)">
+  </app-system-message>
 
-  <div *ngIf="status === 404">404 Not Found!</div>
-  <p *ngIf="status === 500">Oops! 500 Server Error</p>
-  <p *ngIf="status === 0">Could not connect to server, try again later</p>
+  <app-system-message *ngIf="status === 500"
+                      title="Something went wrong with that process"
+                      body="We've logged the issue. Please go back and try again. Wait a moment, check the URL, or try refreshing the page. (500: server error)">
+  </app-system-message>
 
-</div>
+  <app-system-message *ngIf="status === 0"
+                      title="The site is temporarily down for maintenance"
+                      body="We're sorry for the inconvenience. Please check back later.">
+  </app-system-message>
+

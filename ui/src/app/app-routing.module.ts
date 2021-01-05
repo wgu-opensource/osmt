@@ -18,6 +18,8 @@ import {CollectionSearchResultsComponent} from "./collection/collection-search-r
 import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component";
 import {ManageCollectionComponent} from "./collection/detail/manage-collection.component";
 import {PublishCollectionComponent} from "./collection/detail/publish-collection.component";
+import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component";
+import {BatchImportComponent} from "./richskill/import/batch-import.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -41,6 +43,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     canDeactivate: [FormDirtyGuard]
   },
+  // clone skill
+  {path: "skills/:uuid/duplicate",
+    component: RichSkillFormComponent,
+    canActivate: [AuthGuard],
+    canDeactivate: [FormDirtyGuard]
+  },
   // manage skill
   {path: "skills/:uuid/manage",
     component: RichSkillManageComponent,
@@ -49,6 +57,11 @@ const routes: Routes = [
   // skills library
   {path: "skills",
     component: RichSkillsLibraryComponent,
+    canActivate: [AuthGuard],
+  },
+  // batch import
+  {path: "skills/import",
+    component: BatchImportComponent,
     canActivate: [AuthGuard],
   },
 
@@ -81,7 +94,12 @@ const routes: Routes = [
     component: PublishCollectionComponent,
     canActivate: [AuthGuard]
   },
-  // add skills to a collection
+  // find skills to add to a collection
+  {path: "collections/:uuid/add-skills",
+    component: CollectionSkillSearchComponent,
+    canActivate: [AuthGuard],
+  },
+  // find a collection to add a selection of skills to
   {path: "collections/add-skills",
     component: AddSkillsCollectionComponent,
     canActivate: [AuthGuard],

@@ -1,7 +1,12 @@
 package edu.wgu.osmt.csv
 
 import com.opencsv.bean.CsvBindByName
+import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.jobcode.JobCodeRepository
+import edu.wgu.osmt.richskill.RichSkillDoc
+import edu.wgu.osmt.richskill.RichSkillEsRepo
+import edu.wgu.osmt.richskill.RichSkillRepository
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -25,6 +30,18 @@ class OnetImport : CsvImport<OnetJobCode> {
     @Autowired
     private lateinit var jobCodeRepository: JobCodeRepository
 
+    @Autowired
+    private lateinit var jobCodeEsRepo: JobCodeEsRepo
+
+    @Autowired
+    private lateinit var richSkillRepository: RichSkillRepository
+
+    @Autowired
+    private lateinit var richSkillEsRepo: RichSkillEsRepo
+
+    @Autowired
+    private lateinit var appConfig: AppConfig
+
     override fun handleRows(rows: List<OnetJobCode>) {
         log.info("Processing ${rows.size} rows...")
         for (row in rows) transaction {
@@ -35,18 +52,24 @@ class OnetImport : CsvImport<OnetJobCode> {
             val detailed = row.detailed()?.let { jobCodeRepository.findBlsCode(it) }
 
             // Optimization, only fetch these if detailed failed
-            val broad = detailed ?: row.broad()?.let{ jobCodeRepository.findBlsCode(it)}
-            val major = detailed ?: row.major()?.let{ jobCodeRepository.findBlsCode(it)}
-            val minor = detailed ?: row.minor()?.let{ jobCodeRepository.findBlsCode(it)}
+            val broad = detailed?.broad ?: row.broad()?.let { jobCodeRepository.findBlsCode(it) }?.broad
+            val major = detailed?.major ?: row.major()?.let { jobCodeRepository.findBlsCode(it) }?.major
+            val minor = detailed?.minor ?: row.minor()?.let { jobCodeRepository.findBlsCode(it) }?.minor
 
             jobCode?.let {
                 it.name = row.title
                 it.description = row.description
-                it.detailed = row.detailed()
-                it.broad = detailed?.broad ?: broad?.broad
-                it.minor = detailed?.minor ?: minor?.minor
-                it.major = detailed?.major ?: major?.major
+                it.detailed = detailed?.name
+                it.broad = broad
+                it.minor = minor
+                it.major = major
                 it.framework = JobCodeRepository.`O*NET_FRAMEWORK`
+            }.also {
+                jobCode?.let { jobCodeEsRepo.save(it.toModel()) }
+                jobCode?.let {
+                    richSkillRepository.containingJobCode(it.code)
+                        .map { dao -> richSkillEsRepo.save(RichSkillDoc.fromDao(dao, appConfig)) }
+                }
             }
         }
     }

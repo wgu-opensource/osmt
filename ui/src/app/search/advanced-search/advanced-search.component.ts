@@ -25,7 +25,7 @@ export class AdvancedSearchComponent implements OnInit {
 
   getFormDefinitions(): {[key: string]: AbstractControl} {
     const fields = {
-      skillName: new FormControl(""),
+      name: new FormControl(""),
       author: new FormControl(""),
       skillStatement: new FormControl(""),
       category: new FormControl(""),
@@ -49,14 +49,14 @@ export class AdvancedSearchComponent implements OnInit {
   }
 
   handleSearchCollections(): void {
-    this.searchService.advancedCollectionSearch(this.collectFieldData())
+    this.searchService.advancedCollectionSearch(this.collectFieldData(true))
   }
 
-  private collectFieldData(): ApiAdvancedSearch {
+  private collectFieldData(isSearchingCollections: boolean = false): ApiAdvancedSearch {
     const form = this.skillForm.value
 
-    const skillName: string = form.skillName
-    const author = this.scrubReference(form.author)
+    const name: string = form.name
+    const author = form.author
     const skillStatement: string = form.skillStatement
     const category: string = form.category
     const keywords = this.tokenizeString(form.keywords)
@@ -69,7 +69,8 @@ export class AdvancedSearchComponent implements OnInit {
 
     // if a property would be falsey, then completely omit it
     return {
-      ...skillName && { skillName },
+      ...isSearchingCollections && { collectionName: name },
+      ...!isSearchingCollections && { skillName: name },
       ...author && { author },
       ...skillStatement && { skillStatement },
       ...category && { category},

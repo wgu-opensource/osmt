@@ -1,22 +1,37 @@
-import {Component, Input, OnInit} from "@angular/core"
+import {Component, Input, OnInit, Output} from "@angular/core"
 import {AbstractControl, FormControl} from "@angular/forms";
 import {FormField} from "./form-field.component";
+import {Subject} from "rxjs";
 
 
 @Component({
   selector: "app-formfield-textarea",
-  templateUrl: "./form-field-textarea.component.html"
+  template: `
+    <app-formfield
+      [control]="control"
+      [label]="label"
+      [placeholder]="placeholder"
+      [errorMessage]="errorMessage"
+      [helpMessage]="helpMessage"
+      [required]="required"
+      [name]="name"
+    >
+      <div class="m-text"
+           [class.m-text-is-error]="isError()"
+           [class.m-text-is-warning]="isWarning"
+      >
+
+        <textarea id="formfield-{{name}}"
+                  [formControl]="control" [attr.placeholder]="includePlaceholder ? placeholder : null"
+                  (blur)="blur.next($event)"
+        ></textarea>
+      </div>
+    </app-formfield>`
 })
 export class FormFieldTextArea extends FormField implements OnInit {
 
-  @Input() control: FormControl = new FormControl("")
-  @Input() label: string = ""
-  @Input() placeholder: string = ""
-  @Input() errorMessage: string = ""
-  @Input() helpMessage: string = ""
-  @Input() required: boolean = false
-  @Input() name: string = ""
-  @Input() includePlaceholder: boolean = true
+  @Output() blur = new Subject<FocusEvent>()
+  @Input() isWarning: boolean = false
 
   constructor() {
     super()

@@ -1,0 +1,37 @@
+<div class="t-margin-medium t-margin-bottom">
+  <h3 class="t-type-bodyLargeBold t-type-text1 t-margin-extraSmall t-margin-bottom">Map Fields</h3>
+  <p *ngIf="!hasRequiredFields()" class="t-type-attention">Name and skill statement required</p>
+</div>
+
+<div class="t-hidden-tabletMin">
+  <!--  {{render '@m-fieldmaptext&#45;&#45;with-label'}}-->
+  <!--  {{render '@m-select&#45;&#45;fieldmap-is-disabled'}}-->
+</div>
+
+<table class="l-table">
+  <thead class="t-hidden-tabletMax">
+    <!--  {{render '@m-tableheader&#45;&#45;fieldmap'}}-->
+    <tr class="m-tableHeader m-tableHeader-fieldMap">
+      <th scope="col">
+        <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">CSV File Property</span>
+        </span>
+      </th>
+      <th scope="col">
+        <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Map to Property</span>
+        </span>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let head of uploadedHeaders; let i=index" class="m-tableRow m-tableRow-fieldMap">
+      <th scope="row">
+        <div class="m-fieldMapText">{{head}}</div>
+      </th>
+      <td scope="row">
+        <app-field-mapping-select [value]="currentMappings[head]" [data]="head" (mappingChanged)="handleMappingChanged($event)"></app-field-mapping-select>
+      </td>
+    </tr>
+  </tbody>
+</table>

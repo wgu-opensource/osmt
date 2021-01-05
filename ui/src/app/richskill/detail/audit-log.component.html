@@ -1,0 +1,69 @@
+<div class="l-accordion" [class.l-accordion-is-open]="isExpanded">
+  <button class="l-accordion-x-trigger m-buttonText" role="button" [attr.aria-expanded]="isExpanded" (click)="handleClickTrigger()">
+    <span class="m-buttonText-x-icon">
+			<div class="l-iconTransition" [class.l-iconTransition-is-toggled]="isExpanded">
+        <svg class="l-iconTransition-x-icon t-icon">
+          <use xlink:href="/assets/images/svg-defs.svg#icon-add"></use>
+        </svg>
+        <svg class="l-iconTransition-x-iconSwap l-iconTransition-x-replace t-icon">
+          <use xlink:href="/assets/images/svg-defs.svg#icon-minus"></use>
+        </svg>
+      </div>
+    </span>
+    <span class="m-buttonText-x-text">{{triggerLabel}}</span>
+  </button>
+
+  <div class="l-accordion-x-content t-margin-small t-margin-bottom" #content [attr.inert]="isExpanded ? false : ''" [attr.aria-hidden]="!isExpanded">
+    <div class="m-skillBackground l-inset l-inset-horizontal t-margin-small t-margin-top">
+      <!--{{render '@entry'}} -->
+      <app-blocking-loader [observables]="[resultsLoaded]">
+        <div class="l-entry" *ngFor="let entry of results">
+
+          <div class="l-entry-x-type">
+            <!--{{render '@entrytype'}} -->
+            <div class="l-flex">
+              <svg class="t-icon">
+                <use [attr.xlink:href]="iconForEntry(entry)"></use>
+              </svg>
+              <div>
+                <h5 class="t-type-bodyBold">{{labelForEntry(entry)}} {{entry.creationDate | date:'mediumDate'}}</h5>
+                <p class="t-type-small">
+                  <span class="t-visuallyHidden">by</span> {{entry.user}}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <ng-template [ngIf]="!entry.isPublishStatusChange()">
+            <div class="l-entry-x-category" *ngFor="let change of entry.changedFields">
+              <!--{{render '@entrycategory'}} -->
+              <div class="t-margin-small t-margin-bottom">
+                <!-- {{render '@m-sectionlabel&#45;&#45;shadow'}} -->
+                <div class="m-sectionLabel m-sectionLabel-shadow">{{visibleFieldName(change.fieldName)}}</div>
+              </div>
+              <div class="t-margin-small t-margin-bottom">
+                <!-- {{render '@entryitem&#45;&#45;changed-from'}} -->
+                <h6 class="t-type-smallBoldCaps t-margin-extraSmall t-margin-bottom">Changed From</h6>
+                <p *ngIf="change.old" class="t-type-bodyStrikethrough t-type-text3">{{change.old}}<p>
+                <p *ngIf="!change.old">
+                  <span aria-hidden="true">&mdash;</span>
+                  <span class="t-visuallyHidden">Empty</span>
+                </p>
+              </div>
+              <div class="t-margin-small t-margin-bottom">
+                <!-- {{render '@entryitem'}} -->
+                <h6 class="t-type-smallBoldCaps t-margin-extraSmall t-margin-bottom">Changed To</h6>
+                <p>{{change.new}}</p>
+              </div>
+
+            </div>
+          </ng-template>
+
+          <div class="l-entry-x-rule">
+            <hr class="m-rule" />
+          </div>
+        </div>
+      </app-blocking-loader>
+    </div>
+  </div>
+</div>

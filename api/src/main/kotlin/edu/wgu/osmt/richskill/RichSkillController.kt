@@ -3,9 +3,12 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.auditlog.AuditLog
+import edu.wgu.osmt.auditlog.AuditLogRepository
+import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.elasticsearch.*
+import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
 import edu.wgu.osmt.task.*
@@ -24,9 +27,13 @@ import org.springframework.web.util.UriComponentsBuilder
 class RichSkillController @Autowired constructor(
     val richSkillRepository: RichSkillRepository,
     val taskMessageService: TaskMessageService,
-    override val elasticRepository: EsRichSkillRepository,
+    val richSkillEsRepo: RichSkillEsRepo,
+    val auditLogRepository: AuditLogRepository,
     val appConfig: AppConfig
 ): HasAllPaginated<RichSkillDoc> {
+
+    override val elasticRepository = richSkillEsRepo
+
     val keywordDao = KeywordDao.Companion
 
     override val allPaginatedPath: String = RoutePaths.SKILLS_PATH
@@ -144,16 +151,39 @@ class RichSkillController @Autowired constructor(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) filterByStatus: List<String>,
+        @RequestParam(
+            required = false,
+            defaultValue = ""
+        ) collectionUuid: String,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         val filterStatuses = filterByStatus.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val publishStatus = PublishStatus.forApiValue(newStatus) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
-        val task = PublishTask(AppliesToType.Skill, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = readableUsername(user))
+        val task = PublishTask(
+            AppliesToType.Skill,
+            search,
+            filterByStatus=filterStatuses,
+            publishStatus = publishStatus,
+            userString = readableUsername(user),
+            collectionUuid = if (collectionUuid.isNullOrBlank()) null else collectionUuid
+        )
         taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
 
         val responseHeaders = HttpHeaders()
         responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         val tr = TaskResult.fromTask(task)
         return ResponseEntity.status(202).headers(responseHeaders).body(tr)
+    }
+
+    @GetMapping(RoutePaths.SKILL_AUDIT_LOG, produces = ["application/json"])
+    fun skillAuditLog(
+        @PathVariable uuid: String
+    ): HttpEntity<List<AuditLog>> {
+        val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateDesc.apiValue).sort)
+
+        val skill = richSkillRepository.findByUUID(uuid)
+
+        val sizedIterable = auditLogRepository.findByTableAndId(RichSkillDescriptorTable.tableName, entityId = skill!!.id.value, offsetPageable = pageable)
+        return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
     }
 }

@@ -3,27 +3,25 @@ package edu.wgu.osmt.collection
 import edu.wgu.osmt.api.FormValidationException
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
-import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.elasticsearch.EsCollectionRepository
-import edu.wgu.osmt.elasticsearch.EsRichSkillRepository
-import edu.wgu.osmt.elasticsearch.SearchService
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
+import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RichSkillDoc
-import edu.wgu.osmt.richskill.RsdUpdateObject
+import edu.wgu.osmt.richskill.*
 import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -74,13 +72,16 @@ interface CollectionRepository {
 @Repository
 @Transactional
 class CollectionRepositoryImpl @Autowired constructor(
-    val keywordRepository: KeywordRepository,
     val auditLogRepository: AuditLogRepository,
-    val esRichSkillRepository: EsRichSkillRepository,
-    val esCollectionRepository: EsCollectionRepository,
-    val searchService: SearchService,
+    val richSkillEsRepo: RichSkillEsRepo,
+    val collectionEsRepo: CollectionEsRepo,
     val appConfig: AppConfig
 ) : CollectionRepository {
+
+    @Autowired
+    @Lazy
+    lateinit var keywordRepository: KeywordRepository
+
     override val table = CollectionTable
     override val dao = CollectionDao.Companion
 
@@ -99,7 +100,7 @@ class CollectionRepositoryImpl @Autowired constructor(
     }
 
     override fun create(name: String, user: String): CollectionDao? {
-        return create(CollectionUpdateObject(name=name), user)
+        return create(CollectionUpdateObject(name = name), user)
     }
 
     override fun create(updateObject: CollectionUpdateObject, user: String): CollectionDao? {
@@ -112,76 +113,99 @@ class CollectionRepositoryImpl @Autowired constructor(
             this.updateDate = this.creationDate
             this.uuid = UUID.randomUUID().toString()
             this.name = updateObject.name
+            this.author = updateObject.author?.t
         }
 
-        val updateWithIdAndAuthor = updateObject.copy(
-            id = newCollection.id.value
+        updateObject.copy(id = newCollection.id.value).applyToDao(newCollection)
+
+        newCollection.let {
+            collectionEsRepo.save(it.toDoc())
+            richSkillEsRepo.saveAll(it.skills.map { skill -> RichSkillDoc.fromDao(skill, appConfig) })
+        }
+
+        auditLogRepository.create(
+            AuditLog.fromAtomicOp(
+                table,
+                newCollection.id.value,
+                newCollection.toModel().diff(null),
+                user,
+                AuditOperationType.Insert
+            )
         )
-        return update(updateWithIdAndAuthor, user)
-    }
 
-    fun applyUpdate(collectionDao: CollectionDao, updateObject: CollectionUpdateObject): Unit {
-        collectionDao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
-
-        when (updateObject.publishStatus) {
-            PublishStatus.Archived -> collectionDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-            PublishStatus.Published -> collectionDao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
-            PublishStatus.Unarchived -> collectionDao.archiveDate = null
-            PublishStatus.Deleted -> {
-                if (collectionDao.publishDate == null){
-                    collectionDao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
-                }
-            }
-        }
-
-        updateObject.name?.let { collectionDao.name = it }
-
-        updateObject.author?.let {
-            if (it.t != null) {
-                collectionDao.author = it.t
-            } else {
-                collectionDao.author = null
-            }
-        }
-
-        updateObject.skills?.let {
-            it.add?.forEach { skill ->
-                CollectionSkills.create(collectionId = updateObject.id!!, skillId = skill.id.value)
-            }
-            it.remove?.forEach { skill ->
-                CollectionSkills.delete(collectionId = updateObject.id!!, skillId = skill.id.value)
-            }
-        }
+        return newCollection
     }
 
     override fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao? {
         val daoObject = dao.findById(updateObject.id!!)
-        val changes = daoObject?.let { updateObject.diff(it) }
+        val oldObject = daoObject?.toModel()
+        val currentSkillDaos = daoObject?.skills?.toList().orEmpty()
+
+        val skillDaosToTrack = (updateObject.skills?.add.orEmpty() + updateObject.skills?.remove.orEmpty() + currentSkillDaos).distinct()
+        val oldSkills = skillDaosToTrack.map { it.uuid to it.toModel() }.toMap()
 
         daoObject?.let {
-            applyUpdate(it, updateObject)
+            updateObject.applyToDao(it)
 
             // reindex elastic search documents
-            esCollectionRepository.save(it.toDoc())
-            esRichSkillRepository.saveAll(it.skills.map { skill -> RichSkillDoc.fromDao(skill, appConfig) })
+            collectionEsRepo.save(it.toDoc())
+            richSkillEsRepo.saveAll(it.skills.map { skill -> RichSkillDoc.fromDao(skill, appConfig) })
         }
 
-        changes?.let { it ->
+        val (publishStatusChanges, otherChanges) = daoObject?.toModel()?.diff(oldObject)
+            ?.partition { it.fieldName == Collection::publishStatus.name } ?: (null to null)
+
+        // catch collection/skill relationship changes and generate audit log(s)
+        skillDaosToTrack.map { skillDao ->
+            val oldSkill = oldSkills.get(skillDao.uuid)
+            val skillChange = skillDao.toModel().diff(oldSkill)
+            if (skillChange.isNotEmpty()) {
+                auditLogRepository.create(
+                    AuditLog.fromAtomicOp(
+                        RichSkillDescriptorTable,
+                        skillDao.id.value,
+                        skillChange,
+                        user,
+                        AuditOperationType.Update
+                    )
+                )
+            }
+        }
+
+        otherChanges?.let { it ->
             if (it.isNotEmpty())
-                auditLogRepository.insert(
+                auditLogRepository.create(
                     AuditLog.fromAtomicOp(
                         table,
                         updateObject.id,
-                        it.toString(),
+                        it,
                         user,
                         AuditOperationType.Update
                     )
                 )
         }
+
+        publishStatusChanges?.let { it ->
+            if (it.isNotEmpty())
+                auditLogRepository.create(
+                    AuditLog.fromAtomicOp(
+                        table,
+                        updateObject.id,
+                        it,
+                        user,
+                        AuditOperationType.PublishStatusChange
+                    )
+                )
+        }
+
         return daoObject
     }
 
-    override fun createFromApi(apiUpdates: List<ApiCollectionUpdate>, richSkillRepository: RichSkillRepository, user: String): List<CollectionDao> {
+    override fun createFromApi(
+        apiUpdates: List<ApiCollectionUpdate>,
+        richSkillRepository: RichSkillRepository,
+        user: String
+    ): List<CollectionDao> {
         // pre validate all rows
         val allErrors = apiUpdates.mapIndexed { i, updateDto ->
             updateDto.validateForCreation(i)
@@ -210,9 +234,11 @@ class CollectionRepositoryImpl @Autowired constructor(
         }
 
         val collectionUpdateObject = collectionUpdateObjectFromApi(collectionUpdate, richSkillRepository)
+
         val updateObjectWithId = collectionUpdateObject.copy(
             id = existingCollectionId
         )
+
         return update(updateObjectWithId, user)
     }
 
@@ -227,19 +253,24 @@ class CollectionRepositoryImpl @Autowired constructor(
         val collectionDao = this.findByUUID(collectionUuid)
         val collectionId = collectionDao!!.id.value
 
+        var modifiedSkillDaos = mutableListOf<RichSkillDescriptorDao>()
+        var modifiedSkillOriginals = mutableMapOf<String, RichSkillDescriptor>()
 
         //process additions
-        val add_skill_dao = {skillDao: RichSkillDescriptorDao? ->
-            skillDao?.let {
-                CollectionSkills.create(collectionId, skillDao.id.value)
-                esRichSkillRepository.save(RichSkillDoc.fromDao(it, appConfig))
+        fun addSkillDao(skillDao: RichSkillDescriptorDao?) {
+            skillDao?.let { dao ->
+                modifiedSkillDaos.add(dao).also { modifiedSkillOriginals.put(dao.uuid, dao.toModel()) }
+                CollectionSkills.create(collectionId, dao.id.value)
+                richSkillEsRepo.save(RichSkillDoc.fromDao(dao, appConfig))
                 modifiedCount += 1
             }
         }
-        val remove_skill_dao = {skillDao: RichSkillDescriptorDao? ->
-            skillDao?.let {
-                CollectionSkills.delete(collectionId, it.id.value)
-                esRichSkillRepository.save(RichSkillDoc.fromDao(it, appConfig))
+
+        fun removeSkillDao(skillDao: RichSkillDescriptorDao?) {
+            skillDao?.let { dao ->
+                modifiedSkillDaos.add(dao).also { modifiedSkillOriginals.put(dao.uuid, dao.toModel()) }
+                CollectionSkills.delete(collectionId, dao.id.value)
+                richSkillEsRepo.save(RichSkillDoc.fromDao(dao, appConfig))
                 modifiedCount += 1
             }
         }
@@ -247,44 +278,59 @@ class CollectionRepositoryImpl @Autowired constructor(
         if (!task.skillListUpdate.add?.uuids.isNullOrEmpty()) {
             task.skillListUpdate.add?.uuids?.forEach { uuid ->
                 val skillDao = richSkillRepository.findByUUID(uuid)
-                add_skill_dao(skillDao)
+                addSkillDao(skillDao)
             }
             totalCount += task.skillListUpdate.add?.uuids?.size ?: 0
         } else if (task.skillListUpdate.add != null) {
-            val searchHits = searchService.searchRichSkillsByApiSearch(
+            val searchHits = richSkillEsRepo.byApiSearch(
                 task.skillListUpdate.add,
                 task.publishStatuses,
                 Pageable.unpaged()
             )
             searchHits.forEach { hit ->
-                add_skill_dao(richSkillRepository.findById(hit.content.id))
+                addSkillDao(richSkillRepository.findById(hit.content.id))
             }
             totalCount += searchHits.totalHits.toInt()
         }
 
         // process removals
         if (!task.skillListUpdate.remove?.uuids.isNullOrEmpty()) {
-            task.skillListUpdate.remove?.uuids?.forEach{ skillUuid ->
+            task.skillListUpdate.remove?.uuids?.forEach { skillUuid ->
                 val skillDao = richSkillRepository.findByUUID(skillUuid)
-                remove_skill_dao(skillDao)
+                removeSkillDao(skillDao)
                 totalCount += 1
             }
         } else if (task.skillListUpdate.remove != null) {
-            val searchHits = searchService.searchRichSkillsByApiSearch(
+            val searchHits = richSkillEsRepo.byApiSearch(
                 task.skillListUpdate.remove,
                 task.publishStatuses,
                 Pageable.unpaged()
             )
             searchHits.forEach { hit ->
-                remove_skill_dao(richSkillRepository.findById(hit.content.id))
+                removeSkillDao(richSkillRepository.findById(hit.content.id))
             }
             totalCount += searchHits.totalHits.toInt()
 
         }
 
+        modifiedSkillDaos.map{skillDao ->
+            val changes = skillDao.toModel().diff(modifiedSkillOriginals[skillDao.uuid])
+            if (changes.isNotEmpty()) {
+                auditLogRepository.create(
+                    AuditLog.fromAtomicOp(
+                        RichSkillDescriptorTable,
+                        skillDao.id.value,
+                        changes,
+                        task.userString,
+                        AuditOperationType.Update
+                    )
+                )
+            }
+        }
+
         // update affected elasticsearch indexes
         this.findByUUID(collectionUuid)?.let {
-            esCollectionRepository.save(it.toDoc())
+            collectionEsRepo.save(it.toDoc())
         }
 
         return ApiBatchResult(
@@ -294,14 +340,17 @@ class CollectionRepositoryImpl @Autowired constructor(
         )
     }
 
-    override fun collectionUpdateObjectFromApi(collectionUpdate: ApiCollectionUpdate, richSkillRepository: RichSkillRepository): CollectionUpdateObject {
+    override fun collectionUpdateObjectFromApi(
+        collectionUpdate: ApiCollectionUpdate,
+        richSkillRepository: RichSkillRepository
+    ): CollectionUpdateObject {
         val authorKeyword = collectionUpdate.author?.let {
             keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it.name, uri = it.id)
         }
 
         val adding = mutableListOf<RichSkillDescriptorDao>()
         val removing = mutableListOf<RichSkillDescriptorDao>()
-        collectionUpdate.skills?.let {slu ->
+        collectionUpdate.skills?.let { slu ->
             slu.add?.mapNotNull {
                 richSkillRepository.findByUUID(it)
             }?.let {
@@ -327,9 +376,9 @@ class CollectionRepositoryImpl @Autowired constructor(
         var modifiedCount = 0
         var totalCount = 0
 
-        val publish_collection = {collectionDao: CollectionDao, task: PublishTask ->
+        fun publishCollection(collectionDao: CollectionDao, task: PublishTask): Boolean {
             val oldStatus = collectionDao.publishStatus()
-            if (oldStatus != task.publishStatus) {
+            return if (oldStatus != task.publishStatus) {
                 val updateObj = CollectionUpdateObject(id = collectionDao.id.value, publishStatus = task.publishStatus)
                 val updatedDao = this.update(updateObj, task.userString)
                 val newStatus = updatedDao?.publishStatus()
@@ -337,9 +386,9 @@ class CollectionRepositoryImpl @Autowired constructor(
             } else false
         }
 
-        val handle_collection_dao = {collectionDao: CollectionDao? ->
+        fun handleCollectionDao(collectionDao: CollectionDao?): Unit {
             collectionDao?.let {
-                if (publish_collection(it, publishTask)) {
+                if (publishCollection(it, publishTask)) {
                     modifiedCount += 1
                 }
             }
@@ -348,17 +397,17 @@ class CollectionRepositoryImpl @Autowired constructor(
         if (!publishTask.search.uuids.isNullOrEmpty()) {
             totalCount = publishTask.search.uuids.size
             publishTask.search.uuids.forEach { uuid ->
-                handle_collection_dao(this.findByUUID(uuid))
+                handleCollectionDao(this.findByUUID(uuid))
             }
         } else {
-            val searchHits = searchService.searchCollectionsByApiSearch(
+            val searchHits = collectionEsRepo.byApiSearch(
                 publishTask.search,
                 publishTask.filterByStatus,
                 Pageable.unpaged()
             )
             totalCount = searchHits.totalHits.toInt()
             searchHits.forEach { hit ->
-                handle_collection_dao(this.findById(hit.content.id))
+                handleCollectionDao(this.findById(hit.content.id))
             }
         }
 

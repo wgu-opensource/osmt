@@ -1,6 +1,5 @@
-import {Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output} from "@angular/core"
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
-import {OccupationsFormatter} from "../../job-codes/Jobcode"
 import {ApiSkillSummary} from "../ApiSkillSummary"
 import {PublishStatus} from "../../PublishStatus"
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
@@ -16,10 +15,10 @@ export class SkillListRowComponent implements OnInit {
   @Input() isSelected = false
   @Input() id = ""
   @Input() nextId = ""
+  @Input() rowActions: TableActionDefinition[] = []
 
   @Output() rowSelected = new EventEmitter<ApiSkillSummary>()
-
-  @Input() rowActions: TableActionDefinition[] = []
+  @Output() focusActionBar = new EventEmitter<void>()
 
   upIcon = SvgHelper.path(SvgIcon.ICON_UP)
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
@@ -38,7 +37,7 @@ export class SkillListRowComponent implements OnInit {
   }
 
   getFormattedOccupations(): string {
-    return new OccupationsFormatter(this.skill?.occupations ?? []).detailedGroups()
+    return (this.skill?.occupations?.filter(o => !!o.detailed).map(o => o.detailed) ?? []).join("; ")
   }
 
   selected(): void {

@@ -66,7 +66,7 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   }
 
   publishLinkText(): string {
-    return this.isPublished() ? "View Published Skill" : "Publish"
+    return this.isPublished() ? "View Published RSD" : "Publish"
   }
 
   publishLinkDestination(): string {

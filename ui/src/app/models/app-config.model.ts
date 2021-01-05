@@ -12,6 +12,7 @@ export interface IAppConfig {
   poweredBy: string
   poweredByUrl: string
   poweredByLabel: string
+  idleTimeoutInSeconds: number
 }
 
 // Default configuration
@@ -24,9 +25,10 @@ export class DefaultAppConfig implements IAppConfig {
   toolNameLong = "Open Skills Management Tool"
   publicSkillTitle = "Rich Skill Descriptor"
   publicCollectionTitle = "Rich Skill Descriptor Collection"
-  licensePrimary = "© 2020 Western Governors University - WGU."
-  licenseSecondary = "All Rights Reserved."
+  licensePrimary = "© 2021 Western Governors University (WGU)."
+  licenseSecondary = "All rights reserved."
   poweredBy = "Powered by the"
   poweredByUrl = "https://rsd.osmt.dev"
   poweredByLabel = "Open Skills Network"
+  idleTimeoutInSeconds = 15 * 60
 }

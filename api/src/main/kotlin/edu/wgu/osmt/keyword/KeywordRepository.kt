@@ -1,12 +1,12 @@
 package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.elasticsearch.EsKeywordRepository
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -46,7 +46,8 @@ interface KeywordRepository {
 class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : KeywordRepository {
 
     @Autowired
-    lateinit var esKeywordRepository: EsKeywordRepository
+    @Lazy
+    lateinit var keywordEsRepo: KeywordEsRepo
 
     override val dao = KeywordDao.Companion
     override val table = KeywordTable
@@ -84,6 +85,6 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
             this.type = type
             this.value = value
             this.uri = uri
-        }.also { esKeywordRepository.save(it.toModel()) } else null
+        }.also { keywordEsRepo.save(it.toModel()) } else null
     }
 }

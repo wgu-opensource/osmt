@@ -1,4 +1,4 @@
-import {Component} from "@angular/core"
+import {Component, ViewChild} from "@angular/core"
 import {Observable} from "rxjs"
 import {ApiSearch, PaginatedCollections} from "../richskill/service/rich-skill-search.service"
 import {checkArchived, determineFilters, PublishStatus} from "../PublishStatus"
@@ -9,6 +9,7 @@ import {Router} from "@angular/router"
 import {ToastService} from "../toast/toast.service"
 import {CollectionService} from "./service/collection.service"
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
+import {TableActionBarComponent} from "../table/skills-library-table/table-action-bar.component"
 
 
 @Component({
@@ -16,6 +17,8 @@ import {TableActionDefinition} from "../table/skills-library-table/has-action-de
   templateUrl: "./collections-list.component.html"
 })
 export class CollectionsListComponent {
+
+  @ViewChild(TableActionBarComponent) actionBar!: TableActionBarComponent
 
   from = 0
   size = 50
@@ -255,7 +258,7 @@ export class CollectionsListComponent {
     this.collectionsSaved?.subscribe((result) => {
       if (result !== undefined) {
         const partial = (result.modifiedCount !== result.totalCount)  ? ` of ${result.totalCount}` : ""
-        const message = `You ${verb} ${result.modifiedCount}${partial} Collection${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
+        const message = `You ${verb} ${result.modifiedCount}${partial} collection${(result.totalCount ?? 0) > 1 ? "s" : ""}.`
         this.toastService.showToast("Success!", message)
         this.toastService.hideBlockingLoader()
         this.loadNextPage()
@@ -272,4 +275,7 @@ export class CollectionsListComponent {
     return true
   }
 
+  focusActionBar(): void {
+    this.actionBar?.focus()
+  }
 }

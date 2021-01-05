@@ -12,9 +12,10 @@ export class CollectionListRowComponent implements OnInit {
   @Input() collection?: ApiCollectionSummary
   @Input() id = "collection-list-row"
   @Input() isSelected = false
-  @Output() rowSelected = new EventEmitter<ICollectionSummary>()
   @Input() rowActions: TableActionDefinition[] = []
 
+  @Output() rowSelected = new EventEmitter<ICollectionSummary>()
+  @Output() focusActionBar = new EventEmitter<void>()
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
 
   constructor() { }
@@ -33,5 +34,15 @@ export class CollectionListRowComponent implements OnInit {
   handleClick(action: TableActionDefinition): boolean {
     action.fire(this.collection)
     return false
+  }
+
+  focusFirstColumnInRow(): boolean {
+    const ref = document.getElementById(`${this.id}-header-name`)
+    if (ref) {
+      ref.focus()
+      return true
+    } else {
+      return false
+    }
   }
 }

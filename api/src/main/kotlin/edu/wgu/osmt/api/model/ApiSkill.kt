@@ -8,6 +8,7 @@ import edu.wgu.osmt.richskill.RichSkillDescriptor
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -85,8 +86,17 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
 
     @get:JsonProperty
     val occupations: List<ApiJobCode>
-        get() = rsd.jobCodes.map { jobCode ->
-            ApiJobCode.fromJobCode(jobCode)
+        get() {
+            return rsd.jobCodes.filter { it.code.isNotBlank() }.map { jobCode ->
+                val parents = listOfNotNull(
+                    jobCode.major.let {jobCode.majorCode?.let { ApiJobCode(code=it, name=jobCode.major, level=JobCodeLevel.Major) }},
+                    jobCode.minor.let{jobCode.minorCode?.let { ApiJobCode(code=it, name=jobCode.minor, level=JobCodeLevel.Minor) }},
+                    jobCode.broad?.let {jobCode.broadCode?.let { ApiJobCode(code=it, name=jobCode.broad, level=JobCodeLevel.Broad) }},
+                    jobCode.detailed?.let {jobCode.detailedCode?.let { ApiJobCode(code=it, name=jobCode.detailed, level=JobCodeLevel.Detailed) }}
+                ).distinct()
+
+                ApiJobCode.fromJobCode(jobCode, parents=parents)
+            }
         }
 
     @get:JsonProperty
@@ -94,8 +104,8 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
         get() = rsd.employers.map { ApiNamedReference.fromKeyword(it) }
 
     @get:JsonProperty
-    val collections: List<String>
-        get() = cs.map { it.name }
+    val collections: List<ApiUuidReference>
+        get() = cs.map { ApiUuidReference.fromCollection(it) }
 
     companion object {
         fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkill{

@@ -1,11 +1,11 @@
 package edu.wgu.osmt.jobcode
 
-import edu.wgu.osmt.elasticsearch.EsJobCodeRepository
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -19,6 +19,7 @@ interface JobCodeRepository {
     fun findByCodeOrCreate(code: String, framework: String? = null): JobCodeDao
     fun findBlsCode(code: String): JobCodeDao?
     fun create(code: String, framework: String? = null): JobCodeDao
+    fun onetsByDetailCode(detailedCode: String): SizedIterable<JobCodeDao>
 
     companion object {
         const val BLS_FRAMEWORK = "bls"
@@ -28,7 +29,12 @@ interface JobCodeRepository {
 
 @Repository
 @Transactional
-class JobCodeRepositoryImpl @Autowired constructor(val esJobCodeRepository: EsJobCodeRepository) : JobCodeRepository {
+class JobCodeRepositoryImpl: JobCodeRepository {
+
+    @Autowired
+    @Lazy
+    lateinit var jobCodeEsRepo: JobCodeEsRepo
+
     val dao = JobCodeDao.Companion
     override val table = JobCodeTable
 
@@ -37,6 +43,7 @@ class JobCodeRepositoryImpl @Autowired constructor(val esJobCodeRepository: EsJo
     override fun findById(id: Long): JobCodeDao? = dao.findById(id)
 
     override fun findByCode(code: String): JobCodeDao? {
+        if (code.isBlank()) return null
         return table.select { table.code eq code }.firstOrNull()?.let { dao.wrapRow(it) }
     }
 
@@ -51,10 +58,23 @@ class JobCodeRepositoryImpl @Autowired constructor(val esJobCodeRepository: EsJo
     }
 
     override fun create(code: String, framework: String?): JobCodeDao {
+        val maybeDetailed = JobCodeBreakout.detailedCode(code).let{ findBlsCode(code) }
         return dao.new {
             creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.code = code
             this.framework = framework
-        }.also { esJobCodeRepository.save(it.toModel()) }
+            maybeDetailed?.let { detailed ->
+                {
+                    this.detailed = detailed.detailed
+                    this.broad = detailed.broad
+                    this.major = detailed.major
+                    this.minor = detailed.minor
+                }
+            }
+        }.also { jobCodeEsRepo.save(it.toModel()) }
+    }
+
+    override fun onetsByDetailCode(detailedCode: String): SizedIterable<JobCodeDao> {
+        return table.select {table.code regexp "${detailedCode}.[0-90-9]"}.let{dao.wrapRows(it)}
     }
 }

@@ -1,4 +1,5 @@
 
+<ng-template [appLoadingObservables]="[resultsLoaded]">
 <div class="l-stickyBar">
 
   <div class="l-container t-padding-large t-padding-top">
@@ -6,12 +7,12 @@
 <!--    {{render '@listheading'}}-->
     <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
       <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom" tabindex="0" #titleHeading>{{title}}</h2>
-      <p class="t-type-bodyLarge t-color-text3">
+      <p class="t-type-bodyLarge t-type-text3">
         {{skillCountLabel}}
         found based on
         <ng-template [ngIf]="matchingQuery !== undefined">
           <ng-template ngFor let-q [ngForOf]="matchingQuery" let-last="last">
-            <span class="t-type-bodyLargeBold t-color-text1">{{q}}</span><ng-template [ngIf]="!last">, </ng-template> and
+            <span class="t-type-bodyLargeBold t-type-text1">{{q}}</span><ng-template [ngIf]="!last">, </ng-template> and
           </ng-template>
         </ng-template>
         your filters.
@@ -27,17 +28,19 @@
     ></app-filter-controls>
 
     <div class="t-margin-medium t-margin-bottom">
-      <ng-template [appLoadingObservables]="[resultsLoaded]">
+      <app-blocking-loader [observables]="[resultsLoaded]">
+        <p class="t-visuallyHidden">Select one or more RSDs, then use the action menu to publish, archive, unarchive, or add the selected RSDs to a collection. </p>
         <app-skill-table
           *ngIf="!emptyResults"
           [items]="results.skills"
-          (rowSelected)="handleNewSelection($event)"
           [currentSort]="columnSort"
-          (columnSorted)="handleHeaderColumnSort($event)"
           [rowActions]="rowActions()"
-          (selectAllSelected)="handleSelectAll($event)"
           [selectAllCount]="getSelectAllCount()"
           [selectAllEnabled]="getSelectAllEnabled()"
+          (rowSelected)="handleNewSelection($event)"
+          (columnSorted)="handleHeaderColumnSort($event)"
+          (selectAllSelected)="handleSelectAll($event)"
+          (focusActionBar)="focusActionBar()"
         ></app-skill-table>
 
         <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">
@@ -53,7 +56,7 @@
         <app-empty-message *ngIf="emptyResults && !showSearchEmptyMessage">
           <p class="m-emptyMessage-x-message">No RSDs found. Try adjusting your filters.</p>
         </app-empty-message>
-      </ng-template>
+      </app-blocking-loader>
     </div>
 
     <app-pagination
@@ -73,3 +76,4 @@
 </div>
 
 
+</ng-template>

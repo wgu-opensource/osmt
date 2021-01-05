@@ -7,12 +7,7 @@ import {ToastService} from "../../toast/toast.service";
 import {CollectionService} from "../service/collection.service";
 import {PublishStatus} from "../../PublishStatus";
 import {Observable} from "rxjs";
-import {
-  ApiAdvancedSearch,
-  ApiSearch,
-  ApiSkillListUpdate,
-  PaginatedSkills
-} from "../../richskill/service/rich-skill-search.service";
+import {ApiSearch, ApiSkillListUpdate, PaginatedSkills} from "../../richskill/service/rich-skill-search.service";
 import {ApiBatchResult} from "../../richskill/ApiBatchResult";
 
 
@@ -66,38 +61,34 @@ export class PublishCollectionComponent implements OnInit {
   }
 
   nextState(): void {
-    console.log("nextstate", this.activeState, this.activeState + 1)
     this.activeState += 1
     if (this.activeState === PubColState.checkingArchived) {
-      this.checkForStatus(PublishStatus.Archived)
+      this.checkForStatus(new Set([PublishStatus.Archived, PublishStatus.Deleted]))
     }
     else if (this.activeState === PubColState.checkingDraft) {
-      this.checkForStatus(PublishStatus.Unarchived)
+      this.checkForStatus(new Set([PublishStatus.Draft]))
     }
     else if (this.activeState === PubColState.publishingCollection) {
       this.submitCollectionStatusChange()
     }
     else if (this.activeState === PubColState.end) {
-      // done
-      console.log("DONE")
       this.toastService.hideBlockingLoader()
     }
   }
 
   get verb(): string {
-    return (this.activeState === PubColState.checkingArchived) ? "archived" : "unpublished"
+    return (this.activeState === PubColState.checkingArchived) ? "archived" : "draft"
   }
 
-  checkForStatus(status: PublishStatus): void {
-    this.skillsLoaded = this.collectionService.getCollectionSkills(this.uuidParam!, this.batchSize, 0, new Set([status]))
+  checkForStatus(statuses: Set<PublishStatus>): void {
+
+    this.skillsLoaded = this.collectionService.getCollectionSkills(this.uuidParam!, this.batchSize, 0, statuses)
     this.skillsLoaded.subscribe(results => {
       this.blockingSkills = results
       if (results.totalCount < 1) {
-        console.log("no archived skills!", status)
         this.nextState()
       } else {
-        console.log("gotta deal with archived skills!", status)
-
+        this.toastService.hideBlockingLoader()
       }
     })
   }
@@ -108,39 +99,39 @@ export class PublishCollectionComponent implements OnInit {
   }
 
   handleClickConfirmRemove(): boolean {
-    // TODO
-    // this.skillsSaved = this.collectionService.updateSkillsWithResult(this.uuidParam!, new ApiSkillListUpdate({
-    //   remove: new ApiSearch({
-    //     advanced: ApiAdvancedSearch.factory({
-    //       status: PublishStatus.Archived
-    //     })
-    //   })
-    // }))
-    // this.skillsSaved.subscribe(result => {
-    //   if (!result) { return }
-    //
-    //   this.nextState()
-    // })
+    // remove all archived or deleted skills from collection
+    const skillListUpdate = new ApiSkillListUpdate({
+      remove: new ApiSearch({})
+    })
+    const filterBy = new Set([PublishStatus.Archived, PublishStatus.Deleted])
+    this.toastService.showBlockingLoader()
+    this.skillsSaved = this.collectionService.updateSkillsWithResult(this.uuidParam!, skillListUpdate, filterBy)
+    this.skillsSaved.subscribe(result => {
+      if (result) {
+        this.nextState()
+      }
+    })
     return false
   }
 
   handleClickConfirmUnarchive(): boolean {
-    this.submitSkillStatusChange(PublishStatus.Unarchived, PublishStatus.Archived)
+    // unarchive all archived or deleted skills from collection
+    this.submitSkillStatusChange(PublishStatus.Unarchived, new Set([PublishStatus.Archived, PublishStatus.Deleted]))
     return false
   }
 
   handleClickConfirmPublish(): boolean {
-    this.submitSkillStatusChange(PublishStatus.Published, PublishStatus.Unarchived)
+    // publish all draft skills
+    this.submitSkillStatusChange(PublishStatus.Published, new Set([PublishStatus.Draft]))
     return false
   }
 
-  submitSkillStatusChange(newStatus: PublishStatus, filterStatus: PublishStatus): void {
+  submitSkillStatusChange(newStatus: PublishStatus, filterStatuses: Set<PublishStatus>): void {
     const search = new ApiSearch({})
     this.toastService.showBlockingLoader()
-    this.skillsSaved = this.richSkillService.publishSkillsWithResult(search, filterStatus, new Set([newStatus]), this.uuidParam)
+    this.skillsSaved = this.richSkillService.publishSkillsWithResult(search, newStatus, filterStatuses, this.uuidParam)
     this.skillsSaved.subscribe(result => {
       if (!result) { return }
-      console.log("status change complete", newStatus, result)
       this.nextState()
     })
 

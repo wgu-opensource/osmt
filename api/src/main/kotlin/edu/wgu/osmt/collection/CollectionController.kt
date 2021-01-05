@@ -3,6 +3,9 @@ package edu.wgu.osmt.collection
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.auditlog.AuditLog
+import edu.wgu.osmt.auditlog.AuditLogRepository
+import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.*
@@ -26,9 +29,12 @@ class CollectionController @Autowired constructor(
     val collectionRepository: CollectionRepository,
     val richSkillRepository: RichSkillRepository,
     val taskMessageService: TaskMessageService,
-    override val elasticRepository: EsCollectionRepository,
+    val auditLogRepository: AuditLogRepository,
+    val collectionEsRepo: CollectionEsRepo,
     val appConfig: AppConfig
 ): HasAllPaginated<CollectionDoc> {
+
+    override val elasticRepository = collectionEsRepo
 
     override val allPaginatedPath: String = RoutePaths.COLLECTIONS_PATH
     override val sortOrderCompanion = CollectionSortEnum.Companion
@@ -153,4 +159,15 @@ class CollectionController @Autowired constructor(
         return ResponseEntity.status(202).headers(responseHeaders).body(tr)
     }
 
+    @GetMapping(RoutePaths.COLLECTION_AUDIT_LOG, produces = ["application/json"])
+    fun collectionAuditLog(
+        @PathVariable uuid: String
+    ): HttpEntity<List<AuditLog>> {
+        val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateDesc.apiValue).sort)
+
+        val collection = collectionRepository.findByUUID(uuid)
+
+        val sizedIterable = auditLogRepository.findByTableAndId(CollectionTable.tableName, entityId = collection!!.id.value, offsetPageable = pageable)
+        return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
+    }
 }

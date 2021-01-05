@@ -12,8 +12,8 @@
   <div class="t-margin-extraSmall t-margin-bottom">
     <app-status-bar
       [status]="status"
-      [archiveDate]="archiveDate"
-      [publishDate]="publishDate"
+      [archiveDate]="archiveDate | date: 'mediumDate'"
+      [publishDate]="publishDate | date: 'mediumDate'"
     ></app-status-bar>
   </div>
   <p *ngIf="showSkillCount" class="t-type-body">{{totalSkills}} RSDs in collection. Viewing {{indexOfFirstSkill+1}}-{{indexOfLastSkill}}.</p>

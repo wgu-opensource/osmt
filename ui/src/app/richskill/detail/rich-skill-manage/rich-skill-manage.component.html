@@ -13,6 +13,14 @@
         [archiveDate]="getArchivedDate()"
         [publishDate]="getPublishedDate()"
       ></app-detail-card>
+
+      <div *ngIf="uuidParam" class="t-margin-medium t-margin-top">
+        <app-audit-log
+          [skillUuid]="uuidParam"
+          closedLabel="View Audit Log"
+          openLabel="Hide Audit Log">
+        </app-audit-log>
+      </div>
     </div>
 
 
@@ -51,4 +59,19 @@
   <ng-template #noData>
     No data to load.
   </ng-template>
+</ng-template>
+
+<!-- This is injected into the detail card occupations section -->
+<ng-template #occupationsTemplate>
+  <div>
+    <app-occupations-card-section
+      [codes]="this.richSkill?.occupations"
+      [isCollapsed]="isOccupationsCollapsed"
+    ></app-occupations-card-section>
+    <div class="t-margin-extraSmall t-margin-top">
+      <button class="t-link" type="button" (click)="isOccupationsCollapsed = !isOccupationsCollapsed">
+        <span>View {{isOccupationsCollapsed ? "All" : "Fewer"}} Groups</span>
+      </button>
+    </div>
+  </div>
 </ng-template>

@@ -1,6 +1,7 @@
 package edu.wgu.osmt
 
 import edu.wgu.osmt.auditlog.AuditLogTable
+import edu.wgu.osmt.auditlog.AuditLogUtils
 import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.collection.CollectionTable
 import edu.wgu.osmt.config.AppConfig
@@ -43,10 +44,14 @@ class ApiServer {
     @Autowired
     private lateinit var appConfig: AppConfig
 
+    @Autowired
+    private lateinit var auditLogUtils: AuditLogUtils
+
     @Bean
     fun commandLineRunner(): CommandLineRunner {
         return CommandLineRunner {
             printMissingTableAndColumnStatements()
+            auditLogUtils.baseLineIfEmpty()
         }
     }
 

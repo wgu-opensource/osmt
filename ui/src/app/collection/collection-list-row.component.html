@@ -1,7 +1,7 @@
 <ng-template [ngIf]="!!collection">
 
   <th scope="row" id="{{id}}-header">
-    <a class="t-focus t-type-bodyLink" routerLink="/collections/{{collection.uuid}}/manage">{{collection.name}}</a>
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink" routerLink="/collections/{{collection.uuid}}/manage">{{collection.name}}</a>
   </th>
 
   <td>{{collection.skillCount}}</td>
@@ -37,7 +37,7 @@
           </div>
         </div>
         <div class="m-quickLinks">
-          <a href="#">Jump to actions</a>
+          <a (click)="focusActionBar.emit()">Actions menu.</a>
         </div>
       </div>
 

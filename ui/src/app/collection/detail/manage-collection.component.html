@@ -5,7 +5,7 @@
 
   <div class="l-stickySidebar l-container t-margin-medium t-margin-bottom">
 
-    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top" #titleHeading tabindex="0">
+    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top" tabindex="0">
       <app-collection-public-detail-card
         *ngIf="collection"
         [collection]="collection"
@@ -29,14 +29,14 @@
     <div class="t-margin-medium t-margin-bottom">
       <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
         <div class="m-text">
-          <svg class="m-text-x-icon t-icon" (click)="clearSearch()"><use xlink:href="/assets/images/svg-defs.svg#icon-search"></use></svg>
+          <svg aria-hidden="true" class="m-text-x-icon t-icon" (click)="clearSearch()"><use [attr.xlink:href]="searchIcon"></use></svg>
           <input type="text" placeholder="Search RSDs in this collection" [formControl]="searchForm.controls.search">
         </div>
 
         <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
           {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">RSDs</ng-template><ng-template #singular>RSD</ng-template> found in this collection based on
           <ng-template [ngIf]="matchingQuery">
-            <span class="t-type-bodyLargeBold t-color-text1">{{matchingQuery[0]}}</span> and
+            <span class="t-type-bodyLargeBold t-type-text1">{{matchingQuery[0]}}</span> and
           </ng-template>
           your filters.
           <ng-template [ngIf]="totalCount > 0">
@@ -57,6 +57,7 @@
     <ng-template [appLoadingObservables]="[resultsLoaded]">
 
       <div class="t-margin-medium t-margin-bottom">
+        <p class="t-visuallyHidden">Select one or more RSDs in the table, or select all in the table heading, then use the action menu to publish, archive, unarchive, or add the selected RSDs to a collection. </p>
         <app-skill-table
           *ngIf="!emptyResults"
           [items]="results.skills"
@@ -67,6 +68,7 @@
           (selectAllSelected)="handleSelectAll($event)"
           [selectAllCount]="getSelectAllCount()"
           [selectAllEnabled]="getSelectAllEnabled()"
+          (focusActionBar)="focusActionBar()"
         ></app-skill-table>
       </div>
 
@@ -80,6 +82,14 @@
         (pageClicked)="handlePageClicked($event)"
       ></app-pagination>
     </ng-template>
+
+    <div *ngIf="collection" class="t-padding-medium t-padding-top">
+      <app-audit-log
+        [collectionUuid]="collection.uuid"
+        closedLabel="View Audit Log"
+        openLabel="Hide Audit Log">
+      </app-audit-log>
+    </div>
   </div>
 
   <div *ngIf="actionsVisible()" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
@@ -98,7 +108,7 @@
 
         <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Confirm that you want to remove {{selectedCount}} RSDs from this collection.</h2>
 
-        <app-accordian closedLabel="View All Skills" openLabel="View Less Skills">
+        <app-accordian closedLabel="View RSDs" openLabel="Hide RSDs">
           <div class="m-skillBackground l-inset t-margin-small t-margin-top">
             <div class="m-content">
               <ol>
@@ -118,7 +128,7 @@
         <span class="m-button-x-text">Cancel</span>
       </button>
       <button class="m-button" (click)="handleClickConfirmMulti()">
-        <span class="m-button-x-text">Yes, Remove Skill from Collection</span>
+        <span class="m-button-x-text">Yes, Remove RSDs from Collection</span>
       </button>
     </div>
   </div>

@@ -29,7 +29,10 @@ class AppConfig(
     val frontendUrl: String,
 
     @Value("\${app.loginSuccessRedirectUrl}")
-    val loginSuccessRedirectUrl: String
+    val loginSuccessRedirectUrl: String,
+
+    @Value("\${app.baseLineAuditLogIfEmpty}")
+    val baseLineAuditLogIfEmpty: Boolean
 ) {
     @Autowired
     lateinit var environment: Environment

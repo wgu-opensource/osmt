@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core"
 import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {Observable} from "rxjs"
-import {ApiSkill, ApiSortOrder, ISkill} from "../ApiSkill"
+import {ApiAuditLog, ApiSkill, ApiSortOrder, IAuditLog, ISkill} from "../ApiSkill"
 import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate"
@@ -10,7 +10,9 @@ import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service"
 import {PublishStatus} from "../../PublishStatus"
 import {ApiBatchResult} from "../ApiBatchResult"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
-import {ApiSkillSummary} from "../ApiSkillSummary"
+import {ApiSkillSummary, ISkillSummary} from "../ApiSkillSummary"
+import {Router} from "@angular/router";
+import {Location} from "@angular/common";
 
 
 @Injectable({
@@ -18,8 +20,8 @@ import {ApiSkillSummary} from "../ApiSkillSummary"
 })
 export class RichSkillService extends AbstractService {
 
-  constructor(httpClient: HttpClient, authService: AuthService) {
-    super(httpClient, authService)
+  constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
+    super(httpClient, authService, router, location)
   }
 
   private serviceUrl = "api/skills"
@@ -96,13 +98,17 @@ export class RichSkillService extends AbstractService {
   }
 
   createSkill(updateObject: ApiSkillUpdate): Observable<ApiSkill> {
+    return this.createSkills([updateObject]).pipe(map(it => it[0]))
+  }
+
+  createSkills(updateObjects: ApiSkillUpdate[]): Observable<ApiSkill[]> {
     const errorMsg = `Error creating skill`
     return this.post<ISkill[]>({
       path: this.serviceUrl,
-      body: [updateObject]
+      body: updateObjects
     })
       .pipe(share())
-      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiSkill(s))[0]))
+      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiSkill(s))))
   }
 
   updateSkill(uuid: string, updateObject: ApiSkillUpdate): Observable<ApiSkill> {
@@ -151,5 +157,39 @@ export class RichSkillService extends AbstractService {
       this.bulkStatusChange("api/skills/publish", apiSearch, newStatus, filterByStatuses, collectionUuid),
       pollIntervalMs
     )
+  }
+
+  auditLog(
+    skillUuid?: string
+  ): Observable<ApiAuditLog[]> {
+    return this.get<IAuditLog[]>({
+      path: `${this.serviceUrl}/${skillUuid}/log`,
+    })
+      .pipe(share())
+      .pipe(map(({body, headers}) => {
+        return body?.map(it => new ApiAuditLog(it)) || []
+      }))
+  }
+
+  similarityCheck(statement: string): Observable<ApiSkillSummary[]> {
+    return this.post<ISkillSummary[]>({
+      path: "api/search/skills/similarity",
+      body: {statement}
+    })
+      .pipe(share())
+      .pipe(map(({body, headers}) => {
+        return body?.map(it => new ApiSkillSummary(it)) || []
+      }))
+  }
+
+  similaritiesCheck(statements: string[]): Observable<boolean[]> {
+    return this.post<boolean[]>({
+      path: "api/search/skills/similarities",
+      body: statements.map(statement => ({statement}))
+    })
+      .pipe(share())
+      .pipe(map(({body, headers}) => {
+        return body || []
+      }))
   }
 }

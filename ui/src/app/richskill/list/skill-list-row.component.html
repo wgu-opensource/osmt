@@ -18,11 +18,7 @@
       <a id="{{id}}-name" class="t-focus t-type-bodyLink" routerLink="/skills/{{skill.uuid}}/manage">{{skill.skillName}}</a>
     </h4>
 
-    <div class="m-quickLinks">
-      <a (click)="handleClickNext()">Next RSD</a>
-    </div>
-
-    <p class="t-margin-small t-margin-bottom t-color-text3">{{skill.skillStatement}}</p>
+    <p class="t-margin-small t-margin-bottom t-type-text3">{{skill.skillStatement}}</p>
 
     <div class="t-margin-small t-margin-bottom">
       <app-status-bar
@@ -54,7 +50,7 @@
     <!-- Items must be grouped-->
     <div>
       <div class="m-checkbox">
-        <label class="t-visuallyHidden" for="{{id}}-toggle" aria-labelledby="{{id}}-header">Select</label>
+        <label class="t-visuallyHidden" for="{{id}}-toggle" aria-labelledby="{{id}}-header">Select this Skill.</label>
         <input type="checkbox" id="{{id}}-toggle" name="{{id}}-toggle" data-table-row="{{id}}" [checked]="isSelected" (click)="selected()">
         <div class="m-checkbox-x-icon">
           <svg class="t-icon" aria-hidden="true">
@@ -63,7 +59,7 @@
         </div>
       </div>
       <div class="m-quickLinks">
-        <a href="#">Jump to actions</a>
+        <a (click)="focusActionBar.emit()">Actions menu.</a>
       </div>
     </div>
 

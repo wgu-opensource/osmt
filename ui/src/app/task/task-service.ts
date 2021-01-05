@@ -5,14 +5,16 @@ import { ITaskResult, ApiTaskResult } from "./ApiTaskResult"
 import {map, share} from "rxjs/operators"
 import {AbstractService} from "../abstract.service"
 import {AuthService} from "../auth/auth-service";
+import {Router} from "@angular/router";
+import {Location} from "@angular/common";
 
 @Injectable({
   providedIn: "root"
 })
 export class TaskService extends AbstractService {
 
-  constructor(httpClient: HttpClient, authService: AuthService) {
-    super(httpClient, authService)
+  constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
+    super(httpClient, authService, router, location)
   }
 
   private serviceUrl = "api/tasks/"

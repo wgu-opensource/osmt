@@ -33,7 +33,7 @@ export class RichSkillsCsvExportComponent implements OnInit {
           clearInterval(this.intervalHandle)
 
           const blob = new Blob([body], { type: "text/csv;charset=utf-8;" })
-          const filename = `OSMT Skills Library - ${new Date().toDateString()}.csv`
+          const filename = `OSMT RSD Library - ${new Date().toDateString()}.csv`
           saveAs(blob, filename)
 
         }

@@ -18,94 +18,106 @@
 
         </div>
 
-        <app-formfield-text
-          [control]="skillForm.controls.skillName"
-          name="skillName"
-          label="RSD Name"
-          [required]="false"
-        >
-        </app-formfield-text>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text
+            [control]="skillForm.controls.name"
+            name="name"
+            label="Name"
+            [required]="false"
+          >
+          </app-formfield-text>
+        </div>
 
-        <app-formfield-text *ngIf="showAuthor()"
-          [control]="skillForm.controls.author"
-          name="author"
-          label="Author"
-          [required]="false"
-        >
-        </app-formfield-text>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text
+            *ngIf="showAuthor()"
+            [control]="skillForm.controls.author"
+            name="author"
+            label="Author"
+            [required]="false"
+          >
+          </app-formfield-text>
+        </div>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text
+            [control]="skillForm.controls.skillStatement"
+            name="skillStatement"
+            label="Skill Statement"
+            [required]="false"
+          >
+          </app-formfield-text>
+        </div>
 
-        <app-formfield-text
-          [control]="skillForm.controls.skillStatement"
-          name="skillStatement"
-          label="Skill Statement"
-          [required]="false"
-        >
-        </app-formfield-text>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text
+            [control]="skillForm.controls.category"
+            name="category"
+            label="Category"
+            [required]="false"
+          >
+          </app-formfield-text>
+        </div>
 
-        <app-formfield-text
-          [control]="skillForm.controls.category"
-          name="category"
-          label="Category"
-          [required]="false"
-        >
-        </app-formfield-text>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text
+            [control]="skillForm.controls.keywords"
+            name="keywords"
+            label="Keywords"
+            [required]="false"
+          >
+          </app-formfield-text>
+        </div>
 
-        <app-formfield-text
-          [control]="skillForm.controls.keywords"
-          name="keywords"
-          label="Keywords"
-          [required]="false"
-        >
-        </app-formfield-text>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text
+            [control]="skillForm.controls.standards"
+            name="standards"
+            label="Standards"
+            [required]="false"
+          >
+          </app-formfield-text>
+        </div>
 
-        <app-formfield-text
-          [control]="skillForm.controls.standards"
-          name="standards"
-          label="Standards"
-          [required]="false"
-        >
-        </app-formfield-text>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text
+            [control]="skillForm.controls.certifications"
+            name="certifications"
+            label="Certifications"
+            [required]="false"
+          >
+          </app-formfield-text>
+        </div>
 
-        <app-formfield-text
-          [control]="skillForm.controls.certifications"
-          name="certifications"
-          label="Certifications"
-          [required]="false"
-        >
-        </app-formfield-text>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text
+            [control]="skillForm.controls.occupations"
+            name="occupations"
+            label="Occupations"
+            [required]="false"
+            [helpMessage]="getOccupationHelpMessage()"
+          >
+          </app-formfield-text>
+        </div>
 
-        <app-formfield-text
-          [control]="skillForm.controls.occupations"
-          name="occupations"
-          label="Occupations"
-          [required]="false"
-          [helpMessage]="getOccupationHelpMessage()"
-        >
-        </app-formfield-text>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text
+            [control]="skillForm.controls.employers"
+            name="employers"
+            label="Employers"
+            [required]="false"
+          >
+          </app-formfield-text>
+        </div>
 
-        <app-formfield-text
-          [control]="skillForm.controls.employers"
-          name="employers"
-          label="Employers"
-          [required]="false"
-        >
-        </app-formfield-text>
-
-        <app-formfield-text
-          [control]="skillForm.controls.alignments"
-          name="alignments"
-          label="Alignment"
-          [required]="false"
-        >
-        </app-formfield-text>
-
-        <app-formfield-text
-          [control]="skillForm.controls.collectionName"
-          name="collectionName"
-          label="Collection Name"
-          [required]="false"
-        >
-        </app-formfield-text>
+        <div class="t-margin-medium t-margin-bottom">
+          <app-formfield-text
+            [control]="skillForm.controls.alignments"
+            name="alignments"
+            label="Alignment"
+            [required]="false"
+          >
+          </app-formfield-text>
+        </div>
       </div>
     </div>
 

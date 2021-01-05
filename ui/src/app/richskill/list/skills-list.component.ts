@@ -11,6 +11,7 @@ import {ApiSortOrder} from "../ApiSkill";
 import {Router} from "@angular/router";
 import {QuickLinksHelper} from "../../core/quick-links-helper";
 import {ExtrasSelectedSkillsState} from "../../collection/add-skills-collection.component";
+import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component";
 
 
 @Component({
@@ -23,6 +24,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   size = 50
 
   @ViewChild("titleHeading") titleElement!: ElementRef
+  @ViewChild(TableActionBarComponent) tableActionBar!: TableActionBarComponent
 
 
   resultsLoaded: Observable<PaginatedSkills> | undefined
@@ -271,8 +273,13 @@ export class SkillsListComponent extends QuickLinksHelper {
     return false
   }
 
+  protected onlyDraftsSelected(skill?: ApiSkillSummary): boolean {
+    return skill?.status === PublishStatus.Draft || this.selectedSkills?.find(it => it.status !== PublishStatus.Draft) === undefined
+  }
+
   private handleClickArchive(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    if (confirm(`Check that the selected RSDs aren't included in any published collections, then click "OK" to archive them.`)) {
+    const message = `Check that the selected RSDs aren't included in any published collections, then click "OK" to archive them.`
+    if (this.onlyDraftsSelected(skill) || confirm(message)) {
       this.submitStatusChange(PublishStatus.Archived, "archived", skill)
     }
     return false
@@ -335,5 +342,9 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
 
   removeFromCollection(skill?: ApiSkillSummary): void {
+  }
+
+  focusActionBar(): void {
+    this.tableActionBar.focus()
   }
 }

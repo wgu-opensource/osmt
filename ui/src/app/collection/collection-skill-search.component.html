@@ -1,0 +1,79 @@
+<ng-template [appLoadingObservables]="[collectionLoaded]">
+
+<div class="l-stickyBar">
+
+  <div class="l-container t-padding-large t-padding-top">
+
+    <div class="l-container l-container-mobile">
+
+      <!--      {{render '@listheading'}}-->
+      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Add RSDs to Collection</h2>
+
+      <p class="t-type-bodyLarge t-type-text3 t-margin-medium t-margin-bottom">Collection: <a class="t-focus t-type-bodyLargeLink" routerLink="/collections/{{collection.uuid}}/manage">{{collection.name}}</a></p>
+
+      <!--      {{render '@listheadingsearch'}}-->
+      <div class="t-margin-medium t-margin-bottom">
+        <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
+          <div class="m-text">
+            <svg class="m-text-x-icon t-icon" (click)="clearSearch()">
+              <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
+            </svg>
+            <input type="text" placeholder="Search RSDs to add to collection" [formControl]="searchForm.controls.search">
+          </div>
+
+          <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
+            {{totalCount}} <ng-template [ngIf]="results?.skills.length > 1" [ngIfElse]="singular">RSDs contain</ng-template><ng-template #singular>RSD containing</ng-template> the search term
+            <span class="t-type-bodyLargeBold t-type-text1">{{searchQuery}}</span>.
+            <ng-template [ngIf]="totalCount > 0">
+              Viewing {{firstRecordNo}}-{{lastRecordNo}}.
+            </ng-template>
+          </p>
+        </form>
+      </div>
+
+      <app-filter-controls
+        [selectedFilters]="selectedFilters"
+        (filtersChanged)="handleFiltersChanged($event)"
+      ></app-filter-controls>
+
+    </div>
+
+    <div class="t-margin-medium t-margin-bottom">
+      <app-blocking-loader [observables]="[resultsLoaded]">
+      <p class="t-visuallyHidden">Select one or more RSDs in the table, or select all in the table heading, then use the action menu to publish, archive, unarchive, or add the selected RSDs to a collection. </p>
+        <app-skill-table
+          *ngIf="!emptyResults"
+          [items]="results.skills"
+          [currentSort]="columnSort"
+          [selectAllEnabled]="true"
+          [rowActions]="rowActions()"
+          [selectAllCount]="totalCount"
+          (rowSelected)="handleNewSelection($event)"
+          (columnSorted)="handleHeaderColumnSort($event)"
+          (selectAllSelected)="handleSelectAll($event)"
+          (focusActionBar)="focusActionBar()"
+        ></app-skill-table>
+
+        <app-empty-message *ngIf="emptyResults">
+          <p class="m-emptyMessage-x-message">Use search to find and select RSDs to add.</p>
+        </app-empty-message>
+      </app-blocking-loader>
+    </div>
+
+    <app-pagination
+      [currentPage]="currentPageNo"
+      [totalPages]="totalPageCount"
+      (pageClicked)="handlePageClicked($event)"
+    ></app-pagination>
+
+  </div>
+
+  <div *ngIf="actionsVisible()" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
+    <div class="l-container l-container-tablet">
+      <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
+    </div>
+  </div>
+
+</div>
+
+</ng-template>

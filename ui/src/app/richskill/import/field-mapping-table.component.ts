@@ -40,7 +40,7 @@ export class FieldMappingTableComponent implements OnInit {
       <select class="m-select-x-select" (change)="handleChange($event)">
         <option value="">Select Property</option>
         <option *ngFor="let item of headers" [value]="item.field" [attr.selected]="value === item.field ? '' : null">{{item.label}}</option>
-        <option value="">Do not Import</option>
+        <option value="">Do Not Import</option>
       </select>
       <div class="m-select-x-icon">
         <svg class="t-icon" aria-hidden="true">

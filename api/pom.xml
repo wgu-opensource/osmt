@@ -5,7 +5,7 @@
     <parent>
         <groupId>edu.wgu.osmt</groupId>
         <artifactId>osmt-parent</artifactId>
-        <version>0.13.0-SNAPSHOT</version>
+        <version>1.0.0.2-SNAPSHOT</version>
     </parent>
 
     <repositories>
@@ -28,7 +28,7 @@
 
     <groupId>edu.wgu.osmt</groupId>
     <artifactId>osmt-api</artifactId>
-    <version>0.13.0-SNAPSHOT</version>
+    <version>1.0.0.2-SNAPSHOT</version>
     <description>WGU Open Skills Management Toolset</description>
 
     <properties>
@@ -203,6 +203,10 @@
             <artifactId>junit-jupiter</artifactId>
             <version>${testcontainers.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
         </dependency>
     </dependencies>
 

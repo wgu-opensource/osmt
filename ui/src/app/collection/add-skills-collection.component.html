@@ -21,7 +21,7 @@
       </ng-template>
 
       <ng-template #singleSkillSummary>
-        <p *ngIf="state && state.selectedSkills && state.selectedSkills.length > 0" class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">RSD: {{state.selectedSkills[0].skillName}}</p>
+        <p *ngIf="state && state.selectedSkills && state.selectedSkills.length > 0" class="t-type-bodyLarge t-type-text3 t-margin-medium t-margin-bottom">RSD: {{state.selectedSkills[0].skillName}}</p>
       </ng-template>
 
 <!--      {{render '@listheadingsearch'}}-->
@@ -33,8 +33,8 @@
         </div>
 
         <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
-          {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">collections</ng-template><ng-template #singular>collection</ng-template> found based on
-          <span class="t-type-bodyLargeBold t-color-text1">{{searchQuery}}</span> and your filters.
+          {{totalCount}} <ng-template [ngIf]="totalCount > 1" [ngIfElse]="singular">collections</ng-template><ng-template #singular>collection</ng-template> found based on
+          <span class="t-type-bodyLargeBold t-type-text1">{{searchQuery}}</span> and your filters.
           <ng-template [ngIf]="totalCount > 0">
             Viewing {{firstRecordNo}}-{{lastRecordNo}}.
           </ng-template>

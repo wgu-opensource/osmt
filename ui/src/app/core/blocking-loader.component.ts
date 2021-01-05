@@ -31,8 +31,9 @@ export class BlockingLoaderComponent implements OnInit {
     if (filtered.length > 0) {
       this.showLoader()
 
-      forkJoin(filtered).subscribe(a => () => {},
-        error => { this.showError(error) },
+      forkJoin(filtered).subscribe(
+        a => () => {},
+        a => () => {},
         () => { this.showContents() },
       )
     } else {
@@ -40,19 +41,6 @@ export class BlockingLoaderComponent implements OnInit {
     }
   }
 
-  private showError(error: any): void {
-    const status: number = error?.status ?? 500
-    console.log("Loading Error!", status, error)
-    if (status === 401) {
-      this.authService.logout()
-      const returnPath = this.location.path(true)
-      this.router.navigate(["/login"], {queryParams: {return: returnPath}})
-      return
-    }
-    else if (status === 0) {
-      this.authService.setServerIsDown(true)
-    }
-  }
 
   private showContents(): void {
     this.loaderVisible = false

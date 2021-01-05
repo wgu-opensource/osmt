@@ -6,14 +6,16 @@ import {Observable} from "rxjs"
 import {ApiNamedReference, INamedReference, KeywordType} from "../ApiSkill"
 import {map} from "rxjs/operators"
 import {ApiJobCode, IJobCode} from "../../job-codes/Jobcode"
+import {Router} from "@angular/router";
+import {Location} from "@angular/common";
 
 @Injectable({
   providedIn: "root"
 })
 export class KeywordSearchService extends AbstractService {
 
-  constructor(httpClient: HttpClient, authService: AuthService) {
-    super(httpClient, authService)
+  constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
+    super(httpClient, authService, router, location)
   }
 
   searchJobcodes(

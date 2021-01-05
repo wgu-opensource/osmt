@@ -22,6 +22,9 @@
     "@angular/platform-browser": "~10.0.9",
     "@angular/platform-browser-dynamic": "~10.0.9",
     "@angular/router": "~10.0.9",
+    "@concentricsky/wgu-design-system-patternlibrary": "12.2.0",
+    "@ng-idle/core": "^10.0.0-beta.1",
+    "@ng-idle/keepalive": "^10.0.0-beta.1",
     "@popperjs/core": "^2.5.4",
     "@types/file-saver": "^2.0.1",
     "file-saver": "^2.0.2",
@@ -29,7 +32,6 @@
     "ngx-papaparse": "^5.0.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
-    "@concentricsky/wgu-design-system-patternlibrary": "11.0.0",
     "zone.js": "~0.10.3"
   },
   "devDependencies": {

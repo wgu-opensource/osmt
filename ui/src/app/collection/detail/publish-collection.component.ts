@@ -77,7 +77,7 @@ export class PublishCollectionComponent implements OnInit {
   }
 
   get verb(): string {
-    return (this.activeState === PubColState.checkingArchived) ? "archived" : "unpublished"
+    return (this.activeState === PubColState.checkingArchived) ? "archived" : "draft"
   }
 
   checkForStatus(statuses: Set<PublishStatus>): void {

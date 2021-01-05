@@ -47,10 +47,17 @@ export class FormFieldSearchMultiSelectComponent extends AbstractFormFieldSearch
 
   unselectResult(result: string): void {
     this.internalSelectedResults = this.internalSelectedResults.filter(r => r !== result)
+    this.control.markAsDirty()
     this.emitCurrentSelection()
   }
 
   private emitCurrentSelection(): void {
     this.currentSelection.emit(this.internalSelectedResults)
+  }
+
+  handleKeyDownEnter($event: any): boolean {
+    this.selectResult(this.valueFromControl)
+    this.clearField()
+    return false
   }
 }

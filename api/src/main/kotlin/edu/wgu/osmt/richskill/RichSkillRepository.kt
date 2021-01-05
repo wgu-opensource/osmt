@@ -253,11 +253,11 @@ class RichSkillRepositoryImpl @Autowired constructor(
         }
 
         skillUpdate.occupations?.let {
-            it.add?.map {
+            it.add?.filter { it.isNotBlank() }?.map {
                 jobCodeRepository.findByCodeOrCreate(code = it)
             }?.let { jobsToAdd.addAll(it) }
 
-            it.remove?.map {
+            it.remove?.filter { it.isNotBlank() }?.map {
                 jobCodeRepository.findByCode(it)
             }?.let { jobsToRemove.addAll(it.filterNotNull()) }
         }

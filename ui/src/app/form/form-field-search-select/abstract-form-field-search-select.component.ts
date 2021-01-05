@@ -15,6 +15,7 @@ export abstract class AbstractFormFieldSearchSelectComponent extends FormField i
 
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)
   iconDismiss = SvgHelper.path(SvgIcon.DISMISS)
+  iconCheck = SvgHelper.path(SvgIcon.CHECK)
 
   queryInProgress!: Subscription
   currentlyLoading = false

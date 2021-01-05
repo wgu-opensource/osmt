@@ -38,50 +38,62 @@ object JobCodeQueries {
     fun multiPropertySearch(query: String, parentDocPath: String? = null): BoolQueryBuilder {
         val disjunctionQuery = disMaxQuery()
         val path = parentDocPath?.let { "${it}." } ?: ""
-        disjunctionQuery.innerQueries().addAll(
+        val lowerCaseQuery = query.toLowerCase()
+        val codeRegex = "[0-9]+(-)?[0-9]+(.[0-9]*)?".toRegex()
+
+        val queries = if (codeRegex.matches(query)){
+            listOf(
+                prefixQuery(
+                    "${path}${JobCode::code.name}.keyword",
+                    lowerCaseQuery
+                ).boost(2.0f),
+                prefixQuery(
+                    "${path}${JobCode::minorCode.name}.keyword",
+                    lowerCaseQuery
+                ),
+                prefixQuery(
+                    "${path}${JobCode::detailedCode.name}.keyword",
+                    lowerCaseQuery
+                ),
+                prefixQuery(
+                    "${path}${JobCode::majorCode.name}.keyword",
+                    lowerCaseQuery
+                ),
+                prefixQuery(
+                    "${path}${JobCode::broadCode.name}.keyword",
+                    lowerCaseQuery
+                )
+            )
+        } else {
             listOf(
                 matchPhrasePrefixQuery(
-                    "${path}${JobCode::code.name}",
-                    query
-                ),
+                    "${path}${JobCode::name.name}",
+                    lowerCaseQuery
+                ).boost(2.0f),
                 matchPhrasePrefixQuery(
                     "${path}${JobCode::minor.name}",
-                    query
-                ),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::minorCode.name}",
-                    query
+                    lowerCaseQuery
                 ),
                 matchPhrasePrefixQuery(
                     "${path}${JobCode::detailed.name}",
-                    query
-                ),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::detailedCode.name}",
-                    query
+                    lowerCaseQuery
                 ),
                 matchPhrasePrefixQuery(
                     "${path}${JobCode::major.name}",
-                    query
-                ),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::majorCode.name}",
-                    query
+                    lowerCaseQuery
                 ),
                 matchPhrasePrefixQuery(
                     "${path}${JobCode::broad.name}",
-                    query
-                ),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::broadCode.name}",
-                    query
+                    lowerCaseQuery
                 ),
                 matchPhrasePrefixQuery(
                     "${path}${JobCode::description.name}",
-                    query
+                    lowerCaseQuery
                 )
             )
-        )
+        }
+        disjunctionQuery.innerQueries().addAll(queries)
+
         return boolQuery().must(existsQuery("${path}${JobCode::name.name}")).must(disjunctionQuery)
     }
 }

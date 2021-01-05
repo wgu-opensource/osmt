@@ -7,11 +7,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-
-fun <T> List<T>.nullIfEmpty(): List<T>? {
-    return if (this.isEmpty()) null else this
-}
-
 enum class AuditOperationType {
     Insert,
     Update,

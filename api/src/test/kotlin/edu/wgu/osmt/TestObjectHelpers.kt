@@ -11,12 +11,16 @@ import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import org.assertj.core.api.Assertions.assertThat
 import edu.wgu.osmt.richskill.RichSkillDoc
+import java.security.SecureRandom
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
+import kotlin.math.abs
 import kotlin.streams.asSequence
 
 object TestObjectHelpers {
+
+    val secureRandom = SecureRandom()
 
     var elasticIdCounter: Long = 0
         get() {
@@ -43,6 +47,15 @@ object TestObjectHelpers {
 
     fun randomString(): String = UUID.randomUUID().toString().replace("-", "")
 
+    fun randomCode(): String {
+        val twoRandomDigits = (1..2).map { (0..9).random() }.joinToString("")
+        val fourRandomDigits = (1..4).map { (0..9).random() }.joinToString("")
+        return when ((1..2).random()) {
+            1 -> "$twoRandomDigits-$fourRandomDigits"
+            else -> "$twoRandomDigits-$fourRandomDigits.$twoRandomDigits"
+        }
+    }
+
     fun randomStrings() = (1..10).map { randomString() }
 
     fun randomCollectionDoc(): CollectionDoc {
@@ -50,7 +63,12 @@ object TestObjectHelpers {
     }
 
     fun randomJobCode(): JobCode {
-        return JobCode(elasticIdCounter, code = randomString(), name= randomString(), creationDate = LocalDateTime.now(ZoneOffset.UTC))
+        return JobCode(
+            elasticIdCounter,
+            code = randomCode(),
+            name = randomString(),
+            creationDate = LocalDateTime.now(ZoneOffset.UTC)
+        )
     }
 
     fun randomRichSkillDoc(): RichSkillDoc {
@@ -92,14 +110,22 @@ object TestObjectHelpers {
         )
     }
 
-    fun keyword(value: String, type: KeywordTypeEnum): Keyword{
-        return Keyword(elasticIdCounter, LocalDateTime.now(ZoneOffset.UTC), LocalDateTime.now(ZoneOffset.UTC), type, value, null)
+    fun keyword(value: String, type: KeywordTypeEnum): Keyword {
+        return Keyword(
+            elasticIdCounter,
+            LocalDateTime.now(ZoneOffset.UTC),
+            LocalDateTime.now(ZoneOffset.UTC),
+            type,
+            value,
+            null
+        )
     }
+
     fun keywordsGenerator(n: Int, type: KeywordTypeEnum): List<Keyword> {
         val keywords = (0..n).toList().map {
             val chars = "abcdefghijklmnopqrstuvwxyz"
             val word = Random().ints(10, 0, chars.length).asSequence().map(chars::get).joinToString("").capitalize()
-            keyword(word,type)
+            keyword(word, type)
         }
         return keywords
     }
@@ -107,59 +133,62 @@ object TestObjectHelpers {
     fun namedReferenceGenerator(includeName: Boolean = true, includeUri: Boolean = true): ApiNamedReference {
         val name = if (includeName) UUID.randomUUID().toString() else null
         val uri = if (includeUri) UUID.randomUUID().toString() else null
-        return ApiNamedReference(id=uri, name=name)
+        return ApiNamedReference(id = uri, name = name)
     }
 
-    fun apiSkillUpdateGenerator(name: String? = null,
-                                statement: String? = null,
-                                publishStatus: PublishStatus = PublishStatus.Draft,
-                                keywordCount: Int = 3,
-                                certificationCount: Int = 3,
-                                standardCount: Int = 3,
-                                alignmentCount: Int = 3,
-                                employerCount: Int = 3,
-                                occupationCount: Int = 3,
-                                collectionCount: Int = 3): ApiSkillUpdate {
+    fun apiSkillUpdateGenerator(
+        name: String? = null,
+        statement: String? = null,
+        publishStatus: PublishStatus = PublishStatus.Draft,
+        keywordCount: Int = 3,
+        certificationCount: Int = 3,
+        standardCount: Int = 3,
+        alignmentCount: Int = 3,
+        employerCount: Int = 3,
+        occupationCount: Int = 3,
+        collectionCount: Int = 3
+    ): ApiSkillUpdate {
         val skillName = name ?: UUID.randomUUID().toString()
         val skillStatement = statement ?: UUID.randomUUID().toString()
         val categoryName = UUID.randomUUID().toString()
-        val author = namedReferenceGenerator(includeName=true, includeUri=false)
+        val author = namedReferenceGenerator(includeName = true, includeUri = false)
 
         val keywords = ApiStringListUpdate(
-            add=(1..keywordCount).toList().map { UUID.randomUUID().toString() }
+            add = (1..keywordCount).toList().map { UUID.randomUUID().toString() }
         )
         val certifications = ApiReferenceListUpdate(
-            add=(1..certificationCount).toList().map { namedReferenceGenerator(includeName = false, includeUri = true) }
+            add = (1..certificationCount).toList()
+                .map { namedReferenceGenerator(includeName = false, includeUri = true) }
         )
         val standards = ApiReferenceListUpdate(
-            add=(1..standardCount).toList().map { namedReferenceGenerator(includeName = true, includeUri = true) }
+            add = (1..standardCount).toList().map { namedReferenceGenerator(includeName = true, includeUri = true) }
         )
         val alignments = ApiReferenceListUpdate(
-            add=(1..alignmentCount).toList().map { namedReferenceGenerator(includeName = false, includeUri = true) }
+            add = (1..alignmentCount).toList().map { namedReferenceGenerator(includeName = false, includeUri = true) }
         )
         val employers = ApiReferenceListUpdate(
-            add=(1..employerCount).toList().map { namedReferenceGenerator(includeName = true, includeUri = false) }
+            add = (1..employerCount).toList().map { namedReferenceGenerator(includeName = true, includeUri = false) }
         )
         val occupations = ApiStringListUpdate(
-            add=(1..occupationCount).toList().map { UUID.randomUUID().toString() }
+            add = (1..occupationCount).toList().map { UUID.randomUUID().toString() }
         )
         val collections = ApiStringListUpdate(
-            add=(1..collectionCount).toList().map { UUID.randomUUID().toString() }
+            add = (1..collectionCount).toList().map { UUID.randomUUID().toString() }
         )
 
         return ApiSkillUpdate(
-            skillName=skillName,
-            skillStatement=skillStatement,
-            publishStatus=publishStatus,
-            category=categoryName,
-            author=author,
-            keywords=keywords,
-            certifications=certifications,
-            standards=standards,
-            alignments=alignments,
-            employers=employers,
-            occupations=occupations,
-            collections=collections
+            skillName = skillName,
+            skillStatement = skillStatement,
+            publishStatus = publishStatus,
+            category = categoryName,
+            author = author,
+            keywords = keywords,
+            certifications = certifications,
+            standards = standards,
+            alignments = alignments,
+            employers = employers,
+            occupations = occupations,
+            collections = collections
         )
     }
 

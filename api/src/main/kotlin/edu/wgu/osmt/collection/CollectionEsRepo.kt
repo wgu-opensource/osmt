@@ -71,17 +71,12 @@ class CustomCollectionQueriesImpl @Autowired constructor(override val elasticSea
         // treat the presence of query property to mean multi field search with that term
         if (!apiSearch.query.isNullOrBlank()) {
             // Search against rich skill properties
-            bq.must(richSkillEsRepo.richSkillPropertiesMultiMatch(apiSearch.query))
+            bq.should(BoolQueryBuilder().must(richSkillEsRepo.richSkillPropertiesMultiMatch(apiSearch.query)).must(QueryBuilders.nestedQuery(
+                RichSkillDoc::collections.name,
+                QueryBuilders.matchAllQuery(),
+                ScoreMode.Avg
+            ).innerHit(InnerHitBuilder())))
             bq.should(richSkillEsRepo.occupationQueries(apiSearch.query))
-
-            // always include inner collection object with rich skill search hits
-            bq.must(
-                QueryBuilders.nestedQuery(
-                    RichSkillDoc::collections.name,
-                    QueryBuilders.matchAllQuery(),
-                    ScoreMode.Avg
-                ).innerHit(InnerHitBuilder())
-            )
 
             // search on collection specific properties
             collectionMultiPropertyResults = elasticSearchTemplate.search(
@@ -93,7 +88,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(override val elasticSea
         } else if (apiSearch.advanced != null) {
             richSkillEsRepo.generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)
 
-            if (apiSearch.advanced.collectionName != null) {
+            if (!apiSearch.advanced.collectionName.isNullOrBlank()) {
                 bq.must(
                     QueryBuilders.nestedQuery(
                         RichSkillDoc::collections.name,

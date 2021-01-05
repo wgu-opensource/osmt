@@ -38,7 +38,7 @@ class CreateSkillsTaskProcessor {
         logger.info("Started processing createSkillsTask uuid: ${task.uuid}")
 
         val results = richSkillRepository.createFromApi(task.apiSkillUpdates, task.userString).map {
-            ApiSkill.fromDao(it, appConfig)
+            it.uuid
         }
 
         taskMessageService.publishResult(

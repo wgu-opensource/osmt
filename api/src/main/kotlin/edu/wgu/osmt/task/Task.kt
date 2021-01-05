@@ -22,7 +22,8 @@ import java.util.*
     JsonSubTypes.Type(value = ApiBatchResult::class, name = "ApiBatchResult"),
     JsonSubTypes.Type(value = PublishTask::class, name = "PublishTask"),
     JsonSubTypes.Type(value = ApiSkillListUpdate::class, name = "ApiSkillListUpdate"),
-    JsonSubTypes.Type(value = UpdateCollectionSkillsTask::class, name = "UpdateCollectionSkillsTask")
+    JsonSubTypes.Type(value = UpdateCollectionSkillsTask::class, name = "UpdateCollectionSkillsTask"),
+    JsonSubTypes.Type(value = CreateSkillsTask::class, name = "CreateSkillsTask")
 )
 
 interface Task {
@@ -69,7 +70,7 @@ data class CreateSkillsTask(
     val userString: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
-    override val result: List<ApiSkill>? = null,
+    override val result: List<String>? = null, // return list of new skill uuids
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE

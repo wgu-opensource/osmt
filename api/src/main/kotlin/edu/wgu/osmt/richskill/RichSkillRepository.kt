@@ -40,6 +40,7 @@ interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
     fun findAll(): SizedIterable<RichSkillDescriptorDao>
     fun findById(id: Long): RichSkillDescriptorDao?
     fun findByUUID(uuid: String): RichSkillDescriptorDao?
+    fun findManyByUUIDs(uuids: List<String>): List<RichSkillDescriptorDao>?
     fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao?
 
     fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao>
@@ -122,6 +123,11 @@ class RichSkillRepositoryImpl @Autowired constructor(
     override fun findByUUID(uuid: String): RichSkillDescriptorDao? {
         val query = table.select { table.uuid eq uuid }.firstOrNull()
         return query?.let { dao.wrapRow(it) }
+    }
+    override fun findManyByUUIDs(uuids: List<String>): List<RichSkillDescriptorDao>? {
+        val query = table.select { table.uuid inList uuids }
+        return query.map { dao.wrapRow(it) }
+
     }
 
     override fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao? {

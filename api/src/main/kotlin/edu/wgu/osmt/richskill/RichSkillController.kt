@@ -155,12 +155,9 @@ class RichSkillController @Autowired constructor(
             userString = readableUsername(user),
             collectionUuid = if (collectionUuid.isNullOrBlank()) null else collectionUuid
         )
-        taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
 
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        val tr = TaskResult.fromTask(task)
-        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
+        taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
+        return Task.processingResponse(task)
     }
 
     @GetMapping(RoutePaths.SKILL_AUDIT_LOG, produces = ["application/json"])

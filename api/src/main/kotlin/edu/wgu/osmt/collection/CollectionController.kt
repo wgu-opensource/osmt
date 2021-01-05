@@ -142,15 +142,13 @@ class CollectionController @Autowired constructor(
         return Task.processingResponse(task)
     }
 
-    @GetMapping(RoutePaths.COLLECTION_SKILLS, produces = ["text/csv"])
+    @PostMapping(RoutePaths.COLLECTION_CSV, produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getSkillsForCollectionCsv(
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
-        val task = CsvTask(result = uuid)
-        val responseHeaders = HttpHeaders().apply { add("Content-Type", MediaType.APPLICATION_JSON_VALUE) }
+        val task = CsvTask(collectionUuid = uuid)
         taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
-        val tr = TaskResult.fromTask(task)
-        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
+        return Task.processingResponse(task)
     }
 
     @GetMapping(RoutePaths.COLLECTION_AUDIT_LOG, produces = ["application/json"])

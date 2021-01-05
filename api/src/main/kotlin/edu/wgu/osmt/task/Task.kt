@@ -55,6 +55,7 @@ interface Task {
 }
 
 data class CsvTask(
+    val collectionUuid: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: String? = null,

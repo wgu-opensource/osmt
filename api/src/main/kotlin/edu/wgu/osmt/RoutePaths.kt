@@ -23,6 +23,7 @@ object RoutePaths {
     const val COLLECTION_SKILLS_UPDATE = "${COLLECTION_DETAIL}/updateSkills"
     const val COLLECTION_SKILLS = "${COLLECTION_DETAIL}/skills"
     const val COLLECTION_AUDIT_LOG = "${COLLECTION_DETAIL}/log"
+    const val COLLECTION_CSV = "${COLLECTION_DETAIL}/csv"
 
 
     const val TASKS_PATH = "/api/results"

@@ -51,18 +51,6 @@ class RichSkillController @Autowired constructor(
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort)
     }
 
-    @GetMapping(RoutePaths.SKILLS_PATH, produces = ["text/csv"])
-    @ResponseBody
-    fun allSkillsCsv(): HttpEntity<TaskResult> {
-        val task = CsvTask()
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        taskMessageService.enqueueJob(TaskMessageService.allSkillsCsv, task)
-
-        val tr = TaskResult.fromTask(task)
-        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
-    }
-
     @PostMapping(RoutePaths.SKILLS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createSkills(

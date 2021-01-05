@@ -3,9 +3,7 @@ package edu.wgu.osmt.task
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import edu.wgu.osmt.RoutePaths
-import edu.wgu.osmt.api.model.ApiBatchResult
-import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.ApiSkillListUpdate
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.db.PublishStatus
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -38,12 +36,19 @@ interface Task {
     /**
      * Define the response to generate for the task type
      */
-    fun toResultResponse(): HttpEntity<*>
     companion object {
         fun resultResponse(task: Task): HttpEntity<*> {
             val responseHeaders = HttpHeaders()
             responseHeaders.add("Content-Type", task.contentType)
             return ResponseEntity.ok().headers(responseHeaders).body(task.result)
+        }
+
+        fun processingResponse(task: Task): HttpEntity<TaskResult> {
+            val taskResult = TaskResult.fromTask(task)
+            val responseHeaders = HttpHeaders()
+            responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            val tr = TaskResult.fromTask(task)
+            return ResponseEntity.status(202).headers(responseHeaders).body(taskResult)
         }
     }
 }
@@ -57,9 +62,18 @@ data class CsvTask(
     override val contentType = "text/csv"
     override val apiResultPath = RoutePaths.TASK_DETAIL_TEXT
 
-    override fun toResultResponse(): HttpEntity<*> {
-        return Task.resultResponse(this)
-    }
+}
+
+data class CreateSkillsTask(
+    val apiSkillUpdates: List<ApiSkillUpdate> = listOf(),
+    val userString: String = "",
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: List<ApiSkill>? = null,
+    override val status: TaskStatus = TaskStatus.Processing
+) : Task {
+    override val contentType = MediaType.APPLICATION_JSON_VALUE
+    override val apiResultPath = RoutePaths.TASK_DETAIL_SKILLS
 }
 
 
@@ -81,10 +95,6 @@ data class PublishTask(
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
     override val apiResultPath = RoutePaths.TASK_DETAIL_BATCH
-
-    override fun toResultResponse(): HttpEntity<*> {
-        return Task.resultResponse(this)
-    }
 }
 
 data class UpdateCollectionSkillsTask(
@@ -99,10 +109,6 @@ data class UpdateCollectionSkillsTask(
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
     override val apiResultPath = RoutePaths.TASK_DETAIL_BATCH
-
-    override fun toResultResponse(): HttpEntity<*> {
-        return Task.resultResponse(this)
-    }
 }
 
 enum class TaskStatus {

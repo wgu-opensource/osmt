@@ -16,7 +16,7 @@ class TaskController @Autowired constructor(
     private fun taskResult(uuid: String): HttpEntity<*> {
         val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
         return when (task?.status) {
-            TaskStatus.Ready -> task.toResultResponse()
+            TaskStatus.Ready -> Task.resultResponse(task)
             else -> ResponseEntity.status(404).body("Task with id $uuid not ready or not found")
         }
     }

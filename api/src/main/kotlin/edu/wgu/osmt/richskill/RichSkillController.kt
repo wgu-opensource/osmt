@@ -56,10 +56,10 @@ class RichSkillController @Autowired constructor(
     fun createSkills(
         @RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
         @AuthenticationPrincipal user: Jwt?
-    ): List<ApiSkill> {
-        return richSkillRepository.createFromApi(apiSkillUpdates, readableUsername(user)).map {
-            ApiSkill.fromDao(it, appConfig)
-        }
+    ): HttpEntity<TaskResult> {
+        val task = CreateSkillsTask(apiSkillUpdates)
+        taskMessageService.enqueueJob(TaskMessageService.createSkills, task)
+        return Task.processingResponse(task)
     }
 
     @GetMapping(RoutePaths.SKILL_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])

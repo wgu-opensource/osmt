@@ -115,12 +115,9 @@ class CollectionController @Autowired constructor(
     ): HttpEntity<TaskResult> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = readableUsername(user))
-        taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
 
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        val tr = TaskResult.fromTask(task)
-        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
+        taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
+        return Task.processingResponse(task)
     }
 
     @PostMapping(RoutePaths.COLLECTION_PUBLISH, produces = [MediaType.APPLICATION_JSON_VALUE])

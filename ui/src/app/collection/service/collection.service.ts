@@ -176,7 +176,7 @@ export class CollectionService extends AbstractService {
                          filterByStatus?: Set<PublishStatus>,
                          pollIntervalMs: number = 1000
   ): Observable<ApiBatchResult> {
-    return this.pollForTaskResult(this.updateSkills(collectionUuid, skillListUpdate, filterByStatus), pollIntervalMs)
+    return this.pollForTaskResult<ApiBatchResult>(this.updateSkills(collectionUuid, skillListUpdate, filterByStatus), pollIntervalMs)
   }
 
   publishCollectionsWithResult(
@@ -185,7 +185,7 @@ export class CollectionService extends AbstractService {
     filterByStatuses?: Set<PublishStatus>,
     pollIntervalMs: number = 1000,
   ): Observable<ApiBatchResult> {
-    return this.pollForTaskResult(
+    return this.pollForTaskResult<ApiBatchResult>(
       this.bulkStatusChange("api/collections/publish", apiSearch, newStatus, filterByStatuses),
       pollIntervalMs
     )

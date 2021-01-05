@@ -5,10 +5,11 @@ import {RichSkillService} from "../service/rich-skill.service";
 import {ToastService} from "../../toast/toast.service";
 import {Location} from "@angular/common";
 import {Papa, ParseResult} from "ngx-papaparse";
-import {ApiNamedReference} from "../ApiSkill"
+import {ApiNamedReference, ApiSkill} from "../ApiSkill"
 import {ApiReferenceListUpdate, ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate";
 import {forkJoin, Observable} from "rxjs";
 import {PaginatedSkills} from "../service/rich-skill-search.service";
+import {map} from "rxjs/operators";
 
 
 export enum ImportStep {
@@ -417,7 +418,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     const skillUpdates = this.importedSkills.map(it => it.skill)
 
     this.showStepLoader()
-    this.richSkillService.createSkills(skillUpdates).subscribe(results => {
+
+    this.richSkillService.pollForTaskResult<ApiSkill[]>(
+      this.richSkillService.createSkills(skillUpdates)
+    ).subscribe(results => {
       if (results) {
         this.hideStepLoader()
       }

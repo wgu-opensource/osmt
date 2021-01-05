@@ -232,6 +232,8 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
 
     if (this.skillSaved) {
       this.skillSaved.subscribe((result) => {
+        if (!result) { return }
+
         this.skillForm.markAsPristine()
         const collectionCount = updateObject.collections?.add?.length ?? 0
         if (collectionCount > 0) {

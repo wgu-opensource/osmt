@@ -100,10 +100,10 @@ export abstract class AbstractService {
     return headers
   }
 
-  pollForTaskResult(obs: Observable<ApiTaskResult>, pollIntervalMs: number = 1000): Observable<ApiBatchResult> {
+  pollForTaskResult<T>(obs: Observable<ApiTaskResult>, pollIntervalMs: number = 1000): Observable<T> {
     return new Observable((observer) => {
       obs.subscribe(task => {
-        this.observableForTaskResult<ApiBatchResult>(task, pollIntervalMs).subscribe(result => {
+        this.observableForTaskResult<T>(task, pollIntervalMs).subscribe(result => {
           observer.next(result)
           if (result) {
             observer.complete()

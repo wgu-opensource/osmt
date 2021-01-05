@@ -2,6 +2,7 @@ package edu.wgu.osmt.task
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSkillListUpdate
@@ -32,6 +33,7 @@ interface Task {
     val result: Any?
     val status: TaskStatus
     val contentType: String
+    val apiResultPath: String
 
     /**
      * Define the response to generate for the task type
@@ -53,6 +55,7 @@ data class CsvTask(
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = "text/csv"
+    override val apiResultPath = RoutePaths.TASK_DETAIL_TEXT
 
     override fun toResultResponse(): HttpEntity<*> {
         return Task.resultResponse(this)
@@ -77,6 +80,8 @@ data class PublishTask(
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
+    override val apiResultPath = RoutePaths.TASK_DETAIL_BATCH
+
     override fun toResultResponse(): HttpEntity<*> {
         return Task.resultResponse(this)
     }
@@ -93,6 +98,8 @@ data class UpdateCollectionSkillsTask(
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
+    override val apiResultPath = RoutePaths.TASK_DETAIL_BATCH
+
     override fun toResultResponse(): HttpEntity<*> {
         return Task.resultResponse(this)
     }

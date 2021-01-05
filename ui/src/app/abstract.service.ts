@@ -124,7 +124,9 @@ export abstract class AbstractService {
           if (status === 200) {
             observer.next(body as T)
             observer.complete()
-          } else {
+          }
+        }, ({error, status}) => {
+          if (status === 404) {
             observer.next(undefined)
             setTimeout(() => tick(), pollIntervalMs)
           }

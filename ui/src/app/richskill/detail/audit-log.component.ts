@@ -36,7 +36,7 @@ export class AuditLogComponent extends AccordianComponent {
 
   toggle(): void {
     super.toggle()
-    if (this.isExpanded && this.results === undefined) {
+    if (this.isExpanded) {
       this.fetch()
     }
   }

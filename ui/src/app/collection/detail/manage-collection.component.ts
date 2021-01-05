@@ -11,8 +11,8 @@ import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
 import {determineFilters, PublishStatus} from "../../PublishStatus";
 import {ApiSkillSummary} from "../../richskill/ApiSkillSummary";
-import {Observable} from "rxjs";
-import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component";
+import {Observable, Subject} from "rxjs"
+import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
 
 @Component({
   selector: "app-manage-collection",
@@ -42,7 +42,9 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   showAddToCollection = false
   showingMultipleConfirm = false
   collectionSaved?: Observable<ApiCollection>
-  selectAllChecked: boolean = false
+  selectAllChecked = false
+
+  collapseAuditLog = new Subject<void>()
 
   get isPlural(): boolean {
     return (this.results?.skills.length ?? 0) > 1
@@ -187,9 +189,11 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
 
   archiveAction(): void {
     this.submitCollectionStatusChange(PublishStatus.Archived, "archived")
+    this.collapseAuditLog.next()
   }
   unarchiveAction(): void {
     this.submitCollectionStatusChange(PublishStatus.Unarchived, "unarchived")
+    this.collapseAuditLog.next()
   }
 
   submitCollectionStatusChange(newStatus: PublishStatus, verb: string): void {

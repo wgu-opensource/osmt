@@ -86,8 +86,10 @@
     <div *ngIf="collection" class="t-padding-medium t-padding-top">
       <app-audit-log
         [collectionUuid]="collection.uuid"
+        [collapseListener]="collapseAuditLog.asObservable()"
         closedLabel="View Audit Log"
-        openLabel="Hide Audit Log">
+        openLabel="Hide Audit Log"
+      >
       </app-audit-log>
     </div>
   </div>

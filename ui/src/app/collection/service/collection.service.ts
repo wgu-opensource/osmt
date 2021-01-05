@@ -76,21 +76,30 @@ export class CollectionService extends AbstractService {
       .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg)))
   }
 
-  getCollectionSkillsCsv(uuid: string): Observable<ITaskResult> {
+  requestCollectionSkillsCsv(uuid: string): Observable<ITaskResult> {
     if (!uuid) {
       throw new Error("Invalid collection uuid.")
     }
     const errorMsg = `Could not find skills using this collection [${uuid}]`
 
     return this.get<ITaskResult>({
-      path: `${this.baseServiceUrl}/${uuid}/skills`,
-      headers: new HttpHeaders({
-        Accept: "text/csv"
-      })
+      path: `${this.baseServiceUrl}/${uuid}/csv`
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, errorMsg))))
   }
+
+  // this call is a bit different since it's returning a csv for immediate download, so use httpClient's get() method
+  // tslint:disable-next-line:no-any
+  getCsvTaskResultsIfComplete(uuid: string): Observable<any> {
+    return this.httpClient
+      .get(`api/results/text/${uuid}`, {
+        responseType: "text",
+        observe: "response"
+      })
+      .pipe(share())
+  }
+
 
   getCollectionSkills(
     collectionUuid: string,

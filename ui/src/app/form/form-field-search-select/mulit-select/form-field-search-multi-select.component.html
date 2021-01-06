@@ -68,7 +68,7 @@
                   <use [attr.xlink:href]="iconCheck"></use>
                 </svg>
               </span>
-              <span class="m-buttonText-x-text">{{r}}</span>
+              <span class="m-buttonText-x-text">{{r}}<span *ngIf="isResultSelected(r)" class="t-visuallyHidden">, selected</span></span>
             </button>
           </div>
 

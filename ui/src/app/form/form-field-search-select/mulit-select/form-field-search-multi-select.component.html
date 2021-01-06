@@ -11,12 +11,20 @@
     <div class="l-searchSelect-x-search">
       <div class="m-search">
 
-        <svg class="m-search-x-icon t-icon">
+        <svg class="m-search-x-icon t-icon" aria-hidden="true">
           <use [attr.xlink:href]="iconSearch"></use>
         </svg>
 
-        <input (keydown.enter)="handleKeyDownEnter($event)" [formControl]="control" [required]="required" class="m-search-x-input" type="text" placeholder="Search">
-
+        <input
+          (keydown.enter)="handleKeyDownEnter($event)"
+          [formControl]="control"
+          [required]="required"
+          class="m-search-x-input"
+          type="text"
+          placeholder="Search"
+          [attr.aria-label]="name"
+          role="search"
+        >
         <div class="m-search-x-controls">
           <div class="m-search-x-clear">
             <button class="m-iconInteractive" type="button" (click)="clearField()">

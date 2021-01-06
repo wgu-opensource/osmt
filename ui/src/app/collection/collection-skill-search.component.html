@@ -9,7 +9,7 @@
       <!--      {{render '@listheading'}}-->
       <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Add RSDs to Collection</h2>
 
-      <p class="t-type-bodyLarge t-color-text3 t-margin-medium t-margin-bottom">Collection: <a class="t-focus t-type-bodyLargeLink" routerLink="/collections/{{collection.uuid}}/manage">{{collection.name}}</a></p>
+      <p class="t-type-bodyLarge t-type-text3 t-margin-medium t-margin-bottom">Collection: <a class="t-focus t-type-bodyLargeLink" routerLink="/collections/{{collection.uuid}}/manage">{{collection.name}}</a></p>
 
       <!--      {{render '@listheadingsearch'}}-->
       <div class="t-margin-medium t-margin-bottom">
@@ -23,7 +23,7 @@
 
           <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
             {{totalCount}} <ng-template [ngIf]="results?.skills.length > 1" [ngIfElse]="singular">RSDs contain</ng-template><ng-template #singular>RSD containing</ng-template> the search term
-            <span class="t-type-bodyLargeBold t-color-text1">{{searchQuery}}</span>.
+            <span class="t-type-bodyLargeBold t-type-text1">{{searchQuery}}</span>.
             <ng-template [ngIf]="totalCount > 0">
               Viewing {{firstRecordNo}}-{{lastRecordNo}}.
             </ng-template>

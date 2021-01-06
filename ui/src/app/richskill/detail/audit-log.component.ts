@@ -36,7 +36,7 @@ export class AuditLogComponent extends AccordianComponent {
 
   toggle(): void {
     super.toggle()
-    if (this.isExpanded && this.results === undefined) {
+    if (this.isExpanded) {
       this.fetch()
     }
   }
@@ -84,5 +84,17 @@ export class AuditLogComponent extends AccordianComponent {
         default: return entry.changedFields[0]?.new
       }
     }
+  }
+
+  visibleFieldName(fieldName: string): string {
+    switch (fieldName.toLowerCase()) {
+      case "statement": return "Skill Statement"
+      case "publishstatus": return "Publish Status"
+      case "searchingkeywords": return "Keywords"
+      case "alignments": return "Alignment"
+      case "jobcodes": return "Occupations"
+      default: return fieldName
+    }
+
   }
 }

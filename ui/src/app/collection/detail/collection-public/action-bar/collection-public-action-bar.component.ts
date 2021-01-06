@@ -4,7 +4,6 @@ import {Router} from "@angular/router"
 import {ToastService} from "../../../../toast/toast.service"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {formatDate} from "@angular/common"
-import {TaskService} from "../../../../task/task-service"
 import {ITaskResult} from "../../../../task/ApiTaskResult"
 
 @Component({
@@ -30,7 +29,6 @@ export class CollectionPublicActionBarComponent implements OnInit {
     protected router: Router,
     protected collectionService: CollectionService,
     protected toastService: ToastService,
-    protected taskService: TaskService,
     @Inject(LOCALE_ID) protected locale: string
   ) {}
 
@@ -42,7 +40,7 @@ export class CollectionPublicActionBarComponent implements OnInit {
       return
     }
 
-    this.taskService.getTaskResultsIfComplete(this.taskUuidInProgress)
+    this.collectionService.getCsvTaskResultsIfComplete(this.taskUuidInProgress)
       .subscribe(({body, status}) => {
         if (status === 200) {
           this.csvExport = body as string
@@ -65,7 +63,7 @@ export class CollectionPublicActionBarComponent implements OnInit {
   }
 
   onDownloadCsv(): void {
-    this.collectionService.getCollectionSkillsCsv(this.collectionUuid)
+    this.collectionService.requestCollectionSkillsCsv(this.collectionUuid)
       .subscribe((taskStarted: ITaskResult) => {
         this.taskUuidInProgress = taskStarted.uuid
         this.intervalHandle = setInterval(() => this.pollCsv(), 1000)

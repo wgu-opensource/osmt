@@ -11,6 +11,8 @@ import {PublishStatus} from "../../PublishStatus"
 import {ApiBatchResult} from "../ApiBatchResult"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
 import {ApiSkillSummary, ISkillSummary} from "../ApiSkillSummary"
+import {Router} from "@angular/router";
+import {Location} from "@angular/common";
 
 
 @Injectable({
@@ -18,8 +20,8 @@ import {ApiSkillSummary, ISkillSummary} from "../ApiSkillSummary"
 })
 export class RichSkillService extends AbstractService {
 
-  constructor(httpClient: HttpClient, authService: AuthService) {
-    super(httpClient, authService)
+  constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
+    super(httpClient, authService, router, location)
   }
 
   private serviceUrl = "api/skills"
@@ -95,18 +97,21 @@ export class RichSkillService extends AbstractService {
       .pipe(map((response) => this.safeUnwrapBody(response.body, errorMsg)))
   }
 
-  createSkill(updateObject: ApiSkillUpdate): Observable<ApiSkill> {
-    return this.createSkills([updateObject]).pipe(map(it => it[0]))
+  createSkill(updateObject: ApiSkillUpdate, pollIntervalMs: number = 1000): Observable<ApiSkill> {
+    return this.pollForTaskResult<ApiSkill[]>(
+      this.createSkills([updateObject]),
+      pollIntervalMs
+    ).pipe(map(it => it !== undefined ? it[0] : it))
   }
 
-  createSkills(updateObjects: ApiSkillUpdate[]): Observable<ApiSkill[]> {
+  createSkills(updateObjects: ApiSkillUpdate[]): Observable<ApiTaskResult> {
     const errorMsg = `Error creating skill`
-    return this.post<ISkill[]>({
+    return this.post<ITaskResult>({
       path: this.serviceUrl,
       body: updateObjects
     })
       .pipe(share())
-      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiSkill(s))))
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, errorMsg))))
   }
 
   updateSkill(uuid: string, updateObject: ApiSkillUpdate): Observable<ApiSkill> {

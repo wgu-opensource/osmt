@@ -23,7 +23,10 @@ class JobCodeEsRepoTest @Autowired constructor(
 
     @Test
     fun `Should get results for type ahead searches`(){
-        val noiseJobCodes = (1..50).map{TestObjectHelpers.randomJobCode()}.also{
+        val noiseJobCodes = (1..50).map{
+            val codeString = if (it < 10){"50-500${it}"} else {"50-50${it}"}
+            TestObjectHelpers.randomJobCode().copy(code = codeString)
+        }.also{
             jobCodeEsRepo.saveAll(it)
         }
         val testJobCodes = listOf(

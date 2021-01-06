@@ -23,10 +23,13 @@ object RoutePaths {
     const val COLLECTION_SKILLS_UPDATE = "${COLLECTION_DETAIL}/updateSkills"
     const val COLLECTION_SKILLS = "${COLLECTION_DETAIL}/skills"
     const val COLLECTION_AUDIT_LOG = "${COLLECTION_DETAIL}/log"
+    const val COLLECTION_CSV = "${COLLECTION_DETAIL}/csv"
 
 
-    const val TASKS_PATH = "/api/tasks"
-    const val TASK_DETAIL = "${TASKS_PATH}/{uuid}"
+    const val TASKS_PATH = "/api/results"
+    const val TASK_DETAIL_TEXT = "${TASKS_PATH}/text/{uuid}"
+    const val TASK_DETAIL_BATCH = "${TASKS_PATH}/batch/{uuid}"
+    const val TASK_DETAIL_SKILLS = "${TASKS_PATH}/skills/{uuid}"
 
     const val SEARCH_JOBCODES_PATH = "$SEARCH_PATH/jobcodes"
 

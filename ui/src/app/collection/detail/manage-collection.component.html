@@ -36,7 +36,7 @@
         <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
           {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">RSDs</ng-template><ng-template #singular>RSD</ng-template> found in this collection based on
           <ng-template [ngIf]="matchingQuery">
-            <span class="t-type-bodyLargeBold t-color-text1">{{matchingQuery[0]}}</span> and
+            <span class="t-type-bodyLargeBold t-type-text1">{{matchingQuery[0]}}</span> and
           </ng-template>
           your filters.
           <ng-template [ngIf]="totalCount > 0">
@@ -86,8 +86,10 @@
     <div *ngIf="collection" class="t-padding-medium t-padding-top">
       <app-audit-log
         [collectionUuid]="collection.uuid"
+        [collapseListener]="collapseAuditLog.asObservable()"
         closedLabel="View Audit Log"
-        openLabel="Hide Audit Log">
+        openLabel="Hide Audit Log"
+      >
       </app-audit-log>
     </div>
   </div>

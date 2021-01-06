@@ -46,20 +46,11 @@ export class LoadingObservablesDirective {
 
   private showError(error: any): void {
     const status: number = error?.status ?? 500
-    console.log("Loading Error!", status, error)
-    if (status === 401) {
-      this.authService.logout()
-      const returnPath = this.location.path(true)
-      this.router.navigate(["/login"], {queryParams: {return: returnPath}})
-      return
-    }
-
-    const factory = this.componentResolver.resolveComponentFactory(ServerErrorComponent)
-    this.viewContainer.clear()
-    const componentRef: ComponentRef<ServerErrorComponent> = this.viewContainer.createComponent<ServerErrorComponent>(factory)
-    componentRef.instance.status = status
-    if (status === 0) {
-      this.authService.setServerIsDown(true)
+    if (status === 500 || status === 404) {
+      const factory = this.componentResolver.resolveComponentFactory(ServerErrorComponent)
+      this.viewContainer.clear()
+      const componentRef: ComponentRef<ServerErrorComponent> = this.viewContainer.createComponent<ServerErrorComponent>(factory)
+      componentRef.instance.status = status
     }
   }
 

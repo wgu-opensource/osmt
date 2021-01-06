@@ -8,6 +8,8 @@ import {ApiSortOrder} from "./richskill/ApiSkill";
 import {ApiBatchResult} from "./richskill/ApiBatchResult";
 import {ApiSearch} from "./richskill/service/rich-skill-search.service";
 import {map, share} from "rxjs/operators";
+import {DefaultUrlSerializer, Router, UrlSerializer} from "@angular/router";
+import {Location} from "@angular/common";
 
 interface ApiGetParams {
   path: string,
@@ -20,7 +22,24 @@ interface ApiGetParams {
 
 export abstract class AbstractService {
 
-  constructor(protected httpClient: HttpClient, protected authService: AuthService) {
+  constructor(protected httpClient: HttpClient,
+              protected authService: AuthService,
+              protected router: Router,
+              protected location: Location
+  )
+  {
+  }
+
+  redirectToLogin(error: any): void {
+    const status: number = error?.status ?? 500
+    if (status === 401) {
+      this.authService.logout()
+      window.open("/login?return=autoclose", "_blank")
+      return
+    }
+    else if (status === 0) {
+      this.authService.setServerIsDown(true)
+    }
   }
 
   /**
@@ -34,16 +53,22 @@ export abstract class AbstractService {
    * @param params Json blob defining path params
    */
   get<T>({path, headers, params}: ApiGetParams): Observable<HttpResponse<T>> {
-    return this.httpClient.get<T>(this.buildUrl(path), {
+    const observable = this.httpClient.get<T>(this.buildUrl(path), {
       headers: this.wrapHeaders(headers),
       params,
-      observe: "response"})
+      observe: "response"}).pipe(share())
+    observable
+      .subscribe(() => {}, (err) => { this.redirectToLogin(err) })
+    return observable
   }
   post<T>({path, headers, params, body}: ApiGetParams): Observable<HttpResponse<T>> {
-    return this.httpClient.post<T>(this.buildUrl(path), body, {
+    const observable =  this.httpClient.post<T>(this.buildUrl(path), body, {
       headers: this.wrapHeaders(headers),
       params,
-      observe: "response"})
+      observe: "response"}).pipe(share())
+    observable
+      .subscribe(() => {}, (err) => { this.redirectToLogin(err) })
+    return observable
   }
 
   protected safeUnwrapBody<T>(body: T | null, failureMessage: string): T {
@@ -75,10 +100,10 @@ export abstract class AbstractService {
     return headers
   }
 
-  pollForTaskResult(obs: Observable<ApiTaskResult>, pollIntervalMs: number = 1000): Observable<ApiBatchResult> {
+  pollForTaskResult<T>(obs: Observable<ApiTaskResult>, pollIntervalMs: number = 1000): Observable<T> {
     return new Observable((observer) => {
       obs.subscribe(task => {
-        this.observableForTaskResult<ApiBatchResult>(task, pollIntervalMs).subscribe(result => {
+        this.observableForTaskResult<T>(task, pollIntervalMs).subscribe(result => {
           observer.next(result)
           if (result) {
             observer.complete()
@@ -99,7 +124,9 @@ export abstract class AbstractService {
           if (status === 200) {
             observer.next(body as T)
             observer.complete()
-          } else {
+          }
+        }, ({error, status}) => {
+          if (status === 404) {
             observer.next(undefined)
             setTimeout(() => tick(), pollIntervalMs)
           }

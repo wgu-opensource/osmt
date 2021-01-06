@@ -5,10 +5,11 @@ import {RichSkillService} from "../service/rich-skill.service";
 import {ToastService} from "../../toast/toast.service";
 import {Location} from "@angular/common";
 import {Papa, ParseResult} from "ngx-papaparse";
-import {ApiNamedReference} from "../ApiSkill"
+import {ApiNamedReference, ApiSkill} from "../ApiSkill"
 import {ApiReferenceListUpdate, ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate";
-import {Observable} from "rxjs";
+import {forkJoin, Observable} from "rxjs";
 import {PaginatedSkills} from "../service/rich-skill-search.service";
+import {map} from "rxjs/operators";
 
 
 export enum ImportStep {
@@ -371,12 +372,30 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     this.handleMappingChanged(mappings)
   }
 
+  private batchSimilarity(statements: string[]): Observable<boolean[]> {
+    const chunk = (arr: string[], size: number) => {
+      return Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+        arr.slice(i * size, i * size + size)
+      )
+    }
+
+    const chunks: string[][] = chunk(statements, 100)
+    const observables: Observable<boolean[]>[] = chunks.map(it => this.richSkillService.similaritiesCheck(it))
+    return new Observable(observer => {
+      forkJoin(observables).subscribe(it => {
+        const allResponses: boolean[] = it.flat()
+        observer.next(allResponses)
+        observer.complete()
+      }, err => observer.error(err))
+    })
+  }
+
   private auditRecords(): void {
     this.previewSkills = this.skillsFromResults()
 
     this.searchingSimilarity = true
     const statements: string[] = this.previewSkills.map(it => it.skillStatement).map(it => it ?? "")
-    this.richSkillService.similaritiesCheck(statements).subscribe(results => {
+    this.batchSimilarity(statements).subscribe(results => {
       this.searchingSimilarity = false
       this.similarSkills = results
 
@@ -399,7 +418,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     const skillUpdates = this.importedSkills.map(it => it.skill)
 
     this.showStepLoader()
-    this.richSkillService.createSkills(skillUpdates).subscribe(results => {
+
+    this.richSkillService.pollForTaskResult<ApiSkill[]>(
+      this.richSkillService.createSkills(skillUpdates)
+    ).subscribe(results => {
       if (results) {
         this.hideStepLoader()
       }

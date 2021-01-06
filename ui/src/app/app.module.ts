@@ -5,7 +5,6 @@ import {AppComponent} from "./app.component"
 import {HttpClientModule} from "@angular/common/http"
 import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-library.component"
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
-import {RichSkillsCsvExportComponent} from "./richskill/task/rich-skills-csv-export.component"
 import {AppConfig} from "./app.config"
 import {RichSkillFormComponent} from "./richskill/form/rich-skill-form.component"
 import {ReactiveFormsModule} from "@angular/forms"
@@ -92,6 +91,7 @@ import {OccupationsCardSectionComponent} from "./richskill/detail/occupations-ca
 import {CheckerComponent} from "./richskill/form/checker.component";
 import {SystemMessageComponent} from "./core/system-message.component";
 import {LogoutComponent} from "./auth/logout.component";
+import {NgIdleKeepaliveModule} from "@ng-idle/keepalive";
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -121,7 +121,6 @@ export function initializeApp(appConfig: AppConfig): () => void {
 
     // Rich skills
     RichSkillsLibraryComponent,
-    RichSkillsCsvExportComponent,
     SkillCollectionsDisplayComponent,
 
     // Rich skill detail
@@ -196,6 +195,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CheckerComponent,
   ],
   imports: [
+    NgIdleKeepaliveModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,

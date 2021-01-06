@@ -16,6 +16,8 @@ import {map, share} from "rxjs/operators"
 import {ApiBatchResult} from "../../richskill/ApiBatchResult"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
 import {ApiCollection, ICollection, ICollectionUpdate} from "../ApiCollection"
+import {Router} from "@angular/router";
+import {Location} from "@angular/common";
 
 @Injectable({
   providedIn: "root"
@@ -24,8 +26,8 @@ export class CollectionService extends AbstractService {
 
   private baseServiceUrl = "api/collections"
 
-  constructor(httpClient: HttpClient, authService: AuthService) {
-    super(httpClient, authService)
+  constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
+    super(httpClient, authService, router, location)
   }
 
   getCollections(
@@ -74,21 +76,30 @@ export class CollectionService extends AbstractService {
       .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg)))
   }
 
-  getCollectionSkillsCsv(uuid: string): Observable<ITaskResult> {
+  requestCollectionSkillsCsv(uuid: string): Observable<ITaskResult> {
     if (!uuid) {
       throw new Error("Invalid collection uuid.")
     }
     const errorMsg = `Could not find skills using this collection [${uuid}]`
 
     return this.get<ITaskResult>({
-      path: `${this.baseServiceUrl}/${uuid}/skills`,
-      headers: new HttpHeaders({
-        Accept: "text/csv"
-      })
+      path: `${this.baseServiceUrl}/${uuid}/csv`
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, errorMsg))))
   }
+
+  // this call is a bit different since it's returning a csv for immediate download, so use httpClient's get() method
+  // tslint:disable-next-line:no-any
+  getCsvTaskResultsIfComplete(uuid: string): Observable<any> {
+    return this.httpClient
+      .get(`api/results/text/${uuid}`, {
+        responseType: "text",
+        observe: "response"
+      })
+      .pipe(share())
+  }
+
 
   getCollectionSkills(
     collectionUuid: string,
@@ -174,7 +185,7 @@ export class CollectionService extends AbstractService {
                          filterByStatus?: Set<PublishStatus>,
                          pollIntervalMs: number = 1000
   ): Observable<ApiBatchResult> {
-    return this.pollForTaskResult(this.updateSkills(collectionUuid, skillListUpdate, filterByStatus), pollIntervalMs)
+    return this.pollForTaskResult<ApiBatchResult>(this.updateSkills(collectionUuid, skillListUpdate, filterByStatus), pollIntervalMs)
   }
 
   publishCollectionsWithResult(
@@ -183,7 +194,7 @@ export class CollectionService extends AbstractService {
     filterByStatuses?: Set<PublishStatus>,
     pollIntervalMs: number = 1000,
   ): Observable<ApiBatchResult> {
-    return this.pollForTaskResult(
+    return this.pollForTaskResult<ApiBatchResult>(
       this.bulkStatusChange("api/collections/publish", apiSearch, newStatus, filterByStatuses),
       pollIntervalMs
     )

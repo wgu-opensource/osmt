@@ -13,7 +13,7 @@ import {ToastService} from "../../toast/toast.service"
 import {Title} from "@angular/platform-browser"
 import {HasFormGroup} from "../../core/abstract-form.component"
 import {notACopyValidator} from "../../validators/not-a-copy.validator"
-import {ApiSkillSummary} from "../ApiSkillSummary";
+import {ApiSkillSummary} from "../ApiSkillSummary"
 
 
 @Component({
@@ -75,6 +75,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   }
 
   pageTitle(): string {
+    if (this.isDuplicating) { return "Edit Copy of RSD" }
     return `${this.existingSkill != null ? "Edit" : "Create"} Rich Skill Descriptor`
   }
 
@@ -84,7 +85,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
 
   getFormDefinitions(): {[key: string]: AbstractControl} {
     const fields = {
-      skillName: new FormControl("", notACopyValidator),
+      skillName: new FormControl("", Validators.compose([Validators.required, notACopyValidator])),
       skillStatement: new FormControl("", Validators.required),
       category: new FormControl(""),
       keywords: new FormControl(""),
@@ -160,7 +161,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     if (AppConfig.settings.editableAuthor) {
       const author = ApiNamedReference.fromString(formValue.author)
       if (!this.existingSkill || this.isDuplicating || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
-          update.author = author
+        update.author = author
       }
     }
 
@@ -231,6 +232,8 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
 
     if (this.skillSaved) {
       this.skillSaved.subscribe((result) => {
+        if (!result) { return }
+
         this.skillForm.markAsPristine()
         const collectionCount = updateObject.collections?.add?.length ?? 0
         if (collectionCount > 0) {
@@ -355,12 +358,12 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
 
   populateTypeAheadFieldsWithResults(): void {
     const formValue = this.skillForm.value
-    formValue.standards = [formValue.standards, ...this.selectedStandards].join("; ")
-    formValue.occupations = [formValue.occupations, ...this.selectedJobCodes].join("; ")
-    formValue.keywords = [formValue.keywords, ...this.selectedKeywords].join("; ")
-    formValue.certifications = [formValue.certifications, ...this.selectedCertifications].join("; ")
-    formValue.employers = [formValue.employers, ...this.selectedEmployers].join("; ")
-}
+    formValue.standards = this.selectedStandards.join("; ")
+    formValue.occupations = this.selectedJobCodes.join("; ")
+    formValue.keywords = this.selectedKeywords.join("; ")
+    formValue.certifications = this.selectedCertifications.join("; ")
+    formValue.employers = this.selectedEmployers.join("; ")
+  }
 
   handleStandardsTypeAheadResults(standards: string[]): void {
     this.selectedStandards = standards
@@ -391,7 +394,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   checkForStatementSimilarity(statement: string): void {
     this.searchingSimilarity = true
     this.richSkillService.similarityCheck(statement).subscribe(results => {
-      this.similarSkills = results
+      this.similarSkills = results?.filter(s => this.existingSkill?.uuid !== s.uuid)
       this.searchingSimilarity = false
     })
   }

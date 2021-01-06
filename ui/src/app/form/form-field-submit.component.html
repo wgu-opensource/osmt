@@ -1,5 +1,8 @@
 <div *ngIf="!mobileView; else mobile">
   <button class="m-button t-width-100" [class.m-button-is-loading]="isProcessing()" [disabled]="isDisabled()" type="submit">
+    <span *ngIf="isProcessing()" class="m-button-x-loader">
+        <span class="m-loaderGraphic m-loaderGraphic-medium"></span>
+    </span>
     <span class="m-button-x-text">{{label}}</span>
   </button>
 </div>

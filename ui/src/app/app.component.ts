@@ -5,6 +5,7 @@ import {ToastService} from "./toast/toast.service";
 import {DEFAULT_INTERRUPTSOURCES, Idle} from "@ng-idle/core";
 import {Keepalive} from "@ng-idle/keepalive";
 import {Router} from "@angular/router";
+import * as chroma from "chroma-js"
 
 @Component({
   selector: "app-root",
@@ -30,6 +31,10 @@ export class AppComponent extends Whitelabelled implements OnInit {
 
   ngOnInit(): void {
     this.titleService.setTitle(this.whitelabel.toolName)
+
+    if (this.whitelabel.colorBrandAccent1) {
+      this.setWhiteLabelColor(this.whitelabel.colorBrandAccent1)
+    }
   }
 
   watchForIdle(): void {
@@ -43,5 +48,24 @@ export class AppComponent extends Whitelabelled implements OnInit {
     })
     this.keepalive.interval(15)
     this.idle.watch()
+  }
+
+
+  setWhiteLabelColor(newBrandAccent1: string): void {
+    // Set new brand color
+    document.documentElement.style.setProperty("--color-brand1", newBrandAccent1)
+
+    // Check other colors
+    const rootStyles = window.getComputedStyle(document.documentElement)
+    const black = rootStyles.getPropertyValue("--color-onBrandBlack")
+    const defaultA11yOnBrand = rootStyles.getPropertyValue("--color-onBrandWhite")
+    const contrast = chroma.contrast(defaultA11yOnBrand, newBrandAccent1)
+
+    if (contrast < 4.5) { // If white and brand have a contrast of less than 4.5, switch, else set default
+      document.documentElement.style.setProperty("--color-a11yOnBrand", black)
+    } else {
+      document.documentElement.style.setProperty("--color-a11yOnBrand", defaultA11yOnBrand)
+    }
+
   }
 }

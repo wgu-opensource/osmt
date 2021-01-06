@@ -32,11 +32,6 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 ) {
     super(router, richSkillService, toastService)
     this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
-    router.events.subscribe(event => {
-      if (event instanceof NavigationStart) {
-        this.searchService.clearSearch()
-      }
-    })
   }
 
   ngOnInit(): void {

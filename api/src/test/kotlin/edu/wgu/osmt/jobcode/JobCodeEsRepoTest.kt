@@ -11,6 +11,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @Transactional
 class JobCodeEsRepoTest @Autowired constructor(
@@ -33,7 +35,7 @@ class JobCodeEsRepoTest @Autowired constructor(
             TestObjectHelpers.randomJobCode().copy(code = "29-2071.00"),
             TestObjectHelpers.randomJobCode().copy(code = "29-2070.00"),
             TestObjectHelpers.randomJobCode().copy(code = "29-2000.00"),
-            TestObjectHelpers.randomJobCode().copy(code = "29-0000.00", name = null) // should be ignored in results
+            JobCode(id = TestObjectHelpers.elasticIdCounter, code = "29-0000.00", name = null, creationDate = LocalDateTime.now(ZoneOffset.UTC)) // should be ignored in results
         )
         jobCodeEsRepo.saveAll(testJobCodes)
 

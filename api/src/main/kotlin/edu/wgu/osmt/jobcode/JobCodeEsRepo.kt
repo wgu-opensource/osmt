@@ -62,26 +62,14 @@ object JobCodeQueries {
                     "${path}${JobCode::broadCode.name}.keyword",
                     lowerCaseQuery
                 ),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::name.name}",
+                simpleQueryStringQuery(
                     lowerCaseQuery
-                ).boost(2.0f),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::minor.name}",
-                    lowerCaseQuery
-                ),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::detailed.name}",
-                    lowerCaseQuery
-                ),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::major.name}",
-                    lowerCaseQuery
-                ),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::broad.name}",
-                    lowerCaseQuery
-                )
+                ).field("${path}${JobCode::name.name}").boost(2.0f),
+                simpleQueryStringQuery(lowerCaseQuery
+                ).field("${path}${JobCode::minor.name}"),
+                simpleQueryStringQuery(lowerCaseQuery).field("${path}${JobCode::detailed.name}"),
+                simpleQueryStringQuery(lowerCaseQuery).field("${path}${JobCode::major.name}"),
+                simpleQueryStringQuery(lowerCaseQuery).field("${path}${JobCode::broad.name}")
             )
         disjunctionQuery.innerQueries().addAll(queries)
 

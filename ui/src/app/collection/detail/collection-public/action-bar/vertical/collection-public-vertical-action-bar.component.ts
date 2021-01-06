@@ -3,7 +3,6 @@ import {CollectionPublicActionBarComponent} from "../collection-public-action-ba
 import {CollectionService} from "../../../../service/collection.service"
 import {Router} from "@angular/router"
 import {ToastService} from "../../../../../toast/toast.service"
-import {TaskService} from "../../../../../task/task-service"
 
 @Component({
   selector: "app-collection-public-vertical-action-bar",
@@ -15,10 +14,9 @@ export class CollectionPublicVerticalActionBarComponent extends CollectionPublic
     router: Router,
     collectionService: CollectionService,
     toastService: ToastService,
-    taskService: TaskService,
     @Inject(LOCALE_ID) locale: string
   ) {
-    super(router, collectionService, toastService, taskService, locale)
+    super(router, collectionService, toastService, locale)
   }
 }
 

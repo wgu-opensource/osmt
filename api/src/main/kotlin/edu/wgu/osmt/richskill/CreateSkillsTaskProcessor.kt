@@ -1,0 +1,50 @@
+package edu.wgu.osmt.richskill
+
+import com.github.sonus21.rqueue.annotation.RqueueListener
+import edu.wgu.osmt.api.model.ApiSkill
+import edu.wgu.osmt.collection.CollectionRepository
+import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.task.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Profile
+import org.springframework.stereotype.Component
+import javax.transaction.Transactional
+
+
+@Component
+@Profile("apiserver")
+@Transactional
+class CreateSkillsTaskProcessor {
+    val logger: Logger = LoggerFactory.getLogger(CreateSkillsTaskProcessor::class.java)
+
+    @Autowired
+    lateinit var taskMessageService: TaskMessageService
+
+    @Autowired
+    lateinit var richSkillRepository: RichSkillRepository
+
+    @Autowired
+    private lateinit var appConfig: AppConfig
+
+    @RqueueListener(
+        value = [TaskMessageService.createSkills],
+        deadLetterQueueListenerEnabled = "true",
+        deadLetterQueue = TaskMessageService.deadLetters,
+        concurrency = "1"
+    )
+    fun process(task: CreateSkillsTask) {
+        logger.info("Started processing createSkillsTask uuid: ${task.uuid}")
+
+        val results = richSkillRepository.createFromApi(task.apiSkillUpdates, task.userString).map {
+            it.uuid
+        }
+
+        taskMessageService.publishResult(
+            task.copy(result=results, status=TaskStatus.Ready)
+        )
+
+        logger.info("Task ${task.uuid} completed")
+    }
+}

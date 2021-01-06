@@ -115,12 +115,9 @@ class CollectionController @Autowired constructor(
     ): HttpEntity<TaskResult> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = readableUsername(user))
-        taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
 
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        val tr = TaskResult.fromTask(task)
-        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
+        taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
+        return Task.processingResponse(task)
     }
 
     @PostMapping(RoutePaths.COLLECTION_PUBLISH, produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -140,23 +137,18 @@ class CollectionController @Autowired constructor(
         val filterStatuses = filterByStatus.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val publishStatus = PublishStatus.forApiValue(newStatus) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         val task = PublishTask(AppliesToType.Collection, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = readableUsername(user))
-        taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
 
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        val tr = TaskResult.fromTask(task)
-        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
+        taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
+        return Task.processingResponse(task)
     }
 
-    @GetMapping(RoutePaths.COLLECTION_SKILLS, produces = ["text/csv"])
+    @GetMapping(RoutePaths.COLLECTION_CSV, produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getSkillsForCollectionCsv(
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
-        val task = CsvTask(result = uuid)
-        val responseHeaders = HttpHeaders().apply { add("Content-Type", MediaType.APPLICATION_JSON_VALUE) }
+        val task = CsvTask(collectionUuid = uuid)
         taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
-        val tr = TaskResult.fromTask(task)
-        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
+        return Task.processingResponse(task)
     }
 
     @GetMapping(RoutePaths.COLLECTION_AUDIT_LOG, produces = ["application/json"])

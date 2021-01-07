@@ -27,14 +27,14 @@ class JobCodeEsRepoTest @Autowired constructor(
     fun `Should get results for type ahead searches`(){
         val noiseJobCodes = (1..50).map{
             val codeString = if (it < 10){"50-500${it}"} else {"50-50${it}"}
-            TestObjectHelpers.randomJobCode().copy(code = codeString)
+            TestObjectHelpers.randomJobCode().copy(code = codeString, name = "noise job code")
         }.also{
             jobCodeEsRepo.saveAll(it)
         }
         val testJobCodes = listOf(
-            TestObjectHelpers.randomJobCode().copy(code = "29-2071.00"),
-            TestObjectHelpers.randomJobCode().copy(code = "29-2070.00"),
-            TestObjectHelpers.randomJobCode().copy(code = "29-2000.00"),
+            TestObjectHelpers.randomJobCode().copy(code = "29-2071.00", name = "signal job code"),
+            TestObjectHelpers.randomJobCode().copy(code = "29-2070.00", name = "signal job code"),
+            TestObjectHelpers.randomJobCode().copy(code = "29-2000.00", name = "signal job code"),
             JobCode(id = TestObjectHelpers.elasticIdCounter, code = "29-0000.00", name = null, creationDate = LocalDateTime.now(ZoneOffset.UTC)) // should be ignored in results
         )
         jobCodeEsRepo.saveAll(testJobCodes)

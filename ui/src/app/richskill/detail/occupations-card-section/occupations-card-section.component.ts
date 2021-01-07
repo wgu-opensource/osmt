@@ -5,26 +5,45 @@ import {IJobCode} from "../../../job-codes/Jobcode"
   selector: "app-occupations-card-section",
   template: `
     <div>
-      <div *ngIf="!!majorCodes && !isCollapsed">
-        <h4 class="t-type-bodyBold">Major Groups</h4>
-        <p *ngFor="let aMajorCode of majorCodes">{{aMajorCode}}</p>
+      <div *ngIf="!!majorCodes && !isCollapsed" class="t-margin-small t-margin-top">
+        <h4 class="t-type-bodyBoldCaps">Major Groups</h4>
+        <div *ngFor="let code of majorCodes" class="l-flex">
+          <h5 class="t-type-bodyBold t-type-noWrap">{{code.code}}</h5>
+          <p>{{code.name}}</p>
+        </div>
       </div>
 
-      <div *ngIf="!!minorCodes && !isCollapsed">
-        <h4 class="t-type-bodyBold">Minor Groups</h4>
-        <p *ngFor="let aMajorCode of minorCodes">{{aMajorCode}}</p>
+      <div *ngIf="!!minorCodes && !isCollapsed" class="t-margin-small t-margin-top">
+        <h4 class="t-type-bodyBoldCaps">Minor Groups</h4>
+        <div *ngFor="let code of minorCodes" class="l-flex">
+          <h5 class="t-type-bodyBold t-type-noWrap">{{code.code}}</h5>
+          <p>{{code.name}}</p>
+        </div>
       </div>
 
-      <div *ngIf="!!broadCodes && !isCollapsed">
-        <h4 class="t-type-bodyBold">Broad Occupations</h4>
-        <p *ngFor="let aMajorCode of broadCodes">{{aMajorCode}}</p>
+      <div *ngIf="!!broadCodes && !isCollapsed" class="t-margin-small t-margin-top">
+        <h4 class="t-type-bodyBoldCaps">Broad Occupations</h4>
+        <div *ngFor="let code of broadCodes" class="l-flex">
+          <h5 class="t-type-bodyBold t-type-noWrap">{{code.code}}</h5>
+          <p>{{code.name}}</p>
+        </div>
       </div>
 
-      <h4 *ngIf="!!detailedCodes" class="t-type-bodyBold">Detailed Occupations</h4>
-      <p *ngFor="let aMajorCode of detailedCodes">{{aMajorCode}}</p>
+      <div class="t-margin-small t-margin-top">
+        <h4 *ngIf="!!detailedCodes" class="t-type-bodyBoldCaps">Detailed Occupations</h4>
+        <div *ngFor="let code of detailedCodes" class="l-flex">
+          <h5 class="t-type-bodyBold t-type-noWrap">{{code.code}}</h5>
+          <p>{{code.name}}</p>
+        </div>
+      </div>
 
-      <h4 *ngIf="!!onetCodes" class="t-type-bodyBold">O*NET Job Roles</h4>
-      <p *ngFor="let aOnetCode of onetCodes">{{aOnetCode}}</p>
+      <div class="t-margin-small t-margin-top">
+        <h4 *ngIf="!!onetCodes" class="t-type-bodyBoldCaps">O*NET Job Roles</h4>
+        <div *ngFor="let code of onetCodes" class="l-flex">
+          <h5 class="t-type-bodyBold t-type-noWrap">{{code.code}}</h5>
+          <p>{{code.name}}</p>
+        </div>
+      </div>
     </div>
   `
 })
@@ -33,13 +52,17 @@ export class OccupationsCardSectionComponent implements OnInit {
   @Input() codes!: IJobCode[]
   @Input() isCollapsed = false
 
-  majorCodes!: Set<string>
-  minorCodes!: Set<string>
-  broadCodes!: Set<string>
-  detailedCodes!: Set<string>
-  onetCodes!: Set<string>
+  majorCodes!: Set<IJobCode>
+  minorCodes!: Set<IJobCode>
+  broadCodes!: Set<IJobCode>
+  detailedCodes!: Set<IJobCode>
+  onetCodes!: Set<IJobCode>
 
   constructor() { }
+
+  distinctJobcodes(input: Array<IJobCode>): Array<IJobCode> {
+    return input.filter((item, idx, arr) => arr.findIndex(it => it.code === item.code) === idx)
+  }
 
   ngOnInit(): void {
     this.majorCodes = this.major()
@@ -47,39 +70,25 @@ export class OccupationsCardSectionComponent implements OnInit {
     this.broadCodes = this.broad()
     this.detailedCodes = this.detailed()
     this.onetCodes = this.onet()
+    console.log("wtf", this.codes, this.majorCodes)
   }
 
-  major(): Set<string> {
-    const x =  new Set(this.codes?.flatMap(code => {
-      return code.parents?.filter(p => p.level === "Major")?.map(p => `${p.code} ${p.name ?? ""}`) ?? []
-    }))
-    return x
+  major(): Set<IJobCode> {
+    return new Set(this.distinctJobcodes(this.codes?.flatMap(code => code.parents?.filter(p => p.level === "Major") ?? [])))
   }
 
-  minor(): Set<string> {
-    return new Set(this.codes?.flatMap(code => {
-      return code.parents?.filter(p => p.level === "Minor")?.map(p => `${p.code} ${p.name ?? ""}`) ?? []
-    }))
+  minor(): Set<IJobCode> {
+    return new Set(this.distinctJobcodes(this.codes?.flatMap(code => code.parents?.filter(p => p.level === "Minor") ?? [])))
   }
 
-  broad(): Set<string> {
-    return new Set(this.codes?.flatMap(code => {
-      return code.parents?.filter(p => p.level === "Broad")?.map(p => `${p.code} ${p.name ?? ""}`) ?? []
-    }))
+  broad(): Set<IJobCode> {
+    return new Set(this.distinctJobcodes(this.codes?.flatMap(code => code.parents?.filter(p => p.level === "Broad") ?? [])))
   }
-  detailed(): Set<string> {
-    return new Set(this.codes?.flatMap(code => {
-      return code.parents?.filter(p => p.level === "Detailed")?.map(p => `${p.code} ${p.name ?? ""}`) ?? []
-    }))
+  detailed(): Set<IJobCode> {
+    return new Set(this.distinctJobcodes(this.codes?.flatMap(code => code.parents?.filter(p => p.level === "Detailed") ?? [])))
   }
 
-  onet(): Set<string> {
-    return new Set(this.codes?.flatMap(code => {
-      if (code.framework === "o*net") {
-        return `${code.code} ${code.name ?? ""}`
-      } else {
-        return ""
-      }
-    }).filter(c => c.length > 0))
+  onet(): Set<IJobCode> {
+    return new Set(this.distinctJobcodes(this.codes?.filter(code => code.framework === "o*net")))
   }
 }

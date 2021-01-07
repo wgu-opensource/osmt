@@ -17,7 +17,7 @@ export class FormDirtyGuard implements CanDeactivate<HasFormGroup> {
     nextState?: RouterStateSnapshot
   ): Observable<boolean> | boolean {
     const formGroup = component.formGroup()
-    if (nextState?.url.startsWith("/logout") && !formGroup.pristine) {
+    if (!nextState?.url.startsWith("/logout") && !formGroup.pristine) {
       return new Observable((observer) => {
         observer.next(confirm("Whoa, there! You have unsaved changes.\nIf you leave this page without saving, you'll lose your edits. Are you sure you want to leave?"))
         observer.complete()

@@ -64,4 +64,8 @@ export class FormFieldSearchMultiSelectComponent extends AbstractFormFieldSearch
     }
     return false
   }
+
+  handleBlur(): void {
+    this.results = undefined
+  }
 }

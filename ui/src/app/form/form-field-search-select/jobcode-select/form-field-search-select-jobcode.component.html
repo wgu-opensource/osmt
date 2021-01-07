@@ -16,6 +16,7 @@
         </svg>
 
         <input
+          (blur)="handleBlur()"
           [formControl]="control"
           [required]="required"
           class="m-search-x-input"

@@ -16,6 +16,7 @@
         </svg>
 
         <input
+          (blur)="handleBlur()"
           (keydown.enter)="handleKeyDownEnter($event)"
           [formControl]="control"
           [required]="required"

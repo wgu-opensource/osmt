@@ -96,6 +96,10 @@ export class FormFieldSearchSelectJobcodeComponent extends FormField implements 
   private emitCurrentSelection(): void {
     this.currentSelection.emit(this.internalSelectedResults.map(selectedItem => selectedItem.code))
   }
+
+  handleBlur(): void {
+    this.results = undefined
+  }
 }
 
 

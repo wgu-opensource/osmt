@@ -85,7 +85,7 @@
       <div class="l-searchSelect-x-items">
 
         <!-- Currently selected results -->
-        <button class="m-inputItem" *ngFor="let r of internalSelectedResults" (click)="unselectResult(r)">
+        <button type="button" class="m-inputItem" *ngFor="let r of internalSelectedResults" (click)="unselectResult(r)">
           <span class="m-inputItem-x-text"><span class="t-visuallyHidden">Remove </span>{{joinNameAndCode(r)}}</span>
           <span class="m-inputItem-x-icon">
             <svg class="t-icon" aria-hidden="true">

@@ -22,19 +22,27 @@ export class AppConfig {
   load(): Promise<object> {
     const baseUrl = environment.baseApiUrl
 
-    return this.http.get(`${baseUrl}/whitelabel/whitelabel.json`)
-      .toPromise()
-      .then(value => {
-        AppConfig.settings = this.defaultConfig()
-        Object.assign(AppConfig.settings, value as IAppConfig)
+    if (environment.dynamicWhitelabel) {
+      return this.http.get(`${baseUrl}/whitelabel/whitelabel.json`)
+        .toPromise()
+        .then(value => {
+          AppConfig.settings = this.defaultConfig()
+          Object.assign(AppConfig.settings, value as IAppConfig)
 
-        // baseApiUrl and loginUrl are not runtime whitelabellable
-        AppConfig.settings.baseApiUrl = environment.baseApiUrl
-        AppConfig.settings.loginUrl = environment.loginUrl
-        return value
-      }).catch(reason => {
+          // baseApiUrl and loginUrl are not runtime whitelabellable
+          AppConfig.settings.baseApiUrl = environment.baseApiUrl
+          AppConfig.settings.loginUrl = environment.loginUrl
+          return value
+        }).catch(reason => {
+          AppConfig.settings = this.defaultConfig()
+          return reason
+        })
+    }
+    else {
+      return new Promise((resolve, reject) => {
         AppConfig.settings = this.defaultConfig()
-        return reason
+        resolve(AppConfig.settings)
       })
+    }
+    }
   }
-}

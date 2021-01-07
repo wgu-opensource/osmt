@@ -18,6 +18,7 @@ export class FormFieldSearchSelectJobcodeComponent extends FormField implements 
 
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)
   iconDismiss = SvgHelper.path(SvgIcon.DISMISS)
+  iconCheck = SvgHelper.path(SvgIcon.CHECK)
 
   queryInProgress!: Subscription
   currentlyLoading = false
@@ -46,7 +47,7 @@ export class FormFieldSearchSelectJobcodeComponent extends FormField implements 
   }
 
   isResultSelected(result: ApiJobCode): boolean {
-    return !!this.internalSelectedResults.find(value => value === result)
+    return !!this.internalSelectedResults.find(value => value.code === result.code)
   }
 
   performInitialSearchAndPopulation(): void {

@@ -34,7 +34,8 @@ export abstract class AbstractService {
     const status: number = error?.status ?? 500
     if (status === 401) {
       this.authService.logout()
-      window.open("/login?return=autoclose", "_blank")
+      const returnPath = this.location.path(true)
+      this.router.navigate(["/login"], {queryParams: {return: returnPath}})
       return
     }
     else if (status === 0) {

@@ -31,11 +31,6 @@ export class CollectionSearchResultsComponent extends CollectionsListComponent i
   ) {
     super(router, toastService, collectionService)
     this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
-    router.events.subscribe(event => {
-      if (event instanceof NavigationStart) {
-        this.searchService.clearSearch()
-      }
-    })
   }
 
   ngOnInit(): void {

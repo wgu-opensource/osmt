@@ -13,6 +13,7 @@ export interface IAppConfig {
   poweredByUrl: string
   poweredByLabel: string
   idleTimeoutInSeconds: number
+  colorBrandAccent1?: string
 }
 
 // Default configuration
@@ -31,4 +32,5 @@ export class DefaultAppConfig implements IAppConfig {
   poweredByUrl = "https://rsd.osmt.dev"
   poweredByLabel = "Open Skills Network"
   idleTimeoutInSeconds = 15 * 60
+  colorBrandAccent1 = undefined
 }

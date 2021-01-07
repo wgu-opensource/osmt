@@ -36,7 +36,7 @@ data class ApiAdvancedSearch(
     val keywords: List<String>? = null,
 
     @JsonProperty("occupations")
-    val occupations: List<ApiNamedReference>? = null,
+    val occupations: List<String>? = null,
 
     @JsonProperty("standards")
     val standards: List<ApiNamedReference>? = null,

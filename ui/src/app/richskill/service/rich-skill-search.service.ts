@@ -32,7 +32,7 @@ export class ApiAdvancedSearch {
   category?: string
   skillStatement?: string
   keywords?: string[]
-  occupations?: INamedReference[]
+  occupations?: string[]
   standards?: INamedReference[]
   certifications?: INamedReference[]
   employers?: INamedReference[]

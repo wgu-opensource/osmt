@@ -12,20 +12,28 @@ export class AppConfig {
 
   }
 
+  defaultConfig(): IAppConfig {
+    const settings = new DefaultAppConfig()
+    settings.baseApiUrl = environment.baseApiUrl
+    settings.loginUrl = environment.loginUrl
+    return settings
+  }
+
   load(): Promise<object> {
     const baseUrl = environment.baseApiUrl
-    const loginUrl = environment.loginUrl
 
     return this.http.get(`${baseUrl}/whitelabel/whitelabel.json`)
       .toPromise()
       .then(value => {
-        AppConfig.settings = value as IAppConfig
-        AppConfig.settings.baseApiUrl = baseUrl
-        AppConfig.settings.loginUrl = loginUrl
+        AppConfig.settings = this.defaultConfig()
+        Object.assign(AppConfig.settings, value as IAppConfig)
 
+        // baseApiUrl and loginUrl are not runtime whitelabellable
+        AppConfig.settings.baseApiUrl = environment.baseApiUrl
+        AppConfig.settings.loginUrl = environment.loginUrl
         return value
       }).catch(reason => {
-        AppConfig.settings = new DefaultAppConfig()
+        AppConfig.settings = this.defaultConfig()
         return reason
       })
   }

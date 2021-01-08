@@ -24,13 +24,15 @@ class UiAppConfig : WebMvcConfigurer {
             .addResourceLocations("classpath:/ui/assets/")
 
         // Optional white label
-        System.getenv("WHITELABEL_PATH")
-            .takeIf { File(it).isDirectory }
-            ?.let {
-                registry.addResourceHandler("whitelabel/**")
-                    .setCacheControl(CacheControl.noCache())
-                    .addResourceLocations("file:${it}/")
-            } ?: log.warn("No whitelabel environment file defined")
+        val whitelabelPath = System.getenv("WHITELABEL_PATH")
+        if (!whitelabelPath.isNullOrBlank()) {
+            whitelabelPath.takeIf { File(it).isDirectory }
+                ?.let {
+                    registry.addResourceHandler("whitelabel/**")
+                        .setCacheControl(CacheControl.noCache())
+                        .addResourceLocations("file:${it}/")
+                } ?: log.warn("No whitelabel environment file defined")
+        }
     }
 
     /**

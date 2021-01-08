@@ -1,17 +1,23 @@
-<div *ngIf="!mobileView; else mobile">
-  <button class="m-button t-width-100" [class.m-button-is-loading]="isProcessing()" [disabled]="isDisabled()" type="submit">
+<div class="l-actionBarVertical-x-action">
+  <button
+    *ngIf="!mobileView; else mobile"
+    class="m-button"
+    [class.m-button-is-loading]="isProcessing()"
+    [disabled]="isDisabled()"
+    type="submit"
+  >
     <span *ngIf="isProcessing()" class="m-button-x-loader">
         <span class="m-loaderGraphic m-loaderGraphic-medium"></span>
     </span>
     <span class="m-button-x-text">{{label}}</span>
   </button>
+  <ng-template #mobile>
+    <button class="m-actionBarItemHorizontal" type="submit" [disabled]="isDisabled()">
+      <svg class="m-actionBarItemHorizontal-x-icon t-icon">
+        <use [attr.xlink:href]="checkOutlineIcon"></use>
+      </svg>
+      <span class="m-actionBarItemHorizontal-x-label">Save</span>
+      <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
+    </button>
+  </ng-template>
 </div>
-<ng-template #mobile>
-  <button class="m-actionBarItemHorizontal" type="submit" [disabled]="isDisabled()">
-    <svg class="m-actionBarItemHorizontal-x-icon t-icon">
-      <use [attr.xlink:href]="checkOutlineIcon"></use>
-    </svg>
-    <span class="m-actionBarItemHorizontal-x-label">Save</span>
-    <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
-  </button>
-</ng-template>

@@ -53,6 +53,7 @@ export class CollectionSearchResultsComponent extends CollectionsListComponent i
     } else if (this.apiSearch?.advanced !== undefined) {
       this.matchingQuery = this.apiSearch?.advancedMatchingQuery()
     }
+    this.from = 0
     this.loadNextPage()
   }
 

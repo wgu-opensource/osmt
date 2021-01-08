@@ -54,6 +54,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
     } else if (this.apiSearch?.advanced !== undefined) {
       this.matchingQuery = this.apiSearch?.advancedMatchingQuery()
     }
+    this.from = 0
     this.loadNextPage()
   }
 

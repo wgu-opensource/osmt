@@ -39,9 +39,8 @@ object JobCodeQueries {
         val disjunctionQuery = disMaxQuery()
         val path = parentDocPath?.let { "${it}." } ?: ""
         val lowerCaseQuery = query.toLowerCase()
-        val codeRegex = "[0-9]+(-)?[0-9]+(.[0-9]*)?".toRegex()
 
-        val queries = if (codeRegex.matches(query)){
+        val queries =
             listOf(
                 prefixQuery(
                     "${path}${JobCode::code.name}.keyword",
@@ -62,10 +61,7 @@ object JobCodeQueries {
                 prefixQuery(
                     "${path}${JobCode::broadCode.name}.keyword",
                     lowerCaseQuery
-                )
-            )
-        } else {
-            listOf(
+                ),
                 matchPhrasePrefixQuery(
                     "${path}${JobCode::name.name}",
                     lowerCaseQuery
@@ -85,13 +81,8 @@ object JobCodeQueries {
                 matchPhrasePrefixQuery(
                     "${path}${JobCode::broad.name}",
                     lowerCaseQuery
-                ),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::description.name}",
-                    lowerCaseQuery
                 )
             )
-        }
         disjunctionQuery.innerQueries().addAll(queries)
 
         return boolQuery().must(existsQuery("${path}${JobCode::name.name}")).must(disjunctionQuery)

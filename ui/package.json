@@ -22,7 +22,7 @@
     "@angular/platform-browser": "~10.0.9",
     "@angular/platform-browser-dynamic": "~10.0.9",
     "@angular/router": "~10.0.9",
-    "@concentricsky/wgu-design-system-patternlibrary": "12.2.0",
+    "@concentricsky/wgu-design-system-patternlibrary": "12.2.1",
     "@ng-idle/core": "^10.0.0-beta.1",
     "@ng-idle/keepalive": "^10.0.0-beta.1",
     "@popperjs/core": "^2.5.4",

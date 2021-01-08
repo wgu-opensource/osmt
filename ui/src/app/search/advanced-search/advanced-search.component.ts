@@ -62,7 +62,7 @@ export class AdvancedSearchComponent implements OnInit {
     const keywords = this.tokenizeString(form.keywords)
     const standards = this.prepareNamedReferences(form.standards)
     const certifications = this.prepareNamedReferences(form.certifications)
-    const occupations = this.prepareNamedReferences(form.occupations)
+    const occupations = this.tokenizeString(form.occupations)
     const employers = this.prepareNamedReferences(form.employers)
     const alignments = this.prepareNamedReferences(form.alignments)
     const collectionName = form.collectionName

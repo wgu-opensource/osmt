@@ -17,7 +17,7 @@ export class CollectionPublicComponent implements OnInit {
 
   title = "Collection"
   collection: ApiCollection | undefined
-  apiSearch: ApiSearch = {}
+  apiSearch: ApiSearch = new ApiSearch({})
 
   resultsLoaded: Observable<PaginatedSkills> | undefined
   results: PaginatedSkills | undefined

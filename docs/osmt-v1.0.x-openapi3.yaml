@@ -143,7 +143,7 @@ paths:
   /api/skills:
     get:
       summary: Get all skills
-      description: Return all skills in the library
+      description: Returns paginated list of all skills in the library
       parameters:
         - in: query
           name: size
@@ -178,12 +178,6 @@ paths:
               $ref: '#/components/headers/Link'
             X-Total-Count:
               $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
 
           content:
             application/json:
@@ -191,18 +185,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Skill'
-            text/csv:
-              schema:
-                type: string
-                example: >-
-                  id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
-                  https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac, RichSkillDescriptor, "https://osmt.example.com/organization", "Document Saving", "The learner copies and saves documents to their local machine.", "https://skillsource.example.com/base-skills/simple-compuhacking", "documents, file operations, computer basics", "Productivity Software", "13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
-        '202':
-          description: Accepted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskResult'
       tags:
         - Skills
     post:
@@ -219,20 +201,17 @@ paths:
               items:
                 $ref: '#/components/schemas/SkillUpdate'
       responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Skill'
         '202':
           description: Accepted
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskResult'
+          links:
+            CreateSkillResults:
+              operationRef: '/api/results/skills/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
         '400':
           description: Bad Request
           content:
@@ -271,12 +250,6 @@ paths:
                 example: >-
                   id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
                   https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac,RichSkillDescriptor,"https://osmt.example.com/organization","Document Saving","The learner copies and saves documents to their local machine.","https://skillsource.example.com/base-skills/simple-compuhacking","documents, file operations, computer basics","Productivity Software","13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
-        '202':
-          description: Accepted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskResult'
     delete:
       tags:
         - Skills
@@ -391,18 +364,17 @@ paths:
               items:
                 $ref: '#/components/schemas/Search'
       responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BatchResult'
         '202':
           description: Accepted
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskResult'
+          links:
+            PublishBatchResults:
+              operationRef: '/api/results/batch/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
 
 
   /api/search/collections:
@@ -713,6 +685,32 @@ paths:
                 items:
                   $ref: '#/components/schemas/SkillSummary'
 
+  /api/collections/{uuid}/csv:
+    get:
+      tags:
+        - Collections
+      summary: Retrieve the skills in a collection as a CSV
+      description: Retrieve the skills that belong to the collection in CSV format
+      parameters:
+        - name: uuid
+          in: path
+          description: uuid of a collection
+          required: true
+          schema:
+            type: string
+      responses:
+        '202':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          links:
+            CollectionCsvResults:
+              operationRef: '/api/results/text/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
+
   /api/collections/{uuid}/updateSkills:
     post:
       tags:
@@ -731,22 +729,19 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/SkillListUpdate'
+              $ref: '#/components/schemas/SkillListUpdate'
       responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BatchResult'
         '202':
           description: Accepted
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskResult'
+          links:
+            UpdateSkillsBatchResults:
+              operationRef: '/api/results/batch/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
 
   /api/collections/publish:
     post:
@@ -782,20 +777,19 @@ paths:
               items:
                 $ref: '#/components/schemas/Search'
       responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BatchResult'
         '202':
           description: Accepted
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskResult'
+          links:
+            PublishCollectionsBatchResults:
+              operationRef: '/api/results/batch/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
 
-  /api/tasks/{uuid}:
+  /api/results/text/{uuid}:
     parameters:
       - name: uuid
         in: path
@@ -804,26 +798,70 @@ paths:
         schema:
           type: string
     get:
-      summary: Check the results of a task
-      description: Return the results of a previously requested task, or its status if not complete yet
+      tags:
+        - Results
+      summary: Retrieve the results of a CSV task
+      description: Return the results of a previously requested task
       responses:
+        '404':
+          description: NOT READY
         '200':
-          description: OK - Returns the results of the task in the content-type originally requested.
-        '202':
-          description: Accepted - Returns the status of the in-progress Task.
+          description: OK
+          content:
+            text/csv:
+              schema:
+                type: string
+                example: >-
+                  id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
+                  https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac, RichSkillDescriptor, "https://osmt.example.com/organization", "Document Saving", "The learner copies and saves documents to their local machine.", "https://skillsource.example.com/base-skills/simple-compuhacking", "documents, file operations, computer basics", "Productivity Software", "13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
+
+  /api/results/batch/{uuid}:
+    parameters:
+      - name: uuid
+        in: path
+        description: Task uuid
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Results
+      summary: Retrieve the batch results of a task
+      description: Return the results of a previously requested batch task
+      responses:
+        '404':
+          description: NOT READY
+        '200':
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskResult'
-          headers:
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
+                $ref: '#/components/schemas/BatchResult'
+
+  /api/results/skills/{uuid}:
+    parameters:
+      - name: uuid
+        in: path
+        description: Task uuid
+        required: true
+        schema:
+          type: string
+    get:
       tags:
-        - Tasks
+        - Results
+      summary: Retrieve the results of a create skills task
+      description: Return the results of a previously requested skill creation task
+      responses:
+        '404':
+          description: NOT READY
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Skill'
 
   /api/search/jobcodes:
     get:
@@ -1076,6 +1114,8 @@ components:
           $ref: '#/components/schemas/StringListUpdate'
         keywords:
           $ref: '#/components/schemas/StringListUpdate'
+        standards:
+          $ref: '#/components/schemas/ReferenceListUpdate'
         alignments:
           $ref: '#/components/schemas/ReferenceListUpdate'
         certifications:
@@ -1275,7 +1315,7 @@ components:
         occupations:
           type: array
           items:
-            $ref: '#/components/schemas/NamedReference'
+            type: string
         standards:
           type: array
           items:
@@ -1325,9 +1365,8 @@ components:
           type: string
           enum: ["Processing","Ready"]
       example:
-        href: "/tasks/3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        href: "/results/batch/3fa85f64-5717-4562-b3fc-2c963f66afa6"
         uuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-        content-type: "text/csv"
         status: "Processing"
 
     BatchResult:

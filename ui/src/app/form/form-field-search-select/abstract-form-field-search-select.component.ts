@@ -42,6 +42,10 @@ export abstract class AbstractFormFieldSearchSelectComponent extends FormField i
     return this.control.value
   }
 
+  makeHtmlId(r: string): string {
+    return r.replace(new RegExp("\\W"), "")
+  }
+
   performSearch(text: string): void {
     if (!text || !this.keywordType) {
       return // no search to perform

@@ -6,17 +6,27 @@
   [helpMessage]="helpMessage"
   [required]="required"
   [name]="name"
+  aria-live="assertive"
 >
   <div class="l-searchSelect">
     <div class="l-searchSelect-x-search">
       <div class="m-search">
 
-        <svg class="m-search-x-icon t-icon">
+        <svg class="m-search-x-icon t-icon" aria-hidden="true">
           <use [attr.xlink:href]="iconSearch"></use>
         </svg>
 
-        <input (keydown.enter)="handleKeyDownEnter($event)" [formControl]="control" [required]="required" class="m-search-x-input" type="text" placeholder="Search">
-
+        <input
+          (keydown.enter)="handleKeyDownEnter($event)"
+          [formControl]="control"
+          [required]="required"
+          class="m-search-x-input"
+          type="text"
+          placeholder="Search"
+          [attr.aria-label]="name"
+          role="search"
+          [attr.aria-describedby]="name + '-results'"
+        >
         <div class="m-search-x-controls">
           <div class="m-search-x-clear">
             <button class="m-iconInteractive" type="button" (click)="clearField()">
@@ -49,18 +59,19 @@
 
     <!-- Loaded results state -->
     <ng-template #loaded>
-      <div class="l-searchSelect-x-menu" *ngIf="showResults">
+      <div id="{{name}}-results" class="l-searchSelect-x-menu" *ngIf="showResults">
         <div class="m-selectMenu m-selectMenu-fixed m-selectMenu-is-active">
 
           <!-- Results -->
           <div class="m-selectMenu-x-content" *ngIf="results && results.length > 0; else emptyResults">
+            <div class="t-visuallyHidden">Showing search results: </div>
             <button class="m-buttonText" *ngFor="let r of results" type="button" (click)="selectResult(r)" [disabled]="isResultSelected(r)">
               <span class="m-buttonText-x-icon" *ngIf="isResultSelected(r)">
                 <svg class="t-icon" aria-hidden="true">
                   <use [attr.xlink:href]="iconCheck"></use>
                 </svg>
               </span>
-              <span class="m-buttonText-x-text">{{r}}</span>
+              <span class="m-buttonText-x-text">{{r}}<span *ngIf="isResultSelected(r)" class="t-visuallyHidden">, selected</span></span>
             </button>
           </div>
 
@@ -77,14 +88,16 @@
       <div class="l-searchSelect-x-items">
 
         <!-- Currently selected results -->
-        <button class="m-inputItem" *ngFor="let r of internalSelectedResults" (click)="unselectResult(r)">
-          <span class="m-inputItem-x-text"><span class="t-visuallyHidden">Remove </span>{{r}}</span>
-          <span class="m-inputItem-x-icon">
-            <svg class="t-icon" aria-hidden="true">
+        <div class="m-inputItem" *ngFor="let r of internalSelectedResults" (click)="unselectResult(r)">
+          <!-- Note: the ID should be unique between the span and button -->
+          <span class="m-inputItem-x-text" id="input-item-{{makeHtmlId(r)}}">{{r}}</span>
+          <button class="m-inputItem-x-icon" type="button" aria-labelledby="input-item-{{makeHtmlId(r)}}">
+            <span class="t-visuallyHidden">Remove</span>
+            <svg aria-hidden="true">
               <use [attr.xlink:href]="iconDismiss"></use>
             </svg>
-          </span>
-        </button>
+          </button>
+        </div>
 
       </div>
     </ng-template>

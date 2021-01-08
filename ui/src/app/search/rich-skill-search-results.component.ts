@@ -32,11 +32,6 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 ) {
     super(router, richSkillService, toastService)
     this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
-    router.events.subscribe(event => {
-      if (event instanceof NavigationStart) {
-        this.searchService.clearSearch()
-      }
-    })
   }
 
   ngOnInit(): void {
@@ -57,11 +52,9 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
     if (this.apiSearch?.query !== undefined) {
       this.matchingQuery = [this.apiSearch.query]
     } else if (this.apiSearch?.advanced !== undefined) {
-      this.matchingQuery = Object.getOwnPropertyNames(this.apiSearch?.advanced).map((k) => {
-        const a: any = this.apiSearch?.advanced
-        return a !== undefined ? a[k] : undefined
-      }).filter(x => x !== undefined)
+      this.matchingQuery = this.apiSearch?.advancedMatchingQuery()
     }
+    this.from = 0
     this.loadNextPage()
   }
 

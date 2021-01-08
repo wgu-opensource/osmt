@@ -18,6 +18,12 @@ export class ApiSearch implements ISearch {
     this.uuids = uuids
   }
 
+  advancedMatchingQuery(): string[] {
+    return Object.getOwnPropertyNames(this.advanced).flatMap((k) => {
+      const a: any = this.advanced
+      return a !== undefined ? a[k] : undefined
+    }).filter(x => x !== undefined).map(it => it?.name ?? it).filter(it => (it?.length ?? 0) > 0)
+  }
 }
 
 export class ApiAdvancedSearch {
@@ -26,7 +32,7 @@ export class ApiAdvancedSearch {
   category?: string
   skillStatement?: string
   keywords?: string[]
-  occupations?: INamedReference[]
+  occupations?: string[]
   standards?: INamedReference[]
   certifications?: INamedReference[]
   employers?: INamedReference[]

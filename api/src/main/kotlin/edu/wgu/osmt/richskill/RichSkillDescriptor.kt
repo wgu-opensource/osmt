@@ -16,6 +16,7 @@ import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.KeywordDao
+import edu.wgu.osmt.nullIfEmpty
 import kotlin.reflect.KProperty1
 
 data class RichSkillDescriptor(

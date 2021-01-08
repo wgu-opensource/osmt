@@ -31,7 +31,8 @@ export class FormFieldSearchMultiSelectComponent extends AbstractFormFieldSearch
   get showResults(): boolean {
     const isEmpty = this.valueFromControl?.trim()?.length <= 0
     const isDirty = this.control.dirty
-    return isDirty && !isEmpty && this.results !== undefined
+    const show = isDirty && !isEmpty && this.results !== undefined
+    return show
   }
 
   isResultSelected(result: string): boolean {
@@ -56,8 +57,11 @@ export class FormFieldSearchMultiSelectComponent extends AbstractFormFieldSearch
   }
 
   handleKeyDownEnter($event: any): boolean {
-    this.selectResult(this.valueFromControl)
-    this.clearField()
+    const value = this.valueFromControl.trim()
+    if (value.length > 0) {
+      this.selectResult(this.valueFromControl)
+      this.clearField()
+    }
     return false
   }
 }

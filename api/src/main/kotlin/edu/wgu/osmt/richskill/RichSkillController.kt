@@ -51,27 +51,15 @@ class RichSkillController @Autowired constructor(
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort)
     }
 
-    @GetMapping(RoutePaths.SKILLS_PATH, produces = ["text/csv"])
-    @ResponseBody
-    fun allSkillsCsv(): HttpEntity<TaskResult> {
-        val task = CsvTask()
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        taskMessageService.enqueueJob(TaskMessageService.allSkillsCsv, task)
-
-        val tr = TaskResult.fromTask(task)
-        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
-    }
-
     @PostMapping(RoutePaths.SKILLS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createSkills(
         @RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
         @AuthenticationPrincipal user: Jwt?
-    ): List<ApiSkill> {
-        return richSkillRepository.createFromApi(apiSkillUpdates, readableUsername(user)).map {
-            ApiSkill.fromDao(it, appConfig)
-        }
+    ): HttpEntity<TaskResult> {
+        val task = CreateSkillsTask(apiSkillUpdates)
+        taskMessageService.enqueueJob(TaskMessageService.createSkills, task)
+        return Task.processingResponse(task)
     }
 
     @GetMapping(RoutePaths.SKILL_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -167,12 +155,9 @@ class RichSkillController @Autowired constructor(
             userString = readableUsername(user),
             collectionUuid = if (collectionUuid.isNullOrBlank()) null else collectionUuid
         )
-        taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
 
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        val tr = TaskResult.fromTask(task)
-        return ResponseEntity.status(202).headers(responseHeaders).body(tr)
+        taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
+        return Task.processingResponse(task)
     }
 
     @GetMapping(RoutePaths.SKILL_AUDIT_LOG, produces = ["application/json"])

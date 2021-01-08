@@ -27,7 +27,7 @@
   <tbody>
     <tr *ngFor="let head of uploadedHeaders; let i=index" class="m-tableRow m-tableRow-fieldMap">
       <th scope="row">
-        <div class="m-fieldMapText">{{head}}</div>
+        <div class="m-fieldMapText">{{head || "(unlabeled field)" }}</div>
       </th>
       <td scope="row">
         <app-field-mapping-select [value]="currentMappings[head]" [data]="head" (mappingChanged)="handleMappingChanged($event)"></app-field-mapping-select>

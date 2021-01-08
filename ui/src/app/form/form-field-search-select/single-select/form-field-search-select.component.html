@@ -6,16 +6,26 @@
   [helpMessage]="helpMessage"
   [required]="required"
   [name]="name"
+  aria-live="assertive"
 >
   <div class="l-searchSelect">
     <div class="l-searchSelect-x-search">
       <div class="m-search">
 
-        <svg class="m-search-x-icon t-icon">
+        <svg class="m-search-x-icon t-icon" aria-hidden="true">
           <use [attr.xlink:href]="iconSearch"></use>
         </svg>
 
-        <input [formControl]="control" [required]="required" class="m-search-x-input" type="text" placeholder="Search">
+        <input
+          [formControl]="control"
+          [required]="required"
+          class="m-search-x-input"
+          type="text"
+          placeholder="Search"
+          [attr.aria-label]="name"
+          role="search"
+          [attr.aria-describedby]="name + '-results'"
+        >
 
         <div class="m-search-x-controls">
           <div class="m-search-x-clear">
@@ -49,11 +59,12 @@
 
     <!-- Loaded results state -->
     <ng-template #loaded>
-      <div class="l-searchSelect-x-menu" *ngIf="showResults">
+      <div id="{{name}}-results" class="l-searchSelect-x-menu" *ngIf="showResults">
         <div class="m-selectMenu m-selectMenu-fixed m-selectMenu-is-active">
 
           <!-- Results -->
           <div class="m-selectMenu-x-content" *ngIf="results && results.length > 0; else emptyResults">
+            <div class="t-visuallyHidden">Showing search results: </div>
             <button class="m-buttonText" *ngFor="let r of results" type="button" (click)="selectResult(r)">
               <span class="m-buttonText-x-text">{{r}}</span>
             </button>

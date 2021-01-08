@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from "@angular/core"
 import {SvgHelper, SvgIcon} from "./SvgHelper"
+import {Observable} from "rxjs"
 
 @Component({
   selector: "app-accordian",
@@ -10,6 +11,9 @@ export class AccordianComponent implements OnInit {
 
   @Input() closedLabel = "View All"
   @Input() openLabel = "View Less"
+
+  @Input() collapseListener = new Observable<void>()
+
   get triggerLabel(): string {
     if (this.isExpanded) {
       return this.openLabel
@@ -24,6 +28,7 @@ export class AccordianComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.collapseListener.subscribe(() => this.isExpanded = false)
   }
 
 

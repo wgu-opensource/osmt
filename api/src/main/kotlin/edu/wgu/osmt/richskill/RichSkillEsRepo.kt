@@ -10,6 +10,7 @@ import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.jobcode.CustomJobCodeRepositoryImpl
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeQueries
+import edu.wgu.osmt.nullIfEmpty
 import org.apache.lucene.search.join.ScoreMode
 import org.elasticsearch.index.query.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -57,15 +58,14 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         with(advancedQuery) {
             // boolQuery.must for logical AND
             // boolQuery.should for logical OR
-
-            skillName?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::name.name, it)) }
-            category?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::category.name, it)) }
-            author?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::author.name, it)) }
-            skillStatement?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::statement.name, it)) }
+            skillName.nullIfEmpty()?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::name.name, it)) }
+            category.nullIfEmpty()?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::category.name, it)) }
+            author.nullIfEmpty()?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::author.name, it)) }
+            skillStatement.nullIfEmpty()?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::statement.name, it)) }
             keywords?.map { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::searchingKeywords.name, it)) }
 
             occupations?.let {
-                it.mapNotNull { it.name }.map { value ->
+                it.mapNotNull { value ->
                     bq.must(
                         occupationQueries(value)
                     )
@@ -227,3 +227,5 @@ interface RichSkillEsRepo : ElasticsearchRepository<RichSkillDoc, Int>, CustomRi
         pageable: Pageable = PageRequest.of(0, PaginationDefaults.size, Sort.by("name.keyword").descending())
     ): Page<RichSkillDoc>
 }
+
+

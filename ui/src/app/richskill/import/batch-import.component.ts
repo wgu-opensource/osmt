@@ -1,14 +1,14 @@
-import {Component, ElementRef, OnInit, ViewChild} from "@angular/core";
-import {QuickLinksHelper} from "../../core/quick-links-helper";
-import {ActivatedRoute, Router} from "@angular/router";
-import {RichSkillService} from "../service/rich-skill.service";
-import {ToastService} from "../../toast/toast.service";
-import {Location} from "@angular/common";
-import {Papa, ParseResult} from "ngx-papaparse";
-import {ApiNamedReference} from "../ApiSkill"
-import {ApiReferenceListUpdate, ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate";
-import {forkJoin, Observable} from "rxjs";
-import {PaginatedSkills} from "../service/rich-skill-search.service";
+import {Component, ElementRef, OnInit, ViewChild} from "@angular/core"
+import {QuickLinksHelper} from "../../core/quick-links-helper"
+import {ActivatedRoute, Router} from "@angular/router"
+import {RichSkillService} from "../service/rich-skill.service"
+import {ToastService} from "../../toast/toast.service"
+import {Location} from "@angular/common"
+import {Papa, ParseResult} from "ngx-papaparse"
+import {ApiNamedReference, ApiSkill} from "../ApiSkill"
+import {ApiReferenceListUpdate, ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate"
+import {forkJoin, Observable} from "rxjs"
+import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 
 
 export enum ImportStep {
@@ -81,8 +81,9 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   stepLoaded?: Observable<ImportStep>
 
+  uploading = false
   uploadedFile: any;
-  uploadedFileError: boolean = false
+  uploadedFileError = false
 
   acceptableFileTypes = [
     "text/csv",
@@ -95,7 +96,9 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   searchingSimilarity?: boolean
   similarSkills?: boolean[]
-  importSimilarSkills: boolean = false
+  importSimilarSkills = false
+
+  docIcon = SvgHelper.path(SvgIcon.DOC)
 
   get similarSkillCount(): number {
     return (this.similarSkills?.filter(it => it).length ?? 0)
@@ -255,9 +258,11 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         return
       }
 
+      this.uploading = true
       this.papa.parse(file, {
         header: true,
         complete: (results) => {
+          this.uploading = false
           this.uploadedFileError = false
           this.parseResults = results
         }
@@ -417,7 +422,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     const skillUpdates = this.importedSkills.map(it => it.skill)
 
     this.showStepLoader()
-    this.richSkillService.createSkills(skillUpdates).subscribe(results => {
+
+    this.richSkillService.pollForTaskResult<ApiSkill[]>(
+      this.richSkillService.createSkills(skillUpdates)
+    ).subscribe(results => {
       if (results) {
         this.hideStepLoader()
       }

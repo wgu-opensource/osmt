@@ -5,7 +5,6 @@ import {AppComponent} from "./app.component"
 import {HttpClientModule} from "@angular/common/http"
 import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-library.component"
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
-import {RichSkillsCsvExportComponent} from "./richskill/task/rich-skills-csv-export.component"
 import {AppConfig} from "./app.config"
 import {RichSkillFormComponent} from "./richskill/form/rich-skill-form.component"
 import {ReactiveFormsModule} from "@angular/forms"
@@ -122,7 +121,6 @@ export function initializeApp(appConfig: AppConfig): () => void {
 
     // Rich skills
     RichSkillsLibraryComponent,
-    RichSkillsCsvExportComponent,
     SkillCollectionsDisplayComponent,
 
     // Rich skill detail

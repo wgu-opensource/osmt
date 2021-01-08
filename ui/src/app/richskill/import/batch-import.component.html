@@ -49,8 +49,11 @@
     <!-- STEP 1: Upload File -->
     <ng-template [ngIf]="isUploadStep()">
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
-        <div class="m-dragDrop" [class.m-dragDrop-is-error]="uploadedFileError"
-             (drop)="handleFileDrop($event)" (dragover)="handleFileDrag($event)">
+        <div class="m-dragDrop"
+             [class.m-dragDrop-is-error]="uploadedFileError"
+             [class.m-dragDrop-is-loading]="uploading"
+             (drop)="handleFileDrop($event)"
+             (dragover)="handleFileDrag($event)">
           <label for="dragdrop">
             <span class="m-dragDrop-x-loader">
               <span class="m-loaderGraphic m-loaderGraphic-large"></span>
@@ -59,12 +62,14 @@
               <!--{{render '@m-countericon'}}-->
               <div class="m-counterIcon">
                 <div class="m-iconWithFrame">
-                    <svg class="t-icon" aria-hidden="true">
-                        <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
+                    <svg aria-hidden="true">
+                        <use [attr.xlink:href]="docIcon"></use>
                     </svg>
                 </div>
                 <div class="m-counterIcon-x-counter">
-                    <div class="m-counter"><span>{{uploadedFileCount}}</span></div>
+                    <div class="m-counter">
+                      <span>{{uploadedFileCount}}</span>
+                    </div>
                 </div>
               </div>
             </span>

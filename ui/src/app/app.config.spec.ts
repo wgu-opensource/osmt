@@ -27,7 +27,7 @@ describe("AppConfig", () => {
   })
 
   afterEach(() => {
-    httpMock.verify()
+    // httpMock.verify()
   })
 
   describe("whitelabel configuration", () => {

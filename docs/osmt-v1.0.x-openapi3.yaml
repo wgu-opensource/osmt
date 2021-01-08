@@ -1315,7 +1315,7 @@ components:
         occupations:
           type: array
           items:
-            $ref: '#/components/schemas/NamedReference'
+            type: string
         standards:
           type: array
           items:

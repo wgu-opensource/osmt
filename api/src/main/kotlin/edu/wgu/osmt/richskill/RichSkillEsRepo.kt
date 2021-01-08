@@ -65,7 +65,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             keywords?.map { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::searchingKeywords.name, it)) }
 
             occupations?.let {
-                it.mapNotNull { it.name }.map { value ->
+                it.mapNotNull { value ->
                     bq.must(
                         occupationQueries(value)
                     )

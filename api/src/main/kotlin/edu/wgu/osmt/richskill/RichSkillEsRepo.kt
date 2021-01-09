@@ -13,8 +13,7 @@ import edu.wgu.osmt.jobcode.JobCodeQueries
 import edu.wgu.osmt.nullIfEmpty
 import org.apache.lucene.search.join.ScoreMode
 import org.elasticsearch.index.query.*
-import org.elasticsearch.index.query.QueryBuilders.matchPhrasePrefixQuery
-import org.elasticsearch.index.query.QueryBuilders.simpleQueryStringQuery
+import org.elasticsearch.index.query.QueryBuilders.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.Page
@@ -29,7 +28,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 
 interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch)
-    fun richSkillPropertiesMultiMatch(query: String): DisMaxQueryBuilder
+    fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder
     fun byApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
@@ -84,14 +83,19 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             }
             skillStatement.nullIfEmpty()?.let {
                 if (it.contains("\"")) {
-                    bq.must(simpleQueryStringQuery(it).field(RichSkillDoc::statement.name).defaultOperator(Operator.AND))
+                    bq.must(
+                        simpleQueryStringQuery(it).field(RichSkillDoc::statement.name).defaultOperator(Operator.AND)
+                    )
                 } else {
                     bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::statement.name, it))
                 }
             }
             keywords?.map {
                 if (it.contains("\"")) {
-                    bq.must(simpleQueryStringQuery(it).field(RichSkillDoc::searchingKeywords.name).defaultOperator(Operator.AND))
+                    bq.must(
+                        simpleQueryStringQuery(it).field(RichSkillDoc::searchingKeywords.name)
+                            .defaultOperator(Operator.AND)
+                    )
                 } else {
                     bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::searchingKeywords.name, it))
                 }
@@ -107,8 +111,10 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
             standards?.let { it ->
                 it.mapNotNull { it.name }.map { s ->
-                    if (s.contains("\"")){
-                        bq.must(simpleQueryStringQuery(s).field(RichSkillDoc::standards.name).defaultOperator(Operator.AND))
+                    if (s.contains("\"")) {
+                        bq.must(
+                            simpleQueryStringQuery(s).field(RichSkillDoc::standards.name).defaultOperator(Operator.AND)
+                        )
                     } else {
                         bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::standards.name, s))
                     }
@@ -117,8 +123,11 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
             certifications?.let { it ->
                 it.mapNotNull { it.name }.map { s ->
-                    if (s.contains("\"")){
-                        bq.must(simpleQueryStringQuery(s).field(RichSkillDoc::certifications.name).defaultOperator(Operator.AND))
+                    if (s.contains("\"")) {
+                        bq.must(
+                            simpleQueryStringQuery(s).field(RichSkillDoc::certifications.name)
+                                .defaultOperator(Operator.AND)
+                        )
                     } else {
                         bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::certifications.name, s))
                     }
@@ -127,8 +136,10 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
             employers?.let { it ->
                 it.mapNotNull { it.name }.map { s ->
-                    if (s.contains("\"")){
-                        bq.must(simpleQueryStringQuery(s).field(RichSkillDoc::employers.name).defaultOperator(Operator.AND))
+                    if (s.contains("\"")) {
+                        bq.must(
+                            simpleQueryStringQuery(s).field(RichSkillDoc::employers.name).defaultOperator(Operator.AND)
+                        )
                     } else {
                         bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::employers.name, s))
                     }
@@ -137,8 +148,10 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
             alignments?.let { it ->
                 it.mapNotNull { it.name }.map { s ->
-                    if (s.contains("\"")){
-                        bq.must(simpleQueryStringQuery(s).field(RichSkillDoc::alignments.name).defaultOperator(Operator.AND))
+                    if (s.contains("\"")) {
+                        bq.must(
+                            simpleQueryStringQuery(s).field(RichSkillDoc::alignments.name).defaultOperator(Operator.AND)
+                        )
                     } else {
                         bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::alignments.name, s))
                     }
@@ -147,10 +160,11 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         }
     }
 
-    override fun richSkillPropertiesMultiMatch(query: String): DisMaxQueryBuilder {
+    override fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder {
         val isComplex = query.contains("\"")
 
-        val disjunctionQuery = QueryBuilders.disMaxQuery()
+        val boolQuery = QueryBuilders.boolQuery()
+
         val complexQueries = listOf(
             simpleQueryStringQuery(query).field("${RichSkillDoc::name.name}.raw").boost(2.0f)
                 .defaultOperator(Operator.AND),
@@ -179,12 +193,12 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         )
 
         if (isComplex) {
-            disjunctionQuery.innerQueries().addAll(complexQueries)
+            complexQueries.map { boolQuery.should(it) }
         } else {
-            disjunctionQuery.innerQueries().addAll(queries)
+            queries.map { boolQuery.should(it) }
         }
 
-        return disjunctionQuery
+        return boolQuery
     }
 
     override fun byApiSearch(

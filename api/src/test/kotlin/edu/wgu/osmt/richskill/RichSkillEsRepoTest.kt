@@ -12,7 +12,6 @@ import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
-import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
@@ -321,5 +320,24 @@ class RichSkillEsRepoTest @Autowired constructor(
         assertThat(result2.searchHits.first().content.uuid).isEqualTo(richSkill2.uuid)
         assertThat(result3.searchHits.first().content.uuid).isEqualTo(richSkill3.uuid)
         assertThat(result4.searchHits.first().content.uuid).isEqualTo(richSkill4.uuid)
+    }
+
+
+    @Test
+    fun `Should perform simple quoted searches`(){
+        val skill1 = TestObjectHelpers.richSkillDoc(name = "Self-Management", statement = "A statement for a skill")
+        val skill2 = TestObjectHelpers.richSkillDoc(name = "Self Mis-Management", statement = "A statement for a skill")
+        val skill3 = TestObjectHelpers.richSkillDoc(name = "Best Self Management", statement = "A statement for a skill")
+        val skill4 = TestObjectHelpers.richSkillDoc(name = "Management of Selfies", statement = "A statement for a skill")
+
+        val randomSkills = (1..10).map{TestObjectHelpers.randomRichSkillDoc()}
+
+        richSkillEsRepo.saveAll(randomSkills + listOf(skill1, skill2, skill3, skill4))
+
+        val ambiguousNonQuotedSearch = richSkillEsRepo.byApiSearch(ApiSearch(query = "self management")).searchHits.map{it.content}
+        val quotedSearch = richSkillEsRepo.byApiSearch(ApiSearch(query= "\"Self-Management\"")).searchHits.map{it.content}
+
+        assertThat(quotedSearch).contains(skill1)
+        assertThat(quotedSearch.size).isEqualTo(1)
     }
 }

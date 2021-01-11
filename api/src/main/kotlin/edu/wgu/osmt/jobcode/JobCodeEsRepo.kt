@@ -70,14 +70,14 @@ object JobCodeQueries {
                 listOf(
                     simpleQueryStringQuery(
                         query
-                    ).field("${path}${JobCode::name.name}").boost(2.0f).defaultOperator(Operator.AND),
+                    ).field("${path}${JobCode::name.name}.raw").boost(2.0f).defaultOperator(Operator.AND),
                     simpleQueryStringQuery(
                         query
-                    ).field("${path}${JobCode::minor.name}").analyzeWildcard(true),
-                    simpleQueryStringQuery(query).field("${path}${JobCode::detailed.name}")
+                    ).field("${path}${JobCode::minor.name}.raw").analyzeWildcard(true),
+                    simpleQueryStringQuery(query).field("${path}${JobCode::detailed.name}.raw")
                         .defaultOperator(Operator.AND),
-                    simpleQueryStringQuery(query).field("${path}${JobCode::major.name}").defaultOperator(Operator.AND),
-                    simpleQueryStringQuery(query).field("${path}${JobCode::broad.name}").defaultOperator(Operator.AND)
+                    simpleQueryStringQuery(query).field("${path}${JobCode::major.name}.raw").defaultOperator(Operator.AND),
+                    simpleQueryStringQuery(query).field("${path}${JobCode::broad.name}.raw").defaultOperator(Operator.AND)
                 )
             )
         } else {

@@ -4,11 +4,15 @@ import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers
+import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
+import edu.wgu.osmt.richskill.QuotedSearchHelpers
+import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
@@ -19,7 +23,7 @@ class CollectionEsRepoTest @Autowired constructor(
     override val collectionEsRepo: CollectionEsRepo,
     override val keywordEsRepo: KeywordEsRepo,
     override val jobCodeEsRepo: JobCodeEsRepo
-): SpringTest(), HasDatabaseReset, HasElasticsearchReset {
+): SpringTest(), HasDatabaseReset, HasElasticsearchReset, QuotedSearchHelpers {
 
     fun queryCollectionHits(query: String): List<CollectionDoc> {
         return collectionEsRepo.byApiSearch(ApiSearch(query)).searchHits.map { it.content }
@@ -71,5 +75,26 @@ class CollectionEsRepoTest @Autowired constructor(
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.standards[elasticRichSkillDoc.standards.indices.random()]))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.certifications[elasticRichSkillDoc.certifications.indices.random()]))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.employers[elasticRichSkillDoc.employers.indices.random()]))
+    }
+
+    @Test
+    fun `Should perform simple quoted searches`(){
+        val searchSetupResults = quotedSearchSetup()
+
+        val ambiguousUnQuotedSearch = collectionEsRepo.byApiSearch(ApiSearch(query= "Self-Management")).searchHits.map{ it.content }
+        val quotedSearch = collectionEsRepo.byApiSearch(ApiSearch(query= "\"Self-Management\"")).searchHits.map{ it.content }
+
+        assertThat(quotedSearch).contains(searchSetupResults.collections.first())
+        assertThat(quotedSearch.size).isEqualTo(1)
+    }
+
+    @Test
+    fun `Should perform advanced quoted searches`(){
+        val searchSetupResults = quotedSearchSetup()
+
+        val advancedQuotedSearch = collectionEsRepo.byApiSearch(ApiSearch(advanced = ApiAdvancedSearch(collectionName = "\"Self-Management\""))).searchHits.map{ it.content }
+
+        assertThat(advancedQuotedSearch).contains(searchSetupResults.collections.first())
+        assertThat(advancedQuotedSearch.size).isEqualTo(1)
     }
 }

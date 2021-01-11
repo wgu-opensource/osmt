@@ -47,6 +47,13 @@ class CustomCollectionQueriesImpl @Autowired constructor(
     override fun collectionPropertiesMultiMatch(query: String): AbstractQueryBuilder<*> {
         val isComplex = query.contains("\"")
 
+        val complexFields = arrayOf(
+            "${CollectionDoc::name.name}.raw",
+            "${CollectionDoc::name.name}._2gram",
+            "${CollectionDoc::name.name}._3gram",
+            CollectionDoc::author.name
+        )
+
         val fields = arrayOf(
             CollectionDoc::name.name,
             "${CollectionDoc::name.name}._2gram",
@@ -55,7 +62,8 @@ class CustomCollectionQueriesImpl @Autowired constructor(
         )
 
         return if (isComplex) {
-            QueryBuilders.simpleQueryStringQuery(query).fields(fields.map { it to 1.0f }.toMap())
+            QueryBuilders.simpleQueryStringQuery(query).fields(complexFields.map { it to 1.0f }.toMap())
+                .defaultOperator(Operator.AND)
         } else {
             QueryBuilders.multiMatchQuery(query, *fields).type(MultiMatchQueryBuilder.Type.BOOL_PREFIX)
         }
@@ -93,7 +101,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             // search on collection specific properties
             collectionMultiPropertyResults = elasticSearchTemplate.search(
                 NativeSearchQueryBuilder().withQuery(
-                    QueryBuilders.boolQuery().should(collectionPropertiesMultiMatch(apiSearch.query))
+                    collectionPropertiesMultiMatch(apiSearch.query)
                 ).withPageable(Pageable.unpaged()).withFilter(filter).build(), CollectionDoc::class.java
             ).searchHits.map { it.content.uuid }
 
@@ -104,22 +112,16 @@ class CustomCollectionQueriesImpl @Autowired constructor(
                 if (apiSearch.advanced.collectionName.contains("\"")) {
                     collectionMultiPropertyResults = elasticSearchTemplate.search(
                         NativeSearchQueryBuilder().withQuery(
-                            QueryBuilders.boolQuery().should(
-                                QueryBuilders.simpleQueryStringQuery(
-                                    apiSearch.advanced.collectionName
-                                ).field(CollectionDoc::name.name)
-                            )
+                            QueryBuilders.simpleQueryStringQuery(apiSearch.advanced.collectionName).field("${CollectionDoc::name.name}.raw").defaultOperator(Operator.AND)
                         ).withPageable(Pageable.unpaged()).withFilter(filter).build(), CollectionDoc::class.java
                     ).searchHits.map { it.content.uuid }
                 } else {
                     collectionMultiPropertyResults = elasticSearchTemplate.search(
                         NativeSearchQueryBuilder().withQuery(
-                            QueryBuilders.boolQuery().should(
                                 QueryBuilders.matchPhrasePrefixQuery(
                                     CollectionDoc::name.name,
                                     apiSearch.advanced.collectionName
                                 )
-                            )
                         ).withPageable(Pageable.unpaged()).withFilter(filter).build(), CollectionDoc::class.java
                     ).searchHits.map { it.content.uuid }
                 }

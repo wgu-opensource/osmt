@@ -9,6 +9,7 @@ import edu.wgu.osmt.TestObjectHelpers.keywordsGenerator
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
@@ -22,6 +23,31 @@ import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
+interface QuotedSearchHelpers {
+    val richSkillEsRepo: RichSkillEsRepo
+    val collectionEsRepo: CollectionEsRepo
+
+    data class SearchSetupResults(val collections: List<CollectionDoc>, val skills: List<RichSkillDoc>)
+
+    fun quotedSearchSetup(): SearchSetupResults {
+        var collection1 = TestObjectHelpers.collectionDoc(name = "Self-Management Collection")
+        val collection2 = TestObjectHelpers.collectionDoc(name = "Best Self Management Collection")
+        val randomCollections = (1..10).map{ TestObjectHelpers.randomCollectionDoc() }
+
+        val skill1 = TestObjectHelpers.richSkillDoc(name = "Self-Management", statement = "A statement for a skill").copy(collections = listOf(collection1))
+        val skill2 = TestObjectHelpers.richSkillDoc(name = "Self Mis-Management", statement = "A statement for a skill")
+        val skill3 = TestObjectHelpers.richSkillDoc(name = "Best Self Management", statement = "A statement for a skill").copy(collections = listOf(collection2))
+        val skill4 = TestObjectHelpers.richSkillDoc(name = "Management of Selfies", statement = "A statement for a skill")
+
+        collection1 = collection1.copy(skillIds = listOf(skill1.uuid, skill2.uuid))
+
+        val randomSkills = (1..10).map{TestObjectHelpers.randomRichSkillDoc()}
+        richSkillEsRepo.saveAll(randomSkills + listOf(skill1, skill2, skill3, skill4))
+        collectionEsRepo.saveAll(listOf(collection1,collection2) + randomCollections)
+        return SearchSetupResults(listOf(collection1, collection2), listOf(skill1, skill2, skill3, skill4))
+    }
+}
+
 @Transactional
 class RichSkillEsRepoTest @Autowired constructor(
     override val richSkillEsRepo: RichSkillEsRepo,
@@ -30,7 +56,7 @@ class RichSkillEsRepoTest @Autowired constructor(
     override val jobCodeEsRepo: JobCodeEsRepo,
     val richSkillRepository: RichSkillRepository,
     val keywordRepository: KeywordRepository
-) : SpringTest(), HasDatabaseReset, HasElasticsearchReset {
+) : SpringTest(), HasDatabaseReset, HasElasticsearchReset, QuotedSearchHelpers {
 
     val authorString = "unit-test-author"
 
@@ -325,19 +351,21 @@ class RichSkillEsRepoTest @Autowired constructor(
 
     @Test
     fun `Should perform simple quoted searches`(){
-        val skill1 = TestObjectHelpers.richSkillDoc(name = "Self-Management", statement = "A statement for a skill")
-        val skill2 = TestObjectHelpers.richSkillDoc(name = "Self Mis-Management", statement = "A statement for a skill")
-        val skill3 = TestObjectHelpers.richSkillDoc(name = "Best Self Management", statement = "A statement for a skill")
-        val skill4 = TestObjectHelpers.richSkillDoc(name = "Management of Selfies", statement = "A statement for a skill")
-
-        val randomSkills = (1..10).map{TestObjectHelpers.randomRichSkillDoc()}
-
-        richSkillEsRepo.saveAll(randomSkills + listOf(skill1, skill2, skill3, skill4))
+        val searchSetupResults = quotedSearchSetup()
 
         val ambiguousNonQuotedSearch = richSkillEsRepo.byApiSearch(ApiSearch(query = "self management")).searchHits.map{it.content}
         val quotedSearch = richSkillEsRepo.byApiSearch(ApiSearch(query= "\"Self-Management\"")).searchHits.map{it.content}
 
-        assertThat(quotedSearch).contains(skill1)
+        assertThat(quotedSearch).contains(searchSetupResults.skills.first())
         assertThat(quotedSearch.size).isEqualTo(1)
+    }
+
+    @Test
+    fun `Should perform advanced quoted searches`(){
+        val searchSetupResults = quotedSearchSetup()
+        val advancedQuotedSearch = richSkillEsRepo.byApiSearch(ApiSearch(advanced = ApiAdvancedSearch(skillName = "\"Self-Management\""))).searchHits.map{ it.content }
+
+        assertThat(advancedQuotedSearch).contains(searchSetupResults.skills.first())
+        assertThat(advancedQuotedSearch.size).isEqualTo(1)
     }
 }

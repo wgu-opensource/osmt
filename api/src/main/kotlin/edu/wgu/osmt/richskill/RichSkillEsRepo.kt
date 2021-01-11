@@ -61,7 +61,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             // boolQuery.should for logical OR
             skillName.nullIfEmpty()?.let {
                 if (it.contains("\"")) {
-                    bq.must(simpleQueryStringQuery(it).field(RichSkillDoc::name.name).defaultOperator(Operator.AND))
+                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::name.name}.raw").defaultOperator(Operator.AND))
                 } else {
                     bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::name.name, it))
                 }
@@ -69,14 +69,14 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             }
             category.nullIfEmpty()?.let {
                 if (it.contains("\"")) {
-                    bq.must(simpleQueryStringQuery(it).field(RichSkillDoc::category.name).defaultOperator(Operator.AND))
+                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::category.name}.raw").defaultOperator(Operator.AND))
                 } else {
                     bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::category.name, it))
                 }
             }
             author.nullIfEmpty()?.let {
                 if (it.contains("\"")) {
-                    bq.must(simpleQueryStringQuery(it).field(RichSkillDoc::author.name).defaultOperator(Operator.AND))
+                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::author.name}.raw").defaultOperator(Operator.AND))
                 } else {
                     bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::author.name, it))
                 }
@@ -84,7 +84,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             skillStatement.nullIfEmpty()?.let {
                 if (it.contains("\"")) {
                     bq.must(
-                        simpleQueryStringQuery(it).field(RichSkillDoc::statement.name).defaultOperator(Operator.AND)
+                        simpleQueryStringQuery(it).field("${RichSkillDoc::statement.name}.raw").defaultOperator(Operator.AND)
                     )
                 } else {
                     bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::statement.name, it))
@@ -93,7 +93,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             keywords?.map {
                 if (it.contains("\"")) {
                     bq.must(
-                        simpleQueryStringQuery(it).field(RichSkillDoc::searchingKeywords.name)
+                        simpleQueryStringQuery(it).field("${RichSkillDoc::searchingKeywords.name}.raw")
                             .defaultOperator(Operator.AND)
                     )
                 } else {
@@ -113,10 +113,10 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 it.mapNotNull { it.name }.map { s ->
                     if (s.contains("\"")) {
                         bq.must(
-                            simpleQueryStringQuery(s).field(RichSkillDoc::standards.name).defaultOperator(Operator.AND)
+                            simpleQueryStringQuery(s).field("${RichSkillDoc::standards.name}.raw").defaultOperator(Operator.AND)
                         )
                     } else {
-                        bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::standards.name, s))
+                        bq.must(matchBoolPrefixQuery(RichSkillDoc::standards.name, s))
                     }
                 }
             }
@@ -125,11 +125,11 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 it.mapNotNull { it.name }.map { s ->
                     if (s.contains("\"")) {
                         bq.must(
-                            simpleQueryStringQuery(s).field(RichSkillDoc::certifications.name)
+                            simpleQueryStringQuery(s).field("${RichSkillDoc::certifications.name}.raw")
                                 .defaultOperator(Operator.AND)
                         )
                     } else {
-                        bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::certifications.name, s))
+                        bq.must(matchBoolPrefixQuery(RichSkillDoc::certifications.name, s))
                     }
                 }
             }
@@ -138,10 +138,10 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 it.mapNotNull { it.name }.map { s ->
                     if (s.contains("\"")) {
                         bq.must(
-                            simpleQueryStringQuery(s).field(RichSkillDoc::employers.name).defaultOperator(Operator.AND)
+                            simpleQueryStringQuery(s).field("${RichSkillDoc::employers.name}.raw").defaultOperator(Operator.AND)
                         )
                     } else {
-                        bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::employers.name, s))
+                        bq.must(matchBoolPrefixQuery(RichSkillDoc::employers.name, s))
                     }
                 }
             }
@@ -153,7 +153,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                             simpleQueryStringQuery(s).field(RichSkillDoc::alignments.name).defaultOperator(Operator.AND)
                         )
                     } else {
-                        bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::alignments.name, s))
+                        bq.must(matchBoolPrefixQuery(RichSkillDoc::alignments.name, s))
                     }
                 }
             }
@@ -163,7 +163,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     override fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder {
         val isComplex = query.contains("\"")
 
-        val boolQuery = QueryBuilders.boolQuery()
+        val boolQuery = boolQuery()
 
         val complexQueries = listOf(
             simpleQueryStringQuery(query).field("${RichSkillDoc::name.name}.raw").boost(2.0f)
@@ -208,8 +208,8 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         collectionId: String?
     ): SearchHits<RichSkillDoc> {
         val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
-        val bq = QueryBuilders.boolQuery()
-        val filter = BoolQueryBuilder().must(QueryBuilders.termsQuery(RichSkillDoc::publishStatus.name, publishStatus))
+        val bq = boolQuery()
+        val filter = BoolQueryBuilder().must(termsQuery(RichSkillDoc::publishStatus.name, publishStatus))
 
         nsq.withQuery(bq)
         nsq.withFilter(filter)
@@ -221,7 +221,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 bq.should(richSkillPropertiesMultiMatch(apiSearch.query))
                 bq.should(occupationQueries(apiSearch.query))
                 bq.should(
-                    QueryBuilders.nestedQuery(
+                    nestedQuery(
                         RichSkillDoc::collections.name,
                         simpleQueryStringQuery(apiSearch.query).field("collections.name.raw")
                             .defaultOperator(Operator.AND),
@@ -232,7 +232,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 bq.must(richSkillPropertiesMultiMatch(apiSearch.query))
                 bq.should(occupationQueries(apiSearch.query))
                 bq.must(
-                    QueryBuilders.nestedQuery(
+                    nestedQuery(
                         RichSkillDoc::collections.name,
                         QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("collections.uuid", collectionId)),
                         ScoreMode.Avg
@@ -247,7 +247,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                     bq.must(
                         QueryBuilders.nestedQuery(
                             RichSkillDoc::collections.name,
-                            simpleQueryStringQuery(it).field("collections.name").defaultOperator(Operator.AND),
+                            simpleQueryStringQuery(it).field("collections.name.raw").defaultOperator(Operator.AND),
                             ScoreMode.Avg
                         )
                     )

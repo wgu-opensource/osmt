@@ -12,7 +12,7 @@ ENV USER=osmt
 ENV BASE_DIR=/opt/${USER}
 
 # Install EPEL / Useful packages /
-RUN /usr/bin/yum install -y https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/e/epel-release-8-9.el8.noarch.rpm \
+RUN /usr/bin/yum install -y epel-release \
     && /usr/bin/yum update -y \
     && /usr/bin/yum remove -y java-1.8.0-openjdk* \
     && /usr/bin/yum install -y curl java-11-openjdk-headless-${JAVA_VERSION} wget

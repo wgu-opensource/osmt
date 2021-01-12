@@ -252,11 +252,11 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
       this.uploadedFile = file.name
 
-      if (this.acceptableFileTypes.indexOf(file.type) === -1) {
-        this.uploadedFile = "The file you select must be CSV format."
-        this.uploadedFileError = true
-        return
-      }
+      // if (this.acceptableFileTypes.indexOf(file.type) === -1) {
+      //   this.uploadedFile = "The file you select must be CSV format."
+      //   this.uploadedFileError = true
+      //   return
+      // }
 
       this.uploading = true
       this.papa.parse(file, {
@@ -265,6 +265,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
           this.uploading = false
           this.uploadedFileError = false
           this.parseResults = results
+        },
+        error: (error) => {
+          this.uploadedFile = "There was an error reading the file you selected."
+          this.uploadedFileError = true
         }
       })
   }
@@ -317,7 +321,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   }
 
   skillsFromResults(): ApiSkillUpdate[] {
-    const skillUpdates = this.parseResults?.data.map((row: { [x: string]: string; }) => {
+    const skillUpdates = this.parseResults?.data.map((row: { [x: string]: any; }) => {
       // tslint:disable-next-line:no-any
       const newSkill: {[s: string]: any} = {}
 
@@ -326,8 +330,9 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
       Object.keys(row).forEach(uploadedKey => {
         const fieldName = this.fieldMappings?.[uploadedKey]
-        const value: string = row[uploadedKey].trim()
-        if (fieldName !== undefined && value) {
+        const rawValue: any = row[uploadedKey]
+        if (fieldName !== undefined && rawValue && typeof rawValue === "string") {
+          const value: string = rawValue?.trim()
 
           if (["author"].indexOf(fieldName) !== -1) {
             newSkill[fieldName] = new ApiNamedReference({name: value})

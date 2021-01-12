@@ -1,5 +1,5 @@
 import {Component, ViewChild} from "@angular/core"
-import {Observable} from "rxjs"
+import {Observable, Subject} from "rxjs"
 import {ApiSearch, PaginatedCollections} from "../richskill/service/rich-skill-search.service"
 import {checkArchived, determineFilters, PublishStatus} from "../PublishStatus"
 import {ApiCollectionSummary, ICollectionSummary} from "../richskill/ApiSkillSummary"
@@ -34,6 +34,8 @@ export class CollectionsListComponent {
 
   showSearchEmptyMessage = false
   showLibraryEmptyMessage = false
+
+  clearSelectedItemsFromTable = new Subject<void>()
 
   constructor(protected router: Router,
               protected toastService: ToastService,
@@ -133,6 +135,7 @@ export class CollectionsListComponent {
   handleFiltersChanged(newFilters: Set<PublishStatus>): void {
     this.selectedFilters = newFilters
     this.loadNextPage()
+    this.clearSelected()
   }
 
   handlePageClicked(newPageNo: number): void {
@@ -264,6 +267,8 @@ export class CollectionsListComponent {
         this.loadNextPage()
       }
     })
+    this.selectedCollections = undefined
+    this.clearSelected()
     return false
   }
 
@@ -277,5 +282,9 @@ export class CollectionsListComponent {
 
   focusActionBar(): void {
     this.actionBar?.focus()
+  }
+
+  clearSelected(): void {
+    this.clearSelectedItemsFromTable.next()
   }
 }

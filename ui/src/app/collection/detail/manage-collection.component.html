@@ -81,7 +81,7 @@
       ></app-pagination>
     </ng-template>
 
-    <div *ngIf="collection" class="t-padding-medium t-padding-top">
+    <div *ngIf="collection">
       <app-audit-log
         [collectionUuid]="collection.uuid"
         [collapseListener]="collapseAuditLog.asObservable()"

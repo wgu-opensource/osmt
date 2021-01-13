@@ -26,7 +26,7 @@
 
   <div class="l-container">
     <!--      {{render '@listheadingsearch'}}-->
-    <div class="t-margin-medium t-margin-bottom">
+    <div class="t-margin-medium t-margin-bottom" *ngIf="totalCount < 0">
       <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
         <div class="m-text">
           <svg aria-hidden="true" class="m-text-x-icon t-icon" (click)="clearSearch()"><use [attr.xlink:href]="searchIcon"></use></svg>
@@ -47,6 +47,7 @@
     </div>
 
     <app-filter-controls
+      *ngIf="totalCount > 0"
       [selectedFilters]="selectedFilters"
       (filtersChanged)="handleFiltersChanged($event)"
     ></app-filter-controls>
@@ -72,11 +73,8 @@
         ></app-skill-table>
       </div>
 
-      <app-empty-message *ngIf="emptyResults">
-        <p class="m-emptyMessage-x-message">0 RSDs associated with this collection</p>
-      </app-empty-message>
-
       <app-pagination
+        *ngIf="totalCount > 0"
         [currentPage]="currentPageNo"
         [totalPages]="totalPageCount"
         (pageClicked)="handlePageClicked($event)"
@@ -94,7 +92,7 @@
     </div>
   </div>
 
-  <div *ngIf="actionsVisible()" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
+  <div *ngIf="actionsVisible() && totalCount > 0" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
     <div class="l-container l-container-tablet">
       <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
     </div>

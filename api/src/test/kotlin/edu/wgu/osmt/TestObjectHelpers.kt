@@ -51,8 +51,8 @@ object TestObjectHelpers {
         val twoRandomDigits = (1..2).map { (0..9).random() }.joinToString("")
         val fourRandomDigits = (1..4).map { (0..9).random() }.joinToString("")
         return when ((1..2).random()) {
-            1 -> "$twoRandomDigits-$fourRandomDigits"
-            else -> "$twoRandomDigits-$fourRandomDigits.$twoRandomDigits"
+            1 -> "$twoRandomDigits$fourRandomDigits"
+            else -> "$twoRandomDigits$fourRandomDigits.$twoRandomDigits"
         }
     }
 

@@ -13,6 +13,7 @@ import edu.wgu.osmt.jobcode.JobCodeQueries
 import edu.wgu.osmt.nullIfEmpty
 import org.apache.lucene.search.join.ScoreMode
 import org.elasticsearch.index.query.*
+import org.elasticsearch.index.query.QueryBuilders.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.Page
@@ -27,7 +28,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 
 interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch)
-    fun richSkillPropertiesMultiMatch(query: String): MultiMatchQueryBuilder
+    fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder
     fun byApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
@@ -58,11 +59,47 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         with(advancedQuery) {
             // boolQuery.must for logical AND
             // boolQuery.should for logical OR
-            skillName.nullIfEmpty()?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::name.name, it)) }
-            category.nullIfEmpty()?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::category.name, it)) }
-            author.nullIfEmpty()?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::author.name, it)) }
-            skillStatement.nullIfEmpty()?.let { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::statement.name, it)) }
-            keywords?.map { bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::searchingKeywords.name, it)) }
+            skillName.nullIfEmpty()?.let {
+                if (it.contains("\"")) {
+                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::name.name}.raw").defaultOperator(Operator.AND))
+                } else {
+                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::name.name, it))
+                }
+
+            }
+            category.nullIfEmpty()?.let {
+                if (it.contains("\"")) {
+                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::category.name}.raw").defaultOperator(Operator.AND))
+                } else {
+                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::category.name, it))
+                }
+            }
+            author.nullIfEmpty()?.let {
+                if (it.contains("\"")) {
+                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::author.name}.raw").defaultOperator(Operator.AND))
+                } else {
+                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::author.name, it))
+                }
+            }
+            skillStatement.nullIfEmpty()?.let {
+                if (it.contains("\"")) {
+                    bq.must(
+                        simpleQueryStringQuery(it).field("${RichSkillDoc::statement.name}.raw").defaultOperator(Operator.AND)
+                    )
+                } else {
+                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::statement.name, it))
+                }
+            }
+            keywords?.map {
+                if (it.contains("\"")) {
+                    bq.must(
+                        simpleQueryStringQuery(it).field("${RichSkillDoc::searchingKeywords.name}.raw")
+                            .defaultOperator(Operator.AND)
+                    )
+                } else {
+                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::searchingKeywords.name, it))
+                }
+            }
 
             occupations?.let {
                 it.mapNotNull { value ->
@@ -74,65 +111,94 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
             standards?.let { it ->
                 it.mapNotNull { it.name }.map { s ->
-                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::standards.name, s))
+                    if (s.contains("\"")) {
+                        bq.must(
+                            simpleQueryStringQuery(s).field("${RichSkillDoc::standards.name}.raw").defaultOperator(Operator.AND)
+                        )
+                    } else {
+                        bq.must(matchBoolPrefixQuery(RichSkillDoc::standards.name, s))
+                    }
                 }
             }
 
             certifications?.let { it ->
                 it.mapNotNull { it.name }.map { s ->
-                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::certifications.name, s))
+                    if (s.contains("\"")) {
+                        bq.must(
+                            simpleQueryStringQuery(s).field("${RichSkillDoc::certifications.name}.raw")
+                                .defaultOperator(Operator.AND)
+                        )
+                    } else {
+                        bq.must(matchBoolPrefixQuery(RichSkillDoc::certifications.name, s))
+                    }
                 }
             }
 
             employers?.let { it ->
                 it.mapNotNull { it.name }.map { s ->
-                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::employers.name, s))
+                    if (s.contains("\"")) {
+                        bq.must(
+                            simpleQueryStringQuery(s).field("${RichSkillDoc::employers.name}.raw").defaultOperator(Operator.AND)
+                        )
+                    } else {
+                        bq.must(matchBoolPrefixQuery(RichSkillDoc::employers.name, s))
+                    }
                 }
             }
 
             alignments?.let { it ->
                 it.mapNotNull { it.name }.map { s ->
-                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::alignments.name, s))
+                    if (s.contains("\"")) {
+                        bq.must(
+                            simpleQueryStringQuery(s).field(RichSkillDoc::alignments.name).defaultOperator(Operator.AND)
+                        )
+                    } else {
+                        bq.must(matchBoolPrefixQuery(RichSkillDoc::alignments.name, s))
+                    }
                 }
             }
         }
     }
 
-    override fun richSkillPropertiesMultiMatch(query: String): MultiMatchQueryBuilder {
-        val fields = arrayOf(
-            "${RichSkillDoc::name.name}",
-            "${RichSkillDoc::name.name}._2gram",
-            "${RichSkillDoc::name.name}._3gram",
-            RichSkillDoc::statement.name,
-            "${RichSkillDoc::statement.name}._2gram",
-            "${RichSkillDoc::statement.name}._3gram",
-            RichSkillDoc::category.name,
-            "${RichSkillDoc::category.name}._2gram",
-            "${RichSkillDoc::category.name}._3gram",
-            RichSkillDoc::searchingKeywords.name,
-            "${RichSkillDoc::searchingKeywords.name}._2gram",
-            "${RichSkillDoc::searchingKeywords.name}._3gram",
-            RichSkillDoc::standards.name,
-            "${RichSkillDoc::standards.name}._2gram",
-            "${RichSkillDoc::standards.name}._3gram",
-            RichSkillDoc::certifications.name,
-            "${RichSkillDoc::certifications.name}._2gram",
-            "${RichSkillDoc::certifications.name}._3gram",
-            RichSkillDoc::employers.name,
-            "${RichSkillDoc::employers.name}._2gram",
-            "${RichSkillDoc::employers.name}._3gram",
-            RichSkillDoc::alignments.name,
-            "${RichSkillDoc::alignments.name}._2gram",
-            "${RichSkillDoc::alignments.name}._3gram",
-            RichSkillDoc::author.name,
-            "${RichSkillDoc::author.name}._2gram",
-            "${RichSkillDoc::author.name}._3gram"
+    override fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder {
+        val isComplex = query.contains("\"")
+
+        val boolQuery = boolQuery()
+
+        val complexQueries = listOf(
+            simpleQueryStringQuery(query).field("${RichSkillDoc::name.name}.raw").boost(2.0f)
+                .defaultOperator(Operator.AND),
+            simpleQueryStringQuery(query).field("${RichSkillDoc::statement.name}.raw").defaultOperator(Operator.AND),
+            simpleQueryStringQuery(query).field("${RichSkillDoc::category.name}.raw").defaultOperator(Operator.AND),
+            simpleQueryStringQuery(query).field("${RichSkillDoc::searchingKeywords.name}.raw")
+                .defaultOperator(Operator.AND),
+            simpleQueryStringQuery(query).field("${RichSkillDoc::standards.name}.raw").defaultOperator(Operator.AND),
+            simpleQueryStringQuery(query).field("${RichSkillDoc::certifications.name}.raw")
+                .defaultOperator(Operator.AND),
+            simpleQueryStringQuery(query).field("${RichSkillDoc::employers.name}.raw").defaultOperator(Operator.AND),
+            simpleQueryStringQuery(query).field("${RichSkillDoc::alignments.name}.raw").defaultOperator(Operator.AND),
+            simpleQueryStringQuery(query).field("${RichSkillDoc::author.name}.raw").defaultOperator(Operator.AND)
         )
 
-        return QueryBuilders.multiMatchQuery(
-            query,
-            *fields
-        ).type(MultiMatchQueryBuilder.Type.BOOL_PREFIX)
+        val queries = listOf(
+            matchPhrasePrefixQuery(RichSkillDoc::name.name, query).boost(2.0f),
+            matchPhrasePrefixQuery(RichSkillDoc::statement.name, query),
+            matchPhrasePrefixQuery(RichSkillDoc::category.name, query),
+            matchPhrasePrefixQuery(RichSkillDoc::searchingKeywords.name, query),
+            matchPhrasePrefixQuery(RichSkillDoc::standards.name, query),
+            matchPhrasePrefixQuery(RichSkillDoc::certifications.name, query),
+            matchPhrasePrefixQuery(RichSkillDoc::employers.name, query),
+            matchPhrasePrefixQuery(RichSkillDoc::alignments.name, query),
+            matchPhrasePrefixQuery(RichSkillDoc::author.name, query)
+        )
+
+        if (isComplex) {
+            complexQueries.map { boolQuery.should(it) }
+        } else {
+            queries.map { boolQuery.should(it) }
+        }
+
+        return boolQuery
     }
 
     override fun byApiSearch(
@@ -142,8 +208,8 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         collectionId: String?
     ): SearchHits<RichSkillDoc> {
         val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
-        val bq = QueryBuilders.boolQuery()
-        val filter = BoolQueryBuilder().must(QueryBuilders.termsQuery(RichSkillDoc::publishStatus.name, publishStatus))
+        val bq = boolQuery()
+        val filter = BoolQueryBuilder().must(termsQuery(RichSkillDoc::publishStatus.name, publishStatus))
 
         nsq.withQuery(bq)
         nsq.withFilter(filter)
@@ -155,15 +221,16 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 bq.should(richSkillPropertiesMultiMatch(apiSearch.query))
                 bq.should(occupationQueries(apiSearch.query))
                 bq.should(
-                    QueryBuilders.nestedQuery(
+                    nestedQuery(
                         RichSkillDoc::collections.name,
-                        QueryBuilders.matchQuery("collections.name", apiSearch.query),
+                        simpleQueryStringQuery(apiSearch.query).field("collections.name.raw")
+                            .defaultOperator(Operator.AND),
                         ScoreMode.Avg
                     )
                 )
             } else {
                 bq.must(
-                    QueryBuilders.nestedQuery(
+                    nestedQuery(
                         RichSkillDoc::collections.name,
                         QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("collections.uuid", collectionId)),
                         ScoreMode.Avg
@@ -179,7 +246,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                     bq.must(
                         QueryBuilders.nestedQuery(
                             RichSkillDoc::collections.name,
-                            QueryBuilders.matchQuery("collections.name", it),
+                            simpleQueryStringQuery(it).field("collections.name.raw").defaultOperator(Operator.AND),
                             ScoreMode.Avg
                         )
                     )

@@ -9,6 +9,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @Document(indexName = "jobcode_v1", createIndex = true)
+@Setting(settingPath = "/elasticsearch/settings.json")
 data class JobCode(
     @Field
     @Nullable
@@ -20,52 +21,83 @@ data class JobCode(
     override val creationDate: LocalDateTime,
 
     @MultiField(
-        mainField = Field(type = FieldType.Text),
+        mainField = Field(type = FieldType.Text, analyzer = "english_stemmer"),
         otherFields = [
             InnerField(suffix = "", type = FieldType.Search_As_You_Type),
-            InnerField(suffix = "keyword", type = FieldType.Keyword)]
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = FieldType.Text),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)
+        ]
     )
     val major: String? = null,             // bls major category name
 
     @MultiField(
-        mainField = Field(type = FieldType.Text),
+        mainField = Field(type = FieldType.Text, analyzer = "english_stemmer"),
         otherFields = [
             InnerField(suffix = "", type = FieldType.Search_As_You_Type),
-            InnerField(suffix = "keyword", type = FieldType.Keyword)]
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = FieldType.Text),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)
+        ]
     )
     val minor: String? = null,             // bls minor category name
 
     @MultiField(
-        mainField = Field(type = FieldType.Text),
+        mainField = Field(type = FieldType.Text, analyzer = "english_stemmer"),
         otherFields = [
             InnerField(suffix = "", type = FieldType.Search_As_You_Type),
-            InnerField(suffix = "keyword", type = FieldType.Keyword)]
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = FieldType.Text),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)
+        ]
     )
     val broad: String? = null,             // bls broad category name
 
     @MultiField(
-        mainField = Field(type = FieldType.Text),
+        mainField = Field(type = FieldType.Text, analyzer = "english_stemmer"),
         otherFields = [
             InnerField(suffix = "", type = FieldType.Search_As_You_Type),
-            InnerField(suffix = "keyword", type = FieldType.Keyword)]
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = FieldType.Text),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)
+        ]
     )
     val detailed: String? = null,          // bls detailed (for o*net level codes -- blank for bls detailed)
 
     @MultiField(
-        mainField = Field(type = FieldType.Text),
+        mainField = Field(type = FieldType.Text, analyzer = "english_stemmer"),
         otherFields = [
             InnerField(suffix = "", type = FieldType.Search_As_You_Type),
-            InnerField(suffix = "keyword", type = FieldType.Keyword)]
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = FieldType.Text),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)
+        ]
     )
     val code: String,                           // bls detailed code or a o*net code: XX-XXXX or XX-XXXX.XX
 
-    @Field(type = FieldType.Search_As_You_Type)
+    @MultiField(
+        mainField = Field(type = FieldType.Text, analyzer = "english_stemmer"),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = FieldType.Text),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)
+        ]
+    )
     val name: String? = null,                   // human readable label
 
-    @Field(type = FieldType.Search_As_You_Type)
+    @MultiField(
+        mainField = Field(type = FieldType.Text, analyzer = "english_stemmer"),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = FieldType.Text),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)
+        ]
+    )
     val description: String? = null,
 
-    @Field(type = FieldType.Search_As_You_Type)
+    @MultiField(
+        mainField = Field(type = FieldType.Text, analyzer = "english_stemmer"),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = FieldType.Text),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)
+        ]
+    )
     val framework: String? = null,               // e.g.: "bls" or "o*net"
 
     @Field

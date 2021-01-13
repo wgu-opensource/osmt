@@ -4,15 +4,13 @@ import edu.wgu.osmt.db.*
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.`java-time`.datetime
-import org.springframework.data.elasticsearch.annotations.DateFormat
-import org.springframework.data.elasticsearch.annotations.Document
-import org.springframework.data.elasticsearch.annotations.Field
-import org.springframework.data.elasticsearch.annotations.FieldType
 import java.time.LocalDateTime
 import org.elasticsearch.common.Nullable
 import org.springframework.data.annotation.Id
+import org.springframework.data.elasticsearch.annotations.*
 
 @Document(indexName = "keyword", createIndex = true)
+@Setting(settingPath = "/elasticsearch/settings.json")
 data class Keyword(
     @Id
     @Nullable
@@ -28,7 +26,14 @@ data class Keyword(
     val type: KeywordTypeEnum,
 
     @Nullable
-    @Field(type = FieldType.Search_As_You_Type)
+    @MultiField(
+        mainField = Field(type = FieldType.Text, analyzer = "english_stemmer"),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = FieldType.Text),
+            InnerField(suffix = "keyword", type = FieldType.Keyword)
+        ]
+    )
     val value: String? = null,
 
     @Nullable

@@ -2,8 +2,7 @@ package edu.wgu.osmt.jobcode
 
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import org.elasticsearch.index.query.BoolQueryBuilder
-import org.elasticsearch.index.query.DisMaxQueryBuilder
-import org.elasticsearch.index.query.QueryBuilders
+import org.elasticsearch.index.query.Operator
 import org.elasticsearch.index.query.QueryBuilders.*
 import org.elasticsearch.search.sort.SortBuilders
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,52 +37,60 @@ object JobCodeQueries {
     fun multiPropertySearch(query: String, parentDocPath: String? = null): BoolQueryBuilder {
         val disjunctionQuery = disMaxQuery()
         val path = parentDocPath?.let { "${it}." } ?: ""
-        val lowerCaseQuery = query.toLowerCase()
+        val isComplex = query.contains("\"")
 
         val queries =
             listOf(
                 prefixQuery(
                     "${path}${JobCode::code.name}.keyword",
-                    lowerCaseQuery
+                    query
                 ).boost(2.0f),
                 prefixQuery(
                     "${path}${JobCode::minorCode.name}.keyword",
-                    lowerCaseQuery
+                    query
                 ),
                 prefixQuery(
                     "${path}${JobCode::detailedCode.name}.keyword",
-                    lowerCaseQuery
+                    query
                 ),
                 prefixQuery(
                     "${path}${JobCode::majorCode.name}.keyword",
-                    lowerCaseQuery
+                    query
                 ),
                 prefixQuery(
                     "${path}${JobCode::broadCode.name}.keyword",
-                    lowerCaseQuery
-                ),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::name.name}",
-                    lowerCaseQuery
-                ).boost(2.0f),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::minor.name}",
-                    lowerCaseQuery
-                ),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::detailed.name}",
-                    lowerCaseQuery
-                ),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::major.name}",
-                    lowerCaseQuery
-                ),
-                matchPhrasePrefixQuery(
-                    "${path}${JobCode::broad.name}",
-                    lowerCaseQuery
+                    query
                 )
             )
+
         disjunctionQuery.innerQueries().addAll(queries)
+
+        if (isComplex) {
+            disjunctionQuery.innerQueries().addAll(
+                listOf(
+                    simpleQueryStringQuery(
+                        query
+                    ).field("${path}${JobCode::name.name}.raw").boost(2.0f).defaultOperator(Operator.AND),
+                    simpleQueryStringQuery(
+                        query
+                    ).field("${path}${JobCode::minor.name}.raw").analyzeWildcard(true),
+                    simpleQueryStringQuery(query).field("${path}${JobCode::detailed.name}.raw")
+                        .defaultOperator(Operator.AND),
+                    simpleQueryStringQuery(query).field("${path}${JobCode::major.name}.raw").defaultOperator(Operator.AND),
+                    simpleQueryStringQuery(query).field("${path}${JobCode::broad.name}.raw").defaultOperator(Operator.AND)
+                )
+            )
+        } else {
+            disjunctionQuery.innerQueries().addAll(
+                listOf(
+                    matchPhrasePrefixQuery("${path}${JobCode::name.name}", query).boost(2.0f),
+                    matchPhrasePrefixQuery("${path}${JobCode::minor.name}", query),
+                    matchPhrasePrefixQuery("${path}${JobCode::detailed.name}",query),
+                    matchPhrasePrefixQuery("${path}${JobCode::major.name}", query),
+                    matchPhrasePrefixQuery("${path}${JobCode::broad.name}", query)
+                )
+            )
+        }
 
         return boolQuery().must(existsQuery("${path}${JobCode::name.name}")).must(disjunctionQuery)
     }

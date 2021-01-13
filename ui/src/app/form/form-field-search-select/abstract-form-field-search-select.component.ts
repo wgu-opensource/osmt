@@ -1,5 +1,5 @@
-import {Component, Inject, Input, OnDestroy, OnInit} from "@angular/core"
-import {INamedReference, KeywordType} from "../../richskill/ApiSkill"
+import {Component, Input, OnDestroy, OnInit} from "@angular/core"
+import {KeywordType} from "../../richskill/ApiSkill"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {Subscription} from "rxjs"
 import {KeywordSearchService} from "../../richskill/service/keyword-search.service"
@@ -61,6 +61,10 @@ export abstract class AbstractFormFieldSearchSelectComponent extends FormField i
         this.results = searchResults.filter(r => !!r && !!r.name).map(r => r.name as string)
         this.currentlyLoading = false
       })
+  }
+
+  onEnterKeyup(event: Event): void {
+    this.results = undefined
   }
 
   get showResults(): boolean {

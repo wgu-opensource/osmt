@@ -1,16 +1,16 @@
 import {Component, OnInit, ViewChild} from "@angular/core"
-import {ApiCollection, ApiCollectionUpdate} from "../ApiCollection";
-import {ApiSearch, ApiSkillListUpdate} from "../../richskill/service/rich-skill-search.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {CollectionService} from "../service/collection.service";
-import {ToastService} from "../../toast/toast.service";
-import {SkillsListComponent} from "../../richskill/list/skills-list.component";
-import {RichSkillService} from "../../richskill/service/rich-skill.service";
-import {FormControl, FormGroup} from "@angular/forms";
-import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
-import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
-import {determineFilters, PublishStatus} from "../../PublishStatus";
-import {ApiSkillSummary} from "../../richskill/ApiSkillSummary";
+import {ApiCollection, ApiCollectionUpdate} from "../ApiCollection"
+import {ApiSearch, ApiSkillListUpdate} from "../../richskill/service/rich-skill-search.service"
+import {ActivatedRoute, Router} from "@angular/router"
+import {CollectionService} from "../service/collection.service"
+import {ToastService} from "../../toast/toast.service"
+import {SkillsListComponent} from "../../richskill/list/skills-list.component"
+import {RichSkillService} from "../../richskill/service/rich-skill.service"
+import {FormControl, FormGroup} from "@angular/forms"
+import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
+import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions"
+import {determineFilters, PublishStatus} from "../../PublishStatus"
+import {ApiSkillSummary} from "../../richskill/ApiSkillSummary"
 import {Observable, Subject} from "rxjs"
 import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
 
@@ -61,7 +61,20 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
 
   ngOnInit(): void {
     this.uuidParam = this.route.snapshot.paramMap.get("uuid") ?? ""
-    this.collectionService.getCollectionByUUID(this.uuidParam).subscribe(collection => {
+    this.reloadCollection()
+  }
+
+  get collectionHasSkills(): boolean {
+    const count = this.collection?.skills?.length
+    if (count !== undefined) {
+      return count > 0
+    } else {
+      return false
+    }
+  }
+
+  reloadCollection(): void {
+    this.collectionService.getCollectionByUUID(this.uuidParam ?? "").subscribe(collection => {
       this.collection = collection
       this.loadNextPage()
     })
@@ -119,6 +132,12 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   actionDefinitions(): TableActionDefinition[] {
     const actions = [
       new TableActionDefinition({
+        label: "Add RSDs to This Collection",
+        icon: this.addIcon,
+        primary: !this.collectionHasSkills, // Primary only if there are no skills
+        callback: () => this.addSkillsAction(),
+      }),
+      new TableActionDefinition({
         label: "Edit Collection Name",
         icon: this.editIcon,
         callback: () => this.editAction()
@@ -151,12 +170,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         icon: this.unarchiveIcon,
         callback: () => this.unarchiveAction(),
         visible: () => this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted
-      }),
-      new TableActionDefinition({
-        label: "Add RSDs to This Collection",
-        icon: this.addIcon,
-        callback: () => this.addSkillsAction(),
-      }),
+      })
     )
     return actions
   }
@@ -247,11 +261,12 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   submitSkillRemoval(apiSearch?: ApiSearch): void {
     const update = new ApiSkillListUpdate({remove: apiSearch})
     this.toastService.showBlockingLoader()
-    this.skillsSaved = this.collectionService.updateSkillsWithResult(this.uuidParam!, update)
+    this.skillsSaved = this.collectionService.updateSkillsWithResult(this.uuidParam ?? "", update)
     this.skillsSaved.subscribe(result => {
       if (result) {
         this.toastService.showToast("Success!", `You removed ${result.modifiedCount} RSD${(result.modifiedCount ?? 0) > 1 ? "s" : ""} from this collection.`)
         this.toastService.hideBlockingLoader()
+        this.reloadCollection()
         this.loadNextPage()
       }
     })

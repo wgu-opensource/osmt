@@ -89,12 +89,38 @@ class CollectionEsRepoTest @Autowired constructor(
     }
 
     @Test
-    fun `Should perform advanced quoted searches`(){
+    fun `Should perform advanced quoted searches`() {
         val searchSetupResults = quotedSearchSetup()
 
-        val advancedQuotedSearch = collectionEsRepo.byApiSearch(ApiSearch(advanced = ApiAdvancedSearch(collectionName = "\"Self-Management\""))).searchHits.map{ it.content }
+        val advancedQuotedSearch =
+            collectionEsRepo.byApiSearch(ApiSearch(advanced = ApiAdvancedSearch(collectionName = "\"Self-Management\""))).searchHits.map { it.content }
 
         assertThat(advancedQuotedSearch).contains(searchSetupResults.collections.first())
         assertThat(advancedQuotedSearch.size).isEqualTo(1)
+    }
+
+    @Test
+    fun `Should limit skill results to skills within a collection when collection id is present`() {
+        var collection = TestObjectHelpers.collectionDoc(name = "Test Collection")
+
+        val jobcode = TestObjectHelpers.randomJobCode().copy(name = "Bartenders")
+
+        val richskill1 = TestObjectHelpers.randomRichSkillDoc().copy(name = "Skill associated with collection", collections = listOf(collection), jobCodes = listOf(jobcode))
+        val richskill2 = TestObjectHelpers.randomRichSkillDoc().copy(name = "Skill not associated with collection", collections = listOf(), jobCodes = listOf(jobcode))
+
+
+        val associatedRichSkills =
+            (1..10).map { TestObjectHelpers.randomRichSkillDoc().copy(collections = listOf(collection)) }
+        val unassociatedRichSkills = (1..10).map{ TestObjectHelpers.randomRichSkillDoc().copy(collections = listOf(collection)) }
+
+        collection = collection.copy(skillIds = associatedRichSkills.map { it.uuid } + richskill1.uuid)
+
+        collectionEsRepo.save(collection)
+        richSkillEsRepo.saveAll(associatedRichSkills + unassociatedRichSkills + richskill1 + richskill2)
+
+        val result = richSkillEsRepo.byApiSearch(ApiSearch(query = jobcode.name), collectionId = collection.uuid).searchHits.map{ it.content }
+
+        assertThat(result.first().uuid).isEqualTo(richskill1.uuid)
+        assertThat(result.size).isEqualTo(1)
     }
 }

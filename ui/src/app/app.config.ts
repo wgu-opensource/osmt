@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
-import { HttpClient } from "@angular/common/http"
-import { DefaultAppConfig, IAppConfig } from "./models/app-config.model"
+import {DefaultAppConfig, IAppConfig} from "./models/app-config.model"
 import { environment } from "../environments/environment"
+import {HttpClient} from "@angular/common/http"
 
 @Injectable()
 export class AppConfig {
@@ -12,13 +12,37 @@ export class AppConfig {
 
   }
 
-  load(): Promise<void> {
-    return new Promise<void>( (resolve) => {
-      AppConfig.settings = new DefaultAppConfig()
-      AppConfig.settings.baseApiUrl = environment.baseApiUrl
-      AppConfig.settings.loginUrl = environment.loginUrl
-      resolve()
-    })
-
+  defaultConfig(): IAppConfig {
+    const settings = new DefaultAppConfig()
+    settings.baseApiUrl = environment.baseApiUrl
+    settings.loginUrl = environment.loginUrl
+    return settings
   }
-}
+
+  load(): Promise<object> {
+    const baseUrl = environment.baseApiUrl
+
+    if (environment.dynamicWhitelabel) {
+      return this.http.get(`${baseUrl}/whitelabel/whitelabel.json`)
+        .toPromise()
+        .then(value => {
+          AppConfig.settings = this.defaultConfig()
+          Object.assign(AppConfig.settings, value as IAppConfig)
+
+          // baseApiUrl and loginUrl are not runtime whitelabellable
+          AppConfig.settings.baseApiUrl = environment.baseApiUrl
+          AppConfig.settings.loginUrl = environment.loginUrl
+          return value
+        }).catch(reason => {
+          AppConfig.settings = this.defaultConfig()
+          return reason
+        })
+    }
+    else {
+      return new Promise((resolve, reject) => {
+        AppConfig.settings = this.defaultConfig()
+        resolve(AppConfig.settings)
+      })
+    }
+    }
+  }

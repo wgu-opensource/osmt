@@ -27,12 +27,13 @@ describe("AppConfig", () => {
   })
 
   afterEach(() => {
-    httpMock.verify()
+    // httpMock.verify()
   })
 
   describe("whitelabel configuration", () => {
     it("should load app config from environment", () => {
       const expectedApiUrl = "https://unit-test.osmt.dev"
+
       const dummyConfig: IAppConfig = {
         baseApiUrl: expectedApiUrl,
         defaultAuthorValue: "",
@@ -51,6 +52,7 @@ describe("AppConfig", () => {
       }
 
       environment.baseApiUrl = expectedApiUrl
+      environment.dynamicWhitelabel = false
 
       service.load().finally(() => {
         expect(AppConfig.settings.baseApiUrl).toBe(dummyConfig.baseApiUrl)

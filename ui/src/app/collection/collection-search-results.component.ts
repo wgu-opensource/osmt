@@ -51,11 +51,9 @@ export class CollectionSearchResultsComponent extends CollectionsListComponent i
     if (this.apiSearch?.query !== undefined) {
       this.matchingQuery = [this.apiSearch.query]
     } else if (this.apiSearch?.advanced !== undefined) {
-      this.matchingQuery = Object.getOwnPropertyNames(this.apiSearch?.advanced).map((k) => {
-        const a: any = this.apiSearch?.advanced
-        return a !== undefined ? a[k] : undefined
-      }).filter(x => x !== undefined)
+      this.matchingQuery = this.apiSearch?.advancedMatchingQuery()
     }
+    this.from = 0
     this.loadNextPage()
   }
 

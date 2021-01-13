@@ -5,6 +5,7 @@ import {formatDate} from "@angular/common"
 import {Component, Inject, Input, LOCALE_ID, OnInit} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {saveAs} from "file-saver"
+import {Observable} from "rxjs"
 
 @Component({
   selector: "app-abstract-public-rich-skill-action-bar",
@@ -16,6 +17,7 @@ export class PublicRichSkillActionBarComponent implements OnInit {
   @Input() skillName = ""
   @Input() skillUrl = ""
 
+  skillJsonObservable = new Observable<string>()
   jsonClipboard = ""
 
   duplicateIcon = SvgHelper.path(SvgIcon.DUPLICATE)
@@ -31,8 +33,8 @@ export class PublicRichSkillActionBarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.richSkillService.getSkillJsonByUuid(this.skillUuid)
-      .subscribe( (json: string) => this.jsonClipboard = json)
+    this.skillJsonObservable = this.richSkillService.getSkillJsonByUuid(this.skillUuid)
+    this.skillJsonObservable.subscribe( (json: string) => this.jsonClipboard = json)
   }
 
   onCopyURL(fullPath: HTMLTextAreaElement): void {
@@ -53,13 +55,11 @@ export class PublicRichSkillActionBarComponent implements OnInit {
   }
 
   onCopyJSON(skillJson: HTMLTextAreaElement): void {
-    this.richSkillService.getSkillJsonByUuid(this.skillUuid)
-      .subscribe((json: string) => {
-        this.jsonClipboard = json
-        skillJson.select()
-        document.execCommand("copy")
-        skillJson.setSelectionRange(0, 0)
-        this.toastService.showToast("Success!", "JSON copied to clipboard")
-      })
+    this.skillJsonObservable.subscribe(() => {
+      skillJson.select()
+      document.execCommand("copy")
+      skillJson.setSelectionRange(0, 0)
+      this.toastService.showToast("Success!", "JSON copied to clipboard")
+    })
   }
 }

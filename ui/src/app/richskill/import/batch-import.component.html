@@ -49,8 +49,11 @@
     <!-- STEP 1: Upload File -->
     <ng-template [ngIf]="isUploadStep()">
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
-        <div class="m-dragDrop" [class.m-dragDrop-is-error]="uploadedFileError"
-             (drop)="handleFileDrop($event)" (dragover)="handleFileDrag($event)">
+        <div class="m-dragDrop"
+             [class.m-dragDrop-is-error]="uploadedFileError"
+             [class.m-dragDrop-is-loading]="uploading"
+             (drop)="handleFileDrop($event)"
+             (dragover)="handleFileDrag($event)">
           <label for="dragdrop">
             <span class="m-dragDrop-x-loader">
               <span class="m-loaderGraphic m-loaderGraphic-large"></span>
@@ -59,12 +62,14 @@
               <!--{{render '@m-countericon'}}-->
               <div class="m-counterIcon">
                 <div class="m-iconWithFrame">
-                    <svg class="t-icon" aria-hidden="true">
-                        <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
+                    <svg aria-hidden="true">
+                        <use [attr.xlink:href]="docIcon"></use>
                     </svg>
                 </div>
                 <div class="m-counterIcon-x-counter">
-                    <div class="m-counter"><span>{{uploadedFileCount}}</span></div>
+                    <div class="m-counter">
+                      <span>{{uploadedFileCount}}</span>
+                    </div>
                 </div>
               </div>
             </span>
@@ -135,7 +140,7 @@
     <!-- STEP 3: Review -->
     <ng-template [ngIf]="isReviewStep()">
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
-        <div class="t-margin-medium t-margin-bottom">
+        <div class="t-margin-bottom">
           <h3 class="t-type-bodyLargeBold t-type-text1 t-margin-extraSmall t-margin-bottom">Validation results</h3>
           <p class="t-type-text1">{{validCount}} RSD<ng-template [ngIf]="validCount > 1" [ngIfElse]="singular">s are</ng-template><ng-template #singular> is</ng-template> ready to import.</p>
         </div>
@@ -150,7 +155,7 @@
             [similarSkills]="similarSkills"></app-checker>
 
           <ng-template [ngIf]="similarSkillCount > 0">
-            <p class="t-type-small">{{similarSkillCount}} RSDs contain skill statements that are very similar to those already in the library.</p>
+            <p class="t-type-small t-margin-small">{{similarSkillCount}} RSDs contain skill statements that are very similar to those already in the library.</p>
             <app-filter-choice label="OK to import" (filterChanged)="handleSimilarityOk($event)"></app-filter-choice>
           </ng-template>
 

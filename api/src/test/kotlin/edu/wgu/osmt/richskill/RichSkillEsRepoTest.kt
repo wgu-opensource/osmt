@@ -256,7 +256,7 @@ class RichSkillEsRepoTest @Autowired constructor(
             ApiSearch(
                 advanced = ApiAdvancedSearch(
                     occupations = listOf(
-                        ApiNamedReference(name = "10-99")
+                        "10-99"
                     )
                 )
             )

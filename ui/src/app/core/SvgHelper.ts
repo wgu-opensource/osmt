@@ -8,6 +8,7 @@ export enum SvgIcon {
   CHEVRON = "icon-chevron",
   COLLECTION = "icon-collection",
   DISMISS = "icon-dismiss",
+  DOC = "icon-doc",
   DOWNLOAD = "icon-download",
   DUPLICATE = "icon-duplicate",
   EDIT = "icon-edit",

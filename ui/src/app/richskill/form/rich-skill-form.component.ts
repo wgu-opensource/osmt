@@ -394,7 +394,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   checkForStatementSimilarity(statement: string): void {
     this.searchingSimilarity = true
     this.richSkillService.similarityCheck(statement).subscribe(results => {
-      this.similarSkills = results?.filter(s => this.existingSkill?.uuid !== s.uuid)
+      this.similarSkills = this.isDuplicating ? results : results?.filter(s => this.existingSkill?.uuid !== s.uuid)
       this.searchingSimilarity = false
     })
   }

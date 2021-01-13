@@ -162,8 +162,6 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                     )
                 )
             } else {
-                bq.must(richSkillPropertiesMultiMatch(apiSearch.query))
-                bq.should(occupationQueries(apiSearch.query))
                 bq.must(
                     QueryBuilders.nestedQuery(
                         RichSkillDoc::collections.name,
@@ -171,6 +169,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                         ScoreMode.Avg
                     )
                 )
+                bq.must(BoolQueryBuilder().should(richSkillPropertiesMultiMatch(apiSearch.query)).should(occupationQueries(apiSearch.query)))
             }
         } else if (apiSearch.advanced != null) {
             generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)

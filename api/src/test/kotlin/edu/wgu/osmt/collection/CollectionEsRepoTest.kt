@@ -9,6 +9,7 @@ import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
@@ -19,7 +20,7 @@ class CollectionEsRepoTest @Autowired constructor(
     override val collectionEsRepo: CollectionEsRepo,
     override val keywordEsRepo: KeywordEsRepo,
     override val jobCodeEsRepo: JobCodeEsRepo
-): SpringTest(), HasDatabaseReset, HasElasticsearchReset {
+) : SpringTest(), HasDatabaseReset, HasElasticsearchReset {
 
     fun queryCollectionHits(query: String): List<CollectionDoc> {
         return collectionEsRepo.byApiSearch(ApiSearch(query)).searchHits.map { it.content }
@@ -71,5 +72,30 @@ class CollectionEsRepoTest @Autowired constructor(
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.standards[elasticRichSkillDoc.standards.indices.random()]))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.certifications[elasticRichSkillDoc.certifications.indices.random()]))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.employers[elasticRichSkillDoc.employers.indices.random()]))
+    }
+
+    @Test
+    fun `Should limit skill results to skills within a collection when collection id is present`() {
+        var collection = TestObjectHelpers.collectionDoc(name = "Test Collection")
+
+        val jobcode = TestObjectHelpers.randomJobCode().copy(name = "Bartenders")
+
+        val richskill1 = TestObjectHelpers.randomRichSkillDoc().copy(name = "Skill associated with collection", collections = listOf(collection), jobCodes = listOf(jobcode))
+        val richskill2 = TestObjectHelpers.randomRichSkillDoc().copy(name = "Skill not associated with collection", collections = listOf(), jobCodes = listOf(jobcode))
+
+
+        val associatedRichSkills =
+            (1..10).map { TestObjectHelpers.randomRichSkillDoc().copy(collections = listOf(collection)) }
+        val unassociatedRichSkills = (1..10).map{ TestObjectHelpers.randomRichSkillDoc().copy(collections = listOf(collection)) }
+
+        collection = collection.copy(skillIds = associatedRichSkills.map { it.uuid } + richskill1.uuid)
+
+        collectionEsRepo.save(collection)
+        richSkillEsRepo.saveAll(associatedRichSkills + unassociatedRichSkills + richskill1 + richskill2)
+
+        val result = richSkillEsRepo.byApiSearch(ApiSearch(query = jobcode.name), collectionId = collection.uuid).searchHits.map{ it.content }
+
+        assertThat(result.first().uuid).isEqualTo(richskill1.uuid)
+        assertThat(result.size).isEqualTo(1)
     }
 }

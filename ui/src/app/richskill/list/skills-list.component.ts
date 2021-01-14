@@ -333,6 +333,15 @@ export class SkillsListComponent extends QuickLinksHelper {
     return false
   }
 
+  getMobileSortOptions(): {[s: string]: string} {
+    return {
+      "name.asc": "Category (ascending)",
+      "name.desc": "Category (descending)",
+      "skill.asc": "RSD Name (ascending)",
+      "skill.desc": "RSD Name (descending)",
+    }
+  }
+
   getSelectAllCount(): number {
     return this.curPageCount
   }

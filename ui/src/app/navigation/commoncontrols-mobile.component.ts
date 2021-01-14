@@ -4,7 +4,8 @@ import {SearchService} from "../search/search.service";
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
-  selector: "app-commoncontrols-mobile",
+  // tslint:disable-next-line:component-selector
+  selector: "[app-commoncontrols-mobile]",
   templateUrl: "./commoncontrols-mobile.component.html"
 })
 export class CommoncontrolsMobileComponent extends AbstractSearchComponent implements OnInit {

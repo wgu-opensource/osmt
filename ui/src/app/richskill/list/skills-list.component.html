@@ -35,6 +35,7 @@
           *ngIf="!emptyResults"
           [items]="results.skills"
           [currentSort]="columnSort"
+          [mobileSortOptions]="getMobileSortOptions()"
           [rowActions]="rowActions()"
           [selectAllCount]="getSelectAllCount()"
           [selectAllEnabled]="getSelectAllEnabled()"

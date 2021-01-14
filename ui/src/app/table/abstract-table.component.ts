@@ -18,6 +18,8 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
   @Input() selectAllCount?: number
   @Input() selectAllEnabled: boolean = true
 
+  @Input() mobileSortOptions: {[s: string]: string} = {}
+
   @Output() columnSorted = new EventEmitter<ApiSortOrder>()
 
   @Output() rowSelected: EventEmitter<SummaryT[]> = new EventEmitter<SummaryT[]>()
@@ -67,6 +69,11 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
         this.currentSort = ApiSortOrder.SkillDesc
       }
     }
+    this.columnSorted.emit(this.currentSort)
+  }
+
+  mobileSortColumn(newSort: ApiSortOrder): void {
+    this.currentSort = newSort
     this.columnSorted.emit(this.currentSort)
   }
 

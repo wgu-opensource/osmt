@@ -6,7 +6,7 @@ import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
   selector: "app-label-with-filter",
   template: `
     <button class="m-tableLabel" data-table-filter (click)="handleClick()">
-      <span class="m-tableLabel-x-text">{{label}}</span>
+      <span class="m-tableLabel-x-text">{{label}}<ng-content *ngIf="label.length < 1"></ng-content></span>
       <span class="m-tableLabel-x-control">
         <div class="l-iconTransition" [class.l-iconTransition-is-flipped]="isSortAscending()">
             <svg class="l-iconTransition-x-icon t-icon">

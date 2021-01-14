@@ -63,6 +63,9 @@ export abstract class AbstractFormFieldSearchSelectComponent extends FormField i
       })
   }
 
+  onEnterKeyDown(event: Event): boolean {
+    return false
+  }
   onEnterKeyup(event: Event): void {
     this.results = undefined
   }

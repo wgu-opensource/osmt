@@ -34,10 +34,9 @@
       <td class="t-hidden-tabletMax" scope="col" aria-hidden="true">
         <app-label-with-filter
           *ngIf="allowSorting; else noSortSkills"
-          label="RSDs"
           [sortAscending]="getSkillSort()"
           (sortChanged)="sortColumn('skill', $event)"
-        ></app-label-with-filter>
+        >RSD<span class="t-type-lowercase">s</span></app-label-with-filter>
         <ng-template #noSortSkills>
           <span class="m-tableLabel">
             <span class="m-tableLabel-x-text">RSDs</span>

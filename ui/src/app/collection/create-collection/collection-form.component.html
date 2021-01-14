@@ -17,24 +17,28 @@
 
             </div>
 
-            <app-formfield-textarea
-              [control]="collectionForm.controls.collectionName"
-              name="collectionName"
-              label="Collection Name"
-              placeholder="Health Open Skills"
-              errorMessage="Name required"
-              [required]="true"
-            ></app-formfield-textarea>
+            <div class="t-margin-medium t-margin-bottom">
+              <app-formfield-textarea
+                [control]="collectionForm.controls.collectionName"
+                name="collectionName"
+                label="Collection Name"
+                placeholder="Health Open Skills"
+                errorMessage="Name required"
+                [required]="true"
+              ></app-formfield-textarea>
+            </div>
 
-            <app-formfield-text
-              *ngIf="isAuthorEditable()"
-              [control]="collectionForm.controls.author"
+            <div class="t-margin-medium t-margin-bottom">
+              <app-formfield-text
+                *ngIf="isAuthorEditable()"
+                [control]="collectionForm.controls.author"
 
-              name="author"
-              label="Author"
-              errorMessage="Author required"
-              [required]="true"
-            ></app-formfield-text>
+                name="author"
+                label="Author"
+                errorMessage="Author required"
+                [required]="true"
+              ></app-formfield-text>
+            </div>
 
           </div>
 

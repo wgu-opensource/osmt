@@ -33,6 +33,7 @@
         <app-collection-table
           *ngIf="!emptyResults"
           [allowSorting]="true"
+          [mobileSortOptions]="getMobileSortOptions()"
           [items]="results.collections"
           (rowSelected)="handleNewSelection($event)"
           [currentSort]="columnSort"

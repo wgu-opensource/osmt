@@ -70,6 +70,15 @@ export class CollectionsListComponent {
     return this.results?.collections.length ?? 0
   }
 
+  getMobileSortOptions(): {[s: string]: string} {
+    return {
+      "name.asc": "Collection name (ascending)",
+      "name.desc": "Collection name (descending)",
+      "skill.asc": "Skill count (ascending)",
+      "skill.desc": "Skill count (descending)",
+    }
+  }
+
   get emptyResults(): boolean {
     return this.curPageCount < 1
   }

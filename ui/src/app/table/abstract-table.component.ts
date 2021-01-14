@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {ApiSortOrder} from "../richskill/ApiSkill"
 import {TableActionDefinition} from "./skills-library-table/has-action-definitions"
 import {SvgHelper, SvgIcon} from "../core/SvgHelper"
+import {Observable} from "rxjs"
 
 /**
  * Implement row components to hold datasets and figure out how to dynamically pass and use them
@@ -13,10 +14,11 @@ import {SvgHelper, SvgIcon} from "../core/SvgHelper"
 export class AbstractTableComponent<SummaryT> implements OnInit {
 
   @Input() items: SummaryT[] = []
-  @Input() currentSort: ApiSortOrder | undefined = undefined
+  @Input() currentSort?: ApiSortOrder = undefined
   @Input() rowActions: TableActionDefinition[] = []
   @Input() selectAllCount?: number
-  @Input() selectAllEnabled: boolean = true
+  @Input() selectAllEnabled = true
+  @Input() clearSelected = new Observable<void>()
 
   @Output() columnSorted = new EventEmitter<ApiSortOrder>()
 
@@ -31,6 +33,7 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.clearSelected.subscribe(next => this.selectedItems = new Set())
   }
 
   getNameSort(): boolean | undefined {
@@ -101,7 +104,6 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
     } else {
       this.selectedItems.clear()
     }
-
     this.rowSelected.emit(Array.from(this.selectedItems))
   }
 }

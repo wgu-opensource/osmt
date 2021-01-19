@@ -7,18 +7,22 @@ import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-sear
   template: `
     <nav class="l-flex l-flex-alignCenter l-flex-0 t-elevation-large">
       <button class="m-actionBarItemHorizontal" (click)="skillButtonClicked()">
-        <svg class="m-actionBarItemHorizontal-x-icon t-icon">
-          <use [attr.xlink:href]="iconDismiss"></use>
-        </svg>
-        <span class="m-actionBarItemHorizontal-x-label">{{skillButtonText}}</span>
+        <span class="m-actionBarItemHorizontal-x-icon">
+          <svg aria-hidden="true">
+            <use [attr.xlink:href]="iconSearch"></use>
+          </svg>
+        </span>
+        <span class="m-actionBarItemHorizontal-x-label">Search RSD<span class="t-type-lowercase">s</span></span>
         <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
       </button>
 
       <button class="m-actionBarItemHorizontal" (click)="collectionButtonClicked()">
-        <svg class="m-actionBarItemHorizontal-x-icon t-icon">
-          <use [attr.xlink:href]="iconDismiss"></use>
-        </svg>
-        <span class="m-actionBarItemHorizontal-x-label">{{collectionButtonText}}</span>
+        <span class="m-actionBarItemHorizontal-x-icon">
+          <svg aria-hidden="true">
+            <use [attr.xlink:href]="iconSearch"></use>
+          </svg>
+        </span>
+        <span class="m-actionBarItemHorizontal-x-label">Search Collections</span>
         <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
       </button>
     </nav>
@@ -26,7 +30,7 @@ import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-sear
 })
 export class AdvancedSearchHorizontalActionBarComponent extends AbstractAdvancedSearchActionBarComponent {
 
-  iconDismiss = SvgHelper.path(SvgIcon.DISMISS)
+  iconSearch = SvgHelper.path(SvgIcon.SEARCH)
 
   constructor() {
     super()

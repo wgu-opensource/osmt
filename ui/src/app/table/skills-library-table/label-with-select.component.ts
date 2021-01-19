@@ -12,7 +12,7 @@ import {ApiSortOrder} from "../../richskill/ApiSkill";
         <!--{{render '@m-selectsmall'}}-->
         <div class="m-selectSmall">
           <select class="m-selectSmall-x-select" (change)="handleChange($event)">
-            <option *ngFor="let option of options | keyvalue" [value]="option.key" [attr.checked]="option.key === currentSort ? '' : null">{{option.value}}</option>
+            <option *ngFor="let option of options | keyvalue" [value]="option.key" [attr.selected]="option.key === currentSort ? '' : null">{{option.value}}</option>
           </select>
           <div class="m-selectSmall-x-icon">
             <svg aria-hidden="true">

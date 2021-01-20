@@ -5,6 +5,7 @@ import {ToastService} from "../../toast/toast.service";
 import {PaginatedSkills} from "../service/rich-skill-search.service";
 import {Router} from "@angular/router";
 import {determineFilters} from "../../PublishStatus";
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: "app-rich-skills-library",
@@ -17,12 +18,14 @@ export class RichSkillsLibraryComponent extends SkillsListComponent implements O
   constructor(
     protected router: Router,
     protected richSkillService: RichSkillService,
-    protected toastService: ToastService
+    protected toastService: ToastService,
+    protected titleService: Title
   ) {
     super(router, richSkillService, toastService)
   }
 
   ngOnInit(): void {
+    this.titleService.setTitle(`${this.title} | ${this.whitelabel.toolName}`)
     this.loadNextPage()
   }
 

@@ -6,21 +6,27 @@ import {urlValidator} from "../../validators/url.validator"
 import {SearchService} from "../search.service"
 import {ApiAdvancedSearch} from "../../richskill/service/rich-skill-search.service"
 import {ApiNamedReference, INamedReference} from "../../richskill/ApiSkill";
+import {Title} from "@angular/platform-browser";
+import {Whitelabelled} from "../../../whitelabel";
 
 @Component({
   selector: "app-advanced-search",
   templateUrl: "./advanced-search.component.html"
 })
-export class AdvancedSearchComponent implements OnInit {
+export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
 
   skillForm = new FormGroup(this.getFormDefinitions())
 
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)
   constructor(
-    private searchService: SearchService
-  ) { }
+    private searchService: SearchService,
+    protected titleService: Title
+  ) {
+    super()
+  }
 
   ngOnInit(): void {
+    this.titleService.setTitle(`Advanced Search | ${this.whitelabel.toolName}`)
   }
 
   getFormDefinitions(): {[key: string]: AbstractControl} {

@@ -16,6 +16,7 @@ import {ApiSortOrder} from "../richskill/ApiSkill";
 import {CollectionService} from "./service/collection.service";
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
 import {ToastService} from "../toast/toast.service";
+import {Whitelabelled} from "../../whitelabel";
 
 export interface ExtrasSelectedSkillsState {
   selectedSkills: ApiSkillSummary[]
@@ -27,7 +28,7 @@ export interface ExtrasSelectedSkillsState {
   selector: "app-add-skills-collection",
   templateUrl: "./add-skills-collection.component.html"
 })
-export class AddSkillsCollectionComponent implements OnInit {
+export class AddSkillsCollectionComponent extends Whitelabelled implements OnInit {
   uuidParam?: string
 
   from = 0
@@ -55,8 +56,9 @@ export class AddSkillsCollectionComponent implements OnInit {
               protected collectionService: CollectionService,
               protected toastService: ToastService
   ) {
+    super()
     this.state = this.router.getCurrentNavigation()?.extras.state as ExtrasSelectedSkillsState
-    this.titleService.setTitle("Add RSDs to a Collection")
+    this.titleService.setTitle(`Add RSDs to Collection | ${this.whitelabel.toolName}`)
     this.uuidParam = this.route.snapshot.paramMap.get("uuid") || undefined
 
   }

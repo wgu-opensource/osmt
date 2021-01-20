@@ -5,6 +5,7 @@ import {PaginatedCollections} from "../richskill/service/rich-skill-search.servi
 import {CollectionService} from "../collection/service/collection.service";
 import {CollectionsListComponent} from "../collection/collections-list.component";
 import {determineFilters} from "../PublishStatus";
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: "app-collections-library",
@@ -17,11 +18,13 @@ export class CollectionsLibraryComponent extends CollectionsListComponent implem
     protected router: Router,
     protected toastService: ToastService,
     protected collectionService: CollectionService,
+    protected titleService: Title
   ) {
     super(router, toastService, collectionService)
   }
 
   ngOnInit(): void {
+    this.titleService.setTitle(`Collections | ${this.whitelabel.toolName}`)
     this.loadNextPage()
   }
 

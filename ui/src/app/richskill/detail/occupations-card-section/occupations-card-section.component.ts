@@ -70,7 +70,6 @@ export class OccupationsCardSectionComponent implements OnInit {
     this.broadCodes = this.broad()
     this.detailedCodes = this.detailed()
     this.onetCodes = this.onet()
-    console.log("wtf", this.codes, this.majorCodes)
   }
 
   major(): Set<IJobCode> {

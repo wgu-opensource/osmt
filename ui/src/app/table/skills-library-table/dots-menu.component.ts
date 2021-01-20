@@ -64,6 +64,7 @@ export class DotsMenuComponent extends HasActionDefinitions implements AfterView
 
   handleClickTrigger(): boolean {
     this.toggle()
+    this.popper?.forceUpdate()
     return false
   }
 

@@ -21,7 +21,7 @@ import java.time.LocalDateTime
  * Also corresponds to `SkillSummary` API response object
  */
 @Document(indexName = "richskill_v1", createIndex = true, versionType = VersionType.EXTERNAL)
-@Setting(settingPath = "/elasticsearch/english_stemmer.json")
+@Setting(settingPath = "/elasticsearch/settings.json")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class RichSkillDoc(
     @Field(name = "db_id")
@@ -43,13 +43,21 @@ data class RichSkillDoc(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
             InnerField(suffix = "keyword", type = Keyword)
         ]
     )
     @get:JsonProperty("skillName")
     val name: String,
 
-    @Field(type = Search_As_You_Type)
+    @MultiField(
+        mainField = Field(type = Text, analyzer = "english_stemmer"),
+        otherFields = [
+            InnerField(suffix = "", type = Search_As_You_Type),
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
+            InnerField(suffix = "keyword", type = Keyword)
+        ]
+    )
     @get:JsonProperty("skillStatement")
     val statement: String,
 
@@ -58,7 +66,9 @@ data class RichSkillDoc(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
-            InnerField(suffix = "keyword", type = Keyword)]
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
+            InnerField(suffix = "keyword", type = Keyword)
+        ]
     )
     @get:JsonProperty
     val category: String? = null,
@@ -68,7 +78,9 @@ data class RichSkillDoc(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
-            InnerField(suffix = "keyword", type = Keyword)]
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
+            InnerField(suffix = "keyword", type = Keyword)
+        ]
     )
     @get:JsonProperty("author")
     val author: String? = null,
@@ -77,7 +89,14 @@ data class RichSkillDoc(
     @get:JsonProperty("status")
     val publishStatus: PublishStatus,
 
-    @Field(type = Search_As_You_Type)
+    @MultiField(
+        mainField = Field(type = Text, analyzer = "english_stemmer"),
+        otherFields = [
+            InnerField(suffix = "", type = Search_As_You_Type),
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
+            InnerField(suffix = "keyword", type = Keyword)
+        ]
+    )
     @get:JsonProperty("keywords")
     val searchingKeywords: List<String> = listOf(),
 
@@ -85,19 +104,47 @@ data class RichSkillDoc(
     @get:JsonProperty("occupations")
     val jobCodes: List<JobCode> = listOf(),
 
-    @Field(type = Search_As_You_Type)
+    @MultiField(
+        mainField = Field(type = Text, analyzer = "english_stemmer"),
+        otherFields = [
+            InnerField(suffix = "", type = Search_As_You_Type),
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
+            InnerField(suffix = "keyword", type = Keyword)
+        ]
+    )
     @get:JsonIgnore
     val standards: List<String> = listOf(),
 
-    @Field(type = Search_As_You_Type)
+    @MultiField(
+        mainField = Field(type = Text, analyzer = "english_stemmer"),
+        otherFields = [
+            InnerField(suffix = "", type = Search_As_You_Type),
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
+            InnerField(suffix = "keyword", type = Keyword)
+        ]
+    )
     @get:JsonIgnore
     val certifications: List<String> = listOf(),
 
-    @Field(type = Search_As_You_Type)
+    @MultiField(
+        mainField = Field(type = Text, analyzer = "english_stemmer"),
+        otherFields = [
+            InnerField(suffix = "", type = Search_As_You_Type),
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
+            InnerField(suffix = "keyword", type = Keyword)
+        ]
+    )
     @get:JsonIgnore
     val employers: List<String> = listOf(),
 
-    @Field(type = Search_As_You_Type)
+    @MultiField(
+        mainField = Field(type = Text, analyzer = "english_stemmer"),
+        otherFields = [
+            InnerField(suffix = "", type = Search_As_You_Type),
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
+            InnerField(suffix = "keyword", type = Keyword)
+        ]
+    )
     @get:JsonIgnore
     val alignments: List<String> = listOf(),
 

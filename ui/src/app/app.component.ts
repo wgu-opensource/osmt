@@ -1,25 +1,28 @@
 import {Component, OnInit} from "@angular/core"
 import {Title} from "@angular/platform-browser"
 import {Whitelabelled} from "../whitelabel"
-import {ToastService} from "./toast/toast.service";
-import {DEFAULT_INTERRUPTSOURCES, Idle} from "@ng-idle/core";
-import {Keepalive} from "@ng-idle/keepalive";
-import {Router} from "@angular/router";
+import {ToastService} from "./toast/toast.service"
+import {DEFAULT_INTERRUPTSOURCES, Idle} from "@ng-idle/core"
+import {Keepalive} from "@ng-idle/keepalive"
+import {NavigationEnd, Router} from "@angular/router"
 import * as chroma from "chroma-js"
+import {SearchService} from "./search/search.service"
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html"
 })
 export class AppComponent extends Whitelabelled implements OnInit {
-  blockingLoaderVisible: boolean = false
+  blockingLoaderVisible = false
 
-  public constructor(private titleService: Title,
-                     private toastService: ToastService,
-                     private idle: Idle,
-                     private keepalive: Keepalive,
-                     private router: Router)
-  {
+  public constructor(
+    private titleService: Title,
+    private toastService: ToastService,
+    private searchService: SearchService,
+    private idle: Idle,
+    private keepalive: Keepalive,
+    private router: Router
+  ) {
     super()
 
     this.watchForIdle()
@@ -35,6 +38,26 @@ export class AppComponent extends Whitelabelled implements OnInit {
     if (this.whitelabel.colorBrandAccent1) {
       this.setWhiteLabelColor(this.whitelabel.colorBrandAccent1)
     }
+
+    this.initClearSearchOnNavigate()
+  }
+
+  initClearSearchOnNavigate(): void {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd && !this.isCurrentViewSearchResults()) {
+        this.searchService.clearSearch()
+      }
+    })
+  }
+
+  /**
+   * Return true if the current url is one of the common control search results pages:
+   * /collections/search or /skills/search
+   */
+  private isCurrentViewSearchResults(): boolean {
+    const pattern = /.*(?:collections|skills)\/search.*/
+    const currentUrl = this.router.url
+    return pattern.test(currentUrl)
   }
 
   watchForIdle(): void {

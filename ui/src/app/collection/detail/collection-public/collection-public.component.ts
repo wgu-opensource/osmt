@@ -7,7 +7,7 @@ import {CollectionService} from "../../service/collection.service"
 import {Observable} from "rxjs"
 import {ApiSortOrder} from "../../../richskill/ApiSkill"
 import {PublishStatus} from "../../../PublishStatus"
-import {ApiCollection} from "../../ApiCollection";
+import {ApiCollection} from "../../ApiCollection"
 
 @Component({
   selector: "app-collection-public",
@@ -16,6 +16,7 @@ import {ApiCollection} from "../../ApiCollection";
 export class CollectionPublicComponent implements OnInit {
 
   title = "Collection"
+  uuidParam: string | null
   collection: ApiCollection | undefined
   apiSearch: ApiSearch = new ApiSearch({})
 
@@ -33,11 +34,12 @@ export class CollectionPublicComponent implements OnInit {
               protected collectionService: CollectionService,
               protected toastService: ToastService,
               protected route: ActivatedRoute,
-  ) {}
+  ) {
+    this.uuidParam = this.route.snapshot.paramMap.get("uuid")
+  }
 
   ngOnInit(): void {
-    const uuid = this.route.snapshot.paramMap.get("uuid") ?? ""
-    this.collectionService.getCollectionByUUID(uuid).subscribe(collection => {
+    this.collectionService.getCollectionByUUID(this.uuidParam ?? "").subscribe(collection => {
       this.collection = collection
       this.loadNextPage()
     })

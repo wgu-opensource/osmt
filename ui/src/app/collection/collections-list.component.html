@@ -33,14 +33,16 @@
         <app-collection-table
           *ngIf="!emptyResults"
           [allowSorting]="true"
+          [mobileSortOptions]="getMobileSortOptions()"
           [items]="results.collections"
-          (rowSelected)="handleNewSelection($event)"
           [currentSort]="columnSort"
-          (columnSorted)="handleHeaderColumnSort($event)"
           [rowActions]="rowActions()"
-          (selectAllSelected)="handleSelectAll($event)"
           [selectAllCount]="getSelectAllCount()"
           [selectAllEnabled]="getSelectAllEnabled()"
+          [clearSelected]="clearSelectedItemsFromTable.asObservable()"
+          (selectAllSelected)="handleSelectAll($event)"
+          (rowSelected)="handleNewSelection($event)"
+          (columnSorted)="handleHeaderColumnSort($event)"
           (focusActionBar)="focusActionBar()"
         ></app-collection-table>
 

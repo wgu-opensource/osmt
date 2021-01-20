@@ -59,6 +59,10 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     this.skillUuid = this.route.snapshot.paramMap.get("uuid")
 
     this.isDuplicating = window.location.pathname.endsWith("/duplicate")
+    if (this.isDuplicating) {
+      // If we're copying a skill, immediately check validation of the name so the user can make it unique
+      this.formGroup().controls.skillName.markAsTouched()
+    }
 
     if (this.skillUuid) {
       this.skillLoaded = this.richSkillService.getSkillByUUID(this.skillUuid)
@@ -394,7 +398,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
   checkForStatementSimilarity(statement: string): void {
     this.searchingSimilarity = true
     this.richSkillService.similarityCheck(statement).subscribe(results => {
-      this.similarSkills = results?.filter(s => this.existingSkill?.uuid !== s.uuid)
+      this.similarSkills = this.isDuplicating ? results : results?.filter(s => this.existingSkill?.uuid !== s.uuid)
       this.searchingSimilarity = false
     })
   }

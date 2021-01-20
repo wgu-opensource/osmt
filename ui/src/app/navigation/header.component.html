@@ -30,7 +30,7 @@
           <a class="m-iconInteractive m-iconInteractive-onDark" routerLink="/logout">
             <span class="t-visuallyHidden">Icon Interactive</span>
             <span class="m-iconInteractive-x-icon">
-              <svg class="t-icon" aria-hidden="true">
+              <svg aria-hidden="true">
                 <use xlink:href="/assets/images/svg-defs.svg#icon-logout"></use>
               </svg>
             </span>
@@ -38,11 +38,17 @@
         </li>
       </ul>
 
-      <button *ngIf="isAuthenticated()" (click)="handleClickMenu()" [attr.aria-expanded]="menuExpanded" class="m-navBar-x-toggle m-iconInteractive m-iconInteractive-alt" type="button" aria-controls="navbarSupportedContent" data-nav-bar="navBar">
+      <button *ngIf="isAuthenticated()"
+        (click)="handleClickMenu()"
+        [attr.aria-expanded]="menuExpanded"
+        class="m-navBar-x-toggle m-iconInteractive m-iconInteractive-onBrand"
+        type="button"
+        aria-controls="navbarSupportedContent"
+        data-nav-bar="navBar">
 
         <span class="t-visuallyHidden">Toggle Navigation</span>
         <div class="m-iconInteractive-x-icon">
-          <div class="l-iconTransition">
+          <div class="l-iconTransition" [class.l-iconTransition-is-toggled]="menuExpanded">
             <svg class="l-iconTransition-x-icon t-icon">
               <use xlink:href="/assets/images/svg-defs.svg#icon-menu"></use>
             </svg>
@@ -55,8 +61,7 @@
 
     </div>
 
-    <div *ngIf="!showPublicNavbar()" class="m-navBar-x-collapse" id="navbarSupportedContent">
-      <app-commoncontrols-mobile></app-commoncontrols-mobile>
+    <div *ngIf="!showPublicNavbar()" class="m-navBar-x-collapse" id="navbarSupportedContent" app-commoncontrols-mobile>
     </div>
   </nav>
 

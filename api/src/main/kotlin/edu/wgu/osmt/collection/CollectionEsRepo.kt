@@ -7,10 +7,7 @@ import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillDoc
 import org.apache.lucene.search.join.ScoreMode
-import org.elasticsearch.index.query.BoolQueryBuilder
-import org.elasticsearch.index.query.InnerHitBuilder
-import org.elasticsearch.index.query.MultiMatchQueryBuilder
-import org.elasticsearch.index.query.QueryBuilders
+import org.elasticsearch.index.query.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.Page
@@ -27,7 +24,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 interface CustomCollectionQueries : FindsAllByPublishStatus<CollectionDoc> {
     val richSkillEsRepo: RichSkillEsRepo
 
-    fun collectionPropertiesMultiMatch(query: String): MultiMatchQueryBuilder
+    fun collectionPropertiesMultiMatch(query: String): AbstractQueryBuilder<*>
     fun byApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
@@ -39,12 +36,24 @@ interface CustomCollectionQueries : FindsAllByPublishStatus<CollectionDoc> {
     ): SearchHits<CollectionDoc>
 }
 
-class CustomCollectionQueriesImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate, override val richSkillEsRepo: RichSkillEsRepo) :
+class CustomCollectionQueriesImpl @Autowired constructor(
+    override val elasticSearchTemplate: ElasticsearchRestTemplate,
+    override val richSkillEsRepo: RichSkillEsRepo
+) :
     CustomCollectionQueries {
 
     override val javaClass = CollectionDoc::class.java
 
-    override fun collectionPropertiesMultiMatch(query: String): MultiMatchQueryBuilder {
+    override fun collectionPropertiesMultiMatch(query: String): AbstractQueryBuilder<*> {
+        val isComplex = query.contains("\"")
+
+        val complexFields = arrayOf(
+            "${CollectionDoc::name.name}.raw",
+            "${CollectionDoc::name.name}._2gram",
+            "${CollectionDoc::name.name}._3gram",
+            CollectionDoc::author.name
+        )
+
         val fields = arrayOf(
             CollectionDoc::name.name,
             "${CollectionDoc::name.name}._2gram",
@@ -52,7 +61,12 @@ class CustomCollectionQueriesImpl @Autowired constructor(override val elasticSea
             CollectionDoc::author.name
         )
 
-        return QueryBuilders.multiMatchQuery(query, *fields).type(MultiMatchQueryBuilder.Type.BOOL_PREFIX)
+        return if (isComplex) {
+            QueryBuilders.simpleQueryStringQuery(query).fields(complexFields.map { it to 1.0f }.toMap())
+                .defaultOperator(Operator.AND)
+        } else {
+            QueryBuilders.multiMatchQuery(query, *fields).type(MultiMatchQueryBuilder.Type.BOOL_PREFIX)
+        }
     }
 
     override fun byApiSearch(
@@ -71,17 +85,23 @@ class CustomCollectionQueriesImpl @Autowired constructor(override val elasticSea
         // treat the presence of query property to mean multi field search with that term
         if (!apiSearch.query.isNullOrBlank()) {
             // Search against rich skill properties
-            bq.should(BoolQueryBuilder().must(richSkillEsRepo.richSkillPropertiesMultiMatch(apiSearch.query)).must(QueryBuilders.nestedQuery(
-                RichSkillDoc::collections.name,
-                QueryBuilders.matchAllQuery(),
-                ScoreMode.Avg
-            ).innerHit(InnerHitBuilder())))
+            bq.should(
+                BoolQueryBuilder()
+                    .must(richSkillEsRepo.richSkillPropertiesMultiMatch(apiSearch.query))
+                    .must(
+                        QueryBuilders.nestedQuery(
+                            RichSkillDoc::collections.name,
+                            QueryBuilders.matchAllQuery(),
+                            ScoreMode.Avg
+                        ).innerHit(InnerHitBuilder())
+                    )
+            )
             bq.should(richSkillEsRepo.occupationQueries(apiSearch.query))
 
             // search on collection specific properties
             collectionMultiPropertyResults = elasticSearchTemplate.search(
                 NativeSearchQueryBuilder().withQuery(
-                    QueryBuilders.boolQuery().should(collectionPropertiesMultiMatch(apiSearch.query))
+                    collectionPropertiesMultiMatch(apiSearch.query)
                 ).withPageable(Pageable.unpaged()).withFilter(filter).build(), CollectionDoc::class.java
             ).searchHits.map { it.content.uuid }
 
@@ -89,21 +109,22 @@ class CustomCollectionQueriesImpl @Autowired constructor(override val elasticSea
             richSkillEsRepo.generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)
 
             if (!apiSearch.advanced.collectionName.isNullOrBlank()) {
-                bq.must(
-                    QueryBuilders.nestedQuery(
-                        RichSkillDoc::collections.name,
-                        QueryBuilders.boolQuery().must(
-                            QueryBuilders.multiMatchQuery(
-                                apiSearch.advanced.collectionName, *listOf(
-                                    "collections.name",
-                                    "collections.name._2gram",
-                                    "collections.name._3gram"
-                                ).toTypedArray()
-                            ).type(MultiMatchQueryBuilder.Type.BOOL_PREFIX)
-                        ),
-                        ScoreMode.Avg
-                    ).innerHit(InnerHitBuilder())
-                )
+                if (apiSearch.advanced.collectionName.contains("\"")) {
+                    collectionMultiPropertyResults = elasticSearchTemplate.search(
+                        NativeSearchQueryBuilder().withQuery(
+                            QueryBuilders.simpleQueryStringQuery(apiSearch.advanced.collectionName).field("${CollectionDoc::name.name}.raw").defaultOperator(Operator.AND)
+                        ).withPageable(Pageable.unpaged()).withFilter(filter).build(), CollectionDoc::class.java
+                    ).searchHits.map { it.content.uuid }
+                } else {
+                    collectionMultiPropertyResults = elasticSearchTemplate.search(
+                        NativeSearchQueryBuilder().withQuery(
+                                QueryBuilders.matchPhrasePrefixQuery(
+                                    CollectionDoc::name.name,
+                                    apiSearch.advanced.collectionName
+                                )
+                        ).withPageable(Pageable.unpaged()).withFilter(filter).build(), CollectionDoc::class.java
+                    ).searchHits.map { it.content.uuid }
+                }
             } else {
                 bq.must(
                     QueryBuilders.nestedQuery(

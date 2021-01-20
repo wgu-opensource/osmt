@@ -5,6 +5,7 @@ import {ToastService} from "../../../../toast/toast.service"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {formatDate} from "@angular/common"
 import {ITaskResult} from "../../../../task/ApiTaskResult"
+import { Observable } from "rxjs"
 
 @Component({
   selector: "app-collection-public-action-bar",
@@ -19,6 +20,7 @@ export class CollectionPublicActionBarComponent implements OnInit {
   duplicateIcon = SvgHelper.path(SvgIcon.DUPLICATE)
   downloadIcon = SvgHelper.path(SvgIcon.DOWNLOAD)
 
+  collectionJsonObservable = new Observable<string>()
   jsonClipboard = ""
 
   taskUuidInProgress: string | undefined
@@ -32,7 +34,14 @@ export class CollectionPublicActionBarComponent implements OnInit {
     @Inject(LOCALE_ID) protected locale: string
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.collectionUuid) {
+      this.collectionJsonObservable = this.collectionService.getCollectionJson(this.collectionUuid)
+      this.collectionJsonObservable.subscribe( (json: string) => {
+        this.jsonClipboard = json
+      })
+    }
+  }
 
   pollCsv(): void {
     if (this.taskUuidInProgress === undefined) { // fail fast
@@ -70,14 +79,12 @@ export class CollectionPublicActionBarComponent implements OnInit {
       })
   }
 
-  onCopyJSON(collectonJson: HTMLTextAreaElement): void {
-    this.collectionService.getCollectionJson(this.collectionUuid)
-      .subscribe((json) => {
-        this.jsonClipboard = json
-        collectonJson.select()
-        document.execCommand("copy")
-        collectonJson.setSelectionRange(0, 0)
-        this.toastService.showToast("Success!", "JSON copied to clipboard")
-      })
+  onCopyJSON(collectionJson: HTMLTextAreaElement): void {
+    this.collectionJsonObservable.subscribe(() => {
+      collectionJson.select()
+      document.execCommand("copy")
+      collectionJson.setSelectionRange(0, 0)
+      this.toastService.showToast("Success!", "JSON copied to clipboard")
+    })
   }
 }

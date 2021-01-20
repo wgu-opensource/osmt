@@ -25,6 +25,8 @@
           [attr.aria-label]="name"
           role="search"
           [attr.aria-describedby]="name + '-results'"
+          (keydown.enter)="onEnterKeyDown($event)"
+          (keyup.enter)="onEnterKeyup($event)"
         >
 
         <div class="m-search-x-controls">

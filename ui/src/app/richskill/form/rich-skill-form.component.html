@@ -25,7 +25,7 @@
                 [control]="skillForm.controls.skillName"
                 name="skillName"
                 label="RSD Name"
-                placeholder="Health Education Development"
+                placeholder="Disseminate Intelligence"
                 [includePlaceholder]="!this.skillUuid"
                 required="true"
                 [errorMessage]="nameErrorMessage()"
@@ -50,7 +50,7 @@
                 required="true"
                 name="skillStatement"
                 label="Skill Statement"
-                placeholder="Develop education programs to improve health outcomes for patient populations."
+                placeholder="Disseminate items of highest intelligence value in a timely manner."
                 [includePlaceholder]="!this.skillUuid"
                 helpMessage='A description of the applied capabilities and/or behaviors of an individual for a given task, occupation, or need. The recommended format, to support interoperability and the common use of RSDs across organizations, is a predicate and context. Optionally, a skill statement may include a subject, such as "The employee ..." '
                 errorMessage="Skill statement required"
@@ -189,7 +189,7 @@
             <div class="l-actionBarVertical">
 
               <div class="l-actionBarVertical-x-message" *ngIf="!skillForm.valid">
-                <p>Additional information required before you can save. Go to <a class="t-type-bodyLink t-link" (click)="handleClickMissingFields()">first required missing field</a>.</p>
+                <p>Additional information required before you can save. Go to <a class="t-type-bodyLink t-link" href="#" (click)="handleClickMissingFields()">first required missing field</a>.</p>
               </div>
 
               <app-formfield-submit

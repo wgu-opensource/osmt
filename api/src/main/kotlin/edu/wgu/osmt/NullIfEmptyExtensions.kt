@@ -1,6 +1,6 @@
 package edu.wgu.osmt
 
-fun CharSequence?.nullIfEmpty(): CharSequence? {
+fun String?.nullIfEmpty(): String? {
     return if (this == ""){
         null
     } else this

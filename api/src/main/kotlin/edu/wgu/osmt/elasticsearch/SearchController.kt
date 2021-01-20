@@ -88,8 +88,8 @@ class SearchController @Autowired constructor(
         @RequestBody apiSearch: ApiSearch
     ): HttpEntity<List<RichSkillDoc>> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val sortEnum = SkillSortEnum.forValueOrDefault(sort)
-        val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum.sort)
+        val sortEnum = sort?.let{SkillSortEnum.forApiValue(it)}
+        val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum?.sort)
 
         val searchHits = richSkillEsRepo.byApiSearch(
             apiSearch,

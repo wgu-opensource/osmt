@@ -35,6 +35,7 @@
           *ngIf="!emptyResults"
           [items]="results.skills"
           [currentSort]="columnSort"
+          [mobileSortOptions]="getMobileSortOptions()"
           [rowActions]="rowActions()"
           [selectAllCount]="getSelectAllCount()"
           [selectAllEnabled]="getSelectAllEnabled()"
@@ -51,7 +52,7 @@
           <p class="m-emptyMessage-x-message">0 RSDs in library</p>
           <p class="m-emptyMessage-x-message">The library is ready to fill with RSDs.</p>
           <p class="m-emptyMessage-x-message">
-          <a routerLink="/skills/create">Create an RSD</a> or <a href="#">Batch import RSDs</a>.
+          <a routerLink="/skills/create">Create an RSD</a> or <a href="/skills/import">Batch import RSDs</a>.
           </p>
         </app-empty-message>
         <app-empty-message *ngIf="emptyResults && !showSearchEmptyMessage">

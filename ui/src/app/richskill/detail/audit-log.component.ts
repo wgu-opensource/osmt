@@ -1,11 +1,11 @@
-import {Component, Input} from "@angular/core";
-import {RichSkillService} from "../service/rich-skill.service";
-import {AccordianComponent} from "../../core/accordian.component";
-import {ApiAuditLog, AuditOperationType} from "../ApiSkill";
-import {Observable} from "rxjs";
-import {SvgHelper, SvgIcon} from "../../core/SvgHelper";
-import {CollectionService} from "../../collection/service/collection.service";
-import {PublishStatus} from "../../PublishStatus";
+import {Component, Input} from "@angular/core"
+import {RichSkillService} from "../service/rich-skill.service"
+import {AccordianComponent} from "../../core/accordian.component"
+import {ApiAuditLog, AuditOperationType} from "../ApiSkill"
+import {Observable} from "rxjs"
+import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
+import {CollectionService} from "../../collection/service/collection.service"
+import {PublishStatus} from "../../PublishStatus"
 
 
 @Component({

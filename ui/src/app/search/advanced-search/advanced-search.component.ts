@@ -111,6 +111,6 @@ export class AdvancedSearchComponent implements OnInit {
   }
 
   getOccupationHelpMessage(): string {
-    return "BLS or O*NET job codes."
+    return "BLS or O*NET job names or codes"
   }
 }

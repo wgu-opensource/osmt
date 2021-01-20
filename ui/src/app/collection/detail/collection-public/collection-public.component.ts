@@ -8,12 +8,14 @@ import {Observable} from "rxjs"
 import {ApiSortOrder} from "../../../richskill/ApiSkill"
 import {PublishStatus} from "../../../PublishStatus"
 import {ApiCollection} from "../../ApiCollection"
+import {Title} from "@angular/platform-browser";
+import {Whitelabelled} from "../../../../whitelabel";
 
 @Component({
   selector: "app-collection-public",
   templateUrl: "./collection-public.component.html"
 })
-export class CollectionPublicComponent implements OnInit {
+export class CollectionPublicComponent extends Whitelabelled implements OnInit {
 
   title = "Collection"
   uuidParam: string | null
@@ -34,12 +36,15 @@ export class CollectionPublicComponent implements OnInit {
               protected collectionService: CollectionService,
               protected toastService: ToastService,
               protected route: ActivatedRoute,
+              protected titleService: Title
   ) {
+    super()
     this.uuidParam = this.route.snapshot.paramMap.get("uuid")
   }
 
   ngOnInit(): void {
     this.collectionService.getCollectionByUUID(this.uuidParam ?? "").subscribe(collection => {
+      this.titleService.setTitle(`${collection.name} | Collection | ${this.whitelabel.toolName}`)
       this.collection = collection
       this.loadNextPage()
     })

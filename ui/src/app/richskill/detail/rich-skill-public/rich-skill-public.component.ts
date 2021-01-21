@@ -3,6 +3,7 @@ import { RichSkillService } from "../../service/rich-skill.service"
 import { ActivatedRoute } from "@angular/router"
 import {AbstractRichSkillDetailComponent} from "../AbstractRichSkillDetailComponent"
 import {IDetailCardSectionData} from "../../../detail-card/section/section.component"
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: "app-rich-skill-public",
@@ -18,9 +19,10 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
   constructor(
     richSkillService: RichSkillService,
     route: ActivatedRoute,
+    titleService: Title,
     @Inject(LOCALE_ID) locale: string
   ) {
-    super(richSkillService, route, locale)
+    super(richSkillService, route, titleService, locale)
   }
 
   getCardFormat(): IDetailCardSectionData[] {

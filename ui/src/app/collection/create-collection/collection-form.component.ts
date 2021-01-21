@@ -11,12 +11,13 @@ import {ToastService} from "../../toast/toast.service"
 import {Title} from "@angular/platform-browser"
 import {ApiNamedReference, INamedReference} from "../../richskill/ApiSkill"
 import {HasFormGroup} from "../../core/abstract-form.component"
+import {Whitelabelled} from "../../../whitelabel";
 
 @Component({
   selector: "app-create-collection",
   templateUrl: "./collection-form.component.html"
 })
-export class CollectionFormComponent implements OnInit, HasFormGroup {
+export class CollectionFormComponent extends Whitelabelled implements OnInit, HasFormGroup {
 
   collectionForm = new FormGroup(this.getFormDefinitions())
   collectionUuid: string | null = null
@@ -37,7 +38,9 @@ export class CollectionFormComponent implements OnInit, HasFormGroup {
     private route: ActivatedRoute,
     private toastService: ToastService,
     private titleService: Title
-  ) { }
+  ) {
+    super()
+  }
 
   formGroup(): FormGroup { return this.collectionForm }
 
@@ -53,7 +56,7 @@ export class CollectionFormComponent implements OnInit, HasFormGroup {
       this.collectionForm.controls.author.setValue(AppConfig.settings.defaultAuthorValue)
     }
 
-    this.titleService.setTitle(this.pageTitle())
+    this.titleService.setTitle(`${this.pageTitle()} | ${this.whitelabel.toolName}`)
   }
 
   pageTitle(): string {

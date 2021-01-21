@@ -10,13 +10,14 @@ import {ToastService} from "../toast/toast.service"
 import {CollectionService} from "./service/collection.service"
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
 import {TableActionBarComponent} from "../table/skills-library-table/table-action-bar.component"
+import {Whitelabelled} from "../../whitelabel";
 
 
 @Component({
   selector: "app-collections-list",
   templateUrl: "./collections-list.component.html"
 })
-export class CollectionsListComponent {
+export class CollectionsListComponent extends Whitelabelled {
 
   @ViewChild(TableActionBarComponent) actionBar!: TableActionBarComponent
 
@@ -41,6 +42,7 @@ export class CollectionsListComponent {
               protected toastService: ToastService,
               protected collectionService: CollectionService,
   ) {
+    super()
   }
 
   // "abstract" methods to be implemented by a "subclass"

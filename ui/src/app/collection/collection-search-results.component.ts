@@ -9,6 +9,7 @@ import {SearchService} from "../search/search.service";
 import {CollectionService} from "./service/collection.service";
 import {ApiSkillSummary, ICollectionSummary} from "../richskill/ApiSkillSummary";
 import {determineFilters} from "../PublishStatus";
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: "app-collection-search-results",
@@ -28,12 +29,15 @@ export class CollectionSearchResultsComponent extends CollectionsListComponent i
               protected collectionService: CollectionService,
               protected searchService: SearchService,
               protected route: ActivatedRoute,
+              protected titleService: Title
   ) {
     super(router, toastService, collectionService)
     this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
   }
 
   ngOnInit(): void {
+    this.titleService.setTitle(`Search Results | ${this.whitelabel.toolName}`)
+
     if (this.searchService.latestSearch !== undefined) {
       this.handleNewSearch(this.searchService.latestSearch)
     } else {

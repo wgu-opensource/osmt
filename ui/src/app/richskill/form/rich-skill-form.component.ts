@@ -14,13 +14,14 @@ import {Title} from "@angular/platform-browser"
 import {HasFormGroup} from "../../core/abstract-form.component"
 import {notACopyValidator} from "../../validators/not-a-copy.validator"
 import {ApiSkillSummary} from "../ApiSkillSummary"
+import {Whitelabelled} from "../../../whitelabel";
 
 
 @Component({
   selector: "app-rich-skill-form",
   templateUrl: "./rich-skill-form.component.html"
 })
-export class RichSkillFormComponent implements OnInit, HasFormGroup {
+export class RichSkillFormComponent extends Whitelabelled implements OnInit, HasFormGroup  {
   skillForm = new FormGroup(this.getFormDefinitions())
   skillUuid: string | null = null
   existingSkill: ApiSkill | null = null
@@ -51,7 +52,9 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
     private router: Router,
     private toastService: ToastService,
     private titleService: Title
-  ) { }
+  ) {
+    super()
+  }
 
   formGroup(): FormGroup { return this.skillForm }
 
@@ -69,7 +72,7 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
       this.skillLoaded.subscribe(skill => { this.setSkill(skill) })
     }
 
-    this.titleService.setTitle(this.pageTitle())
+    this.titleService.setTitle(`${this.pageTitle()} | ${this.whitelabel.toolName}`)
 
     this.skillForm.controls.skillStatement.valueChanges.subscribe(newStatement => {
       if (this.searchingSimilarity !== undefined) {
@@ -273,6 +276,10 @@ export class RichSkillFormComponent implements OnInit, HasFormGroup {
 
   setSkill(skill: ApiSkill): void {
     this.existingSkill = skill
+
+    if (!this.isDuplicating) {
+      this.titleService.setTitle(`${skill.skillName} | ${this.pageTitle()} | ${this.whitelabel.toolName}`)
+    }
 
     const firstAlignment: INamedReference | undefined = skill.alignments?.find(it => true)
 

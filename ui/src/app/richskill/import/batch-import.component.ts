@@ -9,6 +9,7 @@ import {ApiNamedReference, ApiSkill} from "../ApiSkill"
 import {ApiReferenceListUpdate, ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate"
 import {forkJoin, Observable} from "rxjs"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
+import {Title} from "@angular/platform-browser";
 
 
 export enum ImportStep {
@@ -109,13 +110,15 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
               protected toastService: ToastService,
               protected route: ActivatedRoute,
               protected location: Location,
-              protected papa: Papa
+              protected papa: Papa,
+              protected titleService: Title
   ) {
     super()
     this.resetState()
   }
 
   ngOnInit(): void {
+    this.titleService.setTitle(`Batch Import | ${this.whitelabel.toolName}`)
   }
 
   resetState(): void {

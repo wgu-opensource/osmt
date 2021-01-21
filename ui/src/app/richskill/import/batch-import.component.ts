@@ -100,6 +100,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   importSimilarSkills = false
 
   docIcon = SvgHelper.path(SvgIcon.DOC)
+  isHover: boolean = false
 
   get similarSkillCount(): number {
     return (this.similarSkills?.filter(it => it).length ?? 0)
@@ -236,8 +237,13 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     return false
   }
   handleFileDrag($event: DragEvent): boolean {
+    this.isHover = true
     $event.preventDefault()
     return false
+  }
+  handleFileLeave($event: DragEvent): boolean {
+    this.isHover = false
+    return true
   }
 
   handleFileChange($event: Event): void {

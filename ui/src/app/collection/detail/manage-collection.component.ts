@@ -13,6 +13,7 @@ import {determineFilters, PublishStatus} from "../../PublishStatus"
 import {ApiSkillSummary} from "../../richskill/ApiSkillSummary"
 import {Observable, Subject} from "rxjs"
 import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: "app-manage-collection",
@@ -55,6 +56,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
               protected toastService: ToastService,
               protected collectionService: CollectionService,
               protected route: ActivatedRoute,
+              protected titleService: Title
   ) {
     super(router, richSkillService, toastService)
   }
@@ -75,6 +77,8 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
 
   reloadCollection(): void {
     this.collectionService.getCollectionByUUID(this.uuidParam ?? "").subscribe(collection => {
+      this.titleService.setTitle(`${collection.name} | Collection | ${this.whitelabel.toolName}`)
+
       this.collection = collection
       this.loadNextPage()
     })

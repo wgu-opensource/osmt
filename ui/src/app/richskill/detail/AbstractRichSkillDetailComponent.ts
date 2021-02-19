@@ -7,6 +7,7 @@ import {Observable} from "rxjs"
 import {PublishStatus} from "../../PublishStatus"
 import {QuickLinksHelper} from "../../core/quick-links-helper"
 import {dateformat} from "../../core/DateHelper"
+import {Title} from "@angular/platform-browser";
 
 @Component({template: ``})
 export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper implements OnInit {
@@ -21,6 +22,7 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
   constructor(
     protected richSkillService: RichSkillService,
     protected route: ActivatedRoute,
+    protected titleService: Title,
     @Inject(LOCALE_ID) protected locale: string
   ) {
     super()
@@ -34,8 +36,12 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
   abstract getCardFormat(): IDetailCardSectionData[]
 
   loadSkill(): void {
+
     this.skillLoaded = this.richSkillService.getSkillByUUID(this.uuidParam ?? "")
-    this.skillLoaded.subscribe(skill => { this.richSkill = skill })
+    this.skillLoaded.subscribe(skill => {
+      this.richSkill = skill
+      this.titleService.setTitle(`${skill.skillName} | Rich Skill Descriptor | ${this.whitelabel.toolName}`)
+    })
   }
 
   getAuthor(): string {

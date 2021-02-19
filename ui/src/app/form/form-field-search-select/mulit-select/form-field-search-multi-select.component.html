@@ -26,6 +26,7 @@
           [attr.aria-label]="name"
           role="search"
           [attr.aria-describedby]="name + '-results'"
+          [attr.aria-controls]="name + '-results'"
         >
         <div class="m-search-x-controls">
           <div class="m-search-x-clear">
@@ -59,7 +60,7 @@
 
     <!-- Loaded results state -->
     <ng-template #loaded>
-      <div id="{{name}}-results" class="l-searchSelect-x-menu" *ngIf="showResults">
+      <div id="{{name}}-results" class="l-searchSelect-x-menu" *ngIf="showResults" aria-live="assertive">
         <div class="m-selectMenu m-selectMenu-fixed m-selectMenu-is-active">
 
           <!-- Results -->

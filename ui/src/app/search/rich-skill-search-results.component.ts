@@ -9,6 +9,7 @@ import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
 import {determineFilters} from "../PublishStatus";
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
 import {ExtrasSelectedSkillsState} from "../collection/add-skills-collection.component";
+import {Title} from "@angular/platform-browser";
 
 
 @Component({
@@ -29,12 +30,15 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
               protected toastService: ToastService,
               protected searchService: SearchService,
               protected route: ActivatedRoute,
+              protected titleService: Title
 ) {
     super(router, richSkillService, toastService)
     this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
   }
 
   ngOnInit(): void {
+    this.titleService.setTitle(`Search Results | ${this.whitelabel.toolName}`)
+
     if (this.searchService.latestSearch !== undefined) {
       this.handleNewSearch(this.searchService.latestSearch)
     } else {

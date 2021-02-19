@@ -8,13 +8,13 @@ import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-sear
 
       <div class="l-actionBarVertical-x-action">
         <button class="m-button" (click)="skillButtonClicked()">
-          <span class="m-button-x-text">{{skillButtonText}}</span>
+          <span class="m-button-x-text">Search RSD<span class="t-type-lowercase">s</span></span>
         </button>
       </div>
 
       <div class="l-actionBarVertical-x-action">
         <button class="m-button" (click)="collectionButtonClicked()">
-          <span class="m-button-x-text">{{collectionButtonText}}</span>
+          <span class="m-button-x-text">Search Collections</span>
         </button>
       </div>
     </div>

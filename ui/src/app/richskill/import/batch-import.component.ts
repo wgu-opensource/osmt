@@ -9,6 +9,7 @@ import {ApiNamedReference, ApiSkill} from "../ApiSkill"
 import {ApiReferenceListUpdate, ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate"
 import {forkJoin, Observable} from "rxjs"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
+import {Title} from "@angular/platform-browser";
 
 
 export enum ImportStep {
@@ -99,6 +100,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   importSimilarSkills = false
 
   docIcon = SvgHelper.path(SvgIcon.DOC)
+  isHover: boolean = false
 
   get similarSkillCount(): number {
     return (this.similarSkills?.filter(it => it).length ?? 0)
@@ -109,13 +111,15 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
               protected toastService: ToastService,
               protected route: ActivatedRoute,
               protected location: Location,
-              protected papa: Papa
+              protected papa: Papa,
+              protected titleService: Title
   ) {
     super()
     this.resetState()
   }
 
   ngOnInit(): void {
+    this.titleService.setTitle(`Batch Import | ${this.whitelabel.toolName}`)
   }
 
   resetState(): void {
@@ -233,8 +237,13 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     return false
   }
   handleFileDrag($event: DragEvent): boolean {
+    this.isHover = true
     $event.preventDefault()
     return false
+  }
+  handleFileLeave($event: DragEvent): boolean {
+    this.isHover = false
+    return true
   }
 
   handleFileChange($event: Event): void {

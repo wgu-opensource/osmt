@@ -9,6 +9,8 @@ import {PublishStatus} from "../../PublishStatus";
 import {Observable} from "rxjs";
 import {ApiSearch, ApiSkillListUpdate, PaginatedSkills} from "../../richskill/service/rich-skill-search.service";
 import {ApiBatchResult} from "../../richskill/ApiBatchResult";
+import {Title} from "@angular/platform-browser";
+import {Whitelabelled} from "../../../whitelabel";
 
 
 enum PubColState {
@@ -23,7 +25,7 @@ enum PubColState {
   selector: "app-publish-collection",
   templateUrl: "./publish-collection.component.html"
 })
-export class PublishCollectionComponent implements OnInit {
+export class PublishCollectionComponent extends Whitelabelled implements OnInit {
   uuidParam?: string
   collectionLoaded?: Observable<ApiCollection>
   collection?: ApiCollection
@@ -45,11 +47,15 @@ export class PublishCollectionComponent implements OnInit {
               protected toastService: ToastService,
               protected collectionService: CollectionService,
               protected route: ActivatedRoute,
-              protected location: Location
+              protected location: Location,
+              protected titleService: Title
   ) {
+    super()
   }
 
   ngOnInit(): void {
+    this.titleService.setTitle(`Heads Up | ${this.whitelabel.toolName}`)
+
     this.uuidParam = this.route.snapshot.paramMap.get("uuid") !
     this.collectionLoaded = this.collectionService.getCollectionByUUID(this.uuidParam)
     this.collectionLoaded.subscribe(collection => {

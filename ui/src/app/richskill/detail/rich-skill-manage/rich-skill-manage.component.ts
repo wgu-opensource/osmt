@@ -22,8 +22,7 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
     @Inject(LOCALE_ID) locale: string,
     titleService: Title,
   ) {
-    super(richSkillService, route, locale)
-    titleService.setTitle("Manage Rich Skill Descriptor")
+    super(richSkillService, route, titleService, locale)
   }
 
   getCardFormat(): IDetailCardSectionData[] {

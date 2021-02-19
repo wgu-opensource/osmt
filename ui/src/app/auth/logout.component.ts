@@ -1,20 +1,27 @@
 import {Component, OnInit} from "@angular/core"
 import {ActivatedRoute, Router} from "@angular/router"
 import {AuthService} from "./auth-service"
+import {Title} from "@angular/platform-browser";
+import {Whitelabelled} from "../../whitelabel";
 
 @Component({
   selector: "app-logout",
   templateUrl: "./logout.component.html"
 })
-export class LogoutComponent implements OnInit {
+export class LogoutComponent extends Whitelabelled implements OnInit {
   private isTimeout: boolean = false
 
   constructor(private router: Router,
               private route: ActivatedRoute,
-              private authService: AuthService) {
+              private authService: AuthService,
+              protected titleService: Title
+  ) {
+    super()
   }
 
   ngOnInit(): void {
+    this.titleService.setTitle(`Logged Out | ${this.whitelabel.toolName}`)
+
     this.authService.logout()
     this.route.queryParams.subscribe(params => {
       this.isTimeout = params.timeout || false
@@ -22,7 +29,7 @@ export class LogoutComponent implements OnInit {
   }
 
   get title(): string {
-    return "You're logged out of OSMT."
+    return `You're logged out of ${this.whitelabel.toolName}.`
   }
 
   get body(): string {

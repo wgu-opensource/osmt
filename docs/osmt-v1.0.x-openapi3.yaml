@@ -250,24 +250,6 @@ paths:
                 example: >-
                   id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
                   https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac,RichSkillDescriptor,"https://osmt.example.com/organization","Document Saving","The learner copies and saves documents to their local machine.","https://skillsource.example.com/base-skills/simple-compuhacking","documents, file operations, computer basics","Productivity Software","13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
-    delete:
-      tags:
-        - Skills
-      summary: Delete a draft skill
-      description: Permanently destroy a skill.  This is only possible if the skill has not been published and is still in Draft state.
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskResult'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
 
   /api/skills/{uuid}/update:
     parameters:
@@ -549,18 +531,6 @@ paths:
                 example: >-
                   id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
                   https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac,RichSkillDescriptor,"https://osmt.example.com/organization","Document Saving","The learner copies and saves documents to their local machine.","https://skillsource.example.com/base-skills/simple-compuhacking","documents, file operations, computer basics","Productivity Software","13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
-    delete:
-      tags:
-        - Collections
-      summary: Destroy a collection
-      description: Permanently destroy a collection.  This operation can not be un-done.
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskResult'
 
   /api/collections/{uuid}/update:
     parameters:

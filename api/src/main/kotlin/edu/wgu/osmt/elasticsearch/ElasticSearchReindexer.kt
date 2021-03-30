@@ -61,7 +61,7 @@ class ElasticSearchReindexer {
     private fun reimportSkills() {
         var page = 0
         var exit = false
-        val trace = TraceProcessing("skills", logger)
+        val trace = ProcessLogger("skills", logger)
         while (!exit) {
             transaction {
                 val results = richSkillRepository.findAll()
@@ -85,7 +85,7 @@ class ElasticSearchReindexer {
     private fun reimportCollections() {
         var page = 0
         var exit = false
-        var trace = TraceProcessing("collections", logger)
+        var trace = ProcessLogger("collections", logger)
         while (!exit) {
             transaction {
                 var results = collectionRepository.findAll()
@@ -109,7 +109,7 @@ class ElasticSearchReindexer {
     private fun reimportKeywords() {
         var page = 0
         var exit = false
-        var trace = TraceProcessing("keywords", logger)
+        var trace = ProcessLogger("keywords", logger)
         while (!exit) {
             transaction {
                 var results = keywordRepository.findAll()
@@ -133,7 +133,7 @@ class ElasticSearchReindexer {
     private fun reimportJobCodes() {
         var page = 0
         var exit = false
-        var trace = TraceProcessing("jobCodes", logger)
+        var trace = ProcessLogger("jobCodes", logger)
         while (!exit) {
             transaction {
                 var results = jobCodeRepository.findAll()

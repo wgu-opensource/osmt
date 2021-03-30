@@ -3,7 +3,7 @@ package edu.wgu.osmt.elasticsearch
 import org.slf4j.Logger
 import java.lang.Long.min
 
-internal class TraceProcessing(
+internal class ProcessLogger(
     private val name: String,
     logger: Logger
 ) {

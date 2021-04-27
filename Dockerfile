@@ -77,4 +77,16 @@ ADD ./docker/ /${BASE_DIR}/
 
 EXPOSE 8080
 
-ENTRYPOINT ["/opt/osmt/bin/docker_entrypoint.sh"]
+CMD ["sh", "-c", "java \
+    -Dspring.profiles.active=${ENVIRONMENT} \
+    -Dapp.baseDomain=${BASE_DOMAIN} \
+    -Dredis.uri=${REDIS_URI} \
+    -Ddb.uri=${MYSQL_DB_URI} \
+    -Des.uri=${ELASTICSEARCH_URI} \
+    -Dokta.oauth2.issuer=${OAUTH_ISSUER} \
+    -Dokta.oauth2.clientId=${OAUTH_CLIENTID} \
+    -Dokta.oauth2.clientSecret=${OAUTH_CLIENTSECRET} \
+    -Dokta.oauth2.audience=${OAUTH_AUDIENCE} \
+    -Dspring.flyway.enabled=${MIGRATIONS_ENABLED} \
+    -jar ${BASE_DIR}/bin/osmt.jar"]
+

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.14.2
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    events {}
+    http {
+      include /etc/nginx/conf.d/*.conf;
+      upstream instances {
+        server osmt-app-service.default.svc.cluster.local;
+      }
+      server {
+        listen 80;
+        server_name "http";
+        location / {
+          proxy_pass http://instances;
+          proxy_http_version 1.1;
+          proxy_set_header Connection "";
+        }
+      }
+      server {
+        listen 443;
+        server_name "https";
+      }
+    }

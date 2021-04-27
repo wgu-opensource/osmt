@@ -1,0 +1,190 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      role: mysql
+  serviceName: "mysql"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        role: mysql
+        environment: test
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: osmt-mysql
+          image: library/mysql:8.0
+          env:
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-user
+                  key: mysql-username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-user-pw
+                  key: mysql-pw
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-root
+                  key: root-pw
+            - name: MYSQL_HOST
+              value: '0.0.0.0'
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-persistent-storage
+        annotations:
+          volume.beta.kubernetes.io/storage-class: "fast"
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 100Gi
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: es-config
+data:
+  elasticsearch.yml: |
+    cluster.name: my-elastic-cluster
+    network.host: "0.0.0.0"
+    bootstrap.memory_lock: false
+    discovery.zen.ping.unicast.hosts: elasticsearch-cluster
+    discovery.zen.minimum_master_nodes: 1
+    xpack.security.enabled: false
+    xpack.monitoring.enabled: false
+  ES_JAVA_OPTS: -Xms512m -Xmx512m
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+spec:
+  selector:
+    matchLabels:
+      role: elasticsearch
+  serviceName: "elasticsearch"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        role: elasticsearch
+    spec:
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+        - name: init-sysctl
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          command: ["sysctl", "-w", "vm.max_map_count=262144"]
+      containers:
+        - name: elasticsearch
+          resources:
+            requests:
+              memory: 1Gi
+          securityContext:
+            privileged: true
+            runAsUser: 1000
+            capabilities:
+              add:
+                - IPC_LOCK
+                - SYS_RESOURCE
+          image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+          env:
+            - name: ES_JAVA_OPTS
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: ES_JAVA_OPTS
+            - name: discovery.type
+              value: single-node
+            - name: net
+              value: host
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /_cluster/health?local=true
+              port: 9200
+            initialDelaySeconds: 5
+          ports:
+            - containerPort: 9200
+              name: es-http
+            - containerPort: 9300
+              name: es-transport
+          volumeMounts:
+            - name: es-data
+              mountPath: /usr/share/elasticsearch/data
+            - name: elasticsearch-config
+              mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+              subPath: elasticsearch.yml
+      volumes:
+        - name: elasticsearch-config
+          configMap:
+            name: es-config
+            items:
+              - key: elasticsearch.yml
+                path: elasticsearch.yml
+  volumeClaimTemplates:
+    - metadata:
+        name: es-data
+        annotations:
+          volume.beta.kubernetes.io/storage-class: "fast"
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 100Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  labels:
+    name: mysql
+spec:
+  ports:
+    - port: 3306
+      name: query
+      targetPort: 3306
+  clusterIP: None
+  selector:
+    role: mysql
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  labels:
+    name: elasticsearch
+spec:
+  ports:
+    - port: 9200
+      name: api
+      targetPort: 9200
+    - port: 9300
+      name: rest-search
+      targetPort: 9300
+  clusterIP: None
+  selector:
+    role: elasticsearch

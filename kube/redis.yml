@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis
+  name: redis-{{customerId}}
 spec:
   selector:
     matchLabels:
       role: redis
-      name: redis
+      name: redis-{{customerId}}
   template:
     metadata:
       labels:
         role: redis
-        name: redis
+        name: redis-{{customerId}}
     spec:
       containers:
         - name: redis
@@ -38,7 +38,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis
+  name: redis-{{customerId}}
   labels:
     name: redis
 spec:
@@ -47,4 +47,4 @@ spec:
       targetPort: 6379
   clusterIP: None
   selector:
-    role: redis
+    name: redis-{{customerId}}

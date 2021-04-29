@@ -1,17 +1,19 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mysql
+  name: mysql-{{customerId}}
 spec:
   selector:
     matchLabels:
       role: mysql
-  serviceName: "mysql"
+      name: mysql-{{customerId}}
+  serviceName: "mysql-{{customerId}}"
   replicas: 1
   template:
     metadata:
       labels:
         role: mysql
+        name: mysql-{{customerId}}
         environment: test
     spec:
       terminationGracePeriodSeconds: 10
@@ -73,17 +75,19 @@ data:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: elasticsearch
+  name: elasticsearch-{{customerId}}
 spec:
   selector:
     matchLabels:
       role: elasticsearch
-  serviceName: "elasticsearch"
+      name: elasticsearch-{{customerId}}
+  serviceName: "elasticsearch-{{customerId}}"
   replicas: 1
   template:
     metadata:
       labels:
         role: elasticsearch
+        name: elasticsearch-{{customerId}}
     spec:
       securityContext:
         fsGroup: 1000
@@ -157,7 +161,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
+  name: mysql-{{customerId}}
   labels:
     name: mysql
 spec:
@@ -167,14 +171,14 @@ spec:
       targetPort: 3306
   clusterIP: None
   selector:
-    role: mysql
+    name: mysql-{{customerId}}
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: elasticsearch
+  name: elasticsearch-{{customerId}}
   labels:
     name: elasticsearch
 spec:
@@ -187,4 +191,4 @@ spec:
       targetPort: 9300
   clusterIP: None
   selector:
-    role: elasticsearch
+    name: elasticsearch-{{customerId}}

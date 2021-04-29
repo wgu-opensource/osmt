@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: osmt-app
+  name: osmt-app-{{customerId}}
   labels:
     app: osmt-app
 spec:
@@ -14,7 +14,7 @@ spec:
       labels:
         component: osmt-app
         selector: osmt-app
-        app: osmt-app
+        app: osmt-app-{{customerId}}
     spec:
       containers:
         - name: osmt-app
@@ -31,11 +31,11 @@ spec:
                   name: mysql-root
                   key: root-pw
             - name: MYSQL_DB_URI
-              value: 'root:$(MYSQL_PW)@mysql.default.svc.cluster.local:3306'
+              value: 'root:$(MYSQL_PW)@mysql-{{customerId}}.default.svc.cluster.local:3306'
             - name: REDIS_URI
-              value: "redis.default.svc.cluster.local:6379"
+              value: "redis-{{customerId}}.default.svc.cluster.local:6379"
             - name: ELASTICSEARCH_URI
-              value: "http://elasticsearch.default.svc.cluster.local:9200"
+              value: "http://elasticsearch-{{customerId}}.default.svc.cluster.local:9200"
             - name: OAUTH_ISSUER
               valueFrom:
                 secretKeyRef:
@@ -57,7 +57,7 @@ spec:
                   name: okta
                   key: client_secret
             - name: BASE_DOMAIN
-              value: "a56fae93609fc4abea2612c324278c7f-2091694107.us-west-2.elb.amazonaws.com"
+              value: "{{customerId}}.osmtpilot.openskillsnetwork.com"
             - name: MIGRATIONS_ENABLED
               value: "true"
           ports:

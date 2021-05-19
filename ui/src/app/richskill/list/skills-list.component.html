@@ -15,8 +15,9 @@
             <span class="t-type-bodyLargeBold t-type-text1">{{q}}</span>
             <ng-template [ngIf]="!last && matchingQuery.length > 1">, </ng-template>
           </ng-template>
+          and
         </ng-template>
-        and your filters.
+        your filters.
         <ng-template [ngIf]="totalCount > 0">
           Viewing {{firstRecordNo}}-{{lastRecordNo}}.
         </ng-template>

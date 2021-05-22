@@ -61,7 +61,7 @@ export class CollectionsListComponent extends Whitelabelled {
 
   get collectionCountLabel(): string {
     if (this.totalCount > 0)  {
-      return `${this.totalCount} collection${this.curPageCount > 1 ? "s" : ""}`
+      return `${this.totalCount} collection${this.totalCount > 1 ? "s" : ""}`
     }
     return `0 collections`
   }

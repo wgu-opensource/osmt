@@ -64,7 +64,7 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   get skillCountLabel(): string {
     if (this.totalCount > 0)  {
-      return `${this.totalCount} RSD${this.curPageCount > 1 ? "s" : ""}`
+      return `${this.totalCount} RSD${this.totalCount > 1 ? "s" : ""}`
     }
     return `0 RSDs`
   }

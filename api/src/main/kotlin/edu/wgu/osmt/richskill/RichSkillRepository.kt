@@ -1,10 +1,7 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.api.FormValidationException
-import edu.wgu.osmt.api.model.ApiBatchResult
-import edu.wgu.osmt.api.model.ApiReferenceListUpdate
-import edu.wgu.osmt.api.model.ApiSkillUpdate
-import edu.wgu.osmt.api.model.ApiStringListUpdate
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
@@ -244,6 +241,20 @@ class RichSkillRepositoryImpl @Autowired constructor(
             }
         }
 
+        fun lookup_alignments(lud: ApiAlignmentListUpdate, keywordType: KeywordTypeEnum) {
+            lud.add?.map {
+                keywordRepository.findOrCreate(keywordType, value = it.skillName, uri = it.id)
+            }?.filterNotNull()?.let {
+                addingKeywords.addAll(it)
+            }
+
+            lud.remove?.map {
+                keywordRepository.findByValueOrUri(keywordType, value = it.skillName, uri = it.id)
+            }?.let {
+                removingKeywords.addAll(it.filterNotNull())
+            }
+        }
+
         fun lookup_keywords(slud: ApiStringListUpdate, keywordType: KeywordTypeEnum) {
             slud.add?.map {
                 keywordRepository.findOrCreate(keywordType, value = it)
@@ -271,7 +282,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         skillUpdate.keywords?.let { lookup_keywords(it, KeywordTypeEnum.Keyword) }
         skillUpdate.certifications?.let { lookup_references(it, KeywordTypeEnum.Certification) }
         skillUpdate.standards?.let { lookup_references(it, KeywordTypeEnum.Standard) }
-        skillUpdate.alignments?.let { lookup_references(it, KeywordTypeEnum.Alignment) }
+        skillUpdate.alignments?.let { lookup_alignments(it, KeywordTypeEnum.Alignment) }
         skillUpdate.employers?.let { lookup_references(it, KeywordTypeEnum.Employer) }
 
         val allKeywordsUpdate = if (addingKeywords.size > 0 || removingKeywords.size > 0) {

@@ -27,7 +27,7 @@ class RichSkillCsvExport(
                 CsvColumn("Broad Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::broadCode) },
                 CsvColumn("Detailed Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::detailedCode) },
                 CsvColumn("O*Net Job Codes") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::jobRoleCode) },
-                CsvColumn("Employers") { it.collections.map {it.name}.joinToString(listDelimeter) },
+                CsvColumn("Employers") { it.rs.employers.map {keyword -> keyword.value ?: ""}.joinToString(listDelimeter) },
                 CsvColumn("Alignment Name") { it.rs.alignments.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },
                 CsvColumn("Alignment URL") { it.rs.alignments.map { keyword -> keyword.uri ?: "" }.joinToString(listDelimeter) }
             )

@@ -57,8 +57,8 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
         bodyString: this.richSkill?.alignments
           ?.map(alignment => {
             return (alignment.id)
-              ? `<a class="t-link" target="_blank" href="${alignment.id}">${alignment.name || alignment.id}</a>`
-              : `${alignment.name}`
+              ? `<a class="t-link" target="_blank" href="${alignment.id}">${alignment.skillName || alignment.id}</a>`
+              : `${alignment.skillName}`
           })
           ?.join("") ?? "",
         showIfEmpty: false

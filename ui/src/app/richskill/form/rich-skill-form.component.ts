@@ -4,8 +4,22 @@ import {Location} from "@angular/common"
 import {ActivatedRoute, ActivatedRouteSnapshot, CanDeactivate, Router, RouterStateSnapshot} from "@angular/router"
 import {RichSkillService} from "../service/rich-skill.service"
 import {Observable} from "rxjs"
-import {ApiNamedReference, INamedReference, ApiSkill, KeywordType, IUuidReference} from "../ApiSkill"
-import {ApiStringListUpdate, IStringListUpdate, ApiSkillUpdate, ApiReferenceListUpdate} from "../ApiSkillUpdate"
+import {
+  ApiNamedReference,
+  INamedReference,
+  ApiSkill,
+  KeywordType,
+  IUuidReference,
+  ApiAlignment,
+  IRef, IAlignment
+} from "../ApiSkill"
+import {
+  ApiStringListUpdate,
+  IStringListUpdate,
+  ApiSkillUpdate,
+  ApiReferenceListUpdate,
+  ApiAlignmentListUpdate
+} from "../ApiSkillUpdate"
 import {AppConfig} from "../../app.config"
 import {urlValidator} from "../../validators/url.validator"
 import { IJobCode } from "src/app/job-codes/Jobcode"
@@ -128,14 +142,25 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
   }
 
   diffReferenceList(words: string[], refs?: INamedReference[]): ApiReferenceListUpdate | undefined {
-    const existing = new Set(refs?.map(it => this.stringFromNamedReference(it)))
-    const provided = new Set(words)
-    const removing = [...existing].filter(x => !provided.has(x)).map(it => this.namedReferenceForString(it))
-      .filter(it => it).map(it => it as ApiNamedReference)
-    const adding = [...provided].filter(x => !existing.has(x)).map(it => this.namedReferenceForString(it))
-      .filter(it => it).map(it => it as ApiNamedReference)
+    const existing: Set<string> = new Set(refs?.map(it => ApiNamedReference.formatRef(it)).filter(it => it) ?? [])
+    const provided: Set<string> = new Set(words.filter(it => it))
+    const removing = [...existing].filter(x => !provided.has(x)).map(it => ApiNamedReference.fromString(it))
+      .filter(it => it).map(it => it as ApiNamedReference) // filterNotNull
+    const adding = [...provided].filter(x => !existing.has(x)).map(it => ApiNamedReference.fromString(it))
+      .filter(it => it).map(it => it as ApiNamedReference) // filterNotNull
     return (removing.length > 0 || adding.length > 0) ? new ApiReferenceListUpdate(adding, removing) : undefined
   }
+
+  diffAlignmentList(words: string[], refs?: IAlignment[]): ApiAlignmentListUpdate | undefined {
+    const existing: Set<string> = new Set(refs?.map(it => ApiAlignment.formatRef(it)).filter(it => it) ?? [])
+    const provided: Set<string> = new Set(words.filter(it => it))
+    const removing: ApiAlignment[] = [...existing].filter(x => !provided.has(x)).map(it => ApiAlignment.fromString(it))
+      .filter(it => it).map(it => it as ApiAlignment) // filterNotNull
+    const adding: ApiAlignment[] = [...provided].filter(x => !existing.has(x)).map(it => ApiAlignment.fromString(it))
+      .filter(it => it).map(it => it as ApiAlignment) // filterNotNull
+    return (removing.length > 0 || adding.length > 0) ? new ApiAlignmentListUpdate(adding, removing) : undefined
+  }
+
 
 
   splitTextarea(textValue: string): Array<string> {
@@ -189,31 +214,34 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     )
     if (this.isDuplicating || occupationsDiff) { update.occupations = occupationsDiff }
 
-    // tslint:disable-next-line:variable-name
-    const _handle_ref_list = (formFieldValue: string, fieldName: string, existing?: INamedReference[]) => {
-      const diff = this.diffReferenceList(this.splitTextarea(formFieldValue), existing)
-      if (this.isDuplicating || diff) { // @ts-ignore
-        update[fieldName] = diff
-      }
+    const standardsDiff = this.diffReferenceList(this.splitTextarea(formValue.standards), this.existingSkill?.standards)
+    if (this.isDuplicating || standardsDiff) {
+      update.standards = standardsDiff
     }
 
-    _handle_ref_list(formValue.standards, "standards", this.existingSkill?.standards)
-    _handle_ref_list(formValue.certifications, "certifications", this.existingSkill?.certifications)
-    _handle_ref_list(formValue.employers, "employers", this.existingSkill?.employers)
+    const certificationsDiff = this.diffReferenceList(this.splitTextarea(formValue.certifications), this.existingSkill?.certifications)
+    if (this.isDuplicating || certificationsDiff) {
+      update.certifications = certificationsDiff
+    }
+
+    const employersDiff = this.diffReferenceList(this.splitTextarea(formValue.employers), this.existingSkill?.employers)
+    if (this.isDuplicating || employersDiff) {
+      update.employers = employersDiff
+    }
 
 
     // handle a single alignment with title and url only
-    const firstAlignment: ApiNamedReference | undefined = this.existingSkill
+    const firstAlignment: ApiAlignment | undefined = this.existingSkill
       ?.alignments
-      ?.map(it => new ApiNamedReference(it))
+      ?.map(it => new ApiAlignment(it))
       ?.find(it => true)
-    const inputAlignment = new ApiNamedReference({
+    const inputAlignment = new ApiAlignment({
       id: this.nonEmptyOrNull(formValue.alignmentUrl),
-      name: this.nonEmptyOrNull(formValue.alignmentText)
+      skillName: this.nonEmptyOrNull(formValue.alignmentText)
     })
 
     if (this.isDuplicating || !firstAlignment?.equals(inputAlignment)) {
-      const inputAlignmentDefined = (inputAlignment.id || inputAlignment.name)
+      const inputAlignmentDefined = (inputAlignment.id || inputAlignment.skillName)
       update.alignments = new ApiReferenceListUpdate(
         inputAlignmentDefined ? [inputAlignment] : undefined,
         firstAlignment ? [firstAlignment] : undefined
@@ -255,17 +283,9 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     }
   }
 
-  namedReferenceForString(value: string): ApiNamedReference | undefined {
-    const str = value.trim()
-    if (str.length < 1) {
-      return undefined
-    } else if (str.indexOf("://") !== -1) {
-      return new ApiNamedReference({id: str})
-    } else {
-      return new ApiNamedReference({name: str})
-    }
+  stringFromAlignment(ref?: IAlignment): string {
+    return ref?.skillName ?? ref?.id ?? ""
   }
-
   stringFromNamedReference(ref?: INamedReference): string {
     return ref?.name ?? ref?.id ?? ""
   }
@@ -281,7 +301,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       this.titleService.setTitle(`${skill.skillName} | ${this.pageTitle()} | ${this.whitelabel.toolName}`)
     }
 
-    const firstAlignment: INamedReference | undefined = skill.alignments?.find(it => true)
+    const firstAlignment: IAlignment | undefined = skill.alignments?.find(it => true)
 
     const fields = {
       skillName: (this.isDuplicating ? "Copy of " : "") + skill.skillName,
@@ -293,7 +313,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       certifications: skill.certifications?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
       occupations: skill.occupations?.map(it => this.stringFromJobCode(it)).join("; ") ?? "",
       employers: skill.employers?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
-      alignmentText: firstAlignment?.name ?? "",
+      alignmentText: firstAlignment?.skillName ?? "",
       alignmentUrl: firstAlignment?.id ?? "",
     }
     if (AppConfig.settings.editableAuthor) {

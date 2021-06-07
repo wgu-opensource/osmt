@@ -2,11 +2,9 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.*
 import edu.wgu.osmt.TestObjectHelpers.apiSkillUpdateGenerator
+import edu.wgu.osmt.TestObjectHelpers.assertThatKeywordMatchesAlignment
 import edu.wgu.osmt.TestObjectHelpers.assertThatKeywordMatchesNamedReference
-import edu.wgu.osmt.api.model.ApiReferenceListUpdate
-import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.ApiSkillUpdate
-import edu.wgu.osmt.api.model.ApiStringListUpdate
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.collection.CollectionRepository
@@ -93,6 +91,19 @@ class RichSkillRepositoryTest @Autowired constructor(
         }
     }
 
+    fun assertThatKeywordsMatchAlignmentList(keywords: List<Keyword>, referenceList: ApiAlignmentListUpdate) {
+        referenceList.add?.forEach { align ->
+            val found = keywords.find { it.value == align.skillName && it.uri == align.id }
+            assertThat(found).isNotNull
+            assertThatKeywordMatchesAlignment(found, align)
+        }
+
+        referenceList.remove?.forEach { align ->
+            val found = keywords.find { it.value == align.skillName && it.uri == align.id }
+            assertThat(found).isNull()
+        }
+    }
+
     fun assertThatRichSkillMatchesApiSkillUpdate(rsc: RichSkillAndCollections, apiObj: ApiSkillUpdate) {
         val skill = rsc.rs
 
@@ -109,7 +120,7 @@ class RichSkillRepositoryTest @Autowired constructor(
 
         assertThatKeywordsMatchReferenceList(skill.certifications, apiObj.certifications!!)
         assertThatKeywordsMatchReferenceList(skill.standards, apiObj.standards!!)
-        assertThatKeywordsMatchReferenceList(skill.alignments, apiObj.alignments!!)
+        assertThatKeywordsMatchAlignmentList(skill.alignments, apiObj.alignments!!)
         assertThatKeywordsMatchReferenceList(skill.employers, apiObj.employers!!)
 
         assertThatJobCodesMatchStringList(skill.jobCodes, apiObj.occupations!!)

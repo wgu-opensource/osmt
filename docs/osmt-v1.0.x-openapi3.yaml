@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 1.0.1
+  version: 1.0.2
   title: OSMT API
   description: API for the Open Skills Management Toolset
 security:
@@ -969,7 +969,7 @@ components:
         alignments:
           type: array
           items:
-            $ref: '#/components/schemas/NamedReference'
+            $ref: '#/components/schemas/Alignment'
         standards:
           type: array
           items:
@@ -1087,7 +1087,7 @@ components:
         standards:
           $ref: '#/components/schemas/ReferenceListUpdate'
         alignments:
-          $ref: '#/components/schemas/ReferenceListUpdate'
+          $ref: '#/components/schemas/AlignmentListUpdate'
         certifications:
           $ref: '#/components/schemas/ReferenceListUpdate'
         occupations:
@@ -1181,6 +1181,15 @@ components:
         name:
           type: string
 
+    Alignment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+        skillName:
+          type: string
+
     UuidReference:
       type: object
       properties:
@@ -1203,6 +1212,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NamedReference'
+
+    AlignmentListUpdate:
+      type: object
+      properties:
+        add:
+          type: array
+          items:
+            $ref: '#/components/schemas/Alignment'
+        remove:
+          type: array
+          items:
+            $ref: '#/components/schemas/Alignment'
 
     StringListUpdate:
       type: object
@@ -1301,7 +1322,7 @@ components:
         alignments:
           type: array
           items:
-            $ref: '#/components/schemas/NamedReference'
+            $ref: '#/components/schemas/Alignment'
 
     PublishStatus:
       type: string

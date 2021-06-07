@@ -1,9 +1,6 @@
 package edu.wgu.osmt
 
-import edu.wgu.osmt.api.model.ApiNamedReference
-import edu.wgu.osmt.api.model.ApiReferenceListUpdate
-import edu.wgu.osmt.api.model.ApiSkillUpdate
-import edu.wgu.osmt.api.model.ApiStringListUpdate
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
@@ -135,6 +132,11 @@ object TestObjectHelpers {
         val uri = if (includeUri) UUID.randomUUID().toString() else null
         return ApiNamedReference(id = uri, name = name)
     }
+    fun alignmentGenerator(includeName: Boolean = true, includeUri: Boolean = true): ApiAlignment {
+        val name = if (includeName) UUID.randomUUID().toString() else null
+        val uri = if (includeUri) UUID.randomUUID().toString() else null
+        return ApiAlignment(id = uri, skillName = name)
+    }
 
     fun apiSkillUpdateGenerator(
         name: String? = null,
@@ -163,8 +165,8 @@ object TestObjectHelpers {
         val standards = ApiReferenceListUpdate(
             add = (1..standardCount).toList().map { namedReferenceGenerator(includeName = true, includeUri = true) }
         )
-        val alignments = ApiReferenceListUpdate(
-            add = (1..alignmentCount).toList().map { namedReferenceGenerator(includeName = false, includeUri = true) }
+        val alignments = ApiAlignmentListUpdate(
+            add = (1..alignmentCount).toList().map { alignmentGenerator(includeName = false, includeUri = true) }
         )
         val employers = ApiReferenceListUpdate(
             add = (1..employerCount).toList().map { namedReferenceGenerator(includeName = true, includeUri = false) }
@@ -196,5 +198,11 @@ object TestObjectHelpers {
         assertThat(keyword).isNotNull
         assertThat(keyword?.uri).isEqualTo(namedReference?.id)
         assertThat(keyword?.value).isEqualTo(namedReference?.name)
+    }
+
+    fun assertThatKeywordMatchesAlignment(keyword: Keyword?, alignment: ApiAlignment?) {
+        assertThat(keyword).isNotNull
+        assertThat(keyword?.uri).isEqualTo(alignment?.id)
+        assertThat(keyword?.value).isEqualTo(alignment?.skillName)
     }
 }

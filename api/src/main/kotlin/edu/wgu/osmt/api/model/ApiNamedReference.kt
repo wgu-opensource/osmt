@@ -18,6 +18,17 @@ data class ApiNamedReference(
         }
     }
 }
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+data class ApiAlignment(
+        val id: String? = null,
+        val skillName: String? = null
+) {
+    companion object factory {
+        fun fromKeyword(keyword: Keyword): ApiAlignment {
+            return ApiAlignment(id=keyword.uri, skillName=keyword.value)
+        }
+    }
+}
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class ApiUuidReference(
@@ -34,6 +45,11 @@ data class ApiUuidReference(
 data class ApiReferenceListUpdate(
     val add: List<ApiNamedReference>? = null,
     val remove: List<ApiNamedReference>? = null
+)
+
+data class ApiAlignmentListUpdate(
+    val add: List<ApiAlignment>? = null,
+    val remove: List<ApiAlignment>? = null
 )
 
 data class ApiStringListUpdate(

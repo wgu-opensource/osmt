@@ -29,8 +29,8 @@ export class ApiNamedReference implements INamedReference {
     this.name = reference.name
   }
 
-  equals(other: ApiNamedReference): boolean {
-    return this.id === other.id && this.name === other.name
+  equals(other?: ApiNamedReference): boolean {
+    return this.id === other?.id && this.name === other?.name
   }
   static formatRef(ref: INamedReference): string {
     return ref.name ?? ""
@@ -59,7 +59,8 @@ export class ApiAlignment implements IAlignment {
     this.isPartOf = reference.isPartOf ? new ApiNamedReference(reference.isPartOf) : undefined
   }
   equals(other: ApiAlignment): boolean {
-    return this.id === other.id && this.skillName === other.skillName && this.isPartOf === other.isPartOf
+    return this.id === other.id && this.skillName === other.skillName &&
+      (this.isPartOf?.equals(other.isPartOf) ?? other.isPartOf === undefined)
   }
   static formatRef(ref: IAlignment): string {
     return ref.skillName ?? ""

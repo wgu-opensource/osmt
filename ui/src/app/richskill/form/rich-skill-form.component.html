@@ -224,12 +224,14 @@
           <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
             <div class="l-actionBarVertical">
 
-              <div class="l-actionBarVertical-x-message" *ngIf="!skillForm.valid">
+              <div class="l-actionBarVertical-x-message" *ngIf="!formValid">
                 <p>Additional information required before you can save. Go to <a class="t-type-bodyLink t-link" href="#" (click)="handleClickMissingFields()">first required missing field</a>.</p>
               </div>
 
               <app-formfield-submit
                 [formGroup]="skillForm"
+                [enabled]="formValid"
+                [dirty]="formDirty"
                 [observables]="[skillSaved]"
                 (errorsOccurred)="handleFormErrors($event)"
               ></app-formfield-submit>

@@ -236,7 +236,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
         skillName: this.nonEmptyOrNull(groupData.alignmentText),
         isPartOf: frameworkName ? new ApiNamedReference({name: frameworkName}) : undefined
       })
-    })
+    }).filter(a => a.id || a.skillName)
     const alignmentDiff = this.diffAlignmentList(alignments, this.existingSkill?.alignments)
     if (this.isDuplicating || alignmentDiff) {
       update.alignments = alignmentDiff
@@ -244,6 +244,16 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
 
 
     return update
+  }
+
+  get formValid(): boolean {
+    const alignments_valid = !this.alignmentForms.map(group => group.valid).some(x => !x)
+    return alignments_valid && this.skillForm.valid
+  }
+
+  get formDirty(): boolean {
+    const alignments_dirty = this.alignmentForms.map(x => x.dirty).some(x => x)
+    return alignments_dirty || this.skillForm.dirty
   }
 
   onSubmit(): void {

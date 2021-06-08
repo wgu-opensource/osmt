@@ -13,6 +13,8 @@ export class FormFieldSubmit implements OnInit {
 
   @Input() label = "Save"
   @Input() formGroup: FormGroup = new FormGroup({})
+  @Input() enabled: boolean = true
+  @Input() dirty: boolean = false
 
   @Output() errorsOccurred = new EventEmitter()
 
@@ -61,8 +63,9 @@ export class FormFieldSubmit implements OnInit {
   }
 
   isEnabled(): boolean {
+    if (!this.enabled) return false
     const {touched, valid, pristine, dirty} = this.formGroup
-    return (touched || dirty) && !pristine && valid
+    return (touched || (this.dirty || dirty)) && (this.dirty || !pristine) && valid
   }
 
   isDisabled(): boolean {

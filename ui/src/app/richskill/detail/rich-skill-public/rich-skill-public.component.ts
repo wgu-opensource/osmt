@@ -56,9 +56,10 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
         label: "Alignment",
         bodyString: this.richSkill?.alignments
           ?.map(alignment => {
+            const framework = alignment.isPartOf ? `${alignment.isPartOf.name}: ` : ""
             return (alignment.id)
-              ? `<a class="t-link" target="_blank" href="${alignment.id}">${alignment.skillName || alignment.id}</a>`
-              : `${alignment.skillName}`
+              ? `<p class="t-type-body">${framework}<a class="t-link" target="_blank" href="${alignment.id}">${alignment.skillName || alignment.id}</a></p>`
+              : `${framework}${alignment.skillName}`
           })
           ?.join("") ?? "",
         showIfEmpty: false

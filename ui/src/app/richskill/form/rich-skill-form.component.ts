@@ -230,9 +230,11 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
 
     const alignments = this.alignmentForms.map(group => {
       const groupData = group.value
+      const frameworkName = this.nonEmptyOrNull(groupData.alignmentFramework)
       return new ApiAlignment({
         id: this.nonEmptyOrNull(groupData.alignmentUrl),
-        skillName: this.nonEmptyOrNull(groupData.alignmentText)
+        skillName: this.nonEmptyOrNull(groupData.alignmentText),
+        isPartOf: frameworkName ? new ApiNamedReference({name: frameworkName}) : undefined
       })
     })
     const alignmentDiff = this.diffAlignmentList(alignments, this.existingSkill?.alignments)
@@ -431,13 +433,15 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     const fields = {
       alignmentText: new FormControl(""),
       alignmentUrl: new FormControl("", urlValidator),
+      alignmentFramework: new FormControl(""),
     }
     const group = new FormGroup(fields)
 
     if (existing) {
       group.setValue({
-        alignmentText: existing.skillName,
-        alignmentUrl: existing.id,
+        alignmentText: existing.skillName ?? "",
+        alignmentUrl: existing.id ?? "",
+        alignmentFramework: existing.isPartOf?.name ?? "",
       })
     }
     this.alignmentForms.push(group)

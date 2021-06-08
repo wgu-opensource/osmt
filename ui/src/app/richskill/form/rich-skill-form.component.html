@@ -163,6 +163,16 @@
                         errorMessage="Alignment URL not valid"
                       ></app-formfield-text>
                     </div>
+                    <div class="t-margin-medium t-margin-bottom">
+                      <app-formfield-text
+                        [control]="group.controls.alignmentFramework"
+                        [label]="'Alignment'+(i > 0 ? ' '+(i+1) : '')+' Framework'"
+                        name="alignmentFramework"
+                        placeholder="Emsi Open Skills Library"
+                        [includePlaceholder]="!this.skillUuid"
+                        helpMessage="The industry-recognized framework or data source for this Alignment."
+                      ></app-formfield-text>
+                    </div>
 
                     <button class="m-buttonText" type="button" (click)="removeAlignment(i)">
                       <span class="m-buttonText-x-icon">

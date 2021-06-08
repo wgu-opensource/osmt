@@ -1,7 +1,11 @@
 package edu.wgu.osmt.keyword
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.SpringTest
+import edu.wgu.osmt.api.model.ApiAlignment
+import edu.wgu.osmt.api.model.ApiAlignmentListUpdate
+import edu.wgu.osmt.api.model.ApiNamedReference
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -52,6 +56,30 @@ class KeywordRepositoryTest: SpringTest(), HasDatabaseReset {
         assertThat(byUri?.id).isNotEqualTo(byNameAndUri?.id)
         assertThat(byUri?.value).isNull()
         assertThat(byUri?.uri).isEqualTo(keywordUri)
+
+    }
+
+    @Test
+    fun `should (de)serialize all ApiAlignment fields correctly`() {
+        val mapper = jacksonObjectMapper()
+        val frameworkName = "frameworkName"
+        val frameworkRef = ApiNamedReference(name=frameworkName)
+        val alignment = ApiAlignment(id="http://skill.test/test-skill", skillName="Test Skill", isPartOf=frameworkRef)
+        val jsonstr = mapper.writeValueAsString(alignment)
+
+        val expectedJson = "{\"id\":\"${alignment.id}\",\"skillName\":\"${alignment.skillName}\",\"isPartOf\":{\"name\":\"${frameworkName}\"}}"
+        assertThat(jsonstr).isEqualTo(expectedJson)
+
+        val readAlignment: ApiAlignment = mapper.readValue(expectedJson, ApiAlignment::class.java)
+        assertThat(readAlignment).isEqualTo(alignment)
+
+        val alu = ApiAlignmentListUpdate(add=listOf(alignment))
+        val aluStr = mapper.writeValueAsString(alu)
+        val expectedAlu = "{\"add\":[${expectedJson}],\"remove\":null}"
+        assertThat(aluStr).isEqualTo(expectedAlu)
+
+        val readAlu: ApiAlignmentListUpdate = mapper.readValue(expectedAlu, ApiAlignmentListUpdate::class.java)
+        assertThat(readAlu).isEqualTo(alu)
 
     }
 

@@ -1,6 +1,8 @@
 package edu.wgu.osmt.api.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
@@ -21,11 +23,18 @@ data class ApiNamedReference(
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class ApiAlignment(
         val id: String? = null,
-        val skillName: String? = null
+        val skillName: String? = null,
+        @get:JsonProperty("isPartOf")
+        @JsonProperty("isPartOf")
+        val isPartOf: ApiNamedReference? = null
 ) {
     companion object factory {
         fun fromKeyword(keyword: Keyword): ApiAlignment {
-            return ApiAlignment(id=keyword.uri, skillName=keyword.value)
+            return fromStrings(keyword.uri, keyword.value, keyword.framework)
+        }
+        fun fromStrings(id: String?, skillName: String?, frameworkName: String?): ApiAlignment {
+            val partOf = if (frameworkName?.isNotBlank() == true) ApiNamedReference(name=frameworkName) else null
+            return ApiAlignment(id=id, skillName=skillName, isPartOf=partOf)
         }
     }
 }

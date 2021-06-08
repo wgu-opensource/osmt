@@ -132,10 +132,10 @@ object TestObjectHelpers {
         val uri = if (includeUri) UUID.randomUUID().toString() else null
         return ApiNamedReference(id = uri, name = name)
     }
-    fun alignmentGenerator(includeName: Boolean = true, includeUri: Boolean = true): ApiAlignment {
+    fun alignmentGenerator(includeName: Boolean = true, includeUri: Boolean = true, frameworkName: String? = null): ApiAlignment {
         val name = if (includeName) UUID.randomUUID().toString() else null
         val uri = if (includeUri) UUID.randomUUID().toString() else null
-        return ApiAlignment(id = uri, skillName = name)
+        return ApiAlignment.fromStrings(id = uri, skillName = name, frameworkName = frameworkName)
     }
 
     fun apiSkillUpdateGenerator(

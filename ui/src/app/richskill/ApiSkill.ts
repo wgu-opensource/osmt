@@ -17,6 +17,7 @@ export interface INamedReference {
 export interface IAlignment {
   id?: string
   skillName?: string
+  isPartOf?: INamedReference
 }
 
 export class ApiNamedReference implements INamedReference {
@@ -50,13 +51,15 @@ export class ApiNamedReference implements INamedReference {
 export class ApiAlignment implements IAlignment {
   id?: string
   skillName?: string
+  isPartOf?: ApiNamedReference
 
   constructor(reference: IAlignment) {
     this.id = reference.id
     this.skillName = reference.skillName
+    this.isPartOf = reference.isPartOf ? new ApiNamedReference(reference.isPartOf) : undefined
   }
   equals(other: ApiAlignment): boolean {
-    return this.id === other.id && this.skillName === other.skillName
+    return this.id === other.id && this.skillName === other.skillName && this.isPartOf === other.isPartOf
   }
   static formatRef(ref: IAlignment): string {
     return ref.skillName ?? ""

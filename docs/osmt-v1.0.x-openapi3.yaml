@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 1.0.2
+  version: 1.0.3
   title: OSMT API
   description: API for the Open Skills Management Toolset
 security:
@@ -1189,6 +1189,8 @@ components:
           format: uri
         skillName:
           type: string
+        isPartOf:
+          $ref: '#/components/schemas/NamedReference'
 
     UuidReference:
       type: object

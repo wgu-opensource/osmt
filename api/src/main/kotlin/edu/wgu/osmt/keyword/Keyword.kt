@@ -37,16 +37,24 @@ data class Keyword(
     val value: String? = null,
 
     @Nullable
-    val uri: String? = null
+    val uri: String? = null,
+
+    @Nullable
+    val framework: String? = null
 ) : DatabaseData, HasUpdateDate {
 }
 
-data class KeywordUpdateObj(override val id: Long, val value: String?, val uri: NullableFieldUpdate<String>?) :
-    UpdateObject<KeywordDao> {
+data class KeywordUpdateObj(
+        override val id: Long,
+        val value: String?,
+        val uri: NullableFieldUpdate<String>?,
+        val framework: NullableFieldUpdate<String>?
+) : UpdateObject<KeywordDao> {
 
     override fun applyToDao(dao: KeywordDao) {
         value?.let{dao.value = it}
-        uri?.let{dao.value = it.t}
+        uri?.let{dao.uri = it.t}
+        framework?.let{dao.framework = it.t}
     }
 }
 
@@ -55,6 +63,7 @@ object KeywordTable : LongIdTable("Keyword"), TableWithUpdate<KeywordUpdateObj> 
     override val updateDate = datetime("updateDate")
     val value: Column<String?> = varchar("value", 768).nullable()
     val uri: Column<String?> = varchar("uri", 768).nullable()
+    val framework: Column<String?> = varchar("framework", 768).nullable()
 
     val keyword_type_enum =
         customEnumeration(

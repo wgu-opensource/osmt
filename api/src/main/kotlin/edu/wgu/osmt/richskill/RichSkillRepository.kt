@@ -243,13 +243,13 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         fun lookup_alignments(lud: ApiAlignmentListUpdate, keywordType: KeywordTypeEnum) {
             lud.add?.map {
-                keywordRepository.findOrCreate(keywordType, value = it.skillName, uri = it.id)
+                keywordRepository.findOrCreate(keywordType, value = it.skillName, uri = it.id, framework = it.isPartOf?.name)
             }?.filterNotNull()?.let {
                 addingKeywords.addAll(it)
             }
 
             lud.remove?.map {
-                keywordRepository.findByValueOrUri(keywordType, value = it.skillName, uri = it.id)
+                keywordRepository.findByValueOrUri(keywordType, value = it.skillName, uri = it.id, framework = it.isPartOf?.name)
             }?.let {
                 removingKeywords.addAll(it.filterNotNull())
             }

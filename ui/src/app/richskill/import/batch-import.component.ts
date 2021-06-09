@@ -5,8 +5,14 @@ import {RichSkillService} from "../service/rich-skill.service"
 import {ToastService} from "../../toast/toast.service"
 import {Location} from "@angular/common"
 import {Papa, ParseResult} from "ngx-papaparse"
-import {ApiNamedReference, ApiSkill} from "../ApiSkill"
-import {ApiReferenceListUpdate, ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate"
+import {ApiAlignment, ApiNamedReference, ApiSkill} from "../ApiSkill"
+import {
+  ApiAlignmentListUpdate,
+  ApiReferenceListUpdate,
+  ApiSkillUpdate,
+  ApiStringListUpdate,
+  IRichSkillUpdate
+} from "../ApiSkillUpdate"
 import {forkJoin, Observable} from "rxjs"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {Title} from "@angular/platform-browser";
@@ -32,6 +38,7 @@ export const importSkillHeaderOrder = [
   {field: "employers", label: "Employers"},
   {field: "alignmentName", label: "Alignment Name"},
   {field: "alignmentUrl", label: "Alignment URL"},
+  {field: "alignmentFramework", label: "Alignment Framework"},
 ]
 
 
@@ -270,6 +277,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
       this.uploading = true
       this.papa.parse(file, {
         header: true,
+        skipEmptyLines: true,
         complete: (results) => {
           this.uploading = false
           this.uploadedFileError = false
@@ -309,7 +317,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         count[it] = (count[it] ?? 0) + 1
       })
       const duplicates: string[] = Object.entries(count).filter(it => it[1] > 1).map(it => it[0])
-        .filter(it => it !== undefined && it !== "occupations")
+        .filter(it => it !== undefined && it !== "occupations" && !it.startsWith("alignment"))
       if (duplicates.length > 0) {
         return duplicates
       }
@@ -329,13 +337,35 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     return words[0]
   }
 
+  reverseMappings(): {[p: string]: string[]} {
+    if (this.fieldMappings === undefined) {
+      return {}
+    }
+    const reversed: {[p: string]: string[]} = {}
+    Object.keys(this.fieldMappings).forEach(k => {
+      const v: string = this.fieldMappings ? this.fieldMappings[k] : ""
+      if (reversed[v] === undefined) {
+        reversed[v] = []
+      }
+      reversed[v].push(k)
+    })
+    return reversed
+  }
+
   skillsFromResults(): ApiSkillUpdate[] {
     const skillUpdates = this.parseResults?.data.map((row: { [x: string]: any; }) => {
       // tslint:disable-next-line:no-any
       const newSkill: {[s: string]: any} = {}
 
-      const alignmentHolder: {[s: string]: string} = {}
+      const alignmentHolder: ApiAlignment[] = []
       const jobcodes: string[] = []
+
+      const reversed = this.reverseMappings()
+      const alignFields = Object.keys(reversed).filter(k => k.startsWith('alignment'))
+      const totalAlignFieldCount = alignFields.length
+      const totalAlignmentCount = Math.max(...alignFields.map(k => reversed[k].length))
+      var alignCount = 0
+      var alignFieldCount = 0
 
       Object.keys(row).forEach(uploadedKey => {
         const fieldName = this.fieldMappings?.[uploadedKey]
@@ -355,10 +385,26 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
             newSkill[fieldName] = new ApiStringListUpdate(value.split(";").map(it => it.trim()))
           } else if (fieldName === "occupations") {
             jobcodes.push(...value.split(";").map(it => it.trim()))
-          } else if (fieldName === "alignmentUrl") {
-            alignmentHolder.id = value.trim()
-          } else if (fieldName === "alignmentName") {
-            alignmentHolder.name = value.trim()
+          } else if (fieldName.startsWith("alignment")) {
+              if (!alignmentHolder[alignCount]) {
+                alignmentHolder[alignCount] = new ApiAlignment({})
+              }
+
+              if (fieldName === "alignmentUrl") {
+                alignmentHolder[alignCount].id = value
+              }
+              else if (fieldName === "alignmentName") {
+                alignmentHolder[alignCount].skillName = value
+              }
+              else if (fieldName === "alignmentFramework") {
+                alignmentHolder[alignCount].isPartOf = new ApiNamedReference({name: value.trim()})
+              }
+
+              alignFieldCount += 1
+              if (alignFieldCount >= totalAlignFieldCount) {
+                alignCount += 1
+                alignFieldCount = 0
+              }
           } else {
             newSkill[fieldName] = value
           }
@@ -369,8 +415,8 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         newSkill.occupations = new ApiStringListUpdate(jobcodes)
       }
 
-      if (alignmentHolder.id || alignmentHolder.name) {
-        newSkill.alignments = new ApiReferenceListUpdate([new ApiNamedReference(alignmentHolder)])
+      if (alignmentHolder.length > 0) {
+        newSkill.alignments = new ApiAlignmentListUpdate(Array.from(alignmentHolder))
       }
 
       return newSkill

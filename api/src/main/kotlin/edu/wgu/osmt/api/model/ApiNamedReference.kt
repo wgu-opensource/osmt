@@ -20,10 +20,18 @@ data class ApiNamedReference(
         }
     }
 }
+
+
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class ApiAlignment(
+        @get:JsonProperty("id")             // these explicit decorators are needed to help jackson
+        @JsonProperty("id")
         val id: String? = null,
+
+        @get:JsonProperty("skillName")
+        @JsonProperty("skillName")
         val skillName: String? = null,
+
         @get:JsonProperty("isPartOf")
         @JsonProperty("isPartOf")
         val isPartOf: ApiNamedReference? = null

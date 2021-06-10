@@ -133,6 +133,7 @@
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
         <app-field-mapping-table
           [currentMappings]="fieldMappings"
+          [alignmentCount]="alignmentCount"
           [uploadedHeaders]="uploadedHeaders()"
           (fieldMappingChanged)="handleMappingChanged($event)"
         ></app-field-mapping-table>

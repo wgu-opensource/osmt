@@ -36,10 +36,18 @@ export const importSkillHeaderOrder = [
   {field: "certifications", label: "Certifications"},
   {field: "occupations", label: "Occupations"},
   {field: "employers", label: "Employers"},
-  {field: "alignmentName", label: "Alignment Name"},
-  {field: "alignmentUrl", label: "Alignment URL"},
-  {field: "alignmentFramework", label: "Alignment Framework"},
 ]
+export const allMappingHeaderOrder = (alignmentCount: number = 3): {field: string, label: string}[] => {
+  const alignmentHeaders = [...Array(alignmentCount).keys()].map(i => {
+    const label = (i > 0) ? ` ${i+1}` : ""
+    return [
+      {field: "alignmentName"+i, label: `Alignment${label} Name`},
+      {field: "alignmentUrl"+i, label: `Alignment${label} URL`},
+      {field: "alignmentFramework"+i, label: `Alignment${label} Framework`},
+    ]
+  }).flat()
+  return importSkillHeaderOrder.concat(alignmentHeaders)
+}
 
 
 export const importSkillHeaders: {[p: string]: string} =
@@ -48,11 +56,12 @@ export const importSkillHeaders: {[p: string]: string} =
    return acc
  }, {})
 
-export const importSkillHeadersReverse: {[p: string]: string} =
-  importSkillHeaderOrder.reduce((acc: {[p: string]: string}, it) => {
+export function importSkillHeadersReverse(alignmentCount: number=3): {[p: string]: string} {
+  return allMappingHeaderOrder(alignmentCount).reduce((acc: { [p: string]: string }, it) => {
     acc[it.label.toLowerCase()] = it.field
     return acc
   }, {})
+}
 
 export class AuditedImportSkill {
   skill: ApiSkillUpdate
@@ -101,6 +110,8 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   previewSkills?: ApiSkillUpdate[]
   auditedSkills?: AuditedImportSkill[]
   importedSkills?: AuditedImportSkill[]
+
+  alignmentCount: number = 3
 
   searchingSimilarity?: boolean
   similarSkills?: boolean[]
@@ -317,7 +328,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         count[it] = (count[it] ?? 0) + 1
       })
       const duplicates: string[] = Object.entries(count).filter(it => it[1] > 1).map(it => it[0])
-        .filter(it => it !== undefined && it !== "occupations" && !it.startsWith("alignment"))
+        .filter(it => it !== undefined && it !== "occupations")
       if (duplicates.length > 0) {
         return duplicates
       }
@@ -357,15 +368,9 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
       // tslint:disable-next-line:no-any
       const newSkill: {[s: string]: any} = {}
 
-      const alignmentHolder: ApiAlignment[] = []
+      const alignmentsHolder: ApiAlignment[] = []
       const jobcodes: string[] = []
-
-      const reversed = this.reverseMappings()
-      const alignFields = Object.keys(reversed).filter(k => k.startsWith('alignment'))
-      const totalAlignFieldCount = alignFields.length
-      const totalAlignmentCount = Math.max(...alignFields.map(k => reversed[k].length))
-      var alignCount = 0
-      var alignFieldCount = 0
+      var alignMatches
 
       Object.keys(row).forEach(uploadedKey => {
         const fieldName = this.fieldMappings?.[uploadedKey]
@@ -385,26 +390,23 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
             newSkill[fieldName] = new ApiStringListUpdate(value.split(";").map(it => it.trim()))
           } else if (fieldName === "occupations") {
             jobcodes.push(...value.split(";").map(it => it.trim()))
-          } else if (fieldName.startsWith("alignment")) {
-              if (!alignmentHolder[alignCount]) {
-                alignmentHolder[alignCount] = new ApiAlignment({})
-              }
+          } else if (alignMatches = fieldName.match(/alignment(Url|Name|Framework)(\d+)/)) {
+            var alignIndex = Number(alignMatches[2])
+            var alignField = alignMatches[1]
 
-              if (fieldName === "alignmentUrl") {
-                alignmentHolder[alignCount].id = value
-              }
-              else if (fieldName === "alignmentName") {
-                alignmentHolder[alignCount].skillName = value
-              }
-              else if (fieldName === "alignmentFramework") {
-                alignmentHolder[alignCount].isPartOf = new ApiNamedReference({name: value.trim()})
-              }
+            if (!alignmentsHolder[alignIndex]) {
+              alignmentsHolder[alignIndex] = new ApiAlignment({})
+            }
 
-              alignFieldCount += 1
-              if (alignFieldCount >= totalAlignFieldCount) {
-                alignCount += 1
-                alignFieldCount = 0
-              }
+            if (alignField === "Url") {
+              alignmentsHolder[alignIndex].id = value
+            }
+            else if (alignField === "Name") {
+              alignmentsHolder[alignIndex].skillName = value
+            }
+            else if (alignField === "Framework") {
+              alignmentsHolder[alignIndex].isPartOf = new ApiNamedReference({name: value.trim()})
+            }
           } else {
             newSkill[fieldName] = value
           }
@@ -415,8 +417,8 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         newSkill.occupations = new ApiStringListUpdate(jobcodes)
       }
 
-      if (alignmentHolder.length > 0) {
-        newSkill.alignments = new ApiAlignmentListUpdate(Array.from(alignmentHolder))
+      if (alignmentsHolder.length > 0) {
+        newSkill.alignments = new ApiAlignmentListUpdate(Array.from(alignmentsHolder))
       }
 
       return newSkill
@@ -427,9 +429,12 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   private initializeMapping(): void {
     const mappings: {[s: string]: string} = {}
     this.uploadedHeaders().forEach(it => {
-      const fieldName = importSkillHeadersReverse[it.toLowerCase()]
+      const uploadedField = it.toLowerCase()
+      const fieldName = importSkillHeadersReverse(this.alignmentCount)[uploadedField]
       if (fieldName) {
         mappings[it] = fieldName
+      } else if (uploadedField === 'o*net job codes') {
+        mappings[it] = 'occupations'
       }
     })
 

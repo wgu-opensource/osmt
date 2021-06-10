@@ -3,10 +3,9 @@
 ################
 FROM centos:centos8.3.2011 as osmt-base
 
-LABEL Maintainer="Francisco Gray, <fgray@concentricsky.com>"
 LABEL Version="1.0"
 
-ENV JAVA_VERSION=11.0.9.11
+ENV JAVA_VERSION=11.0.11.0.9
 ENV JAVA_HOME=/etc/alternatives/jre
 ENV USER=osmt
 ENV BASE_DIR=/opt/${USER}
@@ -33,13 +32,13 @@ RUN /usr/sbin/useradd -r -d ${BASE_DIR} -s /bin/bash ${USER} -k /etc/skel -m -U 
 ###########################
 FROM osmt-base as build
 
-ENV JAVA_HOME=/etc/alternatives/jre
-ENV JAVA_VERSION=11.0.9.11
 ENV M2_VERSION=3.6.3
 ENV M2_HOME=/usr/local/maven
 ENV PATH=${M2_HOME}/bin:${PATH}
-ENV USER=osmt
-ENV BASE_DIR=/opt/${USER}
+
+
+ARG OSMT_WHITELABEL_URL
+ENV OSMT_WHITELABEL_URL=${OSMT_WHITELABEL_URL}
 
 # Install OpenJDK Development Packages
 RUN /usr/bin/yum install -y java-11-openjdk-devel-${JAVA_VERSION}
@@ -66,27 +65,10 @@ RUN mvn clean package -Dmaven.test.skip.exec
 ######################
 FROM osmt-base
 
-ENV JAVA_HOME=/etc/alternatives/jre
-ENV JAVA_VERSION=11.0.9.11
-ENV USER=osmt
-ENV BASE_DIR=/opt/${USER}
-
 COPY --from=build --chown=${USER}:${USER} ${BASE_DIR}/build/api/target/osmt-*.jar ${BASE_DIR}/bin/osmt.jar
 
 ADD ./docker/ /${BASE_DIR}/
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "java \
-    -Dspring.profiles.active=${ENVIRONMENT} \
-    -Dapp.baseDomain=${BASE_DOMAIN} \
-    -Dredis.uri=${REDIS_URI} \
-    -Ddb.uri=${MYSQL_DB_URI} \
-    -Des.uri=${ELASTICSEARCH_URI} \
-    -Dokta.oauth2.issuer=${OAUTH_ISSUER} \
-    -Dokta.oauth2.clientId=${OAUTH_CLIENTID} \
-    -Dokta.oauth2.clientSecret=${OAUTH_CLIENTSECRET} \
-    -Dokta.oauth2.audience=${OAUTH_AUDIENCE} \
-    -Dspring.flyway.enabled=${MIGRATIONS_ENABLED} \
-    -jar ${BASE_DIR}/bin/osmt.jar"]
-
+ENTRYPOINT ["/opt/osmt/bin/docker_entrypoint.sh"]

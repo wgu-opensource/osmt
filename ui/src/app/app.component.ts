@@ -7,6 +7,7 @@ import {Keepalive} from "@ng-idle/keepalive"
 import {NavigationEnd, Router} from "@angular/router"
 import * as chroma from "chroma-js"
 import {SearchService} from "./search/search.service"
+import {AuthService} from "./auth/auth-service";
 
 @Component({
   selector: "app-root",
@@ -19,6 +20,7 @@ export class AppComponent extends Whitelabelled implements OnInit {
     private titleService: Title,
     private toastService: ToastService,
     private searchService: SearchService,
+    private authService: AuthService,
     private idle: Idle,
     private keepalive: Keepalive,
     private router: Router
@@ -37,6 +39,9 @@ export class AppComponent extends Whitelabelled implements OnInit {
 
     if (this.whitelabel.colorBrandAccent1) {
       this.setWhiteLabelColor(this.whitelabel.colorBrandAccent1)
+    }
+    if (this.whitelabel.faviconUrl) {
+      this.setFavicon(this.whitelabel.faviconUrl)
     }
 
     this.initClearSearchOnNavigate()
@@ -66,8 +71,9 @@ export class AppComponent extends Whitelabelled implements OnInit {
     this.idle.setInterrupts(DEFAULT_INTERRUPTSOURCES)
 
     this.idle.onTimeout.subscribe(() => {
-      console.log("Idle time out!")
-      this.router.navigate(["/logout"], {queryParams: {timeout: true}})
+      if (this.authService.isAuthenticated()) {
+        this.router.navigate(["/logout"], {queryParams: {timeout: true}})
+      }
     })
     this.keepalive.interval(15)
     this.idle.watch()
@@ -78,17 +84,22 @@ export class AppComponent extends Whitelabelled implements OnInit {
     // Set new brand color
     document.documentElement.style.setProperty("--color-brand1", newBrandAccent1)
 
-    // Check other colors
     const rootStyles = window.getComputedStyle(document.documentElement)
     const black = rootStyles.getPropertyValue("--color-onBrandBlack")
     const defaultA11yOnBrand = rootStyles.getPropertyValue("--color-onBrandWhite")
-    const contrast = chroma.contrast(defaultA11yOnBrand, newBrandAccent1)
 
-    if (contrast < 4.5) { // If white and brand have a contrast of less than 4.5, switch, else set default
+    // If white and brand have a contrast of less than 4.5, switch, else set default
+    if (this.isBrandColorContrasted) {
       document.documentElement.style.setProperty("--color-a11yOnBrand", black)
     } else {
       document.documentElement.style.setProperty("--color-a11yOnBrand", defaultA11yOnBrand)
     }
+  }
 
+  setFavicon(faviconUrl: string): void {
+    const favicon = document.getElementById('favicon')
+    if (favicon) {
+      favicon.setAttribute('href', faviconUrl)
+    }
   }
 }

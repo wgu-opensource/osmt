@@ -14,6 +14,8 @@ export interface IAppConfig {
   poweredByLabel: string
   idleTimeoutInSeconds: number
   colorBrandAccent1?: string
+  siteLogoUrl?: string
+  faviconUrl?: string
 }
 
 // Default configuration

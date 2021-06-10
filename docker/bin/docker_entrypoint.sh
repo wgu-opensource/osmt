@@ -65,6 +65,7 @@ else
   JAVA_CMD="/bin/java
               -Dspring.profiles.active=${ENVIRONMENT}
               -Dapp.baseDomain=${BASE_DOMAIN}
+              -Dapp.frontendUrl=https://${BASE_DOMAIN}
               -Dredis.uri=${REDIS_URI}
               -Ddb.uri=${MYSQL_DB_URI}
               -Des.uri=${ELASTICSEARCH_URI}

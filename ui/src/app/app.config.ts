@@ -19,15 +19,37 @@ export class AppConfig {
     return settings
   }
 
+  dirname(s: string): string {
+    return s.substring(0, s.lastIndexOf('/'))
+  }
+
+  relativeFromWhitelabel(whitelabelUrl: string, url?: string): string | undefined {
+    if (url) {
+      if (url.startsWith("http")) {
+        return url
+      }
+
+      // if url is not absolute, assume it is a sibling to whitelabel.json
+      const wlu = new URL(whitelabelUrl)
+      wlu.pathname = `${this.dirname(wlu.pathname)}/${url}`
+      return wlu.toString()
+    }
+
+    return undefined
+  }
+
   load(): Promise<object> {
-    const baseUrl = environment.baseApiUrl
+    const whitelabelUrl = environment.whiteLabelUrl || `${environment.baseApiUrl}/whitelabel/whitelabel.json`
 
     if (environment.dynamicWhitelabel) {
-      return this.http.get(`${baseUrl}/whitelabel/whitelabel.json`)
+      return this.http.get(whitelabelUrl)
         .toPromise()
         .then(value => {
           AppConfig.settings = this.defaultConfig()
           Object.assign(AppConfig.settings, value as IAppConfig)
+
+          AppConfig.settings.siteLogoUrl = this.relativeFromWhitelabel(whitelabelUrl, AppConfig.settings.siteLogoUrl)
+          AppConfig.settings.faviconUrl = this.relativeFromWhitelabel(whitelabelUrl, AppConfig.settings.faviconUrl)
 
           // baseApiUrl and loginUrl are not runtime whitelabellable
           AppConfig.settings.baseApiUrl = environment.baseApiUrl

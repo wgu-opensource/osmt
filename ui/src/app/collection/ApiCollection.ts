@@ -4,7 +4,7 @@ import {IStringListUpdate} from "../richskill/ApiSkillUpdate"
 
 export interface ICollection {
   archiveDate?: Date
-  author?: INamedReference
+  author?: string
   creationDate?: Date
   creator: string
   id: string
@@ -18,7 +18,7 @@ export interface ICollection {
 
 export class ApiCollection {
   archiveDate?: Date
-  author?: INamedReference
+  author?: string
   creationDate?: Date
   creator: string
   id: string

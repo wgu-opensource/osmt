@@ -345,7 +345,7 @@ class CollectionRepositoryImpl @Autowired constructor(
         richSkillRepository: RichSkillRepository
     ): CollectionUpdateObject {
         val authorKeyword = collectionUpdate.author?.let {
-            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it.name, uri = it.id)
+            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it)
         }
 
         val adding = mutableListOf<RichSkillDescriptorDao>()

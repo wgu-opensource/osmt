@@ -20,7 +20,7 @@ data class ApiSkillUpdate(
     val collections: ApiStringListUpdate? = null,
 
     @JsonProperty("author")
-    val author: ApiNamedReference? = null,
+    val author: String? = null,
 
     @JsonProperty("keywords")
     val keywords: ApiStringListUpdate? = null,
@@ -29,7 +29,7 @@ data class ApiSkillUpdate(
     val certifications: ApiReferenceListUpdate? = null,
 
     @JsonProperty("standards")
-    val standards: ApiReferenceListUpdate? = null,
+    val standards: ApiAlignmentListUpdate? = null,
 
     @JsonProperty("alignments")
     val alignments: ApiAlignmentListUpdate? = null,

@@ -188,8 +188,8 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     }
 
     if (AppConfig.settings.editableAuthor) {
-      const author = ApiNamedReference.fromString(formValue.author)
-      if (!this.existingSkill || this.isDuplicating || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
+      const author = formValue.author
+      if (!this.existingSkill || this.isDuplicating || this.existingSkill.author !== formValue.author) {
         update.author = author
       }
     }
@@ -211,7 +211,8 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     )
     if (this.isDuplicating || occupationsDiff) { update.occupations = occupationsDiff }
 
-    const standardsDiff = this.diffReferenceList(this.splitTextarea(formValue.standards), this.existingSkill?.standards)
+    const standards = this.splitTextarea(formValue.standards).map(s => new ApiAlignment({skillName: s}))
+    const standardsDiff = this.diffAlignmentList(standards, this.existingSkill?.standards)
     if (this.isDuplicating || standardsDiff) {
       update.standards = standardsDiff
     }
@@ -310,7 +311,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       skillStatement: skill.skillStatement,
       category: skill.category ?? "",
       keywords: skill.keywords?.join("; ") ?? "",
-      standards: skill.standards?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
+      standards: skill.standards?.map(it => this.stringFromAlignment(it)).join("; ") ?? "",
       collections: skill.collections?.map(it => it.name) ?? [],
       certifications: skill.certifications?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
       occupations: skill.occupations?.map(it => this.stringFromJobCode(it)).join("; ") ?? "",
@@ -318,7 +319,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     }
     if (AppConfig.settings.editableAuthor) {
       // @ts-ignore
-      fields.author = this.stringFromNamedReference(skill.author)
+      fields.author = skill.author
     }
     this.skillForm.setValue(fields)
 

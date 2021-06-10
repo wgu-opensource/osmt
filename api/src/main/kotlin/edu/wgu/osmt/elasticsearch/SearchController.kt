@@ -142,9 +142,9 @@ class SearchController @Autowired constructor(
     fun searchJobCodes(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = true) query: String
-    ): HttpEntity<List<JobCode>> {
+    ): HttpEntity<List<ApiJobCode>> {
         val searchResults = jobCodeEsRepo.typeAheadSearch(query)
-        return ResponseEntity.status(200).body(searchResults.map { it.content }.toList())
+        return ResponseEntity.status(200).body(searchResults.map { ApiJobCode.fromJobCode(it.content) }.toList())
     }
 
     @GetMapping(RoutePaths.SEARCH_KEYWORDS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])

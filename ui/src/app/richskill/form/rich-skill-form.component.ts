@@ -1,5 +1,5 @@
 import {Component, Injectable, OnInit} from "@angular/core"
-import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms"
+import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms"
 import {Location} from "@angular/common"
 import {ActivatedRoute, ActivatedRouteSnapshot, CanDeactivate, Router, RouterStateSnapshot} from "@angular/router"
 import {RichSkillService} from "../service/rich-skill.service"
@@ -85,8 +85,6 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     if (this.skillUuid) {
       this.skillLoaded = this.richSkillService.getSkillByUUID(this.skillUuid)
       this.skillLoaded.subscribe(skill => { this.setSkill(skill) })
-    } else {
-      this.addAlignment() // show single blank alignment on create form
     }
 
     this.titleService.setTitle(`${this.pageTitle()} | ${this.whitelabel.toolName}`)
@@ -324,11 +322,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     }
     this.skillForm.setValue(fields)
 
-    if (skill.alignments.length < 1) {
-      this.addAlignment()
-    } else {
-      skill.alignments.forEach(a => this.addAlignment(a))
-    }
+    skill.alignments.forEach(a => this.addAlignment(a))
 
     if (skill.skillStatement) {
       this.checkForStatementSimilarity(skill.skillStatement)
@@ -440,9 +434,10 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
   }
 
   addAlignment(existing?: IAlignment): boolean {
+
     const fields = {
-      alignmentText: new FormControl(""),
-      alignmentUrl: new FormControl("", urlValidator),
+      alignmentText: new FormControl("", Validators.required),
+      alignmentUrl: new FormControl("", Validators.compose([Validators.required, urlValidator])),
       alignmentFramework: new FormControl(""),
     }
     const group = new FormGroup(fields)
@@ -460,7 +455,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
   }
   removeAlignment(alignmentIndex: number): boolean {
     this.alignmentForms.splice(alignmentIndex, 1)
-    
+
     return false
   }
 }

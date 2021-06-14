@@ -148,6 +148,8 @@
                         [label]="'Alignment'+(i > 0 ? ' '+(i+1) : '')+' Name'"
                         name="alignmentText"
                         placeholder="Digital Forensics"
+                        required="true"
+                        errorMessage="Alignment name is required"
                         [includePlaceholder]="!this.skillUuid"
                         helpMessage="The industry-recognized framework or data that aligns with this RSD, from a source such as Emsi, Burning Glass, LinkedIn, or Workday."
                       ></app-formfield-text>
@@ -158,6 +160,7 @@
                         [label]="'Alignment'+(i > 0 ? ' '+(i+1) : '')+' URL'"
                         name="alignmentUrl"
                         placeholder="https://skills.emsidata.com/skills/KS122YG760DVCXPRHHJ6"
+                        required="true"
                         [includePlaceholder]="!this.skillUuid"
                         helpMessage="The unique web address that holds alignment details."
                         errorMessage="Alignment URL not valid"
@@ -170,7 +173,7 @@
                         name="alignmentFramework"
                         placeholder="Emsi Open Skills Library"
                         [includePlaceholder]="!this.skillUuid"
-                        helpMessage="The industry-recognized framework or data source for this Alignment."
+                        helpMessage="The industry-recognized framework or data source for this alignment."
                       ></app-formfield-text>
                     </div>
 

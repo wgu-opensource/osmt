@@ -54,7 +54,7 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
         showIfEmpty: false
       }, {
         label: "Alignment",
-        bodyString: this.richSkill?.alignments
+        bodyString: this.richSkill?.sortedAlignments
           ?.map(alignment => {
             const framework = alignment.isPartOf ? `${alignment.isPartOf.name}: ` : ""
             return (alignment.id)

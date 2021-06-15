@@ -60,7 +60,7 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
       },
       {
         label: "Alignments",
-        bodyString: this.richSkill?.alignments
+        bodyString: this.richSkill?.sortedAlignments
           ?.map(alignment => {
             const framework = alignment.isPartOf ? `${alignment.isPartOf.name}: ` : ""
             return (alignment.id)

@@ -174,6 +174,14 @@ export class ApiSkill {
     this.employers = iRichSkill.employers
     this.occupations = iRichSkill.occupations
   }
+
+  get sortedAlignments(): IAlignment[] {
+    return [...this.alignments].sort((a,b) => {
+      const fwk = a.isPartOf ? a.isPartOf?.name?.localeCompare(b.isPartOf?.name ?? "") : 1
+      const name = a.skillName ? a.skillName.localeCompare(b.skillName ?? "") : 1
+      return fwk || name
+    })
+  }
 }
 
 export enum ApiSortOrder {

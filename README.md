@@ -6,6 +6,7 @@
     |-- ui                 - Angular frontend - See `./ui/README.md`
     |-- docker             - Misc. Docker support for development
 
+for a visual over view checkout out the lucidchart diagram [here](https://lucid.app/lucidchart/be7b8312-4ad5-4713-9e3c-a104dd5c5c80/edit?beaconFlowId=48DAEE0D049C7111&page=0_0#)
 ## Getting started
 This project is a multi module Maven project. Pom.xml files exist in the project root, ./api and ./ui.  
   * Import module
@@ -18,6 +19,22 @@ This project is a multi module Maven project. Pom.xml files exist in the project
     * to shut down the development stack, press `<ctl> + c`  
   * Run both the frontend and backend configurations you created from IntelliJ
   * Visit `http://localhost:4200`
+
+## BLS & Onet codes
+You need to make sure you install these codes before deploying, you can find the codes for BLS [here](https://www.bls.gov/soc/2018/#materials)
+and the Onet codes [here](https://www.onetcenter.org/database.html#occ). Make sure you export them as CSV files.
+NOTE, make sure
+you have the right mysql credentials. after downloading them follow these steps to import BLS codes:
+1. go to edit configurations at the top bar of IntelliJ and click on springboot -> Application.
+2. in VM options type in this ```-Dspring.profiles.active=dev,import```
+3. in program arguments type in this ```--csv=path/to/bls_csv --import-type=bls ```
+4. click apply and ok and then run the app.
+
+for importing Onet follow these steps
+1. go to edit configurations at the top bar of IntelliJ and click on springboot -> Application.
+2. in VM options type in this ```-Dspring.profiles.active=dev,import```
+3. in program arguments type in this ```--csv=path/to/onet_csv --import-type=onet ```
+4. click apply and ok and then run the app.
 
 ## Local Development
 The Angular UI app is configured to proxy requests to the backend server during development. This allows one to use Angular's live reloading server.

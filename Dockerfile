@@ -3,7 +3,6 @@
 ################
 FROM centos:centos8.3.2011 as osmt-base
 
-LABEL Maintainer="Francisco Gray, <fgray@concentricsky.com>"
 LABEL Version="1.0"
 
 ENV JAVA_VERSION=11.0.9.11

@@ -6,7 +6,8 @@
     |-- ui                 - Angular frontend - See `./ui/README.md`
     |-- docker             - Misc. Docker support for development
 
-for a visual over view checkout out the lucidchart diagram [here](https://lucid.app/lucidchart/be7b8312-4ad5-4713-9e3c-a104dd5c5c80/edit?beaconFlowId=48DAEE0D049C7111&page=0_0#)
+
+![OSMT architectural overview](./ui/src/assets/Architectural-Diagram1.png)
 ## Getting started
 This project is a multi module Maven project. Pom.xml files exist in the project root, ./api and ./ui.  
   * Import module

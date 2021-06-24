@@ -147,11 +147,11 @@
                         [control]="group.controls.alignmentText"
                         [label]="'Alignment'+(i > 0 ? ' '+(i+1) : '')+' Name'"
                         name="alignmentText"
-                        placeholder="Digital Forensics"
+                        placeholder="Be Good Data Stewards"
                         required="true"
                         errorMessage="Alignment name is required"
                         [includePlaceholder]="!this.skillUuid"
-                        helpMessage="The industry-recognized skill that aligns with this RSD from a source such as Emsi, Burning Glass, LinkedIn, or Workday, etc."
+                        helpMessage="The industry-recognized skill or standard (from an external open skills library or framework) to which this RSD aligns."
                       ></app-formfield-text>
                     </div>
                     <div class="t-margin-medium t-margin-bottom">
@@ -159,10 +159,10 @@
                         [control]="group.controls.alignmentUrl"
                         [label]="'Alignment'+(i > 0 ? ' '+(i+1) : '')+' URL'"
                         name="alignmentUrl"
-                        placeholder="https://skills.emsidata.com/skills/KS122YG760DVCXPRHHJ6"
+                        placeholder="https://credentialengineregistry.org/resources/ce-01063a5c-5e2a-4f52-856c-09c0559290e9"
                         required="true"
                         [includePlaceholder]="!this.skillUuid"
-                        helpMessage="The unique web address that holds alignment details."
+                        helpMessage="The unique web address of the industry-recognized skill or standard."
                         errorMessage="Alignment URL not valid"
                       ></app-formfield-text>
                     </div>
@@ -171,9 +171,9 @@
                         [control]="group.controls.alignmentFramework"
                         [label]="'Alignment'+(i > 0 ? ' '+(i+1) : '')+' Framework'"
                         name="alignmentFramework"
-                        placeholder="Emsi Open Skills Library"
+                        placeholder="Government of Canada Digital Standards"
                         [includePlaceholder]="!this.skillUuid"
-                        helpMessage="The industry-recognized framework or data source for this alignment."
+                        helpMessage="The open skills library or framework that holds the industry-recognized skill or standard."
                       ></app-formfield-text>
                     </div>
 

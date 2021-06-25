@@ -7,7 +7,7 @@
     |-- docker             - Misc. Docker support for development
 
 
-![OSMT architectural overview](./ui/src/assets/Architectural-Diagram1.png)
+![OSMT architectural overview](./ui/src/assets/Architectural-Diagram.png)
 ## Getting started
 This project is a multi module Maven project. Pom.xml files exist in the project root, ./api and ./ui.  
   * Import module

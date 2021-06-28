@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {importSkillHeaderOrder, importSkillHeaders} from "./batch-import.component";
+import {allMappingHeaderOrder, importSkillHeaderOrder, importSkillHeaders} from "./batch-import.component";
 
 
 interface MappingChanged {
@@ -15,6 +15,7 @@ export class FieldMappingTableComponent implements OnInit {
 
   @Input() uploadedHeaders: string[] = []
   @Output() fieldMappingChanged = new EventEmitter<{[p: string]: string}>()
+  @Input() alignmentCount: number = 3
 
   @Input() currentMappings: {[p: string]: string} = {}
 
@@ -55,9 +56,10 @@ export class FieldMappingSelectComponent {
   @Input() data: string = ""
   @Input() value: string = ""
   @Output() mappingChanged = new EventEmitter<MappingChanged>()
+  @Input() alignmentCount: number = 3
 
   get headers(): {field: string, label: string}[] {
-    return importSkillHeaderOrder
+    return importSkillHeaderOrder.concat(allMappingHeaderOrder(this.alignmentCount))
   }
 
   handleChange($event: Event): void {

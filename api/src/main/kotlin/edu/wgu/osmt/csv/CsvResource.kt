@@ -10,7 +10,7 @@ abstract class CsvResource<T>(val debugName: String) {
     /**
      * Defines the columns of this csv in their desired order.
      */
-    abstract fun columnTranslations(): Array<CsvColumn<T>>
+    abstract fun columnTranslations(data: List<T>): Array<CsvColumn<T>>
 
     /**
      * Override if opencsv defaults are not desired
@@ -22,12 +22,12 @@ abstract class CsvResource<T>(val debugName: String) {
      */
     fun toCsv(data: List<T>): String {
         // fail fast
-        validate()
+        validate(data)
 
         val stringWriter = StringWriter()
         val csvWriter = getCsvWriter(stringWriter)
 
-        writeHeaderRow(csvWriter)
+        writeHeaderRow(data, csvWriter)
         writeRows(data, csvWriter)
 
         return stringWriter.toString()
@@ -48,22 +48,22 @@ abstract class CsvResource<T>(val debugName: String) {
         )
     }
 
-    private fun validate() {
-        if (configureCsv().includeHeader && columnTranslations().any { it.name.isEmpty() }) {
+    private fun validate(data: List<T>) {
+        if (configureCsv().includeHeader && columnTranslations(data).any { it.name.isEmpty() }) {
             throw CsvMissingHeaderException(debugName)
         }
     }
 
-    private fun writeHeaderRow(csvWriter: CSVWriter) {
+    private fun writeHeaderRow(data: List<T>, csvWriter: CSVWriter) {
         if (configureCsv().includeHeader) {
-            val headerRow = columnTranslations().map { column -> column.name }.toTypedArray()
+            val headerRow = columnTranslations(data).map { column -> column.name }.toTypedArray()
             writeRow(headerRow, csvWriter)
         }
     }
 
     private fun writeRows(data: List<T>, csvWriter: CSVWriter) {
         val rowsList: List<Array<String>> = data.map { datum ->
-            columnTranslations().map { it.translate(datum) }.toTypedArray()
+            columnTranslations(data).map { it.translate(datum) }.toTypedArray()
         }
         rowsList.forEach { writeRow(it, csvWriter) }
     }

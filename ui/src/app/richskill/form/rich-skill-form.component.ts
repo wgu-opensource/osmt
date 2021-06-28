@@ -1,11 +1,25 @@
 import {Component, Injectable, OnInit} from "@angular/core"
-import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms"
+import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms"
 import {Location} from "@angular/common"
 import {ActivatedRoute, ActivatedRouteSnapshot, CanDeactivate, Router, RouterStateSnapshot} from "@angular/router"
 import {RichSkillService} from "../service/rich-skill.service"
 import {Observable} from "rxjs"
-import {ApiNamedReference, INamedReference, ApiSkill, KeywordType, IUuidReference} from "../ApiSkill"
-import {ApiStringListUpdate, IStringListUpdate, ApiSkillUpdate, ApiReferenceListUpdate} from "../ApiSkillUpdate"
+import {
+  ApiNamedReference,
+  INamedReference,
+  ApiSkill,
+  KeywordType,
+  IUuidReference,
+  ApiAlignment,
+  IRef, IAlignment
+} from "../ApiSkill"
+import {
+  ApiStringListUpdate,
+  IStringListUpdate,
+  ApiSkillUpdate,
+  ApiReferenceListUpdate,
+  ApiAlignmentListUpdate
+} from "../ApiSkillUpdate"
 import {AppConfig} from "../../app.config"
 import {urlValidator} from "../../validators/url.validator"
 import { IJobCode } from "src/app/job-codes/Jobcode"
@@ -23,6 +37,7 @@ import {Whitelabelled} from "../../../whitelabel";
 })
 export class RichSkillFormComponent extends Whitelabelled implements OnInit, HasFormGroup  {
   skillForm = new FormGroup(this.getFormDefinitions())
+  alignmentForms: FormGroup[] = []
   skillUuid: string | null = null
   existingSkill: ApiSkill | null = null
 
@@ -79,6 +94,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
         this.searchingSimilarity = undefined
       }
     })
+
   }
 
   pageTitle(): string {
@@ -101,8 +117,6 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       certifications: new FormControl(""),
       occupations: new FormControl(""),
       employers: new FormControl(""),
-      alignmentText: new FormControl(""),
-      alignmentUrl: new FormControl("", urlValidator),
     }
     if (AppConfig.settings.editableAuthor) {
       // @ts-ignore
@@ -128,14 +142,22 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
   }
 
   diffReferenceList(words: string[], refs?: INamedReference[]): ApiReferenceListUpdate | undefined {
-    const existing = new Set(refs?.map(it => this.stringFromNamedReference(it)))
-    const provided = new Set(words)
-    const removing = [...existing].filter(x => !provided.has(x)).map(it => this.namedReferenceForString(it))
-      .filter(it => it).map(it => it as ApiNamedReference)
-    const adding = [...provided].filter(x => !existing.has(x)).map(it => this.namedReferenceForString(it))
-      .filter(it => it).map(it => it as ApiNamedReference)
+    const existing: Set<string> = new Set(refs?.map(it => ApiNamedReference.formatRef(it)).filter(it => it) ?? [])
+    const provided: Set<string> = new Set(words.filter(it => it))
+    const removing = [...existing].filter(x => !provided.has(x)).map(it => ApiNamedReference.fromString(it))
+      .filter(it => it).map(it => it as ApiNamedReference) // filterNotNull
+    const adding = [...provided].filter(x => !existing.has(x)).map(it => ApiNamedReference.fromString(it))
+      .filter(it => it).map(it => it as ApiNamedReference) // filterNotNull
     return (removing.length > 0 || adding.length > 0) ? new ApiReferenceListUpdate(adding, removing) : undefined
   }
+
+  diffAlignmentList(provided: ApiAlignment[], refs?: IAlignment[]): ApiAlignmentListUpdate | undefined {
+    const existing: ApiAlignment[] = refs?.map(it => new ApiAlignment(it)) ?? []
+    const removing: ApiAlignment[] = [...existing].filter(x => provided.findIndex(y => x.equals(y)) === -1)
+    const adding: ApiAlignment[] = [...provided].filter(x => existing.findIndex(y => x.equals(y)) === -1)
+    return (removing.length > 0 || adding.length > 0) ? new ApiAlignmentListUpdate(adding, removing) : undefined
+  }
+
 
 
   splitTextarea(textValue: string): Array<string> {
@@ -189,39 +211,47 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     )
     if (this.isDuplicating || occupationsDiff) { update.occupations = occupationsDiff }
 
-    // tslint:disable-next-line:variable-name
-    const _handle_ref_list = (formFieldValue: string, fieldName: string, existing?: INamedReference[]) => {
-      const diff = this.diffReferenceList(this.splitTextarea(formFieldValue), existing)
-      if (this.isDuplicating || diff) { // @ts-ignore
-        update[fieldName] = diff
-      }
+    const standardsDiff = this.diffReferenceList(this.splitTextarea(formValue.standards), this.existingSkill?.standards)
+    if (this.isDuplicating || standardsDiff) {
+      update.standards = standardsDiff
     }
 
-    _handle_ref_list(formValue.standards, "standards", this.existingSkill?.standards)
-    _handle_ref_list(formValue.certifications, "certifications", this.existingSkill?.certifications)
-    _handle_ref_list(formValue.employers, "employers", this.existingSkill?.employers)
+    const certificationsDiff = this.diffReferenceList(this.splitTextarea(formValue.certifications), this.existingSkill?.certifications)
+    if (this.isDuplicating || certificationsDiff) {
+      update.certifications = certificationsDiff
+    }
 
+    const employersDiff = this.diffReferenceList(this.splitTextarea(formValue.employers), this.existingSkill?.employers)
+    if (this.isDuplicating || employersDiff) {
+      update.employers = employersDiff
+    }
 
-    // handle a single alignment with title and url only
-    const firstAlignment: ApiNamedReference | undefined = this.existingSkill
-      ?.alignments
-      ?.map(it => new ApiNamedReference(it))
-      ?.find(it => true)
-    const inputAlignment = new ApiNamedReference({
-      id: this.nonEmptyOrNull(formValue.alignmentUrl),
-      name: this.nonEmptyOrNull(formValue.alignmentText)
-    })
-
-    if (this.isDuplicating || !firstAlignment?.equals(inputAlignment)) {
-      const inputAlignmentDefined = (inputAlignment.id || inputAlignment.name)
-      update.alignments = new ApiReferenceListUpdate(
-        inputAlignmentDefined ? [inputAlignment] : undefined,
-        firstAlignment ? [firstAlignment] : undefined
-      )
+    const alignments = this.alignmentForms.map(group => {
+      const groupData = group.value
+      const frameworkName = this.nonEmptyOrNull(groupData.alignmentFramework)
+      return new ApiAlignment({
+        id: this.nonEmptyOrNull(groupData.alignmentUrl),
+        skillName: this.nonEmptyOrNull(groupData.alignmentText),
+        isPartOf: frameworkName ? new ApiNamedReference({name: frameworkName}) : undefined
+      })
+    }).filter(a => a.id || a.skillName)
+    const alignmentDiff = this.diffAlignmentList(alignments, this.existingSkill?.alignments)
+    if (this.isDuplicating || alignmentDiff) {
+      update.alignments = alignmentDiff
     }
 
 
     return update
+  }
+
+  get formValid(): boolean {
+    const alignments_valid = !this.alignmentForms.map(group => group.valid).some(x => !x)
+    return alignments_valid && this.skillForm.valid
+  }
+
+  get formDirty(): boolean {
+    const alignments_dirty = this.alignmentForms.map(x => x.dirty).some(x => x)
+    return alignments_dirty || this.skillForm.dirty
   }
 
   onSubmit(): void {
@@ -255,17 +285,9 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     }
   }
 
-  namedReferenceForString(value: string): ApiNamedReference | undefined {
-    const str = value.trim()
-    if (str.length < 1) {
-      return undefined
-    } else if (str.indexOf("://") !== -1) {
-      return new ApiNamedReference({id: str})
-    } else {
-      return new ApiNamedReference({name: str})
-    }
+  stringFromAlignment(ref?: IAlignment): string {
+    return ref?.skillName ?? ref?.id ?? ""
   }
-
   stringFromNamedReference(ref?: INamedReference): string {
     return ref?.name ?? ref?.id ?? ""
   }
@@ -281,7 +303,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       this.titleService.setTitle(`${skill.skillName} | ${this.pageTitle()} | ${this.whitelabel.toolName}`)
     }
 
-    const firstAlignment: INamedReference | undefined = skill.alignments?.find(it => true)
+    const firstAlignment: IAlignment | undefined = skill.alignments?.find(it => true)
 
     const fields = {
       skillName: (this.isDuplicating ? "Copy of " : "") + skill.skillName,
@@ -292,9 +314,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       collections: skill.collections?.map(it => it.name) ?? [],
       certifications: skill.certifications?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
       occupations: skill.occupations?.map(it => this.stringFromJobCode(it)).join("; ") ?? "",
-      employers: skill.employers?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
-      alignmentText: firstAlignment?.name ?? "",
-      alignmentUrl: firstAlignment?.id ?? "",
+      employers: skill.employers?.map(it => this.stringFromNamedReference(it)).join("; ") ?? ""
     }
     if (AppConfig.settings.editableAuthor) {
       // @ts-ignore
@@ -302,6 +322,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     }
     this.skillForm.setValue(fields)
 
+    skill.alignments.forEach(a => this.addAlignment(a))
 
     if (skill.skillStatement) {
       this.checkForStatementSimilarity(skill.skillStatement)
@@ -331,8 +352,6 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       "certifications",
       "occupations",
       "employers",
-      "alignmentText",
-      "alignmentUrl"
     ]
     this.skillForm.markAllAsTouched()
     for (const fieldName of fieldOrder) {
@@ -412,6 +431,32 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
 
   get hasStatementWarning(): boolean {
     return (this.similarSkills?.length ?? -1) > 0
+  }
+
+  addAlignment(existing?: IAlignment): boolean {
+
+    const fields = {
+      alignmentText: new FormControl("", Validators.required),
+      alignmentUrl: new FormControl("", Validators.compose([Validators.required, urlValidator])),
+      alignmentFramework: new FormControl(""),
+    }
+    const group = new FormGroup(fields)
+
+    if (existing) {
+      group.setValue({
+        alignmentText: existing.skillName ?? "",
+        alignmentUrl: existing.id ?? "",
+        alignmentFramework: existing.isPartOf?.name ?? "",
+      })
+    }
+    this.alignmentForms.push(group)
+
+    return false
+  }
+  removeAlignment(alignmentIndex: number): boolean {
+    this.alignmentForms.splice(alignmentIndex, 1)
+
+    return false
   }
 }
 

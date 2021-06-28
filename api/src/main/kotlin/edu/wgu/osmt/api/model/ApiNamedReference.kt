@@ -1,6 +1,8 @@
 package edu.wgu.osmt.api.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
@@ -15,6 +17,32 @@ data class ApiNamedReference(
     companion object factory {
         fun fromKeyword(keyword: Keyword): ApiNamedReference {
             return ApiNamedReference(id=keyword.uri, name=keyword.value)
+        }
+    }
+}
+
+
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+data class ApiAlignment(
+        @get:JsonProperty("id")             // these explicit decorators are needed to help jackson
+        @JsonProperty("id")
+        val id: String? = null,
+
+        @get:JsonProperty("skillName")
+        @JsonProperty("skillName")
+        val skillName: String? = null,
+
+        @get:JsonProperty("isPartOf")
+        @JsonProperty("isPartOf")
+        val isPartOf: ApiNamedReference? = null
+) {
+    companion object factory {
+        fun fromKeyword(keyword: Keyword): ApiAlignment {
+            return fromStrings(keyword.uri, keyword.value, keyword.framework)
+        }
+        fun fromStrings(id: String?, skillName: String?, frameworkName: String?): ApiAlignment {
+            val partOf = if (frameworkName?.isNotBlank() == true) ApiNamedReference(name=frameworkName) else null
+            return ApiAlignment(id=id, skillName=skillName, isPartOf=partOf)
         }
     }
 }
@@ -34,6 +62,11 @@ data class ApiUuidReference(
 data class ApiReferenceListUpdate(
     val add: List<ApiNamedReference>? = null,
     val remove: List<ApiNamedReference>? = null
+)
+
+data class ApiAlignmentListUpdate(
+    val add: List<ApiAlignment>? = null,
+    val remove: List<ApiAlignment>? = null
 )
 
 data class ApiStringListUpdate(

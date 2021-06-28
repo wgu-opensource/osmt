@@ -32,7 +32,7 @@ data class ApiSkillUpdate(
     val standards: ApiReferenceListUpdate? = null,
 
     @JsonProperty("alignments")
-    val alignments: ApiReferenceListUpdate? = null,
+    val alignments: ApiAlignmentListUpdate? = null,
 
     @JsonProperty("employers")
     val employers: ApiReferenceListUpdate? = null,

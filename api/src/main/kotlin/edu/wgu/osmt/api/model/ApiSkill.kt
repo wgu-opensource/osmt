@@ -81,8 +81,8 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
         get() = rsd.standards.map { ApiNamedReference.fromKeyword(it) }
 
     @get:JsonProperty
-    val alignments: List<ApiNamedReference>
-        get() = rsd.alignments.map { ApiNamedReference.fromKeyword(it) }
+    val alignments: List<ApiAlignment>
+        get() = rsd.alignments.map { ApiAlignment.fromKeyword(it) }
 
     @get:JsonProperty
     val occupations: List<ApiJobCode>

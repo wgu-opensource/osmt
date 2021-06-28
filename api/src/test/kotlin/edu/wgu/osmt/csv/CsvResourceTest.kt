@@ -170,7 +170,7 @@ internal class CsvResourceTest {
             configuration: CsvConfig? = null
     ): CsvResource<T> {
         return object : CsvResource<T>(debugName) {
-            override fun columnTranslations(): Array<CsvColumn<T>> = columnDefinitions
+            override fun columnTranslations(d: List<T>): Array<CsvColumn<T>> = columnDefinitions
             override fun configureCsv(): CsvConfig = configuration ?: super.configureCsv()
         }
     }

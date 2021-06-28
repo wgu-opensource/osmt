@@ -1,4 +1,4 @@
-import {ApiNamedReference, INamedReference} from "./ApiSkill"
+import {ApiAlignment, ApiNamedReference, IAlignment, INamedReference} from "./ApiSkill"
 import {PublishStatus} from "../PublishStatus"
 
 export interface IStringListUpdate {
@@ -19,7 +19,6 @@ export interface IReferenceListUpdate {
   add?: INamedReference[]
   remove?: INamedReference[]
 }
-
 export class ApiReferenceListUpdate {
   add?: ApiNamedReference[]
   remove?: ApiNamedReference[]
@@ -30,6 +29,21 @@ export class ApiReferenceListUpdate {
   }
 }
 
+export interface IAlignmentListUpdate {
+  add?: ApiAlignment[]
+  remove?: ApiAlignment[]
+}
+export class ApiAlignmentListUpdate {
+  add?: ApiAlignment[]
+  remove?: ApiAlignment[]
+
+  constructor(add?: ApiAlignment[], remove?: ApiAlignment[]) {
+    this.add = add
+    this.remove = remove
+  }
+}
+
+
 
 export interface IRichSkillUpdate {
   skillName?: string
@@ -38,7 +52,7 @@ export interface IRichSkillUpdate {
   category?: string
   keywords?: IStringListUpdate
   collections?: ApiStringListUpdate
-  alignments?: ApiReferenceListUpdate
+  alignments?: IAlignmentListUpdate
   certifications?: ApiReferenceListUpdate
   standards?: ApiReferenceListUpdate
   occupations?: ApiStringListUpdate
@@ -53,7 +67,7 @@ export class ApiSkillUpdate implements IRichSkillUpdate {
   category?: string
   keywords?: ApiStringListUpdate
   collections?: ApiStringListUpdate
-  alignments?: ApiReferenceListUpdate
+  alignments?: ApiAlignmentListUpdate
   certifications?: ApiReferenceListUpdate
   standards?: ApiReferenceListUpdate
   occupations?: ApiStringListUpdate

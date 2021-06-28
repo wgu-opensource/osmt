@@ -6,18 +6,35 @@ import {PublishStatus} from "../PublishStatus"
  * The interface to a ApiSkill response we get from the backend
  */
 
+export interface IRef {
+  toString(): string
+}
+
 export interface INamedReference {
   id?: string
   name?: string
 }
+export interface IAlignment {
+  id?: string
+  skillName?: string
+  isPartOf?: INamedReference
+}
+
 export class ApiNamedReference implements INamedReference {
   id?: string
   name?: string
+
   constructor(reference: INamedReference) {
     this.id = reference.id
     this.name = reference.name
   }
 
+  equals(other?: ApiNamedReference): boolean {
+    return this.id === other?.id && this.name === other?.name
+  }
+  static formatRef(ref: INamedReference): string {
+    return ref.name ?? ""
+  }
   static fromString(textValue: string): ApiNamedReference | undefined {
     const val: string = textValue.trim()
     if (val.length < 1) {
@@ -30,9 +47,35 @@ export class ApiNamedReference implements INamedReference {
       return new ApiNamedReference({name: val})
     }
   }
+}
+export class ApiAlignment implements IAlignment {
+  id?: string
+  skillName?: string
+  isPartOf?: ApiNamedReference
 
-  equals(other: ApiNamedReference): boolean {
-    return this.id === other.id && this.name === other.name
+  constructor(reference: IAlignment) {
+    this.id = reference.id
+    this.skillName = reference.skillName
+    this.isPartOf = reference.isPartOf ? new ApiNamedReference(reference.isPartOf) : undefined
+  }
+  equals(other: ApiAlignment): boolean {
+    return this.id === other.id && this.skillName === other.skillName &&
+      (this.isPartOf?.equals(other.isPartOf) ?? other.isPartOf === undefined)
+  }
+  static formatRef(ref: IAlignment): string {
+    return ref.skillName ?? ""
+  }
+  static fromString(textValue: string): ApiAlignment | undefined {
+    const val: string = textValue.trim()
+    if (val.length < 1) {
+      return undefined
+    }
+
+    if (val.indexOf("://") !== -1) {
+      return new ApiAlignment({id: val})
+    } else {
+      return new ApiAlignment({skillName: val})
+    }
   }
 }
 
@@ -73,8 +116,8 @@ export interface ISkill {
   category?: string
   collections: IUuidReference[]
   keywords: string[]
-  alignments: INamedReference[]
   standards: INamedReference[]
+  alignments: IAlignment[]
   certifications: INamedReference[]
   occupations: IJobCode[]
   employers: INamedReference[]
@@ -95,8 +138,8 @@ export class ApiSkill {
   category?: string
   collections: IUuidReference[]
   keywords: string[]
-  alignments: INamedReference[]
   standards: INamedReference[]
+  alignments: IAlignment[]
   certifications: INamedReference[]
   occupations: IJobCode[]
   employers: INamedReference[]
@@ -130,6 +173,14 @@ export class ApiSkill {
     this.type = iRichSkill.type
     this.employers = iRichSkill.employers
     this.occupations = iRichSkill.occupations
+  }
+
+  get sortedAlignments(): IAlignment[] {
+    return [...this.alignments].sort((a,b) => {
+      const fwk = a.isPartOf ? a.isPartOf?.name?.localeCompare(b.isPartOf?.name ?? "") : 1
+      const name = a.skillName ? a.skillName.localeCompare(b.skillName ?? "") : 1
+      return fwk || name
+    })
   }
 }
 

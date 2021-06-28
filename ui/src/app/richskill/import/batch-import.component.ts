@@ -5,8 +5,14 @@ import {RichSkillService} from "../service/rich-skill.service"
 import {ToastService} from "../../toast/toast.service"
 import {Location} from "@angular/common"
 import {Papa, ParseResult} from "ngx-papaparse"
-import {ApiNamedReference, ApiSkill} from "../ApiSkill"
-import {ApiReferenceListUpdate, ApiSkillUpdate, ApiStringListUpdate, IRichSkillUpdate} from "../ApiSkillUpdate"
+import {ApiAlignment, ApiNamedReference, ApiSkill} from "../ApiSkill"
+import {
+  ApiAlignmentListUpdate,
+  ApiReferenceListUpdate,
+  ApiSkillUpdate,
+  ApiStringListUpdate,
+  IRichSkillUpdate
+} from "../ApiSkillUpdate"
 import {forkJoin, Observable} from "rxjs"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {Title} from "@angular/platform-browser";
@@ -30,9 +36,18 @@ export const importSkillHeaderOrder = [
   {field: "certifications", label: "Certifications"},
   {field: "occupations", label: "Occupations"},
   {field: "employers", label: "Employers"},
-  {field: "alignmentName", label: "Alignment Name"},
-  {field: "alignmentUrl", label: "Alignment URL"},
 ]
+export const allMappingHeaderOrder = (alignmentCount: number = 3): {field: string, label: string}[] => {
+  const alignmentHeaders = [...Array(alignmentCount).keys()].map(i => {
+    const label = (i > 0) ? ` ${i+1}` : ""
+    return [
+      {field: "alignmentName"+i, label: `Alignment${label} Name`},
+      {field: "alignmentUrl"+i, label: `Alignment${label} URL`},
+      {field: "alignmentFramework"+i, label: `Alignment${label} Framework`},
+    ]
+  }).flat()
+  return importSkillHeaderOrder.concat(alignmentHeaders)
+}
 
 
 export const importSkillHeaders: {[p: string]: string} =
@@ -41,11 +56,12 @@ export const importSkillHeaders: {[p: string]: string} =
    return acc
  }, {})
 
-export const importSkillHeadersReverse: {[p: string]: string} =
-  importSkillHeaderOrder.reduce((acc: {[p: string]: string}, it) => {
+export function importSkillHeadersReverse(alignmentCount: number=3): {[p: string]: string} {
+  return allMappingHeaderOrder(alignmentCount).reduce((acc: { [p: string]: string }, it) => {
     acc[it.label.toLowerCase()] = it.field
     return acc
   }, {})
+}
 
 export class AuditedImportSkill {
   skill: ApiSkillUpdate
@@ -94,6 +110,8 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   previewSkills?: ApiSkillUpdate[]
   auditedSkills?: AuditedImportSkill[]
   importedSkills?: AuditedImportSkill[]
+
+  alignmentCount: number = 3
 
   searchingSimilarity?: boolean
   similarSkills?: boolean[]
@@ -270,6 +288,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
       this.uploading = true
       this.papa.parse(file, {
         header: true,
+        skipEmptyLines: true,
         complete: (results) => {
           this.uploading = false
           this.uploadedFileError = false
@@ -329,13 +348,29 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     return words[0]
   }
 
+  reverseMappings(): {[p: string]: string[]} {
+    if (this.fieldMappings === undefined) {
+      return {}
+    }
+    const reversed: {[p: string]: string[]} = {}
+    Object.keys(this.fieldMappings).forEach(k => {
+      const v: string = this.fieldMappings ? this.fieldMappings[k] : ""
+      if (reversed[v] === undefined) {
+        reversed[v] = []
+      }
+      reversed[v].push(k)
+    })
+    return reversed
+  }
+
   skillsFromResults(): ApiSkillUpdate[] {
     const skillUpdates = this.parseResults?.data.map((row: { [x: string]: any; }) => {
       // tslint:disable-next-line:no-any
       const newSkill: {[s: string]: any} = {}
 
-      const alignmentHolder: {[s: string]: string} = {}
+      const alignmentsHolder: ApiAlignment[] = []
       const jobcodes: string[] = []
+      var alignMatches
 
       Object.keys(row).forEach(uploadedKey => {
         const fieldName = this.fieldMappings?.[uploadedKey]
@@ -355,10 +390,23 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
             newSkill[fieldName] = new ApiStringListUpdate(value.split(";").map(it => it.trim()))
           } else if (fieldName === "occupations") {
             jobcodes.push(...value.split(";").map(it => it.trim()))
-          } else if (fieldName === "alignmentUrl") {
-            alignmentHolder.id = value.trim()
-          } else if (fieldName === "alignmentName") {
-            alignmentHolder.name = value.trim()
+          } else if (alignMatches = fieldName.match(/alignment(Url|Name|Framework)(\d+)/)) {
+            var alignIndex = Number(alignMatches[2])
+            var alignField = alignMatches[1]
+
+            if (!alignmentsHolder[alignIndex]) {
+              alignmentsHolder[alignIndex] = new ApiAlignment({})
+            }
+
+            if (alignField === "Url") {
+              alignmentsHolder[alignIndex].id = value
+            }
+            else if (alignField === "Name") {
+              alignmentsHolder[alignIndex].skillName = value
+            }
+            else if (alignField === "Framework") {
+              alignmentsHolder[alignIndex].isPartOf = new ApiNamedReference({name: value.trim()})
+            }
           } else {
             newSkill[fieldName] = value
           }
@@ -369,8 +417,8 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         newSkill.occupations = new ApiStringListUpdate(jobcodes)
       }
 
-      if (alignmentHolder.id || alignmentHolder.name) {
-        newSkill.alignments = new ApiReferenceListUpdate([new ApiNamedReference(alignmentHolder)])
+      if (alignmentsHolder.length > 0) {
+        newSkill.alignments = new ApiAlignmentListUpdate(Array.from(alignmentsHolder))
       }
 
       return newSkill
@@ -381,9 +429,12 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   private initializeMapping(): void {
     const mappings: {[s: string]: string} = {}
     this.uploadedHeaders().forEach(it => {
-      const fieldName = importSkillHeadersReverse[it.toLowerCase()]
+      const uploadedField = it.toLowerCase()
+      const fieldName = importSkillHeadersReverse(this.alignmentCount)[uploadedField]
       if (fieldName) {
         mappings[it] = fieldName
+      } else if (uploadedField === 'o*net job codes') {
+        mappings[it] = 'occupations'
       }
     })
 

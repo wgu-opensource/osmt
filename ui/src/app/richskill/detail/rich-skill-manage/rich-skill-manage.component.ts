@@ -59,12 +59,13 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
         showIfEmpty: true
       },
       {
-        label: "Alignment",
-        bodyString: this.richSkill?.alignments
+        label: "Alignments",
+        bodyString: this.richSkill?.sortedAlignments
           ?.map(alignment => {
+            const framework = alignment.isPartOf ? `${alignment.isPartOf.name}: ` : ""
             return (alignment.id)
-              ? `<a class="t-link" target="_blank" href="${alignment.id}">${alignment.name || alignment.id}</a>`
-              : `${alignment.name}`
+              ? `<p class="t-type-body">${framework}<a class="t-link" target="_blank" href="${alignment.id}">${alignment.skillName || alignment.id}</a></p>`
+              : `${framework}${alignment.skillName}`
           })
           ?.join("") ?? "",
         showIfEmpty: true

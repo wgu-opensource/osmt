@@ -22,19 +22,22 @@ interface KeywordRepository {
     fun findByValueOrUri(
         type: KeywordTypeEnum,
         value: String? = null,
-        uri: String? = null
+        uri: String? = null,
+        framework: String? = null
     ): KeywordDao?
 
     fun findOrCreate(
         type: KeywordTypeEnum,
         value: String? = null,
-        uri: String? = null
+        uri: String? = null,
+        framework: String? = null
     ): KeywordDao?
 
     fun create(
         type: KeywordTypeEnum,
         value: String? = null,
-        uri: String? = null
+        uri: String? = null,
+        framework: String? = null
     ): KeywordDao?
 
     fun getDefaultAuthor(): KeywordDao
@@ -65,26 +68,28 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
         return findOrCreate(KeywordTypeEnum.Author, appConfig.defaultAuthorName, authorUri)!!
     }
 
-    override fun findOrCreate(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao? {
-        val existing = findByValueOrUri(type, value, uri)
-        return existing ?: create(type, value, uri)
+    override fun findOrCreate(type: KeywordTypeEnum, value: String?, uri: String?, framework: String?): KeywordDao? {
+        val existing = findByValueOrUri(type, value, uri, framework)
+        return existing ?: create(type, value, uri, framework)
     }
 
-    override fun findByValueOrUri(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao? {
-        val condition = (table.keyword_type_enum eq type) and (table.value eq value) and (table.uri eq uri)
+    override fun findByValueOrUri(type: KeywordTypeEnum, value: String?, uri: String?, framework: String?): KeywordDao? {
+        val condition = (table.keyword_type_enum eq type) and (table.value eq value) and (table.uri eq uri) and (table.framework eq framework)
         val query = table.select(condition).firstOrNull()
         return query?.let { dao.wrapRow(it) }
     }
 
-    override fun create(type: KeywordTypeEnum, value: String?, uri: String?): KeywordDao? {
+    override fun create(type: KeywordTypeEnum, value: String?, uri: String?, framework: String?): KeywordDao? {
         val strippedValue = value?.strip()
         val strippedUri = uri?.strip()
+        val strippedFramework = framework?.strip()
         return if (!strippedValue.isNullOrBlank() || !strippedUri.isNullOrBlank()) dao.new {
             updateDate = LocalDateTime.now(ZoneOffset.UTC)
             creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.type = type
             this.value = value
             this.uri = uri
+            this.framework = framework
         }.also { keywordEsRepo.save(it.toModel()) } else null
     }
 }

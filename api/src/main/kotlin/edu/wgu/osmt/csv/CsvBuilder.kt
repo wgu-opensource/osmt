@@ -34,7 +34,7 @@ class CsvResourceBuilder<T> {
 
     fun build(): CsvResource<T> {
         return object : CsvResource<T>(name) {
-            override fun columnTranslations(): Array<CsvColumn<T>> = data.toTypedArray()
+            override fun columnTranslations(d: List<T>): Array<CsvColumn<T>> = data.toTypedArray()
             override fun configureCsv(): CsvConfig = config
         }
     }

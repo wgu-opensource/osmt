@@ -122,8 +122,9 @@
             <p><strong>Certifications:</strong> Related academic and professional credentials that support career advancement.</p>
             <p><strong>Occupations:</strong> Related job names or codes from the U.S. Bureau of Labor Statistics (BLS) or the Occupational Information Network (O*NET), separated by a semicolon.</p>
             <p><strong>Employers:</strong> Employers who require this RSD for a given job; doesn't display in public view. </p>
-            <p><strong>Alignment Name:</strong> The industry-recognized framework or data that aligns with this RSD, from a source such as Emsi, Burning Glass, LinkedIn, or Workday.</p>
-            <p><strong>Alignment URL:</strong> The unique web address that holds alignment details.</p>
+            <p><strong>Alignment Name:</strong> The industry-recognized skill or standard (from an external open skills library or framework) to which this RSD aligns.</p>
+            <p><strong>Alignment URL:</strong> The unique web address of the industry-recognized skill or standard.</p>
+            <p><strong>Alignment Framework:</strong> The open skills library or framework that holds the industry-recognized skill or standard.</p>
             <p><strong>Do Not Import:</strong> Select this option for any property you don't want to import from the CSV file.</p>
           </div>
         </app-accordian>
@@ -133,6 +134,7 @@
       <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
         <app-field-mapping-table
           [currentMappings]="fieldMappings"
+          [alignmentCount]="alignmentCount"
           [uploadedHeaders]="uploadedHeaders()"
           (fieldMappingChanged)="handleMappingChanged($event)"
         ></app-field-mapping-table>

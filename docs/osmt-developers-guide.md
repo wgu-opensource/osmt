@@ -16,7 +16,7 @@ Public Canonical URL endpoints are exempt from rate limits.
 
 Make a request to ```/api/skills``` with the Accept header set to "text/csv":
 ```bash
-# curl -H "Accept: text/csv" https://Domain.Name/api/skills
+# curl -H "Accept: text/csv" https://osmt.wgu.edu/api/skills
 ```
 Since it may take a while for this CSV to be prepared you will receive a response with http status code 202 Accepted with content-type "application/json".
 ```json
@@ -29,7 +29,7 @@ Since it may take a while for this CSV to be prepared you will receive a respons
 ```
 Use the ```/api/tasks/{uuid}``` endpoint to check for the results of your task:
 ```bash
-# curl -H https://Domain.Name/api/tasks/3fa85f64-5717-4562-b3fc-2c963f66afa6
+# curl -H https://osmt.wgu.edu/api/tasks/3fa85f64-5717-4562-b3fc-2c963f66afa6
 ```
 If the task is not yet complete you will receive http status 202 and the same TaskResult as before with Content-Type: application/json.  
 If the results of the task are ready you will receive http status 200 OK with the Content-Type originally requested, in this case "text/csv".
@@ -38,8 +38,8 @@ If the results of the task are ready you will receive http status 200 OK with th
 
 Make a request to ```/api/skills``` with Accept header "application/json":
 ```bash
-# curl -H "Accept: application/json" https://Domain.Name/api/skills
-< Link: <https://Domain.Name/api/skills?page=2>; rel="next";
+# curl -H "Accept: application/json" https://osmt.wgu.edu/api/skills
+< Link: <https://osmt.wgu.edu/api/skills?page=2>; rel="next";
 [
 {}, {}, ...
 ]
@@ -52,7 +52,7 @@ Request the url specified in the Link header with the ```next``` relation until 
 Make a request to the url with Accept header set to "application/json":
 
 ```bash
-# curl -H "Accept: application/json" https://Domain.Name/api/skills/3fa85f64-5717-4562-b3fc-2c963f66afa6
+# curl -H "Accept: application/json" https://osmt.wgu.edu/api/skills/3fa85f64-5717-4562-b3fc-2c963f66afa6
 ```
 
 

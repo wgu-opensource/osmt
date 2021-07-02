@@ -1003,7 +1003,7 @@ components:
       example:
         id: https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac
         type: RichSkillDescriptor
-        author: https://example/organization
+        author: https://example.osmt.wgu.edu/organization
         category: Business Ethics
         skillName: "Business Ethics: Responsibility Acceptance"
         skillStatement: The learner accepts responsibility and repercussions related to ethical behavior.

@@ -59,7 +59,7 @@ WORKDIR ${BASE_DIR}/build
 
 USER ${USER}
 
-RUN mvn clean package -Dmaven.test.skip.exec
+RUN mvn clean package
 
 ######################
 ### PACKAGING IMAGE ##

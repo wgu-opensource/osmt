@@ -73,7 +73,7 @@ To automatically apply the official Kotlin code style, Install the IntelliJ plug
 
 ## Command Line execution
 #### Building the jar:
-```mvn clean package -Dmaven.test.skip.exec```
+```mvn clean package```
 
 #### Run the web service:
 ```mvn -Dspring-boot.run.profiles=dev,apiserver spring-boot:run```

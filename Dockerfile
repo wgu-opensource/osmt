@@ -3,6 +3,7 @@
 ################
 FROM centos:centos8.3.2011 as osmt-base
 
+LABEL Maintainer="WGU / OSN"
 LABEL Version="1.0"
 
 ENV JAVA_VERSION=11.0.11.0.9
@@ -58,7 +59,7 @@ WORKDIR ${BASE_DIR}/build
 
 USER ${USER}
 
-RUN mvn clean package -Dmaven.test.skip.exec
+RUN mvn clean package
 
 ######################
 ### PACKAGING IMAGE ##

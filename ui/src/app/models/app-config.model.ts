@@ -28,7 +28,7 @@ export class DefaultAppConfig implements IAppConfig {
   toolNameLong = "Open Skills Management Tool"
   publicSkillTitle = "Rich Skill Descriptor"
   publicCollectionTitle = "Rich Skill Descriptor Collection"
-  licensePrimary = "© 2021 Western Governors University (WGU)."
+  licensePrimary = "Copyright © Open Skills Network"
   licenseSecondary = "All rights reserved."
   poweredBy = "Powered by the"
   poweredByUrl = "https://rsd.osmt.dev"

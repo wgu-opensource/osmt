@@ -22,7 +22,7 @@ We use a branching workflow, where committers create a feature branch containing
 Please format your commit messages with a summary line (50 characters or less), a blank line, and more detailed text explaining the commit.
 - Understand ahead of time that commits are often squashed, so commit messages may not last forever.
 - Speak to both others and your near-future self. Capture enough ephemeral context to understand why this commit exists.
-- Reference issues and tickets
+- Reference [GitHub issues](https://guides.github.com/features/issues/) whenever possible.
 
 #### Example commit message:
 _(with thanks to https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)_
@@ -69,7 +69,7 @@ Never made an open source contribution before? Wondering how contributions work 
 5. Use `git add insert-paths-of-changed-files-here` to add the file contents of the changed files to the "snapshot" git uses to manage the state of the project, also known as the index.
 6. Use `git commit` to commit the contents of the index. This should open an editor; please provide a useful commit message (see above for [more about commit messages](#commit-message-format))
 7. Push the changes to the remote repository using `git push HEAD:origin feature/your-feature-branch-name`. 
-8. Submit a pull request to the upstream repository.
+8. Submit a pull request to the upstream repository. GitHub will provide a button for this in the browser after you push.
 9. Provide a title for your pull request. It can be the same as the 1st line of your commit message.
 10. Provide a description for your pull request. It can be the same as the description in your commit message.
 11. It's OK if your pull request is not perfect (no pull request is), the reviewer will be able to help you fix any problems and improve it!
@@ -78,5 +78,4 @@ Never made an open source contribution before? Wondering how contributions work 
 14. Celebrate your success after your pull request is merged!
 
 # Where can I go for help?
-If you need help, you can ask questions on our mailing list, IRC chat, or
-[list any other communication platforms that your project uses].
+If you need help, you can ask questions in our GitHub '[Discussions](https://github.com/wgu-opensource/osmt/discussions)' area.

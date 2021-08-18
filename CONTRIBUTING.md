@@ -11,7 +11,7 @@ We use GitHub's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues).
 - Issues have labels describing what kind of changes are involved. GitHub search makes it easy to use these labels to find issues or pull requests you're interested in. Each label is listed with search links for finding open items with that label. We encourage you to read about other search filters to help you write more focused queries.
 
 - If you don't feel ready to make a code contribution yet, no problem! Check out the [existing issues](https://github.com/wgu-opensource/osmt/issues) to see if an issue exists already for the change you want.
-- 
+
 ### Expectations for contributed code
 - OSMT project uses Kotlin 1.3.72 and Angular Front-end 10.0, with MySQL DB, redis and Elasticsearch. See the [Getting Started](README.md#getting-started) section in the README file.
 - Contributed code needs to follow appropriate style guides. Coding style isn't only a matter of preference, but is essential in managing an effective branching and release strategy. Trivial or unrelated code changes create merge conflicts, and introduce risk and wasted time in resolving them.
@@ -42,9 +42,6 @@ A ["Pull Request"](https://docs.github.com/en/github/collaborating-with-pull-req
 2. Wait for the pull request to be reviewed by a maintainer.
 3. Make changes to the pull request if the reviewing maintainer recommends them. Push those changes to the same GitHub feature branch.
 4. Celebrate your success after your pull request is merged!
-
-### Workflow
-1. TODO - outline what to expect for CI/CD processes related to code changes (verification jobs, merge jobs, release jobs)
 
 ### Commit Message Format
 Please format your commit messages with a summary line (50 characters or less), a blank line, and more detailed text explaining the commit.

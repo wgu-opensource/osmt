@@ -108,38 +108,10 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
         }?.filterNotNull()
     }
 
-    fun parse_blsMajor(rowValue: String?): List<JobCodeDao>? {
-        return split_field(rowValue)?.map { code ->
-            val sanitizedCode = JobCodeBreakout.majorCode(code)
-            jobCodeRepository.findByCodeOrCreate(sanitizedCode!!)
-        }
-    }
-
-    fun parse_blsMinor(rowValue: String?): List<JobCodeDao>? {
-        return split_field(rowValue)?.map { code ->
-            val sanitizedCode = JobCodeBreakout.minorCode(code)
-            jobCodeRepository.findByCodeOrCreate(sanitizedCode!!)
-        }
-    }
-
-    fun parse_blsBroad(rowValue: String?): List<JobCodeDao>? {
-        return split_field(rowValue)?.map { code ->
-            val sanitizedCode = JobCodeBreakout.broadCode(code)
-            jobCodeRepository.findByCodeOrCreate(sanitizedCode!!)
-        }
-    }
-
-    fun parse_blsDetailed(rowValue: String?): List<JobCodeDao>? {
-        return split_field(rowValue)?.map { code ->
-            val sanitizedCode = JobCodeBreakout.detailedCode(code)
-            jobCodeRepository.findByCodeOrCreate(sanitizedCode!!)
-        }
-    }
-
-    fun parse_jobcodes(rowValue: String?): List<JobCodeDao>? {
-        return split_field(rowValue)?.map { code ->
-            val sanitizedCode = JobCodeBreakout.jobRoleCode(code)
-            jobCodeRepository.findByCodeOrCreate(sanitizedCode!!)
+    fun parse_jobcodes(rowValue: String?, parserFunction:
+        (codeParam: String) -> String?): List<JobCodeDao>? {
+        return split_field(rowValue)?.map {
+                code -> jobCodeRepository.findByCodeOrCreate(parserFunction(code)!!)
         }
     }
 
@@ -181,11 +153,11 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
             standards = parse_keywords(KeywordTypeEnum.Standard, row.standards)
             certifications = parse_keywords(KeywordTypeEnum.Certification, row.certifications)
             employers = parse_keywords(KeywordTypeEnum.Employer, row.employer)
-            blsMajor = parse_blsMajor(row.blsMajors)
-            blsMinor = parse_blsMinor(row.blsMinors)
-            blsBroad = parse_blsBroad(row.blsBroads)
-            blsDetailed = parse_blsDetailed(row.blsDetaileds)
-            occupations = parse_jobcodes(row.jobRoles)
+            blsMajor = parse_jobcodes(row.blsMajors, JobCodeBreakout::majorCode)
+            blsMinor = parse_jobcodes(row.blsMinors, JobCodeBreakout::minorCode)
+            blsBroad = parse_jobcodes(row.blsBroads, JobCodeBreakout::broadCode)
+            blsDetailed = parse_jobcodes(row.blsDetaileds, JobCodeBreakout::detailedCode)
+            occupations = parse_jobcodes(row.jobRoles, JobCodeBreakout::jobRoleCode)
             collections = parse_collections(row.collections)
 
             if (row.alignmentTitle != null || row.alignmentUri != null) {

@@ -24,7 +24,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import org.springframework.transaction.annotation.Transactional
 
-@SpringBootTest
+@SpringBootTest(classes = [TestApplication::class])
 @ActiveProfiles("test,apiserver")
 @ConfigurationPropertiesScan("edu.wgu.osmt.config")
 @ContextConfiguration

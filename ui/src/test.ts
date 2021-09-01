@@ -1,5 +1,6 @@
 // This file is required by karma.conf.js and loads recursively all the .spec and framework files
 
+import './app/app.module';  // Force Karma to load all source files, not just those that have a corresponding spec file
 import 'zone.js/dist/zone-testing';
 import { getTestBed } from '@angular/core/testing';
 import {

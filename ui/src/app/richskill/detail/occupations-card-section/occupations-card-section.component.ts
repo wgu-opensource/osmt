@@ -61,7 +61,9 @@ export class OccupationsCardSectionComponent implements OnInit {
   constructor() { }
 
   distinctJobcodes(input: Array<IJobCode>): Array<IJobCode> {
-    return input.filter((item, idx, arr) => arr.findIndex(it => it.code === item.code) === idx)
+    return input.sort((a,b) => b.name?.localeCompare(a.name!) ? 1 : -1)
+      .filter((item, idx, arr) => arr.findIndex(it => it.code === item.code) === idx)
+      .sort((a,b) => a.code > b.code ? 1 : -1)
   }
 
   ngOnInit(): void {

@@ -1,0 +1,13 @@
+{
+  "editableAuthor": false,
+  "defaultAuthorValue": "Western Governors University",
+  "toolName": "OSMT",
+  "toolNameLong": "Open Skills Management Tool",
+  "publicSkillTitle": "Rich Skill Descriptor",
+  "publicCollectionTitle": "Rich Skill Descriptor Collection",
+  "licensePrimary": "© 2021 Western Governors University - WGU.",
+  "licenseSecondary": "All Rights Reserved.",
+  "poweredBy": "Powered by the",
+  "poweredByUrl": "https://openskillsnetwork.org",
+  "poweredByLabel": "Open Skills Network"
+}

@@ -83,7 +83,7 @@ export abstract class AbstractService {
     const baseUrl = AppConfig.settings.baseApiUrl
 
     // if user defined, make sure it delineates between the host and path
-    if (baseUrl && !baseUrl.endsWith("/")) {
+    if (baseUrl && !baseUrl.endsWith("/") && !path.startsWith("/")) {
       return baseUrl + "/" + path
     } else {
       return baseUrl + path
@@ -118,7 +118,8 @@ export abstract class AbstractService {
     return new Observable((observer) => {
 
       const tick = () => {
-        this.httpClient.get<any>(task.id, {
+        // TODO: For DMND-635, we temporarily added the following buildUrl call, but the permanent fix should be in the back-end, not here.  Fix the 2 tests for pollForTaskResults also, by passing fullUrl into doWork() instead of path.
+        this.httpClient.get<any>(this.buildUrl(task.id), {
           headers: this.wrapHeaders(),
           observe: "response"
         }).subscribe(({body, status}) => {

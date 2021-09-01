@@ -28,7 +28,7 @@ import {Title} from "@angular/platform-browser"
 import {HasFormGroup} from "../../core/abstract-form.component"
 import {notACopyValidator} from "../../validators/not-a-copy.validator"
 import {ApiSkillSummary} from "../ApiSkillSummary"
-import {Whitelabelled} from "../../../whitelabel";
+import {Whitelabelled} from "../../../whitelabel"
 
 
 @Component({
@@ -94,7 +94,6 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
         this.searchingSimilarity = undefined
       }
     })
-
   }
 
   pageTitle(): string {
@@ -288,6 +287,18 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
   stringFromAlignment(ref?: IAlignment): string {
     return ref?.skillName ?? ref?.id ?? ""
   }
+
+  namedReferenceForString(value: string): ApiNamedReference | undefined {
+    const str = value.trim()
+    if (str.length < 1) {
+      return undefined
+    } else if (str.indexOf("://") !== -1) {
+      return new ApiNamedReference({id: str})
+    } else {
+      return new ApiNamedReference({name: str})
+    }
+  }
+
   stringFromNamedReference(ref?: INamedReference): string {
     return ref?.name ?? ref?.id ?? ""
   }

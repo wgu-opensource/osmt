@@ -86,7 +86,7 @@ describe("RichSkillService", () => {
     })
   })
 
-  it("getSkillsByUUID should return", () => {
+  it("getSkillByUUID should return", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false

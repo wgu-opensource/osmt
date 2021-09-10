@@ -41,11 +41,7 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
       occupations: new FormControl(""),
       employers: new FormControl(""),
       alignments: new FormControl("", urlValidator),
-      collectionName: new FormControl("")
-    }
-    if (AppConfig.settings.editableAuthor) {
-      // @ts-ignore
-      fields.author = new FormControl(AppConfig.settings.defaultAuthorValue, Validators.required)
+      collectionName: new FormControl(""),
     }
     return fields
   }

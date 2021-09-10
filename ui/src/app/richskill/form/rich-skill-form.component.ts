@@ -116,10 +116,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       certifications: new FormControl(""),
       occupations: new FormControl(""),
       employers: new FormControl(""),
-    }
-    if (AppConfig.settings.editableAuthor) {
-      // @ts-ignore
-      fields.author = new FormControl(AppConfig.settings.defaultAuthorValue, Validators.required)
+      author: new FormControl(AppConfig.settings.defaultAuthorValue, Validators.required)
     }
     return fields
   }
@@ -186,11 +183,9 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       update.skillStatement = inputStatement
     }
 
-    if (AppConfig.settings.editableAuthor) {
-      const author = ApiNamedReference.fromString(formValue.author)
-      if (!this.existingSkill || this.isDuplicating || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
-        update.author = author
-      }
+    const author = ApiNamedReference.fromString(formValue.author)
+    if (!this.existingSkill || this.isDuplicating || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
+      update.author = author
     }
 
     const inputCategory = this.nonEmptyOrNull(formValue.category)
@@ -325,11 +320,8 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       collections: skill.collections?.map(it => it.name) ?? [],
       certifications: skill.certifications?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
       occupations: skill.occupations?.map(it => this.stringFromJobCode(it)).join("; ") ?? "",
-      employers: skill.employers?.map(it => this.stringFromNamedReference(it)).join("; ") ?? ""
-    }
-    if (AppConfig.settings.editableAuthor) {
-      // @ts-ignore
-      fields.author = this.stringFromNamedReference(skill.author)
+      employers: skill.employers?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
+      author: this.stringFromNamedReference(skill.author)
     }
     this.skillForm.setValue(fields)
 

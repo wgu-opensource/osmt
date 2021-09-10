@@ -52,9 +52,7 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
       this.collectionLoaded.subscribe(collection => { this.setCollection(collection) })
     }
 
-    if (this.isAuthorEditable()) {
-      this.collectionForm.controls.author.setValue(AppConfig.settings.defaultAuthorValue)
-    }
+    this.collectionForm.controls.author.setValue(AppConfig.settings.defaultAuthorValue)
 
     this.titleService.setTitle(`${this.pageTitle()} | ${this.whitelabel.toolName}`)
   }
@@ -66,10 +64,7 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
   getFormDefinitions(): {[key: string]: AbstractControl} {
     const fields = {
       collectionName: new FormControl("", Validators.required),
-    }
-    if (this.isAuthorEditable()) {
-      // @ts-ignore
-      fields.author = new FormControl(AppConfig.settings.defaultAuthorValue, Validators.required)
+      author: new FormControl(AppConfig.settings.defaultAuthorValue, Validators.required)
     }
     return fields
   }
@@ -91,11 +86,8 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
   setCollection(collection: ApiCollection): void {
     this.existingCollection = collection
     const fields = {
-      collectionName: collection.name
-    }
-    if (AppConfig.settings.editableAuthor) {
-      // @ts-ignore
-      fields.author = this.stringFromNamedReference(collection.author)
+      collectionName: collection.name,
+      author: this.stringFromNamedReference(collection.author)
     }
     this.collectionForm.setValue(fields)
   }

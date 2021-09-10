@@ -93,7 +93,7 @@ export class CollectionService extends AbstractService {
   // tslint:disable-next-line:no-any
   getCsvTaskResultsIfComplete(uuid: string): Observable<any> {
     return this.httpClient
-      .get(`api/results/text/${uuid}`, {
+      .get(this.buildUrl(`/api/results/text/${uuid}`), {
         responseType: "text",
         observe: "response"
       })

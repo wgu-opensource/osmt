@@ -10,7 +10,11 @@ import {
   ISkill,
   IUuidReference
 } from "../../src/app/richskill/ApiSkill"
-import { ICollectionSummary, ISkillSummary } from "../../src/app/richskill/ApiSkillSummary"
+import {
+  ApiCollectionSummary,
+  ICollectionSummary,
+  ISkillSummary
+} from "../../src/app/richskill/ApiSkillSummary"
 import { ApiReferenceListUpdate, IRichSkillUpdate, IStringListUpdate } from "../../src/app/richskill/ApiSkillUpdate"
 import { PaginatedCollections, PaginatedSkills } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ITaskResult } from "../../src/app/task/ApiTaskResult"
@@ -188,11 +192,11 @@ export function createMockPaginatedCollections(collectionCount = 1, total = 10):
   const collections = []
   for (let c = 1; c <= collectionCount; ++c) {
     collections.push(
-      createMockCollectionSummary(
+      new ApiCollectionSummary(createMockCollectionSummary(
         "id" + c,
         PublishStatus.Draft,
         "2020-06-25T14:58:46.313Z"
-      )
+      ))
     )
   }
 

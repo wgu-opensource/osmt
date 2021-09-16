@@ -6,6 +6,8 @@
     |-- ui                 - Angular frontend - See `./ui/README.md`
     |-- docker             - Misc. Docker support for development
 
+
+![OSMT architectural overview](./ui/src/assets/Architectural-Diagram.png)
 ## Getting started
 This project is a multi module Maven project. Pom.xml files exist in the project root, ./api and ./ui.  
   * Import module
@@ -19,6 +21,33 @@ This project is a multi module Maven project. Pom.xml files exist in the project
   * Run both the frontend and backend configurations you created from IntelliJ
   * Visit `http://localhost:4200`
 
+## BLS & Onet codes
+You need to make sure you install these codes before deploying, you can find the codes for BLS [here](https://www.bls.gov/soc/2018/#materials)
+and the Onet codes [here](https://www.onetcenter.org/database.html#occ). Make sure you export them as CSV files.
+*NOTE*, make sure you have mysql setup before continuing with the following steps. After downloading them follow these steps:
+### steps to import BLS codes:
+1. go to edit configurations at the top bar of IntelliJ and click on springboot -> Application.
+2. in VM options type in this ```-Dspring.profiles.active=dev,import```
+3. in program arguments type in this ```--csv=path/to/bls_csv --import-type=bls ```
+4. click apply and ok and then run the app.
+
+### for importing Onet
+1. go to edit configurations at the top bar of IntelliJ and click on springboot -> Application.
+2. in VM options type in this ```-Dspring.profiles.active=dev,import```
+3. in program arguments type in this ```--csv=path/to/onet_csv --import-type=onet ```
+4. click apply and ok and then run the app.
+
+## Okta configuration
+To use Okta as your OAuth2 provider, include `oauth2-okta` in the list of Spring Boot profiles. You will need to provide the
+following properties when running the application. To get these properties you will need go to okta, create an
+Okta application in Web Mode with OpenID. Once created you can find the values on the left nav, click "Applications->Applications".
+Then, in the main content pane, select the application you created. You will immediately be presented with
+the Client ID and Client Secret. Clicking on the "Sign On" tab will present you with the issuer and audience values.
+ * okta.oauth2.clientId      
+ * okta.oauth2.clientSecret
+ * okta.oauth2.audience
+ * okta.oauth2.issuer
+ 
 ## Local Development
 The Angular UI app is configured to proxy requests to the backend server during development. This allows one to use Angular's live reloading server.
 

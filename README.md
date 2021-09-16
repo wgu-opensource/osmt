@@ -1,61 +1,68 @@
 # WGU Open Skills Management Toolset (OSMT)
 
-## Project Structure
+## Overview
+The Open Skills Management Tool (OSMT, pronounced "Oz-mit") is a free, open-source instrument to facilitate the production of rich skill descriptor (RSD) based open skills libraries. In short it helps to create a commons skills language by creating, managing, and organizing skills related data.  An open-source framework allows everyone to use the tool collaboratively to define the RSD so that those skills are translatable and transferable across educational institutions and hiring organizations within programs, curricula, and job descriptions.
+
+## Architecture
+OSMT is written with Kotlin and Angular, using backend-instances of MySQL, Redis, and Elastisearch. 
+![OSMT architectural overview](./ui/src/assets/Architectural-Diagram.png).
+
+## Release / Branching Strategy
+The OSMT project will follow the [GitFlow](https://nvie.com/posts/a-successful-git-branching-model/) model, with
+* Enhancement and bug fix work done on feature branches (```feature/branch-name```)
+* Feature branches merge into ```develop```, as the integration branch
+* Releases are cut from ```develop``` (as ```release-branch-name```), and merged back in to both ```master``` and ```develop```
+
+See the [CONTRIBUTING.md](./CONTRIBUTING.md) document for additional context.
+
+### Dependencies
+OSMT stands up Elasticsearch, Redis, and MySQL dependencies via a docker-compose instance. For more context, see [docker-compose.yml](./docker-compose.yml) in the project root, and [dev-stack-local.yml](./docker/dev-stack.yml) in the ./docker directory.
+
+#### OAuth2 and Okta Configuration
+See the section for [OAuth2](./api/README.md#oauth2) in the API README file.
+
+## Build
+### Requirements
+OSMT requires Java 11 and a modern version of NodeJS / npm (currently v16.6.2 / 7.20.3, but any recent version should work OK). To follow the project documentation, you will need a recent version of Docker and docker-compose. 
+
     project root/
     |-- api                - Spring Boot, Kotlin based backend - See `./api/README.md`
     |-- ui                 - Angular frontend - See `./ui/README.md`
     |-- docker             - Misc. Docker support for development
 
+OSMT is a multi module Maven project, and you will also need a modern version of Maven (currently 3.8.1, but any recent version will probably work). pom.xml files exist in the project root, ./api and ./ui. Running the command `mvn clean install` from the project root will create a fat jar in the target directory that contains both the backend server and the built Angular frontend static files.
+Both the API and the UI modules have README.md files with more specific information about those layers.
 
-![OSMT architectural overview](./ui/src/assets/Architectural-Diagram.png)
-## Getting started
-This project is a multi module Maven project. Pom.xml files exist in the project root, ./api and ./ui.  
-  * Import module
-      * Navigate to File -> New -> Module from existing sources
-      * Select "Create module from existing sources"
-      * Select the root project folder where this README exists from the file dialog
-  * Go through the readme files of `./api` and `./ui` to setup the child modules in IntelliJ and to create run/debug configurations 
-  * Start the docker development stack for MySQL and other dependencies
+## Install / Run from IntelliJ
+* Import maven module
+    * Navigate to File -> New from existing sources
+    * Select "Create from existing sources"
+    * Select the project root folder
+* Go through the readme files of `./api` and `./ui` to setup the child modules in IntelliJ and to create run/debug configurations. The API and UI modules require
+* Start the docker development stack for MySQL and other dependencies
     * from the `./docker` folder, run `docker-compose -f dev-stack.yml up`
-    * to shut down the development stack, press `<ctl> + c`  
-  * Run both the frontend and backend configurations you created from IntelliJ
-  * Visit `http://localhost:4200`
+    * to shut down the development stack, press `<ctl> + c`
+* Run both the frontend and backend configurations you created from IntelliJ
+* Visit `http://localhost:4200`
 
-## BLS & Onet codes
-You need to make sure you install these codes before deploying, you can find the codes for BLS [here](https://www.bls.gov/soc/2018/#materials)
-and the Onet codes [here](https://www.onetcenter.org/database.html#occ). Make sure you export them as CSV files.
-*NOTE*, make sure you have mysql setup before continuing with the following steps. After downloading them follow these steps:
-### steps to import BLS codes:
-1. go to edit configurations at the top bar of IntelliJ and click on springboot -> Application.
-2. in VM options type in this ```-Dspring.profiles.active=dev,import```
-3. in program arguments type in this ```--csv=path/to/bls_csv --import-type=bls ```
-4. click apply and ok and then run the app.
-
-### for importing Onet
-1. go to edit configurations at the top bar of IntelliJ and click on springboot -> Application.
-2. in VM options type in this ```-Dspring.profiles.active=dev,import```
-3. in program arguments type in this ```--csv=path/to/onet_csv --import-type=onet ```
-4. click apply and ok and then run the app.
-
-## Okta configuration
-To use Okta as your OAuth2 provider, include `oauth2-okta` in the list of Spring Boot profiles. You will need to provide the
-following properties when running the application. To get these properties you will need go to okta, create an
-Okta application in Web Mode with OpenID. Once created you can find the values on the left nav, click "Applications->Applications".
-Then, in the main content pane, select the application you created. You will immediately be presented with
-the Client ID and Client Secret. Clicking on the "Sign On" tab will present you with the issuer and audience values.
- * okta.oauth2.clientId      
- * okta.oauth2.clientSecret
- * okta.oauth2.audience
- * okta.oauth2.issuer
- 
-## Local Development
 The Angular UI app is configured to proxy requests to the backend server during development. This allows one to use Angular's live reloading server.
 
-## Building
-Running the command `mvn clean install` will result in a fat jar being built that contains both the backend server and the built Angular frontend static files.
+
+### Configuration
+### Running Locally
+
+### Post-installation (BLS, O*NET, etc)
+See the section for [Importing Skills, BLS, and O*NET](./api/README.md#importing-skills-bls-and-onet) in the API README file.
+
+## How to get help
+OMST is an open source project, and is supported by its community. Please look to the Discussion boards and Wiki on GitHub. Please all see the [CONTRIBUTING.md](./CONTRIBUTING.md) document for additional context.
+
+-------------------------------------------------
+
+
 
 ## Other notes
-The backend will serve any routes not already configured to the API to the frontend, allowing Angular's routing to takeover. 
+The backend will serve any routes not already configured to the API to the frontend, allowing Angular's routing to takeover.
 
 ## Deploy steps
 ### Create the Database and Database user
@@ -98,4 +105,3 @@ cd /mnt/
   -jar /opt/osmt/bin/osmt.jar \
   --csv=/mnt/<PATH_TO_CSV>
 ```
-

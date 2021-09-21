@@ -46,6 +46,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>edu.wgu.osmt</groupId>
+            <artifactId>osmt-ui</artifactId>
+            <version>1.0.5-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
@@ -259,7 +264,7 @@
                 <version>${flywaydb.version}</version>
                 <configuration>
                     <url>jdbc:mysql://localhost:3306/osmt_db</url>
-                    <user>changeme</user>
+                    <user>osmt</user>
                     <password>password</password>
                     <locations>
                         <location>classpath:db/migration</location>

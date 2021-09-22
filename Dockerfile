@@ -57,8 +57,8 @@ WORKDIR ${BASE_DIR}/build
 
 USER ${USER}
 
-# Skipping tests because api integration tests require access to the Docker service.
-RUN mvn clean package -Dmaven.test.skip.exec
+# The dockerfile-build Maven profile excludes certain api integration tests that require access to the Docker service.
+RUN mvn clean package -P dockerfile-build
 
 ######################
 ### PACKAGING IMAGE ##

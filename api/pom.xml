@@ -296,7 +296,54 @@
                     <commitIdGenerationMode>full</commitIdGenerationMode>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-help-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>show-profiles</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>active-profiles</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>dockerfile-build</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <!-- for Kotlin files, don't include the extension - https://stackoverflow.com/questions/39723763/kotlin-maven-not-executing-tests#39735811 -->
+                                <exclude>AuditLogRepositoryTest</exclude>
+                                <exclude>BatchImportRichSkillTest</exclude>
+                                <exclude>BlsImportTest</exclude>
+                                <exclude>CollectionEsRepoTest</exclude>
+                                <exclude>CollectionRepositoryTest</exclude>
+                                <exclude>JobCodeEsRepoTest</exclude>
+                                <exclude>JobCodeRepositoryTest</exclude>
+                                <exclude>KeywordEsRepoTest</exclude>
+                                <exclude>KeywordRepositoryTest</exclude>
+                                <exclude>OnetImportTest</exclude>
+                                <exclude>RichSkillControllerTest</exclude>
+                                <exclude>RichSkillEsRepoTest</exclude>
+                                <exclude>RichSkillRepositoryTest</exclude>
+                                <exclude>SearchControllerTest</exclude>
+                                <exclude>TaskTest</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

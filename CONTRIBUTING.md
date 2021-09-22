@@ -22,6 +22,16 @@ We use GitHub's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues).
 - All execution paths for new code should be covered by unit tests.
   - Many IDEs will report on unit test coverage and call out any gaps. That said, reporting of test coverage doesn't mean that the tests are useful or effective. If you find a section of code is difficult to unit test, this may indicate the need for some refactoring. Non-trivial refactors should also be coordinated with project maintainers.
 
+#### Testing expectations
+- The OSMT project embraces the [Test Pyramid](https://martinfowler.com/bliki/TestPyramid.html). Boiling this down:
+  - We want to test all execution paths with unit tests.
+    - Unit tests do not rely on any external services, network access, databases, or filesystem I/O, but rather use mocks when required. This also informs good object composition and design, facilitating healthy dependency injection/inversion of control
+    - Unit test classes will be run by Maven in the "test" phase by the Surefire plugin, and need to end in "Test"
+  - We use integration tests as needed to stand up subsets of the application. These may require Docker containers or interactions between several components or services.
+    - Integration test classes will be run by Maven in the "verify" phase by the Failsafe plugin, and need to end in "IT". Failsafe has "pre-integration-test" and "post-integration-test" phases for stand up and tearing down integration test resources. The "post-intergation-test" phase is always processed, regardless of test failures. Thsi allows Maven to clean up and destroy integration test resources
+  - We want to have as few E2E (end to end) tests as possible.
+    - Our E2E tests are implemented in Protractor as automated browser tests, and require walking through functionality on an actual OSMT instance. These are the most expensive and time-consuming tests. They are needed to ensure that layers of the application are wired up correctly, but should be used sparingly.
+
 ### Using git with this project
 1. Use the project's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues) to find an issue that you want to address, or a feature that you would like to add.
 2. Clone the repository to your local machine using `git clone https://github.com/wgu-opensource/osmt.git` or `git@github.com:wgu-opensource/osmt.git` for SSH.

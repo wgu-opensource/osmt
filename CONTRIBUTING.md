@@ -25,10 +25,10 @@ We use GitHub's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues).
 #### Testing expectations
 - The OSMT project embraces the [Test Pyramid](https://martinfowler.com/bliki/TestPyramid.html). Boiling this down:
   - We want to test all execution paths with unit tests.
-    - Unit tests do not rely on any external services, network access, databases, or filesystem I/O, but rather use mocks when required. This also informs good object composition and design, facilitating healthy dependency injection/inversion of control
-    - Unit test classes will be run by Maven in the "test" phase by the Surefire plugin, and need to end in "Test"
+    - Unit tests do not rely on any external services, network access, databases, or filesystem I/O, but rather use mocks when required. This also informs good object composition and design, facilitating healthy dependency injection/inversion of control.
+    - Unit test classes will be run by Maven in the "test" phase by the Surefire plugin, and need to end in "Test".
   - We use integration tests as needed to stand up subsets of the application. These may require Docker containers or interactions between several components or services.
-    - Integration test classes will be run by Maven in the "verify" phase by the Failsafe plugin, and need to end in "IT". Failsafe has "pre-integration-test" and "post-integration-test" phases for stand up and tearing down integration test resources. The "post-intergation-test" phase is always processed, regardless of test failures. Thsi allows Maven to clean up and destroy integration test resources
+    - Integration test classes will be run by Maven in the "verify" phase by the Failsafe plugin, and need to end in "IT". Failsafe has "pre-integration-test" and "post-integration-test" phases for standing up and tearing down integration test resources. The "post-integration-test" phase is always processed, regardless of test failures. This allows Maven to clean up and destroy integration test resources.
   - We want to have as few E2E (end to end) tests as possible.
     - Our E2E tests are implemented in Protractor as automated browser tests, and require walking through functionality on an actual OSMT instance. These are the most expensive and time-consuming tests. They are needed to ensure that layers of the application are wired up correctly, but should be used sparingly.
 

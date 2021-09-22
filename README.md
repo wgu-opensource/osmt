@@ -1,25 +1,14 @@
 # WGU Open Skills Management Toolset (OSMT)
 
 ## Overview
-The Open Skills Management Tool (OSMT, pronounced "Oz-mit") is a free, open-source instrument to facilitate the production of rich skill descriptor (RSD) based open skills libraries. In short it helps to create a commons skills language by creating, managing, and organizing skills related data.  An open-source framework allows everyone to use the tool collaboratively to define the RSD so that those skills are translatable and transferable across educational institutions and hiring organizations within programs, curricula, and job descriptions.
+The Open Skills Management Tool (OSMT, pronounced "Oz-mit") is a free, open-source instrument to facilitate the production of rich skill descriptor (RSD) based open skills libraries. In short, it helps to create a commons skills language by creating, managing, and organizing skills related data.  An open-source framework allows everyone to use the tool collaboratively to define the RSD so that those skills are translatable and transferable across educational institutions and hiring organizations within programs, curricula, and job descriptions.
 
 ## Architecture
 OSMT is written with Kotlin and Angular, using backend-instances of MySQL, Redis, and Elastisearch. 
-![OSMT architectural overview](./ui/src/assets/Architectural-Diagram.png).
-
-## Release / Branching Strategy
-The OSMT project will follow the [GitFlow](https://nvie.com/posts/a-successful-git-branching-model/) model, with
-* Enhancement and bug fix work done on feature branches (```feature/branch-name```)
-* Feature branches merge into ```develop```, as the integration branch
-* Releases are cut from ```develop``` (as ```release-branch-name```), and merged back in to both ```master``` and ```develop```
-
-See the [CONTRIBUTING.md](./CONTRIBUTING.md) document for additional context.
+![OSMT architectural overview](./ui/src/assets/Architectural-Diagram.png)
 
 ### Dependencies
-OSMT stands up Elasticsearch, Redis, and MySQL dependencies via a docker-compose instance. For more context, see [docker-compose.yml](./docker-compose.yml) in the project root, and [dev-stack-local.yml](./docker/dev-stack.yml) in the ./docker directory.
-
-#### OAuth2 and Okta Configuration
-See the section for [OAuth2](./api/README.md#oauth2) in the API README file.
+OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. These are deployed as services via docker-compose. See additional notes below for [Configuration](#configuration).
 
 ## Build
 ### Requirements
@@ -30,36 +19,63 @@ OSMT requires Java 11 and a modern version of NodeJS / npm (currently v16.6.2 / 
     |-- ui                 - Angular frontend - See `./ui/README.md`
     |-- docker             - Misc. Docker support for development
 
-OSMT is a multi module Maven project, and you will also need a modern version of Maven (currently 3.8.1, but any recent version will probably work). pom.xml files exist in the project root, ./api and ./ui. Running the command `mvn clean install` from the project root will create a fat jar in the target directory that contains both the backend server and the built Angular frontend static files.
-Both the API and the UI modules have README.md files with more specific information about those layers.
+OSMT is a multi-module Maven project, and you will also need a modern version of Maven (currently 3.8.1, but any recent version will probably work). pom.xml files exist in the project root, ./api and ./ui. Running the command `mvn clean package` from the project root will create a fat jar in the target directory that contains both the backend server and the built Angular frontend static files.
 
-## Install / Run from IntelliJ
-* Import maven module
+The [API](./api/README.md) and [UI](./ui/README.md) modules have their own README.md files with more specific information about those layers.
+
+### Running Locally / Run from IntelliJ
+* Import Maven project
     * Navigate to File -> New from existing sources
     * Select "Create from existing sources"
     * Select the project root folder
-* Go through the readme files of `./api` and `./ui` to setup the child modules in IntelliJ and to create run/debug configurations. The API and UI modules require
+* Use the readme files of [`./api`](./api/README.md) and [`./ui`](./ui/README.md) to configure the submodules in IntelliJ, and to create run/debug configurations.
 * Start the docker development stack for MySQL and other dependencies
-    * from the `./docker` folder, run `docker-compose -f dev-stack.yml up`
+    * run `docker-compose -f ./docker/dev-stack.yml up`
     * to shut down the development stack, press `<ctl> + c`
-* Run both the frontend and backend configurations you created from IntelliJ
+* Run both the frontend (Angular ng serve) and backend (Spring Boot) configurations you created from IntelliJ
 * Visit `http://localhost:4200`
 
 The Angular UI app is configured to proxy requests to the backend server during development. This allows one to use Angular's live reloading server.
 
-
 ### Configuration
-### Running Locally
+OSMT can be built and deployed in a non-production context using docker-compose with [./docker-compose.yml](./docker-compose.yml) in the project root. This file builds a Docker image with Java 11 and Maven, builds the UI and API modules as a fat jar, and then stands up an application stack with the back end dependencies and a Spring application using the fat jar. This configuration should inform a production deployment, but should not be used for a production deployment.
+
+When starting OSMT via docker-compose, you will need to provide values for OAuth2. See usage of an `osmt.env` file with docker-compose, immediately below.
+
+### Okta Configuration
+OSMT will require an OAuth2 provider. It is preconfigured for Okta, but you can use any provider. To use Okta as your OAuth2 provider, include `oauth2-okta` in the list of Spring Boot profiles. You will need to provide the following properties when running the application:
+* okta.oauth2.clientId
+* okta.oauth2.clientSecret
+* okta.oauth2.audience
+* okta.oauth2.issuer
+  To get these properties, you will need a free developer account with [Okta](https://okta.com). Create an Okta web application, using the OpenID option. Navigate to Applications. In the main content pane, select the application you created. You will find the Client ID and Client Secret.
+* Add a redirect URL back to http://localhost. The port will vary.
+* Click the "Sign On" tab. You will find the issuer and audience values there.
+  * You may find it helpful to create 2 Okta accounts for developing OSMT.
+    * One account for active local development with a redirect URL that points back to http://localhost:4200 for Angular's ng serve
+    * A second account for using the full non-prod docker-compose stack, with a redirect URL that points to http://localhost:8080.
+
+You should never push these OAuth2 values to GitHub, so you should never save them in a properties file. The OSMT project is configured to git ignore files named `osmt*.env`. You can use files name with this pattern to store your OAuth2 secrets locally and pass them to a docker-compose stack, e.g., `docker-compose --env-file /path/to/osmt-angular.env -f /path/to/compose-file/yml up`.
+
+This is the format of an env file:
+```OAUTH_ISSUER=https://abcdefg.okta.com
+OAUTH_CLIENTID=123456qwerty
+OAUTH_CLIENTSECRET=2354asdf
+OAUTH_AUDIENCE=3456zxcv
+```
+
+Also, you can provide these OAuth2 values as program arguments when starting your Spring Boot app (`-Dokta.oauth2.clientId="123456qwerty"`), either via the command line or via an IntelliJ Run config.
 
 ### Post-installation (BLS, O*NET, etc)
 See the section for [Importing Skills, BLS, and O*NET](./api/README.md#importing-skills-bls-and-onet) in the API README file.
 
 ## How to get help
+This project includes [./api/HELP.md](./api/HELP.md), with links to relevant references and tutorials.
+
 OMST is an open source project, and is supported by its community. Please look to the Discussion boards and Wiki on GitHub. Please all see the [CONTRIBUTING.md](./CONTRIBUTING.md) document for additional context.
 
+
 -------------------------------------------------
-
-
 
 ## Other notes
 The backend will serve any routes not already configured to the API to the frontend, allowing Angular's routing to takeover.
@@ -90,7 +106,6 @@ Example:
   ```
 
 ### Manual CSV import
-
 To do a manual batch import from a CSV:
 1. Run the app container: `docker run -ti --entrypoint /bin/bash -v <full_path_to_csv_folder>:/mnt concentricsky/osmt:0.5.1`
 1. Run the csv import:

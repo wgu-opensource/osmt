@@ -1,5 +1,5 @@
 # OSMT API
-This module represents the Spring Boot backend application. 
+This Maven module represents the Spring Boot backend application. 
  
 ## IntelliJ Setup
   * Open the project root into IntelliJ (parent folder of `./api`)
@@ -20,7 +20,7 @@ This module represents the Spring Boot backend application.
   * Click 'ok'
 
 ## Spring Boot Configuration / Profiles
-This project makes use of configuring Spring boot via property files. These are located at `./api/src/main/resources/config/`. A `dev` profile exists for local development, and can be applied by passing the `-Dspring.profiles.active=dev` argument on launch. Active profiles also control which Spring Boot `@component`(s) are run.
+This project makes use of configuring Spring boot via property files. These are located at `./api/src/main/resources/config/`. A `dev` profile exists for local development, and can be applied by passing the `-Dspring.profiles.active=dev` argument on launch. Active profiles also control which Spring Boot `@Component`(s) are run.
   
 ### Override Specific Properties While Using Maven
 To override specific properties with JVM arguments when developing with Maven, pass the JVM arguments as the value to `-Dspring-boot.run.jvmArguments=`
@@ -47,25 +47,14 @@ Example:
 For example to run the import component with a dev configuration, set active profiles by passing a JVM argument like this:
 `-Dspring-boot.run.profiles=dev,import`
 
-### OAuth2 
-An example profile and Spring Boot components (edu.wgu.osmt.security.SecurityConfig) are provided to support OAuth2 with Okta. To use a different provider, create a separate Spring Boot profile to contain the configuration.  
-Additional Spring Boot components may also be required to support the chosen provider.
+## OAuth2 
+An example profile and Spring Boot components (edu.wgu.osmt.security.SecurityConfig) are provided to support OAuth2 with Okta. To use a different provider, create a separate Spring Boot profile to contain the configuration. Additional Spring Boot components may also be required to support the chosen provider. See [Okta Configuration](./README.md#okta-configuration) in the [README](./README.md) for more details.
 
-#### Okta Configuration
-To use Okta as your OAuth2 provider, include `oauth2-okta` in the list of Spring Boot profiles. You will need to provide the following properties when running the application. To get these properties, you will need create an Okta web application with OpenID. Navigate to Applications. In the main content pane, select the application you created. You will be presented with the Client ID and Client Secret. Clicking on the "Sign On" tab will present you with the issuer and audience values.
-* okta.oauth2.clientId
-* okta.oauth2.clientSecret
-* okta.oauth2.audience
-* okta.oauth2.issuer
-
-You should not push these values to GitHub, so you should probably not put them in a proerties file. Instead, you can provide them as program arguments when starting your Spring Boot app (```-Dokta.oauth2.clientId="foobarClientId"```), either via the command line or via an IntelliJ Run config.
-  
 ## Database Configurations
 This project uses [FlywayDb](https://flywaydb.org/). SQL Migrations can be placed in `./api/src/main/resources/db/migration/`.
-Scripts in this folder will be automatically processed when the app is ran with the appropriate `application.properties` settings in `spring.flyway.*`. 
+Scripts in this folder will be automatically processed when the app is started with the appropriate `application.properties` settings in `spring.flyway.*`.
 
-By default only `test` and `dev` environments will automatically run migrations. To enable migrations for other environments, i.e. a single production server, include the JVM argument `-Dspring.flyway.enabled=true`
-when running the server. 
+By default, only `test` and `dev` environments will automatically run migrations. To enable migrations for other environments, i.e. a single production server, start the server with this JVM argument: `-Dspring.flyway.enabled=true`. 
 
 ## Code Style
 To automatically apply the official Kotlin code style, Install the IntelliJ plugin `Save Actions`. Configure `Save Actions` in preferences to `Reformat file` on save.    

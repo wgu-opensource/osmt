@@ -13,7 +13,7 @@ We use GitHub's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues).
 - If you don't feel ready to make a code contribution yet, no problem! Check out the [existing issues](https://github.com/wgu-opensource/osmt/issues) to see if an issue exists already for the change you want.
 
 ### Expectations for contributed code
-- OSMT project uses Kotlin 1.3.72 and Angular Front-end 10.0, with MySQL DB, redis and Elasticsearch. See the [Getting Started](README.md#getting-started) section in the README file.
+- OSMT project uses Kotlin 1.3.72 and Angular Front-end 10.0, with MySQL DB, redis and Elasticsearch. See the [Architecture](README.md#architecture) section in the README file.
 - Contributed code needs to follow appropriate style guides. Coding style isn't only a matter of preference, but is essential in managing an effective branching and release strategy. Trivial or unrelated code changes create merge conflicts, and introduce risk and wasted time in resolving them.
   - Kotlin - https://developer.android.com/kotlin/style-guide
   - Angular - https://angular.io/guide/styleguide
@@ -21,6 +21,12 @@ We use GitHub's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues).
   - Changes that are ["boy scouting"](https://headspring.com/2020/01/27/clean-code-conundrum/) (code improvements that leave an area cleaner than you found it) should be separate from feature changes. Boy scouting changes may be disruptive to others, and should be coordinated with project maintainers.
 - All execution paths for new code should be covered by unit tests.
   - Many IDEs will report on unit test coverage and call out any gaps. That said, reporting of test coverage doesn't mean that the tests are useful or effective. If you find a section of code is difficult to unit test, this may indicate the need for some refactoring. Non-trivial refactors should also be coordinated with project maintainers.
+
+## Release / Branching Strategy
+The OSMT project will follow the [GitFlow](https://nvie.com/posts/a-successful-git-branching-model/) model, with
+* Enhancement and bug fix work done on feature branches (```feature/branch-name```)
+* Feature branches merge into ```develop```, as the integration branch
+* Releases are cut from ```develop``` (as ```release-branch-name```), and merged back in to both ```master``` and ```develop```
 
 ### Using git with this project
 1. Use the project's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues) to find an issue that you want to address, or a feature that you would like to add.

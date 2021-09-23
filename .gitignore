@@ -24,4 +24,4 @@ build/
 ### VS Code ###
 .vscode/
 
-osmt.env
+osmt*.env

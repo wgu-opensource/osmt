@@ -13,7 +13,7 @@ We use GitHub's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues).
 - If you don't feel ready to make a code contribution yet, no problem! Check out the [existing issues](https://github.com/wgu-opensource/osmt/issues) to see if an issue exists already for the change you want.
 
 ### Expectations for contributed code
-- OSMT project uses Kotlin 1.3.72 and Angular Front-end 10.0, with MySQL DB, redis and Elasticsearch. See the [Getting Started](README.md#getting-started) section in the README file.
+- OSMT project uses Kotlin 1.3.72 and Angular Front-end 10.0, with MySQL DB, redis and Elasticsearch. See the [Architecture](README.md#architecture) section in the README file.
 - Contributed code needs to follow appropriate style guides. Coding style isn't only a matter of preference, but is essential in managing an effective branching and release strategy. Trivial or unrelated code changes create merge conflicts, and introduce risk and wasted time in resolving them.
   - Kotlin - https://developer.android.com/kotlin/style-guide
   - Angular - https://angular.io/guide/styleguide
@@ -31,6 +31,13 @@ We use GitHub's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues).
     - Integration test classes will be run by Maven in the "verify" phase by the Failsafe plugin, and need to end in "IT". Failsafe has "pre-integration-test" and "post-integration-test" phases for standing up and tearing down integration test resources. The "post-integration-test" phase is always processed, regardless of test failures. This allows Maven to clean up and destroy integration test resources.
   - We want to have as few E2E (end to end) tests as possible.
     - Our E2E tests are implemented in Protractor as automated browser tests, and require walking through functionality on an actual OSMT instance. These are the most expensive and time-consuming tests. They are needed to ensure that layers of the application are wired up correctly, but should be used sparingly.
+
+## Release / Branching Strategy
+The OSMT project will follow the [GitFlow](https://nvie.com/posts/a-successful-git-branching-model/) model, with
+* Enhancement and bug fix work done on feature branches (```feature/branch-name```)
+* Feature branches merge into ```develop```, as the integration branch
+* Releases are cut from ```develop``` (as ```release-branch-name```), and merged back in to both ```master``` and ```develop```
+>
 
 ### Using git with this project
 1. Use the project's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues) to find an issue that you want to address, or a feature that you would like to add.

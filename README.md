@@ -48,7 +48,8 @@ OSMT will require an OAuth2 provider. It is preconfigured for Okta, but you can 
 * okta.oauth2.clientSecret
 * okta.oauth2.audience
 * okta.oauth2.issuer
-  To get these properties, you will need a free developer account with [Okta](https://okta.com). Create an Okta web application, using the OpenID option. Navigate to Applications. In the main content pane, select the application you created. You will find the Client ID and Client Secret.
+
+To get these properties, you will need a free developer account with [Okta](https://okta.com). Create an Okta web application, using the OpenID option. Navigate to Applications. In the main content pane, select the application you created. You will find the Client ID and Client Secret.
 * Add a redirect URL back to http://localhost. The port will vary.
 * Click the "Sign On" tab. You will find the issuer and audience values there.
   * You may find it helpful to create 2 Okta accounts for developing OSMT.

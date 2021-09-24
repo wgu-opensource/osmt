@@ -4,8 +4,8 @@ import { HttpClientTestingModule, HttpTestingController } from "@angular/common/
 import { async, TestBed } from "@angular/core/testing"
 import { Router } from "@angular/router"
 import {
+  createMockBatchResult,
   createMockCollection,
-  createMockCollectionUpdate,
   createMockPaginatedCollections,
   createMockPaginatedSkills,
   createMockTaskResult
@@ -15,9 +15,15 @@ import { AppConfig } from "../../app.config"
 import { AuthService } from "../../auth/auth-service"
 import { EnvironmentService } from "../../core/environment.service"
 import { PublishStatus } from "../../PublishStatus"
+import { ApiBatchResult, IBatchResult } from "../../richskill/ApiBatchResult"
 import { ApiSortOrder } from "../../richskill/ApiSkill"
 import { IStringListUpdate } from "../../richskill/ApiSkillUpdate"
-import { PaginatedCollections, PaginatedSkills } from "../../richskill/service/rich-skill-search.service"
+import {
+  ApiSearch,
+  ApiSkillListUpdate,
+  PaginatedCollections,
+  PaginatedSkills
+} from "../../richskill/service/rich-skill-search.service"
 import { ApiTaskResult, ITaskResult } from "../../task/ApiTaskResult"
 import { ApiCollection, ApiCollectionUpdate } from "../ApiCollection"
 import { CollectionService } from "./collection.service"
@@ -332,5 +338,169 @@ describe("CollectionService", () => {
     const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
     expect(req.request.method).toEqual("POST")
     req.flush(testData)
+  })
+
+  it("searchCollections should return", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const testData: PaginatedCollections = createMockPaginatedCollections()
+    const expected = testData
+    const path = "api/search/collections"
+    const query = "testQueryString"
+    const apiSearch = new ApiSearch({ query })
+    const size = 5
+    const from = 1
+    const filter = new Set<PublishStatus>([PublishStatus.Published, PublishStatus.Draft])
+    const sort = ApiSortOrder.SkillAsc
+
+    // Act
+    const result$ = testService.searchCollections(apiSearch, size, from, filter, sort)
+
+    // Assert
+    result$
+      .subscribe((data: PaginatedCollections) => {
+        expect(data).toEqual(expected)
+        expect(RouterData.commands).toEqual([ ])  // No errors
+        expect(AuthServiceData.isDown).toEqual(false)
+      })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path +
+        `?sort=${sort}&status=${PublishStatus.Published}&status=${PublishStatus.Draft}&size=${size}&from=${from}`)
+    expect(req.request.method).toEqual("POST")
+    req.flush(testData.collections, {
+      headers: { "x-total-count": "" + testData.totalCount}
+    })
+  })
+
+  it("updateSkills should return", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const testData = createMockTaskResult()
+    const expected = new ApiTaskResult(testData)
+    const uuid = expected.uuid
+    const path = "api/collections/" + uuid + "/updateSkills"
+    const query = "testQueryString"
+    const update = new ApiSkillListUpdate({
+      add: new ApiSearch({query}),
+      remove: new ApiSearch({query})
+    })
+    const filter = new Set<PublishStatus>([PublishStatus.Published, PublishStatus.Draft])
+    const sort = undefined
+
+    // Act
+    const result$ = testService.updateSkills(uuid, update, filter)
+
+    // Assert
+    result$
+      .subscribe((data: ITaskResult) => {
+        expect(data).toEqual(expected)
+        expect(RouterData.commands).toEqual([ ])  // No errors
+        expect(AuthServiceData.isDown).toEqual(false)
+      })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path +
+      `?sort=${sort}&status=${PublishStatus.Published}&status=${PublishStatus.Draft}`)
+    expect(req.request.method).toEqual("POST")
+    req.flush(testData)
+  })
+
+  // There are 2 REST requests here.  Cannot figure out how to get the task request to return the task.
+  xit("updateSkillsWithResult should return", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const iTaskResult = createMockTaskResult()
+    const testData: IBatchResult = createMockBatchResult()
+    const expected = new ApiBatchResult(testData)
+    const uuid: string = iTaskResult.uuid ? iTaskResult.uuid : ""
+    const path = "api/collections/" + uuid + "/updateSkills"
+    const query = "testQueryString"
+    const update = new ApiSkillListUpdate({
+      add: new ApiSearch({query}),
+      remove: new ApiSearch({query})
+    })
+    const filter = new Set<PublishStatus>([PublishStatus.Published, PublishStatus.Draft])
+    const sort = undefined
+
+    // Act
+    const result$ = testService.updateSkillsWithResult(uuid, update, filter)
+
+    // Assert
+    result$
+      .subscribe((data: ApiBatchResult) => {
+        expect(data).toEqual(expected)
+        expect(RouterData.commands).toEqual([ ])  // No errors
+        expect(AuthServiceData.isDown).toEqual(false)
+      })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path +
+      `?sort=${sort}&status=${PublishStatus.Published}&status=${PublishStatus.Draft}`)
+    expect(req.request.method).toEqual("POST")
+    req.flush(testData)
+  })
+
+  // There are 2 REST requests here.  Cannot figure out how to get the task request to return the task.
+  xit("publishCollectionWithResult should return", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const now = new Date()
+    const iTaskResult = createMockTaskResult()
+    const testData: IBatchResult = createMockBatchResult()
+    const expected = new ApiBatchResult(testData)
+    const path = "api/collections/publish"
+    const query = "testQueryString"
+    const apiSearch = new ApiSearch({ query })
+    const filter = new Set<PublishStatus>([PublishStatus.Draft])
+    const newStatus = PublishStatus.Published
+
+    // Act
+    const result$ = testService.publishCollectionsWithResult(apiSearch, newStatus, filter)
+
+    // Assert
+    result$
+      .subscribe((data: ApiBatchResult) => {
+        expect(data).toEqual(expected)
+        expect(RouterData.commands).toEqual([ ])  // No errors
+        expect(AuthServiceData.isDown).toEqual(false)
+      })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path +
+      `?newStatus=${newStatus}&filterByStatus=${PublishStatus.Draft}`)
+    expect(req.request.method).toEqual("POST")
+    req.flush(testData)
+  })
+
+  it("collectionReadyToPublish should return", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
+    const path = "api/collections/" + uuid + "/skills"
+    const testData = createMockPaginatedSkills(0, 0)
+    const expected = true
+    const size = 1
+    const from = 0
+    const sort = undefined
+
+    // Act
+    const result$ = testService.collectionReadyToPublish(uuid)
+
+    // Assert
+    result$
+      .subscribe((data: boolean) => {
+        expect(data).toEqual(expected)
+        expect(RouterData.commands).toEqual([ ])  // No errors
+        expect(AuthServiceData.isDown).toEqual(false)
+      })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path +
+      `?sort=${sort}&status=${PublishStatus.Archived}&status=${PublishStatus.Draft}&size=${size}&from=${from}`)
+    expect(req.request.method).toEqual("POST")
+    req.flush(testData.skills, {
+      headers: { "x-total-count": "" + testData.totalCount}
+    })
   })
 })

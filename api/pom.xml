@@ -329,6 +329,7 @@
                                 <exclude>BlsImportTest</exclude>
                                 <exclude>CollectionEsRepoTest</exclude>
                                 <exclude>CollectionRepositoryTest</exclude>
+                                <exclude>ElasticSearchReindexerTest</exclude>
                                 <exclude>JobCodeEsRepoTest</exclude>
                                 <exclude>JobCodeRepositoryTest</exclude>
                                 <exclude>KeywordEsRepoTest</exclude>

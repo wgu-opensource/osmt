@@ -508,7 +508,7 @@ describe("RichSkillFormComponent (with parameter)", () => {
     const appConfig = TestBed.inject(AppConfig)
     AppConfig.settings = appConfig.defaultConfig()
 
-    activatedRoute.setParamMap({ uuid: EXPECTED_UUID })
+    activatedRoute.setParams({ uuid: EXPECTED_UUID })
     createComponent(RichSkillFormComponent)
   }))
 

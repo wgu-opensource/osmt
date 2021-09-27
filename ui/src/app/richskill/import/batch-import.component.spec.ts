@@ -84,7 +84,7 @@ describe("BatchImportComponent", () => {
 
     // const environmentService = TestBed.inject(EnvironmentService)
 
-    activatedRoute.setParamMap({ userId: 126 })
+    activatedRoute.setParams({ userId: 126 })
     createComponent(BatchImportComponent)
   }))
 

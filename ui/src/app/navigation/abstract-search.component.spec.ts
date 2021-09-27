@@ -62,7 +62,7 @@ describe("AbstractSearchComponent", () => {
     })
       .compileComponents()
 
-    activatedRoute.setParamMap({ userId: 126 })
+    activatedRoute.setParams({ userId: 126 })
     createComponent(ConcreteSearchComponent)
   }))
 

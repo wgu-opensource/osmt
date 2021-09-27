@@ -75,7 +75,7 @@ describe("RichSkillSearchResultsComponent", () => {
     AppConfig.settings = appConfig.defaultConfig()  // This avoids the race condition on reading the config's whitelabel.toolName
     searchService = TestBed.inject(SearchService)
 
-    activatedRoute.setParamMap({ query: "some query" })
+    activatedRoute.setParams({ query: "some query" })
     createComponent(RichSkillSearchResultsComponent)
   }))
 
@@ -235,7 +235,7 @@ describe("RichSkillSearchResultsComponent with latestSearch", () => {
     AppConfig.settings = appConfig.defaultConfig()  // This avoids the race condition on reading the config's whitelabel.toolName
     searchService = TestBed.inject(SearchService)
 
-    activatedRoute.setParamMap({ query: "some query" })
+    activatedRoute.setParams({ query: "some query" })
     createComponent(RichSkillSearchResultsComponent, () => {
       // Arrange - Setup for ngOnInit alternate path
       const query = "some query"

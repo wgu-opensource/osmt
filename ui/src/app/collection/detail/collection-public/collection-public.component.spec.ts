@@ -66,7 +66,7 @@ describe("CollectionPublicComponent", () => {
     const appConfig = TestBed.inject(AppConfig)
     AppConfig.settings = appConfig.defaultConfig()
 
-    activatedRoute.setParamMap({ uuid: "uuid1" })
+    activatedRoute.setParams({ uuid: "uuid1" })
     createComponent(CollectionPublicComponent)
   }))
 

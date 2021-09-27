@@ -65,7 +65,7 @@ describe("AdvancedSearchComponent", () => {
     const appConfig = TestBed.inject(AppConfig)
     AppConfig.settings = appConfig.defaultConfig()
 
-    activatedRoute.setParamMap({ userId: 126 })
+    activatedRoute.setParams({ userId: 126 })
     createComponent(AdvancedSearchComponent)
   }))
 

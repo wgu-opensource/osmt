@@ -15,6 +15,7 @@ export class ActivatedRouteStubSpec {
   private queryParams$ = new ReplaySubject<Params>()
 
   private testParams: Params = {}
+  private testQueryParams: Params = {}
 
   // tslint:disable-next-line:no-any
   static createRouterSpy(): any {
@@ -31,6 +32,13 @@ export class ActivatedRouteStubSpec {
     if (params) {
       this.params$.next(this.testParams = params)
       this.paramMap$.next(convertToParamMap(params))
+    }
+  }
+
+  /** Set the queryParams$'s next value */
+  setQueryParams(params?: Params): void {
+    if (params) {
+      this.queryParams$.next(this.testQueryParams = params)
     }
   }
 

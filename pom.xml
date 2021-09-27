@@ -26,4 +26,11 @@
         <module>ui</module>
         <module>api</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>dockerfile-build</id>
+        </profile>
+    </profiles>
+
 </project>

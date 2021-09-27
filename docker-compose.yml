@@ -8,8 +8,14 @@ services:
     environment:
       - "ENVIRONMENT=apiserver,dev"
       - "MYSQL_DB_URI=osmt:password@db:3306"
+      - "DB_NAME=osmt_db"
       - "ELASTICSEARCH_URI=elasticsearch:9200"
       - "REDIS_URI=redis:6379"
+      - "MIGRATIONS_ENABLED=false"
+      - "OAUTH_ISSUER=${OAUTH_ISSUER}"
+      - "OAUTH_CLIENTID=${OAUTH_CLIENTID}"
+      - "OAUTH_CLIENTSECRET=${OAUTH_CLIENTSECRET}"
+      - "OAUTH_AUDIENCE=${OAUTH_AUDIENCE}"
     depends_on:
       - db
       - elasticsearch

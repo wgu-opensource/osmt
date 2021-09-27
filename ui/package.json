@@ -6,7 +6,7 @@
     "start": "./node_modules/@angular/cli/bin/ng serve",
     "start-hotreload": "./node_modules/@angular/cli/bin/ng serve --live-reload",
     "build": "./node_modules/@angular/cli/bin/ng build",
-    "build-prod": "./node_modules/@angular/cli/bin/ng build --prod",
+    "build-prod": "./node_modules/@angular/cli/bin/ng build --prod  --output-path dist/ui/META-INF/resources",
     "test": "./node_modules/@angular/cli/bin/ng test",
     "lint": "./node_modules/@angular/cli/bin/ng lint",
     "e2e": "./node_modules/@angular/cli/bin/ng e2e",

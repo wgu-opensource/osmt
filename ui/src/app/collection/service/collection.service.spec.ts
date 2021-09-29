@@ -1,3 +1,5 @@
+// noinspection LocalVariableNamingConventionJS
+
 import { Location } from "@angular/common"
 import { HttpClient, HttpResponse } from "@angular/common/http"
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
@@ -15,7 +17,7 @@ import { AppConfig } from "../../app.config"
 import { AuthService } from "../../auth/auth-service"
 import { EnvironmentService } from "../../core/environment.service"
 import { PublishStatus } from "../../PublishStatus"
-import { ApiBatchResult, IBatchResult } from "../../richskill/ApiBatchResult"
+import { ApiBatchResult } from "../../richskill/ApiBatchResult"
 import { ApiSortOrder } from "../../richskill/ApiSkill"
 import { IStringListUpdate } from "../../richskill/ApiSkillUpdate"
 import {
@@ -28,6 +30,8 @@ import { ApiTaskResult, ITaskResult } from "../../task/ApiTaskResult"
 import { ApiCollection, ApiCollectionUpdate } from "../ApiCollection"
 import { CollectionService } from "./collection.service"
 
+
+const ASYNC_WAIT_PERIOD = 3000
 
 describe("CollectionService", () => {
   let httpClient: HttpClient
@@ -156,14 +160,14 @@ describe("CollectionService", () => {
 
     // Act
     try {
-      const result$ = testService.getCollectionJson(uuid)
+      testService.getCollectionJson(uuid)
     } catch (e) {
       expect(e instanceof Error).toBeTrue()
       expect(e.message).toEqual("No uuid provided for collection json export")
     }
 
     // Assert
-    const req = httpTestingController.expectNone(AppConfig.settings.baseApiUrl + "/" + path)
+    httpTestingController.expectNone(AppConfig.settings.baseApiUrl + "/" + path)
   })
 
   it("getCollectionSkillsCsv should return", () => {
@@ -196,19 +200,17 @@ describe("CollectionService", () => {
     AuthServiceData.isDown = false
     const uuid: string = undefined as unknown as string
     const path = "api/collections/" + uuid + "/csv"
-    const testData = createMockTaskResult()
-    const expected = new ApiTaskResult(testData)
 
     // Act
     try {
-      const result$ = testService.requestCollectionSkillsCsv(uuid)
+      testService.requestCollectionSkillsCsv(uuid)
     } catch (e) {
       expect(e instanceof Error).toBeTrue()
       expect(e.message).toEqual("Invalid collection uuid.")
     }
 
     // Assert
-    const req = httpTestingController.expectNone(AppConfig.settings.baseApiUrl + "/" + path)
+    httpTestingController.expectNone(AppConfig.settings.baseApiUrl + "/" + path)
   })
 
   it("getCsvTaskResultsIfComplete should return", () => {
@@ -442,7 +444,7 @@ describe("CollectionService", () => {
     expect(req1.request.method).toEqual("POST")
     req1.flush(taskResult)
 
-    tick(3000)  // wait for async request
+    tick(ASYNC_WAIT_PERIOD)
 
     /* Setup for request 2 */
     const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path2)
@@ -455,7 +457,6 @@ describe("CollectionService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const now = new Date()
     const taskResult = createMockTaskResult()
     const apiBatchResult = new ApiBatchResult(createMockBatchResult())
     const expected = apiBatchResult
@@ -484,7 +485,7 @@ describe("CollectionService", () => {
     expect(req1.request.method).toEqual("POST")
     req1.flush(taskResult)
 
-    tick(3000)  // wait for async request
+    tick(ASYNC_WAIT_PERIOD)
 
     /* Setup for request 2 */
     const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path2)

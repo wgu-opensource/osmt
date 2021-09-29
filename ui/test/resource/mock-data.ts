@@ -10,11 +10,7 @@ import {
   ISkill,
   IUuidReference
 } from "../../src/app/richskill/ApiSkill"
-import {
-  ApiCollectionSummary,
-  ICollectionSummary,
-  ISkillSummary
-} from "../../src/app/richskill/ApiSkillSummary"
+import { ApiCollectionSummary, ICollectionSummary, ISkillSummary } from "../../src/app/richskill/ApiSkillSummary"
 import { ApiReferenceListUpdate, IRichSkillUpdate, IStringListUpdate } from "../../src/app/richskill/ApiSkillUpdate"
 import { PaginatedCollections, PaginatedSkills } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ITaskResult } from "../../src/app/task/ApiTaskResult"

@@ -89,7 +89,7 @@ describe("CollectionFormComponent", () => {
     environmentService.environment.editableAuthor = true
     AppConfig.settings.editableAuthor = true  // Doubly sure
 
-    activatedRoute.setParamMap({ uuid: "uuid1" })
+    activatedRoute.setParams({ uuid: "uuid1" })
     createComponent(CollectionFormComponent)
   }))
 

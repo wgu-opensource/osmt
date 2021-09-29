@@ -16,8 +16,8 @@ import {map, share} from "rxjs/operators"
 import {ApiBatchResult} from "../../richskill/ApiBatchResult"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
 import {ApiCollection, ICollection, ICollectionUpdate} from "../ApiCollection"
-import {Router} from "@angular/router";
-import {Location} from "@angular/common";
+import {Router} from "@angular/router"
+import {Location} from "@angular/common"
 
 @Injectable({
   providedIn: "root"

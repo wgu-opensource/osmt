@@ -88,7 +88,7 @@ describe("ConcreteComponent", () => {
     const appConfig = TestBed.inject(AppConfig)
     AppConfig.settings = appConfig.defaultConfig()  // This avoids the race condition on reading the config's whitelabel.toolName
 
-    activatedRoute.setParamMap({ uuid: "126" })
+    activatedRoute.setParams({ uuid: "126" })
     createComponent(ConcreteComponent)
   }))
 

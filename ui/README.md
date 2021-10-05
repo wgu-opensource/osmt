@@ -7,10 +7,7 @@ tldr: you need to install a recent version of NodeJS and npm. The Maven build us
 Details about NodeJS and npm: OSMT uses [the Maven Frontend plugin](https://github.com/eirslett/frontend-maven-plugin), which installs and runs a local copy of Node v10.16.0 and npm 6.10.2. These executables are added in the `ui/node` directory. The plugin's intention is to isolate the required Node and npm executables for a consistent build and not pollute a developer's workstation by installing globally. While these Maven-provided node and npm executables _can_ be used for local client development, they aren't very handy. Practically, it makes sense for someone doing client development to install their own copies of Node and npm. There are many ways to do this, and this is beyond the scope of this document.
 
 1. Install NodeJS and npm.
-1. From the ui directory, run this command: `npm install`
-
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.6. Rather than installing Angular's CLI globally, you can invoke commands on OSMT's `ng` devDependency by calling `npm run ng whatever_command`. This may help avoid conflicts with other Angular tooling installed on your development machine.
-
+2. From the ui directory, run this command: `npm install`
 
 ## IntelliJ setup
 ### Run Configurations
@@ -20,6 +17,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Development server
 Run `npm run start-hotreload` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+## Angular CLI - install globally vs using local version
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.6. Rather than installing Angular's CLI globally, you can invoke commands on OSMT's `ng` devDependency by calling `npm run ng whatever_command`. This may help avoid conflicts with other Angular tooling installed on your development machine.
 
 ## Code scaffolding
 Run `npm run ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
@@ -39,7 +39,6 @@ On app launch, the file is downloaded in an api call and is deserialized into th
 
 ### How to update the shape of the config
 If any changes to the signatures need to be made, such as adding new properties, then both the interface and class located in `src/app/models/app-config.model.ts` must be updated.
- 
 * The interface IAppConfig provides the expected shape of the json files and type safety when parsing config JSON. 
 * The class DefaultAppConfig defines our default set of configurations when no overriding URI is provided.
     

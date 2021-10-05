@@ -1,23 +1,25 @@
 # OSMT UI 
+This Maven module represents the Angular frontend application.
 
-## IntelliJ setup
+## Getting Started
+tldr: you need to install a recent version of NodeJS and npm. The Maven build uses a bundled copy of Node v10.16.0 and npm 6.10.2.
 
-### Import module
-  * Navigate to File -> New -> Module from existing sources
-  * Select "Create module from existing sources"
-  * Select the `./ui` folder where this README exists from the file dialog
-  
-### Run Configurations
-  * Create a new `npm` configuration
-  * Use package.json from the `./ui/package-json`
-  * Set Scripts to `start-hotreload` (or `start` if not interested in live reloading)
-  
----
+Details about NodeJS and npm: OSMT uses [the Maven Frontend plugin](https://github.com/eirslett/frontend-maven-plugin), which installs and runs a local copy of Node v10.16.0 and npm 6.10.2. These executables are added in the `ui/node` directory. The plugin's intention is to isolate the required Node and npm executables for a consistent build and not pollute a developer's workstation by installing globally. While these Maven-provided node and npm executables _can_ be used for local client development, they aren't very handy. Practically, it makes sense for someone doing client development to install their own copies of Node and npm. There are many ways to do this, and this is beyond the scope of this document.
+
+1. Install NodeJS and npm.
+1. From the ui directory, run this command: `npm install`
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.6. Rather than installing Angular's CLI globally, you can invoke commands on OSMT's `ng` devDependency by calling `npm run ng whatever_command`. This may help avoid conflicts with other Angular tooling installed on your development machine.
 
+
+## IntelliJ setup
+### Run Configurations
+1. From IntelliJ, create a new Run configuration for npm. Give it a name that makes sense to you. The intention is an Angular development server.
+2. Select the package.json from the `./ui/package-json`
+3. Set Scripts to `start-hotreload` (or `start` if not interested in live reloading)
+
 ## Development server
-Run `npm run ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `npm run start-hotreload` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
 Run `npm run ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
@@ -32,13 +34,11 @@ Run `npm run ng test` to execute the unit tests via [Karma](https://karma-runner
 Run `npm run ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
 ## Whitelabel JSON config
-A whitelabel JSON file's URI can be defined in the environment file for deployment.  This file is loaded dynamically at runtime and can be replaced 
-without rebuilding with access to the deployed file.  The URI can be set for each angular environment by setting `environment.whiteLabelConfigUri`.  
+A whitelabel JSON file's URI can be defined in the environment file for deployment. This file is loaded dynamically at runtime and can be replaced without rebuilding with access to the deployed file. The URI can be set for each angular environment by setting `environment.whiteLabelConfigUri`.
 On app launch, the file is downloaded in an api call and is deserialized into the AppConfig property `AppConfig.settings` which is available globally.
 
 ### How to update the shape of the config
-If any changes to the signatures need to be made, such as adding new properties, then both the interface and class located in 
-`src/app/models/app-config.model.ts` must be updated.
+If any changes to the signatures need to be made, such as adding new properties, then both the interface and class located in `src/app/models/app-config.model.ts` must be updated.
  
 * The interface IAppConfig provides the expected shape of the json files and type safety when parsing config JSON. 
 * The class DefaultAppConfig defines our default set of configurations when no overriding URI is provided.

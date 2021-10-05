@@ -5,7 +5,7 @@
     "ng": "./node_modules/@angular/cli/bin/ng",
     "start": "./node_modules/@angular/cli/bin/ng serve",
     "start-hotreload": "./node_modules/@angular/cli/bin/ng serve --live-reload",
-    "build": "./node_modules/@angular/cli/bin/ng build",
+    "build": "./node_modules/@angular/cli/bin/ng build  --output-path dist/ui/META-INF/resources",
     "build-prod": "./node_modules/@angular/cli/bin/ng build --prod  --output-path dist/ui/META-INF/resources",
     "test": "./node_modules/@angular/cli/bin/ng test",
     "lint": "./node_modules/@angular/cli/bin/ng lint",

@@ -6,7 +6,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     environment:
-      - "ENVIRONMENT=apiserver,dev"
+      - "ENVIRONMENT=apiserver,dev,oauth2-okta"
       - "MYSQL_DB_URI=osmt:password@db:3306"
       - "DB_NAME=osmt_db"
       - "ELASTICSEARCH_URI=elasticsearch:9200"

@@ -1140,8 +1140,7 @@ components:
         skills:
           type: array
           items:
-            type: string
-            format: uri
+            $ref: '#/components/schemas/SkillSummary'
 
     CollectionSummary:
       type: object

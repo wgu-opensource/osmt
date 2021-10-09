@@ -19,6 +19,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
+import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 @Component
 @Profile("apiserver")
 @EnableWebMvc
+@EnableCaching
 class ApiServer {
     val logger: Logger = LoggerFactory.getLogger(ApiServer::class.java)
 

@@ -2,14 +2,15 @@
 This Maven module represents the Angular frontend application.
 
 ## Getting Started
-tldr: you need to install a recent version of NodeJS and npm. The Maven build uses a bundled copy of Node v10.16.0 and npm 6.10.2.
+tldr: The Maven build uses an embedded copy of NodeJS v10.16.0 and npm 6.10.2. For client development work, you should install your own NodeJS and npm.
 
-Details about NodeJS and npm: OSMT uses [the Maven Frontend plugin](https://github.com/eirslett/frontend-maven-plugin), which installs and runs a local copy of Node v10.16.0 and npm 6.10.2. These executables are added in the `ui/node` directory. The plugin's intention is to isolate the required Node and npm executables for a consistent build and not pollute a developer's workstation by installing globally. While these Maven-provided node and npm executables _can_ be used for local client development, they aren't very handy. Practically, it makes sense for someone doing client development to install their own copies of Node and npm. There are many ways to do this, and this is beyond the scope of this document.
-
-1. Install NodeJS and npm.
+1. Install NodeJS v10.16.0 / npm 6.10.2 or higher for your operating system.
 2. From the ui directory, run this command: `npm install`
 
-## IntelliJ setup
+### About frontend-maven-plugin
+OSMT uses the [Maven Frontend plugin](https://github.com/eirslett/frontend-maven-plugin), which is configured to install and run a project-local copy of Node v10.16.0 and npm 6.10.2. These executables are added in the `ui/node` directory. The plugin's intention is to isolate the required Node and npm executables for a consistent build, and not pollute a developer's workstation by installing globally. While these Maven-embedded node and npm executables _can_ be used for local client development, they aren't very handy. Practically, it makes sense for someone doing client development to install their own copies of Node and npm. There are many ways to do this, and this is beyond the scope of this document.
+
+# IntelliJ setup
 ### Run Configurations
 1. From IntelliJ, create a new Run configuration for npm. Give it a name that makes sense to you. The intention is an Angular development server.
 2. Select the package.json from the `./ui/package-json`

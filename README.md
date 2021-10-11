@@ -14,8 +14,10 @@ OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. Any OSMT ins
 OSMT requires certain software and SDKs to build:
 * a Java 11 JDK (OpenJDK works fine)
 * Maven 3.8.1 or higher
-* a modern version of NodeJS and npm
-   * Maven uses a bundled copy of Node v10.16.0 and npm 6.10.2, but any recent version should work OK)
+* NodeJS v10.16.0 / npm 6.10.2 or higher
+   * NodeJS/npm are used for building client code; there are no runtime NodeJS/npm dependencies.
+   * Maven uses an embedded copy of Node v10.16.0 and npm 6.10.2 (see [About frontend-maven-plugin](./ui/README.md#about-frontend-maven-plugin) in the UI README file). 
+   * Locally, a developer probably has their own versions of NodeJS and npm installed. They should be >= the versions given above.
 * a recent version of Docker and docker-compose
 
 ### Project Structure
@@ -33,6 +35,7 @@ The [API](./api/README.md) and [UI](./ui/README.md) modules have their own READM
 * OSMT requires an OAuth2 provider. It is preconfigured for Okta, but you can use any provider.
 
 #### Non-prod Configuration
+TODO - something other than "non-prod"
 The Non-prod configuration uses the `docker-compose.yml` file in the project root to stand up a non-production OSMT stack. This file builds a Docker image with Java 11 and Maven, builds the UI and API modules as a fat jar, and then stands up an application stack with the back-end dependencies (MySQL, ElasticSearch, and Redis) and a Spring application using the fat jar. This configuration could inform how to configure a production OSMT instance, but it is not intended for a production deployment. The Non-prod configuration is deployed with a single docker-compose command. You will need to create a file named `osmt.env` in the project root. Follow the guidance in [Environment files for Non-Prod and Development Stacks](#environment-files-for-non-prod-and-development-stacks) for more details.
   - Run this command from the project root: ```docker-compose --env-file osmt.env up --build```
 

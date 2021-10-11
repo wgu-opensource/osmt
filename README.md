@@ -8,12 +8,12 @@ OSMT is written in Kotlin with Spring Boot, and Angular. It uses backend-instanc
 ![OSMT architectural overview](./ui/src/assets/Architectural-Diagram.png)
 
 ### Dependencies
-OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. These are deployed as services via docker-compose. See additional notes below for [Configuration](#configuration).
+OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. Any OSMT instance beyond a local development server also requires an OAuth2 provider. See additional notes below for [Configuration](#configuration).
 
 ### Requirements to Build OSMT
 OSMT requires certain software and SDKs to build:
 * a Java 11 JDK (OpenJDK works fine)
-* a modern version of Maven (currently 3.8.1, but any recent version will probably work)
+* Maven 3.8.1 or higher
 * a modern version of NodeJS and npm
    * Maven uses a bundled copy of Node v10.16.0 and npm 6.10.2, but any recent version should work OK)
 * a recent version of Docker and docker-compose

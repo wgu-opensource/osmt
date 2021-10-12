@@ -31,18 +31,20 @@ OSMT is a multi-module Maven project. pom.xml files exist in the project root, `
 The [API](./api/README.md) and [UI](./ui/README.md) modules have their own README.md files with more specific information about those layers.
 
 ### Configuration
-* This project makes use of 2 similar configurations, labelled in this documentation as "Non-prod" and "Development".
+* This project makes use of 2 similar configurations, labelled in this documentation as "Quickstart" and "Development".
 * OSMT requires an OAuth2 provider. It is preconfigured for Okta, but you can use any provider.
 
-#### Non-prod Configuration
-TODO - something other than "non-prod"
-The Non-prod configuration uses the `docker-compose.yml` file in the project root to stand up a non-production OSMT stack. This file builds a Docker image with Java 11 and Maven, builds the UI and API modules as a fat jar, and then stands up an application stack with the back-end dependencies (MySQL, ElasticSearch, and Redis) and a Spring application using the fat jar. This configuration could inform how to configure a production OSMT instance, but it is not intended for a production deployment. The Non-prod configuration is deployed with a single docker-compose command. You will need to create a file named `osmt.env` in the project root. Follow the guidance in [Environment files for Non-Prod and Development Stacks](#environment-files-for-non-prod-and-development-stacks) for more details.
+#### Quickstart Configuration
+TODO - something other than "Quickstart"
+The Quickstart configuration uses the `docker-compose.yml` file in the project root to stand up a non-production OSMT stack. This file builds a Docker image with Java 11 and Maven, builds the UI and API modules as a fat jar, and then stands up an application stack with the back-end dependencies (MySQL, ElasticSearch, and Redis) and a Spring application using the fat jar.
+
+* This configuration could inform how to configure a production OSMT instance, but it is not intended for a production deployment. The Quickstart configuration is deployed with a single docker-compose command. You will need to create a file named `osmt.env` in the project root. Follow the guidance in [Environment files for Quickstart and Development Stacks](#environment-files-for-Quickstart-and-development-stacks) for more details.
   - Run this command from the project root: ```docker-compose --env-file osmt.env up --build```
 
 #### Development Configuration
 The Development configuration uses the `dev-stack.yml` docker-compose file in the `docker` directory, for standing up just the back-end dependencies and doing active development in the Spring or Angular layers.
    1. Start the Development docker-compose stack (`dev-stack.yml`, with MySQL, ElasticSearch, and Redis).
-      - Create a file named `osmt-dev-stack.env` in the `docker` directory. Follow the guidance in [Environment files for Non-Prod and Development Stacks](#environment-files-for-non-prod-and-development-stacks) for more details.
+      - Create a file named `osmt-dev-stack.env` in the `docker` directory. Follow the guidance in [Environment files for Quickstart and Development Stacks](#environment-files-for-Quickstart-and-development-stacks) for more details.
       - From the `docker` directory, run this command:
         - ```docker-compose --env-file osmt-dev-stack.env dev-stack.yml up --build```
 
@@ -65,7 +67,7 @@ The Development configuration uses the `dev-stack.yml` docker-compose file in th
 ### OAuth2 and Okta Configuration
 To use Okta as your OAuth2 provider, you will need a free developer account with [Okta](https://okta.com). While the user interface at Okta may change, the big ideas of configuring an application for an OAuth/OpenID Connect provider should still apply. From your Okta Dashboard:
    1. Navigate to Applications. Create an Application Integration, using the OpenID Connect option. When prompted, choose the "Web Application" option.
-   2. Provide a name that makes sense to you. The intention here is OSMT non-prod and development.
+   2. Provide a name that makes sense to you. The intention here is OSMT Quickstart and development.
    3. In the General tab, under "Client Credentials":
       - Copy/paste the values for Client ID and Client Secret into a text file, you will need them shortly.
    4. In the General tab, under "Login":
@@ -79,15 +81,15 @@ To use Okta as your OAuth2 provider, you will need a free developer account with
 
 For Okta, you will use the `oauth2-okta` profile for Spring Boot, which will include the properties from [application-oauth2-okta.properties](./api/src/main/resources/config/application-oauth2-okta.properties). This properties file relies on secrets being provided via the environment.
 
-#### Environment files for Non-Prod and Development Stacks
+#### Environment files for Quickstart and Development Stacks
 There are many ways to provide environment values to a Spring application. That said, you should never push secrets to GitHub, so you should never store secrets in source code. The OSMT project is configured to git ignore files named `osmt*.env`, and we recommend you follow this approach. You can use files following this pattern to store your OAuth2 secrets locally and pass them to a docker-compose stack, e.g., `docker-compose --env-file /path/to/osmt.env -f /path/to/compose-file/yml up --build`. We suggest the following environment files:
 
-  - Create a file named `osmt.env` in the project root. Populate it with these values and the relevant secrets from your OAuth2 provider. This will be provided to a Non-prod docker-compose stack from the docker-compose file in the project root directory.
+  - Create a file named `osmt.env` in the project root. Populate it with these values and the relevant secrets from your OAuth2 provider. This will be provided to a Quickstart docker-compose stack from the docker-compose file in the project root directory.
     ```
     ENVIRONMENT=dev,apiserver,oauth2-okta
     BASE_DOMAIN=localhost:8080
     REDIS_URI=docker_redis_1:6379
-    MYSQL_DB_URI=osmt_db_user:password@docker_db_1:3306
+    DB_URI=osmt_db_user:password@docker_db_1:3306
     ELASTICSEARCH_URI=http://docker_elasticsearch_1:9200
     MIGRATIONS_ENABLED=true
     OAUTH_ISSUER=https://abcdefg.okta.com
@@ -144,7 +146,7 @@ Run the docker container and pass the following environment variables to it:
  * ENVIRONMENT
  * BASE_DOMAIN
  * REDIS_URI
- * MYSQL_DB_URI
+ * DB_URI
  * ELASTICSEARCH_URI
  
 The use of these variables can be referenced in the [docker entrypoint script](docker/bin/docker_entrypoint.sh).
@@ -154,6 +156,6 @@ Example:
     ENVIRONMENT=review,apiserver
     BASE_DOMAIN=osmt.example.com
     REDIS_URI=<HOST>:<PORT>
-    MYSQL_DB_URI=<USER>:<PASSWORD>@<HOST>:<PORT>
+    DB_URI=<USER>:<PASSWORD>@<HOST>:<PORT>
     ELASTICSEARCH_URI=<HOST>:<PORT>
   ```

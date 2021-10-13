@@ -38,15 +38,18 @@ The [API](./api/README.md) and [UI](./ui/README.md) modules have their own READM
 TODO - something other than "Quickstart"
 The Quickstart configuration uses the `docker-compose.yml` file in the project root to stand up a non-production OSMT stack. This file builds a Docker image with Java 11 and Maven, builds the UI and API modules as a fat jar, and then stands up an application stack with the back-end dependencies (MySQL, ElasticSearch, and Redis) and a Spring application using the fat jar.
 
-* This configuration could inform how to configure a production OSMT instance, but it is not intended for a production deployment. 
+* This configuration could inform how to configure a production OSMT instance, but it is not intended for a production deployment.
 
 The Quickstart configuration is deployed with a single docker-compose command. These steps below are the general process. Follow the guidance in [Environment files for Quickstart and Development Stacks](#environment-files-for-Quickstart-and-development-stacks) for more details.
   1. Create file named `osmt-quickstart.env` in the project root. This file will be ignored by git.
   2. From the project root, run this command:
      - `docker-compose --env-file osmt-quickstart.env up --build`
   3. Import any skills-related data you plan to use in your Quickstart instance
-     - See [Importing Skills, BLS, and O*NET](./api/README.md#importing-skills-bls-and-onet) for details. 
-  4. Perform an initial index in ElasticSearch
+     - See [Importing Skills, BLS, and O*NET](./api/README.md#importing-skills-bls-and-onet) for details.
+  4. Perform an initial index in ElasticSearch. OSMT will return an error if you skip this step.
+      - From the `api` directory, run these commands:
+          - `mvn clean package`
+          - `mvn -Dspring-boot.run.profiles=dev,reindex springboot:run`
       - See [Elasticsearch indexing](./api/README.md#elasticsearch-indexing) for details.
   5. Open `http://localhost:8080` in your browser.
 

@@ -32,15 +32,9 @@ RUN /usr/sbin/useradd -r -d ${BASE_DIR} -s /bin/bash ${USER} -k /etc/skel -m -U 
 ###########################
 FROM osmt-base as build
 
-ENV JAVA_HOME=/etc/alternatives/jre
-ENV M2_VERSION=3.8.1
+ENV M2_VERSION=3.8.3
 ENV M2_HOME=/usr/local/maven
 ENV PATH=${M2_HOME}/bin:${PATH}
-ENV USER=osmt
-ENV BASE_DIR=/opt/${USER}
-
-# Install OpenJDK Development Packages
-RUN /usr/bin/yum install -y java-11-openjdk-devel
 
 # Download / Install Maven
 ADD https://www-eu.apache.org/dist/maven/maven-3/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz /usr/share/src/
@@ -58,16 +52,12 @@ WORKDIR ${BASE_DIR}/build
 USER ${USER}
 
 # The dockerfile-build Maven profile excludes certain api integration tests that require access to the Docker service.
-RUN mvn clean package -P dockerfile-build
+RUN mvn clean install -P dockerfile-build
 
 ######################
 ### PACKAGING IMAGE ##
 ######################
 FROM osmt-base
-
-ENV JAVA_HOME=/etc/alternatives/jre
-ENV USER=osmt
-ENV BASE_DIR=/opt/${USER}
 
 COPY --from=build --chown=${USER}:${USER} ${BASE_DIR}/build/api/target/osmt-*.jar ${BASE_DIR}/bin/osmt.jar
 
@@ -79,7 +69,7 @@ CMD ["sh", "-c", "java \
     -Dspring.profiles.active=${ENVIRONMENT} \
     -Dapp.baseDomain=${BASE_DOMAIN} \
     -Dredis.uri=${REDIS_URI} \
-    -Ddb.uri=${MYSQL_DB_URI} \
+    -Ddb.uri=${DB_URI} \
     -Des.uri=${ELASTICSEARCH_URI} \
     -Dokta.oauth2.issuer=${OAUTH_ISSUER} \
     -Dokta.oauth2.clientId=${OAUTH_CLIENTID} \
@@ -87,4 +77,3 @@ CMD ["sh", "-c", "java \
     -Dokta.oauth2.audience=${OAUTH_AUDIENCE} \
     -Dspring.flyway.enabled=${MIGRATIONS_ENABLED} \
     -jar ${BASE_DIR}/bin/osmt.jar"]
-

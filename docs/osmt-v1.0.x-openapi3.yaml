@@ -474,7 +474,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Collection'
+                  $ref: '#/components/schemas/CollectionDoc'
     post:
       tags:
         - Collections
@@ -1141,6 +1141,42 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SkillSummary'
+
+    CollectionDoc:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+        uuid:
+          type: string
+          format: uuid
+        creator:
+          type: string
+          format: uri
+        status:
+          $ref: '#/components/schemas/PublishStatus'
+        creationDate:
+          type: string
+          format: date-time
+        updateDate:
+          type: string
+          format: date-time
+        publishDate:
+          type: string
+          format: date-time
+        archiveDate:
+          type: string
+          format: date-time
+        name:
+          type: string
+        author:
+          $ref: '#/components/schemas/NamedReference'
+        skills:
+          type: array
+          items:
+            type: string
+            format: uuid
 
     CollectionSummary:
       type: object

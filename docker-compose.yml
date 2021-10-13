@@ -6,12 +6,14 @@ services:
       context: ./
       dockerfile: Dockerfile
     environment:
-      - "ENVIRONMENT=apiserver,dev"
-      - "MYSQL_DB_URI=osmt:password@db:3306"
-      - "DB_NAME=osmt_db"
+      - "ENVIRONMENT=${ENVIRONMENT:-dev,apiserver,oauth2-okta}"
+      - "DB_NAME=${DB_NAME}"
+      - "DB_USER=${DB_USER}"
+      - "DB_PASSWORD=${DB_PASSWORD}"
+      - "DB_URI=${DB_USER}:${DB_PASSWORD}@db:3306"
+      - "MIGRATIONS_ENABLED=${MIGRATIONS_ENABLED}"
       - "ELASTICSEARCH_URI=elasticsearch:9200"
       - "REDIS_URI=redis:6379"
-      - "MIGRATIONS_ENABLED=false"
       - "OAUTH_ISSUER=${OAUTH_ISSUER}"
       - "OAUTH_CLIENTID=${OAUTH_CLIENTID}"
       - "OAUTH_CLIENTSECRET=${OAUTH_CLIENTSECRET}"
@@ -32,13 +34,13 @@ services:
       - osmt_sql_db:/var/lib/mysql:rw
       - ./docker/mysql-init:/docker-entrypoint-initdb.d
     environment:
-      - "MYSQL_PASSWORD=password"
+      - "MYSQL_PASSWORD=${DB_PASSWORD}"
+      - "MYSQL_USER=${DB_USER}"
+      - "MYSQL_DATABASE=${DB_NAME}"
       - "MYSQL_HOST=0.0.0.0"
-      - "MYSQL_DATABASE=osmt_db"
       - "MYSQL_ROOT_PASSWORD=password"
-      - "MYSQL_USER=osmt"
     ports:
-      - 3306:3306
+      - "3306:3306"
     networks:
       - osmt
 
@@ -50,8 +52,8 @@ services:
       - "discovery.type=single-node"
       - "net=host"
     ports:
-      - 9200:9200
-      - 9300:9300
+      - "9200:9200"
+      - "9300:9300"
     networks:
       - osmt
 
@@ -60,7 +62,7 @@ services:
     networks:
       - osmt
     ports:
-      - 6379:6379
+      - "6379:6379"
 
 networks:
   osmt:

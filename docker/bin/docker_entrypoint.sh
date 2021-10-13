@@ -16,9 +16,9 @@ if [[ -z ${ENVIRONMENT} ]]; then
   echo "Missing environment 'ENVIRONMENT'"
 fi
 
-if [[ -z "${MYSQL_DB_URI}" ]]; then
+if [[ -z "${DB_URI}" ]]; then
   MISSING_ARGS=$((MISSING_ARGS + 1))
-  echo "Missing environment 'MYSQL_DB_URI'"
+  echo "Missing environment 'DB_URI'"
 fi
 
 if [[ -z "${REDIS_URI}" ]]; then
@@ -66,7 +66,7 @@ else
               -Dspring.profiles.active=${ENVIRONMENT}
               -Dapp.baseDomain=${BASE_DOMAIN}
               -Dredis.uri=${REDIS_URI}
-              -Ddb.uri=${MYSQL_DB_URI}
+              -Ddb.uri=${DB_URI}
               -Des.uri=${ELASTICSEARCH_URI}
               -Dokta.oauth2.issuer=${OAUTH_ISSUER}
               -Dokta.oauth2.clientId=${OAUTH_CLIENTID}

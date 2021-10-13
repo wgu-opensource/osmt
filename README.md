@@ -92,7 +92,7 @@ Run the docker container and pass the following environment variables to it:
  * ENVIRONMENT
  * BASE_DOMAIN
  * REDIS_URI
- * MYSQL_DB_URI
+ * DB_URI
  * ELASTICSEARCH_URI
  
 The use of these variables can be referenced in the [docker entrypoint script](docker/bin/docker_entrypoint.sh).
@@ -102,7 +102,7 @@ Example:
     ENVIRONMENT=review,apiserver
     BASE_DOMAIN=osmt.example.com
     REDIS_URI=<HOST>:<PORT>
-    MYSQL_DB_URI=<USER>:<PASSWORD>@<HOST>:<PORT>
+    DB_URI=<USER>:<PASSWORD>@<HOST>:<PORT>
     ELASTICSEARCH_URI=<HOST>:<PORT>
   ```
 

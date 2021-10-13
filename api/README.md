@@ -114,7 +114,7 @@ After the initial import, it is necessary to run Spring Boot with the `reindex` 
 
 Via Maven:
 ```
-mvn spring-boot:run -DSpring.profiles.active=<environment profile>,reindex
+mvn spring-boot:run -Dspring.profiles.active=<environment profile>,reindex
 ```
 Via the compiled jar:
 ```

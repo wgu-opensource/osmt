@@ -6,7 +6,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     environment:
-      - "ENVIRONMENT=${ENVIRONMENT:-apiserver,dev,oauth2-okta}"
+      - "ENVIRONMENT=${ENVIRONMENT:-dev,apiserver,oauth2-okta}"
       - "DB_NAME=${DB_NAME}"
       - "DB_USER=${DB_USER}"
       - "DB_PASSWORD=${DB_PASSWORD}"

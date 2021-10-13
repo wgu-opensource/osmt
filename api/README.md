@@ -88,9 +88,7 @@ java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar 
 1. Download BLS codes in Excel format from [https://www.bls.gov/soc/2018/#materials]("https://www.bls.gov/soc/2018/#materials")
 2. Convert Excel to CSV format
 3. Import the CSV with either the following command:
-    ```
-    java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar --csv=path/to/bls_csv --import-type=bls    
-    ```
+    ```java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar --csv=path/to/bls_csv --import-type=bls```
 4. You can also create a Run configuration in IntelliJ
     1. Add a Spring Boot Run configurations in IntelliJ.
     2. In VM options, enter ```-Dspring.profiles.active=dev,import```
@@ -114,15 +112,15 @@ java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar 
 ## Elasticsearch indexing
 After the initial import, it is necessary to run Spring Boot with the `reindex` profile to generate Elasticsearch index mappings and documents. The `<environment profile>` in the following examples can be `dev`,`review` or omitted for production. 
 
+Via Maven:
+```
+mvn -DSpring.profiles.active=<environment profile>,reindex
+```
 Via the compiled jar:
 ```
 java -Dspring.profiles.active=<environment profile>,reindex -jar api/target/osmt-api-<version>.jar 
 ``` 
 
-Via mvn:
-```
-mvn -DSpring.profiles.active=<environment profile>,reindex
-```
 
 ### Reindex after changes to Elasticsearch `@Document` index classes
 If changes are made to @Document annotated classes, the indexes need to be deleted and re-indexed. 

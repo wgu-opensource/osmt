@@ -38,15 +38,24 @@ The [API](./api/README.md) and [UI](./ui/README.md) modules have their own READM
 TODO - something other than "Quickstart"
 The Quickstart configuration uses the `docker-compose.yml` file in the project root to stand up a non-production OSMT stack. This file builds a Docker image with Java 11 and Maven, builds the UI and API modules as a fat jar, and then stands up an application stack with the back-end dependencies (MySQL, ElasticSearch, and Redis) and a Spring application using the fat jar.
 
-* This configuration could inform how to configure a production OSMT instance, but it is not intended for a production deployment. The Quickstart configuration is deployed with a single docker-compose command. You will need to create a file named `osmt.env` in the project root. Follow the guidance in [Environment files for Quickstart and Development Stacks](#environment-files-for-Quickstart-and-development-stacks) for more details.
-  - Run this command from the project root: ```docker-compose --env-file osmt.env up --build```
+* This configuration could inform how to configure a production OSMT instance, but it is not intended for a production deployment. 
+
+The Quickstart configuration is deployed with a single docker-compose command. These steps below are the general process. Follow the guidance in [Environment files for Quickstart and Development Stacks](#environment-files-for-Quickstart-and-development-stacks) for more details.
+  1. Create file named `osmt-quickstart.env` in the project root. This file will be ignored by git.
+  2. From the project root, run this command:
+     - `docker-compose --env-file osmt-quickstart.env up --build`
+  3. Import any skills-related data you plan to use in your Quickstart instance
+     - See [Importing Skills, BLS, and O*NET](./api/README.md#importing-skills-bls-and-onet) for details. 
+  4. Perform an initial index in ElasticSearch
+      - See [Elasticsearch indexing](./api/README.md#elasticsearch-indexing) for details.
+  5. Open `http://localhost:8080` in your browser.
 
 #### Development Configuration
 The Development configuration uses the `dev-stack.yml` docker-compose file in the `docker` directory, for standing up just the back-end dependencies and doing active development in the Spring or Angular layers.
    1. Start the Development docker-compose stack (`dev-stack.yml`, with MySQL, ElasticSearch, and Redis).
       - Create a file named `osmt-dev-stack.env` in the `docker` directory. Follow the guidance in [Environment files for Quickstart and Development Stacks](#environment-files-for-Quickstart-and-development-stacks) for more details.
       - From the `docker` directory, run this command:
-        - ```docker-compose --env-file osmt-dev-stack.env dev-stack.yml up --build```
+        - `docker-compose --env-file osmt-dev-stack.env dev-stack.yml up --build```
 
    2. Start the API Spring Boot application.
       - From the `api` directory, run these commands:

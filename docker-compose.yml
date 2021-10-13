@@ -10,7 +10,7 @@ services:
       - "DB_NAME=${DB_NAME}"
       - "DB_USER=${DB_USER}"
       - "DB_PASSWORD=${DB_PASSWORD}"
-      - "DB_URI=${DB_USER}:${DB_PASSWORD}@${DB_NAME}:3306"
+      - "DB_URI=${DB_USER}:${DB_PASSWORD}@db:3306"
       - "MIGRATIONS_ENABLED=${MIGRATIONS_ENABLED}"
       - "ELASTICSEARCH_URI=elasticsearch:9200"
       - "REDIS_URI=redis:6379"

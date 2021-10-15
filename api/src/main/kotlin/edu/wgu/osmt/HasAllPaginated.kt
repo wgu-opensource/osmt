@@ -7,8 +7,6 @@ import edu.wgu.osmt.elasticsearch.*
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -35,14 +33,10 @@ interface HasAllPaginated<T> {
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
-        @RequestParam(required = false) sort: String?,
-        @AuthenticationPrincipal user: Jwt?
+        @RequestParam(required = false) sort: String?
     ): HttpEntity<List<T>> {
 
-        val publishStatuses = status.mapNotNull {
-            val status = PublishStatus.forApiValue(it)
-            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
-        }.toSet()
+        val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val sortEnum: SortOrder = sortOrderCompanion.forValueOrDefault(sort)
         val pageable = OffsetPageable(from, size, sortEnum.sort)
 

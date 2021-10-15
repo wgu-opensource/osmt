@@ -1,29 +1,6 @@
 package edu.wgu.osmt.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import edu.wgu.osmt.RoutePaths.COLLECTIONS_LIST
-import edu.wgu.osmt.RoutePaths.COLLECTION_AUDIT_LOG
-import edu.wgu.osmt.RoutePaths.COLLECTION_CREATE
-import edu.wgu.osmt.RoutePaths.COLLECTION_CSV
-import edu.wgu.osmt.RoutePaths.COLLECTION_DETAIL
-import edu.wgu.osmt.RoutePaths.COLLECTION_PUBLISH
-import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS
-import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS_UPDATE
-import edu.wgu.osmt.RoutePaths.COLLECTION_UPDATE
-import edu.wgu.osmt.RoutePaths.SEARCH_COLLECTIONS
-import edu.wgu.osmt.RoutePaths.SEARCH_JOBCODES_PATH
-import edu.wgu.osmt.RoutePaths.SEARCH_KEYWORDS_PATH
-import edu.wgu.osmt.RoutePaths.SEARCH_SKILLS
-import edu.wgu.osmt.RoutePaths.SKILLS_CREATE
-import edu.wgu.osmt.RoutePaths.SKILLS_LIST
-import edu.wgu.osmt.RoutePaths.SKILL_AUDIT_LOG
-import edu.wgu.osmt.RoutePaths.SKILL_DETAIL
-import edu.wgu.osmt.RoutePaths.SKILL_PUBLISH
-import edu.wgu.osmt.RoutePaths.SKILL_UPDATE
-import edu.wgu.osmt.RoutePaths.TASK_DETAIL_BATCH
-import edu.wgu.osmt.RoutePaths.TASK_DETAIL_SKILLS
-import edu.wgu.osmt.RoutePaths.TASK_DETAIL_TEXT
-import edu.wgu.osmt.RoutePaths.scrubForConfigure
 import edu.wgu.osmt.api.model.ApiError
 import edu.wgu.osmt.config.AppConfig
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,11 +18,11 @@ import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.DefaultRedirectStrategy
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.stereotype.Component
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 /**
  * Security configurations
@@ -70,38 +47,19 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .csrf().disable()
             .httpBasic().disable()
             .authorizeRequests()
-
-             // authorization required
-            .antMatchers(HttpMethod.POST, SKILLS_CREATE).authenticated()
-            .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_UPDATE)).authenticated()
-            .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_PUBLISH)).authenticated()
-            .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_AUDIT_LOG)).authenticated()
-            .antMatchers(HttpMethod.POST, COLLECTION_CREATE).authenticated()
-            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_PUBLISH)).authenticated()
-            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_UPDATE)).authenticated()
-            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS_UPDATE)).authenticated()
-            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_AUDIT_LOG)).authenticated()
-            .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_SKILLS)).authenticated()
-            .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_BATCH)).authenticated()
-            .antMatchers(HttpMethod.GET, SEARCH_JOBCODES_PATH).authenticated()
-            .antMatchers(HttpMethod.GET, SEARCH_KEYWORDS_PATH).authenticated()
-
-            // public search endpoints
-            .antMatchers(HttpMethod.GET,  SKILLS_LIST).permitAll()
-            .antMatchers(HttpMethod.POST, SEARCH_SKILLS).permitAll()
-            .antMatchers(HttpMethod.GET,  COLLECTIONS_LIST).permitAll()
-            .antMatchers(HttpMethod.POST, SEARCH_COLLECTIONS).permitAll()
-
-            // public canonical URL endpoints
-            .antMatchers(HttpMethod.GET, scrubForConfigure(SKILL_DETAIL)).permitAll()
-            .antMatchers(HttpMethod.GET, scrubForConfigure(COLLECTION_DETAIL)).permitAll()
-            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS)).permitAll()
-            .antMatchers(HttpMethod.GET, scrubForConfigure(COLLECTION_CSV)).permitAll()
-            .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_TEXT)).permitAll()   // public csv results
-
-            // catch-all
+            .antMatchers(HttpMethod.GET,  "/api/skills").authenticated()
+            .antMatchers(HttpMethod.POST, "/api/skills").authenticated()
+            .antMatchers(HttpMethod.POST, "/api/skills/*/update").authenticated()
+            .antMatchers(HttpMethod.GET,  "/api/collections").authenticated()
+            .antMatchers(HttpMethod.POST,  "/api/collections").authenticated()
+            .antMatchers(HttpMethod.POST,  "/api/collections/*/update").authenticated()
+            .antMatchers(HttpMethod.GET,  "/api/collections/*").authenticated()
+            //public endpoints
+            .antMatchers(HttpMethod.GET,  "/api/skills/*").permitAll()
+            .antMatchers(HttpMethod.GET,  "/api/collections/*").permitAll()
+            .antMatchers(HttpMethod.GET,  "/api/collections/*/skills").permitAll()
+            .antMatchers(HttpMethod.GET,  "/api/tasks/*").permitAll()
             .antMatchers("/**").permitAll()
-
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
             .and().oauth2Login().successHandler(redirectToFrontend)
             .and().oauth2ResourceServer().jwt()

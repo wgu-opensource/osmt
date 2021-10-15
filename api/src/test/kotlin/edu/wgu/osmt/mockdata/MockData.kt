@@ -243,8 +243,6 @@ class MockData {
             "https://osmt.wgu.edu/credentialengineerregistry",
             "http://localhost:4200",
             "http://localhost:4200/login/success",
-            true,
-            true,
             true)
     }
 
@@ -344,7 +342,7 @@ class MockData {
                         .collect(Collectors.toList())
 
                 richSkillDescriptor[rsd.uuid] = RichSkillDescriptor(
-                    rsd.id,
+                    (richSkillDescriptor.size+1).toLong(),
                     now,
                     now,
                     rsd.uuid!!,

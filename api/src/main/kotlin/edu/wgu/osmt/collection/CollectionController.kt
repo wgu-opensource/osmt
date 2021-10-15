@@ -2,7 +2,6 @@ package edu.wgu.osmt.collection
 
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
-import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
@@ -37,23 +36,19 @@ class CollectionController @Autowired constructor(
 
     override val elasticRepository = collectionEsRepo
 
-    override val allPaginatedPath: String = RoutePaths.COLLECTIONS_LIST
+    override val allPaginatedPath: String = RoutePaths.COLLECTIONS_PATH
     override val sortOrderCompanion = CollectionSortEnum.Companion
 
-    @GetMapping(RoutePaths.COLLECTIONS_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.COLLECTIONS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     override fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
         size: Int,
         from: Int,
         status: Array<String>,
-        sort: String?,
-        @AuthenticationPrincipal user: Jwt?
+        sort: String?
     ): HttpEntity<List<CollectionDoc>> {
-        if (!appConfig.allowPublicLists && user === null) {
-            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
-        }
-        return super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
+        return super.allPaginated(uriComponentsBuilder, size, from, status, sort)
     }
 
     @GetMapping(RoutePaths.COLLECTION_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -69,7 +64,7 @@ class CollectionController @Autowired constructor(
         return "forward:/collections/$uuid"
     }
 
-    @PostMapping(RoutePaths.COLLECTION_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.COLLECTIONS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createCollections(
         @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,

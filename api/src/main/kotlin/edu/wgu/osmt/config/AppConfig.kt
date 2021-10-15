@@ -31,12 +31,6 @@ class AppConfig(
     @Value("\${app.loginSuccessRedirectUrl}")
     val loginSuccessRedirectUrl: String,
 
-    @Value("\${app.allowPublicSearching}")
-    val allowPublicSearching: Boolean = true,
-
-    @Value("\${app.allowPublicLists}")
-    val allowPublicLists: Boolean = true,
-
     @Value("\${app.baseLineAuditLogIfEmpty}")
     val baseLineAuditLogIfEmpty: Boolean
 ) {

@@ -262,14 +262,14 @@
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${flywaydb.version}</version>
-                <configuration>
-                    <url>jdbc:mysql://localhost:3306/osmt_db</url>
-                    <user>osmt</user>
-                    <password>password</password>
-                    <locations>
-                        <location>classpath:db/migration</location>
-                    </locations>
-                </configuration>
+<!--                <configuration>-->
+<!--                    <url>jdbc:mysql://localhost:3306/osmt_db</url>-->
+<!--                    <user>osmt</user>-->
+<!--                    <password>password</password>-->
+<!--                    <locations>-->
+<!--                        <location>classpath:db/migration</location>-->
+<!--                    </locations>-->
+<!--                </configuration>-->
             </plugin>
             <plugin>
                 <groupId>pl.project13.maven</groupId>

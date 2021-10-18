@@ -1,4 +1,4 @@
-# A dockerized stack for development
+# A Quickstart dockerized stack for non-production deployment
 version: '3.3'
 services:
   app:
@@ -11,8 +11,9 @@ services:
       - "DB_NAME=${DB_NAME}"
       - "DB_USER=${DB_USER}"
       - "DB_PASSWORD=${DB_PASSWORD}"
-      - "DB_URI=${DB_USER}:${DB_PASSWORD}@db:3306"
+      - "DB_URI=${DB_URI}"
       - "MIGRATIONS_ENABLED=${MIGRATIONS_ENABLED}"
+      - "REINDEX_ELASTICSEARCH=${REINDEX_ELASTICSEARCH}"
       - "ELASTICSEARCH_URI=elasticsearch:9200"
       - "REDIS_URI=redis:6379"
       - "OAUTH_ISSUER=${OAUTH_ISSUER}"
@@ -60,10 +61,10 @@ services:
 
   redis:
     image: library/redis:6.0.6
-    networks:
-      - osmt
     ports:
       - "6379:6379"
+    networks:
+      - osmt
 
 networks:
   osmt:

@@ -33,7 +33,7 @@ RUN /usr/sbin/useradd -r -d ${BASE_DIR} -s /bin/bash ${USER} -k /etc/skel -m -U 
 FROM osmt-base as build
 
 ENV JAVA_HOME=/etc/alternatives/jre
-ENV M2_VERSION=3.8.1
+ENV M2_VERSION=3.8.3
 ENV M2_HOME=/usr/local/maven
 ENV PATH=${M2_HOME}/bin:${PATH}
 ENV USER=osmt
@@ -43,7 +43,7 @@ ENV BASE_DIR=/opt/${USER}
 RUN /usr/bin/yum install -y java-11-openjdk-devel
 
 # Download / Install Maven
-ADD https://www-eu.apache.org/dist/maven/maven-3/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz /usr/share/src/
+ADD https://dlcdn.apache.org/maven/maven-3/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz /usr/share/src/
 
 WORKDIR /usr/share/src
 

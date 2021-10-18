@@ -37,7 +37,7 @@ ENV M2_HOME=/usr/local/maven
 ENV PATH=${M2_HOME}/bin:${PATH}
 
 # Download / Install Maven
-ADD https://www-eu.apache.org/dist/maven/maven-3/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz /usr/share/src/
+ADD https://dlcdn.apache.org/maven/maven-3/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz /usr/share/src/
 
 WORKDIR /usr/share/src
 
@@ -77,3 +77,4 @@ CMD ["sh", "-c", "java \
     -Dokta.oauth2.audience=${OAUTH_AUDIENCE} \
     -Dspring.flyway.enabled=${MIGRATIONS_ENABLED} \
     -jar ${BASE_DIR}/bin/osmt.jar"]
+

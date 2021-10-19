@@ -73,7 +73,7 @@ The general import sequence should be:
 3. O*NET (```--import-type=onet```)
 4. Reindex Elasticsearch
 
-_Please refer import folder under project root to get sample files for testing purpose only.
+_Please refer import folder under project root to get sample files for testing purpose only._
 
 ### Running batch skill / collection import from the jar:
 ```

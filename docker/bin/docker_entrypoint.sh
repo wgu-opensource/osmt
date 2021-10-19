@@ -83,7 +83,7 @@ JAVA_CMD="/bin/java
   -jar ${BASE_DIR}/bin/osmt.jar"
 
 echo "---------------------------------------------------------------------------------------------------------------------------------------"
-echo "Starting OSMT Spring Boot application using ${REINDEX_SPRING_PROFILE} Spring profiles..."
+echo "Starting OSMT Spring Boot application using ${ENVIRONMENT} Spring profiles..."
 return_code=1
 until [ ${return_code} -eq 0 ]; do
     ${JAVA_CMD}

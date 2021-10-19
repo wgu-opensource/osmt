@@ -5,6 +5,8 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    volumes:
+      - ./import:/opt/somt/import:rw
     environment:
       - "ENVIRONMENT=${ENVIRONMENT:-dev,apiserver,oauth2-okta}"
       - "BASE_DOMAIN=${BASE_DOMAIN}"
@@ -13,7 +15,6 @@ services:
       - "DB_PASSWORD=${DB_PASSWORD}"
       - "DB_URI=${DB_USER}:${DB_PASSWORD}@db:3306"
       - "MIGRATIONS_ENABLED=${MIGRATIONS_ENABLED}"
-      - "REINDEX_ELASTICSEARCH=${REINDEX_ELASTICSEARCH}"
       - "ELASTICSEARCH_URI=elasticsearch:9200"
       - "REDIS_URI=redis:6379"
       - "OAUTH_ISSUER=${OAUTH_ISSUER}"

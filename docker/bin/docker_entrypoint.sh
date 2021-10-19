@@ -76,12 +76,6 @@ if [[ -z "${MIGRATIONS_ENABLED}" ]]; then
   echo "  Defaulting to MIGRATIONS_ENABLED=${MIGRATIONS_ENABLED}"
 fi
 
-if [[ -z "${REINDEX_ELASTICSEARCH}" ]]; then
-  REINDEX_ELASTICSEARCH=false
-  echo "Missing environment 'REINDEX_ELASTICSEARCH'"
-  echo "  Defaulting to REINDEX_ELASTICSEARCH=${REINDEX_ELASTICSEARCH}"
-fi
-
 if [[ -z "${FRONTEND_URL}" ]]; then
   FRONTEND_URL="http://${BASE_DOMAIN}"
   echo "Missing environment 'FRONTEND_URL'"
@@ -92,34 +86,6 @@ if [[ ${MISSING_ARGS} != 0 ]]; then
   echo "Missing ${MISSING_ARGS} shell variable(s), exiting.."
   exit 128
 fi
-
-# The containerized Spring app needs an initial ElasticSearch index, or it returns 500s.
-
-# convert REINDEX_ELASTICSEARCH to lowercase and compare to "true"
-if [[ $(echo "$REINDEX_ELASTICSEARCH" | awk '{print tolower($0)}') == "true" ]]; then
-  declare REINDEX_SPRING_PROFILE="$(build_reindex_profile_string "${ENVIRONMENT}")"
-
-  JAVA_CMD="/bin/java
-    -Dspring.profiles.active=${REINDEX_SPRING_PROFILE}
-    -Dredis.uri=${REDIS_URI}
-    -Ddb.uri=${DB_URI}
-    -Des.uri=${ELASTICSEARCH_URI}
-    -Dspring.flyway.enabled=${MIGRATIONS_ENABLED}
-    -jar ${BASE_DIR}/bin/osmt.jar"
-
-  echo "---------------------------------------------------------------------------------------------------------------------------------------"
-  echo "Building initial index in OSMT ElasticSearch using ${REINDEX_SPRING_PROFILE} Spring profiles..."
-  declare return_code=1
-  until [ ${return_code} -eq 0 ]; do
-      ${JAVA_CMD}
-      return_code=$?
-      if [[ ${return_code} -ne 0 ]]; then
-        echo "Retrying in 10 seconds..."
-      fi
-      sleep 10
-  done
-fi
-
 
 JAVA_CMD="/bin/java
   -Dspring.profiles.active=${ENVIRONMENT}

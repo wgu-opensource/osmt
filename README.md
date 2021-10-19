@@ -101,10 +101,17 @@ You can use files following this pattern to store your OAuth2 secrets locally an
   ```
   ENVIRONMENT=dev,apiserver,oauth2-okta
   BASE_DOMAIN=localhost:8080
-  REDIS_URI=docker_redis_1:6379
-  DB_URI=osmt_db_user:password@docker_db_1:3306
-  ELASTICSEARCH_URI=http://docker_elasticsearch_1:9200
+  FRONTEND_URL=http://localhost:8080
+
+  DB_NAME=osmt_db
+  DB_USER=osmt_db_user
+  DB_PASSWORD=password
+  MYSQL_ROOT_PASSWORD=root_password
   MIGRATIONS_ENABLED=true
+
+  ELASTICSEARCH_URI=http://docker_elasticsearch_1:9200
+  REDIS_URI=docker_redis_1:6379
+
   OAUTH_ISSUER=https://abcdefg.okta.com
   OAUTH_CLIENTID=123456qwerty
   OAUTH_CLIENTSECRET=2354asdf

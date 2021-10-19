@@ -95,8 +95,8 @@ fi
 
 # The containerized Spring app needs an initial ElasticSearch index, or it returns 500s.
 
-# if REINDEX_ELASTICSEARCH exists, then convert to lowercase and compare to "true"
-if [[ -n "${REINDEX_ELASTICSEARCH}" && $(echo "$REINDEX_ELASTICSEARCH" | awk '{print tolower($0)}') == "true" ]]; then
+# convert REINDEX_ELASTICSEARCH to lowercase and compare to "true"
+if [[ $(echo "$REINDEX_ELASTICSEARCH" | awk '{print tolower($0)}') == "true" ]]; then
   declare REINDEX_SPRING_PROFILE="$(build_reindex_profile_string "${ENVIRONMENT}")"
 
   JAVA_CMD="/bin/java

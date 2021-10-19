@@ -1,24 +1,5 @@
 #!/bin/bash
 
-function build_reindex_profile_string() {
-  # accept the $ENVIRONMENT env var, i.e. "test,apiserver,oauth2-okta"
-  declare env_arg=${1}
-
-  declare reindex_profile="reindex"
-
-  # If $ENVIRONMENT contains the SDLC env from one of these Spring application profiles,
-  # then append it to the reindex profile string
-  declare -ar sdlc_env_list=("dev" "test" "review" "stage")
-
-  for sdlc_env in "${sdlc_env_list[@]}"; do
-    if grep -q "${sdlc_env}" <<<"${env_arg}"; then
-      reindex_profile="${reindex_profile},${sdlc_env}"
-    fi
-  done
-
-  echo "${reindex_profile}"
-}
-
 BASE_DIR=/opt/osmt
 
 cd ${BASE_DIR} || exit

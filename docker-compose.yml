@@ -10,6 +10,7 @@ services:
     environment:
       - "ENVIRONMENT=${ENVIRONMENT:-dev,apiserver,oauth2-okta}"
       - "BASE_DOMAIN=${BASE_DOMAIN}"
+      - "FRONTEND_URL=${FRONTEND_URL}"
       - "DB_NAME=${DB_NAME}"
       - "DB_USER=${DB_USER}"
       - "DB_PASSWORD=${DB_PASSWORD}"

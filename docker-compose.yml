@@ -6,7 +6,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     volumes:
-      - ./import:/opt/somt/import:rw
+      - ./import:/opt/osmt/import:rw
     environment:
       - "ENVIRONMENT=${ENVIRONMENT:-dev,apiserver,oauth2-okta}"
       - "BASE_DOMAIN=${BASE_DOMAIN}"

@@ -52,7 +52,7 @@ WORKDIR ${BASE_DIR}/build
 USER ${USER}
 
 # The dockerfile-build Maven profile excludes certain api integration tests that require access to the Docker service.
-RUN mvn clean package -P dockerfile-build
+RUN mvn clean install -P dockerfile-build
 
 ######################
 ### PACKAGING IMAGE ##
@@ -65,16 +65,4 @@ ADD ./docker/ /${BASE_DIR}/
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "java \
-    -Dspring.profiles.active=${ENVIRONMENT} \
-    -Dapp.baseDomain=${BASE_DOMAIN} \
-    -Dredis.uri=${REDIS_URI} \
-    -Ddb.uri=${DB_URI} \
-    -Des.uri=${ELASTICSEARCH_URI} \
-    -Dokta.oauth2.issuer=${OAUTH_ISSUER} \
-    -Dokta.oauth2.clientId=${OAUTH_CLIENTID} \
-    -Dokta.oauth2.clientSecret=${OAUTH_CLIENTSECRET} \
-    -Dokta.oauth2.audience=${OAUTH_AUDIENCE} \
-    -Dspring.flyway.enabled=${MIGRATIONS_ENABLED} \
-    -jar ${BASE_DIR}/bin/osmt.jar"]
-
+ENTRYPOINT ["/opt/osmt/bin/docker_entrypoint.sh"]

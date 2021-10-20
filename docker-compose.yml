@@ -5,13 +5,18 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    volumes:
+      - ./import:/opt/osmt/import:rw
     environment:
       - "ENVIRONMENT=${ENVIRONMENT:-dev,apiserver,oauth2-okta}"
+      - "BASE_DOMAIN=${BASE_DOMAIN}"
+      - "FRONTEND_URL=${FRONTEND_URL}"
       - "DB_NAME=${DB_NAME}"
       - "DB_USER=${DB_USER}"
       - "DB_PASSWORD=${DB_PASSWORD}"
       - "DB_URI=${DB_USER}:${DB_PASSWORD}@db:3306"
       - "MIGRATIONS_ENABLED=${MIGRATIONS_ENABLED}"
+      - "REINDEX_ELASTICSEARCH=${REINDEX_ELASTICSEARCH}"
       - "ELASTICSEARCH_URI=elasticsearch:9200"
       - "REDIS_URI=redis:6379"
       - "OAUTH_ISSUER=${OAUTH_ISSUER}"
@@ -59,10 +64,10 @@ services:
 
   redis:
     image: library/redis:6.0.6
-    networks:
-      - osmt
     ports:
       - "6379:6379"
+    networks:
+      - osmt
 
 networks:
   osmt:

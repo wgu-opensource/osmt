@@ -1,7 +1,7 @@
 # WGU Open Skills Management Toolset (OSMT)
 
 ## Overview
-The Open Skills Management Tool (OSMT, pronounced "oz-mit") is a free, open-source instrument to facilitate the production of Rich Skill Descriptor (RSD) based open skills libraries. In short, it helps to create a commons skills language by creating, managing, and organizing skills-related data. An open-source framework allows everyone to use the tool collaboratively to define the RSD, so that those skills are translatable and transferable across educational institutions and hiring organizations within programs, curricula, and job descriptions.
+The Open Skills Management Tool (OSMT, pronounced "oz-mit") is a free, open-source instrument to facilitate the production of Rich Skill Descriptor (RSD) based open skills libraries. In short, it helps to create a common skills language by creating, managing, and organizing skills-related data. An open-source framework allows everyone to use the tool collaboratively to define the RSD, so that those skills are translatable and transferable across educational institutions and hiring organizations within programs, curricula, and job descriptions.
 
 ## Architecture
 OSMT is written in Kotlin with Spring Boot, and Angular. It uses backend-instances of MySQL, Redis, and Elastisearch.
@@ -19,15 +19,16 @@ OSMT requires certain software and SDKs to build:
   * Maven uses an embedded copy of Node v10.16.0 and npm 6.10.2 (see [About frontend-maven-plugin](./ui/README.md#about-frontend-maven-plugin) in the UI README file).
   * Locally, a developer probably has their own versions of NodeJS and npm installed. They should be >= the versions given above.
 * a recent version of Docker and docker-compose
-  * Recommended 4 GB Memory
+  * Recommended 4 GB memory allocated to the Docker service
 
 ### Project Structure
-OSMT is a multi-module Maven project. pom.xml files exist in the project root, `./api` and `./ui` directories. Running the command `mvn clean package` from the project root will create a fat jar in the target directory that contains both the backend server and the prod-built Angular frontend static files.
+OSMT is a multi-module Maven project. pom.xml files exist in the project root, `./api` and `./ui` directories. Running the command `mvn clean install` from the project root will create a fat jar in the target directory that contains both the backend server and the prod-built Angular frontend static files.
 
     project root/
     |-- api                - Spring Boot, Kotlin-based backend
     |-- ui                 - Angular frontend
     \-- docker             - Misc. Docker support for development
+* `mvn package` may work file, but the `api` module depends on artifacts from the `ui` module. `mvn install`. Will place the ui artifacts in your local Maven repo, and will decouple your local builds from the present of the jar file being present in `ui/target`
 
 The [API](./api/README.md) and [UI](./ui/README.md) modules have their own README.md files with more specific information about those layers.
 
@@ -35,35 +36,20 @@ The [API](./api/README.md) and [UI](./ui/README.md) modules have their own READM
 * This project makes use of 2 similar configurations, labelled in this documentation as "Quickstart" and "Development".
 * OSMT requires an OAuth2 provider. It is preconfigured for Okta, but you can use any provider.
 
-[comment]: <> (#### Quickstart Configuration)
+#### Quickstart Configuration
 
-[comment]: <> (The Quickstart configuration uses the `docker-compose.yml` file in the project root to stand up a non-production OSMT stack. This file builds a Docker image with Java 11 and Maven, builds the UI and API modules as a fat jar, and then stands up an application stack with the back-end dependencies &#40;MySQL, ElasticSearch, and Redis&#41; and a Spring application using the fat jar.)
+The Quickstart configuration uses the `docker-compose.yml` file in the project root to stand up a non-production OSMT stack. This file builds a Docker image with Java 11 and Maven, builds the UI and API modules as a fat jar, and then stands up an application stack with the back-end dependencies (MySQL, ElasticSearch, and Redis) and a Spring application using the fat jar.
 
-[comment]: <> (* This configuration could inform how to configure a production OSMT instance, but it is not intended for a production deployment.)
+* This configuration could inform how to configure a production OSMT instance, but it is not intended for a production deployment.
 
-[comment]: <> (The Quickstart configuration is deployed with a single docker-compose command. These steps below are the general process. Follow the guidance in [Environment files for Quickstart and Development Stacks]&#40;#environment-files-for-Quickstart-and-development-stacks&#41; for more details.)
+The Quickstart configuration is deployed with a single docker-compose command. These steps below are the general process. Follow the guidance in [Environment files for Quickstart and Development Stacks](#environment-files-for-Quickstart-and-development-stacks) for more details.
 
-[comment]: <> (1. Create file named `osmt-quickstart.env` in the project root. This file will be ignored by git.)
-
-[comment]: <> (2. From the project root, run this command:)
-
-[comment]: <> (  - `docker-compose --env-file osmt-quickstart.env up --build`)
-
-[comment]: <> (3. Import any skills-related data you plan to use in your Quickstart instance)
-
-[comment]: <> (  - See [Importing Skills, BLS, and O*NET]&#40;./api/README.md#importing-skills-bls-and-onet&#41; for details.)
-
-[comment]: <> (4. Perform an initial index in ElasticSearch. OSMT will return an error if you skip this step.)
-
-[comment]: <> (  - From the `api` directory, run these commands:)
-
-[comment]: <> (    - `mvn clean package`)
-
-[comment]: <> (    - `mvn -Dspring-boot.run.profiles=dev,reindex springboot:run`)
-
-[comment]: <> (  - See [Elasticsearch indexing]&#40;./api/README.md#elasticsearch-indexing&#41; for details.)
-
-[comment]: <> (5. Open `http://localhost:8080` in your browser.)
+1. Create file named `osmt-quickstart.env` in the project root. This file will be ignored by git.
+2. From the project root, run this command:
+  - `docker-compose --env-file osmt-quickstart.env up --build`
+3. Import any skills-related data you plan to use in your Quickstart instance
+  - See [Importing Skills, BLS, and O*NET](./api/README.md#importing-skills-bls-and-onet) for details.
+4. Open `http://localhost:8080` in your browser.
 
 #### Development Configuration
 The Development configuration uses the `dev-stack.yml` docker-compose file in the `docker` directory, for standing up just the back-end dependencies and doing active development in the Spring or Angular layers.
@@ -115,10 +101,18 @@ You can use files following this pattern to store your OAuth2 secrets locally an
   ```
   ENVIRONMENT=dev,apiserver,oauth2-okta
   BASE_DOMAIN=localhost:8080
-  REDIS_URI=docker_redis_1:6379
-  DB_URI=osmt_db_user:password@docker_db_1:3306
-  ELASTICSEARCH_URI=http://docker_elasticsearch_1:9200
+  FRONTEND_URL=http://localhost:8080
+
+  DB_NAME=osmt_db
+  DB_USER=osmt_db_user
+  DB_PASSWORD=password
+  MYSQL_ROOT_PASSWORD=root_password
   MIGRATIONS_ENABLED=true
+  REINDEX_ELASTICSEARCH=true
+
+  ELASTICSEARCH_URI=http://docker_elasticsearch_1:9200
+  REDIS_URI=docker_redis_1:6379
+
   OAUTH_ISSUER=https://abcdefg.okta.com
   OAUTH_CLIENTID=123456qwerty
   OAUTH_CLIENTSECRET=2354asdf

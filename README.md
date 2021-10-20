@@ -108,6 +108,7 @@ You can use files following this pattern to store your OAuth2 secrets locally an
   DB_PASSWORD=password
   MYSQL_ROOT_PASSWORD=root_password
   MIGRATIONS_ENABLED=true
+  REINDEX_ELASTICSEARCH=true
 
   ELASTICSEARCH_URI=http://docker_elasticsearch_1:9200
   REDIS_URI=docker_redis_1:6379

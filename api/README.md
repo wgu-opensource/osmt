@@ -83,12 +83,13 @@ java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar 
 ### Importing BLS codes:
 * Note - BLS codes should be imported before O*NET codes
 1. Download BLS codes in Excel format from [https://www.bls.gov/soc/2018/#materials]("https://www.bls.gov/soc/2018/#materials")
-2. Convert Excel to CSV format
-3. Import the CSV with either the following command:
+2. Remove the content before header row. 
+3. Convert Excel to CSV format
+4. Import the CSV with the following command:
     ```
     java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar --csv=path/to/bls_csv --import-type=bls    
     ```
-4. You can also create a Run configuration in IntelliJ
+5. You can also create a Run configuration in IntelliJ
     1. Add a Spring Boot Run configurations in IntelliJ.
     2. In VM options, enter ```-Dspring.profiles.active=dev,import```
     3. In program arguments, enter ```--csv=path/to/bls_csv --import-type=bls ```

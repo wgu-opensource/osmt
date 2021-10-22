@@ -83,9 +83,9 @@ java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar 
 ### Importing BLS codes:
 * Note - BLS codes should be imported before O*NET codes
 1. Download BLS codes in Excel format from [https://www.bls.gov/soc/2018/#materials]("https://www.bls.gov/soc/2018/#materials")
-2. Delete column 'SOC Definition'
+2. Remove the content before header row. 
 3. Convert Excel to CSV format
-4. Import the CSV with either the following command:
+4. Import the CSV with the following command:
     ```
     java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar --csv=path/to/bls_csv --import-type=bls    
     ```

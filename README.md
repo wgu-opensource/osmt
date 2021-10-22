@@ -47,7 +47,16 @@ The Quickstart configuration is deployed with a single docker-compose command. T
 1. Create file named `osmt-quickstart.env` in the project root. This file will be ignored by git.
 2. From the project root, run this command:
   - `docker-compose --env-file osmt-quickstart.env up --build`
-3. Import any skills-related data you plan to use in your Quickstart instance
+3. Import any skills-related data you plan to use in your Quickstart instance.
+  - Replace the content in the existing files in import folder for skills, BLS and O*NET data. __These existing files under import folder are provided for testing purpose only.__
+  - Run below commands.
+    ```
+    docker exec -it <app-container-id> /bin/bash
+    java -jar -Dspring.profiles.active=dev,import /opt/osmt/bin/osmt.jar --csv=/opt/osmt/import/skills-import.csv --import-type=batchskill
+    java -jar -Dspring.profiles.active=dev,import /opt/osmt/bin/osmt.jar --csv=/opt/osmt/import/BLS-import.csv --import-type=bls
+    java -jar -Dspring.profiles.active=dev,import /opt/osmt/bin/osmt.jar --csv=/opt/osmt/import/oNet-import.csv --import-type=onet  
+    java -Dspring.profiles.active=dev,reindex -jar /opt/osmt/bin/osmt.jar
+    ```
   - See [Importing Skills, BLS, and O*NET](./api/README.md#importing-skills-bls-and-onet) for details.
 4. Open `http://localhost:8080` in your browser.
 
@@ -110,8 +119,8 @@ You can use files following this pattern to store your OAuth2 secrets locally an
   MIGRATIONS_ENABLED=true
   REINDEX_ELASTICSEARCH=true
 
-  ELASTICSEARCH_URI=http://docker_elasticsearch_1:9200
-  REDIS_URI=docker_redis_1:6379
+  ELASTICSEARCH_URI=http://osmt_elasticsearch_1:9200
+  REDIS_URI=osmt_redis_1:6379
 
   OAUTH_ISSUER=https://abcdefg.okta.com
   OAUTH_CLIENTID=123456qwerty

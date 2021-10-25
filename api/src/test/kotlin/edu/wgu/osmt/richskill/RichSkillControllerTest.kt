@@ -31,6 +31,7 @@ internal class RichSkillControllerTest @Autowired constructor(
     lateinit var batchImportRichSkill: BatchImportRichSkill
 
     private lateinit var mockData : MockData
+    val nullJwt : Jwt? = null
 
     @BeforeAll
     fun setup() {
@@ -50,7 +51,9 @@ internal class RichSkillControllerTest @Autowired constructor(
                 size,
                 0,
                 arrayOf("draft","published"),
-                "")
+                "",
+                nullJwt
+        )
 
         // Assert
         assertThat(result.body?.size).isEqualTo(size)

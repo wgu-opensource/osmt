@@ -56,6 +56,14 @@ Scripts in this folder will be automatically processed when the app is started w
 
 By default, only `test` and `dev` environments will automatically run migrations. To enable migrations for other environments, i.e. a single production server, start the server with this JVM argument: `-Dspring.flyway.enabled=true`. 
 
+## Allowing anonymous API to search and list endpoints for published skills and collections
+This feature is enabled by default. These settings are in application.properties
+   * app.allowPublicSearching=true
+   * app.allowPublicLists=true
+
+## Caching and Rate Limiting with bucket4j
+OSMT uses Bucket4j for caching and rate limiting on the API. You can learn more about this [here](https://www.baeldung.com/spring-bucket4j). These features are enabled by including "bucket4j" as a run profile, which pull in [./src/main/resources/config/application-bucket4j.properties](./src/main/resources/config/application-bucket4j.properties). All of these properties can be adjusted at runtime as Spring application properties.
+
 ## Code Style
 To automatically apply the official Kotlin code style, Install the IntelliJ plugin `Save Actions`. Configure `Save Actions` in preferences to `Reformat file` on save.    
 

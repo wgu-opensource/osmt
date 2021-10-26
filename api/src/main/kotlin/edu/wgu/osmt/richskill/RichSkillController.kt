@@ -2,6 +2,7 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
+import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
@@ -36,22 +37,26 @@ class RichSkillController @Autowired constructor(
 
     val keywordDao = KeywordDao.Companion
 
-    override val allPaginatedPath: String = RoutePaths.SKILLS_PATH
+    override val allPaginatedPath: String = RoutePaths.SKILLS_LIST
     override val sortOrderCompanion = SkillSortEnum.Companion
 
-    @GetMapping(RoutePaths.SKILLS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.SKILLS_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     override fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
         size: Int,
         from: Int,
         status: Array<String>,
-        sort: String?
+        sort: String?,
+        @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<RichSkillDoc>> {
-        return super.allPaginated(uriComponentsBuilder, size, from, status, sort)
+        if (!appConfig.allowPublicLists && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+        return super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
     }
 
-    @PostMapping(RoutePaths.SKILLS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.SKILLS_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createSkills(
         @RequestBody apiSkillUpdates: List<ApiSkillUpdate>,

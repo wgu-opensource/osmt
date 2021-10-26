@@ -12,6 +12,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -27,6 +28,7 @@ internal class SearchControllerTest @Autowired constructor(
     lateinit var searchController: SearchController
 
     private lateinit var mockData : MockData
+    val nullJwt : Jwt? = null
 
     @BeforeAll
     fun setup() {
@@ -46,9 +48,10 @@ internal class SearchControllerTest @Autowired constructor(
                 UriComponentsBuilder.newInstance(),
                 50,
                 0,
-                arrayOf("draft","published"),
+                arrayOf("draft", "published"),
                 "",
-                 ApiSearch(advanced = ApiAdvancedSearch(collectionName = collectionDoc?.name)))
+                ApiSearch(advanced = ApiAdvancedSearch(collectionName = collectionDoc?.name)),
+                nullJwt)
 
         // Assert
         assertThat(result.body?.first()?.uuid).isEqualTo(collectionDoc?.uuid)
@@ -71,7 +74,8 @@ internal class SearchControllerTest @Autowired constructor(
                 arrayOf("draft","published"),
                 "",
                 collectionDoc?.uuid,
-                ApiSearch(query=listOfSkills[0].name))
+                ApiSearch(query=listOfSkills[0].name),
+                nullJwt)
 
         // Assert
         assertThat(result.body?.map { it.uuid }).contains(listOfSkills[0].uuid)

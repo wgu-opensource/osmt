@@ -1,0 +1,1448 @@
+SOC Group,SOC Code,SOC Title
+Major,11-0000,Management Occupations
+Minor,11-1000,Top Executives
+Broad,11-1010,Chief Executives
+Detailed,11-1011,Chief Executives
+Broad,11-1020,General and Operations Managers
+Detailed,11-1021,General and Operations Managers
+Broad,11-1030,Legislators
+Detailed,11-1031,Legislators
+Minor,Nov-00,"Advertising, Marketing, Promotions, Public Relations, and Sales Managers"
+Broad,Nov-10,Advertising and Promotions Managers
+Detailed,Nov-11,Advertising and Promotions Managers
+Broad,Nov-20,Marketing and Sales Managers
+Detailed,Nov-21,Marketing Managers
+Detailed,Nov-22,Sales Managers
+Broad,Nov-30,Public Relations and Fundraising Managers
+Detailed,Nov-32,Public Relations Managers
+Detailed,Nov-33,Fundraising Managers
+Minor,Nov-00,Operations Specialties Managers
+Broad,Nov-10,Administrative Services and Facilities Managers
+Detailed,Nov-12,Administrative Services Managers
+Detailed,Nov-13,Facilities Managers
+Broad,Nov-20,Computer and Information Systems Managers
+Detailed,Nov-21,Computer and Information Systems Managers
+Broad,Nov-30,Financial Managers
+Detailed,Nov-31,Financial Managers
+Broad,Nov-50,Industrial Production Managers
+Detailed,Nov-51,Industrial Production Managers
+Broad,Nov-60,Purchasing Managers
+Detailed,Nov-61,Purchasing Managers
+Broad,Nov-70,"Transportation, Storage, and Distribution Managers"
+Detailed,Nov-71,"Transportation, Storage, and Distribution Managers"
+Broad,Nov-10,Compensation and Benefits Managers
+Detailed,Nov-11,Compensation and Benefits Managers
+Broad,Nov-20,Human Resources Managers
+Detailed,Nov-21,Human Resources Managers
+Broad,Nov-30,Training and Development Managers
+Detailed,Nov-31,Training and Development Managers
+Minor,Nov-00,Other Management Occupations
+Broad,Nov-10,"Farmers, Ranchers, and Other Agricultural Managers"
+Detailed,Nov-13,"Farmers, Ranchers, and Other Agricultural Managers"
+Broad,Nov-20,Construction Managers
+Detailed,Nov-21,Construction Managers
+Broad,Nov-30,Education and Childcare Administrators
+Detailed,Nov-31,"Education and Childcare Administrators, Preschool and Daycare"
+Detailed,Nov-32,"Education Administrators, Kindergarten through Secondary"
+Detailed,Nov-33,"Education Administrators, Postsecondary"
+Detailed,Nov-39,"Education Administrators, All Other"
+Broad,Nov-40,Architectural and Engineering Managers
+Detailed,Nov-41,Architectural and Engineering Managers
+Broad,Nov-50,Food Service Managers
+Detailed,Nov-51,Food Service Managers
+Broad,Nov-70,Entertainment and Recreation Managers
+Detailed,Nov-71,Gambling Managers
+Detailed,Nov-72,"Entertainment and Recreation Managers, Except Gambling"
+Broad,Nov-80,Lodging Managers
+Detailed,Nov-81,Lodging Managers
+Broad,Nov-10,Medical and Health Services Managers
+Detailed,Nov-11,Medical and Health Services Managers
+Broad,Nov-20,Natural Sciences Managers
+Detailed,Nov-21,Natural Sciences Managers
+Broad,Nov-30,Postmasters and Mail Superintendents
+Detailed,Nov-31,Postmasters and Mail Superintendents
+Broad,Nov-40,"Property, Real Estate, and Community Association Managers"
+Detailed,Nov-41,"Property, Real Estate, and Community Association Managers"
+Broad,Nov-50,Social and Community Service Managers
+Detailed,Nov-51,Social and Community Service Managers
+Broad,Nov-60,Emergency Management Directors
+Detailed,Nov-61,Emergency Management Directors
+Broad,Nov-70,Personal Service Managers
+Detailed,Nov-71,Funeral Home Managers
+Detailed,Nov-79,"Personal Service Managers, All Other"
+Broad,Nov-90,Miscellaneous Managers
+Detailed,Nov-99,"Managers, All Other"
+Major,13-0000,Business and Financial Operations Occupations
+Minor,13-1000,Business Operations Specialists
+Broad,13-1010,"Agents and Business Managers of Artists, Performers, and Athletes"
+Detailed,13-1011,"Agents and Business Managers of Artists, Performers, and Athletes"
+Broad,13-1020,Buyers and Purchasing Agents
+Detailed,13-1021,"Buyers and Purchasing Agents, Farm Products"
+Detailed,13-1022,"Wholesale and Retail Buyers, Except Farm Products"
+Detailed,13-1023,"Purchasing Agents, Except Wholesale, Retail, and Farm Products"
+Broad,13-1030,"Claims Adjusters, Appraisers, Examiners, and Investigators"
+Detailed,13-1031,"Claims Adjusters, Examiners, and Investigators"
+Detailed,13-1032,"Insurance Appraisers, Auto Damage"
+Broad,13-1040,Compliance Officers
+Detailed,13-1041,Compliance Officers
+Broad,13-1050,Cost Estimators
+Detailed,13-1051,Cost Estimators
+Broad,13-1070,Human Resources Workers
+Detailed,13-1071,Human Resources Specialists
+Detailed,13-1074,Farm Labor Contractors
+Detailed,13-1075,Labor Relations Specialists
+Broad,13-1080,Logisticians and Project Management Specialists
+Detailed,13-1081,Logisticians
+Detailed,13-1082,Project Management Specialists
+Broad,13-1110,Management Analysts
+Detailed,13-1111,Management Analysts
+Broad,13-1120,"Meeting, Convention, and Event Planners"
+Detailed,13-1121,"Meeting, Convention, and Event Planners"
+Broad,13-1130,Fundraisers
+Detailed,13-1131,Fundraisers
+Broad,13-1140,"Compensation, Benefits, and Job Analysis Specialists"
+Detailed,13-1141,"Compensation, Benefits, and Job Analysis Specialists"
+Broad,13-1150,Training and Development Specialists
+Detailed,13-1151,Training and Development Specialists
+Broad,13-1160,Market Research Analysts and Marketing Specialists
+Detailed,13-1161,Market Research Analysts and Marketing Specialists
+Broad,13-1190,Miscellaneous Business Operations Specialists
+Detailed,13-1199,"Business Operations Specialists, All Other"
+Minor,13-2000,Financial Specialists
+Broad,13-2010,Accountants and Auditors
+Detailed,13-2011,Accountants and Auditors
+Broad,13-2020,Property Appraisers and Assessors
+Detailed,13-2022,Appraisers of Personal and Business Property
+Detailed,13-2023,Appraisers and Assessors of Real Estate
+Broad,13-2030,Budget Analysts
+Detailed,13-2031,Budget Analysts
+Broad,13-2040,Credit Analysts
+Detailed,13-2041,Credit Analysts
+Broad,13-2050,Financial Analysts and Advisors
+Detailed,13-2051,Financial and Investment Analysts
+Detailed,13-2052,Personal Financial Advisors
+Detailed,13-2053,Insurance Underwriters
+Detailed,13-2054,Financial Risk Specialists
+Broad,13-2060,Financial Examiners
+Detailed,13-2061,Financial Examiners
+Broad,13-2070,Credit Counselors and Loan Officers
+Detailed,13-2071,Credit Counselors
+Detailed,13-2072,Loan Officers
+Broad,13-2080,"Tax Examiners, Collectors and Preparers, and Revenue Agents"
+Detailed,13-2081,"Tax Examiners and Collectors, and Revenue Agents"
+Detailed,13-2082,Tax Preparers
+Broad,13-2090,Miscellaneous Financial Specialists
+Detailed,13-2099,"Financial Specialists, All Other"
+Major,15-0000,Computer and Mathematical Occupations
+Minor,15-1200,Computer Occupations
+Broad,15-1210,Computer and Information Analysts
+Detailed,15-1211,Computer Systems Analysts
+Detailed,15-1212,Information Security Analysts
+Broad,15-1220,Computer and Information Research Scientists
+Detailed,15-1221,Computer and Information Research Scientists
+Broad,15-1230,Computer Support Specialists
+Detailed,15-1231,Computer Network Support Specialists
+Detailed,15-1232,Computer User Support Specialists
+Broad,15-1240,Database and Network Administrators and Architects
+Detailed,15-1241,Computer Network Architects
+Detailed,15-1242,Database Administrators
+Detailed,15-1243,Database Architects
+Detailed,15-1244,Network and Computer Systems Administrators
+Broad,15-1250,"Software and Web Developers, Programmers, and Testers"
+Detailed,15-1251,Computer Programmers
+Detailed,15-1252,Software Developers
+Detailed,15-1253,Software Quality Assurance Analysts and Testers
+Detailed,15-1254,Web Developers
+Detailed,15-1255,Web and Digital Interface Designers
+Broad,15-1290,Miscellaneous Computer Occupations
+Detailed,15-1299,"Computer Occupations, All Other"
+Minor,15-2000,Mathematical Science Occupations
+Broad,15-2010,Actuaries
+Detailed,15-2011,Actuaries
+Broad,15-2020,Mathematicians
+Detailed,15-2021,Mathematicians
+Broad,15-2030,Operations Research Analysts
+Detailed,15-2031,Operations Research Analysts
+Broad,15-2040,Statisticians
+Detailed,15-2041,Statisticians
+Broad,15-2050,Data Scientists
+Detailed,15-2051,Data Scientists
+Broad,15-2090,Miscellaneous Mathematical Science Occupations
+Detailed,15-2099,"Mathematical Science Occupations, All Other"
+Major,17-0000,Architecture and Engineering Occupations
+Minor,17-1000,"Architects, Surveyors, and Cartographers"
+Broad,17-1010,"Architects, Except Naval"
+Detailed,17-1011,"Architects, Except Landscape and Naval"
+Detailed,17-1012,Landscape Architects
+Broad,17-1020,"Surveyors, Cartographers, and Photogrammetrists"
+Detailed,17-1021,Cartographers and Photogrammetrists
+Detailed,17-1022,Surveyors
+Minor,17-2000,Engineers
+Broad,17-2010,Aerospace Engineers
+Detailed,17-2011,Aerospace Engineers
+Broad,17-2020,Agricultural Engineers
+Detailed,17-2021,Agricultural Engineers
+Broad,17-2030,Bioengineers and Biomedical Engineers
+Detailed,17-2031,Bioengineers and Biomedical Engineers
+Broad,17-2040,Chemical Engineers
+Detailed,17-2041,Chemical Engineers
+Broad,17-2050,Civil Engineers
+Detailed,17-2051,Civil Engineers
+Broad,17-2060,Computer Hardware Engineers
+Detailed,17-2061,Computer Hardware Engineers
+Broad,17-2070,Electrical and Electronics Engineers
+Detailed,17-2071,Electrical Engineers
+Detailed,17-2072,"Electronics Engineers, Except Computer"
+Broad,17-2080,Environmental Engineers
+Detailed,17-2081,Environmental Engineers
+Broad,17-2110,"Industrial Engineers, Including Health and Safety"
+Detailed,17-2111,"Health and Safety Engineers, Except Mining Safety Engineers and Inspectors"
+Detailed,17-2112,Industrial Engineers
+Broad,17-2120,Marine Engineers and Naval Architects
+Detailed,17-2121,Marine Engineers and Naval Architects
+Broad,17-2130,Materials Engineers
+Detailed,17-2131,Materials Engineers
+Broad,17-2140,Mechanical Engineers
+Detailed,17-2141,Mechanical Engineers
+Broad,17-2150,"Mining and Geological Engineers, Including Mining Safety Engineers"
+Detailed,17-2151,"Mining and Geological Engineers, Including Mining Safety Engineers"
+Broad,17-2160,Nuclear Engineers
+Detailed,17-2161,Nuclear Engineers
+Broad,17-2170,Petroleum Engineers
+Detailed,17-2171,Petroleum Engineers
+Broad,17-2190,Miscellaneous Engineers
+Detailed,17-2199,"Engineers, All Other"
+Minor,17-3000,"Drafters, Engineering Technicians, and Mapping Technicians"
+Broad,17-3010,Drafters
+Detailed,17-3011,Architectural and Civil Drafters
+Detailed,17-3012,Electrical and Electronics Drafters
+Detailed,17-3013,Mechanical Drafters
+Detailed,17-3019,"Drafters, All Other"
+Broad,17-3020,"Engineering Technologists and Technicians, Except Drafters"
+Detailed,17-3021,Aerospace Engineering and Operations Technologists and Technicians
+Detailed,17-3022,Civil Engineering Technologists and Technicians
+Detailed,17-3023,Electrical and Electronic Engineering Technologists and Technicians
+Detailed,17-3024,Electro-Mechanical and Mechatronics Technologists and Technicians
+Detailed,17-3025,Environmental Engineering Technologists and Technicians
+Detailed,17-3026,Industrial Engineering Technologists and Technicians
+Detailed,17-3027,Mechanical Engineering Technologists and Technicians
+Detailed,17-3028,Calibration Technologists and Technicians
+Detailed,17-3029,"Engineering Technologists and Technicians, Except Drafters, All Other"
+Broad,17-3030,Surveying and Mapping Technicians
+Detailed,17-3031,Surveying and Mapping Technicians
+Major,19-0000,"Life, Physical, and Social Science Occupations"
+Minor,19-1000,Life Scientists
+Broad,19-1010,Agricultural and Food Scientists
+Detailed,19-1011,Animal Scientists
+Detailed,19-1012,Food Scientists and Technologists
+Detailed,19-1013,Soil and Plant Scientists
+Broad,19-1020,Biological Scientists
+Detailed,19-1021,Biochemists and Biophysicists
+Detailed,19-1022,Microbiologists
+Detailed,19-1023,Zoologists and Wildlife Biologists
+Detailed,19-1029,"Biological Scientists, All Other"
+Broad,19-1030,Conservation Scientists and Foresters
+Detailed,19-1031,Conservation Scientists
+Detailed,19-1032,Foresters
+Broad,19-1040,Medical Scientists
+Detailed,19-1041,Epidemiologists
+Detailed,19-1042,"Medical Scientists, Except Epidemiologists"
+Broad,19-1090,Miscellaneous Life Scientists
+Detailed,19-1099,"Life Scientists, All Other"
+Minor,19-2000,Physical Scientists
+Broad,19-2010,Astronomers and Physicists
+Detailed,19-2011,Astronomers
+Detailed,19-2012,Physicists
+Broad,19-2020,Atmospheric and Space Scientists
+Detailed,19-2021,Atmospheric and Space Scientists
+Broad,19-2030,Chemists and Materials Scientists
+Detailed,19-2031,Chemists
+Detailed,19-2032,Materials Scientists
+Broad,19-2040,Environmental Scientists and Geoscientists
+Detailed,19-2041,"Environmental Scientists and Specialists, Including Health"
+Detailed,19-2042,"Geoscientists, Except Hydrologists and Geographers"
+Detailed,19-2043,Hydrologists
+Broad,19-2090,Miscellaneous Physical Scientists
+Detailed,19-2099,"Physical Scientists, All Other"
+Minor,19-3000,Social Scientists and Related Workers
+Broad,19-3010,Economists
+Detailed,19-3011,Economists
+Broad,19-3020,Survey Researchers
+Detailed,19-3022,Survey Researchers
+Broad,19-3030,Psychologists
+Detailed,19-3032,Industrial-Organizational Psychologists
+Detailed,19-3033,Clinical and Counseling Psychologists
+Detailed,19-3034,School Psychologists
+Detailed,19-3039,"Psychologists, All Other"
+Broad,19-3040,Sociologists
+Detailed,19-3041,Sociologists
+Broad,19-3050,Urban and Regional Planners
+Detailed,19-3051,Urban and Regional Planners
+Broad,19-3090,Miscellaneous Social Scientists and Related Workers
+Detailed,19-3091,Anthropologists and Archeologists
+Detailed,19-3092,Geographers
+Detailed,19-3093,Historians
+Detailed,19-3094,Political Scientists
+Detailed,19-3099,"Social Scientists and Related Workers, All Other"
+Minor,19-4000,"Life, Physical, and Social Science Technicians"
+Broad,19-4010,Agricultural and Food Science Technicians
+Detailed,19-4012,Agricultural Technicians
+Detailed,19-4013,Food Science Technicians
+Broad,19-4020,Biological Technicians
+Detailed,19-4021,Biological Technicians
+Broad,19-4030,Chemical Technicians
+Detailed,19-4031,Chemical Technicians
+Broad,19-4040,Environmental Science and Geoscience Technicians
+Detailed,19-4042,"Environmental Science and Protection Technicians, Including Health"
+Detailed,19-4043,"Geological Technicians, Except Hydrologic Technicians"
+Detailed,19-4044,Hydrologic Technicians
+Broad,19-4050,Nuclear Technicians
+Detailed,19-4051,Nuclear Technicians
+Broad,19-4060,Social Science Research Assistants
+Detailed,19-4061,Social Science Research Assistants
+Broad,19-4070,Forest and Conservation Technicians
+Detailed,19-4071,Forest and Conservation Technicians
+Broad,19-4090,"Miscellaneous Life, Physical, and Social Science Technicians"
+Detailed,19-4092,Forensic Science Technicians
+Detailed,19-4099,"Life, Physical, and Social Science Technicians, All Other"
+Minor,19-5000,Occupational Health and Safety Specialists and Technicians
+Broad,19-5010,Occupational Health and Safety Specialists and Technicians
+Detailed,19-5011,Occupational Health and Safety Specialists
+Detailed,19-5012,Occupational Health and Safety Technicians
+Major,21-0000,Community and Social Service Occupations
+Minor,21-1000,"Counselors, Social Workers, and Other Community and Social Service Specialists"
+Broad,21-1010,Counselors
+Detailed,21-1011,Substance Abuse and Behavioral Disorder Counselors
+Detailed,21-1012,"Educational, Guidance, and Career Counselors and Advisors"
+Detailed,21-1013,Marriage and Family Therapists
+Detailed,21-1014,Mental Health Counselors
+Detailed,21-1015,Rehabilitation Counselors
+Detailed,21-1019,"Counselors, All Other"
+Broad,21-1020,Social Workers
+Detailed,21-1021,"Child, Family, and School Social Workers"
+Detailed,21-1022,Healthcare Social Workers
+Detailed,21-1023,Mental Health and Substance Abuse Social Workers
+Detailed,21-1029,"Social Workers, All Other"
+Broad,21-1090,Miscellaneous Community and Social Service Specialists
+Detailed,21-1091,Health Education Specialists
+Detailed,21-1092,Probation Officers and Correctional Treatment Specialists
+Detailed,21-1093,Social and Human Service Assistants
+Detailed,21-1094,Community Health Workers
+Detailed,21-1099,"Community and Social Service Specialists, All Other"
+Minor,21-2000,Religious Workers
+Broad,21-2010,Clergy
+Detailed,21-2011,Clergy
+Broad,21-2020,"Directors, Religious Activities and Education"
+Detailed,21-2021,"Directors, Religious Activities and Education"
+Broad,21-2090,Miscellaneous Religious Workers
+Detailed,21-2099,"Religious Workers, All Other"
+Major,23-0000,Legal Occupations
+Minor,23-1000,"Lawyers, Judges, and Related Workers"
+Broad,23-1010,Lawyers and Judicial Law Clerks
+Detailed,23-1011,Lawyers
+Detailed,23-1012,Judicial Law Clerks
+Broad,23-1020,"Judges, Magistrates, and Other Judicial Workers"
+Detailed,23-1021,"Administrative Law Judges, Adjudicators, and Hearing Officers"
+Detailed,23-1022,"Arbitrators, Mediators, and Conciliators"
+Detailed,23-1023,"Judges, Magistrate Judges, and Magistrates"
+Minor,23-2000,Legal Support Workers
+Broad,23-2010,Paralegals and Legal Assistants
+Detailed,23-2011,Paralegals and Legal Assistants
+Broad,23-2090,Miscellaneous Legal Support Workers
+Detailed,23-2093,"Title Examiners, Abstractors, and Searchers"
+Detailed,23-2099,"Legal Support Workers, All Other"
+Major,25-0000,Educational Instruction and Library Occupations
+Minor,25-1000,Postsecondary Teachers
+Broad,25-1010,"Business Teachers, Postsecondary"
+Detailed,25-1011,"Business Teachers, Postsecondary"
+Broad,25-1020,"Math and Computer Science Teachers, Postsecondary"
+Detailed,25-1021,"Computer Science Teachers, Postsecondary"
+Detailed,25-1022,"Mathematical Science Teachers, Postsecondary"
+Broad,25-1030,"Engineering and Architecture Teachers, Postsecondary"
+Detailed,25-1031,"Architecture Teachers, Postsecondary"
+Detailed,25-1032,"Engineering Teachers, Postsecondary"
+Broad,25-1040,"Life Sciences Teachers, Postsecondary"
+Detailed,25-1041,"Agricultural Sciences Teachers, Postsecondary"
+Detailed,25-1042,"Biological Science Teachers, Postsecondary"
+Detailed,25-1043,"Forestry and Conservation Science Teachers, Postsecondary"
+Broad,25-1050,"Physical Sciences Teachers, Postsecondary"
+Detailed,25-1051,"Atmospheric, Earth, Marine, and Space Sciences Teachers, Postsecondary"
+Detailed,25-1052,"Chemistry Teachers, Postsecondary"
+Detailed,25-1053,"Environmental Science Teachers, Postsecondary"
+Detailed,25-1054,"Physics Teachers, Postsecondary"
+Broad,25-1060,"Social Sciences Teachers, Postsecondary"
+Detailed,25-1061,"Anthropology and Archeology Teachers, Postsecondary"
+Detailed,25-1062,"Area, Ethnic, and Cultural Studies Teachers, Postsecondary"
+Detailed,25-1063,"Economics Teachers, Postsecondary"
+Detailed,25-1064,"Geography Teachers, Postsecondary"
+Detailed,25-1065,"Political Science Teachers, Postsecondary"
+Detailed,25-1066,"Psychology Teachers, Postsecondary"
+Detailed,25-1067,"Sociology Teachers, Postsecondary"
+Detailed,25-1069,"Social Sciences Teachers, Postsecondary, All Other"
+Broad,25-1070,"Health Teachers, Postsecondary"
+Detailed,25-1071,"Health Specialties Teachers, Postsecondary"
+Detailed,25-1072,"Nursing Instructors and Teachers, Postsecondary"
+Broad,25-1080,"Education and Library Science Teachers, Postsecondary"
+Detailed,25-1081,"Education Teachers, Postsecondary"
+Detailed,25-1082,"Library Science Teachers, Postsecondary"
+Broad,25-1110,"Law, Criminal Justice, and Social Work Teachers, Postsecondary"
+Detailed,25-1111,"Criminal Justice and Law Enforcement Teachers, Postsecondary"
+Detailed,25-1112,"Law Teachers, Postsecondary"
+Detailed,25-1113,"Social Work Teachers, Postsecondary"
+Broad,25-1120,"Arts, Communications, History, and Humanities Teachers, Postsecondary"
+Detailed,25-1121,"Art, Drama, and Music Teachers, Postsecondary"
+Detailed,25-1122,"Communications Teachers, Postsecondary"
+Detailed,25-1123,"English Language and Literature Teachers, Postsecondary"
+Detailed,25-1124,"Foreign Language and Literature Teachers, Postsecondary"
+Detailed,25-1125,"History Teachers, Postsecondary"
+Detailed,25-1126,"Philosophy and Religion Teachers, Postsecondary"
+Broad,25-1190,Miscellaneous Postsecondary Teachers
+Detailed,25-1192,"Family and Consumer Sciences Teachers, Postsecondary"
+Detailed,25-1193,"Recreation and Fitness Studies Teachers, Postsecondary"
+Detailed,25-1194,"Career/Technical Education Teachers, Postsecondary"
+Detailed,25-1199,"Postsecondary Teachers, All Other"
+Minor,25-2000,"Preschool, Elementary, Middle, Secondary, and Special Education Teachers"
+Broad,25-2010,Preschool and Kindergarten Teachers
+Detailed,25-2011,"Preschool Teachers, Except Special Education"
+Detailed,25-2012,"Kindergarten Teachers, Except Special Education"
+Broad,25-2020,Elementary and Middle School Teachers
+Detailed,25-2021,"Elementary School Teachers, Except Special Education"
+Detailed,25-2022,"Middle School Teachers, Except Special and Career/Technical Education"
+Detailed,25-2023,"Career/Technical Education Teachers, Middle School"
+Broad,25-2030,Secondary School Teachers
+Detailed,25-2031,"Secondary School Teachers, Except Special and Career/Technical Education"
+Detailed,25-2032,"Career/Technical Education Teachers, Secondary School"
+Broad,25-2050,Special Education Teachers
+Detailed,25-2051,"Special Education Teachers, Preschool"
+Detailed,25-2055,"Special Education Teachers, Kindergarten"
+Detailed,25-2056,"Special Education Teachers, Elementary School"
+Detailed,25-2057,"Special Education Teachers, Middle School"
+Detailed,25-2058,"Special Education Teachers, Secondary School"
+Detailed,25-2059,"Special Education Teachers, All Other"
+Minor,25-3000,Other Teachers and Instructors
+Broad,25-3010,"Adult Basic Education, Adult Secondary Education, and English as a Second Language Instructors"
+Detailed,25-3011,"Adult Basic Education, Adult Secondary Education, and English as a Second Language Instructors"
+Broad,25-3020,Self-Enrichment Teachers
+Detailed,25-3021,Self-Enrichment Teachers
+Broad,25-3030,"Substitute Teachers, Short-Term"
+Detailed,25-3031,"Substitute Teachers, Short-Term"
+Broad,25-3040,Tutors
+Detailed,25-3041,Tutors
+Broad,25-3090,Miscellaneous Teachers and Instructors
+Detailed,25-3099,"Teachers and Instructors, All Other"
+Minor,25-4000,"Librarians, Curators, and Archivists"
+Broad,25-4010,"Archivists, Curators, and Museum Technicians"
+Detailed,25-4011,Archivists
+Detailed,25-4012,Curators
+Detailed,25-4013,Museum Technicians and Conservators
+Broad,25-4020,Librarians and Media Collections Specialists
+Detailed,25-4022,Librarians and Media Collections Specialists
+Broad,25-4030,Library Technicians
+Detailed,25-4031,Library Technicians
+Minor,25-9000,Other Educational Instruction and Library Occupations
+Broad,25-9020,Farm and Home Management Educators
+Detailed,25-9021,Farm and Home Management Educators
+Broad,25-9030,Instructional Coordinators
+Detailed,25-9031,Instructional Coordinators
+Broad,25-9040,Teaching Assistants
+Detailed,25-9042,"Teaching Assistants, Preschool, Elementary, Middle, and Secondary School, Except Special Education"
+Detailed,25-9043,"Teaching Assistants, Special Education"
+Detailed,25-9044,"Teaching Assistants, Postsecondary"
+Detailed,25-9049,"Teaching Assistants, All Other"
+Broad,25-9090,Miscellaneous Educational Instruction and Library Workers
+Detailed,25-9099,"Educational Instruction and Library Workers, All Other"
+Major,27-0000,"Arts, Design, Entertainment, Sports, and Media Occupations"
+Minor,27-1000,Art and Design Workers
+Broad,27-1010,Artists and Related Workers
+Detailed,27-1011,Art Directors
+Detailed,27-1012,Craft Artists
+Detailed,27-1013,"Fine Artists, Including Painters, Sculptors, and Illustrators"
+Detailed,27-1014,Special Effects Artists and Animators
+Detailed,27-1019,"Artists and Related Workers, All Other"
+Broad,27-1020,Designers
+Detailed,27-1021,Commercial and Industrial Designers
+Detailed,27-1022,Fashion Designers
+Detailed,27-1023,Floral Designers
+Detailed,27-1024,Graphic Designers
+Detailed,27-1025,Interior Designers
+Detailed,27-1026,Merchandise Displayers and Window Trimmers
+Detailed,27-1027,Set and Exhibit Designers
+Detailed,27-1029,"Designers, All Other"
+Minor,27-2000,"Entertainers and Performers, Sports and Related Workers"
+Broad,27-2010,"Actors, Producers, and Directors"
+Detailed,27-2011,Actors
+Detailed,27-2012,Producers and Directors
+Broad,27-2020,"Athletes, Coaches, Umpires, and Related Workers"
+Detailed,27-2021,Athletes and Sports Competitors
+Detailed,27-2022,Coaches and Scouts
+Detailed,27-2023,"Umpires, Referees, and Other Sports Officials"
+Broad,27-2030,Dancers and Choreographers
+Detailed,27-2031,Dancers
+Detailed,27-2032,Choreographers
+Broad,27-2040,"Musicians, Singers, and Related Workers"
+Detailed,27-2041,Music Directors and Composers
+Detailed,27-2042,Musicians and Singers
+Broad,27-2090,"Miscellaneous Entertainers and Performers, Sports and Related Workers"
+Detailed,27-2091,"Disc Jockeys, Except Radio"
+Detailed,27-2099,"Entertainers and Performers, Sports and Related Workers, All Other"
+Minor,27-3000,Media and Communication Workers
+Broad,27-3010,Broadcast Announcers and Radio Disc Jockeys
+Detailed,27-3011,Broadcast Announcers and Radio Disc Jockeys
+Broad,27-3020,"News Analysts, Reporters and Journalists"
+Detailed,27-3023,"News Analysts, Reporters, and Journalists"
+Broad,27-3030,Public Relations Specialists
+Detailed,27-3031,Public Relations Specialists
+Broad,27-3040,Writers and Editors
+Detailed,27-3041,Editors
+Detailed,27-3042,Technical Writers
+Detailed,27-3043,Writers and Authors
+Broad,27-3090,Miscellaneous Media and Communication Workers
+Detailed,27-3091,Interpreters and Translators
+Detailed,27-3092,Court Reporters and Simultaneous Captioners
+Detailed,27-3099,"Media and Communication Workers, All Other"
+Minor,27-4000,Media and Communication Equipment Workers
+Broad,27-4010,"Broadcast, Sound, and Lighting Technicians"
+Detailed,27-4011,Audio and Video Technicians
+Detailed,27-4012,Broadcast Technicians
+Detailed,27-4014,Sound Engineering Technicians
+Detailed,27-4015,Lighting Technicians
+Broad,27-4020,Photographers
+Detailed,27-4021,Photographers
+Broad,27-4030,"Television, Video, and Film Camera Operators and Editors"
+Detailed,27-4031,"Camera Operators, Television, Video, and Film"
+Detailed,27-4032,Film and Video Editors
+Broad,27-4090,Miscellaneous Media and Communication Equipment Workers
+Detailed,27-4099,"Media and Communication Equipment Workers, All Other"
+Major,29-0000,Healthcare Practitioners and Technical Occupations
+Minor,29-1000,Healthcare Diagnosing or Treating Practitioners
+Broad,29-1010,Chiropractors
+Detailed,29-1011,Chiropractors
+Broad,29-1020,Dentists
+Detailed,29-1021,"Dentists, General"
+Detailed,29-1022,Oral and Maxillofacial Surgeons
+Detailed,29-1023,Orthodontists
+Detailed,29-1024,Prosthodontists
+Detailed,29-1029,"Dentists, All Other Specialists"
+Broad,29-1030,Dietitians and Nutritionists
+Detailed,29-1031,Dietitians and Nutritionists
+Broad,29-1040,Optometrists
+Detailed,29-1041,Optometrists
+Broad,29-1050,Pharmacists
+Detailed,29-1051,Pharmacists
+Broad,29-1070,Physician Assistants
+Detailed,29-1071,Physician Assistants
+Broad,29-1080,Podiatrists
+Detailed,29-1081,Podiatrists
+Broad,29-1120,Therapists
+Detailed,29-1122,Occupational Therapists
+Detailed,29-1123,Physical Therapists
+Detailed,29-1124,Radiation Therapists
+Detailed,29-1125,Recreational Therapists
+Detailed,29-1126,Respiratory Therapists
+Detailed,29-1127,Speech-Language Pathologists
+Detailed,29-1128,Exercise Physiologists
+Detailed,29-1129,"Therapists, All Other"
+Broad,29-1130,Veterinarians
+Detailed,29-1131,Veterinarians
+Broad,29-1140,Registered Nurses
+Detailed,29-1141,Registered Nurses
+Broad,29-1150,Nurse Anesthetists
+Detailed,29-1151,Nurse Anesthetists
+Broad,29-1160,Nurse Midwives
+Detailed,29-1161,Nurse Midwives
+Broad,29-1170,Nurse Practitioners
+Detailed,29-1171,Nurse Practitioners
+Broad,29-1180,Audiologists
+Detailed,29-1181,Audiologists
+Broad,29-1210,Physicians
+Detailed,29-1211,Anesthesiologists
+Detailed,29-1212,Cardiologists
+Detailed,29-1213,Dermatologists
+Detailed,29-1214,Emergency Medicine Physicians
+Detailed,29-1215,Family Medicine Physicians
+Detailed,29-1216,General Internal Medicine Physicians
+Detailed,29-1217,Neurologists
+Detailed,29-1218,Obstetricians and Gynecologists
+Detailed,29-1221,"Pediatricians, General"
+Detailed,29-1222,"Physicians, Pathologists"
+Detailed,29-1223,Psychiatrists
+Detailed,29-1224,Radiologists
+Detailed,29-1229,"Physicians, All Other"
+Broad,29-1240,Surgeons
+Detailed,29-1241,"Ophthalmologists, Except Pediatric"
+Detailed,29-1242,"Orthopedic Surgeons, Except Pediatric"
+Detailed,29-1243,Pediatric Surgeons
+Detailed,29-1249,"Surgeons, All Other"
+Broad,29-1290,Miscellaneous Healthcare Diagnosing or Treating Practitioners
+Detailed,29-1291,Acupuncturists
+Detailed,29-1292,Dental Hygienists
+Detailed,29-1299,"Healthcare Diagnosing or Treating Practitioners, All Other"
+Minor,29-2000,Health Technologists and Technicians
+Broad,29-2010,Clinical Laboratory Technologists and Technicians
+Detailed,29-2011,Medical and Clinical Laboratory Technologists
+Detailed,29-2012,Medical and Clinical Laboratory Technicians
+Broad,29-2030,Diagnostic Related Technologists and Technicians
+Detailed,29-2031,Cardiovascular Technologists and Technicians
+Detailed,29-2032,Diagnostic Medical Sonographers
+Detailed,29-2033,Nuclear Medicine Technologists
+Detailed,29-2034,Radiologic Technologists and Technicians
+Detailed,29-2035,Magnetic Resonance Imaging Technologists
+Detailed,29-2036,Medical Dosimetrists
+Broad,29-2040,Emergency Medical Technicians and Paramedics
+Detailed,29-2042,Emergency Medical Technicians
+Detailed,29-2043,Paramedics
+Broad,29-2050,Health Practitioner Support Technologists and Technicians
+Detailed,29-2051,Dietetic Technicians
+Detailed,29-2052,Pharmacy Technicians
+Detailed,29-2053,Psychiatric Technicians
+Detailed,29-2055,Surgical Technologists
+Detailed,29-2056,Veterinary Technologists and Technicians
+Detailed,29-2057,Ophthalmic Medical Technicians
+Broad,29-2060,Licensed Practical and Licensed Vocational Nurses
+Detailed,29-2061,Licensed Practical and Licensed Vocational Nurses
+Broad,29-2070,Medical Records Specialists
+Detailed,29-2072,Medical Records Specialists
+Broad,29-2080,"Opticians, Dispensing"
+Detailed,29-2081,"Opticians, Dispensing"
+Broad,29-2090,Miscellaneous Health Technologists and Technicians
+Detailed,29-2091,Orthotists and Prosthetists
+Detailed,29-2092,Hearing Aid Specialists
+Detailed,29-2099,"Health Technologists and Technicians, All Other"
+Minor,29-9000,Other Healthcare Practitioners and Technical Occupations
+Broad,29-9020,Health Information Technologists and Medical Registrars
+Detailed,29-9021,Health Information Technologists and Medical Registrars
+Broad,29-9090,Miscellaneous Health Practitioners and Technical Workers
+Detailed,29-9091,Athletic Trainers
+Detailed,29-9092,Genetic Counselors
+Detailed,29-9093,Surgical Assistants
+Detailed,29-9099,"Healthcare Practitioners and Technical Workers, All Other"
+Major,31-0000,Healthcare Support Occupations
+Minor,31-1100,"Home Health and Personal Care Aides; and Nursing Assistants, Orderlies, and Psychiatric Aides"
+Broad,31-1120,Home Health and Personal Care Aides
+Detailed,31-1121,Home Health Aides
+Detailed,31-1122,Personal Care Aides
+Broad,31-1130,"Nursing Assistants, Orderlies, and Psychiatric Aides"
+Detailed,31-1131,Nursing Assistants
+Detailed,31-1132,Orderlies
+Detailed,31-1133,Psychiatric Aides
+Minor,31-2000,Occupational Therapy and Physical Therapist Assistants and Aides
+Broad,31-2010,Occupational Therapy Assistants and Aides
+Detailed,31-2011,Occupational Therapy Assistants
+Detailed,31-2012,Occupational Therapy Aides
+Broad,31-2020,Physical Therapist Assistants and Aides
+Detailed,31-2021,Physical Therapist Assistants
+Detailed,31-2022,Physical Therapist Aides
+Minor,31-9000,Other Healthcare Support Occupations
+Broad,31-9010,Massage Therapists
+Detailed,31-9011,Massage Therapists
+Broad,31-9090,Miscellaneous Healthcare Support Occupations
+Detailed,31-9091,Dental Assistants
+Detailed,31-9092,Medical Assistants
+Detailed,31-9093,Medical Equipment Preparers
+Detailed,31-9094,Medical Transcriptionists
+Detailed,31-9095,Pharmacy Aides
+Detailed,31-9096,Veterinary Assistants and Laboratory Animal Caretakers
+Detailed,31-9097,Phlebotomists
+Detailed,31-9099,"Healthcare Support Workers, All Other"
+Major,33-0000,Protective Service Occupations
+Minor,33-1000,Supervisors of Protective Service Workers
+Broad,33-1010,First-Line Supervisors of Law Enforcement Workers
+Detailed,33-1011,First-Line Supervisors of Correctional Officers
+Detailed,33-1012,First-Line Supervisors of Police and Detectives
+Broad,33-1020,First-Line Supervisors of Firefighting and Prevention Workers
+Detailed,33-1021,First-Line Supervisors of Firefighting and Prevention Workers
+Broad,33-1090,"Miscellaneous First-Line Supervisors, Protective Service Workers"
+Detailed,33-1091,First-Line Supervisors of Security Workers
+Detailed,33-1099,"First-Line Supervisors of Protective Service Workers, All Other"
+Minor,33-2000,Firefighting and Prevention Workers
+Broad,33-2010,Firefighters
+Detailed,33-2011,Firefighters
+Broad,33-2020,Fire Inspectors
+Detailed,33-2021,Fire Inspectors and Investigators
+Detailed,33-2022,Forest Fire Inspectors and Prevention Specialists
+Minor,33-3000,Law Enforcement Workers
+Broad,33-3010,"Bailiffs, Correctional Officers, and Jailers"
+Detailed,33-3011,Bailiffs
+Detailed,33-3012,Correctional Officers and Jailers
+Broad,33-3020,Detectives and Criminal Investigators
+Detailed,33-3021,Detectives and Criminal Investigators
+Broad,33-3030,Fish and Game Wardens
+Detailed,33-3031,Fish and Game Wardens
+Broad,33-3040,Parking Enforcement Workers
+Detailed,33-3041,Parking Enforcement Workers
+Broad,33-3050,Police Officers
+Detailed,33-3051,Police and Sheriff’s Patrol Officers
+Detailed,33-3052,Transit and Railroad Police
+Minor,33-9000,Other Protective Service Workers
+Broad,33-9010,Animal Control Workers
+Detailed,33-9011,Animal Control Workers
+Broad,33-9020,Private Detectives and Investigators
+Detailed,33-9021,Private Detectives and Investigators
+Broad,33-9030,Security Guards and Gambling Surveillance Officers
+Detailed,33-9031,Gambling Surveillance Officers and Gambling Investigators
+Detailed,33-9032,Security Guards
+Broad,33-9090,Miscellaneous Protective Service Workers
+Detailed,33-9091,Crossing Guards and Flaggers
+Detailed,33-9092,"Lifeguards, Ski Patrol, and Other Recreational Protective Service Workers"
+Detailed,33-9093,Transportation Security Screeners
+Detailed,33-9094,School Bus Monitors
+Detailed,33-9099,"Protective Service Workers, All Other"
+Major,35-0000,Food Preparation and Serving Related Occupations
+Minor,35-1000,Supervisors of Food Preparation and Serving Workers
+Broad,35-1010,Supervisors of Food Preparation and Serving Workers
+Detailed,35-1011,Chefs and Head Cooks
+Detailed,35-1012,First-Line Supervisors of Food Preparation and Serving Workers
+Minor,35-2000,Cooks and Food Preparation Workers
+Broad,35-2010,Cooks
+Detailed,35-2011,"Cooks, Fast Food"
+Detailed,35-2012,"Cooks, Institution and Cafeteria"
+Detailed,35-2013,"Cooks, Private Household"
+Detailed,35-2014,"Cooks, Restaurant"
+Detailed,35-2015,"Cooks, Short Order"
+Detailed,35-2019,"Cooks, All Other"
+Broad,35-2020,Food Preparation Workers
+Detailed,35-2021,Food Preparation Workers
+Minor,35-3000,Food and Beverage Serving Workers
+Broad,35-3010,Bartenders
+Detailed,35-3011,Bartenders
+Broad,35-3020,Fast Food and Counter Workers
+Detailed,35-3023,Fast Food and Counter Workers
+Broad,35-3030,Waiters and Waitresses
+Detailed,35-3031,Waiters and Waitresses
+Broad,35-3040,"Food Servers, Nonrestaurant"
+Detailed,35-3041,"Food Servers, Nonrestaurant"
+Minor,35-9000,Other Food Preparation and Serving Related Workers
+Broad,35-9010,Dining Room and Cafeteria Attendants and Bartender Helpers
+Detailed,35-9011,Dining Room and Cafeteria Attendants and Bartender Helpers
+Broad,35-9020,Dishwashers
+Detailed,35-9021,Dishwashers
+Broad,35-9030,"Hosts and Hostesses, Restaurant, Lounge, and Coffee Shop"
+Detailed,35-9031,"Hosts and Hostesses, Restaurant, Lounge, and Coffee Shop"
+Broad,35-9090,Miscellaneous Food Preparation and Serving Related Workers
+Detailed,35-9099,"Food Preparation and Serving Related Workers, All Other"
+Major,37-0000,Building and Grounds Cleaning and Maintenance Occupations
+Minor,37-1000,Supervisors of Building and Grounds Cleaning and Maintenance Workers
+Broad,37-1010,First-Line Supervisors of Building and Grounds Cleaning and Maintenance Workers
+Detailed,37-1011,First-Line Supervisors of Housekeeping and Janitorial Workers
+Detailed,37-1012,"First-Line Supervisors of Landscaping, Lawn Service, and Groundskeeping Workers"
+Minor,37-2000,Building Cleaning and Pest Control Workers
+Broad,37-2010,Building Cleaning Workers
+Detailed,37-2011,"Janitors and Cleaners, Except Maids and Housekeeping Cleaners"
+Detailed,37-2012,Maids and Housekeeping Cleaners
+Detailed,37-2019,"Building Cleaning Workers, All Other"
+Broad,37-2020,Pest Control Workers
+Detailed,37-2021,Pest Control Workers
+Minor,37-3000,Grounds Maintenance Workers
+Broad,37-3010,Grounds Maintenance Workers
+Detailed,37-3011,Landscaping and Groundskeeping Workers
+Detailed,37-3012,"Pesticide Handlers, Sprayers, and Applicators, Vegetation"
+Detailed,37-3013,Tree Trimmers and Pruners
+Detailed,37-3019,"Grounds Maintenance Workers, All Other"
+Major,39-0000,Personal Care and Service Occupations
+Minor,39-1000,Supervisors of Personal Care and Service Workers
+Broad,39-1010,First-Line Supervisors of Entertainment and Recreation Workers
+Detailed,39-1013,First-Line Supervisors of Gambling Services Workers
+Detailed,39-1014,"First-Line Supervisors of Entertainment and Recreation Workers, Except Gambling Services"
+Broad,39-1020,First-Line Supervisors of Personal Service Workers
+Detailed,39-1022,First-Line Supervisors of Personal Service Workers
+Minor,39-2000,Animal Care and Service Workers
+Broad,39-2010,Animal Trainers
+Detailed,39-2011,Animal Trainers
+Broad,39-2020,Animal Caretakers
+Detailed,39-2021,Animal Caretakers
+Minor,39-3000,Entertainment Attendants and Related Workers
+Broad,39-3010,Gambling Services Workers
+Detailed,39-3011,Gambling Dealers
+Detailed,39-3012,Gambling and Sports Book Writers and Runners
+Detailed,39-3019,"Gambling Service Workers, All Other"
+Broad,39-3020,Motion Picture Projectionists
+Detailed,39-3021,Motion Picture Projectionists
+Broad,39-3030,"Ushers, Lobby Attendants, and Ticket Takers"
+Detailed,39-3031,"Ushers, Lobby Attendants, and Ticket Takers"
+Broad,39-3090,Miscellaneous Entertainment Attendants and Related Workers
+Detailed,39-3091,Amusement and Recreation Attendants
+Detailed,39-3092,Costume Attendants
+Detailed,39-3093,"Locker Room, Coatroom, and Dressing Room Attendants"
+Detailed,39-3099,"Entertainment Attendants and Related Workers, All Other"
+Minor,39-4000,Funeral Service Workers
+Broad,39-4010,Embalmers and Crematory Operators
+Detailed,39-4011,Embalmers
+Detailed,39-4012,Crematory Operators
+Broad,39-4020,Funeral Attendants
+Detailed,39-4021,Funeral Attendants
+Broad,39-4030,"Morticians, Undertakers, and Funeral Arrangers"
+Detailed,39-4031,"Morticians, Undertakers, and Funeral Arrangers"
+Minor,39-5000,Personal Appearance Workers
+Broad,39-5010,"Barbers, Hairdressers, Hairstylists and Cosmetologists"
+Detailed,39-5011,Barbers
+Detailed,39-5012,"Hairdressers, Hairstylists, and Cosmetologists"
+Broad,39-5090,Miscellaneous Personal Appearance Workers
+Detailed,39-5091,"Makeup Artists, Theatrical and Performance"
+Detailed,39-5092,Manicurists and Pedicurists
+Detailed,39-5093,Shampooers
+Detailed,39-5094,Skincare Specialists
+Minor,39-6000,"Baggage Porters, Bellhops, and Concierges"
+Broad,39-6010,"Baggage Porters, Bellhops, and Concierges"
+Detailed,39-6011,Baggage Porters and Bellhops
+Detailed,39-6012,Concierges
+Minor,39-7000,Tour and Travel Guides
+Broad,39-7010,Tour and Travel Guides
+Detailed,39-7011,Tour Guides and Escorts
+Detailed,39-7012,Travel Guides
+Minor,39-9000,Other Personal Care and Service Workers
+Broad,39-9010,Childcare Workers
+Detailed,39-9011,Childcare Workers
+Broad,39-9030,Recreation and Fitness Workers
+Detailed,39-9031,Exercise Trainers and Group Fitness Instructors
+Detailed,39-9032,Recreation Workers
+Broad,39-9040,Residential Advisors
+Detailed,39-9041,Residential Advisors
+Broad,39-9090,Miscellaneous Personal Care and Service Workers
+Detailed,39-9099,"Personal Care and Service Workers, All Other"
+Major,41-0000,Sales and Related Occupations
+Minor,41-1000,Supervisors of Sales Workers
+Broad,41-1010,First-Line Supervisors of Sales Workers
+Detailed,41-1011,First-Line Supervisors of Retail Sales Workers
+Detailed,41-1012,First-Line Supervisors of Non-Retail Sales Workers
+Minor,41-2000,Retail Sales Workers
+Broad,41-2010,Cashiers
+Detailed,41-2011,Cashiers
+Detailed,41-2012,Gambling Change Persons and Booth Cashiers
+Broad,41-2020,Counter and Rental Clerks and Parts Salespersons
+Detailed,41-2021,Counter and Rental Clerks
+Detailed,41-2022,Parts Salespersons
+Broad,41-2030,Retail Salespersons
+Detailed,41-2031,Retail Salespersons
+Minor,41-3000,"Sales Representatives, Services"
+Broad,41-3010,Advertising Sales Agents
+Detailed,41-3011,Advertising Sales Agents
+Broad,41-3020,Insurance Sales Agents
+Detailed,41-3021,Insurance Sales Agents
+Broad,41-3030,"Securities, Commodities, and Financial Services Sales Agents"
+Detailed,41-3031,"Securities, Commodities, and Financial Services Sales Agents"
+Broad,41-3040,Travel Agents
+Detailed,41-3041,Travel Agents
+Broad,41-3090,"Miscellaneous Sales Representatives, Services"
+Detailed,41-3091,"Sales Representatives of Services, Except Advertising, Insurance, Financial Services, and Travel"
+Minor,41-4000,"Sales Representatives, Wholesale and Manufacturing"
+Broad,41-4010,"Sales Representatives, Wholesale and Manufacturing"
+Detailed,41-4011,"Sales Representatives, Wholesale and Manufacturing, Technical and Scientific Products"
+Detailed,41-4012,"Sales Representatives, Wholesale and Manufacturing, Except Technical and Scientific Products"
+Minor,41-9000,Other Sales and Related Workers
+Broad,41-9010,"Models, Demonstrators, and Product Promoters"
+Detailed,41-9011,Demonstrators and Product Promoters
+Detailed,41-9012,Models
+Broad,41-9020,Real Estate Brokers and Sales Agents
+Detailed,41-9021,Real Estate Brokers
+Detailed,41-9022,Real Estate Sales Agents
+Broad,41-9030,Sales Engineers
+Detailed,41-9031,Sales Engineers
+Broad,41-9040,Telemarketers
+Detailed,41-9041,Telemarketers
+Broad,41-9090,Miscellaneous Sales and Related Workers
+Detailed,41-9091,"Door-to-Door Sales Workers, News and Street Vendors, and Related Workers"
+Detailed,41-9099,"Sales and Related Workers, All Other"
+Major,43-0000,Office and Administrative Support Occupations
+Minor,43-1000,Supervisors of Office and Administrative Support Workers
+Broad,43-1010,First-Line Supervisors of Office and Administrative Support Workers
+Detailed,43-1011,First-Line Supervisors of Office and Administrative Support Workers
+Minor,43-2000,Communications Equipment Operators
+Broad,43-2010,"Switchboard Operators, Including Answering Service"
+Detailed,43-2011,"Switchboard Operators, Including Answering Service"
+Broad,43-2020,Telephone Operators
+Detailed,43-2021,Telephone Operators
+Broad,43-2090,Miscellaneous Communications Equipment Operators
+Detailed,43-2099,"Communications Equipment Operators, All Other"
+Minor,43-3000,Financial Clerks
+Broad,43-3010,Bill and Account Collectors
+Detailed,43-3011,Bill and Account Collectors
+Broad,43-3020,Billing and Posting Clerks
+Detailed,43-3021,Billing and Posting Clerks
+Broad,43-3030,"Bookkeeping, Accounting, and Auditing Clerks"
+Detailed,43-3031,"Bookkeeping, Accounting, and Auditing Clerks"
+Broad,43-3040,Gambling Cage Workers
+Detailed,43-3041,Gambling Cage Workers
+Broad,43-3050,Payroll and Timekeeping Clerks
+Detailed,43-3051,Payroll and Timekeeping Clerks
+Broad,43-3060,Procurement Clerks
+Detailed,43-3061,Procurement Clerks
+Broad,43-3070,Tellers
+Detailed,43-3071,Tellers
+Broad,43-3090,Miscellaneous Financial Clerks
+Detailed,43-3099,"Financial Clerks, All Other"
+Minor,43-4000,Information and Record Clerks
+Broad,43-4010,Brokerage Clerks
+Detailed,43-4011,Brokerage Clerks
+Broad,43-4020,Correspondence Clerks
+Detailed,43-4021,Correspondence Clerks
+Broad,43-4030,"Court, Municipal, and License Clerks"
+Detailed,43-4031,"Court, Municipal, and License Clerks"
+Broad,43-4040,"Credit Authorizers, Checkers, and Clerks"
+Detailed,43-4041,"Credit Authorizers, Checkers, and Clerks"
+Broad,43-4050,Customer Service Representatives
+Detailed,43-4051,Customer Service Representatives
+Broad,43-4060,"Eligibility Interviewers, Government Programs"
+Detailed,43-4061,"Eligibility Interviewers, Government Programs"
+Broad,43-4070,File Clerks
+Detailed,43-4071,File Clerks
+Broad,43-4080,"Hotel, Motel, and Resort Desk Clerks"
+Detailed,43-4081,"Hotel, Motel, and Resort Desk Clerks"
+Broad,43-4110,"Interviewers, Except Eligibility and Loan"
+Detailed,43-4111,"Interviewers, Except Eligibility and Loan"
+Broad,43-4120,"Library Assistants, Clerical"
+Detailed,43-4121,"Library Assistants, Clerical"
+Broad,43-4130,Loan Interviewers and Clerks
+Detailed,43-4131,Loan Interviewers and Clerks
+Broad,43-4140,New Accounts Clerks
+Detailed,43-4141,New Accounts Clerks
+Broad,43-4150,Order Clerks
+Detailed,43-4151,Order Clerks
+Broad,43-4160,"Human Resources Assistants, Except Payroll and Timekeeping"
+Detailed,43-4161,"Human Resources Assistants, Except Payroll and Timekeeping"
+Broad,43-4170,Receptionists and Information Clerks
+Detailed,43-4171,Receptionists and Information Clerks
+Broad,43-4180,Reservation and Transportation Ticket Agents and Travel Clerks
+Detailed,43-4181,Reservation and Transportation Ticket Agents and Travel Clerks
+Broad,43-4190,Miscellaneous Information and Record Clerks
+Detailed,43-4199,"Information and Record Clerks, All Other"
+Minor,43-5000,"Material Recording, Scheduling, Dispatching, and Distributing Workers"
+Broad,43-5010,Cargo and Freight Agents
+Detailed,43-5011,Cargo and Freight Agents
+Broad,43-5020,Couriers and Messengers
+Detailed,43-5021,Couriers and Messengers
+Broad,43-5030,Dispatchers
+Detailed,43-5031,Public Safety Telecommunicators
+Detailed,43-5032,"Dispatchers, Except Police, Fire, and Ambulance"
+Broad,43-5040,"Meter Readers, Utilities"
+Detailed,43-5041,"Meter Readers, Utilities"
+Broad,43-5050,Postal Service Workers
+Detailed,43-5051,Postal Service Clerks
+Detailed,43-5052,Postal Service Mail Carriers
+Detailed,43-5053,"Postal Service Mail Sorters, Processors, and Processing Machine Operators"
+Broad,43-5060,"Production, Planning, and Expediting Clerks"
+Detailed,43-5061,"Production, Planning, and Expediting Clerks"
+Broad,43-5070,"Shipping, Receiving, and Inventory Clerks"
+Detailed,43-5071,"Shipping, Receiving, and Inventory Clerks"
+Broad,43-5110,"Weighers, Measurers, Checkers, and Samplers, Recordkeeping"
+Detailed,43-5111,"Weighers, Measurers, Checkers, and Samplers, Recordkeeping"
+Minor,43-6000,Secretaries and Administrative Assistants
+Broad,43-6010,Secretaries and Administrative Assistants
+Detailed,43-6011,Executive Secretaries and Executive Administrative Assistants
+Detailed,43-6012,Legal Secretaries and Administrative Assistants
+Detailed,43-6013,Medical Secretaries and Administrative Assistants
+Detailed,43-6014,"Secretaries and Administrative Assistants, Except Legal, Medical, and Executive"
+Minor,43-9000,Other Office and Administrative Support Workers
+Broad,43-9020,Data Entry and Information Processing Workers
+Detailed,43-9021,Data Entry Keyers
+Detailed,43-9022,Word Processors and Typists
+Broad,43-9030,Desktop Publishers
+Detailed,43-9031,Desktop Publishers
+Broad,43-9040,Insurance Claims and Policy Processing Clerks
+Detailed,43-9041,Insurance Claims and Policy Processing Clerks
+Broad,43-9050,"Mail Clerks and Mail Machine Operators, Except Postal Service"
+Detailed,43-9051,"Mail Clerks and Mail Machine Operators, Except Postal Service"
+Broad,43-9060,"Office Clerks, General"
+Detailed,43-9061,"Office Clerks, General"
+Broad,43-9070,"Office Machine Operators, Except Computer"
+Detailed,43-9071,"Office Machine Operators, Except Computer"
+Broad,43-9080,Proofreaders and Copy Markers
+Detailed,43-9081,Proofreaders and Copy Markers
+Broad,43-9110,Statistical Assistants
+Detailed,43-9111,Statistical Assistants
+Broad,43-9190,Miscellaneous Office and Administrative Support Workers
+Detailed,43-9199,"Office and Administrative Support Workers, All Other"
+Major,45-0000,"Farming, Fishing, and Forestry Occupations"
+Minor,45-1000,"Supervisors of Farming, Fishing, and Forestry Workers"
+Broad,45-1010,"First-Line Supervisors of Farming, Fishing, and Forestry Workers"
+Detailed,45-1011,"First-Line Supervisors of Farming, Fishing, and Forestry Workers"
+Minor,45-2000,Agricultural Workers
+Broad,45-2010,Agricultural Inspectors
+Detailed,45-2011,Agricultural Inspectors
+Broad,45-2020,Animal Breeders
+Detailed,45-2021,Animal Breeders
+Broad,45-2040,"Graders and Sorters, Agricultural Products"
+Detailed,45-2041,"Graders and Sorters, Agricultural Products"
+Broad,45-2090,Miscellaneous Agricultural Workers
+Detailed,45-2091,Agricultural Equipment Operators
+Detailed,45-2092,"Farmworkers and Laborers, Crop, Nursery, and Greenhouse"
+Detailed,45-2093,"Farmworkers, Farm, Ranch, and Aquacultural Animals"
+Detailed,45-2099,"Agricultural Workers, All Other"
+Minor,45-3000,Fishing and Hunting Workers
+Broad,45-3030,Fishing and Hunting Workers
+Detailed,45-3031,Fishing and Hunting Workers
+Minor,45-4000,"Forest, Conservation, and Logging Workers"
+Broad,45-4010,Forest and Conservation Workers
+Detailed,45-4011,Forest and Conservation Workers
+Broad,45-4020,Logging Workers
+Detailed,45-4021,Fallers
+Detailed,45-4022,Logging Equipment Operators
+Detailed,45-4023,Log Graders and Scalers
+Detailed,45-4029,"Logging Workers, All Other"
+Major,47-0000,Construction and Extraction Occupations
+Minor,47-1000,Supervisors of Construction and Extraction Workers
+Broad,47-1010,First-Line Supervisors of Construction Trades and Extraction Workers
+Detailed,47-1011,First-Line Supervisors of Construction Trades and Extraction Workers
+Minor,47-2000,Construction Trades Workers
+Broad,47-2010,Boilermakers
+Detailed,47-2011,Boilermakers
+Broad,47-2020,"Brickmasons, Blockmasons, and Stonemasons"
+Detailed,47-2021,Brickmasons and Blockmasons
+Detailed,47-2022,Stonemasons
+Broad,47-2030,Carpenters
+Detailed,47-2031,Carpenters
+Broad,47-2040,"Carpet, Floor, and Tile Installers and Finishers"
+Detailed,47-2041,Carpet Installers
+Detailed,47-2042,"Floor Layers, Except Carpet, Wood, and Hard Tiles"
+Detailed,47-2043,Floor Sanders and Finishers
+Detailed,47-2044,Tile and Stone Setters
+Broad,47-2050,"Cement Masons, Concrete Finishers, and Terrazzo Workers"
+Detailed,47-2051,Cement Masons and Concrete Finishers
+Detailed,47-2053,Terrazzo Workers and Finishers
+Broad,47-2060,Construction Laborers
+Detailed,47-2061,Construction Laborers
+Broad,47-2070,Construction Equipment Operators
+Detailed,47-2071,"Paving, Surfacing, and Tamping Equipment Operators"
+Detailed,47-2072,Pile Driver Operators
+Detailed,47-2073,Operating Engineers and Other Construction Equipment Operators
+Broad,47-2080,"Drywall Installers, Ceiling Tile Installers, and Tapers"
+Detailed,47-2081,Drywall and Ceiling Tile Installers
+Detailed,47-2082,Tapers
+Broad,47-2110,Electricians
+Detailed,47-2111,Electricians
+Broad,47-2120,Glaziers
+Detailed,47-2121,Glaziers
+Broad,47-2130,Insulation Workers
+Detailed,47-2131,"Insulation Workers, Floor, Ceiling, and Wall"
+Detailed,47-2132,"Insulation Workers, Mechanical"
+Broad,47-2140,Painters and Paperhangers
+Detailed,47-2141,"Painters, Construction and Maintenance"
+Detailed,47-2142,Paperhangers
+Broad,47-2150,"Pipelayers, Plumbers, Pipefitters, and Steamfitters"
+Detailed,47-2151,Pipelayers
+Detailed,47-2152,"Plumbers, Pipefitters, and Steamfitters"
+Broad,47-2160,Plasterers and Stucco Masons
+Detailed,47-2161,Plasterers and Stucco Masons
+Broad,47-2170,Reinforcing Iron and Rebar Workers
+Detailed,47-2171,Reinforcing Iron and Rebar Workers
+Broad,47-2180,Roofers
+Detailed,47-2181,Roofers
+Broad,47-2210,Sheet Metal Workers
+Detailed,47-2211,Sheet Metal Workers
+Broad,47-2220,Structural Iron and Steel Workers
+Detailed,47-2221,Structural Iron and Steel Workers
+Broad,47-2230,Solar Photovoltaic Installers
+Detailed,47-2231,Solar Photovoltaic Installers
+Minor,47-3000,"Helpers, Construction Trades"
+Broad,47-3010,"Helpers, Construction Trades"
+Detailed,47-3011,"Helpers--Brickmasons, Blockmasons, Stonemasons, and Tile and Marble Setters"
+Detailed,47-3012,Helpers--Carpenters
+Detailed,47-3013,Helpers--Electricians
+Detailed,47-3014,"Helpers--Painters, Paperhangers, Plasterers, and Stucco Masons"
+Detailed,47-3015,"Helpers--Pipelayers, Plumbers, Pipefitters, and Steamfitters"
+Detailed,47-3016,Helpers--Roofers
+Detailed,47-3019,"Helpers, Construction Trades, All Other"
+Minor,47-4000,Other Construction and Related Workers
+Broad,47-4010,Construction and Building Inspectors
+Detailed,47-4011,Construction and Building Inspectors
+Broad,47-4020,Elevator and Escalator Installers and Repairers
+Detailed,47-4021,Elevator and Escalator Installers and Repairers
+Broad,47-4030,Fence Erectors
+Detailed,47-4031,Fence Erectors
+Broad,47-4040,Hazardous Materials Removal Workers
+Detailed,47-4041,Hazardous Materials Removal Workers
+Broad,47-4050,Highway Maintenance Workers
+Detailed,47-4051,Highway Maintenance Workers
+Broad,47-4060,Rail-Track Laying and Maintenance Equipment Operators
+Detailed,47-4061,Rail-Track Laying and Maintenance Equipment Operators
+Broad,47-4070,Septic Tank Servicers and Sewer Pipe Cleaners
+Detailed,47-4071,Septic Tank Servicers and Sewer Pipe Cleaners
+Broad,47-4090,Miscellaneous Construction and Related Workers
+Detailed,47-4091,Segmental Pavers
+Detailed,47-4099,"Construction and Related Workers, All Other"
+Minor,47-5000,Extraction Workers
+Broad,47-5010,"Derrick, Rotary Drill, and Service Unit Operators, Oil and Gas"
+Detailed,47-5011,"Derrick Operators, Oil and Gas"
+Detailed,47-5012,"Rotary Drill Operators, Oil and Gas"
+Detailed,47-5013,"Service Unit Operators, Oil and Gas"
+Broad,47-5020,Surface Mining Machine Operators and Earth Drillers
+Detailed,47-5022,"Excavating and Loading Machine and Dragline Operators, Surface Mining"
+Detailed,47-5023,"Earth Drillers, Except Oil and Gas"
+Broad,47-5030,"Explosives Workers, Ordnance Handling Experts, and Blasters"
+Detailed,47-5032,"Explosives Workers, Ordnance Handling Experts, and Blasters"
+Broad,47-5040,Underground Mining Machine Operators
+Detailed,47-5041,Continuous Mining Machine Operators
+Detailed,47-5043,"Roof Bolters, Mining"
+Detailed,47-5044,"Loading and Moving Machine Operators, Underground Mining"
+Detailed,47-5049,"Underground Mining Machine Operators, All Other"
+Broad,47-5050,"Rock Splitters, Quarry"
+Detailed,47-5051,"Rock Splitters, Quarry"
+Broad,47-5070,"Roustabouts, Oil and Gas"
+Detailed,47-5071,"Roustabouts, Oil and Gas"
+Broad,47-5080,Helpers--Extraction Workers
+Detailed,47-5081,Helpers--Extraction Workers
+Broad,47-5090,Miscellaneous Extraction Workers
+Detailed,47-5099,"Extraction Workers, All Other"
+Major,49-0000,"Installation, Maintenance, and Repair Occupations"
+Minor,49-1000,"Supervisors of Installation, Maintenance, and Repair Workers"
+Broad,49-1010,"First-Line Supervisors of Mechanics, Installers, and Repairers"
+Detailed,49-1011,"First-Line Supervisors of Mechanics, Installers, and Repairers"
+Minor,49-2000,"Electrical and Electronic Equipment Mechanics, Installers, and Repairers"
+Broad,49-2010,"Computer, Automated Teller, and Office Machine Repairers"
+Detailed,49-2011,"Computer, Automated Teller, and Office Machine Repairers"
+Broad,49-2020,Radio and Telecommunications Equipment Installers and Repairers
+Detailed,49-2021,"Radio, Cellular, and Tower Equipment Installers and Repairers"
+Detailed,49-2022,"Telecommunications Equipment Installers and Repairers, Except Line Installers"
+Broad,49-2090,"Miscellaneous Electrical and Electronic Equipment Mechanics, Installers, and Repairers"
+Detailed,49-2091,Avionics Technicians
+Detailed,49-2092,"Electric Motor, Power Tool, and Related Repairers"
+Detailed,49-2093,"Electrical and Electronics Installers and Repairers, Transportation Equipment"
+Detailed,49-2094,"Electrical and Electronics Repairers, Commercial and Industrial Equipment"
+Detailed,49-2095,"Electrical and Electronics Repairers, Powerhouse, Substation, and Relay"
+Detailed,49-2096,"Electronic Equipment Installers and Repairers, Motor Vehicles"
+Detailed,49-2097,Audiovisual Equipment Installers and Repairers
+Detailed,49-2098,Security and Fire Alarm Systems Installers
+Minor,49-3000,"Vehicle and Mobile Equipment Mechanics, Installers, and Repairers"
+Broad,49-3010,Aircraft Mechanics and Service Technicians
+Detailed,49-3011,Aircraft Mechanics and Service Technicians
+Broad,49-3020,Automotive Technicians and Repairers
+Detailed,49-3021,Automotive Body and Related Repairers
+Detailed,49-3022,Automotive Glass Installers and Repairers
+Detailed,49-3023,Automotive Service Technicians and Mechanics
+Broad,49-3030,Bus and Truck Mechanics and Diesel Engine Specialists
+Detailed,49-3031,Bus and Truck Mechanics and Diesel Engine Specialists
+Broad,49-3040,Heavy Vehicle and Mobile Equipment Service Technicians and Mechanics
+Detailed,49-3041,Farm Equipment Mechanics and Service Technicians
+Detailed,49-3042,"Mobile Heavy Equipment Mechanics, Except Engines"
+Detailed,49-3043,Rail Car Repairers
+Broad,49-3050,Small Engine Mechanics
+Detailed,49-3051,Motorboat Mechanics and Service Technicians
+Detailed,49-3052,Motorcycle Mechanics
+Detailed,49-3053,Outdoor Power Equipment and Other Small Engine Mechanics
+Broad,49-3090,"Miscellaneous Vehicle and Mobile Equipment Mechanics, Installers, and Repairers"
+Detailed,49-3091,Bicycle Repairers
+Detailed,49-3092,Recreational Vehicle Service Technicians
+Detailed,49-3093,Tire Repairers and Changers
+Minor,49-9000,"Other Installation, Maintenance, and Repair Occupations"
+Broad,49-9010,Control and Valve Installers and Repairers
+Detailed,49-9011,Mechanical Door Repairers
+Detailed,49-9012,"Control and Valve Installers and Repairers, Except Mechanical Door"
+Broad,49-9020,"Heating, Air Conditioning, and Refrigeration Mechanics and Installers"
+Detailed,49-9021,"Heating, Air Conditioning, and Refrigeration Mechanics and Installers"
+Broad,49-9030,Home Appliance Repairers
+Detailed,49-9031,Home Appliance Repairers
+Broad,49-9040,"Industrial Machinery Installation, Repair, and Maintenance Workers"
+Detailed,49-9041,Industrial Machinery Mechanics
+Detailed,49-9043,"Maintenance Workers, Machinery"
+Detailed,49-9044,Millwrights
+Detailed,49-9045,"Refractory Materials Repairers, Except Brickmasons"
+Broad,49-9050,Line Installers and Repairers
+Detailed,49-9051,Electrical Power-Line Installers and Repairers
+Detailed,49-9052,Telecommunications Line Installers and Repairers
+Broad,49-9060,Precision Instrument and Equipment Repairers
+Detailed,49-9061,Camera and Photographic Equipment Repairers
+Detailed,49-9062,Medical Equipment Repairers
+Detailed,49-9063,Musical Instrument Repairers and Tuners
+Detailed,49-9064,Watch and Clock Repairers
+Detailed,49-9069,"Precision Instrument and Equipment Repairers, All Other"
+Broad,49-9070,"Maintenance and Repair Workers, General"
+Detailed,49-9071,"Maintenance and Repair Workers, General"
+Broad,49-9080,Wind Turbine Service Technicians
+Detailed,49-9081,Wind Turbine Service Technicians
+Broad,49-9090,"Miscellaneous Installation, Maintenance, and Repair Workers"
+Detailed,49-9091,"Coin, Vending, and Amusement Machine Servicers and Repairers"
+Detailed,49-9092,Commercial Divers
+Detailed,49-9094,Locksmiths and Safe Repairers
+Detailed,49-9095,Manufactured Building and Mobile Home Installers
+Detailed,49-9096,Riggers
+Detailed,49-9097,Signal and Track Switch Repairers
+Detailed,49-9098,"Helpers--Installation, Maintenance, and Repair Workers"
+Detailed,49-9099,"Installation, Maintenance, and Repair Workers, All Other"
+Major,51-0000,Production Occupations
+Minor,51-1000,Supervisors of Production Workers
+Broad,51-1010,First-Line Supervisors of Production and Operating Workers
+Detailed,51-1011,First-Line Supervisors of Production and Operating Workers
+Minor,51-2000,Assemblers and Fabricators
+Broad,51-2010,"Aircraft Structure, Surfaces, Rigging, and Systems Assemblers"
+Detailed,51-2011,"Aircraft Structure, Surfaces, Rigging, and Systems Assemblers"
+Broad,51-2020,"Electrical, Electronics, and Electromechanical Assemblers"
+Detailed,51-2021,"Coil Winders, Tapers, and Finishers"
+Detailed,51-2022,Electrical and Electronic Equipment Assemblers
+Detailed,51-2023,Electromechanical Equipment Assemblers
+Broad,51-2030,Engine and Other Machine Assemblers
+Detailed,51-2031,Engine and Other Machine Assemblers
+Broad,51-2040,Structural Metal Fabricators and Fitters
+Detailed,51-2041,Structural Metal Fabricators and Fitters
+Broad,51-2050,Fiberglass Laminators and Fabricators
+Detailed,51-2051,Fiberglass Laminators and Fabricators
+Broad,51-2060,Timing Device Assemblers and Adjusters
+Detailed,51-2061,Timing Device Assemblers and Adjusters
+Broad,51-2090,Miscellaneous Assemblers and Fabricators
+Detailed,51-2092,Team Assemblers
+Detailed,51-2099,"Assemblers and Fabricators, All Other"
+Minor,51-3000,Food Processing Workers
+Broad,51-3010,Bakers
+Detailed,51-3011,Bakers
+Broad,51-3020,"Butchers and Other Meat, Poultry, and Fish Processing Workers"
+Detailed,51-3021,Butchers and Meat Cutters
+Detailed,51-3022,"Meat, Poultry, and Fish Cutters and Trimmers"
+Detailed,51-3023,Slaughterers and Meat Packers
+Broad,51-3090,Miscellaneous Food Processing Workers
+Detailed,51-3091,"Food and Tobacco Roasting, Baking, and Drying Machine Operators and Tenders"
+Detailed,51-3092,Food Batchmakers
+Detailed,51-3093,Food Cooking Machine Operators and Tenders
+Detailed,51-3099,"Food Processing Workers, All Other"
+Minor,51-4000,Metal Workers and Plastic Workers
+Broad,51-4020,"Forming Machine Setters, Operators, and Tenders, Metal and Plastic"
+Detailed,51-4021,"Extruding and Drawing Machine Setters, Operators, and Tenders, Metal and Plastic"
+Detailed,51-4022,"Forging Machine Setters, Operators, and Tenders, Metal and Plastic"
+Detailed,51-4023,"Rolling Machine Setters, Operators, and Tenders, Metal and Plastic"
+Broad,51-4030,"Machine Tool Cutting Setters, Operators, and Tenders, Metal and Plastic"
+Detailed,51-4031,"Cutting, Punching, and Press Machine Setters, Operators, and Tenders, Metal and Plastic"
+Detailed,51-4032,"Drilling and Boring Machine Tool Setters, Operators, and Tenders, Metal and Plastic"
+Detailed,51-4033,"Grinding, Lapping, Polishing, and Buffing Machine Tool Setters, Operators, and Tenders, Metal and Plastic"
+Detailed,51-4034,"Lathe and Turning Machine Tool Setters, Operators, and Tenders, Metal and Plastic"
+Detailed,51-4035,"Milling and Planing Machine Setters, Operators, and Tenders, Metal and Plastic"
+Broad,51-4040,Machinists
+Detailed,51-4041,Machinists
+Broad,51-4050,"Metal Furnace Operators, Tenders, Pourers, and Casters"
+Detailed,51-4051,Metal-Refining Furnace Operators and Tenders
+Detailed,51-4052,"Pourers and Casters, Metal"
+Broad,51-4060,"Model Makers and Patternmakers, Metal and Plastic"
+Detailed,51-4061,"Model Makers, Metal and Plastic"
+Detailed,51-4062,"Patternmakers, Metal and Plastic"
+Broad,51-4070,"Molders and Molding Machine Setters, Operators, and Tenders, Metal and Plastic"
+Detailed,51-4071,Foundry Mold and Coremakers
+Detailed,51-4072,"Molding, Coremaking, and Casting Machine Setters, Operators, and Tenders, Metal and Plastic"
+Broad,51-4080,"Multiple Machine Tool Setters, Operators, and Tenders, Metal and Plastic"
+Detailed,51-4081,"Multiple Machine Tool Setters, Operators, and Tenders, Metal and Plastic"
+Broad,51-4110,Tool and Die Makers
+Detailed,51-4111,Tool and Die Makers
+Broad,51-4120,"Welding, Soldering, and Brazing Workers"
+Detailed,51-4121,"Welders, Cutters, Solderers, and Brazers"
+Detailed,51-4122,"Welding, Soldering, and Brazing Machine Setters, Operators, and Tenders"
+Broad,51-4190,Miscellaneous Metal Workers and Plastic Workers
+Detailed,51-4191,"Heat Treating Equipment Setters, Operators, and Tenders, Metal and Plastic"
+Detailed,51-4192,"Layout Workers, Metal and Plastic"
+Detailed,51-4193,"Plating Machine Setters, Operators, and Tenders, Metal and Plastic"
+Detailed,51-4194,"Tool Grinders, Filers, and Sharpeners"
+Detailed,51-4199,"Metal Workers and Plastic Workers, All Other"
+Minor,51-5100,Printing Workers
+Broad,51-5110,Printing Workers
+Detailed,51-5111,Prepress Technicians and Workers
+Detailed,51-5112,Printing Press Operators
+Detailed,51-5113,Print Binding and Finishing Workers
+Minor,51-6000,"Textile, Apparel, and Furnishings Workers"
+Broad,51-6010,Laundry and Dry-Cleaning Workers
+Detailed,51-6011,Laundry and Dry-Cleaning Workers
+Broad,51-6020,"Pressers, Textile, Garment, and Related Materials"
+Detailed,51-6021,"Pressers, Textile, Garment, and Related Materials"
+Broad,51-6030,Sewing Machine Operators
+Detailed,51-6031,Sewing Machine Operators
+Broad,51-6040,Shoe and Leather Workers
+Detailed,51-6041,Shoe and Leather Workers and Repairers
+Detailed,51-6042,Shoe Machine Operators and Tenders
+Broad,51-6050,"Tailors, Dressmakers, and Sewers"
+Detailed,51-6051,"Sewers, Hand"
+Detailed,51-6052,"Tailors, Dressmakers, and Custom Sewers"
+Broad,51-6060,"Textile Machine Setters, Operators, and Tenders"
+Detailed,51-6061,Textile Bleaching and Dyeing Machine Operators and Tenders
+Detailed,51-6062,"Textile Cutting Machine Setters, Operators, and Tenders"
+Detailed,51-6063,"Textile Knitting and Weaving Machine Setters, Operators, and Tenders"
+Detailed,51-6064,"Textile Winding, Twisting, and Drawing Out Machine Setters, Operators, and Tenders"
+Broad,51-6090,"Miscellaneous Textile, Apparel, and Furnishings Workers"
+Detailed,51-6091,"Extruding and Forming Machine Setters, Operators, and Tenders, Synthetic and Glass Fibers"
+Detailed,51-6092,Fabric and Apparel Patternmakers
+Detailed,51-6093,Upholsterers
+Detailed,51-6099,"Textile, Apparel, and Furnishings Workers, All Other"
+Minor,51-7000,Woodworkers
+Broad,51-7010,Cabinetmakers and Bench Carpenters
+Detailed,51-7011,Cabinetmakers and Bench Carpenters
+Broad,51-7020,Furniture Finishers
+Detailed,51-7021,Furniture Finishers
+Broad,51-7030,"Model Makers and Patternmakers, Wood"
+Detailed,51-7031,"Model Makers, Wood"
+Detailed,51-7032,"Patternmakers, Wood"
+Broad,51-7040,"Woodworking Machine Setters, Operators, and Tenders"
+Detailed,51-7041,"Sawing Machine Setters, Operators, and Tenders, Wood"
+Detailed,51-7042,"Woodworking Machine Setters, Operators, and Tenders, Except Sawing"
+Broad,51-7090,Miscellaneous Woodworkers
+Detailed,51-7099,"Woodworkers, All Other"
+Minor,51-8000,Plant and System Operators
+Broad,51-8010,"Power Plant Operators, Distributors, and Dispatchers"
+Detailed,51-8011,Nuclear Power Reactor Operators
+Detailed,51-8012,Power Distributors and Dispatchers
+Detailed,51-8013,Power Plant Operators
+Broad,51-8020,Stationary Engineers and Boiler Operators
+Detailed,51-8021,Stationary Engineers and Boiler Operators
+Broad,51-8030,Water and Wastewater Treatment Plant and System Operators
+Detailed,51-8031,Water and Wastewater Treatment Plant and System Operators
+Broad,51-8090,Miscellaneous Plant and System Operators
+Detailed,51-8091,Chemical Plant and System Operators
+Detailed,51-8092,Gas Plant Operators
+Detailed,51-8093,"Petroleum Pump System Operators, Refinery Operators, and Gaugers"
+Detailed,51-8099,"Plant and System Operators, All Other"
+Minor,51-9000,Other Production Occupations
+Broad,51-9010,"Chemical Processing Machine Setters, Operators, and Tenders"
+Detailed,51-9011,Chemical Equipment Operators and Tenders
+Detailed,51-9012,"Separating, Filtering, Clarifying, Precipitating, and Still Machine Setters, Operators, and Tenders"
+Broad,51-9020,"Crushing, Grinding, Polishing, Mixing, and Blending Workers"
+Detailed,51-9021,"Crushing, Grinding, and Polishing Machine Setters, Operators, and Tenders"
+Detailed,51-9022,"Grinding and Polishing Workers, Hand"
+Detailed,51-9023,"Mixing and Blending Machine Setters, Operators, and Tenders"
+Broad,51-9030,Cutting Workers
+Detailed,51-9031,"Cutters and Trimmers, Hand"
+Detailed,51-9032,"Cutting and Slicing Machine Setters, Operators, and Tenders"
+Broad,51-9040,"Extruding, Forming, Pressing, and Compacting Machine Setters, Operators, and Tenders"
+Detailed,51-9041,"Extruding, Forming, Pressing, and Compacting Machine Setters, Operators, and Tenders"
+Broad,51-9050,"Furnace, Kiln, Oven, Drier, and Kettle Operators and Tenders"
+Detailed,51-9051,"Furnace, Kiln, Oven, Drier, and Kettle Operators and Tenders"
+Broad,51-9060,"Inspectors, Testers, Sorters, Samplers, and Weighers"
+Detailed,51-9061,"Inspectors, Testers, Sorters, Samplers, and Weighers"
+Broad,51-9070,Jewelers and Precious Stone and Metal Workers
+Detailed,51-9071,Jewelers and Precious Stone and Metal Workers
+Broad,51-9080,Dental and Ophthalmic Laboratory Technicians and Medical Appliance Technicians
+Detailed,51-9081,Dental Laboratory Technicians
+Detailed,51-9082,Medical Appliance Technicians
+Detailed,51-9083,Ophthalmic Laboratory Technicians
+Broad,51-9110,Packaging and Filling Machine Operators and Tenders
+Detailed,51-9111,Packaging and Filling Machine Operators and Tenders
+Broad,51-9120,Painting Workers
+Detailed,51-9123,"Painting, Coating, and Decorating Workers"
+Detailed,51-9124,"Coating, Painting, and Spraying Machine Setters, Operators, and Tenders"
+Broad,51-9140,Semiconductor Processing Technicians
+Detailed,51-9141,Semiconductor Processing Technicians
+Broad,51-9150,Photographic Process Workers and Processing Machine Operators
+Detailed,51-9151,Photographic Process Workers and Processing Machine Operators
+Broad,51-9160,Computer Numerically Controlled Tool Operators and Programmers
+Detailed,51-9161,Computer Numerically Controlled Tool Operators
+Detailed,51-9162,Computer Numerically Controlled Tool Programmers
+Broad,51-9190,Miscellaneous Production Workers
+Detailed,51-9191,Adhesive Bonding Machine Operators and Tenders
+Detailed,51-9192,"Cleaning, Washing, and Metal Pickling Equipment Operators and Tenders"
+Detailed,51-9193,Cooling and Freezing Equipment Operators and Tenders
+Detailed,51-9194,Etchers and Engravers
+Detailed,51-9195,"Molders, Shapers, and Casters, Except Metal and Plastic"
+Detailed,51-9196,"Paper Goods Machine Setters, Operators, and Tenders"
+Detailed,51-9197,Tire Builders
+Detailed,51-9198,Helpers--Production Workers
+Detailed,51-9199,"Production Workers, All Other"
+Major,53-0000,Transportation and Material Moving Occupations
+Minor,53-1000,Supervisors of Transportation and Material Moving Workers
+Broad,53-1040,First-Line Supervisors of Transportation and Material Moving Workers
+Detailed,53-1041,Aircraft Cargo Handling Supervisors
+Detailed,53-1042,"First-Line Supervisors of Helpers, Laborers, and Material Movers, Hand"
+Detailed,53-1043,First-Line Supervisors of Material-Moving Machine and Vehicle Operators
+Detailed,53-1044,First-Line Supervisors of Passenger Attendants
+Detailed,53-1049,"First-Line Supervisors of Transportation Workers, All Other"
+Minor,53-2000,Air Transportation Workers
+Broad,53-2010,Aircraft Pilots and Flight Engineers
+Detailed,53-2011,"Airline Pilots, Copilots, and Flight Engineers"
+Detailed,53-2012,Commercial Pilots
+Broad,53-2020,Air Traffic Controllers and Airfield Operations Specialists
+Detailed,53-2021,Air Traffic Controllers
+Detailed,53-2022,Airfield Operations Specialists
+Broad,53-2030,Flight Attendants
+Detailed,53-2031,Flight Attendants
+Minor,53-3000,Motor Vehicle Operators
+Broad,53-3010,"Ambulance Drivers and Attendants, Except Emergency Medical Technicians"
+Detailed,53-3011,"Ambulance Drivers and Attendants, Except Emergency Medical Technicians"
+Broad,53-3030,Driver/Sales Workers and Truck Drivers
+Detailed,53-3031,Driver/Sales Workers
+Detailed,53-3032,Heavy and Tractor-Trailer Truck Drivers
+Detailed,53-3033,Light Truck Drivers
+Broad,53-3050,Passenger Vehicle Drivers
+Detailed,53-3051,"Bus Drivers, School"
+Detailed,53-3052,"Bus Drivers, Transit and Intercity"
+Detailed,53-3053,Shuttle Drivers and Chauffeurs
+Detailed,53-3054,Taxi Drivers
+Broad,53-3090,Miscellaneous Motor Vehicle Operators
+Detailed,53-3099,"Motor Vehicle Operators, All Other"
+Minor,53-4000,Rail Transportation Workers
+Broad,53-4010,Locomotive Engineers and Operators
+Detailed,53-4011,Locomotive Engineers
+Detailed,53-4013,"Rail Yard Engineers, Dinkey Operators, and Hostlers"
+Broad,53-4020,"Railroad Brake, Signal, and Switch Operators and Locomotive Firers"
+Detailed,53-4022,"Railroad Brake, Signal, and Switch Operators and Locomotive Firers"
+Broad,53-4030,Railroad Conductors and Yardmasters
+Detailed,53-4031,Railroad Conductors and Yardmasters
+Broad,53-4040,Subway and Streetcar Operators
+Detailed,53-4041,Subway and Streetcar Operators
+Broad,53-4090,Miscellaneous Rail Transportation Workers
+Detailed,53-4099,"Rail Transportation Workers, All Other"
+Minor,53-5000,Water Transportation Workers
+Broad,53-5010,Sailors and Marine Oilers
+Detailed,53-5011,Sailors and Marine Oilers
+Broad,53-5020,Ship and Boat Captains and Operators
+Detailed,53-5021,"Captains, Mates, and Pilots of Water Vessels"
+Detailed,53-5022,Motorboat Operators
+Broad,53-5030,Ship Engineers
+Detailed,53-5031,Ship Engineers
+Minor,53-6000,Other Transportation Workers
+Broad,53-6010,Bridge and Lock Tenders
+Detailed,53-6011,Bridge and Lock Tenders
+Broad,53-6020,Parking Attendants
+Detailed,53-6021,Parking Attendants
+Broad,53-6030,Transportation Service Attendants
+Detailed,53-6031,Automotive and Watercraft Service Attendants
+Detailed,53-6032,Aircraft Service Attendants
+Broad,53-6040,Traffic Technicians
+Detailed,53-6041,Traffic Technicians
+Broad,53-6050,Transportation Inspectors
+Detailed,53-6051,Transportation Inspectors
+Broad,53-6060,Passenger Attendants
+Detailed,53-6061,Passenger Attendants
+Broad,53-6090,Miscellaneous Transportation Workers
+Detailed,53-6099,"Transportation Workers, All Other"
+Minor,53-7000,Material Moving Workers
+Broad,53-7010,Conveyor Operators and Tenders
+Detailed,53-7011,Conveyor Operators and Tenders
+Broad,53-7020,Crane and Tower Operators
+Detailed,53-7021,Crane and Tower Operators
+Broad,53-7030,Dredge Operators
+Detailed,53-7031,Dredge Operators
+Broad,53-7040,Hoist and Winch Operators
+Detailed,53-7041,Hoist and Winch Operators
+Broad,53-7050,Industrial Truck and Tractor Operators
+Detailed,53-7051,Industrial Truck and Tractor Operators
+Broad,53-7060,Laborers and Material Movers
+Detailed,53-7061,Cleaners of Vehicles and Equipment
+Detailed,53-7062,"Laborers and Freight, Stock, and Material Movers, Hand"
+Detailed,53-7063,Machine Feeders and Offbearers
+Detailed,53-7064,"Packers and Packagers, Hand"
+Detailed,53-7065,Stockers and Order Fillers
+Broad,53-7070,Pumping Station Operators
+Detailed,53-7071,Gas Compressor and Gas Pumping Station Operators
+Detailed,53-7072,"Pump Operators, Except Wellhead Pumpers"
+Detailed,53-7073,Wellhead Pumpers
+Broad,53-7080,Refuse and Recyclable Material Collectors
+Detailed,53-7081,Refuse and Recyclable Material Collectors
+Broad,53-7120,"Tank Car, Truck, and Ship Loaders"
+Detailed,53-7121,"Tank Car, Truck, and Ship Loaders"
+Broad,53-7190,Miscellaneous Material Moving Workers
+Detailed,53-7199,"Material Moving Workers, All Other"
+Major,55-0000,Military Specific Occupations
+Minor,55-1000,Military Officer Special and Tactical Operations Leaders
+Broad,55-1010,Military Officer Special and Tactical Operations Leaders
+Detailed,55-1011,Air Crew Officers
+Detailed,55-1012,Aircraft Launch and Recovery Officers
+Detailed,55-1013,Armored Assault Vehicle Officers
+Detailed,55-1014,Artillery and Missile Officers
+Detailed,55-1015,Command and Control Center Officers
+Detailed,55-1016,Infantry Officers
+Detailed,55-1017,Special Forces Officers
+Detailed,55-1019,"Military Officer Special and Tactical Operations Leaders, All Other"
+Minor,55-2000,First-Line Enlisted Military Supervisors
+Broad,55-2010,First-Line Enlisted Military Supervisors
+Detailed,55-2011,First-Line Supervisors of Air Crew Members
+Detailed,55-2012,First-Line Supervisors of Weapons Specialists/Crew Members
+Detailed,55-2013,First-Line Supervisors of All Other Tactical Operations Specialists
+Minor,55-3000,Military Enlisted Tactical Operations and Air/Weapons Specialists and Crew Members
+Broad,55-3010,Military Enlisted Tactical Operations and Air/Weapons Specialists and Crew Members
+Detailed,55-3011,Air Crew Members
+Detailed,55-3012,Aircraft Launch and Recovery Specialists
+Detailed,55-3013,Armored Assault Vehicle Crew Members
+Detailed,55-3014,Artillery and Missile Crew Members
+Detailed,55-3015,Command and Control Center Specialists
+Detailed,55-3016,Infantry
+Detailed,55-3018,Special Forces
+Detailed,55-3019,"Military Enlisted Tactical Operations and Air/Weapons Specialists and Crew Members, All Other"

@@ -187,8 +187,8 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     }
 
     if (AppConfig.settings.editableAuthor) {
-      const author = ApiNamedReference.fromString(formValue.author)
-      if (!this.existingSkill || this.isDuplicating || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
+      const author = formValue.author
+      if (!this.existingSkill || this.isDuplicating || this.existingSkill.author !== formValue.author) {
         update.author = author
       }
     }

@@ -22,8 +22,8 @@ internal class JobCodeTest {
     companion object {
         fun assertEquals(jobCode: JobCode, apiJobCode: ApiJobCode) {
             Assertions.assertThat(apiJobCode.code).isEqualTo(jobCode.code)
-            Assertions.assertThat(apiJobCode.name).isEqualTo(jobCode.name)
-            Assertions.assertThat(apiJobCode.framework).isEqualTo(jobCode.framework)
+            Assertions.assertThat(apiJobCode.targetNodeName).isEqualTo(jobCode.name)
+            Assertions.assertThat(apiJobCode.frameworkName).isEqualTo(jobCode.framework)
         }
     }
 }

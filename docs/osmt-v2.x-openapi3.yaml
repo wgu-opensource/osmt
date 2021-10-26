@@ -184,7 +184,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Skill'
+                  $ref: '#/components/schemas/SkillSummary'
       tags:
         - Skills
     post:
@@ -419,7 +419,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/CollectionSummary'
+                  $ref: '#/components/schemas/CollectionDoc'
 
 
   /api/collections:
@@ -694,6 +694,15 @@ paths:
           required: true
           schema:
             type: string
+        - in: query
+          name: status
+          schema:
+            default:
+              - Unpublished
+              - Published
+            type: array
+            items:
+              $ref: '#/components/schemas/PublishStatus'
       requestBody:
         required: true
         content:
@@ -1061,6 +1070,8 @@ components:
           type: string
         category:
           type: string
+        author:
+          type: string
         keywords:
           type: array
           items:
@@ -1069,6 +1080,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobCode'
+        publishDate:
+          type: string
+          format: date-time
+        archiveDate:
+          type: string
+          format: date-time
     SkillUpdate:
       type: object
       properties:
@@ -1145,54 +1162,21 @@ components:
     CollectionDoc:
       type: object
       properties:
-        id:
-          type: string
-          format: uri
         uuid:
           type: string
           format: uuid
-        creator:
+        name:
           type: string
-          format: uri
         status:
           $ref: '#/components/schemas/PublishStatus'
-        creationDate:
-          type: string
-          format: date-time
-        updateDate:
-          type: string
-          format: date-time
+        skillCount:
+          type: integer
         publishDate:
           type: string
           format: date-time
         archiveDate:
           type: string
           format: date-time
-        name:
-          type: string
-        author:
-          $ref: '#/components/schemas/NamedReference'
-        skills:
-          type: array
-          items:
-            type: string
-            format: uuid
-
-    CollectionSummary:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uri
-        uuid:
-          type: string
-          format: uuid
-        name:
-          type: string
-        skillCount:
-          type: number
-        status:
-          $ref: '#/components/schemas/PublishStatus'
 
     CollectionUpdate:
       type: object
@@ -1285,21 +1269,22 @@ components:
     JobCode:
       type: object
       properties:
+        major:
+          type: string
+        minor:
+          type: string
+        broad:
+          type: string
+        detailed:
+          $ref: '#/components/schemas/JobCodeLevel'
         code:
           type: string
-        id:
-          type: string
-          format: uri
         name:
+          type: string
+        description:
           type: string
         framework:
           type: string
-        level:
-          $ref: '#/components/schemas/JobCodeLevel'
-        parents:
-          type: array
-          items:
-            $ref: '#/components/schemas/JobCode'
       required:
         - code
     JobCodeLevel:
@@ -1381,7 +1366,7 @@ components:
     TaskResult:
       type: object
       properties:
-        href:
+        apiResultPath:
           type: string
           format: uri
         uuid:
@@ -1393,7 +1378,7 @@ components:
           type: string
           enum: ["Processing","Ready"]
       example:
-        href: "/results/batch/3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        apiResultPath: "/results/batch/3fa85f64-5717-4562-b3fc-2c963f66afa6"
         uuid: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         status: "Processing"
 

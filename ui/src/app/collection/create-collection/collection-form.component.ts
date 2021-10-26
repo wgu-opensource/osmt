@@ -95,7 +95,7 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
     }
     if (AppConfig.settings.editableAuthor) {
       // @ts-ignore
-      fields.author = collection.author
+      fields.author = this.stringFromNamedReference(collection.author)
     }
     this.collectionForm.setValue(fields)
   }
@@ -108,7 +108,7 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
     const formValues = this.collectionForm.value
     return {
       name: formValues.collectionName,
-      author: formValues.author
+      author: this.namedReferenceForString(formValues.author ?? ""),
     }
   }
 

@@ -3,6 +3,7 @@ import {APP_INITIALIZER, NgModule} from "@angular/core"
 import {AppRoutingModule} from "./app-routing.module"
 import {AppComponent} from "./app.component"
 import {HttpClientModule} from "@angular/common/http"
+import {EnvironmentService} from "./core/environment.service"
 import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-library.component"
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
 import {AppConfig} from "./app.config"
@@ -88,11 +89,11 @@ import {FormFieldSearchMultiSelectComponent} from "./form/form-field-search-sele
 import {FormFieldSearchSelectJobcodeComponent} from "./form/form-field-search-select/jobcode-select/form-field-search-select-jobcode.component"
 import {AuditLogComponent} from "./richskill/detail/audit-log.component"
 import {OccupationsCardSectionComponent} from "./richskill/detail/occupations-card-section/occupations-card-section.component"
-import {CheckerComponent} from "./richskill/form/checker.component";
-import {SystemMessageComponent} from "./core/system-message.component";
-import {LogoutComponent} from "./auth/logout.component";
-import {NgIdleKeepaliveModule} from "@ng-idle/keepalive";
-import {LabelWithSelectComponent} from "./table/skills-library-table/label-with-select.component";
+import {CheckerComponent} from "./richskill/form/checker.component"
+import {SystemMessageComponent} from "./core/system-message.component"
+import {LogoutComponent} from "./auth/logout.component"
+import {NgIdleKeepaliveModule} from "@ng-idle/keepalive"
+import {LabelWithSelectComponent} from "./table/skills-library-table/label-with-select.component"
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -205,6 +206,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CommonModule
   ],
   providers: [
+    EnvironmentService,
     Title,
     AppConfig,
     FormDirtyGuard,

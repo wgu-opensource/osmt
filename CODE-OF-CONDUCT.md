@@ -87,5 +87,6 @@ harassment or threats to anyone's safety, we may take action without notice.
 ## Attribution
 
 This Code of Conduct is adapted from the Contributor Covenant, version 1.4,
-available at
-https://www.contributor-covenant.org/version/1/4/code-of-conduct.html
+available at https://www.contributor-covenant.org/version/1/4/code-of-conduct.html,
+and it is licensed under the CC BY 4.0 License, the terms of which are available at
+https://creativecommons.org/licenses/by/4.0/legalcode.

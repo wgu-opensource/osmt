@@ -28,7 +28,7 @@ import {Title} from "@angular/platform-browser"
 import {HasFormGroup} from "../../core/abstract-form.component"
 import {notACopyValidator} from "../../validators/not-a-copy.validator"
 import {ApiSkillSummary} from "../ApiSkillSummary"
-import {Whitelabelled} from "../../../whitelabel";
+import {Whitelabelled} from "../../../whitelabel"
 
 
 @Component({
@@ -94,7 +94,6 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
         this.searchingSimilarity = undefined
       }
     })
-
   }
 
   pageTitle(): string {
@@ -188,8 +187,8 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     }
 
     if (AppConfig.settings.editableAuthor) {
-      const author = formValue.author
-      if (!this.existingSkill || this.isDuplicating || this.existingSkill.author !== formValue.author) {
+      const author = ApiNamedReference.fromString(formValue.author)
+      if (!this.existingSkill || this.isDuplicating || this.stringFromNamedReference(this.existingSkill.author) !== formValue.author) {
         update.author = author
       }
     }
@@ -212,6 +211,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     if (this.isDuplicating || occupationsDiff) { update.occupations = occupationsDiff }
 
     const standards = this.splitTextarea(formValue.standards).map(s => new ApiAlignment({skillName: s}))
+
     const standardsDiff = this.diffAlignmentList(standards, this.existingSkill?.standards)
     if (this.isDuplicating || standardsDiff) {
       update.standards = standardsDiff
@@ -289,6 +289,18 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
   stringFromAlignment(ref?: IAlignment): string {
     return ref?.skillName ?? ref?.id ?? ""
   }
+
+  namedReferenceForString(value: string): ApiNamedReference | undefined {
+    const str = value.trim()
+    if (str.length < 1) {
+      return undefined
+    } else if (str.indexOf("://") !== -1) {
+      return new ApiNamedReference({id: str})
+    } else {
+      return new ApiNamedReference({name: str})
+    }
+  }
+
   stringFromNamedReference(ref?: INamedReference): string {
     return ref?.name ?? ref?.id ?? ""
   }
@@ -319,7 +331,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     }
     if (AppConfig.settings.editableAuthor) {
       // @ts-ignore
-      fields.author = skill.author
+      fields.author = this.stringFromNamedReference(skill.author)
     }
     this.skillForm.setValue(fields)
 

@@ -15,6 +15,7 @@ import edu.wgu.osmt.richskill.CollectionAndRichSkills
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RsdUpdateObject
+import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -137,4 +138,57 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
             assertThat(skillUuids).contains(knownDao.uuid)
         }
     }
+
+    @Test
+    fun testFindAll() {
+        // Act
+        val collectionDao = collectionRepository.findAll()
+
+        // Assert
+        assertThat(collectionDao).isNotNull
+    }
+
+    @Test
+    fun testChangeStatusesForTask() {
+        // Arrange
+        val collectionsCount = 2
+        val collections = (1..collectionsCount).toList().map { collectionRepository.create(UUID.randomUUID().toString(), userString)!!.toModel() }
+
+        val task = PublishTask(
+                search=ApiSearch(uuids= collections.map { it.uuid }),
+                userString=userString
+        )
+
+        // Act
+        val batchResult = collectionRepository.changeStatusesForTask(task)
+
+        // Assert
+        assertThat(batchResult?.modifiedCount).isEqualTo(collectionsCount)
+
+    }
+
+    @Test
+    fun testChangeStatusesForTaskWithCollectionId() {
+        // Arrange
+        val skillCount = 3
+        val skills = (1..skillCount).toList().map { TestObjectHelpers.apiSkillUpdateGenerator() }
+
+        val collectionDao = collectionRepository.create(UUID.randomUUID().toString(), userString)
+        val collection = collectionDao!!.toModel()
+
+        richSkillRepository.createFromApi(skills, userString)
+
+        val task = PublishTask(
+            search=ApiSearch(),
+            collectionUuid=collection.uuid,
+            userString=userString
+        )
+
+        // Act
+        val batchResult = collectionRepository.changeStatusesForTask(task)
+
+        // Assert
+        assertThat(batchResult?.modifiedCount).isEqualTo(skillCount*3)
+    }
+
 }

@@ -52,8 +52,8 @@ The Quickstart configuration is deployed with a single docker-compose command. T
   - Run below commands.
     ```
     docker exec -it <app-container-id> /bin/bash
-    java -jar -Dspring.profiles.active=dev,import /opt/osmt/bin/osmt.jar --csv=/opt/osmt/import/BLS-import.csv --import-type=bls
-    java -jar -Dspring.profiles.active=dev,import /opt/osmt/bin/osmt.jar --csv=/opt/osmt/import/oNet-import.csv --import-type=onet  
+    java -jar -Dspring.profiles.active=dev,import /opt/osmt/bin/osmt.jar --csv=/opt/osmt/import/BLS-Import.csv --import-type=bls
+    java -jar -Dspring.profiles.active=dev,import /opt/osmt/bin/osmt.jar --csv=/opt/osmt/import/oNet-Import.csv --import-type=onet  
     java -Dspring.profiles.active=dev,reindex -jar /opt/osmt/bin/osmt.jar
     ```
   - See [Importing Skills, BLS, and O*NET](./api/README.md#importing-skills-bls-and-onet) for details.

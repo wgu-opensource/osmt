@@ -58,7 +58,7 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
         val collection = crs.collection
 
         assertThat(collection.name).isEqualTo(apiObj.name)
-        assertThatKeywordMatchesNamedReference(collection.author, apiObj.author)
+        assertThat(collection.author?.value).isEqualTo(apiObj.author)
         assertThat(collection.publishStatus()).isEqualTo(apiObj.publishStatus)
 
         assertThat(crs.skills.map { it.uuid }.toSet() ).isEqualTo(apiObj.skills!!.add!!.toSet())
@@ -73,7 +73,7 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
 
     private fun random_collection_update(): ApiCollectionUpdate {
         val name = UUID.randomUUID().toString()
-        val author = namedReferenceGenerator(includeName=true, includeUri=false)
+        val author = UUID.randomUUID().toString()
         val status = PublishStatus.Published
         val skillCount = 3
         val skillDaos = (1..skillCount).toList().map { random_skill() }

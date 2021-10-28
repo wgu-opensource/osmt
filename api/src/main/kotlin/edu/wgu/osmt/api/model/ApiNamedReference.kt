@@ -1,6 +1,5 @@
 package edu.wgu.osmt.api.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.db.JobCodeLevel
@@ -77,15 +76,15 @@ data class ApiStringListUpdate(
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class ApiJobCode(
     val code: String,
-    val id: String? = null,
-    val name: String? = null,
-    val framework: String? = null,
+    val targetNode: String? = null,
+    val targetNodeName: String? = null,
+    val frameworkName: String? = null,
     val level: JobCodeLevel? = null,
     val parents: List<ApiJobCode>? = null
 ) {
     companion object factory {
         fun fromJobCode(jobCode: JobCode, level: JobCodeLevel? = null, parents: List<ApiJobCode>? = null): ApiJobCode {
-            return ApiJobCode(code=jobCode.code, name=jobCode.name, id=jobCode.url, framework=jobCode.framework, level=level, parents=parents)
+            return ApiJobCode(code=jobCode.code, targetNodeName=jobCode.name, targetNode=jobCode.url, frameworkName=jobCode.framework, level=level, parents=parents)
         }
     }
 }

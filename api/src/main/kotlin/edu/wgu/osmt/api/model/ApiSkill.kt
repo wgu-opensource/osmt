@@ -25,8 +25,8 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
         get() = appConfig.defaultCreatorUri
 
     @get:JsonProperty
-    val author: ApiNamedReference?
-        get() = rsd.author?.let { ApiNamedReference.fromKeyword(it) }
+    val author: String?
+        get() = rsd.author?.let { it.value }
 
     @get:JsonProperty
     val status: PublishStatus
@@ -77,8 +77,8 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
         get() = rsd.certifications.map { ApiNamedReference.fromKeyword(it) }
 
     @get:JsonProperty
-    val standards: List<ApiNamedReference>
-        get() = rsd.standards.map { ApiNamedReference.fromKeyword(it) }
+    val standards: List<ApiAlignment>
+        get() = rsd.standards.map { ApiAlignment.fromKeyword(it) }
 
     @get:JsonProperty
     val alignments: List<ApiAlignment>
@@ -89,10 +89,10 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
         get() {
             return rsd.jobCodes.filter { it.code.isNotBlank() }.map { jobCode ->
                 val parents = listOfNotNull(
-                    jobCode.major.let {jobCode.majorCode?.let { ApiJobCode(code=it, name=jobCode.major, level=JobCodeLevel.Major) }},
-                    jobCode.minor.let{jobCode.minorCode?.let { ApiJobCode(code=it, name=jobCode.minor, level=JobCodeLevel.Minor) }},
-                    jobCode.broad?.let {jobCode.broadCode?.let { ApiJobCode(code=it, name=jobCode.broad, level=JobCodeLevel.Broad) }},
-                    jobCode.detailed?.let {jobCode.detailedCode?.let { ApiJobCode(code=it, name=jobCode.detailed, level=JobCodeLevel.Detailed) }}
+                    jobCode.major.let {jobCode.majorCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.major, level=JobCodeLevel.Major) }},
+                    jobCode.minor.let{jobCode.minorCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.minor, level=JobCodeLevel.Minor) }},
+                    jobCode.broad?.let {jobCode.broadCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.broad, level=JobCodeLevel.Broad) }},
+                    jobCode.detailed?.let {jobCode.detailedCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.detailed, level=JobCodeLevel.Detailed) }}
                 ).distinct()
 
                 ApiJobCode.fromJobCode(jobCode, parents=parents)

@@ -91,7 +91,7 @@ internal class SearchControllerTest @Autowired constructor(
         val result = searchController.searchJobCodes(UriComponentsBuilder.newInstance(),listOfJobCodes[0].code)
 
         // Assert
-        assertThat(result.body?.map { it.name }).contains(listOfJobCodes[0].name)
+        assertThat(result.body?.map { it.targetNodeName }).contains(listOfJobCodes[0].name)
     }
 
     @Test

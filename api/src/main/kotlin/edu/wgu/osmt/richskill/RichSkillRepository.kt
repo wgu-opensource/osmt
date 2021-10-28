@@ -198,7 +198,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
     override fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject {
         val authorKeyword = skillUpdate.author?.let {
-            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it.name, uri = it.id)
+            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it)
         }
 
         val categoryKeyword = skillUpdate.category?.let {
@@ -281,7 +281,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         skillUpdate.keywords?.let { lookup_keywords(it, KeywordTypeEnum.Keyword) }
         skillUpdate.certifications?.let { lookup_references(it, KeywordTypeEnum.Certification) }
-        skillUpdate.standards?.let { lookup_references(it, KeywordTypeEnum.Standard) }
+        skillUpdate.standards?.let { lookup_alignments(it, KeywordTypeEnum.Standard) }
         skillUpdate.alignments?.let { lookup_alignments(it, KeywordTypeEnum.Alignment) }
         skillUpdate.employers?.let { lookup_references(it, KeywordTypeEnum.Employer) }
 

@@ -42,7 +42,7 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
       },
       {
         label: "Standards",
-        bodyString: this.richSkill?.standards?.map(({name}) => name)?.join("; ") ?? "",
+        bodyString: this.richSkill?.standards?.map(({skillName}) => skillName)?.join("; ") ?? "",
         showIfEmpty: false
       }, {
         label: "Certifications",

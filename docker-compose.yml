@@ -5,11 +5,24 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    volumes:
+      - ./import:/opt/osmt/import:rw
     environment:
-      - "ENVIRONMENT=apiserver,dev"
-      - "MYSQL_DB_URI=osmt:password@db:3306"
-      - "ELASTICSEARCH_URI=elasticsearch:9200"
-      - "REDIS_URI=redis:6379"
+      - "ENVIRONMENT=${ENVIRONMENT:-dev,apiserver,bucket4j,oauth2-okta}"
+      - "BASE_DOMAIN=${BASE_DOMAIN}"
+      - "FRONTEND_URL=${FRONTEND_URL}"
+      - "DB_NAME=${DB_NAME}"
+      - "DB_USER=${DB_USER}"
+      - "DB_PASSWORD=${DB_PASSWORD}"
+      - "DB_URI=${DB_USER}:${DB_PASSWORD}@db:3306"
+      - "MIGRATIONS_ENABLED=${MIGRATIONS_ENABLED}"
+      - "REINDEX_ELASTICSEARCH=${REINDEX_ELASTICSEARCH}"
+      - "ELASTICSEARCH_URI=${ELASTICSEARCH_URI}"
+      - "REDIS_URI=${REDIS_URI}"
+      - "OAUTH_ISSUER=${OAUTH_ISSUER}"
+      - "OAUTH_CLIENTID=${OAUTH_CLIENTID}"
+      - "OAUTH_CLIENTSECRET=${OAUTH_CLIENTSECRET}"
+      - "OAUTH_AUDIENCE=${OAUTH_AUDIENCE}"
     depends_on:
       - db
       - elasticsearch
@@ -26,13 +39,13 @@ services:
       - osmt_sql_db:/var/lib/mysql:rw
       - ./docker/mysql-init:/docker-entrypoint-initdb.d
     environment:
-      - "MYSQL_PASSWORD=password"
+      - "MYSQL_PASSWORD=${DB_PASSWORD}"
+      - "MYSQL_USER=${DB_USER}"
+      - "MYSQL_DATABASE=${DB_NAME}"
       - "MYSQL_HOST=0.0.0.0"
-      - "MYSQL_DATABASE=osmt_db"
       - "MYSQL_ROOT_PASSWORD=password"
-      - "MYSQL_USER=osmt"
     ports:
-      - 3306:3306
+      - "3306:3306"
     networks:
       - osmt
 
@@ -44,17 +57,17 @@ services:
       - "discovery.type=single-node"
       - "net=host"
     ports:
-      - 9200:9200
-      - 9300:9300
+      - "9200:9200"
+      - "9300:9300"
     networks:
       - osmt
 
   redis:
     image: library/redis:6.0.6
+    ports:
+      - "6379:6379"
     networks:
       - osmt
-    ports:
-      - 6379:6379
 
 networks:
   osmt:

@@ -379,9 +379,9 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
           const value: string = rawValue?.trim()
 
           if (["author"].indexOf(fieldName) !== -1) {
-            newSkill[fieldName] = new ApiNamedReference({name: value})
+            newSkill[fieldName] = value
           }
-          else if (["standards", "certifications", "employers"].indexOf(fieldName) !== -1) {
+          else if (["certifications", "employers"].indexOf(fieldName) !== -1) {
             newSkill[fieldName] = new ApiReferenceListUpdate(
               value.split(";").map(it => ApiNamedReference.fromString(it)).filter(it => it !== undefined).map(it => it as ApiNamedReference)
             )
@@ -407,6 +407,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
             else if (alignField === "Framework") {
               alignmentsHolder[alignIndex].isPartOf = new ApiNamedReference({name: value.trim()})
             }
+          } else if (["standards"].indexOf(fieldName) !== -1) {
+            newSkill[fieldName] = new ApiAlignmentListUpdate(
+              value.split(";").map(it => ApiAlignment.fromString(it)).filter(it => it !== undefined).map(it => it as ApiAlignment)
+            )
           } else {
             newSkill[fieldName] = value
           }

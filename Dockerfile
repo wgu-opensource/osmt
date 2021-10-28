@@ -6,7 +6,6 @@ FROM centos:centos8.3.2011 as osmt-base
 LABEL Maintainer="WGU / OSN"
 LABEL Version="1.0"
 
-ENV JAVA_VERSION=11.0.11.0.9
 ENV JAVA_HOME=/etc/alternatives/jre
 ENV USER=osmt
 ENV BASE_DIR=/opt/${USER}
@@ -15,7 +14,7 @@ ENV BASE_DIR=/opt/${USER}
 RUN /usr/bin/yum install -y epel-release \
     && /usr/bin/yum update -y \
     && /usr/bin/yum remove -y java-1.8.0-openjdk* \
-    && /usr/bin/yum install -y curl java-11-openjdk-headless-${JAVA_VERSION} wget
+    && /usr/bin/yum install -y curl java-11-openjdk wget
 
 # Add in configuration files
 ADD ./docker/etc /etc
@@ -33,19 +32,15 @@ RUN /usr/sbin/useradd -r -d ${BASE_DIR} -s /bin/bash ${USER} -k /etc/skel -m -U 
 ###########################
 FROM osmt-base as build
 
-ENV M2_VERSION=3.6.3
-ENV M2_HOME=/usr/local/maven
-ENV PATH=${M2_HOME}/bin:${PATH}
-
-
 ARG OSMT_WHITELABEL_URL
 ENV OSMT_WHITELABEL_URL=${OSMT_WHITELABEL_URL}
 
-# Install OpenJDK Development Packages
-RUN /usr/bin/yum install -y java-11-openjdk-devel-${JAVA_VERSION}
+ENV M2_VERSION=3.8.3
+ENV M2_HOME=/usr/local/maven
+ENV PATH=${M2_HOME}/bin:${PATH}
 
 # Download / Install Maven
-ADD https://www-eu.apache.org/dist/maven/maven-3/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz /usr/share/src/
+ADD https://dlcdn.apache.org/maven/maven-3/${M2_VERSION}/binaries/apache-maven-${M2_VERSION}-bin.tar.gz /usr/share/src/
 
 WORKDIR /usr/share/src
 
@@ -59,7 +54,8 @@ WORKDIR ${BASE_DIR}/build
 
 USER ${USER}
 
-RUN mvn clean package
+# The dockerfile-build Maven profile excludes certain api integration tests that require access to the Docker service.
+RUN mvn clean install -P dockerfile-build
 
 ######################
 ### PACKAGING IMAGE ##

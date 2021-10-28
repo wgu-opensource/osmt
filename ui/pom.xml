@@ -12,7 +12,11 @@
   <artifactId>osmt-ui</artifactId>
   <version>1.0.5-SNAPSHOT</version>
 
-  <packaging>pom</packaging>
+  <packaging>jar</packaging>
+
+  <properties>
+    <main.basedir>${project.parent.basedir}</main.basedir>
+  </properties>
 
   <build>
     <resources>
@@ -24,7 +28,7 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.7.6</version>
+        <version>1.9.1</version>
         <configuration>
           <workingDirectory>./</workingDirectory>
           <nodeVersion>v10.16.0</nodeVersion>
@@ -36,22 +40,28 @@
             <goals>
               <goal>install-node-and-npm</goal>
             </goals>
+            <phase>generate-resources</phase>
           </execution>
           <execution>
             <id>npm install</id>
             <goals>
               <goal>npm</goal>
             </goals>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
           </execution>
           <execution>
             <id>npm run build-prod</id>
             <goals>
               <goal>npm</goal>
             </goals>
+            <phase>generate-resources</phase>
             <configuration>
               <arguments>run build-prod</arguments>
             </configuration>
           </execution>
+
         </executions>
       </plugin>
     </plugins>

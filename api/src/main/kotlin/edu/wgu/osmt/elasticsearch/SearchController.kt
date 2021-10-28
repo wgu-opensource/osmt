@@ -16,6 +16,8 @@ import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillDoc
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -44,9 +46,17 @@ class SearchController @Autowired constructor(
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
         @RequestParam(required = false) sort: String?,
-        @RequestBody apiSearch: ApiSearch
+        @RequestBody apiSearch: ApiSearch,
+        @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<CollectionDoc>> {
-        val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
+        if (!appConfig.allowPublicSearching && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+
+        val publishStatuses = status.mapNotNull {
+            val status = PublishStatus.forApiValue(it)
+            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+        }.toSet()
         val sortEnum: CollectionSortEnum = CollectionSortEnum.forValueOrDefault(sort)
         val pageable = OffsetPageable(from, size, sortEnum.sort)
 
@@ -85,9 +95,17 @@ class SearchController @Autowired constructor(
         ) status: Array<String>,
         @RequestParam(required = false) sort: String?,
         @RequestParam(required = false) collectionId: String?,
-        @RequestBody apiSearch: ApiSearch
+        @RequestBody apiSearch: ApiSearch,
+        @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<RichSkillDoc>> {
-        val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
+        if (!appConfig.allowPublicSearching && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+
+        val publishStatuses = status.mapNotNull {
+            val status = PublishStatus.forApiValue(it)
+            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+        }.toSet()
         val sortEnum = sort?.let{SkillSortEnum.forApiValue(it)}
         val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum?.sort)
 
@@ -132,9 +150,10 @@ class SearchController @Autowired constructor(
         ) status: Array<String>,
         @RequestParam(required = false) sort: String?,
         @PathVariable uuid: String,
-        @RequestBody apiSearch: ApiSearch
+        @RequestBody apiSearch: ApiSearch,
+        @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<RichSkillDoc>> {
-        return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch)
+        return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
     }
 
     @GetMapping(RoutePaths.SEARCH_JOBCODES_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -142,9 +161,9 @@ class SearchController @Autowired constructor(
     fun searchJobCodes(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = true) query: String
-    ): HttpEntity<List<JobCode>> {
+    ): HttpEntity<List<ApiJobCode>> {
         val searchResults = jobCodeEsRepo.typeAheadSearch(query)
-        return ResponseEntity.status(200).body(searchResults.map { it.content }.toList())
+        return ResponseEntity.status(200).body(searchResults.map { ApiJobCode.fromJobCode(it.content) }.toList())
     }
 
     @GetMapping(RoutePaths.SEARCH_KEYWORDS_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])

@@ -35,4 +35,5 @@ export class DefaultAppConfig implements IAppConfig {
   poweredByLabel = "Open Skills Network"
   idleTimeoutInSeconds = 15 * 60
   colorBrandAccent1 = undefined
+  dynamicWhitelabel = false
 }

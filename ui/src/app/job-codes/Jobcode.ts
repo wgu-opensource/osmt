@@ -1,10 +1,10 @@
 export type JobCodeLevel =  "Major" | "Minor" | "Broad" | "Detailed" | "Onet"
 
 export interface IJobCode {
-  name?: string
+  targetNodeName?: string
   code: string
-  id?: number
-  framework?: string
+  targetNode?: number
+  frameworkName?: string
   level?: JobCodeLevel
   parents?: IJobCode[]
   major?: string
@@ -19,9 +19,9 @@ export interface IJobCode {
 
 export class ApiJobCode implements IJobCode {
   code = ""
-  name?: string
-  id?: number
-  framework?: string
+  targetNodeName?: string
+  targetNode?: number
+  frameworkName?: string
   level?: JobCodeLevel
   parents?: IJobCode[]
 

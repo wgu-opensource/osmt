@@ -16,8 +16,8 @@ import {map, share} from "rxjs/operators"
 import {ApiBatchResult} from "../../richskill/ApiBatchResult"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
 import {ApiCollection, ICollection, ICollectionUpdate} from "../ApiCollection"
-import {Router} from "@angular/router";
-import {Location} from "@angular/common";
+import {Router} from "@angular/router"
+import {Location} from "@angular/common"
 
 @Injectable({
   providedIn: "root"
@@ -93,7 +93,7 @@ export class CollectionService extends AbstractService {
   // tslint:disable-next-line:no-any
   getCsvTaskResultsIfComplete(uuid: string): Observable<any> {
     return this.httpClient
-      .get(`api/results/text/${uuid}`, {
+      .get(this.buildUrl(`/api/results/text/${uuid}`), {
         responseType: "text",
         observe: "response"
       })

@@ -36,8 +36,8 @@ class ApiCollection(private val collection: Collection, private val ss: List<Ric
         get() = appConfig.defaultCreatorUri
 
     @get:JsonProperty
-    val author: ApiNamedReference?
-        get() = collection.author?.let { ApiNamedReference.fromKeyword(it) }
+    val author: String?
+        get() = collection.author?.let { it.value }
 
     @get:JsonProperty
     val status: PublishStatus

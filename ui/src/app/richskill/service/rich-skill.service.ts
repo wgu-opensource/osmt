@@ -65,7 +65,7 @@ export class RichSkillService extends AbstractService {
     const errorMsg = `Could not find skill by uuid [${uuid}]`
 
     return this.httpClient
-      .get(`${this.serviceUrl}/${uuid}`, {
+      .get(this.buildUrl(`${this.serviceUrl}/${uuid}`), {
         headers: this.wrapHeaders(new HttpHeaders({
             Accept: "text/csv"
           }

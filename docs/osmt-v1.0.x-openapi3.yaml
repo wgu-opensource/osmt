@@ -73,7 +73,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/SkillSummary'
+                  $ref: '#/components/schemas/SkillDoc'
 
   /api/search/skills/similarity:
     post:
@@ -184,7 +184,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/SkillSummary'
+                  $ref: '#/components/schemas/SkillDoc'
       tags:
         - Skills
     post:
@@ -653,7 +653,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/SkillSummary'
+                  $ref: '#/components/schemas/SkillDoc'
 
   /api/collections/{uuid}/csv:
     get:
@@ -1054,6 +1054,37 @@ components:
         employer:
           - name: Sample Company
     SkillSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+        uuid:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/PublishStatus'
+        skillName:
+          type: string
+        skillStatement:
+          type: string
+        category:
+          type: string
+        keywords:
+          type: array
+          items:
+            type: string
+        occupations:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobCode'
+        publishDate:
+          type: string
+          format: date-time
+        archiveDate:
+          type: string
+          format: date-time
+    SkillDoc:
       type: object
       properties:
         id:

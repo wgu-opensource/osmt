@@ -51,7 +51,7 @@ The Quickstart configuration is deployed with a single docker-compose command. T
   - Replace the content in the existing files in import folder for skills, BLS and O*NET data. __These existing files under import folder are provided for testing purpose only.__
   - Run below commands.
     ```
-    docker exec -it <app-container-id> /bin/bash
+    docker exec -it osmt_app_1 /bin/bash
     java -jar -Dspring.profiles.active=dev,import /opt/osmt/bin/osmt.jar --csv=/opt/osmt/import/BLS-Import.csv --import-type=bls
     java -jar -Dspring.profiles.active=dev,import /opt/osmt/bin/osmt.jar --csv=/opt/osmt/import/oNet-Import.csv --import-type=onet  
     java -Dspring.profiles.active=dev,reindex -jar /opt/osmt/bin/osmt.jar
@@ -110,6 +110,8 @@ You can use files following this pattern to store your OAuth2 secrets locally an
   ENVIRONMENT=dev,apiserver,oauth2-okta
   BASE_DOMAIN=localhost:8080
   FRONTEND_URL=http://localhost:8080
+  # this is optional. Only provide it if you plan to whitelabel OSMT
+  OSMT_WHITELABEL_URL=/whitelabel/my-organizations-whitelabel.json
 
   DB_NAME=osmt_db
   DB_USER=osmt_db_user

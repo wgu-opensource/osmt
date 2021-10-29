@@ -6,15 +6,23 @@ FROM centos:centos8.3.2011 as osmt-base
 LABEL Maintainer="WGU / OSN"
 LABEL Version="1.0"
 
+ARG OSMT_WHITELABEL_URL
+ENV OSMT_WHITELABEL_URL=${OSMT_WHITELABEL_URL}
+
 ENV JAVA_HOME=/etc/alternatives/jre
 ENV USER=osmt
 ENV BASE_DIR=/opt/${USER}
 
-# Install EPEL / Useful packages /
-RUN /usr/bin/yum install -y epel-release \
-    && /usr/bin/yum update -y \
-    && /usr/bin/yum remove -y java-1.8.0-openjdk* \
-    && /usr/bin/yum install -y curl java-11-openjdk wget
+# Do some housekeeping for yum
+RUN rm /var/lib/rpm/.rpm.lock
+RUN rm /var/lib/rpm/.dbenv.lock
+RUN /usr/bin/yum clean all
+RUN /usr/bin/yum update -y
+
+# Install EPEL / useful packages
+RUN /usr/bin/yum install -y epel-release
+RUN /usr/bin/yum remove -y java-1.8.0-openjdk*
+RUN /usr/bin/yum install -y curl java-11-openjdk wget
 
 # Add in configuration files
 ADD ./docker/etc /etc
@@ -31,9 +39,6 @@ RUN /usr/sbin/useradd -r -d ${BASE_DIR} -s /bin/bash ${USER} -k /etc/skel -m -U 
 ## BUILD / COMPILE IMAGE ##
 ###########################
 FROM osmt-base as build
-
-ARG OSMT_WHITELABEL_URL
-ENV OSMT_WHITELABEL_URL=${OSMT_WHITELABEL_URL}
 
 ENV M2_VERSION=3.8.3
 ENV M2_HOME=/usr/local/maven
@@ -60,7 +65,7 @@ RUN mvn clean install -P dockerfile-build
 ######################
 ### PACKAGING IMAGE ##
 ######################
-FROM osmt-base
+FROM osmt-base as app
 
 COPY --from=build --chown=${USER}:${USER} ${BASE_DIR}/build/api/target/osmt-*.jar ${BASE_DIR}/bin/osmt.jar
 

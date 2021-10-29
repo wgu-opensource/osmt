@@ -23,7 +23,16 @@ Run `npm run ng serve` for a dev server. Navigate to `http://localhost:4200/`. T
 Run `npm run ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
 ## Build
-Run `npm run ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Run `npm run ng build` to build the project. The build artifacts will be stored in the `api/src/main/resources/ui` directory, as defined in the angular.json file. 
+
+### Production Build
+Use the `--prod` flag for a production build. The following environment variables will be used in environment.ts by the `set-environment` npm run script:
+```
+OSMT_API_URL
+OSMT_LOGIN_URL
+OSMT_DYNAMIC_WHITELABEL
+OSMT_WHITELABEL_URL
+```
 
 ## Running unit tests
 Run `npm run ng test` to execute the unit tests via [Karma](https://karma-runner.github.io). Use `<ctrl + c>` to exit.
@@ -32,15 +41,33 @@ Run `npm run ng test` to execute the unit tests via [Karma](https://karma-runner
 Run `npm run ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
 ## Whitelabel JSON config
-A whitelabel JSON file's URI can be defined in the environment file for deployment.  This file is loaded dynamically at runtime and can be replaced 
-without rebuilding with access to the deployed file.  The URI can be set for each angular environment by setting `environment.whiteLabelConfigUri`.  
-On app launch, the file is downloaded in an api call and is deserialized into the AppConfig property `AppConfig.settings` which is available globally.
+A URL can be defined for a whitelabel.json file in environment.*.ts for a given deployment. It can also be passed in via a `OSMT_WHITELABEL_URL` environment variable, i.e.,
+```
+OSMT_WHITELABEL_URL=/whitelabel/whitelabel-my-org.json
+```
+
+* This file is loaded dynamically at runtime. On app launch, the file is downloaded in an API call and is deserialized into the AppConfig property `AppConfig.settings` which is available globally.
+
+### Local Whitelabel Development considerations
+For local whitelabel development work, these environment variables will need local development values:
+```
+OSMT_API_URL=http://localhost:8080
+OSMT_LOGIN_URLhttp://localhost:8080/oauth2/authorization/okta
+OSMT_DYNAMIC_WHITELABEL=true
+OSMT_WHITELABEL_URL=http://localhost:8080/whitelabel/whitelabel-my-org.json
+```
+
+package.json has a slightly-different run script for starting a local webpackdev server for whitelabel development. This uses the OSMT_WHITELABEL_URL environment variable. This will pick up changes to the source code, and rebuild the build artifacts in `api/src/main/resources/ui`
+* `"ng-serve-prod": "./node_modules/@angular/cli/bin/ng serve --prod",`
+
+* For local development, this repo git ignores files matching `whitelabel-*.json`. This allows local development making whitelabel changes without being committed back to OSMT's main git repo.
+
 
 ### How to update the shape of the config
 If any changes to the signatures need to be made, such as adding new properties, then both the interface and class located in 
 `src/app/models/app-config.model.ts` must be updated.
  
-* The interface IAppConfig provides the expected shape of the json files and type safety when parsing config JSON. 
+* The interface IAppConfig provides the expected shape of the json files and type safety when parsing config JSON.
 * The class DefaultAppConfig defines our default set of configurations when no overriding URI is provided.
     
 ## Further help

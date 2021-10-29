@@ -47,6 +47,7 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              "src/whitelabel",
               {
                 "glob": "**/*",
                 "input": "./node_modules/@concentricsky/wgu-design-system-patternlibrary/dist",

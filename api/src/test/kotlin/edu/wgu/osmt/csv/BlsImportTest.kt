@@ -31,32 +31,19 @@ internal class BlsImportTest @Autowired constructor(
     @Autowired
     lateinit var searchController: SearchController
 
-    fun <T> concatenate(vararg lists: List<T>?): List<T>? {
-        val flat = lists.filterNotNull().flatten()
-        return when {
-            flat.isNotEmpty() -> flat
-            else -> null
-        }
-    }
-
     @Test
     fun testHandleRows() {
         // Arrange
-        val mockData = MockData()
-        val listOfBlsJobCodes = mockData.getBlsJobCodes()
+        val listOfBlsJobCodes = MockData().getBlsJobCodes()
 
         // Act
         blsImport.handleRows(listOfBlsJobCodes)
         val result = listOfBlsJobCodes[0].code?.let { searchController.searchJobCodes(UriComponentsBuilder.newInstance(), it) }
 
-        val listOfJobCodes = concatenate(result?.body?.map { it.jobRoleCode },
-                result?.body?.map { it.majorCode },
-                result?.body?.map { it.minorCode },
-                result?.body?.map { it.broadCode },
-                result?.body?.map { it.detailedCode })
+        val listOfApiJobCodes = result?.body?.map { it.code }
 
         // Assert
         assertThat(result).isNotNull
-        assertThat(listOfJobCodes).contains(listOfBlsJobCodes[0].code)
+        assertThat(listOfApiJobCodes).contains(listOfBlsJobCodes[0].code)
     }
 }

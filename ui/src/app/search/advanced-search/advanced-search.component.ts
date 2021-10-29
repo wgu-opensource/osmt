@@ -58,7 +58,7 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
     const form = this.skillForm.value
 
     const name: string = form.name
-    const author = form.author
+    const author: string = form.author
     const skillStatement: string = form.skillStatement
     const category: string = form.category
     const keywords = this.tokenizeString(form.keywords)

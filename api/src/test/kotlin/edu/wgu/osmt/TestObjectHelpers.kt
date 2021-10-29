@@ -12,7 +12,6 @@ import java.security.SecureRandom
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
-import kotlin.math.abs
 import kotlin.streams.asSequence
 
 object TestObjectHelpers {
@@ -153,7 +152,7 @@ object TestObjectHelpers {
         val skillName = name ?: UUID.randomUUID().toString()
         val skillStatement = statement ?: UUID.randomUUID().toString()
         val categoryName = UUID.randomUUID().toString()
-        val author = namedReferenceGenerator(includeName = true, includeUri = false)
+        val author = UUID.randomUUID().toString()
 
         val keywords = ApiStringListUpdate(
             add = (1..keywordCount).toList().map { UUID.randomUUID().toString() }
@@ -162,8 +161,8 @@ object TestObjectHelpers {
             add = (1..certificationCount).toList()
                 .map { namedReferenceGenerator(includeName = false, includeUri = true) }
         )
-        val standards = ApiReferenceListUpdate(
-            add = (1..standardCount).toList().map { namedReferenceGenerator(includeName = true, includeUri = true) }
+        val standards = ApiAlignmentListUpdate(
+            add = (1..standardCount).toList().map { alignmentGenerator(includeName = true, includeUri = true) }
         )
         val alignments = ApiAlignmentListUpdate(
             add = (1..alignmentCount).toList().map { alignmentGenerator(includeName = false, includeUri = true) }

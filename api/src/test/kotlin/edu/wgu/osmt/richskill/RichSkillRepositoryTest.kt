@@ -114,12 +114,12 @@ class RichSkillRepositoryTest @Autowired constructor(
         assertThat(skill.category?.value).isEqualTo(apiObj.category)
         assertThat(skill.category?.uri).isNull()
 
-        assertThatKeywordMatchesNamedReference(skill.author, apiObj.author)
+        assertThat(skill.author?.value).isEqualTo(apiObj.author)
 
         assertThatKeywordsMatchStringList(skill.searchingKeywords, apiObj.keywords!!)
 
         assertThatKeywordsMatchReferenceList(skill.certifications, apiObj.certifications!!)
-        assertThatKeywordsMatchReferenceList(skill.standards, apiObj.standards!!)
+        assertThatKeywordsMatchAlignmentList(skill.standards, apiObj.standards!!)
         assertThatKeywordsMatchAlignmentList(skill.alignments, apiObj.alignments!!)
         assertThatKeywordsMatchReferenceList(skill.employers, apiObj.employers!!)
 

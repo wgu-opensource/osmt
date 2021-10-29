@@ -42,7 +42,7 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
       },
       {
         label: "Standards",
-        bodyString: this.richSkill?.standards?.map(standard => standard.name)?.join("; ") ?? "",
+        bodyString: this.richSkill?.standards?.map(standard => standard.skillName)?.join("; ") ?? "",
         showIfEmpty: true
       }, {
         label: "Certifications",

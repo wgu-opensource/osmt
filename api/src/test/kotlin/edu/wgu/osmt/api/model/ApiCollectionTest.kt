@@ -29,7 +29,7 @@ internal class ApiCollectionTest {
         Assertions.assertThat(col?.updateDate).isEqualTo(api?.updateDate?.toLocalDateTime())
         Assertions.assertThat(col?.uuid).isEqualTo(api?.uuid)
         Assertions.assertThat(col?.name).isEqualTo(api?.name)
-        Assertions.assertThat(col?.author?.value).isEqualTo(api?.author?.name)
+        Assertions.assertThat(col?.author?.value).isEqualTo(api?.author)
         Assertions.assertThat(col?.archiveDate).isEqualTo(api?.archiveDate?.toLocalDateTime())
         Assertions.assertThat(col?.publishDate).isEqualTo(api?.publishDate?.toLocalDateTime())
     }

@@ -116,12 +116,12 @@ export interface ISkill {
   category?: string
   collections: IUuidReference[]
   keywords: string[]
-  standards: INamedReference[]
   alignments: IAlignment[]
+  standards: IAlignment[]
   certifications: INamedReference[]
   occupations: IJobCode[]
   employers: INamedReference[]
-  author: INamedReference
+  author: string
 }
 
 export class ApiSkill {
@@ -138,12 +138,12 @@ export class ApiSkill {
   category?: string
   collections: IUuidReference[]
   keywords: string[]
-  standards: INamedReference[]
   alignments: IAlignment[]
+  standards: IAlignment[]
   certifications: INamedReference[]
   occupations: IJobCode[]
   employers: INamedReference[]
-  author: INamedReference
+  author: string
 
   constructor(iRichSkill: ISkill) {
     this.id = iRichSkill.id

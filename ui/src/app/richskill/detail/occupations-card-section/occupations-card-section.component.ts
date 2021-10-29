@@ -9,7 +9,7 @@ import {IJobCode} from "../../../job-codes/Jobcode"
         <h4 class="t-type-bodyBoldCaps">Major Groups</h4>
         <div *ngFor="let code of majorCodes" class="l-flex">
           <h5 class="t-type-bodyBold t-type-noWrap">{{code.code}}</h5>
-          <p>{{code.name}}</p>
+          <p>{{code.targetNodeName}}</p>
         </div>
       </div>
 
@@ -17,7 +17,7 @@ import {IJobCode} from "../../../job-codes/Jobcode"
         <h4 class="t-type-bodyBoldCaps">Minor Groups</h4>
         <div *ngFor="let code of minorCodes" class="l-flex">
           <h5 class="t-type-bodyBold t-type-noWrap">{{code.code}}</h5>
-          <p>{{code.name}}</p>
+          <p>{{code.targetNodeName}}</p>
         </div>
       </div>
 
@@ -25,7 +25,7 @@ import {IJobCode} from "../../../job-codes/Jobcode"
         <h4 class="t-type-bodyBoldCaps">Broad Occupations</h4>
         <div *ngFor="let code of broadCodes" class="l-flex">
           <h5 class="t-type-bodyBold t-type-noWrap">{{code.code}}</h5>
-          <p>{{code.name}}</p>
+          <p>{{code.targetNodeName}}</p>
         </div>
       </div>
 
@@ -33,7 +33,7 @@ import {IJobCode} from "../../../job-codes/Jobcode"
         <h4 *ngIf="!!detailedCodes" class="t-type-bodyBoldCaps">Detailed Occupations</h4>
         <div *ngFor="let code of detailedCodes" class="l-flex">
           <h5 class="t-type-bodyBold t-type-noWrap">{{code.code}}</h5>
-          <p>{{code.name}}</p>
+          <p><a href="https://www.bls.gov/oes/current/oes{{code.code.replace('-','')}}.htm" target="_blank">{{code.targetNodeName}}</a></p>
         </div>
       </div>
 
@@ -41,7 +41,7 @@ import {IJobCode} from "../../../job-codes/Jobcode"
         <h4 *ngIf="!!onetCodes" class="t-type-bodyBoldCaps">O*NET Job Roles</h4>
         <div *ngFor="let code of onetCodes" class="l-flex">
           <h5 class="t-type-bodyBold t-type-noWrap">{{code.code}}</h5>
-          <p>{{code.name}}</p>
+          <p><a href="https://onetonline.org/link/summary/{{code.code}}" target="_blank">{{code.targetNodeName}}</a></p>
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@ export class OccupationsCardSectionComponent implements OnInit {
   constructor() { }
 
   distinctJobcodes(input: Array<IJobCode>): Array<IJobCode> {
-    return input.sort((a,b) => b.name?.localeCompare(a.name!) ? 1 : -1)
+    return input.sort((a,b) => b.targetNodeName?.localeCompare(a.targetNodeName!) ? 1 : -1)
       .filter((item, idx, arr) => arr.findIndex(it => it.code === item.code) === idx)
       .sort((a,b) => a.code > b.code ? 1 : -1)
   }
@@ -90,6 +90,6 @@ export class OccupationsCardSectionComponent implements OnInit {
   }
 
   onet(): Set<IJobCode> {
-    return new Set(this.distinctJobcodes(this.codes?.filter(code => code.framework === "o*net")))
+    return new Set(this.distinctJobcodes(this.codes?.filter(code => code.frameworkName === "o*net")))
   }
 }

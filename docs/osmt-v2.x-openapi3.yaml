@@ -1143,7 +1143,7 @@ components:
         employers:
           $ref: '#/components/schemas/ReferenceListUpdate'
         author:
-          $ref: '#/components/schemas/NamedReference'
+          type: string
       example:
         skillName: "New Skill Name"
         keywords:
@@ -1184,7 +1184,7 @@ components:
         name:
           type: string
         author:
-          $ref: '#/components/schemas/NamedReference'
+          type: string
         skills:
           type: array
           items:
@@ -1217,7 +1217,7 @@ components:
         status:
           $ref: '#/components/schemas/PublishStatus'
         author:
-          $ref: '#/components/schemas/NamedReference'
+          type: string
         skills:
           $ref: '#/components/schemas/StringListUpdate'
 

@@ -111,7 +111,7 @@ You can use files following this pattern to store your OAuth2 secrets locally an
   BASE_DOMAIN=localhost:8080
   FRONTEND_URL=http://localhost:8080
   # this is optional. Only provide it if you plan to whitelabel OSMT
-  OSMT_WHITELABEL_URL=/whitelabel/my-organizations-whitelabel.json
+  OSMT_WHITELABEL_URL=/whitelabel/whitelabel-my-org.json
 
   DB_NAME=osmt_db
   DB_USER=osmt_db_user

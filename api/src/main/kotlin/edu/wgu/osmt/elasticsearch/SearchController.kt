@@ -181,9 +181,9 @@ class SearchController @Autowired constructor(
 
     @PostMapping(RoutePaths.SEARCH_SIMILAR_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun searchSimilarSkills(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<RichSkillDoc>> {
+    fun searchSimilarSkills(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<ApiSkillSummary>> {
         val hits = richSkillEsRepo.findSimilar(apiSimilaritySearch).toList()
-        return ResponseEntity.status(200).body(hits.map{it.content})
+        return ResponseEntity.status(200).body(hits.map{ApiSkillSummary.fromDoc(it.content)})
     }
 
     @PostMapping(RoutePaths.SEARCH_SIMILARITIES, produces = [MediaType.APPLICATION_JSON_VALUE])

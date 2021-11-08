@@ -59,7 +59,8 @@ WORKDIR ${BASE_DIR}/build
 
 USER ${USER}
 
-# The dockerfile-build Maven profile excludes certain api integration tests that require access to the Docker service.
+RUN echo "$(env|sort)"
+# The dockerfile-build Maven profile excludes certain API integration tests that require access to the Docker service.
 RUN mvn clean install -P dockerfile-build
 
 ######################

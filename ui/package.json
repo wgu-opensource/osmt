@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "./node_modules/@angular/cli/bin/ng",
-    "ng-serve-prod": "./node_modules/@angular/cli/bin/ng serve --prod",
+    "ng-serve-prod": "npm run set-environment && ./node_modules/@angular/cli/bin/ng serve --prod",
     "set-environment": "ts-node set-environment.ts",
     "start": "./node_modules/@angular/cli/bin/ng serve",
     "start-hotreload": "./node_modules/@angular/cli/bin/ng serve --live-reload",

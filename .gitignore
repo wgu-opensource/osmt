@@ -34,3 +34,6 @@ environment.prod.ts
 
 # this allows whitelable configs to be ignored
 whitelabel-*.json
+
+# this directory is created by frontend-maven-plugin. No need for this is source control
+ui/node

@@ -42,11 +42,11 @@ The Quickstart configuration uses the `docker-compose.yml` file in the project r
 
 * This configuration could inform how to configure a production OSMT instance, but it is not intended for a production deployment.
 
-The Quickstart configuration is deployed with a single docker-compose command. These steps below are the general process. Follow the guidance in [Environment files for Quickstart and Development Stacks](#environment-files-for-Quickstart-and-development-stacks) for more details.
+The Quickstart configuration is deployed with a single docker-compose command. These steps below are the general process. Follow the guidance in [Environment files for Quickstart and Development Stacks](#environment-files-for-quickstart-and-development-stacks) for more details.
 
-1. Create file named `osmt-quickstart.env` in the project root. This file will be ignored by git.
+1. Create file named `osmt.env` in the project root. This file will be ignored by git.
 2. From the project root, run this command:
-  - `docker-compose --env-file osmt-quickstart.env up --build`
+  - `docker-compose --env-file osmt.env up --build`
 3. Import any skills-related data you plan to use in your Quickstart instance.
   - Replace the content in the existing files in import folder for skills, BLS and O*NET data. __These existing files under import folder are provided for testing purpose only.__
   - Run below commands.
@@ -101,15 +101,17 @@ For Okta, you will use the `oauth2-okta` profile for Spring Boot, which will inc
 
 #### Environment files for Quickstart and Development Stacks
 There are many ways to provide environment values to a Spring application. That said, you should never push secrets to GitHub, so you should never store secrets in source code. The OSMT project is configured to git ignore files named `osmt*.env`, and we recommend you follow this approach. 
-#### Quickstart
 
-You can use files following this pattern to store your OAuth2 secrets locally and pass them to a docker-compose stack, e.g., `docker-compose --env-file /path/to/osmt.env -f /path/to/compose-file/yml up --build`. We suggest the following environment files:
+You can use files that follow this pattern to store your OAuth2 secrets locally and pass them to a docker-compose stack, e.g., `docker-compose --env-file /path/to/osmt.env -f /path/to/compose-file/yml up --build`. We suggest the following environment files:
 
-- Create a file named `osmt.env` in the project root. Populate it with these values and the relevant secrets from your OAuth2 provider. This will be provided to a Quickstart docker-compose stack from the docker-compose file in the project root directory.
+- Create a file named `osmt.env` in the project root. Populate it with these values and the relevant secrets from your OAuth2 provider. This will be provided to a Quickstart docker-compose stack from the docker-compose file in the project root directory. In a Linux/MacOS environment, you can also source these environment variables into your shell
   ```
+  set -o allexport
+
   ENVIRONMENT=dev,apiserver,oauth2-okta
   BASE_DOMAIN=localhost:8080
   FRONTEND_URL=http://localhost:8080
+  
   # this is optional. Only provide it if you plan to whitelabel OSMT
   OSMT_WHITELABEL_URL=/whitelabel/whitelabel-my-org.json
 
@@ -127,6 +129,8 @@ You can use files following this pattern to store your OAuth2 secrets locally an
   OAUTH_CLIENTID=123456qwerty
   OAUTH_CLIENTSECRET=2354asdf
   OAUTH_AUDIENCE=3456zxcv
+  
+  set +o allexport
   ```
 
 #### Development Stacks

@@ -41,24 +41,24 @@ Run `npm run ng test` to execute the unit tests via [Karma](https://karma-runner
 Run `npm run ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
 ## Whitelabel JSON config
-A URL can be defined for a whitelabel.json file in environment.*.ts for a given deployment. It can also be passed in via a `OSMT_WHITELABEL_URL` environment variable, i.e.,
+A URL can be defined for a whitelabel.json file in the Angular environment.*.ts for a given deployment. For an Angular "prod" build, set-environment.ts will use the `OSMT_WHITELABEL_URL` environment variable, i.e.,
 ```
 OSMT_WHITELABEL_URL=/whitelabel/whitelabel-my-org.json
 ```
 
-* This file is loaded dynamically at runtime. On app launch, the file is downloaded in an API call and is deserialized into the AppConfig property `AppConfig.settings` which is available globally.
+* This file is loaded dynamically at runtime. On app launch, the file is downloaded and deserialized into the AppConfig property `AppConfig.settings` which is available globally.
 
 ### Local Whitelabel Development considerations
-For local whitelabel development work, these environment variables will need local development values:
+For local whitelabel development work, package.json provides a slightly-different run script for starting a local server for whitelabel development. This uses the OSMT_WHITELABEL_URL environment variable.
+* `"ng-serve-prod": "./node_modules/@angular/cli/bin/ng serve --prod",`
+
+These environment variables will need local development values:
 ```
 OSMT_API_URL=http://localhost:8080
 OSMT_LOGIN_URLhttp://localhost:8080/oauth2/authorization/okta
 OSMT_DYNAMIC_WHITELABEL=true
 OSMT_WHITELABEL_URL=http://localhost:8080/whitelabel/whitelabel-my-org.json
 ```
-
-package.json has a slightly-different run script for starting a local webpackdev server for whitelabel development. This uses the OSMT_WHITELABEL_URL environment variable. This will pick up changes to the source code, and rebuild the build artifacts in `api/src/main/resources/ui`
-* `"ng-serve-prod": "./node_modules/@angular/cli/bin/ng serve --prod",`
 
 * For local development, this repo git ignores files matching `whitelabel-*.json`. This allows local development making whitelabel changes without being committed back to OSMT's main git repo.
 

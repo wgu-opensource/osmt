@@ -1,10 +1,9 @@
 import { writeFile } from 'fs';
 
-// require('dotenv').load();
-require('dotenv').config( { path: '../osmt-quickstart.env' } )
+// use env provided by osmt.env in project root
+require('dotenv').config( { path: '../osmt.env' } );
 
-// Configure Angular `environment.ts` file path
-// OSMT git ignores environment.prod.ts
+// environment.prod.ts is set in project .gitignore file
 const targetPath = './src/environments/environment.prod.ts';
 
 const envConfigFile = `export const environment = {

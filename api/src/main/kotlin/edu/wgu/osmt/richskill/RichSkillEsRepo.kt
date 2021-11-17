@@ -7,8 +7,6 @@ import edu.wgu.osmt.api.model.ApiSimilaritySearch
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
-import edu.wgu.osmt.jobcode.CustomJobCodeRepositoryImpl
-import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeQueries
 import edu.wgu.osmt.nullIfEmpty
 import org.apache.lucene.search.join.ScoreMode
@@ -260,14 +258,30 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                     )
                 )
             }
-        } else if (!collectionId.isNullOrBlank()) {
-            bq.must(
-                QueryBuilders.nestedQuery(
-                    RichSkillDoc::collections.name,
-                    QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("collections.uuid", collectionId)),
-                    ScoreMode.Avg
+        } else {
+            var apiSearchUuids = apiSearch.uuids?.filterNotNull()?.filter { x: String? -> x != "" }
+
+            if (!apiSearchUuids.isNullOrEmpty()) {
+                nsq.withFilter(
+                    BoolQueryBuilder().must(
+                        termsQuery(
+                            RichSkillDoc::uuid.name,
+                            apiSearchUuids
+                        )
+                    )
                 )
-            )
+            }
+            if (!collectionId.isNullOrBlank()) {
+                bq.must(
+                    QueryBuilders.nestedQuery(
+                        RichSkillDoc::collections.name,
+                        QueryBuilders.boolQuery()
+                            .must(QueryBuilders.matchQuery("collections.uuid", collectionId)),
+                        ScoreMode.Avg
+                    )
+                )
+
+            }
         }
 
         return elasticSearchTemplate.search(nsq.build(), RichSkillDoc::class.java)

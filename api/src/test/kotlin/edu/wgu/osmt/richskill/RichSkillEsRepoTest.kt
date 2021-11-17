@@ -634,4 +634,91 @@ class RichSkillEsRepoTest @Autowired constructor(
         // Assert
         assertThat(result.first().uuid).contains(skill.uuid)
     }
+
+    @Test
+    fun testByApiSearchWithUuids() {
+        // Arrange
+        var collection1 = TestObjectHelpers.collectionDoc(name = "Self-Management Collection")
+        val collection2 = TestObjectHelpers.collectionDoc(name = "Best Self Management Collection")
+
+        val skill1 = TestObjectHelpers.richSkillDoc(
+            name = "Self-Management",
+            statement = "A statement for a skill"
+        ).copy(collections = listOf(collection1))
+        val skill2 = TestObjectHelpers.richSkillDoc(
+            name = "Self Mis-Management",
+            statement = "A statement for a skill"
+        )
+        val skill3 = TestObjectHelpers.richSkillDoc(
+            name = "Best Self Management",
+            statement = "A statement for a skill"
+        ).copy(collections = listOf(collection2))
+        val skill4 = TestObjectHelpers.richSkillDoc(
+            name = "Management of Selfies",
+            statement = "A statement for a skill"
+        )
+
+        collection1 = collection1.copy(skillIds = listOf(skill1.uuid, skill2.uuid))
+
+        val randomSkills = (1..10).map { TestObjectHelpers.randomRichSkillDoc() }
+        richSkillEsRepo.saveAll(randomSkills + listOf(skill1, skill2, skill3, skill4))
+        collectionEsRepo.saveAll(listOf(collection1, collection2))
+
+        //Act
+        val skillResult = richSkillEsRepo.byApiSearch(
+            ApiSearch(
+                uuids = listOf(randomSkills[0].uuid, skill1.uuid, skill2.uuid)
+            ), collectionId = collection1.uuid
+        ).searchHits.map { it.content }
+
+        // Assert
+        assertThat(skillResult.isNotEmpty())
+        assertThat(skillResult.size).isEqualTo(1)
+        assertThat(skillResult[0] == skill1)
+
+    }
+
+    @Test
+    fun testByApiSearchWithUuidsAndNoCollection() {
+        // Arrange
+        var collection1 = TestObjectHelpers.collectionDoc(name = "Self-Management Collection")
+        val collection2 = TestObjectHelpers.collectionDoc(name = "Best Self Management Collection")
+
+        val skill1 = TestObjectHelpers.richSkillDoc(
+            name = "Self-Management",
+            statement = "A statement for a skill"
+        ).copy(collections = listOf(collection1))
+        val skill2 = TestObjectHelpers.richSkillDoc(
+            name = "Self Mis-Management",
+            statement = "A statement for a skill"
+        )
+        val skill3 = TestObjectHelpers.richSkillDoc(
+            name = "Best Self Management",
+            statement = "A statement for a skill"
+        ).copy(collections = listOf(collection2))
+        val skill4 = TestObjectHelpers.richSkillDoc(
+            name = "Management of Selfies",
+            statement = "A statement for a skill"
+        )
+
+        collection1 = collection1.copy(skillIds = listOf(skill1.uuid, skill2.uuid))
+
+        val randomSkills = (1..10).map { TestObjectHelpers.randomRichSkillDoc() }
+        richSkillEsRepo.saveAll(randomSkills + listOf(skill1, skill2, skill3, skill4))
+        collectionEsRepo.saveAll(listOf(collection1, collection2))
+
+        //Act
+        val skillResult = richSkillEsRepo.byApiSearch(
+            ApiSearch(
+                uuids = listOf(randomSkills[0].uuid, skill2.uuid)
+            )
+        ).searchHits.map { it.content }
+
+        // Assert
+        assertThat(skillResult.isNotEmpty())
+        assertThat(skillResult.size).isEqualTo(2)
+        assertThat(skillResult.contains(randomSkills[0]))
+        assertThat(skillResult.contains(skill2))
+
+    }
 }

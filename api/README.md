@@ -56,18 +56,21 @@ Scripts in this folder will be automatically processed when the app is started w
 
 By default, only `test` and `dev` environments will automatically run migrations. To enable migrations for other environments, i.e. a single production server, start the server with this JVM argument: `-Dspring.flyway.enabled=true`. 
 
+## Allowing anonymous API to search and list endpoints for published skills and collections
+This feature is enabled by default. These settings are in application.properties
+   * app.allowPublicSearching=true
+   * app.allowPublicLists=true
+
+## Caching and Rate Limiting with bucket4j
+OSMT uses Bucket4j for caching and rate limiting on the API. You can learn more about this [here](https://www.baeldung.com/spring-bucket4j). These features are enabled by including "bucket4j" as a run profile, which pull in [./src/main/resources/config/application-bucket4j.properties](./src/main/resources/config/application-bucket4j.properties). All of these properties can be adjusted at runtime as Spring application properties.
+
 ## Code Style
 To automatically apply the official Kotlin code style, Install the IntelliJ plugin `Save Actions`. Configure `Save Actions` in preferences to `Reformat file` on save.    
 
 ## Command Line execution
-#### Building the jar:
-```mvn clean package```
 
-#### Run the web service:
-```mvn -Dspring-boot.run.profiles=dev,apiserver spring-boot:run```
+- See [development-configuration](/../README.md#development-configuration) in the [README.md](/../README.md) for specifics.
 
-#### Running the web service from the jar:
-```java -Dspring.profiles.active=dev,apiserver -jar api/target/osmt-api-<version>.jar```
 
 ## Importing Skills, BLS, and O*NET
 OSMT allows importing BLS and O*NET data into it's MySQL database and Elasticsearch indexing. If you are going to import this data, you should do it before deploying the Spring Boot web application. The import process supports CSV files. See specific information for each type below.
@@ -76,22 +79,25 @@ The general import sequence should be:
 1. Batch Skills (```--import-type=batchskill```)
 2. BLS (```--import-type=bls```)
 3. O*NET (```--import-type=onet```)
-4. Reindex Elastisearch
+4. Reindex Elasticsearch
+
+_Please refer import folder under project root to get sample files for testing purpose only._
 
 ### Running batch skill / collection import from the jar:
 ```
-java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar --csv=path/to/csv    
+java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar --csv=path/to/csv --import-type=batchskill  
 ```
 
 ### Importing BLS codes:
 * Note - BLS codes should be imported before O*NET codes
 1. Download BLS codes in Excel format from [https://www.bls.gov/soc/2018/#materials]("https://www.bls.gov/soc/2018/#materials")
-2. Convert Excel to CSV format
-3. Import the CSV with either the following command:
+2. Remove the content before header row. 
+3. Convert Excel to CSV format
+4. Import the CSV with the following command:
     ```
     java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar --csv=path/to/bls_csv --import-type=bls    
     ```
-4. You can also create a Run configuration in IntelliJ
+5. You can also create a Run configuration in IntelliJ
     1. Add a Spring Boot Run configurations in IntelliJ.
     2. In VM options, enter ```-Dspring.profiles.active=dev,import```
     3. In program arguments, enter ```--csv=path/to/bls_csv --import-type=bls ```

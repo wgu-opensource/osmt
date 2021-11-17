@@ -51,7 +51,8 @@ internal class OnetImportTest @Autowired constructor(
 
         // Assert
         assertThat(result).isNotNull
-        assertThat(result?.body?.map { it.jobRoleCode }).contains(listOfOnetCodes[0].code)
+        assertThat(result?.body?.map { it.code }).contains(listOfOnetCodes[0].code)
+        assertThat(result?.body?.map { it.targetNodeName }).contains(listOfOnetCodes[0].title)
     }
 
 }

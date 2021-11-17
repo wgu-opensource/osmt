@@ -45,7 +45,7 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
   }
 
   getAuthor(): string {
-    return this.richSkill?.author?.name ?? ""
+    return this.richSkill?.author ?? ""
   }
 
   getSkillUuid(): string {

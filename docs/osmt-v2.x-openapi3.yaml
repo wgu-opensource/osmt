@@ -973,7 +973,7 @@ components:
         standards:
           type: array
           items:
-            $ref: '#/components/schemas/NamedReference'
+            $ref: '#/components/schemas/Alignment'
         certifications:
           type: array
           items:
@@ -987,7 +987,7 @@ components:
           items:
             $ref: '#/components/schemas/NamedReference'
         author:
-          $ref: '#/components/schemas/NamedReference'
+          type: string
         creationDate:
           type: string
           format: date-time
@@ -1013,17 +1013,17 @@ components:
           - "Business Ethics"
           - "Being"
         standards:
-          - name: "NICE: Investigate - Digital Forensics"
-          - name: "NICE: Protect and Defend - Computer Defense Analysis"
-          - name: "NICE: Protect and Defend - Cyber Defense Infrastructure Support"
-          - name: "NICE: Protect and Defend - Incident Response; NICE: Protect and Defend - Vulnerability Assessment and Management"
-          - name: "NICE: Operate and Maintain - Customer Service and Technical Support"
-          - name: "NICE: Operate and Maintain - Network Services"
-          - name: "NICE: Operate and Maintain - System Administration"
-          - name: "NSA-CAE KU: Networking"
-          - name: "NSA-CAE KU: Wireless Security"
-          - name: "NSA-CAE KU: HCI/Usability Security"
-          - name: "NSA-CAE KU: Wireless Security"
+          - skillName: "NICE: Investigate - Digital Forensics"
+          - skillName: "NICE: Protect and Defend - Computer Defense Analysis"
+          - skillName: "NICE: Protect and Defend - Cyber Defense Infrastructure Support"
+          - skillName: "NICE: Protect and Defend - Incident Response; NICE: Protect and Defend - Vulnerability Assessment and Management"
+          - skillName: "NICE: Operate and Maintain - Customer Service and Technical Support"
+          - skillName: "NICE: Operate and Maintain - Network Services"
+          - skillName: "NICE: Operate and Maintain - System Administration"
+          - skillName: "NSA-CAE KU: Networking"
+          - skillName: "NSA-CAE KU: Wireless Security"
+          - skillName: "NSA-CAE KU: HCI/Usability Security"
+          - skillName: "NSA-CAE KU: Wireless Security"
         certifications:
           - name: CCNA Security
           - name: CCIE Security
@@ -1085,7 +1085,7 @@ components:
         keywords:
           $ref: '#/components/schemas/StringListUpdate'
         standards:
-          $ref: '#/components/schemas/ReferenceListUpdate'
+          $ref: '#/components/schemas/AlignmentListUpdate'
         alignments:
           $ref: '#/components/schemas/AlignmentListUpdate'
         certifications:
@@ -1095,7 +1095,7 @@ components:
         employers:
           $ref: '#/components/schemas/ReferenceListUpdate'
         author:
-          $ref: '#/components/schemas/NamedReference'
+          type: string
       example:
         skillName: "New Skill Name"
         keywords:
@@ -1136,7 +1136,7 @@ components:
         name:
           type: string
         author:
-          $ref: '#/components/schemas/NamedReference'
+          type: string
         skills:
           type: array
           items:
@@ -1167,7 +1167,7 @@ components:
         status:
           $ref: '#/components/schemas/PublishStatus'
         author:
-          $ref: '#/components/schemas/NamedReference'
+          type: string
         skills:
           $ref: '#/components/schemas/StringListUpdate'
 
@@ -1252,12 +1252,12 @@ components:
       properties:
         code:
           type: string
-        id:
+        targetNode:
           type: string
           format: uri
-        name:
+        targetNodeName:
           type: string
-        framework:
+        frameworkName:
           type: string
         level:
           $ref: '#/components/schemas/JobCodeLevel'
@@ -1312,7 +1312,7 @@ components:
         standards:
           type: array
           items:
-            $ref: '#/components/schemas/NamedReference'
+            $ref: '#/components/schemas/Alignment'
         certifications:
           type: array
           items:

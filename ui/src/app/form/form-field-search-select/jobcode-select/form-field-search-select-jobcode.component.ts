@@ -71,7 +71,7 @@ export class FormFieldSearchSelectJobcodeComponent extends FormField implements 
 
     this.queryInProgress = this.searchService.searchJobcodes(text)
       .subscribe(searchResults => {
-        this.results = searchResults.filter(r => !!r && !!r.code && !!r.name)
+        this.results = searchResults.filter(r => !!r && !!r.code && !!r.targetNodeName)
         this.currentlyLoading = false
       })
   }
@@ -90,7 +90,7 @@ export class FormFieldSearchSelectJobcodeComponent extends FormField implements 
   }
 
   joinNameAndCode(apiCode: ApiJobCode): string {
-    return `${apiCode.name}  ${apiCode.code}`
+    return `${apiCode.targetNodeName}  ${apiCode.code}`
   }
 
   private emitCurrentSelection(): void {

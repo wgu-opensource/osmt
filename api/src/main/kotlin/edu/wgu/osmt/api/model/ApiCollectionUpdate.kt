@@ -11,7 +11,7 @@ data class ApiCollectionUpdate(
     val publishStatus: PublishStatus? = null,
 
     @JsonProperty("author")
-    val author: ApiNamedReference? = null,
+    val author: String? = null,
 
     @JsonProperty("skills")
     val skills: ApiStringListUpdate? = null

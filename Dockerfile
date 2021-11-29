@@ -32,7 +32,7 @@ RUN /usr/sbin/useradd -r -d ${BASE_DIR} -s /bin/bash ${USER} -k /etc/skel -m -U 
 ###########################
 FROM osmt-base as build
 
-ENV M2_VERSION=3.8.3
+ENV M2_VERSION=3.8.4
 ENV M2_HOME=/usr/local/maven
 ENV PATH=${M2_HOME}/bin:${PATH}
 

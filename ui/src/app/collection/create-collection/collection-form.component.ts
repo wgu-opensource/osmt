@@ -9,7 +9,7 @@ import {ApiCollection, ICollectionUpdate} from "../ApiCollection"
 import {Observable} from "rxjs"
 import {ToastService} from "../../toast/toast.service"
 import {Title} from "@angular/platform-browser"
-import {ApiNamedReference, INamedReference} from "../../richskill/ApiSkill"
+import {ApiNamedReference} from "../../richskill/ApiSkill"
 import {HasFormGroup} from "../../core/abstract-form.component"
 import {Whitelabelled} from "../../../whitelabel";
 
@@ -27,6 +27,7 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
   collectionSaved?: Observable<ApiCollection>
 
   iconCollection = SvgHelper.path(SvgIcon.COLLECTION)
+
   get nameLabel(): string {
     return this.collectionUuid ? "Collection Name" : "New Collection Name"
   }
@@ -42,14 +43,18 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
     super()
   }
 
-  formGroup(): FormGroup { return this.collectionForm }
+  formGroup(): FormGroup {
+    return this.collectionForm
+  }
 
   ngOnInit(): void {
     this.collectionUuid = this.route.snapshot.paramMap.get("uuid")
 
     if (this.collectionUuid) {
       this.collectionLoaded = this.collectionService.getCollectionByUUID(this.collectionUuid)
-      this.collectionLoaded.subscribe(collection => { this.setCollection(collection) })
+      this.collectionLoaded.subscribe(collection => {
+        this.setCollection(collection)
+      })
     }
 
     if (this.isAuthorEditable()) {
@@ -63,7 +68,7 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
     return `${this.collectionUuid !== null ? "Edit" : "Create"} Collection`
   }
 
-  getFormDefinitions(): {[key: string]: AbstractControl} {
+  getFormDefinitions(): { [key: string]: AbstractControl } {
     const fields = {
       collectionName: new FormControl("", Validators.required),
     }
@@ -84,9 +89,6 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
       return new ApiNamedReference({name: str})
     }
   }
-  stringFromNamedReference(ref?: INamedReference): string {
-    return ref?.name ?? ref?.id ?? ""
-  }
 
   setCollection(collection: ApiCollection): void {
     this.existingCollection = collection
@@ -95,7 +97,7 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
     }
     if (AppConfig.settings.editableAuthor) {
       // @ts-ignore
-      fields.author = this.stringFromNamedReference(collection.author)
+      fields.author = collection.author
     }
     this.collectionForm.setValue(fields)
   }
@@ -108,7 +110,7 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
     const formValues = this.collectionForm.value
     return {
       name: formValues.collectionName,
-      author: this.namedReferenceForString(formValues.author ?? ""),
+      author: formValues.author
     }
   }
 

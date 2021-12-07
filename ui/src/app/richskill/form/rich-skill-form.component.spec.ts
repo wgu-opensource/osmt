@@ -577,7 +577,8 @@ function setupSelectedFields(isBlank: boolean): object {
   return {
     keywords: component.selectedKeywords,
     occupations: component.selectedJobCodes,
-    standards: component.selectedStandards.map(x => new ApiNamedReference({ id: undefined, name: x }) as INamedReference),    certifications: component.selectedCertifications.map(x => new ApiNamedReference({ id: undefined, name: x })),
+    standards: component.selectedStandards.map(x => new ApiAlignment({ id: undefined, skillName: x }) as INamedReference),
+    certifications: component.selectedCertifications.map(x => new ApiNamedReference({ id: undefined, name: x })),
     employers: component.selectedEmployers.map(x => new ApiNamedReference({ id: undefined, name: x }))
   }
 }

@@ -133,7 +133,7 @@ describe("CollectionFormComponent", () => {
 
     // Assert
     expect(result.name).toEqual(value.collectionName)
-    expect(result.author?.name).toEqual(value.author)
+    expect(result.author).toEqual(value.author)
   })
 
   it("onSubmit should be correct", (done) => {

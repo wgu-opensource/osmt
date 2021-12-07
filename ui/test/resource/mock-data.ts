@@ -30,8 +30,6 @@ export function createMockBatchResult(): IBatchResult {
 
 export function createMockJobcode(): IJobCode {
   return {
-    id: 42,
-    name: "my jobcode name",
     code: "my jobcode",
     broad: "my jobcode broad",
     broadCode: "my jobcode broadCode",
@@ -39,7 +37,7 @@ export function createMockJobcode(): IJobCode {
     level: "Broad",
     major: "my jobcode major",
     majorCode: "my jobcode majorCode",
-    framework: "my jobcode framework",
+    frameworkName: "my jobcode framework",
     minor: "my jobcode minor",
     minorCode: "my jobcode minorCode",
     url: "my jobcode url",
@@ -121,7 +119,7 @@ export function createMockSkillUpdate(): IRichSkillUpdate {
     standards: createMockApiReferenceListUpdate(),
     occupations: createMockStringListUpdate(),
     employers: createMockApiReferenceListUpdate(),
-    author: new ApiNamedReference(createMockNamedReference("a", "author"))
+    author: "author"
   }
 }
 
@@ -229,7 +227,7 @@ export function createMockSkill(creationDate: Date, updateDate: Date, status: Pu
     certifications: [createMockNamedReference()],
     occupations: [createMockJobcode()],
     employers: [createMockNamedReference()],
-    author: createMockNamedReference()
+    author: "name"
   }
 }
 
@@ -250,7 +248,7 @@ export function createMockCollection(
     id: "id1",
     uuid: "uuid1",
     name: "my collection name",
-    author: createMockNamedReference(),
+    author: "name",
     skills,
     creator: "creator"
   }
@@ -261,7 +259,7 @@ export function createMockCollectionUpdate(creationDate: Date, updateDate: Date,
   return {
     status,
     name: "my collection name",
-    author: createMockNamedReference(),
+    author: "name",
     skills: createMockStringListUpdate()
   }
 }

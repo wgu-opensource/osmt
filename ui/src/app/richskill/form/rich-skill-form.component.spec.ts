@@ -23,7 +23,7 @@ import { EnvironmentService } from "../../core/environment.service"
 import { IJobCode } from "../../job-codes/Jobcode"
 import { PublishStatus } from "../../PublishStatus"
 import { ToastService } from "../../toast/toast.service"
-import { ApiNamedReference, ApiSkill, INamedReference } from "../ApiSkill"
+import {ApiAlignment, ApiNamedReference, ApiSkill, INamedReference} from "../ApiSkill"
 import { ApiSkillSummary } from "../ApiSkillSummary"
 import {
   ApiReferenceListUpdate,
@@ -287,16 +287,17 @@ describe("RichSkillFormComponent", () => {
     // Act
     const update = component.updateObject()
 
-    // Assert
+    // Assert`
     expect(update.skillName).toEqual(skillName)
     expect(update.skillStatement).toEqual(skillStatement)
     expect(update.category).toEqual(category)
     expect((update.keywords as IStringListUpdate).add).toEqual(keywords)
-    expect((update.standards as IReferenceListUpdate).add).toEqual(standards)
     expect((update.collections as IStringListUpdate).add).toEqual(collections)
     expect((update.certifications as IReferenceListUpdate).add).toEqual(certifications)
     expect((update.occupations as IStringListUpdate).add).toEqual(occupations)
     expect((update.employers as IReferenceListUpdate).add).toEqual(employers)
+    expect((update.standards as IReferenceListUpdate).add).toEqual(standards)
+
   })
 
   it("onSubmit should be correct", () => {
@@ -337,7 +338,7 @@ describe("RichSkillFormComponent", () => {
   it("stringFromJobCode should return string", () => {
     expect(component.stringFromJobCode(undefined)).toEqual("")
     expect(component.stringFromJobCode({ code: "abcd" })).toEqual("abcd")
-    expect(component.stringFromJobCode({ name: "id1" } as IJobCode)).toEqual("")
+    expect(component.stringFromJobCode({ frameworkName: "id1" } as IJobCode)).toEqual("")
   })
 
   it("setSkill should be correct", () => {
@@ -576,7 +577,7 @@ function setupSelectedFields(isBlank: boolean): object {
   return {
     keywords: component.selectedKeywords,
     occupations: component.selectedJobCodes,
-    standards: component.selectedStandards.map(x => new ApiNamedReference({ id: undefined, name: x }) as INamedReference),
+    standards: component.selectedStandards.map(x => new ApiAlignment({ id: undefined, skillName: x }) as INamedReference),
     certifications: component.selectedCertifications.map(x => new ApiNamedReference({ id: undefined, name: x })),
     employers: component.selectedEmployers.map(x => new ApiNamedReference({ id: undefined, name: x }))
   }

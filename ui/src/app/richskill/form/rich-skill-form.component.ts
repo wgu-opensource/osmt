@@ -331,7 +331,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     }
     if (AppConfig.settings.editableAuthor) {
       // @ts-ignore
-      fields.author = this.stringFromNamedReference(skill.author)
+      fields.author = skill.author
     }
     this.skillForm.setValue(fields)
 

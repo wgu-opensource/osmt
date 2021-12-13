@@ -1,5 +1,4 @@
 import {PublishStatus} from "../PublishStatus"
-import {INamedReference} from "../richskill/ApiSkill"
 import {IStringListUpdate} from "../richskill/ApiSkillUpdate"
 
 export interface ICollection {
@@ -31,17 +30,18 @@ export class ApiCollection {
 
   constructor(
     {
-    archiveDate,
-    author,
-    creationDate,
-    creator,
-    id,
-    name,
-    publishDate,
-    skills,
-    status,
-    updateDate,
-    uuid}: ICollection
+      archiveDate,
+      author,
+      creationDate,
+      creator,
+      id,
+      name,
+      publishDate,
+      skills,
+      status,
+      updateDate,
+      uuid
+    }: ICollection
   ) {
     this.archiveDate = archiveDate
     this.author = author
@@ -60,15 +60,16 @@ export class ApiCollection {
 export interface ICollectionUpdate {
   name?: string,
   status?: PublishStatus,
-  author?: INamedReference,
+  author?: string,
   skills?: IStringListUpdate
 }
 
 export class ApiCollectionUpdate {
   name?: string
   status?: PublishStatus
-  author?: INamedReference
+  author?: string
   skills?: IStringListUpdate
+
   constructor({name, status, author, skills}: ICollectionUpdate) {
     this.name = name
     this.status = status

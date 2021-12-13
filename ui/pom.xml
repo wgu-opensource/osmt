@@ -52,6 +52,16 @@
             </configuration>
           </execution>
           <execution>
+            <id>test</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <arguments>run ci-test</arguments>
+            </configuration>
+          </execution>
+          <execution>
             <id>npm run build-prod</id>
             <goals>
               <goal>npm</goal>
@@ -61,7 +71,6 @@
               <arguments>run build-prod</arguments>
             </configuration>
           </execution>
-
         </executions>
       </plugin>
     </plugins>

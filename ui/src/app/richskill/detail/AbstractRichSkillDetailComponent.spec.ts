@@ -107,7 +107,7 @@ describe("ConcreteComponent", () => {
     // Arrange
     component.richSkill = skill
     // Act/Assert
-    expect(component.getAuthor()).toEqual(skill.author.name as string)
+    expect(component.getAuthor()).toEqual(skill.author as string)
   })
 
   it("getUuid should return", () => {

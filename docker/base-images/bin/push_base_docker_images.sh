@@ -10,13 +10,13 @@ function prepare() {
   local project_dir; project_dir="$(git rev-parse --show-toplevel)"
   if [[ -z "${project_dir}" ]]; then
     echo_err "Pushing the base Docker images should be run from the directory context of the osmt git repo. Exiting..."
-    exit 134
+    exit 135
   fi
 
   local script_dir; script_dir="${project_dir}/docker/base-images"
   if [[ ! -d "${script_dir}" ||  ! -r "${script_dir}" ]]; then
     echo_err "Can not change directory to ${script_dir}. Exiting..."
-    exit 138
+    exit 135
   fi
 
   echo_info "Changing directory to ${script_dir}."

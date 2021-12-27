@@ -12,7 +12,7 @@ declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
 declare OAUTH_CLIENTSECRET="${OAUTH_CLIENTSECRET:-}"
 declare OAUTH_AUDIENCE="${OAUTH_AUDIENCE:-}"
 declare MIGRATIONS_ENABLED="${MIGRATIONS_ENABLED:-}"
-#declare SKIP_METADATA_IMPORT="${SKIP_METADATA_IMPORT:-}"
+declare SKIP_METADATA_IMPORT="${SKIP_METADATA_IMPORT:-}"
 declare REINDEX_ELASTICSEARCH="${REINDEX_ELASTICSEARCH:-}"
 declare FRONTEND_URL="${FRONTEND_URL:-}"
 declare OSMT_JAR
@@ -55,11 +55,11 @@ function validate() {
     echo_info "  Defaulting to REINDEX_ELASTICSEARCH=${REINDEX_ELASTICSEARCH}"
   fi
 
-#  if [[ -z "${SKIP_METADATA_IMPORT}" ]]; then
-#    SKIP_METADATA_IMPORT=false
-#    echo_info "Missing environment 'SKIP_METADATA_IMPORT'"
-#    echo_info "  Defaulting to SKIP_METADATA_IMPORT=${REINDEX_ELASTICSEARCH}"
-#  fi
+  if [[ -z "${SKIP_METADATA_IMPORT}" ]]; then
+    SKIP_METADATA_IMPORT=false
+    echo_info "Missing environment 'SKIP_METADATA_IMPORT'"
+    echo_info "  Defaulting to SKIP_METADATA_IMPORT=${REINDEX_ELASTICSEARCH}"
+  fi
 
   if [[ -z "${FRONTEND_URL}" ]]; then
     FRONTEND_URL="http://${BASE_DOMAIN}"
@@ -74,6 +74,9 @@ function validate() {
 }
 
 function import_metadata() {
+  if [[ "${SKIP_METADATA_IMPORT}" == "true" ]]; then
+    echo_info "Skipping BLS and O*NET metadata import"
+  else
     echo_info "Importing BLS metadata"
     local java_cmd="/bin/java -jar
       -Dspring.profiles.active=dev,import
@@ -95,25 +98,25 @@ function import_metadata() {
       --import-type=onet"
 
     run_cmd_with_retry "${java_cmd}"
+  fi
 }
 
 function reindex_elasticsearch() {
-    # The containerized Spring app needs an initial ElasticSearch index, or it returns 500s.
-    # convert value of REINDEX_ELASTICSEARCH to lowercase and compare to "true"
-    if [[ $(echo "$REINDEX_ELASTICSEARCH" | awk '{print tolower($0)}') == "true" ]]; then
-      local reindex_profile_string; reindex_profile_string="$(build_reindex_profile_string "${ENVIRONMENT}")"
+  # The containerized Spring app needs an initial ElasticSearch index, or it returns 500s.
+  if [[ "${REINDEX_ELASTICSEARCH}" == "true" ]]; then
+    local reindex_profile_string; reindex_profile_string="$(build_reindex_profile_string "${ENVIRONMENT}")"
 
-      echo_info "Building initial index in OSMT ElasticSearch using ${reindex_profile_string} Spring profiles..."
-      java_cmd="/bin/java
-        -Dspring.profiles.active=${reindex_profile_string}
-        -Dredis.uri=${REDIS_URI}
-        -Ddb.uri=${DB_URI}
-        -Des.uri=${ELASTICSEARCH_URI}
-        -Dspring.flyway.enabled=${MIGRATIONS_ENABLED}
-        -jar ${OSMT_JAR}"
+    echo_info "Building initial index in OSMT ElasticSearch using ${reindex_profile_string} Spring profiles..."
+    java_cmd="/bin/java
+      -Dspring.profiles.active=${reindex_profile_string}
+      -Dredis.uri=${REDIS_URI}
+      -Ddb.uri=${DB_URI}
+      -Des.uri=${ELASTICSEARCH_URI}
+      -Dspring.flyway.enabled=${MIGRATIONS_ENABLED}
+      -jar ${OSMT_JAR}"
 
-      run_cmd_with_retry "${java_cmd}"
-    fi
+    run_cmd_with_retry "${java_cmd}"
+  fi
 }
 
 function start_spring_app() {

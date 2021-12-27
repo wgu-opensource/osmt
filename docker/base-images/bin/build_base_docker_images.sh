@@ -56,11 +56,11 @@ function build() {
 }
 
 function echo_info() {
-  echo "INFO: $@"
+  echo "INFO: $*"
 }
 
 function echo_err() {
-  echo "ERROR: $@" 1>&2;
+  echo "ERROR: $*" 1>&2;
 }
 
 function main() {

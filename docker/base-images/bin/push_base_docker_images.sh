@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -u
+set -eu
 
 declare IMAGE_VERSION
 declare DOCKERHUB_USER_ID
@@ -81,11 +81,11 @@ function logout() {
 }
 
 function echo_info() {
-  echo "INFO: $@"
+  echo "INFO: $*"
 }
 
 function echo_err() {
-  echo "ERROR: $@" 1>&2;
+  echo "ERROR: $*" 1>&2;
 }
 
 function main() {

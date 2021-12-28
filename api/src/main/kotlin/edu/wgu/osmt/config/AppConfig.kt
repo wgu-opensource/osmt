@@ -38,7 +38,10 @@ class AppConfig(
     val allowPublicLists: Boolean = true,
 
     @Value("\${app.baseLineAuditLogIfEmpty}")
-    val baseLineAuditLogIfEmpty: Boolean
+    val baseLineAuditLogIfEmpty: Boolean,
+
+    @Value("\${app.api.context}")
+    val apiContext: String
 ) {
     @Autowired
     lateinit var environment: Environment

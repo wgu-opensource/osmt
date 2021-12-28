@@ -245,7 +245,9 @@ class MockData {
             "http://localhost:4200/login/success",
             true,
             true,
-            true)
+            true,
+            "https://rsd.openskillsnetwork.org/context-v1.json"
+        )
     }
 
     private fun parseDateTime(dateTime: String?): LocalDateTime? {

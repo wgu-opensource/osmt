@@ -58,7 +58,7 @@ function validate() {
   if [[ -z "${SKIP_METADATA_IMPORT}" ]]; then
     SKIP_METADATA_IMPORT=false
     echo_info "Missing environment 'SKIP_METADATA_IMPORT'"
-    echo_info "  Defaulting to SKIP_METADATA_IMPORT=${REINDEX_ELASTICSEARCH}"
+    echo_info "  Defaulting to SKIP_METADATA_IMPORT=${SKIP_METADATA_IMPORT}"
   fi
 
   if [[ -z "${FRONTEND_URL}" ]]; then

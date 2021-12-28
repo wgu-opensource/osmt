@@ -73,7 +73,7 @@ To automatically apply the official Kotlin code style, Install the IntelliJ plug
 
 
 ## Importing Skills, BLS, and O*NET
-OSMT allows importing BLS and O*NET data into it's MySQL database and Elasticsearch indexing. If you are going to import this data, you should do it before deploying the Spring Boot web application. The import process supports CSV files. See specific information for each type below.
+OSMT allows importing BLS and O*NET data into its MySQL database and Elasticsearch indexing. If you are going to import this data, you should do it before deploying the Spring Boot web application. The import process supports CSV files. See specific information for each type below.
 
 The general import sequence should be: 
 1. Batch Skills (```--import-type=batchskill```)
@@ -89,6 +89,7 @@ java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar 
 ```
 
 ### Importing BLS codes:
+BLS codes will not be duplicated if imported multiple times
 * Note - BLS codes should be imported before O*NET codes
 1. Download BLS codes in Excel format from [https://www.bls.gov/soc/2018/#materials]("https://www.bls.gov/soc/2018/#materials")
 2. Remove the content before header row. 
@@ -104,6 +105,7 @@ java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar 
     4. Save and then run the app.
 
 ### Importing O*NET
+O*NET codes will not be duplicated if imported multiple times
 * Note - BLS codes should be imported before O*NET codes
 1. Download O*NET `Occupation Data` in Excel format from [https://www.onetcenter.org/database.html#occ]("https://www.onetcenter.org/database.html#occ")
 2. Convert Excel to CSV format

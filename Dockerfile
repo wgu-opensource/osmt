@@ -16,6 +16,7 @@ RUN mvn clean install -P dockerfile-build
 ######################
 FROM wguopensource/osmt-base:latest
 
+COPY --chown=${USER}:${USER} ./import ${BASE_DIR}/import/
 COPY --from=build --chown=${USER}:${USER} ${BASE_DIR}/build/api/target/osmt-*.jar ${BASE_DIR}/bin/osmt.jar
 
 ADD ./docker/ /${BASE_DIR}/

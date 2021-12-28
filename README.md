@@ -38,7 +38,7 @@ The [API](./api/README.md) and [UI](./ui/README.md) modules have their own READM
 
 #### Quickstart Configuration
 
-The Quickstart configuration uses the `docker-compose.yml` file in the project root to stand up a non-production OSMT stack. This file builds a Docker image with Java 11 and Maven, builds the UI and API modules as a fat jar, and then stands up an application stack with the back-end dependencies (MySQL, ElasticSearch, and Redis) and a Spring application using the fat jar.
+The Quickstart configuration uses the `docker-compose.yml` file in the project root to stand up a non-production OSMT stack. This file builds a Docker image with Java 11 and Maven, builds the UI and API modules as a fat jar, and then stands up an application stack with the back-end dependencies (MySQL, ElasticSearch, and Redis) and a Spring application using the fat jar. The Quickstart configuration automatically imports BLS and O*NET job code metadata
 
 * This configuration could inform how to configure a production OSMT instance, but it is not intended for a production deployment.
 
@@ -47,17 +47,7 @@ The Quickstart configuration is deployed with a single docker-compose command. T
 1. Create file named `osmt-quickstart.env` in the project root. This file will be ignored by git.
 2. From the project root, run this command:
   - `docker-compose --env-file osmt-quickstart.env up --build`
-3. Import any skills-related data you plan to use in your Quickstart instance.
-  - Replace the content in the existing files in import folder for skills, BLS and O*NET data. __These existing files under import folder are provided for testing purpose only.__
-  - Run below commands.
-    ```
-    docker exec -it <app-container-id> /bin/bash
-    java -jar -Dspring.profiles.active=dev,import /opt/osmt/bin/osmt.jar --csv=/opt/osmt/import/BLS-Import.csv --import-type=bls
-    java -jar -Dspring.profiles.active=dev,import /opt/osmt/bin/osmt.jar --csv=/opt/osmt/import/oNet-Import.csv --import-type=onet  
-    java -Dspring.profiles.active=dev,reindex -jar /opt/osmt/bin/osmt.jar
-    ```
-  - See [Importing Skills, BLS, and O*NET](./api/README.md#importing-skills-bls-and-onet) for details.
-4. Open `http://localhost:8080` in your browser.
+3. Open `http://localhost:8080` in your browser.
 
 #### Development Configuration
 The Development configuration uses the `dev-stack.yml` docker-compose file in the `docker` directory, for standing up just the back-end dependencies and doing active development in the Spring or Angular layers.
@@ -117,6 +107,7 @@ You can use files following this pattern to store your OAuth2 secrets locally an
   MYSQL_ROOT_PASSWORD=root_password
   MIGRATIONS_ENABLED=true
   REINDEX_ELASTICSEARCH=true
+  SKIP_METADATA_IMPORT=false
 
   ELASTICSEARCH_URI=http://osmt_elasticsearch_1:9200
   REDIS_URI=osmt_redis_1:6379
@@ -192,13 +183,3 @@ See the section for [Importing Skills, BLS, and O*NET](./api/README.md#importing
 This project includes [./api/HELP.md](./api/HELP.md), with links to relevant references and tutorials.
 
 OMST is an open source project, and is supported by its community. Please look to the Discussion boards and Wiki on GitHub. Please all see the [CONTRIBUTING.md](./CONTRIBUTING.md) document for additional context.
-
-
--------------------------------------------------
-
-## Troubleshooting Instructions
-- Scenario 1
-- Scenario 2
-
-
-

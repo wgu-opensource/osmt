@@ -6,6 +6,7 @@ import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {formatDate} from "@angular/common"
 import {ITaskResult} from "../../../../task/ApiTaskResult"
 import { Observable } from "rxjs"
+import {saveAs} from "file-saver";
 
 @Component({
   selector: "app-collection-public-action-bar",

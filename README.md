@@ -14,9 +14,9 @@ OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. Any OSMT ins
 OSMT requires certain software and SDKs to build:
 * a Java 11 JDK (OpenJDK works fine)
 * Maven 3.8.3 or higher
-* NodeJS v10.16.0 / npm 6.10.2 or higher
+* NodeJS v16.13.0 / npm 8.1.0 or higher (the LTS versions at the time of this writing)
   * NodeJS/npm are used for building client code; there are no runtime NodeJS/npm dependencies.
-  * Maven uses an embedded copy of Node v10.16.0 and npm 6.10.2 (see [About frontend-maven-plugin](./ui/README.md#about-frontend-maven-plugin) in the UI README file).
+  * In the `ui` module, `frontend-maven-plugin` uses an embedded copy of Node v16.13.0 and npm 8.1.0.
   * Locally, a developer probably has their own versions of NodeJS and npm installed. They should be >= the versions given above.
 * a recent version of Docker and docker-compose
   * Recommended 4 GB memory allocated to the Docker service

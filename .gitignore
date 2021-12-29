@@ -24,4 +24,7 @@ build/
 ### VS Code ###
 .vscode/
 
+### Local nodejs downloaded for frontend-maven-plugin
+ui/node
+
 osmt*.env

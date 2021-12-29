@@ -48,6 +48,7 @@
               <goal>npm</goal>
             </goals>
             <configuration>
+              <npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
               <arguments>install</arguments>
             </configuration>
           </execution>

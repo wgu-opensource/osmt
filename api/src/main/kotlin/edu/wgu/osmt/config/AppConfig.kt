@@ -38,7 +38,10 @@ class AppConfig(
     val allowPublicLists: Boolean = true,
 
     @Value("\${app.baseLineAuditLogIfEmpty}")
-    val baseLineAuditLogIfEmpty: Boolean
+    val baseLineAuditLogIfEmpty: Boolean,
+
+    @Value("\${app.rsd-context-url}")
+    val rsdContextUrl: String
 ) {
     @Autowired
     lateinit var environment: Environment

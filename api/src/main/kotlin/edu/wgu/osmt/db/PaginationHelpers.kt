@@ -4,7 +4,6 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.*
 import org.springframework.data.domain.Sort
 import org.springframework.data.util.Streamable
-import java.lang.Error
 
 interface PaginationHelpers<T> where T : LongIdTable, T : PublishStatusUpdate<*> {
     val table: T

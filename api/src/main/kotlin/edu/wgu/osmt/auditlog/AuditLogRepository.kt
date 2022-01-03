@@ -2,22 +2,18 @@ package edu.wgu.osmt.auditlog
 
 import com.google.gson.Gson
 import edu.wgu.osmt.api.model.SkillSortEnum
-import edu.wgu.osmt.api.model.SortOrder as SortOrder
+import edu.wgu.osmt.api.model.SortOrder
 import edu.wgu.osmt.api.model.SortOrderCompanion
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.sortAdapter
 import edu.wgu.osmt.elasticsearch.OffsetPageable
-import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.SizedIterable
-import org.jetbrains.exposed.sql.SortOrder as ExposedSortOrder
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
-import org.springframework.data.util.Streamable
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 

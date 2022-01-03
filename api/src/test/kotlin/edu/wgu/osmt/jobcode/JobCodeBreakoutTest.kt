@@ -1,6 +1,5 @@
 package edu.wgu.osmt.jobcode
 
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 internal class JobCodeBreakoutTest {

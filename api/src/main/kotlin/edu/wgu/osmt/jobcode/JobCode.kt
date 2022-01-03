@@ -1,7 +1,6 @@
 package edu.wgu.osmt.jobcode
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import edu.wgu.osmt.csv.HasCodeHierarchy
 import edu.wgu.osmt.db.DatabaseData
 import org.elasticsearch.common.Nullable
 import org.springframework.data.elasticsearch.annotations.*
@@ -17,7 +16,7 @@ data class JobCode(
     override val id: Long?,
 
     @JsonIgnore
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     override val creationDate: LocalDateTime,
 
     @MultiField(

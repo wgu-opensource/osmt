@@ -2,7 +2,6 @@ package edu.wgu.osmt.elasticsearch
 
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
-import java.lang.IllegalArgumentException
 
 class OffsetPageable(offset: Int, limit: Int, private val sort: Sort?) : Pageable {
     val offset: Int
@@ -49,6 +48,10 @@ class OffsetPageable(offset: Int, limit: Int, private val sort: Sort?) : Pageabl
 
     override fun first(): Pageable {
         return OffsetPageable(pageSize, 0, getSort())
+    }
+
+    override fun withPage(pageNumber: Int): Pageable {
+        return OffsetPageable(pageSize, pageNumber * pageSize, getSort())
     }
 
     override fun previousOrFirst(): Pageable {

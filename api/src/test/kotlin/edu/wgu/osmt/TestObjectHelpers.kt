@@ -6,8 +6,8 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import org.assertj.core.api.Assertions.assertThat
 import edu.wgu.osmt.richskill.RichSkillDoc
+import org.assertj.core.api.Assertions.assertThat
 import java.security.SecureRandom
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -118,9 +118,13 @@ object TestObjectHelpers {
     }
 
     fun keywordsGenerator(n: Int, type: KeywordTypeEnum): List<Keyword> {
-        val keywords = (0..n).toList().map {
+        val keywords = (1..n).toList().map {
             val chars = "abcdefghijklmnopqrstuvwxyz"
-            val word = Random().ints(10, 0, chars.length).asSequence().map(chars::get).joinToString("").capitalize()
+            val word = Random().ints(5, 0, chars.length)
+                .asSequence()
+                .map(chars::get)
+                .joinToString("")
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
             keyword(word, type)
         }
         return keywords

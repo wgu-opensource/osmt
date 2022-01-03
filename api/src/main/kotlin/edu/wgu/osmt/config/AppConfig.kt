@@ -40,8 +40,8 @@ class AppConfig(
     @Value("\${app.baseLineAuditLogIfEmpty}")
     val baseLineAuditLogIfEmpty: Boolean,
 
-    @Value("\${app.api.context}")
-    val apiContext: String
+    @Value("\${app.rsd-context-url}")
+    val rsdContextUrl: String
 ) {
     @Autowired
     lateinit var environment: Environment

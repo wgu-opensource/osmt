@@ -18,7 +18,7 @@ class ApiCollection(private val collection: Collection, private val ss: List<Ric
         get() = collection.canonicalUrl(appConfig.baseUrl)
 
     @JsonProperty("@context")
-    val context = appConfig.apiContext
+    val context = appConfig.rsdContextUrl
 
     @JsonProperty
     val `type` = "RichSkillCollection"

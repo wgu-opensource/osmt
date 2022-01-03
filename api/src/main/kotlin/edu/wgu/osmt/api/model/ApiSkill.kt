@@ -15,7 +15,7 @@ import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collection>, private val appConfig: AppConfig) {
 
     @JsonProperty("@context")
-    val context = appConfig.apiContext
+    val context = appConfig.rsdContextUrl
 
 
     @JsonProperty

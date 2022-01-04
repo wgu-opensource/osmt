@@ -1,7 +1,6 @@
-FROM centos:centos8.3.2011
+FROM centos:centos8.3.2011 as osmt-base
 
 LABEL Maintainer="WGU / OSN"
-LABEL Version="1.0"
 
 ENV JAVA_HOME=/etc/alternatives/jre
 ENV USER=osmt

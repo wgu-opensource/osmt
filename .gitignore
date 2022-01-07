@@ -27,4 +27,4 @@ build/
 ### Local nodejs downloaded for frontend-maven-plugin
 ui/node
 
-____osmt-quickstart.env
+osmt-quickstart.env

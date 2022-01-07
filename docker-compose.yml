@@ -1,4 +1,4 @@
-# A dockerized stack for development
+# A dockerized stack for the non-production Quickstart configuration
 version: '3.3'
 services:
   app:

@@ -37,11 +37,13 @@ Usage:
 Use this workflow to help bootstrap a local Quickstart OSMT instance (you can see more in the [Quickstart Configuration](#quickstart-configuration) section).
 *  A Quickstart OSMT instance should be for demo purposes only. The data is stored on a Docker volume, on the same computer where you started the Quickstart. You should consider this data to be temporary. If you create RSDs or Collections, you should export them before shutting down the Quickstart. Please use a deployed OSMT instance when making any real investment in effort for building skills.
 
-1. Initialize your environment files. After running this, update the OAUTH2/OIDC values in the env files (replace the `xxxxxx` values with the correct values from your OAUTH 2/OIDC provider)
+1. Obtain a "free developer" Okta account. This is required to log in to a local OSMT. Please follow the steps in [OAuth2 and Okta Configuration](#oauth2-and-okta-configuration) below, and return here when complete.
+
+2. Initialize your environment files. After running this, update the OAUTH2/OIDC values in the env files (replace the `xxxxxx` values with the correct values from your Okta account)
     ```
     osmt_dev.sh -i
     ``` 
-2. Validate your local environment (for Docker, Java, and other SDKs / runtimes). If this command reports error, you will need to resolve them before running the Quickstart configuration. See more in the [Requirements to Build OSMT](#requirements-to-build-osmt) section
+3. Validate your local environment (for Docker, Java, and other SDKs / runtimes). If this command reports error, you will need to resolve them before running the Quickstart configuration. See more in the [Requirements to Build OSMT](#requirements-to-build-osmt) section
     ```
     osmt_dev.sh -v
     ```

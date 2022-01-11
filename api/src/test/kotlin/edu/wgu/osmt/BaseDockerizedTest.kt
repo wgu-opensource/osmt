@@ -17,13 +17,12 @@ interface BaseDockerizedTest {
             val redisPort = Containers.redisContainer.getMappedPort(6379)
             val elasticPort = Containers.elasticContainer.getMappedPort(9200)
             val mySqlPort = Containers.mysqlContainer.getMappedPort(3306)
-            println("Redis port")
             registry.add(
                 "db.uri",
                 { "root:password@${Containers.mysqlContainer.host}:${mySqlPort}" })
             registry.add(
-                "redis.uri",
-                { "${Containers.redisContainer.host}:${redisPort}" })
+                "spring.redis.url",
+                { "redis://${Containers.redisContainer.host}:${redisPort}/0" })
             registry.add(
                 "es.uri",
                 { "${Containers.elasticContainer.host}:${elasticPort}" })

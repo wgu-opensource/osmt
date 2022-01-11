@@ -12,17 +12,15 @@ import org.springframework.data.redis.serializer.StringRedisSerializer
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer
 import org.springframework.session.data.redis.config.ConfigureRedisAction
-
-
-
+import java.net.URI
 
 
 @Configuration
 @EnableRedisHttpSession
 class RedisConfig: AbstractHttpSessionApplicationInitializer(){
 
-    @Value("\${redis.uri}")
-    lateinit var redisUri: String
+    @Value("\${spring.redis.url}")
+    lateinit var redisUrl: String
 
     @Bean
     fun configureRedisAction(): ConfigureRedisAction {
@@ -31,10 +29,11 @@ class RedisConfig: AbstractHttpSessionApplicationInitializer(){
 
     @Bean
     fun redisConnectionFactory(): LettuceConnectionFactory {
-        val redisHost = redisUri.split(":")[0]
-        val (redisPort, redisDB) = redisUri.split(":")[1].split("/")
+        val parsedUri = URI(redisUrl)
+        val redisDb = if (parsedUri.path.isNotEmpty()) parsedUri.path.toInt() else 0
 
-        val redisStandaloneConfiguration = RedisStandaloneConfiguration(redisHost, redisPort.toInt()).WithDatabaseIndex(redisDB.toInt())
+        val redisStandaloneConfiguration = RedisStandaloneConfiguration(parsedUri.host, parsedUri.port)
+        redisStandaloneConfiguration.database = redisDb
         return LettuceConnectionFactory(redisStandaloneConfiguration)
     }
 

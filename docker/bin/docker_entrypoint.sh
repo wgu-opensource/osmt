@@ -109,7 +109,7 @@ function reindex_elasticsearch() {
     echo_info "Building initial index in OSMT ElasticSearch using ${reindex_profile_string} Spring profiles..."
     java_cmd="/bin/java
       -Dspring.profiles.active=${reindex_profile_string}
-      -Dredis.uri=${REDIS_URI}
+      -Dspring.redis.url=${REDIS_URI}
       -Ddb.uri=${DB_URI}
       -Des.uri=${ELASTICSEARCH_URI}
       -Dspring.flyway.enabled=${MIGRATIONS_ENABLED}
@@ -124,7 +124,7 @@ function start_spring_app() {
       -Dspring.profiles.active=${ENVIRONMENT}
       -Dapp.baseDomain=${BASE_DOMAIN}
       -Dapp.frontendUrl=${FRONTEND_URL}
-      -Dredis.uri=${REDIS_URI}
+      -Dspring.redis.url=redis://${REDIS_URI}
       -Ddb.uri=${DB_URI}
       -Des.uri=${ELASTICSEARCH_URI}
       -Dokta.oauth2.issuer=${OAUTH_ISSUER}

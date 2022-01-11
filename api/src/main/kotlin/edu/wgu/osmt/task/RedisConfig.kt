@@ -31,9 +31,10 @@ class RedisConfig: AbstractHttpSessionApplicationInitializer(){
 
     @Bean
     fun redisConnectionFactory(): LettuceConnectionFactory {
-        val (redisHost, redisPort) = redisUri.split(":")
+        val redisHost = redisUri.split(":")[0]
+        val (redisPort, redisDB) = redisUri.split(":")[1].split("/")
 
-        val redisStandaloneConfiguration = RedisStandaloneConfiguration(redisHost, redisPort.toInt())
+        val redisStandaloneConfiguration = RedisStandaloneConfiguration(redisHost, redisPort.toInt()).WithDatabaseIndex(redisDB.toInt())
         return LettuceConnectionFactory(redisStandaloneConfiguration)
     }
 

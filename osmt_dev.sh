@@ -6,11 +6,14 @@ set -u
 declare debug=${DEBUG:-0}
 declare quickstart_env_file
 declare dev_env_file
+# new line formatted to indent with echo_err / echo_info etc
+declare -r indent="       "
+declare -r nl="\n${indent}"
 
 _get_osmt_project_dir() {
   local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
   if [[ -z "${project_dir}" ]]; then
-    echo_err "Shell commands should be run from the directory context of the osmt git repo. Exiting..."
+    echo_err "Shell commands should be run from the directory context of the osmt git repo."
     return 1
   fi
 
@@ -20,7 +23,7 @@ _get_osmt_project_dir() {
 _cd_osmt_project_dir() {
   local project_dir; project_dir="$(_get_osmt_project_dir)"
   if [[ ! -d "${project_dir}" ||  ! -r "${project_dir}" ]]; then
-    echo_err "Can not change directory to ${project_dir}. Exiting..."
+    echo_err "Can not change directory to ${project_dir}."
     return 1
   else
     echo_info "Changing directory to OSMT project root (${project_dir})"
@@ -30,7 +33,7 @@ _cd_osmt_project_dir() {
 
 _source_osmt_dev_env_file() {
   if [[ ! -f "${dev_env_file}" ||  ! -r "${dev_env_file}" ]]; then
-    echo_err "Can not access ${dev_env_file}. Exiting..."
+    echo_err "Can not access ${dev_env_file}. You can initialize the environment files by running $(basename "${0}") -i$"
     return 1
   fi
 
@@ -44,7 +47,7 @@ _source_osmt_dev_env_file() {
 }
 
 _report_os() {
-  echo_info "Reporting operating system information"
+  echo_info "Reporting operating system information..."
   uname -a
 }
 
@@ -146,7 +149,7 @@ _validate_osmt_dev_dependencies() {
   local -i is_dependency_valid=0
   _validate_java_version || is_dependency_valid+=1
   echo
-  echo_info "Maven version:$(mvn --version)"
+  echo_info "Maven version: $(mvn --version)"
 
   echo
   echo_info "NodeJS version: $(node --version)"
@@ -160,15 +163,21 @@ _validate_osmt_dev_dependencies() {
 }
 
 _validate_osmt_quickstart_env_file() {
-  _validate_env_file "${quickstart_env_file}" || return 1
+  _validate_env_file "Quickstart" "${quickstart_env_file}" || return 1
 }
 
 _validate_osmt_dev_env_file() {
-  _validate_env_file "${dev_env_file}" || return 1
+  _validate_env_file "Development" "${dev_env_file}" || return 1
 }
 
 _validate_env_file() {
-  local env_file="${1}"
+  local env_name="${1}"
+  local env_file="${2}"
+
+  if [[ ! -f "${env_file}" ]]; then
+    echo_err "Can not access ${dev_env_file}. You can initialize the environment files by running $(basename "${0}") -i$"
+    return 1
+  fi
 
   echo_info "Checking ${env_file} for invalid default values (xxxxxx)"
   if grep -q "xxxxxx" "${env_file}"; then
@@ -190,15 +199,16 @@ _validate_osmt_dev_docker_stack() {
 _init_osmt_env_file() {
   local env_name="${1}"
   local env_file="${2}"
-  local indent="       "
   echo
   echo_info "Initializing ${env_name} env file..."
   if [[ -f "${env_file}" ]]; then
-    echo_err "Env file ${env_file} already exists.\n${indent}Please remove if you want to retry. Make a note of any OAUTH2 values before deleting the file."
+    echo_err "Env file ${env_file} already exists.${nl}Please remove if you want to retry. Make a note of any OAUTH2 values before deleting the file."
     return 1
   else
     cp "${env_file}.example" "${env_file}"
-    echo_info "Created ${env_file}.\n${indent}This file is ignored by git, and will not be added to git commits. You will need to populate \n${indent}the OAUTH2/OIDC values, following guidance in the 'OAuth2 and Okta Configuration' section of the project README.md."
+    echo_info "Created ${env_file}.${nl}This file is ignored by git, and will not be added to git commits. Replace the 'xxxxxx' values in ${nl}${env_file} with your OAUTH2/OIDC values, shown below.${nl}Follow guidance in the 'OAuth2 and Okta Configuration' section of the project README.md."
+    echo
+    grep xxxxxx "${env_file}"
   fi
 }
 
@@ -228,12 +238,12 @@ validate_osmt_environment() {
 start_osmt_dev_docker_stack() {
   local -i rc
   _cd_osmt_project_dir
-  echo_info "Starting OSMT dev Docker stack"
+  echo_info "Starting OSMT Development Docker stack. You can stop it with $(basename "${0}") -e"
   cd docker || return 1
   docker-compose --file dev-stack.yml -p osmt_dev up --detach
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "Starting OSMT dev Docker stack failed. Exiting..."
+    echo_err "Starting OSMT Development Docker stack failed. Exiting..."
     return 1
   fi
 }
@@ -241,19 +251,19 @@ start_osmt_dev_docker_stack() {
 stop_osmt_dev_docker_stack() {
   local -i rc
   _cd_osmt_project_dir
-  echo_info "Stopping OSMT dev Docker stack"
+  echo_info "Stopping OSMT Development Docker stack"
   cd docker || return 1
   docker-compose --file dev-stack.yml -p osmt_dev down
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "Stopping OSMT dev Docker stack failed. Exiting..."
+    echo_err "Stopping OSMT Development Docker stack failed. Exiting..."
     return 1
   fi
 }
 
 start_osmt_quickstart() {
   local -i rc
-  _cd_osmt_project_dir
+  _cd_osmt_project_dir || return 1
   _validate_osmt_dev_dependencies
   rc=$?
   if [[ $rc -ne 0 ]]; then
@@ -269,17 +279,10 @@ start_osmt_quickstart() {
   fi
 
   echo_info "Starting OSMT Quickstart with docker-compose using osmt-quickstart.env"
-  docker-compose --env-file "${quickstart_env_file}" up --detach
-}
-
-stop_osmt_quickstart() {
-  local -i rc
-  _cd_osmt_project_dir
-  echo_info "Stopping OSMT Quickstart"
-  docker-compose --env-file "${quickstart_env_file}" down
+  docker-compose --env-file "${quickstart_env_file}" up
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "Stopping OSMT Quickstart failed. Exiting..."
+    echo_err "Starting OSMT Quickstart Docker stack failed. Exiting..."
     return 1
   fi
 }
@@ -293,8 +296,8 @@ import_osmt_dev_metadata() {
     return 1
   fi
 
-  _cd_osmt_project_dir
-  _source_osmt_dev_env_file
+  _cd_osmt_project_dir || return 1
+  _source_osmt_dev_env_file || return 1
 
   local project_dir; project_dir="$(_get_osmt_project_dir)"
 
@@ -328,8 +331,8 @@ start_osmt_dev_spring_app() {
     return 1
   fi
 
-  _cd_osmt_project_dir
-  _source_osmt_dev_env_file
+  _cd_osmt_project_dir || return 1
+  _source_osmt_dev_env_file || return 1
   echo
   echo_info "Starting OSMT via Maven Spring Boot plug-in (Maven log output suppressed)..."
   local project_dir; project_dir="$(_get_osmt_project_dir)"
@@ -345,9 +348,25 @@ start_osmt_dev_spring_app() {
 }
 
 cleanup_osmt_docker_artifacts() {
+  local prompt_msg; prompt_msg="$(cat <<-EOF
+${indent}Do you want to clean up OSMT-related Docker images and volumes?
+${indent}This step will delete data from local OSMT Quickstart and Development configurations.
+
+${indent}Please answer 'y' to proceed?
+EOF
+  )"
+  while true; do
+      echo_warn "Attention:"
+      read -p "${prompt_msg}" yn
+      case $yn in
+          [Yy]* ) _remove_osmt_docker_artifacts; break;;
+          * ) echo_info "Cancelling..."; exit;;
+      esac
+  done
+}
+_remove_osmt_docker_artifacts() {
   echo_info "Stopping OSMT-related Docker containers..."
   stop_osmt_dev_docker_stack
-  stop_osmt_quickstart
 
   echo_info "Removing OSMT-related Docker images..."
   docker images -q --filter=reference='osmt_*' | xargs docker rmi
@@ -375,22 +394,22 @@ echo_debug() {
 usage() {
   local help_msg; help_msg="$(cat <<-'EOF'
 Usage:
-  $(basename ${0}) [accepts a single option]
+  osmt_dev.sh [accepts a single option]
 
   -i   Initialize environment files for Quickstart and Development configurations.
   -v   Validate local environment and dependencies for development.
   -q   Start the Quickstart configuration. Application and services are containerized and
-       managed by docker-compose. docker-compose stack will be detached, with containers
-       named "osmt_dev_". You can review status with 'docker ps'
-  -r   Stop the detached Quickstart configuration
+       managed by docker-compose. The docker-compose stack will attach to the console, with containers
+       named "osmt_".
   -d   Start the backend Development Docker stack (MySQL, ElasticSearch, Redis). docker-compose stack will
        be detached, with containers named "osmt_dev_". You can review status with 'docker ps'
   -e   Stop the detached backend Development Docker stack (MySQL, ElasticSearch, Redis).
   -s   Start the local Spring app, as built from source code. This also sources the api/osmt-dev-stack.env file
        for OAUTH2-related environment variables.
   -m   Import default BLS and O*NET metadata into local Development instance
-  -c   Surgically clean up OSMT-related Docker artifacts. It does not remove the mysql/redis/elasticsearch images,
-       as those may be available locally for other purposes.
+  -c   Surgically clean up OSMT-related Docker images and data volumes. This step will delete data from local OSMT
+       Quickstart and Development configurations. It does not remove the mysql/redis/elasticsearch images, as
+       those may be available locally for other purposes.
   -h   Show this help message.
 
 EOF
@@ -417,7 +436,7 @@ if [[ $# == 0 ]]; then
   exit 135
 fi
 
-while getopts "ivqrdesmch" flag; do
+while getopts "ivqdesmch" flag; do
   case "${flag}" in
     i)
       init_osmt_env_files || exit 135
@@ -429,10 +448,6 @@ while getopts "ivqrdesmch" flag; do
       ;;
     q)
       start_osmt_quickstart || exit 135
-      exit 0
-      ;;
-    r)
-      stop_osmt_quickstart || exit 135
       exit 0
       ;;
     d)

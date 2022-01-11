@@ -84,9 +84,9 @@ Use this workflow to help bootstrap a local Quickstart OSMT instance (you can se
 
 #### Housekeeping with `osmt_dev.sh`
 You can surgically clean up OSMT-related Docker images and data volumes. This step **will** delete data from local OSMT Quickstart and Development configurations. It does not remove the mysql/redis/elasticsearch images, as those may be available locally for other purposes.
-    ```
-    osmt_dev.sh -c
-    ```
+```
+osmt_dev.sh -c
+```
 
 ### Requirements to Build OSMT Locally
 OSMT requires certain software and SDKs to build:

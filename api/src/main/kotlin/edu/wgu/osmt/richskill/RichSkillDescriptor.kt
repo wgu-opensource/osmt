@@ -1,22 +1,22 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.auditlog.*
+import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.collection.CollectionDao
+import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.db.*
 import edu.wgu.osmt.jobcode.JobCode
+import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.Keyword
+import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordTypeEnum
+import edu.wgu.osmt.nullIfEmpty
 import org.valiktor.functions.isEqualTo
+import org.valiktor.functions.validate
 import org.valiktor.validate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import org.valiktor.functions.validate
 import java.util.*
-import edu.wgu.osmt.collection.CollectionDao
-import edu.wgu.osmt.collection.Collection
-import edu.wgu.osmt.collection.CollectionSkills
-import edu.wgu.osmt.jobcode.JobCodeDao
-import edu.wgu.osmt.keyword.KeywordDao
-import edu.wgu.osmt.nullIfEmpty
 import kotlin.reflect.KProperty1
 
 data class RichSkillDescriptor(

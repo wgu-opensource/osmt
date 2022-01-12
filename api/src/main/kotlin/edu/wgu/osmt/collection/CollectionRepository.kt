@@ -7,17 +7,13 @@ import edu.wgu.osmt.api.model.ApiCollectionUpdate
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
+import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.auditlog.Change
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
-import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.richskill.RichSkillEsRepo
-import edu.wgu.osmt.richskill.RichSkillDescriptorDao
-import edu.wgu.osmt.richskill.RichSkillRepository
-import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.*
 import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
@@ -298,8 +294,8 @@ class CollectionRepositoryImpl @Autowired constructor(
         val collectionDao = this.findByUUID(collectionUuid)
         val collectionId = collectionDao!!.id.value
 
-        var modifiedSkillDaos = mutableListOf<RichSkillDescriptorDao>()
-        var modifiedSkillOriginals = mutableMapOf<String, RichSkillDescriptor>()
+        val modifiedSkillDaos = mutableListOf<RichSkillDescriptorDao>()
+        val modifiedSkillOriginals = mutableMapOf<String, RichSkillDescriptor>()
 
         //process additions
         fun addSkillDao(skillDao: RichSkillDescriptorDao?) {

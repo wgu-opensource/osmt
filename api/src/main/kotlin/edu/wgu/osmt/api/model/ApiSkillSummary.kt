@@ -6,10 +6,7 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.richskill.RichSkillDescriptor
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillDoc
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
-import java.util.*
 
 class ApiSkillSummary(
     @JsonProperty val id: String,

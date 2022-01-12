@@ -9,7 +9,7 @@ import edu.wgu.osmt.jobcode.JobCodeBreakout
 class RichSkillCsvExport(
     private val appConfig: AppConfig
 ): CsvResource<RichSkillAndCollections>("RichSkillCsvExport") {
-    val listDelimeter = "; "
+    val listDelimiter = "; "
 
     override fun columnTranslations(data: List<RichSkillAndCollections>): Array<CsvColumn<RichSkillAndCollections>> {
         val columns = arrayOf(
@@ -18,17 +18,17 @@ class RichSkillCsvExport(
             CsvColumn("Author") { it.rs.author?.value ?: "" },
             CsvColumn("Skill Statement") { it.rs.statement },
             CsvColumn("Category") { it.rs.category?.value ?: "" },
-            CsvColumn("Keywords") { it.rs.searchingKeywords.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },
-            CsvColumn("Standards") { it.rs.standards.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },
-            CsvColumn("Certifications") { it.rs.certifications.map { keyword -> keyword.value ?: "" }.joinToString(listDelimeter) },
+            CsvColumn("Keywords") { it.rs.searchingKeywords.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) },
+            CsvColumn("Standards") { it.rs.standards.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) },
+            CsvColumn("Certifications") { it.rs.certifications.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) },
             CsvColumn("Occupation Major Groups") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::majorCode) },
             CsvColumn("Occupation Minor Groups") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::minorCode) },
             CsvColumn("Broad Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::broadCode) },
             CsvColumn("Detailed Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::detailedCode) },
             CsvColumn("O*Net Job Codes") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::jobRoleCode) },
-            CsvColumn("Employers") { it.rs.employers.map {keyword -> keyword.value ?: ""}.joinToString(listDelimeter) }
+            CsvColumn("Employers") { it.rs.employers.map {keyword -> keyword.value ?: ""}.joinToString(listDelimiter) }
         )
-        val alignmentCount = data.map { s -> s.rs.alignments.size }.max() ?: 0
+        val alignmentCount = data.map { s -> s.rs.alignments.size }.maxOrNull() ?: 0
         val alignmentColumns = (0 until alignmentCount).flatMap { i ->
             val label = if (i > 0) " ${i+1}" else ""
             listOf(
@@ -49,6 +49,6 @@ class RichSkillCsvExport(
             .map(partTransformation)
             .filterNotNull()
             .distinct()
-            .joinToString(listDelimeter)
+            .joinToString(listDelimiter)
 
     }

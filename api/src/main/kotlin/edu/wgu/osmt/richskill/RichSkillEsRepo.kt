@@ -207,10 +207,14 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     ): SearchHits<RichSkillDoc> {
         val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
         val bq = boolQuery()
-        val filter = BoolQueryBuilder().must(termsQuery(RichSkillDoc::publishStatus.name, publishStatus))
 
         nsq.withQuery(bq)
-        nsq.withFilter(filter)
+        nsq.withFilter(BoolQueryBuilder().must(
+            termsQuery(
+                RichSkillDoc::publishStatus.name,
+                publishStatus.map { ps -> ps.toString() }
+            )
+        ))
 
         // treat the presence of query property to mean multi field search with that term
         if (!apiSearch.query.isNullOrBlank()) {

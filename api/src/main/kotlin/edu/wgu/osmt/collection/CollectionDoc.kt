@@ -61,12 +61,11 @@ data class CollectionDoc(
     @get:JsonIgnore
     val author: String?,
 
-
-    @Field(type = Date, format = DateFormat.date_time)
+    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     @get:JsonProperty("archiveDate")
     val archiveDate: LocalDateTime? = null,
 
-    @Field(type = Date, format = DateFormat.date_time)
+    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     @get:JsonProperty("publishDate")
     val publishDate: LocalDateTime? = null
 )

@@ -2,7 +2,9 @@ package edu.wgu.osmt.collection
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
 import edu.wgu.osmt.richskill.RichSkillRepository
-import edu.wgu.osmt.task.*
+import edu.wgu.osmt.task.TaskMessageService
+import edu.wgu.osmt.task.TaskStatus
+import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

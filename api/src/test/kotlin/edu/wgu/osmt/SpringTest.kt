@@ -1,14 +1,14 @@
 package edu.wgu.osmt
 
 import edu.wgu.osmt.auditlog.AuditLogTable
+import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.collection.CollectionTable
-import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordTable
-import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillDescriptorTable
+import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillJobCodes
 import edu.wgu.osmt.richskill.RichSkillKeywords
 import org.jetbrains.exposed.sql.deleteAll

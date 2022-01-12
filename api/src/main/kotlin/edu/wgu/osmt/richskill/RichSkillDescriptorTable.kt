@@ -1,14 +1,13 @@
 package edu.wgu.osmt.richskill
 
-import edu.wgu.osmt.db.TableWithUpdate
 import edu.wgu.osmt.db.PublishStatusUpdate
+import edu.wgu.osmt.db.TableWithUpdate
 import edu.wgu.osmt.jobcode.JobCodeTable
 import edu.wgu.osmt.keyword.KeywordTable
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.`java-time`.datetime
-import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.time.LocalDateTime
 
 

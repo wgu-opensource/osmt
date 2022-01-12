@@ -11,7 +11,6 @@ import edu.wgu.osmt.collection.CollectionUpdateObject
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.jobcode.CustomJobCodeRepository
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
@@ -316,25 +315,31 @@ class AuditLogRepositoryTest @Autowired constructor(
 
     @Test
     fun `generates rich skill audit log for collection name changes`() {
+        // Arrange
         val initialCollectionName = "test collection"
         val updatedCollectionName = "updated collection"
+        val expected = Change("name", initialCollectionName, updatedCollectionName)
+
         val initialSkill =
             richSkillRepository.create(RsdUpdateObject(name = "initial skill", statement = "test statement"), testUser)
 
         val initialCollectionUpdate =
             CollectionUpdateObject(name = initialCollectionName, skills = ListFieldUpdate(add = listOf(initialSkill!!)))
 
+        // Act
         val collectionDao = collectionRepository.create(initialCollectionUpdate, testUser)
 
         val collectionUpdate = CollectionUpdateObject(id = collectionDao?.id?.value, name = updatedCollectionName)
         collectionRepository.update(collectionUpdate, testUser)
 
-        val richSkillUpdateLogs =
-            auditLogRepository.findByTableAndId(RichSkillDescriptorTable.tableName, initialSkill.id.value)
-                .find { it.operationType == AuditOperationType.Update.name }?.toModel()
+        val auditLogResults =
+            collectionDao?.id?.let {
+                auditLogRepository.findByTableAndId(CollectionTable.tableName, it.value)
+                    .find { it.operationType == AuditOperationType.Update.name }?.toModel()
+            }
 
-        assertThat(richSkillUpdateLogs?.changedFields?.findByFieldName(RichSkillDescriptor::collections.name)).isEqualTo(
-            Change(RichSkillDescriptor::collections.name, initialCollectionName, updatedCollectionName)
-        )
+        // Assert
+        val actual = auditLogResults?.changedFields?.first()
+        assertThat(actual).isEqualTo(expected)
     }
 }

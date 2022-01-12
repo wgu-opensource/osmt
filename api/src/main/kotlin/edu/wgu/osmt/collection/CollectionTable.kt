@@ -8,7 +8,6 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.`java-time`.datetime
-import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.time.LocalDateTime
 
 object CollectionTable: TableWithUpdate<CollectionUpdateObject>, PublishStatusUpdate<CollectionUpdateObject>, LongIdTable("Collection") {

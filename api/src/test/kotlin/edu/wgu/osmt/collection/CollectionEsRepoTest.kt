@@ -9,7 +9,6 @@ import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.richskill.QuotedSearchHelpers
-import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat

@@ -4,8 +4,8 @@ import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
-import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillDoc
+import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.apache.lucene.search.join.ScoreMode
 import org.elasticsearch.index.query.*
 import org.springframework.beans.factory.annotation.Autowired

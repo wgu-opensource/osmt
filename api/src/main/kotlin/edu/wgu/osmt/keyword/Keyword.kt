@@ -1,13 +1,13 @@
 package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.db.*
+import org.elasticsearch.common.Nullable
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.`java-time`.datetime
-import java.time.LocalDateTime
-import org.elasticsearch.common.Nullable
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.*
+import java.time.LocalDateTime
 
 @Document(indexName = "keyword", createIndex = true)
 @Setting(settingPath = "/elasticsearch/settings.json")
@@ -16,10 +16,10 @@ data class Keyword(
     @Nullable
     override val id: Long?,
 
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     override val creationDate: LocalDateTime,
 
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     override val updateDate: LocalDateTime,
 
     @Field(type = FieldType.Keyword)

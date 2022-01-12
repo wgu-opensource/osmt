@@ -2,10 +2,10 @@ package edu.wgu.osmt.api.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
-import edu.wgu.osmt.collection.Collection
 
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)

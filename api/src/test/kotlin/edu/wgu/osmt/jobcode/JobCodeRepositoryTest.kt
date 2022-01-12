@@ -1,6 +1,9 @@
 package edu.wgu.osmt.jobcode
 
-import edu.wgu.osmt.*
+import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.HasDatabaseReset
+import edu.wgu.osmt.HasElasticsearchReset
+import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.richskill.RichSkillEsRepo

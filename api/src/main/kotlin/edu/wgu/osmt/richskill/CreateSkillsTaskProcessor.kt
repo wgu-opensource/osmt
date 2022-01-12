@@ -1,10 +1,10 @@
 package edu.wgu.osmt.richskill
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
-import edu.wgu.osmt.api.model.ApiSkill
-import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.task.*
+import edu.wgu.osmt.task.CreateSkillsTask
+import edu.wgu.osmt.task.TaskMessageService
+import edu.wgu.osmt.task.TaskStatus
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

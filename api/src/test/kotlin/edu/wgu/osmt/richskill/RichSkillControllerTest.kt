@@ -1,6 +1,9 @@
 package edu.wgu.osmt.richskill
 
-import edu.wgu.osmt.*
+import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.HasDatabaseReset
+import edu.wgu.osmt.HasElasticsearchReset
+import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.csv.BatchImportRichSkill

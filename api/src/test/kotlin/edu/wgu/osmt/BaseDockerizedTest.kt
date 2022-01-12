@@ -1,6 +1,5 @@
 package edu.wgu.osmt
 
-import org.slf4j.Logger
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.GenericContainer

@@ -3,7 +3,6 @@ package edu.wgu.osmt.csv
 import com.opencsv.CSVWriter
 import java.io.StringWriter
 import java.io.Writer
-import java.lang.RuntimeException
 
 abstract class CsvResource<T>(val debugName: String) {
 

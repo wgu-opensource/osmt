@@ -1,7 +1,5 @@
 package edu.wgu.osmt.csv
 
-import com.opencsv.CSVWriter
-
 /**
  * DSL style entry-point to build a CsvResource.  This approach should be used if a csv file is simple in structure
  * and can be defined inline where it's used, rather than as a top level type definition.

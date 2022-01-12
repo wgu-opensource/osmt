@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.config.AppConfig
-import org.elasticsearch.common.Nullable
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.KeywordTypeEnum
+import org.elasticsearch.common.Nullable
 import org.elasticsearch.index.VersionType
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.*
@@ -152,11 +152,11 @@ data class RichSkillDoc(
     @get:JsonIgnore
     val collections: List<CollectionDoc> = listOf(),
 
-    @Field(type = Date, format = DateFormat.date_time)
+    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     @get:JsonProperty("publishDate")
     val publishDate: LocalDateTime? = null,
 
-    @Field(type = Date, format = DateFormat.date_time)
+    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     @get:JsonProperty("archiveDate")
     val archiveDate: LocalDateTime? = null
 ) {

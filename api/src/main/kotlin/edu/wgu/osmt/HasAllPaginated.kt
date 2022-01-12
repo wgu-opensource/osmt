@@ -3,7 +3,9 @@ package edu.wgu.osmt
 import edu.wgu.osmt.api.model.SortOrder
 import edu.wgu.osmt.api.model.SortOrderCompanion
 import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.elasticsearch.*
+import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
+import edu.wgu.osmt.elasticsearch.OffsetPageable
+import edu.wgu.osmt.elasticsearch.PaginatedLinks
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity

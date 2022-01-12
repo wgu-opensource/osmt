@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 
 class FormValidationException(override val message: String, val errors:List<ApiFieldError>): Exception(message)

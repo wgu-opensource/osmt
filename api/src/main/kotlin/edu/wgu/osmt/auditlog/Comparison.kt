@@ -1,6 +1,6 @@
 package edu.wgu.osmt.auditlog
 
-import kotlin.reflect.*
+import kotlin.reflect.KFunction1
 
 const val DELIMITER = "; "
 

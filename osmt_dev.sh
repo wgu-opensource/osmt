@@ -174,6 +174,7 @@ _validate_env_file() {
   local env_name="${1}"
   local env_file="${2}"
 
+  echo
   if [[ ! -f "${env_file}" ]]; then
     echo_err "Can not access ${dev_env_file}. You can initialize the environment files by running $(basename "${0}") -i$"
     return 1
@@ -238,6 +239,7 @@ validate_osmt_environment() {
 start_osmt_dev_docker_stack() {
   local -i rc
   _cd_osmt_project_dir
+  echo
   echo_info "Starting OSMT Development Docker stack. You can stop it with $(basename "${0}") -e"
   cd docker || return 1
   docker-compose --file dev-stack.yml -p osmt_dev up --detach
@@ -264,7 +266,7 @@ stop_osmt_dev_docker_stack() {
 start_osmt_quickstart() {
   local -i rc
   _cd_osmt_project_dir || return 1
-  _validate_osmt_dev_dependencies
+  _validate_docker_version
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Aborting OSMT Quickstart. Exiting..."
@@ -278,6 +280,7 @@ start_osmt_quickstart() {
     return 1
   fi
 
+  echo
   echo_info "Starting OSMT Quickstart with docker-compose using osmt-quickstart.env"
   docker-compose --env-file "${quickstart_env_file}" up
   rc=$?
@@ -347,6 +350,17 @@ start_osmt_dev_spring_app() {
   cd "${project_dir}" || return 1
 }
 
+_remove_osmt_docker_artifacts() {
+  echo_info "Stopping OSMT-related Docker containers..."
+  stop_osmt_dev_docker_stack
+
+  echo_info "Removing OSMT-related Docker images..."
+  docker images -q --filter=reference='osmt_*' | xargs docker rmi
+
+  echo_info "Removing OSMT-related Docker volumes..."
+  docker volume ls -q -f name=osmt_ | xargs docker volume rm -f {} > /dev/null
+}
+
 cleanup_osmt_docker_artifacts() {
   local prompt_msg; prompt_msg="$(cat <<-EOF
 ${indent}Do you want to clean up OSMT-related Docker images and volumes?
@@ -364,17 +378,6 @@ EOF
       esac
   done
 }
-_remove_osmt_docker_artifacts() {
-  echo_info "Stopping OSMT-related Docker containers..."
-  stop_osmt_dev_docker_stack
-
-  echo_info "Removing OSMT-related Docker images..."
-  docker images -q --filter=reference='osmt_*' | xargs docker rmi
-
-  echo_info "Removing OSMT-related Docker volumes..."
-  docker volume ls -q -f name=osmt_ | xargs docker volume rm -f {} > /dev/null
-}
-
 echo_info() {
   echo -e "INFO:  $*"
 }

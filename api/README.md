@@ -75,7 +75,7 @@ Imports via the command line require these 2 arguments:
 | --import-type             | RSDs - `batchskill`<br>BLS - `bls`<br>O*NET - `onet`| 
 | --csv                     | a valid path to a CSV file |
 
-So command will look like this:
+So commands will look something like this:
 ```
   java -jar -Dspring.profiles.active=dev,import \
       api/target/osmt-api-<version>.jar \
@@ -93,9 +93,6 @@ Please see the `import` folder in the project root for sample files. The general
 2. BLS (```--import-type=bls```)
 3. O*NET (```--import-type=onet```)
 4. Reindex Elasticsearch
-
-### Importing RSDs
-
 
 ### Importing BLS codes:
 BLS codes will not be duplicated if imported multiple times

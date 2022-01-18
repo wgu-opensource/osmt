@@ -2,7 +2,7 @@ pipeline {
   agent { label 'master' }
   environment {
     gitRepository = 'ssh://git@bitbucket.org/concentric-sky/osmt-core.git'
-    projectName = 'osmt-core'
+    projectName = 'osmt'
     dockerhubCredentials = credentials('dockerhub')
   }
 

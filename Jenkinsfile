@@ -9,15 +9,16 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-//        // Cleaning build context
+        // Cleaning build context
         deleteDir()
+
         // Checkout the osmt repo
         checkout([$class: 'GitSCM',
-                  branches: [[name: scm.branches[0].name]],
+                  branches: [[name: env.BRANCH_NAME]],
                   doGenerateSubmoduleConfigurations: false,
                   submoduleCfg: [],
                   userRemoteConfigs: [[credentialsId: 'jenkins',
-                  url: 'git@github.com:concentricsky/wgu-osmt.git']]])
+                  url:  env.gitRepository]]])
       }
     }
     stage('Setup') {

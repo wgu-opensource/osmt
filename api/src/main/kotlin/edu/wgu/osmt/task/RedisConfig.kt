@@ -30,7 +30,7 @@ class RedisConfig: AbstractHttpSessionApplicationInitializer(){
     @Bean
     fun redisConnectionFactory(): LettuceConnectionFactory {
         val parsedUri = URI(redisUrl)
-        val redisDb = if (parsedUri.path.isNotEmpty()) parsedUri.path.toInt() else 0
+        val redisDb = if (parsedUri.path.isNotEmpty()) parsedUri.path.split("/")[1].toInt() else 0
 
         val redisStandaloneConfiguration = RedisStandaloneConfiguration(parsedUri.host, parsedUri.port)
         redisStandaloneConfiguration.database = redisDb

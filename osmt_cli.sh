@@ -240,6 +240,8 @@ init_osmt_env_files() {
 }
 
 validate_osmt_environment() {
+  echo
+  echo_info "Validating software and SDKs available for OSMT on this machine..."
   local -i is_environment_valid=0
   _report_os
   _validate_git || is_environment_valid+=1
@@ -273,6 +275,7 @@ start_osmt_dev_docker_stack() {
 
 stop_osmt_dev_docker_stack() {
   local -i rc
+  echo
   echo_info "Stopping OSMT Development Docker stack"
   cd "${project_dir}/docker" || return 1
   docker-compose --file dev-stack.yml -p osmt_cli down
@@ -312,6 +315,7 @@ start_osmt_quickstart() {
 }
 
 import_osmt_dev_metadata() {
+  echo
   local -i rc
   _validate_osmt_dev_docker_stack
   rc=$?
@@ -345,6 +349,7 @@ import_osmt_dev_metadata() {
 }
 
 start_osmt_dev_spring_app() {
+  echo
   local -i rc
   _validate_osmt_dev_docker_stack
   rc=$?
@@ -369,6 +374,7 @@ start_osmt_dev_spring_app() {
 }
 
 _remove_osmt_docker_artifacts() {
+  echo
   echo_info "Stopping OSMT-related Docker containers..."
   stop_osmt_dev_docker_stack
 
@@ -388,6 +394,7 @@ ${indent}Please answer 'y' to proceed?
 EOF
   )"
   while true; do
+    echo
       echo_warn "Attention:"
       read -p "${prompt_msg}" yn
       case $yn in
@@ -414,6 +421,7 @@ echo_debug() {
 
 usage() {
   local help_msg; help_msg="$(cat <<-'EOF'
+
 A command line utility to simplify onboarding with OSMT development instances. This utility:
 - creates starter environment files
 - validates software and SDK dependencies for a local instance
@@ -453,7 +461,6 @@ cat <<-EOF
   / _ \/ __|  \/  |_   _| / __| |  |_ _|
  | (_) \__ \ |\/| | | |  | (__| |__ | |
   \___/|___/_|  |_| |_|   \___|____|___|
-
 EOF
 
 ## all functions return. We only exit from the opts in getopts

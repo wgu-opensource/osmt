@@ -56,7 +56,7 @@ Examples:
     ```
 
 ## OAuth2 
-An example profile and Spring Boot components (edu.wgu.osmt.security.SecurityConfig) are provided to support OAuth2 with Okta. To use a different provider, create a separate Spring Boot profile to contain the configuration. Additional Spring Boot components may also be required to support the chosen provider. See [Okta Configuration](../README.md#oauth2-and-okta-configuration) in the project [README](../README.md) for more details.
+An example profile and Spring Boot components (edu.wgu.osmt.security.SecurityConfig) are provided to support OAuth2 with Okta. To use a different provider, create an additional profile-scoped Spring @Component that implements org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter, and activate that security profile. Additional Spring Boot components may also be required to support the chosen provider. See [Okta Configuration](../README.md#oauth2-and-okta-configuration) in the project [README](../README.md) for more details.
 
 ## Database Configurations
 This project uses [FlywayDb](https://flywaydb.org/). SQL Migrations can be placed in `./api/src/main/resources/db/migration/`.

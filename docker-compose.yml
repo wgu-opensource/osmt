@@ -37,7 +37,7 @@ services:
     image: library/mysql:8.0
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb3 --collation-server=utf8mb3_unicode_ci
     volumes:
-      - osmt_sql_db:/var/lib/mysql:rw
+      - sql_db:/var/lib/mysql:rw
       - ./docker/mysql-init:/docker-entrypoint-initdb.d
     environment:
       - "MYSQL_PASSWORD=${DB_PASSWORD}"
@@ -57,7 +57,7 @@ services:
     environment:
       - "discovery.type=single-node"
       - "net=host"
-      - "xpack.security.enabled: false"
+      - "xpack.security.enabled=false"
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -76,5 +76,5 @@ networks:
     driver: bridge
 
 volumes:
-  osmt_sql_db:
+  sql_db:
   elastic_data:

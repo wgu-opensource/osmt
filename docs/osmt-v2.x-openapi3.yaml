@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 2.0.0
+  version: 2.1.0
   title: OSMT API
   description: API for the Open Skills Management Toolset
 security:
@@ -43,8 +43,16 @@ paths:
           name: collectionId
           schema:
             type: string
-            format: uri
+            format: uuid
             description: Limit skills to those associated with given collection id
+        - in: query
+          name: library
+          description: Limit skills to those contained within the given libraries
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
       requestBody:
         required: true
         content:
@@ -391,6 +399,14 @@ paths:
           name: sort
           schema:
             $ref: '#/components/schemas/SortOrder'
+        - in: query
+          name: library
+          description: Limit collections to those contained within the given libraries
+          schema:
+            type: array
+            items:
+              type: string
+              format: uuid
       requestBody:
         required: true
         content:
@@ -997,6 +1013,13 @@ components:
             $ref: '#/components/schemas/NamedReference'
         author:
           type: string
+        shared:
+          type: boolean
+        library:
+          $ref: '#/components/schemas/NamedReference'
+        importedFrom:
+          type: string
+          format: uri
         creationDate:
           type: string
           format: date-time
@@ -1064,6 +1087,8 @@ components:
           format: uuid
         status:
           $ref: '#/components/schemas/PublishStatus'
+        library:
+          $ref: '#/components/schemas/NamedReference'
         skillName:
           type: string
         skillStatement:
@@ -1095,6 +1120,8 @@ components:
           format: uuid
         status:
           $ref: '#/components/schemas/PublishStatus'
+        library:
+          $ref: '#/components/schemas/NamedReference'
         skillName:
           type: string
         skillStatement:
@@ -1126,6 +1153,8 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/PublishStatus'
+        shared:
+          type: boolean
         category:
           type: string
         collections:
@@ -1198,6 +1227,8 @@ components:
           format: uuid
         name:
           type: string
+        library:
+          $ref: '#/components/schemas/NamedReference'
         status:
           $ref: '#/components/schemas/PublishStatus'
         skillCount:
@@ -1216,6 +1247,8 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/PublishStatus'
+        shared:
+          type: boolean
         author:
           type: string
         skills:

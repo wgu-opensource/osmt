@@ -24,9 +24,9 @@ OSMT configures Spring boot with property files. These are located at `./api/src
 | reindex                   | runs the Elasticsearch re-index process |
 
 ## Running from the Command Line
-See [Using the OSMT development utility](../README.md#using-the-osmt-development-utility-osmt_devsh) in the project [README.md](/../README.md) for using `osmt_dev.sh` to start and stop the Development Docker services and the Spring API application. `osmt_dev.sh` automatically sources the environment variables from `api/osmt-dev-stack.env`.
+See [Using the OSMT development utility](../README.md#using-the-osmt-development-utility-osmt_devsh) in the project [README.md](/../README.md) for using `osmt_cli.sh` to start and stop the Development Docker services and the Spring API application. `osmt_cli.sh` automatically sources the environment variables from `api/osmt-dev-stack.env`.
 
-* You are not required to use the `osmt_dev.sh` utility. Many will prefer to run `mvn` and `java jar` commands against the jars in the api/target directory. Examples are given below. You will probably need to use a configuration profile (i.e., `dev`) and at least one component profile (i.e., `apiserver`). 
+* You are not required to use the `osmt_cli.sh` utility. Many will prefer to run `mvn` and `java jar` commands against the jars in the api/target directory. Examples are given below. You will probably need to use a configuration profile (i.e., `dev`) and at least one component profile (i.e., `apiserver`). 
 * To override specific properties with JVM arguments when developing with Maven, pass the JVM arguments as the value to `-Dspring-boot.run.jvmArguments=`
 * Depending on the configuration you use, you may need to source the environment variables from `api/osmt-dev-stack.env`.
   * These command will help source an environment file into a shell session (`omst_dev.sh -s` does this for you automatically:

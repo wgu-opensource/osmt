@@ -4,6 +4,7 @@
 set -u
 
 declare debug=${DEBUG:-0}
+declare project_dir
 declare quickstart_env_file
 declare dev_env_file
 # new line formatted to indent with echo_err / echo_info etc
@@ -13,7 +14,7 @@ declare -r nl="\n${indent}"
 _get_osmt_project_dir() {
   local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
   if [[ -z "${project_dir}" ]]; then
-    echo_err "Shell commands should be run from the directory context of the osmt git repo."
+    echo_err "$(basename "${0}") commands should be run from the directory context of the OSMT git repo."
     return 1
   fi
 
@@ -21,7 +22,6 @@ _get_osmt_project_dir() {
 }
 
 _cd_osmt_project_dir() {
-  local project_dir; project_dir="$(_get_osmt_project_dir)"
   if [[ ! -d "${project_dir}" ||  ! -r "${project_dir}" ]]; then
     echo_err "Can not change directory to ${project_dir}."
     return 1
@@ -51,6 +51,23 @@ _report_os() {
   uname -a
 }
 
+_validate_git() {
+  echo
+  echo_info "Checking git..."
+
+  # no specific version of git is required
+  which git &> /dev/null
+  if [[ $? -eq 0 ]]; then
+    echo_info "Git detected at $(which git)"
+    git --version
+  else
+    echo_err "git not found on path. Use 'which git' to confirm."
+    echo_err "$(basename "${0}") requires git to run commands for the correct directories."
+    return 1
+  fi
+
+}
+
 _validate_docker_version() {
   echo
   echo_info "Checking Docker..."
@@ -74,6 +91,7 @@ _validate_docker_version() {
   fi
 
   echo_info "Checking Docker version..."
+  docker version
   det_docker_version="$(docker version --format '{{.Server.Version}}')"
 
   det_docker_version="${det_docker_version#[vV]}"
@@ -152,7 +170,10 @@ _validate_osmt_dev_dependencies() {
   echo_info "Maven version: $(mvn --version)"
 
   echo
+  echo_info "OSMT development recommends NodeJS version v16.13.0 or greater. Maven uses an embedded copy of NodeJS v16.13.0."
   echo_info "NodeJS version: $(node --version)"
+  echo
+  echo_info "OSMT development recommends npm version 8.1.0 or greater. Maven uses an embedded copy of npm 8.1.0."
   echo_info "npm version: $(npm --version)"
   if [[ "${is_dependency_valid}" -ne 0 ]]; then
     echo
@@ -190,7 +211,7 @@ _validate_env_file() {
 }
 
 _validate_osmt_dev_docker_stack() {
-  local -i dev_container_count; dev_container_count="$(docker ps -q --filter name='osmt_dev*' | wc -l)"
+  local -i dev_container_count; dev_container_count="$(docker ps -q --filter name='osmt_cli*' | wc -l)"
   if [[ "${dev_container_count}" -ne 3 ]]; then
     echo_err "Development Docker stack containers are not running."
     return 1
@@ -221,6 +242,7 @@ init_osmt_env_files() {
 validate_osmt_environment() {
   local -i is_environment_valid=0
   _report_os
+  _validate_git || is_environment_valid+=1
   _validate_docker_version || is_environment_valid+=1
   _validate_osmt_dev_dependencies || is_environment_valid+=1
 
@@ -238,11 +260,10 @@ validate_osmt_environment() {
 
 start_osmt_dev_docker_stack() {
   local -i rc
-  _cd_osmt_project_dir
   echo
   echo_info "Starting OSMT Development Docker stack. You can stop it with $(basename "${0}") -e"
-  cd docker || return 1
-  docker-compose --file dev-stack.yml -p osmt_dev up --detach
+  cd "${project_dir}/docker" || return 1
+  docker-compose --file dev-stack.yml -p osmt_cli up --detach
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Starting OSMT Development Docker stack failed. Exiting..."
@@ -252,10 +273,9 @@ start_osmt_dev_docker_stack() {
 
 stop_osmt_dev_docker_stack() {
   local -i rc
-  _cd_osmt_project_dir
   echo_info "Stopping OSMT Development Docker stack"
-  cd docker || return 1
-  docker-compose --file dev-stack.yml -p osmt_dev down
+  cd "${project_dir}/docker" || return 1
+  docker-compose --file dev-stack.yml -p osmt_cli down
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Stopping OSMT Development Docker stack failed. Exiting..."
@@ -265,7 +285,7 @@ stop_osmt_dev_docker_stack() {
 
 start_osmt_quickstart() {
   local -i rc
-  _cd_osmt_project_dir || return 1
+  _validate_git || return 1
   _validate_docker_version
   rc=$?
   if [[ $rc -ne 0 ]]; then
@@ -273,6 +293,7 @@ start_osmt_quickstart() {
     return 1
   fi
 
+  _cd_osmt_project_dir || return 1
   _validate_osmt_quickstart_env_file
   rc=$?
   if [[ $rc -ne 0 ]]; then
@@ -302,19 +323,17 @@ import_osmt_dev_metadata() {
   _cd_osmt_project_dir || return 1
   _source_osmt_dev_env_file || return 1
 
-  local project_dir; project_dir="$(_get_osmt_project_dir)"
-
   cd api || return 1
   echo
   echo_info "Importing BLS metadata via Maven Spring Boot plug-in (Maven log output suppressed)..."
   mvn -q -Dspring-boot.run.profiles=dev,import \
-    -Dspring-boot.run.arguments="--import-type=bls,--csv=$(_get_osmt_project_dir)/import/BLS-Import.csv" \
+    -Dspring-boot.run.arguments="--import-type=bls,--csv=${project_dir}/import/BLS-Import.csv" \
     spring-boot:run
 
   echo
   echo_info "Importing O*NET metadata via Maven Spring Boot plug-in (Maven log output suppressed)..."
   mvn -q -Dspring-boot.run.profiles=dev,import \
-    -Dspring-boot.run.arguments="--import-type=onet,--csv=$(_get_osmt_project_dir)/import/oNet-Import.csv" \
+    -Dspring-boot.run.arguments="--import-type=onet,--csv=${project_dir}/import/oNet-Import.csv" \
     spring-boot:run
 
   echo
@@ -338,7 +357,6 @@ start_osmt_dev_spring_app() {
   _source_osmt_dev_env_file || return 1
   echo
   echo_info "Starting OSMT via Maven Spring Boot plug-in (Maven log output suppressed)..."
-  local project_dir; project_dir="$(_get_osmt_project_dir)"
   cd api || return 1
   mvn -q -Dspring-boot.run.profiles=dev,apiserver,oauth2-okta spring-boot:run
   rc=$?
@@ -358,7 +376,7 @@ _remove_osmt_docker_artifacts() {
   docker images -q --filter=reference='osmt_*' | xargs docker rmi
 
   echo_info "Removing OSMT-related Docker volumes..."
-  docker volume ls -q -f name=osmt_ | xargs docker volume rm -f {} > /dev/null
+  docker volume ls -q -f name=osmt_ | xargs docker volume rm -f {} &> /dev/null
 }
 
 cleanup_osmt_docker_artifacts() {
@@ -397,7 +415,7 @@ echo_debug() {
 usage() {
   local help_msg; help_msg="$(cat <<-'EOF'
 Usage:
-  osmt_dev.sh [accepts a single option]
+  osmt_cli.sh [accepts a single option]
 
   -i   Initialize environment files for Quickstart and Development configurations.
   -v   Validate local environment and dependencies for development.
@@ -418,10 +436,12 @@ Usage:
 EOF
   )"
   echo "${help_msg}"
+  echo
 }
 
-quickstart_env_file="$(_get_osmt_project_dir)/osmt-quickstart.env"
-dev_env_file="$(_get_osmt_project_dir)/api/osmt-dev-stack.env"
+project_dir="$(_get_osmt_project_dir)" || exit 135
+quickstart_env_file="${project_dir}/osmt-quickstart.env"
+dev_env_file="${project_dir}/api/osmt-dev-stack.env"
 
 cat <<-EOF
    ____    ____  __  ___ ______     ___                 __  __  __    _   __

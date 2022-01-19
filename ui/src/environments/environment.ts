@@ -7,6 +7,7 @@ export const environment = {
   baseApiUrl: "http://localhost:8080",
   loginUrl: "http://localhost:8080/oauth2/authorization/okta",
   dynamicWhitelabel: true,
+  isAuthEnabled: true
 }
 
 /*

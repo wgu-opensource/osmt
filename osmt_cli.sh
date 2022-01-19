@@ -360,10 +360,11 @@ start_osmt_dev_spring_app() {
 
   _cd_osmt_project_dir || return 1
   _source_osmt_dev_env_file || return 1
+  local security_profile="${OSMT_SECURITY_PROFILE:-oauth2-okta}"
   echo
-  echo_info "Starting OSMT via Maven Spring Boot plug-in (Maven log output suppressed)..."
+  echo_info "Starting OSMT via Maven Spring Boot plug-in with ${security_profile} security profile (Maven log output suppressed)..."
   cd api || return 1
-  mvn -q -Dspring-boot.run.profiles=dev,apiserver,oauth2-okta spring-boot:run
+  mvn -q -Dspring-boot.run.profiles=dev,apiserver,"${security_profile}" spring-boot:run
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Error running OSMT Spring app with Maven. Returning to project root (${project_dir})"
@@ -378,9 +379,15 @@ _remove_osmt_docker_artifacts() {
   echo_info "Stopping OSMT-related Docker containers..."
   stop_osmt_dev_docker_stack
 
+  echo
+  echo_info "Removing OSMT-related Docker containers..."
+  docker ps -aq --filter=name='osmt_*' | xargs docker rm
+
+  echo
   echo_info "Removing OSMT-related Docker images..."
   docker images -q --filter=reference='osmt_*' | xargs docker rmi
 
+  echo
   echo_info "Removing OSMT-related Docker volumes..."
   docker volume ls -q -f name=osmt_ | xargs docker volume rm -f {} &> /dev/null
 }

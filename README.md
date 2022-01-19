@@ -12,7 +12,8 @@ OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. Any OSMT ins
 
 ## Getting started
 Follow the steps in the [Pre-requisites](README.md#pre-requisites) and [Running the Quickstart](README.md#running-the-quickstart) sections to bootstrap a local Quickstart OSMT instance (you can see more details in the [Quickstart Configuration](README.md#quickstart-configuration) section).
-*  NOTE: A Quickstart OSMT instance should be for demo purposes only. The data is stored on a Docker volume, on the same computer where you started the Quickstart. You should consider this data to be fragile and temporary. If you create RSDs or Collections, you should export them before shutting down the Quickstart. Please have the right technical people in your organization deploy a production OSMT instance before making any real investment in effort for building skills.
+* NOTE: A Quickstart OSMT instance should be for demo purposes only. The data is stored on a Docker volume. Unless your organization has taken technical steps to ensure the backing data will remain available, you should consider Quickstart data to be temporary. If you create RSDs or Collections, you should export them before shutting down the Quickstart. See the How-To section of osmt.io for more information on exporting.
+* Please have the right technical people in your organization deploy a production OSMT instance before making any real investment in effort for building skills.
 
 ### Using the OSMT development utility (`osmt_cli.sh`)
 The OSMT source code includes a utility named `osmt_cli.sh`, in the project root directory. `osmt_cli.sh` simplifies setting up an OSMT environment and doing routine tasks. It uses BASH, and works on MacOS and Linux. It may work with a BASH interpreter in Windows, but we have not yet tested this. You can run `./osmt_cli.sh -h` for the help text.
@@ -111,9 +112,9 @@ This project makes use of 2 similar local configurations, "Quickstart" and "Deve
 
 ### Quickstart Configuration
 The Quickstart configuration uses the `docker-compose.yml` file in the project root to stand up a non-production OSMT stack. This file uses Dockerized Java 11 and Maven to build the UI and API modules as a fat jar, and then stands up an application stack with the back-end dependencies (MySQL, ElasticSearch, and Redis) and a Spring application using the fat jar. The Quickstart configuration automatically imports BLS and O*NET job code metadata.
-* This configuration could inform how to configure a production OSMT instance, but it is not intended for a production deployment.
+* The Quickstart configuration is opinionated in that all services and volumes are stood up on a single machine That topology may or may not be appropriate for your organization. It could inform how to configure a production OSMT instance, but it is not intended for a production deployment.
 * Quickstart will want to use the `osmt-quickstart.env` file to provide your OAuth2 secrets.
-* You are not required to use `osmt_cli.sh`. You can run this command to stand up the Quickstart configuration.
+* You are not required to use `osmt_cli.sh`. You can run this command from the project root to stand up the Quickstart configuration.
     ```
     docker-compose --env-file osmt-quickstart.env up --build
     ```

@@ -2,34 +2,42 @@
 This Maven module represents the Spring Boot API application. 
 
 ## Spring Boot Configuration and Profiles
-OSMT configures Spring boot with property files. These are located at `./api/src/main/resources/config/`. It has 2 kinds of Spring profiles:
-* Configuration Profiles - these contextualize an SDLC environment (i.e., the `dev` profile for local development). `dev` is the only profile that is fleshed out at this time.
-* Component profiles - these active certain Spring Boot `@Component`(s). You can find them in `@Profile` annotations.
+Spring Boot uses profiles to manage its runtime configuration. While these can be provided in different ways, osmt_cli.sh uses `-D` to set a `spring-boot.run.profiles` system property in the JVM. A typical OSMT profile list will look like `dev,apiserver,oauth2-okta`. In OSMT, this list of profiles informs which property files are loaded, and which Spring Boot components are run.
 
-| Configuration Profile     | Properties file |
-| -----------               | ----------- |
-| (none)                    | application.properties |
-| dev                       | application-dev.properties |
-| staging                   | application-staging.properties |
-| review                    | application-review.properties |
-| test                      | application-test.properties |
-| staging                   | application-staging.properties |
+* Property files -- If a profile from the active profiles list (`dev`) matches a property file (`application-dev.properties`), then that property file is loaded. Spring Boot's property files are located in `./api/src/main/resources/config/`.
+* Spring Boot components -- When Spring Boot starts, it scans for classes with a `@Component` annotation. If a profile from the active profiles list (`apieserver`) matches a @Profile annotation in a @Component class (`@Profile("apiserver")`), then that class is loaded.
 
-| Component Profile         | Note |
-| ---                       | --- |
-| apiserver                 | starts the API server |
-| oauth2-okta               | includes required configuration for OAuth2 OIDC with Okta |
-| noauth                    | bypasses API authentication |
-| import                    | runs the batch import process, expects `--csv=` argument and `--import-type=` argument. | 
-| reindex                   | runs the Elasticsearch re-index process |
+The Spring profiles in OSMT can be conceptually grouped as:
+* Configuration Profiles - these contextualize an SDLC environment (i.e., the `dev` profile for local development). `dev` is the only profile that is fleshed out at this time. If no Configuration Profile is provided, the values in application.properties will be used without override.
+
+  | Configuration Profile      | Properties file |
+  | -------------------------- | -------------------------- |
+  | (none)                     | application.properties |
+  | dev                        | application-dev.properties |
+  | staging                    | application-staging.properties |
+  | review                     | application-review.properties |
+  | test                       | application-test.properties |
+
+* Component profiles - these active certain Spring Boot `@Component`(s). See notes on "Security" and "Application" profiles.
+
+  | Security Component Profile | |
+  | -------------------------- | -------------------------- |
+  | oauth2-okta                | Includes required configuration for OAuth2 OIDC with Okta |
+  | noauth                     | Bypasses API authentication |
+
+  | Application Component Profile | |
+  | -------------------------- | -------------------------- |
+  | apiserver                  | Starts the API server. API endpoints started with this profile will also require a<br> Security Component Profile (above, either `oauth2-okta` or `noauth`) |
+  | import                     | Runs the batch import process, expects `--csv=` argument and `--import-type=` argument.<br>This process terminates when complete, and does not expose API endpoints; no Security profile is needed. |
+  | reindex                    | Runs the Elasticsearch re-index process.<br>This process terminates when complete, and does not expose API endpoints; no Security profile is needed.  |
 
 ## Running from the Command Line
 See [Using the OSMT development utility](../README.md#using-the-osmt-development-utility-osmt_devsh) in the project [README.md](/../README.md) for using `osmt_cli.sh` to start and stop the Development Docker services and the Spring API application. `osmt_cli.sh` automatically sources the environment variables from `api/osmt-dev-stack.env`.
 
-* You are not required to use the `osmt_cli.sh` utility. Many will prefer to run `mvn` and `java jar` commands against the jars in the api/target directory. Examples are given below. You will probably need to use a configuration profile (i.e., `dev`) and at least one component profile (i.e., `apiserver`). 
+* You are not required to use the `osmt_cli.sh` utility. Many will prefer to run `mvn` and `java -jar` commands against the jars in the api/target directory _(this workflow assumes you know how to use `mvn clean package` to create jars)_. Examples are given below. You will probably need to use a configuration profile (i.e., `dev`) and at least one application component profile (i.e., `apiserver`).
 * To override specific properties with JVM arguments when developing with Maven, pass the JVM arguments as the value to `-Dspring-boot.run.jvmArguments=`
 * Depending on the configuration you use, you may need to source the environment variables from `api/osmt-dev-stack.env`.
-  * These command will help source an environment file into a shell session (`omst_dev.sh -s` does this for you automatically:
+  * This command will help source an environment file into a shell session (`omst_dev.sh -s` does this for you automatically:
     ```
     set -o allexport; source api/osmt-dev-stack.env; set +o allexport;
     ``` 

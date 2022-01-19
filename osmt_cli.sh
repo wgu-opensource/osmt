@@ -414,6 +414,11 @@ echo_debug() {
 
 usage() {
   local help_msg; help_msg="$(cat <<-'EOF'
+A command line utility to simplify onboarding with OSMT development instances. This utility:
+- creates starter environment files
+- validates software and SDK dependencies for a local instance
+- provides convenience commands for starting / stopping / cleaning up development stacks
+
 Usage:
   osmt_cli.sh [accepts a single option]
 
@@ -454,6 +459,7 @@ EOF
 ## all functions return. We only exit from the opts in getopts
 if [[ $# == 0 ]]; then
   echo_err "$(basename "${0}") requires 1 argument"
+  echo
   usage 1>&2
   echo_err "Exiting..."
   exit 135

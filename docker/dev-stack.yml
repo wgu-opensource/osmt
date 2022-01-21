@@ -24,7 +24,7 @@ services:
     environment:
       - "discovery.type=single-node"
       - "net=host"
-      - "xpack.security.enabled: false"
+      - "xpack.security.enabled=false"
     ports:
       - "9200:9200"
       - "9300:9300"

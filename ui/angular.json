@@ -87,6 +87,14 @@
                   "maximumError": "4kb"
                 }
               ]
+            },
+            "noauth": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.noauth.ts"
+                }
+              ]
             }
           }
         },
@@ -99,6 +107,9 @@
           "configurations": {
             "production": {
               "browserTarget": "ui:build:production"
+            },
+            "noauth": {
+              "browserTarget": "ui:build:noauth"
             }
           }
         },

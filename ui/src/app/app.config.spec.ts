@@ -36,18 +36,20 @@ describe("AppConfig", () => {
 
       const dummyConfig: IAppConfig = {
         baseApiUrl: expectedApiUrl,
-        defaultAuthorValue: "",
+        loginUrl: "",
+        isAuthEnabled: false,
+        production: false,
         editableAuthor: false,
+        defaultAuthorValue: "",
+        toolName: "",
+        toolNameLong: "",
+        publicSkillTitle: "",
+        publicCollectionTitle: "",
         licensePrimary: "",
         licenseSecondary: "",
         poweredBy: "",
-        poweredByLabel: "",
         poweredByUrl: "",
-        publicCollectionTitle: "",
-        publicSkillTitle: "",
-        toolName: "",
-        toolNameLong: "",
-        loginUrl: "",
+        poweredByLabel: "",
         idleTimeoutInSeconds: 300
       }
 

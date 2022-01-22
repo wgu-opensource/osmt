@@ -135,7 +135,11 @@ If doing front-end development, start the UI Angular front end. The Angular app 
     - `npm run ng serve`
   - Open your browser to `http://localhost:4200`.
 
-_For local development testing of API module, you can use also the `noauth` Spring profile to bypass authentication._
+### Bypassing OAuth2/OIDC for Local Development
+For local development testing of API module, you can bypass having to use OAuth2/OIDC. These are the general steps: 
+* Start the Spring Boot application with the `noauth` profile instead of `oauth2-okta`. Do not run your front end code from 8080. 
+* Start your front end server with `npm start -- --configuration=noauth`
+* Open your browser to 'http://localhost:4200'
 
 ### OAuth2 and Okta Configuration
 To use Okta as your OAuth2 provider, you will need a free developer account with [Okta](https://okta.com). While the user interface at Okta may change, the big ideas of configuring an application for an OAuth/OpenID Connect provider should still apply. From your Okta Dashboard:

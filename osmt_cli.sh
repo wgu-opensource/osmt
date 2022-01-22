@@ -160,7 +160,6 @@ _validate_java_version() {
     echo_err "Java version must be >= ${req_java_major}.${req_java_minor}.${req_java_patch}. Current version here is ${det_java_version}."
     return 1
   fi
-  
 }
 
 _validate_osmt_dev_dependencies() {

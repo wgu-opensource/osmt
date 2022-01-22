@@ -1,5 +1,5 @@
 # OSMT API
-This Maven module represents the Spring Boot API application. 
+This Maven module represents the Spring Boot API application.
 
 ## Spring Boot Configuration and Profiles
 Spring Boot uses profiles to manage its runtime configuration. While these can be provided in different ways, osmt_cli.sh uses `-D` to set a `spring-boot.run.profiles` system property in the JVM. A typical OSMT profile list will look like `dev,apiserver,oauth2-okta`. In OSMT, this list of profiles informs which property files are loaded, and which Spring Boot components are run.
@@ -40,10 +40,10 @@ See [Using the OSMT development utility](../README.md#using-the-osmt-development
   * This command will help source an environment file into a shell session (`omst_dev.sh -s` does this for you automatically:
     ```
     set -o allexport; source api/osmt-dev-stack.env; set +o allexport;
-    ``` 
+    ```
 
 Examples:
-* Using Maven to start the API server overriding the `spring.flyway.enabled` property: 
+* Using Maven to start the API server overriding the `spring.flyway.enabled` property:
     ```
       mvn -Dspring-boot.run.profiles=dev,apiserver,oauth2-okta \
           -Dspring-boot.run.jvmArguments="-Dspring.flyway.enabled=false" \
@@ -52,7 +52,7 @@ Examples:
 * Using Java to import BLS metadata
     ```
       java -jar -Dspring.profiles.active=dev,import \
-          api/target/osmt-api-<version>.jar --csv=path/to/csv --import-type=bls  
+          api/target/osmt-api-<version>.jar --csv=path/to/csv --import-type=bls
     ```
 
 ## OAuth2 
@@ -62,7 +62,7 @@ An example profile and Spring Boot components (edu.wgu.osmt.security.SecurityCon
 This project uses [FlywayDb](https://flywaydb.org/). SQL Migrations can be placed in `./api/src/main/resources/db/migration/`.
 Scripts in this folder will be automatically processed when the app is started with the appropriate `application.properties` settings in `spring.flyway.*`.
 
-By default, only `test` and `dev` configuration profiles will automatically run migrations. To enable migrations for other environments, i.e. a single production server, start the server with this JVM argument: `-Dspring.flyway.enabled=true`. 
+By default, only `test` and `dev` configuration profiles will automatically run migrations. To enable migrations for other environments, i.e. a single production server, start the server with this JVM argument: `-Dspring.flyway.enabled=true`.
 
 ## Allowing anonymous API to search and list endpoints for published skills and collections
 This feature is enabled by default. These settings are in application.properties
@@ -80,14 +80,14 @@ Imports via the command line require these 2 arguments:
 
 | Command Line Arguments    | Values                     |
 | -----------               | -----------                |
-| --import-type             | RSDs - `batchskill`<br>BLS - `bls`<br>O*NET - `onet`| 
+| --import-type             | RSDs - `batchskill`<br>BLS - `bls`<br>O*NET - `onet`|
 | --csv                     | a valid path to a CSV file |
 
 So commands will look something like this:
 ```
   java -jar -Dspring.profiles.active=dev,import \
       api/target/osmt-api-<version>.jar \
-      --csv=path/to/csv --import-type=batchskill  
+      --csv=path/to/csv --import-type=batchskill
 ```
 or
 ```
@@ -124,7 +124,7 @@ O*NET codes will not be duplicated if imported multiple times
     ```
 
 ## Elasticsearch indexing
-After importing, it is necessary to run Spring Boot with the `reindex` profile to generate Elasticsearch index mappings and documents. The `<environment profile>` in the following examples can be `dev`,`review` or omitted for production. 
+After importing, it is necessary to run Spring Boot with the `reindex` profile to generate Elasticsearch index mappings and documents. The `<environment profile>` in the following examples can be `dev`,`review` or omitted for production.
 
 Via the compiled jar:
 ```

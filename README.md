@@ -70,6 +70,7 @@ The Development configuration uses the `dev-stack.yml` docker-compose file in th
     
 4. Open `http://localhost:4200` in your browser.
 
+### Bypassing 
 _For local development testing of API module, you can use also the `noauth` Spring profile to bypass authentication._
 
 ### OAuth2 and Okta Configuration

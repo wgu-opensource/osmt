@@ -1,4 +1,4 @@
-import {HttpErrorResponse} from "@angular/common/http";
+import {AppConfig} from "../app.config";
 
 export const STORAGE_KEY_TOKEN = "OSMT.AuthService.accessToken"
 export const STORAGE_KEY_RETURN = "OSMT.AuthService.return"

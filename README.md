@@ -24,17 +24,17 @@ The OSMT source code includes a utility named `osmt_cli.sh`, in the project root
 2. Initialize your environment files. After running this, update the OAUTH2/OIDC values in the env files (replace the `xxxxxx` values with the correct values from your Okta account)
     ```
     ./osmt_cli.sh -i
-    ``` 
+    ```
 
 ### Running the Quickstart
 1. Start the Quickstart configuration. This will take several minutes to download resources and build the software. If you continue to loop on errors that report "Retrying in 10 seconds...", there's something wrong. Search and reach out in the [Discussion](https://github.com/wgu-opensource/osmt/discussions) boards in GitHub.
     ```
     ./osmt_cli.sh -q
-    ``` 
+    ```
 
 2. Open your browser to `http://localhost:8080`.
 
-3. You can exit the Quickstart configuration by pressing [Ctrl-C]. 
+3. You can exit the Quickstart configuration by pressing [Ctrl-C].
     * If you don't clean up the Docker images and volumes, Quickstart should start very quickly when re-running `osmt_cli.sh -q`.
 
 ### Running the Development configuration
@@ -46,28 +46,28 @@ The OSMT source code includes a utility named `osmt_cli.sh`, in the project root
 2. **From the project root**, run a Maven build. The API module currently depends on the UI module, so 'mvn package' will not be sufficient.
     ```
     mvn clean install
-    ``` 
+    ```
 
-3. Start the back-end MySQL/Redis/ElasticSearch dependencies. 
+3. Start the back-end MySQL/Redis/ElasticSearch dependencies.
     * This starts the dev-stack.yml docker-compose stack. It will run "detached", meaning running in the background. You can use `docker ps` and `docker logs` to see what the services are doing.
     ```
     ./osmt_cli.sh -d
-    ``` 
+    ```
 
 5. If you prefer, you can import BLS and O*NET job code metadata. This step is optional. See [Post-installation (BLS, O*NET, etc)](README.md#post-installation-bls-onet-etc) and [](api/README.md#importing-data) for more details.
     ```
     ./osmt_cli.sh -m
     ``` 
 
-6. Start the Spring application. 
+6. Start the Spring application.
    * This automatically sources the `api/osmt-dev-stack.env` file. It will also serve the static Angular files.
     * You can exit the Spring application by pressing [Ctrl-C].
    ```
    ./osmt_cli.sh -s
-   ``` 
+   ```
 
 7. Shut down the back-end MySQL/Redis/ElasticSearch dependencies.
-   * This stops the dev-stack.yml docker-compose stack.  
+   * This stops the dev-stack.yml docker-compose stack.
     ```
     ./osmt_cli.sh -e
     ``` 
@@ -122,7 +122,7 @@ The Quickstart configuration uses the `docker-compose.yml` file in the project r
 ### Development Configuration
 The Development configuration uses the `dev-stack.yml` docker-compose file in the `docker` directory, for standing up just the back-end dependencies. This facilitates doing active development in the Spring or Angular layers. You can use `osmt_cli.sh` in the steps given in [Running the Development configuration](README.md#running-the-development-configuration) to simplify starting and stopping the Docker services and Spring application.
 
-* You are not required to use `osmt_cli.sh`. 
+* You are not required to use `osmt_cli.sh`.
   * You can run this command to stand up the Development configuration.
       ```
       cd docker; docker-compose --file dev-stack.yml up
@@ -132,7 +132,7 @@ The Development configuration uses the `dev-stack.yml` docker-compose file in th
 If doing front-end development, start the UI Angular front end. The Angular app proxies requests to the backend server during development. This allows one to use Angular's live reloading server.
   - From the `ui` directory, run these commands:
     - `npm install`
-    - `npm run ng serve`
+    - `npm start`
   - Open your browser to `http://localhost:4200`.
 
 ### Bypassing OAuth2/OIDC for Local Development
@@ -140,6 +140,7 @@ For local development testing of API module, you can bypass having to use OAuth2
 * Start the Spring Boot application with the `noauth` profile instead of `oauth2-okta`. Do not run your front end code from 8080. 
 * Start your front end server with `npm start -- --configuration=noauth`
 * Open your browser to 'http://localhost:4200'
+* TODO -- expand on this, with required env vars and implications in Quickstart and Development stacks
 
 ### OAuth2 and Okta Configuration
 To use Okta as your OAuth2 provider, you will need a free developer account with [Okta](https://okta.com). While the user interface at Okta may change, the big ideas of configuring an application for an OAuth/OpenID Connect provider should still apply. From your Okta Dashboard:
@@ -161,7 +162,7 @@ For Okta, you will use the `oauth2-okta` profile for Spring Boot, which will inc
 ### Environment Files for Quickstart and Development Stacks
 There are many ways to provide environment values to a Spring application. That said, you should never push secrets to GitHub, so you should never store secrets in source code. The OSMT project is configured to git ignore files named `osmt*.env`, and we recommend you follow this approach. The OSMT source code includes example environment files for the Quickstart and Development configurations (`osmt-quickstart.env.example` and `api/osmt-dev-stack.env.example`). Running `./osmt_cli.sh -i` will create env files for you, but you will need to replace the 'xxxxxx' values with your OAUTH2/OIDC values, following the guidance in the [OAuth2 and Okta Configuration](README.md#oauth2-and-okta-configuration) section.
 
-#### Alternate approaches for Providing Environment Variables 
+#### Alternate approaches for Providing Environment Variables
 * Provide these OAuth2 values as program arguments when starting your Spring Boot app (`-Dokta.oauth2.clientId="123456qwerty"`).
 * Set environment variables by supplying json
     * For MacOS & Linux, replace <placeholder> values and run below command.

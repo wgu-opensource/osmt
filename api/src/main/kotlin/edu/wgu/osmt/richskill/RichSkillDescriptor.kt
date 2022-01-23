@@ -30,6 +30,7 @@ data class RichSkillDescriptor(
     val keywords: List<Keyword> = listOf(),
     val category: Keyword? = null,
     val author: Keyword? = null,
+    val isExternallyShared: Boolean = false,
     override val archiveDate: LocalDateTime? = null,
     override val publishDate: LocalDateTime? = null,
     val collections: List<Collection> = listOf()
@@ -78,6 +79,7 @@ fun RichSkillDescriptor.diff(old: RichSkillDescriptor?): List<Change> {
         Comparison(RichSkillDescriptor::statement.name, RichSkillDescriptorComparisons::compareStatement, old, new),
         Comparison(RichSkillDescriptor::category.name, RichSkillDescriptorComparisons::compareCategory, old, new),
         Comparison(RichSkillDescriptor::author.name, RichSkillDescriptorComparisons::compareAuthor, old, new),
+        Comparison(RichSkillDescriptor::isExternallyShared.name, RichSkillDescriptorComparisons::compareIsExternallyShared, old, new),
         Comparison(
             RichSkillDescriptor::publishStatus.name,
             RichSkillDescriptorComparisons::comparePublishStatus,
@@ -225,6 +227,10 @@ object RichSkillDescriptorComparisons {
 
     fun comparePublishStatus(r: RichSkillDescriptor): String {
         return r.publishStatus().name
+    }
+
+    fun compareIsExternallyShared(r: RichSkillDescriptor): String {
+        return r.isExternallyShared.toString()
     }
 
     fun compareCertifications(receiver: RichSkillDescriptor): String? {

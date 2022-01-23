@@ -315,6 +315,61 @@ class AuditLogRepositoryTest @Autowired constructor(
     }
 
     @Test
+    fun `generates audit logs on rich skill share externally`() {
+        val initialSkillName = "initial skill"
+        val initialStatement = "test statement"
+        val skill = richSkillRepository.create(
+            RsdUpdateObject(
+                name = initialSkillName,
+                statement = initialStatement,
+                publishStatus = PublishStatus.Published
+            ),
+            testUser
+        )
+
+        richSkillRepository.updateIsExternallyShared(skill!!.id.value, true, testUser)
+
+        val logs = auditLogRepository.findByTableAndId(RichSkillDescriptorTable.tableName, skill.id.value).map { it.toModel() }
+            .filter { it.operationType == AuditOperationType.ExternalSharingChange.name }.sortedBy { it.creationDate }
+
+        assertThat(logs[0].changedFields.findByFieldName(RichSkillDescriptor::isExternallyShared.name)).isEqualTo(
+            Change(
+                RichSkillDescriptor::isExternallyShared.name,
+                "false",
+                "true"
+            )
+        )
+    }
+
+    @Test
+    fun `generates audit logs on rich skill unshare externally`() {
+        val initialSkillName = "initial skill"
+        val initialStatement = "test statement"
+        val skill = richSkillRepository.create(
+            RsdUpdateObject(
+                name = initialSkillName,
+                statement = initialStatement,
+                publishStatus = PublishStatus.Published
+            ),
+            testUser
+        )
+
+        richSkillRepository.updateIsExternallyShared(skill!!.id.value, true, testUser)
+        richSkillRepository.updateIsExternallyShared(skill!!.id.value, false, testUser)
+
+        val logs = auditLogRepository.findByTableAndId(RichSkillDescriptorTable.tableName, skill.id.value).map { it.toModel() }
+            .filter { it.operationType == AuditOperationType.ExternalSharingChange.name }.sortedBy { it.creationDate }
+
+        assertThat(logs[1].changedFields.findByFieldName(RichSkillDescriptor::isExternallyShared.name)).isEqualTo(
+            Change(
+                RichSkillDescriptor::isExternallyShared.name,
+                "true",
+                "false"
+            )
+        )
+    }
+
+    @Test
     fun `generates rich skill audit log for collection name changes`() {
         val initialCollectionName = "test collection"
         val updatedCollectionName = "updated collection"

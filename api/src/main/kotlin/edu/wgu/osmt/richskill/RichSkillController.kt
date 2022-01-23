@@ -132,6 +132,38 @@ class RichSkillController @Autowired constructor(
         return ApiSkill.fromDao(updatedSkill, appConfig)
     }
 
+    @PostMapping(RoutePaths.SKILL_SHARE_EXTERNALLY, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun shareSkillExternally(
+        @PathVariable uuid: String,
+        @AuthenticationPrincipal user: Jwt?
+    ): ApiSkill {
+        val existingSkill = richSkillRepository.findByUUID(uuid)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        val updatedSkill =
+            richSkillRepository.updateIsExternallyShared(existingSkill.id.value, true, readableUsername(user))
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        return ApiSkill.fromDao(updatedSkill, appConfig)
+    }
+
+    @PostMapping(RoutePaths.SKILL_UNSHARE_EXTERNALLY, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun unshareSkillExternally(
+        @PathVariable uuid: String,
+        @AuthenticationPrincipal user: Jwt?
+    ): ApiSkill {
+        val existingSkill = richSkillRepository.findByUUID(uuid)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        val updatedSkill =
+            richSkillRepository.updateIsExternallyShared(existingSkill.id.value, false, readableUsername(user))
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        return ApiSkill.fromDao(updatedSkill, appConfig)
+    }
+
     @PostMapping(RoutePaths.SKILL_PUBLISH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun publishSkills(

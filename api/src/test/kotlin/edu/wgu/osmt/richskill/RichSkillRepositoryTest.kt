@@ -202,6 +202,50 @@ class RichSkillRepositoryTest @Autowired constructor(
     }
 
     @Test
+    fun `should share an existing skill`() {
+        val name = UUID.randomUUID().toString()
+        val statement = UUID.randomUUID().toString()
+        val created = richSkillRepository.create(RsdUpdateObject(
+            name = name,
+            statement = statement,
+            author = null,
+            category = null
+        ), "test")
+        assertThat(created).isNotNull
+        assertThat(created!!.id).isNotNull()
+
+        val updated = richSkillRepository.updateIsExternallyShared(created.id.value, true,"test")
+        val retrieved  = richSkillRepository.findById(created.id.value)
+
+        assertThat(updated?.isExternallyShared).isEqualTo(true)
+        assertThat(retrieved?.isExternallyShared).isEqualTo(true)
+    }
+
+    @Test
+    fun `should unshare an existing skill`() {
+        val name = UUID.randomUUID().toString()
+        val statement = UUID.randomUUID().toString()
+        val created = richSkillRepository.create(RsdUpdateObject(
+            name = name,
+            statement = statement,
+            author = null,
+            category = null,
+            publishStatus = PublishStatus.Published
+        ), "test")
+        assertThat(created).isNotNull
+        assertThat(created!!.id).isNotNull()
+
+        // First need to make externally shared.
+        richSkillRepository.updateIsExternallyShared(created.id.value, true,"test")
+
+        val updated = richSkillRepository.updateIsExternallyShared(created.id.value, false,"test")
+        val retrieved  = richSkillRepository.findById(created.id.value)
+
+        assertThat(updated?.isExternallyShared).isEqualTo(false)
+        assertThat(retrieved?.isExternallyShared).isEqualTo(false)
+    }
+
+    @Test
     fun `should insert and retrieve a rich skill to the database`(){
         val name = UUID.randomUUID().toString()
         val statement = UUID.randomUUID().toString()

@@ -1,13 +1,14 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.api.FormValidationException
+import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
+import edu.wgu.osmt.auditlog.Change
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionRepository
-import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.*
@@ -23,6 +24,7 @@ import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -43,6 +45,7 @@ interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
     fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao>
     fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String): RichSkillDescriptorDao?
     fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject
+    fun updateIsExternallyShared(id: Long, newValue: Boolean, user: String): RichSkillDescriptorDao?
 
     fun changeStatusesForTask(task: PublishTask): ApiBatchResult
 
@@ -140,6 +143,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
             this.uuid = UUID.randomUUID().toString()
             this.author = updateObject.author?.t
             this.category = updateObject.category?.t
+            this.isExternallyShared = false
         }
 
         updateObject.copy(id = newRsd.id.value).applyToDao(newRsd)
@@ -319,6 +323,40 @@ class RichSkillRepositoryImpl @Autowired constructor(
                 removingCollections
             ) else null
         )
+    }
+
+    override fun updateIsExternallyShared(id: Long, newValue: Boolean, user: String): RichSkillDescriptorDao? {
+        val daoObject = dao.findById(id)
+
+        daoObject?.let {
+            if (daoObject.isExternallyShared != newValue) {
+                if (newValue && !PublishStatus.isCurrentlyPublished(daoObject.publishStatus())) {
+                    throw GeneralApiException("RSD must be published to share externally", HttpStatus.FORBIDDEN)
+                }
+
+                daoObject.isExternallyShared = newValue;
+
+                // TODO: Create Search hub sync task.
+
+                auditLogRepository.create(
+                    AuditLog.fromAtomicOp(
+                        table,
+                        id,
+                        listOf(
+                            Change(
+                                RichSkillDescriptor::isExternallyShared.name,
+                                (!newValue).toString(),
+                                newValue.toString()
+                            )
+                        ),
+                        user,
+                        AuditOperationType.ExternalSharingChange
+                    )
+                )
+            }
+        }
+
+        return daoObject
     }
 
     override fun changeStatusesForTask(publishTask: PublishTask): ApiBatchResult {

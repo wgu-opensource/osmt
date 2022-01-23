@@ -34,7 +34,7 @@
             </div>
           </div>
 
-          <ng-template [ngIf]="!entry.isPublishStatusChange()">
+          <ng-template [ngIf]="shouldDisplayFieldChanges(entry)">
             <div class="l-entry-x-category" *ngFor="let change of entry.changedFields">
               <!--{{render '@entrycategory'}} -->
               <div class="t-margin-small t-margin-bottom">

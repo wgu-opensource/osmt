@@ -102,6 +102,8 @@ describe("AuditLogComponent", () => {
       { op: AuditOperationType.PublishStatusChange, new: PublishStatus.Deleted, expected: component.archiveIcon },
       { op: AuditOperationType.PublishStatusChange, new: PublishStatus.Draft, expected: component.unarchiveIcon },
       { op: AuditOperationType.PublishStatusChange, new: "", expected: component.publishIcon },
+      { op: AuditOperationType.ExternalSharingChange, new: "true", old: "false", expected: component.shareIcon },
+      { op: AuditOperationType.ExternalSharingChange, new: "false", old: "true", expected: component.unshareIcon }
     ].forEach((params) => {
       const entry = new ApiAuditLog({
         creationDate: "",
@@ -120,7 +122,9 @@ describe("AuditLogComponent", () => {
       { op: AuditOperationType.PublishStatusChange, new: PublishStatus.Draft, old: "-", expected: "Unarchived" },
       { op: AuditOperationType.PublishStatusChange, new: PublishStatus.Published, old: "Archived", expected: "Unarchived" },
       { op: AuditOperationType.PublishStatusChange, new: PublishStatus.Published, old: "Draft", expected: "Published" },
-      { op: AuditOperationType.PublishStatusChange, new: "foo", old: "", expected: "foo"}
+      { op: AuditOperationType.PublishStatusChange, new: "foo", old: "", expected: "foo"},
+      { op: AuditOperationType.ExternalSharingChange, new: "true", old: "false", expected: "Shared to Search Hub" },
+      { op: AuditOperationType.ExternalSharingChange, new: "false", old: "true", expected: "Unshared from Search Hub" }
     ].forEach((params) => {
       const entry = new ApiAuditLog({
         creationDate: "",
@@ -128,6 +132,27 @@ describe("AuditLogComponent", () => {
         user: "",
         changedFields: [ { fieldName: "foo", new: params.new, old: params.old } ] })
       expect(component.labelForEntry(entry)).toEqual(params.expected)
+    })
+  })
+
+  it("shouldDisplayFieldChanges should return", () => {
+    [
+      { op: AuditOperationType.Insert, new: "", old: "-", expected: true },
+      { op: AuditOperationType.Update, new: "", old: "-", expected: true },
+      { op: AuditOperationType.PublishStatusChange, new: PublishStatus.Deleted, old: "-", expected: false },
+      { op: AuditOperationType.PublishStatusChange, new: PublishStatus.Draft, old: "-", expected: false },
+      { op: AuditOperationType.PublishStatusChange, new: PublishStatus.Published, old: "Archived", expected: false },
+      { op: AuditOperationType.PublishStatusChange, new: PublishStatus.Published, old: "Draft", expected: false },
+      { op: AuditOperationType.PublishStatusChange, new: "foo", old: "", expected: false },
+      { op: AuditOperationType.ExternalSharingChange, new: "true", old: "false", expected: false },
+      { op: AuditOperationType.ExternalSharingChange, new: "false", old: "true", expected: false }
+    ].forEach((params) => {
+      const entry = new ApiAuditLog({
+        creationDate: "",
+        operationType: params.op,
+        user: "",
+        changedFields: [ { fieldName: "foo", new: params.new, old: params.old } ] })
+      expect(component.shouldDisplayFieldChanges(entry)).toEqual(params.expected)
     })
   })
 

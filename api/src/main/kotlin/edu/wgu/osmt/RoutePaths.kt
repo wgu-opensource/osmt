@@ -13,6 +13,8 @@ object RoutePaths {
     const val SKILL_PUBLISH = "$SKILLS_PATH/publish"
     const val SKILL_DETAIL = "$SKILLS_PATH/{uuid}"
     const val SKILL_UPDATE = "$SKILL_DETAIL/update"
+    const val SKILL_SHARE_EXTERNALLY = "$SKILL_DETAIL/share"
+    const val SKILL_UNSHARE_EXTERNALLY = "$SKILL_DETAIL/unshare"
     const val SKILL_AUDIT_LOG = "${SKILL_DETAIL}/log"
 
 

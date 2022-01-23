@@ -31,6 +31,7 @@
           [skillName]="getSkillName()"
           [archived]="getArchivedDate()"
           [published]="getPublishedDate()"
+          [isExternallyShared]="getIsExternallyShared()"
           (reloadSkill)="loadSkill()"
         ></app-manage-skill-action-bar-vertical>
 
@@ -49,6 +50,7 @@
       [skillName]="getSkillName()"
       [archived]="getArchivedDate()"
       [published]="getPublishedDate()"
+      [isExternallyShared]="getIsExternallyShared()"
       (reloadSkill)="loadSkill()"
     ></app-manage-skill-action-bar-horizontal>
   </div>

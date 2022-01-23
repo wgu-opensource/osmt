@@ -124,6 +124,23 @@ export class RichSkillService extends AbstractService {
       .pipe(map(({body}) => new ApiSkill(this.safeUnwrapBody(body, errorMsg))))
   }
 
+  shareSkillExternally(uuid: string): Observable<ApiSkill> {
+    const errorMsg = `Error sharing skill to Search Hub`
+    return this.post<ISkill>({
+      path: `${this.serviceUrl}/${uuid}/share`,
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiSkill(this.safeUnwrapBody(body, errorMsg))))
+  }
+
+  unshareSkillExternally(uuid: string): Observable<ApiSkill> {
+    const errorMsg = `Error unsharing skill from Search Hub`
+    return this.post<ISkill>({
+      path: `${this.serviceUrl}/${uuid}/unshare`,
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiSkill(this.safeUnwrapBody(body, errorMsg))))
+  }
 
   searchSkills(
     apiSearch: ApiSearch,

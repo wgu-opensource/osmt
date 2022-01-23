@@ -20,5 +20,12 @@ enum class PublishStatus(val apiValue: String) {
         val publishStatusSet = values().toSet()
 
         fun forApiValue(apiValue: String) = values().find { it.apiValue.toLowerCase() == apiValue.toLowerCase() }
+
+        fun isCurrentlyPublished(status: PublishStatus): Boolean {
+            return when(status) {
+                Published, Unarchived -> true
+                else -> false
+            }
+        }
     }
 }

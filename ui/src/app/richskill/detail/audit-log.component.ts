@@ -26,6 +26,8 @@ export class AuditLogComponent extends AccordianComponent {
   archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)
   unarchiveIcon = SvgHelper.path(SvgIcon.UNARCHIVE)
   dismissIcon = SvgHelper.path(SvgIcon.DISMISS)
+  shareIcon = SvgHelper.path(SvgIcon.SHARE)
+  unshareIcon = SvgHelper.path(SvgIcon.UNSHARE)
 
   constructor(
     protected richSkillService: RichSkillService,
@@ -70,6 +72,7 @@ export class AuditLogComponent extends AccordianComponent {
         case PublishStatus.Draft: return this.unarchiveIcon
         default: return this.publishIcon
       }
+      case AuditOperationType.ExternalSharingChange: return entry.changedFields[0]?.new === "true" ? this.shareIcon : this.unshareIcon
     }
   }
 
@@ -83,7 +86,13 @@ export class AuditLogComponent extends AccordianComponent {
         case PublishStatus.Published: return entry.changedFields[0]?.old === "Archived" ? "Unarchived" : "Published"
         default: return entry.changedFields[0]?.new
       }
+      case AuditOperationType.ExternalSharingChange: return entry.changedFields[0]?.new === "true" ? "Shared to Search Hub" : "Unshared from Search Hub"
     }
+  }
+
+  shouldDisplayFieldChanges(entry: ApiAuditLog): boolean {
+    return (entry?.operationType !== AuditOperationType.PublishStatusChange
+             && entry?.operationType !== AuditOperationType.ExternalSharingChange)
   }
 
   visibleFieldName(fieldName: string): string {
@@ -95,6 +104,5 @@ export class AuditLogComponent extends AccordianComponent {
       case "jobcodes": return "Occupations"
       default: return fieldName
     }
-
   }
 }

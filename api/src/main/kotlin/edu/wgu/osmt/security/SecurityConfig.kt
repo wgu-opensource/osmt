@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletResponse
  */
 @Configuration
 @EnableWebSecurity
-@Profile("oauth2-okta | mockoauth")
+@Profile("oauth2-okta | OTHER-OAUTH-PROFILE")
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired

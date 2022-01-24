@@ -8,7 +8,7 @@ Spring Boot uses profiles to manage its runtime configuration. While these can b
 * Spring Boot components -- When Spring Boot starts, it scans for classes with a `@Component` annotation. If a profile from the active profiles list (`apieserver`) matches a @Profile annotation in a @Component class (`@Profile("apiserver")`), then that class is loaded.
 
 The Spring profiles in OSMT can be conceptually grouped as:
-* Configuration Profiles - these contextualize an SDLC environment (i.e., the `dev` profile for local development). `dev` is the only profile that is fleshed out at this time. If no Configuration Profile is provided, the values in application.properties will be used without override.
+* Configuration Profiles - these contextualize an SDLC environment (i.e., the `dev` profile for local development). If no Configuration Profile is provided, the values in application.properties will be used without override.
 
   | Configuration Profile      | Properties file |
   | -------------------------- | -------------------------- |

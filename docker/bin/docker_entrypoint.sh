@@ -28,6 +28,10 @@ function validate() {
     "DB_URI"
     "REDIS_URI"
     "ELASTICSEARCH_URI"
+    "OAUTH_ISSUER"
+    "OAUTH_CLIENTID"
+    "OAUTH_CLIENTSECRET"
+    "OAUTH_AUDIENCE"
   )
 
   for arg in "${required_args[@]}"
@@ -39,30 +43,6 @@ function validate() {
   done
 
   # optional args
-  if [[ -z "${OAUTH_ISSUER}" ]]; then
-    OAUTH_ISSUER=""
-    echo_info "Missing environment 'OAUTH_ISSUER'"
-    echo_info "  Defaulting to OAUTH_ISSUER=${OAUTH_ISSUER}"
-  fi
-
-  if [[ -z "${OAUTH_CLIENTID}" ]]; then
-    OAUTH_CLIENTID=""
-    echo_info "Missing environment 'OAUTH_CLIENTID'"
-    echo_info "  Defaulting to OAUTH_CLIENTID=${OAUTH_CLIENTID}"
-  fi
-
-  if [[ -z "${OAUTH_CLIENTSECRET}" ]]; then
-    OAUTH_CLIENTSECRET=""
-    echo_info "Missing environment 'OAUTH_CLIENTSECRET'"
-    echo_info "  Defaulting to OAUTH_CLIENTSECRET=${OAUTH_CLIENTSECRET}"
-  fi
-
-  if [[ -z "${OAUTH_AUDIENCE}" ]]; then
-    OAUTH_AUDIENCE=""
-    echo_info "Missing environment 'OAUTH_AUDIENCE'"
-    echo_info "  Defaulting to OAUTH_AUDIENCE=${OAUTH_AUDIENCE}"
-  fi
-
   if [[ -z "${MIGRATIONS_ENABLED}" ]]; then
     MIGRATIONS_ENABLED=false
     echo_info "Missing environment 'MIGRATIONS_ENABLED'"

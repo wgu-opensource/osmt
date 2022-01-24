@@ -14,10 +14,8 @@ export class AppConfig {
 
   defaultConfig(): IAppConfig {
     const settings = new DefaultAppConfig()
-    settings.production = environment.production
     settings.baseApiUrl = environment.baseApiUrl
     settings.loginUrl = environment.loginUrl
-    settings.isAuthEnabled = environment.isAuthEnabled
     return settings
   }
 

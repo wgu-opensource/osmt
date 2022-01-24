@@ -2,6 +2,5 @@ export const environment = {
   production: true,
   baseApiUrl: "",
   loginUrl: "/oauth2/authorization/okta",
-  dynamicWhitelabel: true,
-  isAuthEnabled: true
+  dynamicWhitelabel: true
 }

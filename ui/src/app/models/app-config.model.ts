@@ -1,7 +1,6 @@
 export interface IAppConfig {
   baseApiUrl: string,
   loginUrl: string,
-  isAuthEnabled: boolean,
   production: boolean,
   editableAuthor: boolean,
   defaultAuthorValue: string,
@@ -22,7 +21,6 @@ export interface IAppConfig {
 export class DefaultAppConfig implements IAppConfig {
   baseApiUrl = ""
   loginUrl = ""
-  isAuthEnabled = true
   production = false
   editableAuthor = true
   defaultAuthorValue = ""

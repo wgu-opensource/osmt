@@ -12,11 +12,12 @@ OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. Any OSMT ins
 
 ## Getting started
 Follow the steps in the [Pre-requisites](README.md#pre-requisites) and [Running the Quickstart](README.md#running-the-quickstart) sections to bootstrap a local Quickstart OSMT instance (you can see more details in the [Quickstart Configuration](README.md#quickstart-configuration) section).
-* NOTE: A Quickstart OSMT instance should be for demo purposes only. The data is stored on a Docker volume. Unless your organization has taken technical steps to ensure the backing data will remain available, you should consider Quickstart data to be temporary. If you create RSDs or Collections, you should export them before shutting down the Quickstart. See the How-To section of osmt.io for more information on exporting.
+* NOTE: A Quickstart OSMT instance should be for demo purposes only. The data is stored on a Docker volume. Unless your organization has taken technical steps to ensure the backing data will remain available, you should consider Quickstart data to be temporary. If you create RSDs or Collections, you should export them before shutting down the Quickstart. See the [How-To](https://osmt.io/docs.html) section of osmt.io for more information on exporting.
 * Please have the right technical people in your organization deploy a production OSMT instance before making any real investment in effort for building skills.
 
 ### Using the OSMT development utility (`osmt_cli.sh`)
 The OSMT source code includes a utility named `osmt_cli.sh`, in the project root directory. `osmt_cli.sh` simplifies setting up an OSMT environment and doing routine tasks. It uses BASH, and works on MacOS and Linux. It may work with a BASH interpreter in Windows, but we have not yet tested this. You can run `./osmt_cli.sh -h` for the help text.
+* `osmt_cli.sh` uses git to help identify directory context. If you downloaded the source code as a ZIP file, you will need to have git installed to use `osmt_cli.sh`.
 
 ### Pre-requisites
 1. Obtain a "free developer" Okta account. This is required to log in to a local OSMT. Please follow the steps in [OAuth2 and Okta Configuration](README.md#oauth2-and-okta-configuration) below, and return here when complete. You can refer to [Environment files for Quickstart and Development Stacks](README.md#environment-files-for-quickstart-and-development-stacks) for more details.
@@ -57,7 +58,7 @@ The OSMT source code includes a utility named `osmt_cli.sh`, in the project root
 5. If you prefer, you can import BLS and O*NET job code metadata. This step is optional. See [Post-installation (BLS, O*NET, etc)](README.md#post-installation-bls-onet-etc) and [](api/README.md#importing-data) for more details.
     ```
     ./osmt_cli.sh -m
-    ``` 
+    ```
 
 6. Start the Spring application.
    * This automatically sources the `api/osmt-dev-stack.env` file. It will also serve the static Angular files.
@@ -70,7 +71,7 @@ The OSMT source code includes a utility named `osmt_cli.sh`, in the project root
    * This stops the dev-stack.yml docker-compose stack.
     ```
     ./osmt_cli.sh -e
-    ``` 
+    ```
 
 ### Housekeeping with `osmt_cli.sh`
 You can surgically clean up OSMT-related Docker images and data volumes. This step **will** delete data from local OSMT Quickstart and Development configurations. It does not remove the mysql/redis/elasticsearch images, as those may be available locally for other purposes.

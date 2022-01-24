@@ -30,10 +30,6 @@
     <profiles>
         <profile>
             <id>dockerfile-build</id>
-
-        </profile>
-        <profile>
-            <id>local-noauth</id>
         </profile>
     </profiles>
 

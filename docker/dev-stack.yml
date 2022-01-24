@@ -6,7 +6,7 @@ services:
     image: library/mysql:8.0
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb3 --collation-server=utf8mb3_unicode_ci
     volumes:
-      - osmt_sql_db:/var/lib/mysql:rw
+      - sql_db:/var/lib/mysql:rw
       - ./mysql-init:/docker-entrypoint-initdb.d
     environment:
       - "MYSQL_PASSWORD=password"
@@ -36,16 +36,10 @@ services:
       - osmt
     ports:
       - "6379:6379"
-  oauth:
-    image: ghcr.io/navikt/mock-oauth2-server:0.4.1
-    environment:
-      - "SERVER_PORT=8180"
-    networks:
-      - osmt
 networks:
   osmt:
     driver: bridge
 
 volumes:
-  osmt_sql_db:
+  sql_db:
   elastic_data:

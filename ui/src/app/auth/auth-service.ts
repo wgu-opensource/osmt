@@ -1,4 +1,4 @@
-import {AppConfig} from "../app.config";
+import {HttpErrorResponse} from "@angular/common/http";
 
 export const STORAGE_KEY_TOKEN = "OSMT.AuthService.accessToken"
 export const STORAGE_KEY_RETURN = "OSMT.AuthService.return"
@@ -32,8 +32,7 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return (!AppConfig.settings.production && !AppConfig.settings.isAuthEnabled) ||
-      (!this.serverIsDown && this.currentAuthToken() !== null)
+    return !this.serverIsDown && this.currentAuthToken() !== null
   }
 
   setServerIsDown(isDown: boolean): void {

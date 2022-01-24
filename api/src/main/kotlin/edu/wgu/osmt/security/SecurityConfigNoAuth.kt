@@ -15,4 +15,5 @@ class SecurityConfigNoAuth : WebSecurityConfigurerAdapter() {
     @Throws(Exception::class)
     override fun configure(web: WebSecurity) {
         web.ignoring().antMatchers("/**")
-    }}
+    }
+}

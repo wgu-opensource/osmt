@@ -36,6 +36,12 @@ services:
       - osmt
     ports:
       - "6379:6379"
+  oauth:
+    image: ghcr.io/navikt/mock-oauth2-server:0.4.1
+    environment:
+      - "SERVER_PORT=8180"
+    networks:
+      - osmt
 networks:
   osmt:
     driver: bridge

@@ -212,7 +212,7 @@ _validate_env_file() {
 
 _validate_osmt_dev_docker_stack() {
   local -i dev_container_count; dev_container_count="$(docker ps -q --filter name='osmt_dev*' | wc -l)"
-  if [[ "${dev_container_count}" -ne 4 ]]; then
+  if [[ "${dev_container_count}" -ne 3 ]]; then
     echo_err "Development Docker stack containers are not running."
     return 1
   fi

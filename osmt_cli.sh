@@ -4,6 +4,7 @@
 set -u
 
 declare debug=${DEBUG:-0}
+declare verbose=${VERBOSE:-}
 declare project_dir
 declare quickstart_env_file
 declare dev_env_file
@@ -210,8 +211,8 @@ _validate_env_file() {
 }
 
 _validate_osmt_dev_docker_stack() {
-  local -i dev_container_count; dev_container_count="$(docker ps -q --filter name='osmt_cli*' | wc -l)"
-  if [[ "${dev_container_count}" -ne 3 ]]; then
+  local -i dev_container_count; dev_container_count="$(docker ps -q --filter name='osmt_dev*' | wc -l)"
+  if [[ "${dev_container_count}" -ne 4 ]]; then
     echo_err "Development Docker stack containers are not running."
     return 1
   fi
@@ -264,7 +265,7 @@ start_osmt_dev_docker_stack() {
   echo
   echo_info "Starting OSMT Development Docker stack. You can stop it with $(basename "${0}") -e"
   cd "${project_dir}/docker" || return 1
-  docker-compose --file dev-stack.yml -p osmt_cli up --detach
+  docker-compose --file dev-stack.yml -p osmt_dev up --detach
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Starting OSMT Development Docker stack failed. Exiting..."
@@ -277,7 +278,7 @@ stop_osmt_dev_docker_stack() {
   echo
   echo_info "Stopping OSMT Development Docker stack"
   cd "${project_dir}/docker" || return 1
-  docker-compose --file dev-stack.yml -p osmt_cli down
+  docker-compose --file dev-stack.yml -p osmt_dev down
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Stopping OSMT Development Docker stack failed. Exiting..."
@@ -305,7 +306,7 @@ start_osmt_quickstart() {
 
   echo
   echo_info "Starting OSMT Quickstart with docker-compose using osmt-quickstart.env"
-  docker-compose --env-file "${quickstart_env_file}" up
+  docker-compose --env-file "${quickstart_env_file}" -p osmt_quickstart up
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Starting OSMT Quickstart Docker stack failed. Exiting..."
@@ -434,7 +435,7 @@ A command line utility to simplify onboarding with OSMT development instances. T
 - provides convenience commands for starting / stopping / cleaning up development stacks
 
 Usage:
-  osmt_cli.sh [accepts a single option]
+  osmt_dev.sh [accepts a single option]
 
   -i   Initialize environment files for Quickstart and Development configurations.
   -v   Validate local environment and dependencies for development.

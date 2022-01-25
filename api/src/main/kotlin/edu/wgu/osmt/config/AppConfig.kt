@@ -41,7 +41,10 @@ class AppConfig(
     val baseLineAuditLogIfEmpty: Boolean,
 
     @Value("\${app.rsd-context-url}")
-    val rsdContextUrl: String
+    val rsdContextUrl: String,
+
+    @Value("\${app.security.cors.allowedOrigins}")
+    val corsAllowedOrigins: String
 ) {
     @Autowired
     lateinit var environment: Environment

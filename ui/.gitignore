@@ -5,6 +5,7 @@
 /tmp
 /out-tsc
 /test-results
+target/
 
 # Only exists if Bazel was run
 /bazel-out

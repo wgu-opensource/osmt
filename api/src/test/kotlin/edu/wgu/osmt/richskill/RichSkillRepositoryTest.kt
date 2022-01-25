@@ -209,7 +209,8 @@ class RichSkillRepositoryTest @Autowired constructor(
             name = name,
             statement = statement,
             author = null,
-            category = null
+            category = null,
+            publishStatus = PublishStatus.Published
         ), "test")
         assertThat(created).isNotNull
         assertThat(created!!.id).isNotNull()

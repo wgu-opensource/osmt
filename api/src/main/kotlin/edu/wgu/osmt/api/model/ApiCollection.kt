@@ -43,6 +43,10 @@ class ApiCollection(private val collection: Collection, private val ss: List<Ric
     val status: PublishStatus
         get() = collection.publishStatus()
 
+    @get:JsonProperty("isExternallyShared")
+    val isExternallyShared: Boolean
+        get() = collection.isExternallyShared
+
     @get:JsonProperty
     val creationDate: ZonedDateTime
         get() = collection.creationDate.atZone(ZoneId.of("UTC"))

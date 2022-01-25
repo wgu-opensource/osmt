@@ -24,8 +24,7 @@ object CollectionTable: TableWithUpdate<CollectionUpdateObject>, PublishStatusUp
         onDelete = ReferenceOption.RESTRICT,
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
-
-
+    val externallyShared = bool("externally_shared")
 }
 
 object CollectionSkills : Table("CollectionSkills") {

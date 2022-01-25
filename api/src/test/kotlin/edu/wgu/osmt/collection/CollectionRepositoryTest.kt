@@ -191,4 +191,40 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
         assertThat(batchResult?.modifiedCount).isEqualTo(skillCount*3)
     }
 
+    @Test
+    fun `should share an existing collection`() {
+        val created = collectionRepository.create(
+            CollectionUpdateObject(
+            name = "test collection",
+            publishStatus = PublishStatus.Published
+        ), "test")
+        assertThat(created).isNotNull
+        assertThat(created!!.id).isNotNull()
+
+        val updated = collectionRepository.updateIsExternallyShared(created.id.value, true,"test")
+        val retrieved  = collectionRepository.findById(created.id.value)
+
+        assertThat(updated?.isExternallyShared).isEqualTo(true)
+        assertThat(retrieved?.isExternallyShared).isEqualTo(true)
+    }
+
+    @Test
+    fun `should unshare an existing collection`() {
+        val created = collectionRepository.create(CollectionUpdateObject(
+            name = "test collection",
+            publishStatus = PublishStatus.Published
+        ), "test")
+        assertThat(created).isNotNull
+        assertThat(created!!.id).isNotNull()
+
+        // First need to make externally shared
+        collectionRepository.updateIsExternallyShared(created.id.value, true,"test")
+
+        val updated = collectionRepository.updateIsExternallyShared(created.id.value, false,"test")
+        val retrieved  = collectionRepository.findById(created.id.value)
+
+        assertThat(updated?.isExternallyShared).isEqualTo(false)
+        assertThat(retrieved?.isExternallyShared).isEqualTo(false)
+    }
+
 }

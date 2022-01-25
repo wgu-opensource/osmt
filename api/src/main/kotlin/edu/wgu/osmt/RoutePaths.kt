@@ -24,6 +24,8 @@ object RoutePaths {
     const val COLLECTION_PUBLISH = "$COLLECTIONS_PATH/publish"
     const val COLLECTION_DETAIL = "${COLLECTIONS_PATH}/{uuid}"
     const val COLLECTION_UPDATE = "${COLLECTION_DETAIL}/update"
+    const val COLLECTION_SHARE_EXTERNALLY = "$COLLECTION_DETAIL/share"
+    const val COLLECTION_UNSHARE_EXTERNALLY = "$COLLECTION_DETAIL/unshare"
     const val COLLECTION_SKILLS_UPDATE = "${COLLECTION_DETAIL}/updateSkills"
     const val COLLECTION_SKILLS = "${COLLECTION_DETAIL}/skills"
     const val COLLECTION_AUDIT_LOG = "${COLLECTION_DETAIL}/log"

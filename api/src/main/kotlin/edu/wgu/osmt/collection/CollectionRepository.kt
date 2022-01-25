@@ -1,14 +1,17 @@
 package edu.wgu.osmt.collection
 
 import edu.wgu.osmt.api.FormValidationException
+import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
+import edu.wgu.osmt.auditlog.Change
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillEsRepo
@@ -23,6 +26,7 @@ import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -56,6 +60,12 @@ interface CollectionRepository {
         existingCollectionId: Long,
         collectionUpdate: ApiCollectionUpdate,
         richSkillRepository: RichSkillRepository,
+        user: String
+    ): CollectionDao?
+
+    fun updateIsExternallyShared(
+        id: Long,
+        newValue: Boolean,
         user: String
     ): CollectionDao?
 
@@ -114,6 +124,7 @@ class CollectionRepositoryImpl @Autowired constructor(
             this.uuid = UUID.randomUUID().toString()
             this.name = updateObject.name
             this.author = updateObject.author?.t
+            this.isExternallyShared = false
         }
 
         updateObject.copy(id = newCollection.id.value).applyToDao(newCollection)
@@ -240,6 +251,40 @@ class CollectionRepositoryImpl @Autowired constructor(
         )
 
         return update(updateObjectWithId, user)
+    }
+
+    override fun updateIsExternallyShared(id: Long, newValue: Boolean, user: String): CollectionDao? {
+        val daoObject = dao.findById(id)
+
+        daoObject?.let {
+            if (daoObject.isExternallyShared != newValue) {
+                if (newValue && !PublishStatus.isCurrentlyPublished(daoObject.publishStatus())) {
+                    throw GeneralApiException("Collection must be published to share externally", HttpStatus.FORBIDDEN)
+                }
+
+                daoObject.isExternallyShared = newValue;
+
+                // TODO: Create Search hub sync task.
+
+                auditLogRepository.create(
+                    AuditLog.fromAtomicOp(
+                        table,
+                        id,
+                        listOf(
+                            Change(
+                                Collection::isExternallyShared.name,
+                                (!newValue).toString(),
+                                newValue.toString()
+                            )
+                        ),
+                        user,
+                        AuditOperationType.ExternalSharingChange
+                    )
+                )
+            }
+        }
+
+        return daoObject
     }
 
     override fun updateSkillsForTask(

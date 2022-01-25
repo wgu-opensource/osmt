@@ -11,6 +11,7 @@ export interface ICollection {
   publishDate?: Date
   skills: string[]
   status: PublishStatus
+  isExternallyShared: boolean
   updateDate?: Date
   uuid: string
 }
@@ -25,6 +26,7 @@ export class ApiCollection {
   publishDate?: Date
   skills: string[]
   status: PublishStatus
+  isExternallyShared: boolean
   updateDate?: Date
   uuid: string
 
@@ -39,6 +41,7 @@ export class ApiCollection {
       publishDate,
       skills,
       status,
+      isExternallyShared,
       updateDate,
       uuid
     }: ICollection
@@ -52,6 +55,7 @@ export class ApiCollection {
     this.publishDate = publishDate
     this.skills = skills
     this.status = status
+    this.isExternallyShared = isExternallyShared
     this.updateDate = updateDate
     this.uuid = uuid
   }

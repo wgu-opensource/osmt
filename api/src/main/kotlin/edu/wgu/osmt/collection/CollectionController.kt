@@ -106,6 +106,41 @@ class CollectionController @Autowired constructor(
         return ApiCollection.fromDao(updated, appConfig)
     }
 
+    @PostMapping(RoutePaths.COLLECTION_SHARE_EXTERNALLY, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun shareCollectionExternally(
+        @PathVariable uuid: String,
+        @AuthenticationPrincipal user: Jwt?
+    ): ApiCollection {
+        val existingCollection = collectionRepository.findByUUID(uuid)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        val updatedCollection = collectionRepository.updateIsExternallyShared(
+                existingCollection.id.value,
+                true,
+                readableUsername(user)
+            ) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        return ApiCollection.fromDao(updatedCollection, appConfig)
+    }
+
+    @PostMapping(RoutePaths.COLLECTION_UNSHARE_EXTERNALLY, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun unshareCollectionExternally(
+        @PathVariable uuid: String,
+        @AuthenticationPrincipal user: Jwt?
+    ): ApiCollection {
+        val existingCollection = collectionRepository.findByUUID(uuid)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        val updatedCollection = collectionRepository.updateIsExternallyShared(
+                existingCollection.id.value,
+                false,
+                readableUsername(user)
+            ) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        return ApiCollection.fromDao(updatedCollection, appConfig)
+    }
 
     @PostMapping(RoutePaths.COLLECTION_SKILLS_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody

@@ -20,6 +20,7 @@ data class Collection(
     val uuid: String,
     val name: String,
     val author: Keyword? = null,
+    val isExternallyShared: Boolean = false,
     override val archiveDate: LocalDateTime? = null,
     override val publishDate: LocalDateTime? = null
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
@@ -80,7 +81,8 @@ fun Collection.diff(old: Collection?): List<Change> {
     val comparisons: List<Comparison<*>> = listOf(
         Comparison(Collection::name.name, CollectionComparison::compareName, old, new),
         Comparison(Collection::author.name, CollectionComparison::compareAuthor, old, new),
-        Comparison(Collection::publishStatus.name, CollectionComparison::comparePublishStatus, old, new)
+        Comparison(Collection::publishStatus.name, CollectionComparison::comparePublishStatus, old, new),
+        Comparison(Collection::isExternallyShared.name, CollectionComparison::compareIsExternallyShared, old, new)
     )
 
     return comparisons.mapNotNull { it.compare() }
@@ -97,6 +99,10 @@ object CollectionComparison {
 
     fun comparePublishStatus(c: Collection): String {
         return c.publishStatus().name
+    }
+
+    fun compareIsExternallyShared(c: Collection): String {
+        return c.isExternallyShared.toString()
     }
 }
 

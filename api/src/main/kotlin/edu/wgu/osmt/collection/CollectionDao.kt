@@ -17,6 +17,7 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
     var uuid: String by CollectionTable.uuid
     var name: String by CollectionTable.name
     var author by KeywordDao optionalReferencedOn CollectionTable.author
+    var isExternallyShared: Boolean by CollectionTable.externallyShared
 
     var skills by RichSkillDescriptorDao via CollectionSkills
 
@@ -31,6 +32,7 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             uuid = uuid,
             name = name,
             author = author?.toModel(),
+            isExternallyShared = isExternallyShared,
             archiveDate = archiveDate,
             publishDate = publishDate
         )

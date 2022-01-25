@@ -243,6 +243,7 @@ export function createMockCollection(
   archiveDate: Date | undefined,
   publishDate: Date | undefined,
   status: PublishStatus,
+  isExternallyShared: boolean = false,
   skills: string[] = ["skill 1", "skill 2"]
 ): ICollection {
   return {
@@ -251,6 +252,7 @@ export function createMockCollection(
     archiveDate,
     publishDate,
     status,
+    isExternallyShared,
     id: "id1",
     uuid: "uuid1",
     name: "my collection name",

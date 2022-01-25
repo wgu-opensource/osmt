@@ -58,6 +58,9 @@ import javax.servlet.http.HttpServletResponse
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
+    lateinit var appConfig: AppConfig
+
+    @Autowired
     lateinit var redirectToFrontend: RedirectToFrontend
 
     @Autowired
@@ -110,7 +113,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource?{
         val  configuration: CorsConfiguration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("*")
+        configuration.allowedOrigins = listOf(appConfig.baseDomain, appConfig.frontendUrl)
         configuration.allowedMethods = listOf("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH")
         // setAllowCredentials(true) is important, otherwise:
         // The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.

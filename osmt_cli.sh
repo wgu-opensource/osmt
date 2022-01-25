@@ -307,11 +307,6 @@ start_osmt_quickstart() {
   echo
   echo_info "Starting OSMT Quickstart with docker-compose using osmt-quickstart.env"
   docker-compose --env-file "${quickstart_env_file}" -p osmt_quickstart up
-  rc=$?
-  if [[ $rc -ne 0 ]]; then
-    echo_err "Starting OSMT Quickstart Docker stack failed. Exiting..."
-    return 1
-  fi
 }
 
 import_osmt_dev_metadata() {

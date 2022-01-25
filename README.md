@@ -15,7 +15,7 @@ Follow the steps in the [Pre-requisites](README.md#pre-requisites) and [Running 
 * NOTE: A Quickstart OSMT instance should be for demo purposes only. The data is stored on a Docker volume. Unless your organization has taken technical steps to ensure the backing data will remain available, you should consider Quickstart data to be temporary. If you create RSDs or Collections, you should export them before shutting down the Quickstart. See the [How-To](https://osmt.io/docs.html) section of osmt.io for more information on exporting.
 * Please have the right technical people in your organization deploy a production OSMT instance before making any real investment in effort for building skills.
 
-### Using the OSMT development utility (`osmt_cli.sh`)
+### Using the OSMT CLI utility (`osmt_cli.sh`)
 The OSMT source code includes a utility named `osmt_cli.sh`, in the project root directory. `osmt_cli.sh` simplifies setting up an OSMT environment and doing routine tasks. It uses BASH, and works on MacOS and Linux. It may work with a BASH interpreter in Windows, but we have not yet tested this. You can run `./osmt_cli.sh -h` for the help text.
 * `osmt_cli.sh` uses git to help identify directory context. If you downloaded the source code as a ZIP file, you will need to have git installed to use `osmt_cli.sh`.
 
@@ -84,7 +84,7 @@ You can surgically clean up OSMT-related Docker images and data volumes. This st
 ### Requirements to Build OSMT Locally
 OSMT requires certain software and SDKs to build:
 * Docker >=17.06.0
-  * Recommended 4 GB memory allocated to the Docker service
+  * Recommended 6 GB memory allocated to the Docker service. On Windows, Docker will possibly need more memory.
 * a Java 11 JDK (OpenJDK works fine)
 * Maven 3.8.3 or higher
 * NodeJS v16.13.0 / npm 8.1.0 or higher (the LTS versions at the time of this writing)

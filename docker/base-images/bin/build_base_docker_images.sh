@@ -31,7 +31,7 @@ function prepare() {
 }
 
 function build() {
-  local rc
+  local -i rc
   local image_name; image_name="${1}"
   if [[ -z "${image_name}" ]]; then
     echo_err "build() requires an image_name argument. Exiting..."

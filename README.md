@@ -5,77 +5,141 @@ The Open Skills Management Tool (OSMT, pronounced "oz-mit") is a free, open-sour
 
 ## Architecture
 OSMT is written in Kotlin with Spring Boot, and Angular. It uses backend-instances of MySQL, Redis, and Elastisearch.
-![OSMT architectural overview](./ui/src/assets/Architectural-Diagram.png)
+![High-level architecture diagram](./ui/src/assets/Architectural-Diagram.png "High-level architecture diagram")
 
-### Dependencies
-OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. Any OSMT instance beyond a local development server also requires an OAuth2 provider. See additional notes below for [Configuration](#configuration).
+## Dependencies
+OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. Any OSMT instance beyond a local development server also requires an OAuth2 provider. Local / non-production configurations can be stood up using only Docker. See additional notes below for [Configuration](README.md#configuration).
 
-### Requirements to Build OSMT
+## Getting started
+Follow the steps in the [Pre-requisites](README.md#pre-requisites) and [Running the Quickstart](README.md#running-the-quickstart) sections to bootstrap a local Quickstart OSMT instance (you can see more details in the [Quickstart Configuration](README.md#quickstart-configuration) section).
+* NOTE: A Quickstart OSMT instance should be for demo purposes only. The data is stored on a Docker volume. Unless your organization has taken technical steps to ensure the backing data will remain available, you should consider Quickstart data to be temporary. If you create RSDs or Collections, you should export them before shutting down the Quickstart. See the [How-To](https://osmt.io/docs.html) section of osmt.io for more information on exporting.
+* Please have the right technical people in your organization deploy a production OSMT instance before making any real investment in effort for building skills.
+
+### Using the OSMT CLI utility (`osmt_cli.sh`)
+The OSMT source code includes a utility named `osmt_cli.sh`, in the project root directory. `osmt_cli.sh` simplifies setting up an OSMT environment and doing routine tasks. It uses BASH, and works on MacOS and Linux. It may work with a BASH interpreter in Windows, but we have not yet tested this. You can run `./osmt_cli.sh -h` for the help text.
+* `osmt_cli.sh` uses git to help identify directory context. If you downloaded the source code as a ZIP file, you will need to have git installed to use `osmt_cli.sh`.
+
+### Pre-requisites
+1. Obtain a "free developer" Okta account. This is required to log in to a local OSMT. Please follow the steps in [OAuth2 and Okta Configuration](README.md#oauth2-and-okta-configuration) below, and return here when complete. You can refer to [Environment files for Quickstart and Development Stacks](README.md#environment-files-for-quickstart-and-development-stacks) for more details.
+
+2. Initialize your environment files. After running this, update the OAUTH2/OIDC values in the env files (replace the `xxxxxx` values with the correct values from your Okta account)
+    ```
+    ./osmt_cli.sh -i
+    ```
+
+### Running the Quickstart
+1. Start the Quickstart configuration. This will take several minutes to download resources and build the software. If you continue to loop on errors that report "Retrying in 10 seconds...", there's something wrong. Search and reach out in the [Discussion](https://github.com/wgu-opensource/osmt/discussions) boards in GitHub.
+    ```
+    ./osmt_cli.sh -q
+    ```
+
+2. Open your browser to `http://localhost:8080`.
+
+3. You can exit the Quickstart configuration by pressing [Ctrl-C].
+    * If you don't clean up the Docker images and volumes, Quickstart should start very quickly when re-running `osmt_cli.sh -q`.
+
+### Running the Development configuration
+1. Validate your local environment (for Docker, Java, and other SDKs / runtimes). If this command reports error, you will need to resolve them before running the Quickstart configuration. See more in the [Requirements to Build OSMT](README.md#requirements-to-build-osmt) section
+    ```
+    ./osmt_cli.sh -v
+    ```
+
+2. **From the project root**, run a Maven build. The API module currently depends on the UI module, so 'mvn package' will not be sufficient.
+    ```
+    mvn clean install
+    ```
+
+3. Start the back-end MySQL/Redis/ElasticSearch dependencies.
+    * This starts the dev-stack.yml docker-compose stack. It will run "detached", meaning running in the background. You can use `docker ps` and `docker logs` to see what the services are doing.
+    ```
+    ./osmt_cli.sh -d
+    ```
+
+5. If you prefer, you can import BLS and O*NET job code metadata. This step is optional. See [Post-installation (BLS, O*NET, etc)](README.md#post-installation-bls-onet-etc) and [](api/README.md#importing-data) for more details.
+    ```
+    ./osmt_cli.sh -m
+    ```
+
+6. Start the Spring application.
+   * This automatically sources the `api/osmt-dev-stack.env` file. It will also serve the static Angular files.
+    * You can exit the Spring application by pressing [Ctrl-C].
+   ```
+   ./osmt_cli.sh -s
+   ```
+
+7. Shut down the back-end MySQL/Redis/ElasticSearch dependencies.
+   * This stops the dev-stack.yml docker-compose stack.
+    ```
+    ./osmt_cli.sh -e
+    ```
+
+### Housekeeping with `osmt_cli.sh`
+You can surgically clean up OSMT-related Docker images and data volumes. This step **will** delete data from local OSMT Quickstart and Development configurations. It does not remove the mysql/redis/elasticsearch images, as those may be available locally for other purposes.
+```
+./osmt_cli.sh -c
+```
+
+## Building OSMT
+
+### Requirements to Build OSMT Locally
 OSMT requires certain software and SDKs to build:
+* Docker >=17.06.0
+  * Recommended 6 GB memory allocated to the Docker service. On Windows, Docker will possibly need more memory.
 * a Java 11 JDK (OpenJDK works fine)
 * Maven 3.8.3 or higher
 * NodeJS v16.13.0 / npm 8.1.0 or higher (the LTS versions at the time of this writing)
   * NodeJS/npm are used for building client code; there are no runtime NodeJS/npm dependencies.
   * In the `ui` module, `frontend-maven-plugin` uses an embedded copy of Node v16.13.0 and npm 8.1.0.
   * Locally, a developer probably has their own versions of NodeJS and npm installed. They should be >= the versions given above.
-* a recent version of Docker and docker-compose
-  * Recommended 4 GB memory allocated to the Docker service
+
+Run `osmt_cli.sh -v` for feedback on your local SDKs and runtimes. The output of this command may be helpful in troubleshooting with the OSMT community as well.
 
 ### Project Structure
 OSMT is a multi-module Maven project. pom.xml files exist in the project root, `./api` and `./ui` directories. Running the command `mvn clean install` from the project root will create a fat jar in the target directory that contains both the backend server and the prod-built Angular frontend static files.
 
-    project root/
-    |-- api                - Spring Boot, Kotlin-based backend
-    |-- ui                 - Angular frontend
-    \-- docker             - Misc. Docker support for development
-* `mvn package` may work file, but the `api` module depends on artifacts from the `ui` module. `mvn install`. Will place the ui artifacts in your local Maven repo, and will decouple your local builds from the present of the jar file being present in `ui/target`
+    -- project root
+     |-- api                - Spring Boot, Kotlin-based backend
+     |-- docs               - Techincal and OpenAPI documentation
+     |-- import             - Example CSV files for importing
+     |-- docker             - Docker resources for base images and development
+     \-- ui                 - Angular frontend
 
-The [API](./api/README.md) and [UI](./ui/README.md) modules have their own README.md files with more specific information about those layers.
+* `mvn package` may work fine, but the `api` module depends on artifacts from the `ui` module. `mvn install` will place the ui artifacts in your local Maven repo, and will decouple your local builds from the presence of the jar file being present in `ui/target`.
+
+The [API](api/README.md) and [UI](ui/README.md) modules have their own README.md files with more specific information about those modules.
 
 ### Configuration
-* This project makes use of 2 similar configurations, labelled in this documentation as "Quickstart" and "Development".
-* OSMT requires an OAuth2 provider. It is preconfigured for Okta, but you can use any provider.
+This project makes use of 2 similar local configurations, "Quickstart" and "Development". These both rely on docker-compose and environment files. Follow the steps in [Pre-requisites](README.md#pre-requisites) above. See [Environment files for Quickstart and Development Stacks](README.md#environment-files-for-quickstart-and-development-stacks) for more details.
 
-#### Quickstart Configuration
+### Quickstart Configuration
+The Quickstart configuration uses the `docker-compose.yml` file in the project root to stand up a non-production OSMT stack. This file uses Dockerized Java 11 and Maven to build the UI and API modules as a fat jar, and then stands up an application stack with the back-end dependencies (MySQL, ElasticSearch, and Redis) and a Spring application using the fat jar. The Quickstart configuration automatically imports BLS and O*NET job code metadata.
+* The Quickstart configuration is opinionated in that all services and volumes are stood up on a single machine That topology may or may not be appropriate for your organization. It could inform how to configure a production OSMT instance, but it is not intended for a production deployment.
+* Quickstart will want to use the `osmt-quickstart.env` file to provide your OAuth2 secrets.
+* You are not required to use `osmt_cli.sh`. You can run this command from the project root to stand up the Quickstart configuration.
+    ```
+    docker-compose --env-file osmt-quickstart.env up --build
+    ```
 
-The Quickstart configuration uses the `docker-compose.yml` file in the project root to stand up a non-production OSMT stack. This file builds a Docker image with Java 11 and Maven, builds the UI and API modules as a fat jar, and then stands up an application stack with the back-end dependencies (MySQL, ElasticSearch, and Redis) and a Spring application using the fat jar. The Quickstart configuration automatically imports BLS and O*NET job code metadata
+### Development Configuration
+The Development configuration uses the `dev-stack.yml` docker-compose file in the `docker` directory, for standing up just the back-end dependencies. This facilitates doing active development in the Spring or Angular layers. You can use `osmt_cli.sh` in the steps given in [Running the Development configuration](README.md#running-the-development-configuration) to simplify starting and stopping the Docker services and Spring application.
 
-* This configuration could inform how to configure a production OSMT instance, but it is not intended for a production deployment.
+* You are not required to use `osmt_cli.sh`.
+  * You can run this command to stand up the Development configuration.
+      ```
+      cd docker; docker-compose --file dev-stack.yml up
+      ```
+  * You can manage the local Spring application directly. See [Running from the Command Line](api/README.md#running-from-the-command-line) for details
 
-The Quickstart configuration is deployed with a single docker-compose command. These steps below are the general process. Follow the guidance in [Environment files for Quickstart and Development Stacks](#environment-files-for-Quickstart-and-development-stacks) for more details.
-
-1. Create file named `osmt-quickstart.env` in the project root. This file will be ignored by git.
-2. From the project root, run this command:
-  - `docker-compose --env-file osmt-quickstart.env up --build`
-3. Open `http://localhost:8080` in your browser.
-
-#### Development Configuration
-The Development configuration uses the `dev-stack.yml` docker-compose file in the `docker` directory, for standing up just the back-end dependencies and doing active development in the Spring or Angular layers.
-1. Start the Development docker-compose stack (`dev-stack.yml`, with MySQL, ElasticSearch, and Redis).
-  - From the `docker` directory, run this command:
-    - `docker-compose -f dev-stack.yml up`
-
-2. Start the API Spring Boot application.
-- From the `project root` directory, run this commands
-    - `mvn clean install`
-- Create a file named `osmt-dev-stack.env` in the `api` directory. Follow the guidance in [Environment files for Quickstart and Development Stacks](#environment-files-for-quickstart-and-development-stacks) for more details.
-- From the `api` directory, run this command:
-    - `mvn -Dspring-boot.run.profiles=dev,apiserver,oauth2-okta spring-boot:run`
-- See [Spring Boot Configuration / Profiles](./api/README.md#spring-boot-configuration-profiles) in the [API README.md](./api/README.md) for specifics.
-
-3. Start the UI Angular front end. The Angular app is configured to proxy requests to the backend server during development. This allows one to use Angular's live reloading server.
+If doing front-end development, start the UI Angular front end. The Angular app proxies requests to the backend server during development. This allows one to use Angular's live reloading server.
   - From the `ui` directory, run these commands:
     - `npm install`
-    - `npm run ng serve`
-    
-4. Open `http://localhost:4200` in your browser.
-
-_For local development testing of API module, you can use also the `noauth` Spring profile to bypass authentication._
+    - `npm start`
+  - Open your browser to `http://localhost:4200`.
 
 ### OAuth2 and Okta Configuration
 To use Okta as your OAuth2 provider, you will need a free developer account with [Okta](https://okta.com). While the user interface at Okta may change, the big ideas of configuring an application for an OAuth/OpenID Connect provider should still apply. From your Okta Dashboard:
 1. Navigate to Applications. Create an Application Integration, using the OpenID Connect option. When prompted, choose the "Web Application" option.
-2. Provide a name that makes sense to you. The intention here is OSMT Quickstart and development.
+2. Provide a name that makes sense to you. The intention here is local OSMT development.
 3. In the General tab, under "Client Credentials":
   - Copy/paste the values for Client ID and Client Secret into a text file, you will need them shortly.
 4. In the General tab, under "Login":
@@ -87,99 +151,31 @@ To use Okta as your OAuth2 provider, you will need a free developer account with
   - Assign your Okta user ID to your web application.
 7. OSMT does not require any scopes.
 
-For Okta, you will use the `oauth2-okta` profile for Spring Boot, which will include the properties from [application-oauth2-okta.properties](./api/src/main/resources/config/application-oauth2-okta.properties). This properties file relies on secrets being provided via the environment.
+For Okta, you will use the `oauth2-okta` profile for Spring Boot, which will include the properties from [application-oauth2-okta.properties](api/src/main/resources/config/application-oauth2-okta.properties). This properties file relies on secrets being provided via the environment. The commands in `osmt_cli.sh` automatically provide the appropriate environment files.
 
-#### Environment files for Quickstart and Development Stacks
-There are many ways to provide environment values to a Spring application. That said, you should never push secrets to GitHub, so you should never store secrets in source code. The OSMT project is configured to git ignore files named `osmt*.env`, and we recommend you follow this approach. 
-#### Quickstart
+### Environment Files for Quickstart and Development Stacks
+There are many ways to provide environment values to a Spring application. That said, you should never push secrets to GitHub, so you should never store secrets in source code. The OSMT project is configured to git ignore files named `osmt*.env`, and we recommend you follow this approach. The OSMT source code includes example environment files for the Quickstart and Development configurations (`osmt-quickstart.env.example` and `api/osmt-dev-stack.env.example`). Running `./osmt_cli.sh -i` will create env files for you, but you will need to replace the 'xxxxxx' values with your OAUTH2/OIDC values, following the guidance in the [OAuth2 and Okta Configuration](README.md#oauth2-and-okta-configuration) section.
 
-You can use files following this pattern to store your OAuth2 secrets locally and pass them to a docker-compose stack, e.g., `docker-compose --env-file /path/to/osmt.env -f /path/to/compose-file/yml up --build`. We suggest the following environment files:
-
-- Create a file named `osmt.env` in the project root. Populate it with these values and the relevant secrets from your OAuth2 provider. This will be provided to a Quickstart docker-compose stack from the docker-compose file in the project root directory.
-  ```
-  ENVIRONMENT=dev,apiserver,oauth2-okta
-  BASE_DOMAIN=localhost:8080
-  FRONTEND_URL=http://localhost:8080
-
-  DB_NAME=osmt_db
-  DB_USER=osmt_db_user
-  DB_PASSWORD=password
-  MYSQL_ROOT_PASSWORD=root_password
-  MIGRATIONS_ENABLED=true
-  REINDEX_ELASTICSEARCH=true
-  SKIP_METADATA_IMPORT=false
-
-  ELASTICSEARCH_URI=http://osmt_elasticsearch_1:9200
-  REDIS_URI=osmt_redis_1:6379
-
-  OAUTH_ISSUER=https://abcdefg.okta.com
-  OAUTH_CLIENTID=123456qwerty
-  OAUTH_CLIENTSECRET=2354asdf
-  OAUTH_AUDIENCE=3456zxcv
-  ```
-
-#### Development Stacks
-- Create a file named `osmt-dev-stack.env` in the api directory. Populate it with these values and the relevant secrets from your OAuth2 provider.
-    ```
-    OAUTH_ISSUER=https://<okta_issuer>.okta.com
-    OAUTH_CLIENTID=<oauth_clientId>
-    OAUTH_CLIENTSECRET=<oauth_client_secret>
-    OAUTH_AUDIENCE=<oauth_audience>
-    ```
-- Create a bash file say exportEnv.sh in API folder to supply env properties
-    ```
-  #!/bin/bash
-    
-  echo -n "Starting Spring Boot from Maven"
-    
-  declare ENV_FILE=$1
-    
-  if [[ -n "${ENV_FILE}" ]]; then
-   echo " using environment variables from ${ENV_FILE}"
-   set -o allexport
-   source "${ENV_FILE}"
-   set +o allexport
-  fi
-  
-  mvn -Dspring-boot.run.profiles=dev,apiserver,oauth2-okta spring-boot:run
-  ```
-- Provide 755 permission to exportEnv.sh file 
-  ```
-  chmod 755 exportEnv.sh
-  ```
-- run``` ./exportEnv.sh osmt-dev-stack.env```
-- Alternate approaches to supply env variables. 
-  - you can provide these OAuth2 values as program arguments when starting your Spring Boot app (`-Dokta.oauth2.clientId="123456qwerty"`).
-  - Set environment variables by supplying json
-    - In Windows, replace <placeholder> values and run below command.
+#### Alternate approaches for Providing Environment Variables
+* Provide these OAuth2 values as program arguments when starting your Spring Boot app (`-Dokta.oauth2.clientId="123456qwerty"`).
+* Set environment variables by supplying json
+    * For MacOS & Linux, replace <placeholder> values and run below command.
       ```
-      set SPRING_APPLICATION_JSON="{\"OAUTH_ISSUER\":\"<aouth_issuer>\",\"OAUTH_CLIENTID\":\"<aouth_client>\", \"OAUTH_CLIENTSECRET\":\"<oauth_clientsecret>\",\"OAUTH_AUDIENCE\":\"<oauth_audience>\"}"
+      export SPRING_APPLICATION_JSON="{\"OAUTH_ISSUER\":\"<oauth_issuer>\",\"OAUTH_CLIENTID\":\"<aouth_client>\", \"OAUTH_CLIENTSECRET\":\"<oauth_clientsecret>\",\"OAUTH_AUDIENCE\":\"<oauth_audience>\"}"
       ```
-    - In mac & linux, replace <placeholder> values and run below command.
+    * For Windows, replace <placeholder> values and run below command.
       ```
-      export SPRING_APPLICATION_JSON="{\"OAUTH_ISSUER\":\"<aouth_issuer>\",\"OAUTH_CLIENTID\":\"<aouth_client>\", \"OAUTH_CLIENTSECRET\":\"<oauth_clientsecret>\",\"OAUTH_AUDIENCE\":\"<oauth_audience>\"}"
+      set SPRING_APPLICATION_JSON="{\"OAUTH_ISSUER\":\"<oauth_issuer>\",\"OAUTH_CLIENTID\":\"<aouth_client>\", \"OAUTH_CLIENTSECRET\":\"<oauth_clientsecret>\",\"OAUTH_AUDIENCE\":\"<oauth_audience>\"}"
       ```
-
-#### Running the Development stack from IntelliJ
-IntelliJ can automate running different layers of the OSMT stack, and also provides valuable feedback about how they are running. These steps may inform how to work with OSMT in IntelliJ:
-1. Import the top-level Maven project
-  * Navigate to File -> New from existing sources
-  * Select "Create from existing sources"
-  * Select the project root folder
-  * From IntelliJ's Maven panel, run the package phase on the osmt-parent (root) project.
-2. Add a Run configuration for the local dev docker stack
-  * Open the Project window to the docker directory. Right-click `dev-stack.yml` and choose "Edit configurations".
-  * Provide a name that makes sense to you. The intention is an OSMT development stack.
-  * Click "Modify" and add and environment file. Navigate to `osmt-dev-stack.env` and select it.
-  * Save the Run configuration, and start it.
-3. Use the [API README file](./api/README.md) to create a Run/Debug configuration for Spring Boot, and start it.
-4. Use the [UI README file](./ui/README.md) to create Run/Debug configuration for Angular, and start it.
-6. Open `http://localhost:4200` in your browser.
 
 ### Post-installation (BLS, O*NET, etc)
-See the section for [Importing Skills, BLS, and O*NET](./api/README.md#importing-skills-bls-and-onet) in the API README file.
+The Quickstart configuration automatically imports the default BLS and O*NET job code metadata. For a Development configuration, you can import the metadata with this command:
+```
+osmt_cli.sh -m
+```
+Keep in mind that removing Docker volumes will also remove this metadata. For more information, see the section for [Importing Data](api/README.md#importing-data) in the API README file.
 
 ## How to get help
-This project includes [./api/HELP.md](./api/HELP.md), with links to relevant references and tutorials.
+This project includes [./api/HELP.md](api/HELP.md), with links to relevant references and tutorials.
 
-OMST is an open source project, and is supported by its community. Please look to the Discussion boards and Wiki on GitHub. Please all see the [CONTRIBUTING.md](./CONTRIBUTING.md) document for additional context.
+OMST is an open source project, and is supported by its community. Please look to the Discussion boards and Wiki on GitHub. Please see the [CONTRIBUTING.md](CONTRIBUTING.md) document for additional context.

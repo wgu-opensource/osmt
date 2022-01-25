@@ -1,19 +1,5 @@
 # OSMT UI 
 
-## IntelliJ setup
-
-### Import module
-  * Navigate to File -> New -> Module from existing sources
-  * Select "Create module from existing sources"
-  * Select the `./ui` folder where this README exists from the file dialog
-  
-### Run Configurations
-  * Create a new `npm` configuration
-  * Use package.json from the `./ui/package-json`
-  * Set Scripts to `start-hotreload` (or `start` if not interested in live reloading)
-  
----
-
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.6. Rather than installing Angular's CLI globally, you can invoke commands on OSMT's `ng` devDependency by calling `npm run ng whatever_command`. This may help avoid conflicts with other Angular tooling installed on your development machine.
 
 ## Development server

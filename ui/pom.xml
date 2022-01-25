@@ -63,7 +63,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>npm run build-prod</id>
+            <id>npm-build-prod</id>
             <goals>
               <goal>npm</goal>
             </goals>
@@ -93,7 +93,6 @@
                 <phase>none</phase>
               </execution>
             </executions>
-
           </plugin>
         </plugins>
       </build>

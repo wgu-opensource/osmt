@@ -2,13 +2,11 @@
 version: '3.3'
 services:
   app:
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    image: "wguopensource/osmt-app:${OSMT_APP_VERSION:-latest}"
     volumes:
       - ./import:/opt/osmt/import:rw
     environment:
-      - "ENVIRONMENT=${ENVIRONMENT:-dev,apiserver,bucket4j,oauth2-okta}"
+      - "ENVIRONMENT=${ENVIRONMENT:-dev,apiserver,oauth2-okta}"
       - "BASE_DOMAIN=${BASE_DOMAIN}"
       - "FRONTEND_URL=${FRONTEND_URL}"
       - "DB_NAME=${DB_NAME}"

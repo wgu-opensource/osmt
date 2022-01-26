@@ -1,6 +1,6 @@
 {
   "name": "ui",
-  "version": "1.1.0",
+  "version": "1.1.1-SNAPSHOT",
   "scripts": {
     "ng": "./node_modules/@angular/cli/bin/ng",
     "start": "./node_modules/@angular/cli/bin/ng serve",

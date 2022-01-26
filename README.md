@@ -112,13 +112,13 @@ The [API](api/README.md) and [UI](ui/README.md) modules have their own README.md
 This project makes use of 2 similar local configurations, "Quickstart" and "Development". These both rely on docker-compose and environment files. Follow the steps in [Pre-requisites](README.md#pre-requisites) above. See [Environment files for Quickstart and Development Stacks](README.md#environment-files-for-quickstart-and-development-stacks) for more details.
 
 ### Quickstart Configuration
-The Quickstart configuration uses the `docker-compose.quickstart.yml` file in the project root to stand up a non-production OSMT stack. This file stands up an application stack with the back-end dependencies (MySQL, ElasticSearch, and Redis) and an image for the Spring application.
+The Quickstart configuration uses the `docker-compose.quickstart.yml` file in the project root to stand up a non-production OSMT stack. This stack uses containers for the Spring application and the back-end dependencies (MySQL, ElasticSearch, and Redis).
 * The Quickstart configuration is opinionated, in that all services and volumes are stood up on a single machine. That topology may or may not be appropriate for your organization. It could inform how to configure a production OSMT instance, but it is not intended for a production deployment.
-* Quickstart will want to use the `osmt-quickstart.env` file to provide your OAuth2 secrets, and override default values. If you break this env file, you can refer to osmt-quickstart.env.example for the default values.
-* By default, the Quickstart configuration automatically imports BLS and O*NET job code metadata, and reindexes ElasticSearch. You can alter this default behavior with the REINDEX_ELASTICSEARCH and SKIP_METADATA_IMPORT environment variables (export them in your shell, or uncomment them in osmt-quickstart.env).
-* By default, Quickstart uses an image named "wguopensource/osmt-app:latest". 
-  * You can override the tagged version number with the OSMT_APP_VERSION environment variable (export it in your shell, or uncomment it in osmt-quickstart.env).
-  * You can build a new Docker image and locally tag it with "wguopensource/osmt-app:latest", and Quickstart will use it.
+* Quickstart uses the `osmt-quickstart.env` file to provide your OAuth2 secrets, and override default values. If you break your working copy of this env file, you can refer to `osmt-quickstart.env.example` for the default values.
+* By default, the Quickstart configuration automatically imports BLS and O*NET job code metadata, and reindexes ElasticSearch. You can alter this default behavior with the `REINDEX_ELASTICSEARCH` and `SKIP_METADATA_IMPORT` environment variables (export them in your shell, or uncomment them in `osmt-quickstart.env`).
+* By default, Quickstart uses an image named `wguopensource/osmt-app:latest` as the Spring application. It will pull the image tagged `latest` from DockerHub.
+  * You can override the tagged version number with the `OSMT_APP_IMAGE_TAG` environment variable (export it in your shell, or uncomment it in `osmt-quickstart.env`).
+  * You can build a new Docker image for the Spring application, and tag it with `wguopensource/osmt-app:latest`. Quickstart will use it, instead of pulling from DockerHub.
 * You are not required to use `osmt_cli.sh`. You can run this command from the project root to stand up the Quickstart configuration.
     ```
     docker-compose --file docker-compose.quickstart.yml --env-file osmt-quickstart.env --project-name osmt_quickstart up 

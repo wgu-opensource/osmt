@@ -340,6 +340,66 @@ describe("CollectionService", () => {
     req.flush(testData)
   })
 
+  it("shareCollectionExternally should return", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const now = new Date()
+    const testData = new ApiCollection(createMockCollection(
+        now, now, now, now,
+        PublishStatus.Published,
+        false
+      ))
+    const expected = testData
+    const uuid = expected.uuid
+    const path = "api/collections/" + uuid + "/share"
+
+    // Act
+    const result$ = testService.shareCollectionExternally(uuid)
+
+    // Assert
+    result$
+      .subscribe((data: ApiCollection) => {
+        expect(data).toEqual(expected)
+        expect(RouterData.commands).toEqual([ ])  // No errors
+        expect(AuthServiceData.isDown).toEqual(false)
+      })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    expect(req.request.method).toEqual("POST")
+    req.flush(testData)
+  })
+
+  it("unshareCollectionExternally should return", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const now = new Date()
+    const testData = new ApiCollection(createMockCollection(
+        now, now, now, now,
+        PublishStatus.Published,
+        true
+      ))
+    const expected = testData
+    const uuid = expected.uuid
+    const path = "api/collections/" + uuid + "/unshare"
+
+    // Act
+    const result$ = testService.unshareCollectionExternally(uuid)
+
+    // Assert
+    result$
+      .subscribe((data: ApiCollection) => {
+        expect(data).toEqual(expected)
+        expect(RouterData.commands).toEqual([ ])  // No errors
+        expect(AuthServiceData.isDown).toEqual(false)
+      })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    expect(req.request.method).toEqual("POST")
+    req.flush(testData)
+  })
+
   it("searchCollections should return", () => {
     // Arrange
     RouterData.commands = []

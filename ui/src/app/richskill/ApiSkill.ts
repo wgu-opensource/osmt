@@ -111,6 +111,7 @@ export interface ISkill {
   publishDate?: string
   type: string
   status: PublishStatus
+  isExternallyShared: boolean
   skillName: string
   skillStatement: string
   category?: string
@@ -133,6 +134,7 @@ export class ApiSkill {
   archiveDate?: Date = undefined
   type: string
   status: PublishStatus
+  isExternallyShared: boolean
   skillName: string
   skillStatement: string
   category?: string
@@ -166,6 +168,7 @@ export class ApiSkill {
     this.keywords = iRichSkill.keywords
     this.collections = iRichSkill.collections
     this.status = iRichSkill.status
+    this.isExternallyShared = iRichSkill.isExternallyShared
     this.category = iRichSkill.category
     this.certifications = iRichSkill.certifications
     this.alignments = iRichSkill.alignments
@@ -195,7 +198,8 @@ export enum ApiSortOrder {
 export enum AuditOperationType {
   Insert = "Insert",
   Update = "Update",
-  PublishStatusChange = "PublishStatusChange"
+  PublishStatusChange = "PublishStatusChange",
+  ExternalSharingChange = "ExternalSharingChange"
 }
 
 export interface IChange {

@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {AuthService} from "../../auth/auth-service"
 import {AbstractService} from "../../abstract.service"
 import {PublishStatus} from "../../PublishStatus"
-import {ApiAuditLog, ApiSortOrder, IAuditLog} from "../../richskill/ApiSkill"
+import {ApiAuditLog, ApiSkill, ApiSortOrder, IAuditLog, ISkill} from "../../richskill/ApiSkill"
 import {
   ApiSearch,
   ApiSkillListUpdate,
@@ -138,6 +138,24 @@ export class CollectionService extends AbstractService {
     return this.post<ICollection>({
       path: `${this.baseServiceUrl}/${uuid}/update`,
       body: updateObject
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
+  }
+
+  shareCollectionExternally(uuid: string): Observable<ApiCollection> {
+    const errorMsg = `Error sharing collection to Search Hub`
+    return this.post<ICollection>({
+      path: `${this.baseServiceUrl}/${uuid}/share`,
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
+  }
+
+  unshareCollectionExternally(uuid: string): Observable<ApiCollection> {
+    const errorMsg = `Error unsharing collection from Search Hub`
+    return this.post<ICollection>({
+      path: `${this.baseServiceUrl}/${uuid}/unshare`,
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))

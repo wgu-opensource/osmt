@@ -170,6 +170,7 @@ describe("ApiSkill", () => {
     expect(apiSkill).toBeTruthy()
     /* cannot do deep equals because the date formats are different (i.e., string != Date) */
     expect(apiSkill.status).toEqual(iSkill.status)
+    expect(apiSkill.isExternallyShared).toEqual(iSkill.isExternallyShared)
     expect(apiSkill.id).toEqual(iSkill.id)
     expect(apiSkill.uuid).toEqual(iSkill.uuid)
     expect(apiSkill.creationDate?.toISOString()).toEqual(iSkill.creationDate)  // <--

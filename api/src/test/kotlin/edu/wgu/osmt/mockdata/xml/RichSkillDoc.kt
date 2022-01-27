@@ -8,6 +8,7 @@ class RichSkillDoc {
     var categoryKeyword: Long? = null
     var authorKeyword: Long? = null
     var status: String? = null
+    var isExternallyShared: Boolean = false
     var keywordValues: String? = null
     var jobCodes: String? = null
     var collections: String? = null

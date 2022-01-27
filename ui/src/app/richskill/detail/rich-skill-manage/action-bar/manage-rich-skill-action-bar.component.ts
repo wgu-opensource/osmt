@@ -11,10 +11,27 @@ import {ApiSkillSummary} from "../../../ApiSkillSummary";
 @Component({template: ""})
 export abstract class ManageRichSkillActionBarComponent implements OnInit {
 
+  private static MESSAGES = {
+    SHARE: {
+      SUCCESS: "This RSD will be available in the Search Hub soon",
+      ERROR: {
+        DEFAULT: "Unable to share to Search Hub"
+      }
+    },
+    UNSHARE: {
+      CONFIRM: "Are you sure you want to remove this RSD from the Search Hub? " +
+               "This RSD will no longer be available in search results.",
+      ERROR: {
+        DEFAULT: "Unable to unshare from Search Hub"
+      }
+    }
+  }
+
   abstract skillUuid: string
   abstract skillName: string
   abstract archived: string | undefined
   abstract published: string | undefined
+  abstract isExternallyShared: boolean | undefined
 
   abstract reloadSkill: EventEmitter<void>
 
@@ -28,6 +45,8 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   publishIcon: string = SvgHelper.path(SvgIcon.PUBLISH)
   archiveIcon: string = SvgHelper.path(SvgIcon.ARCHIVE)
   dismissIcon: string = SvgHelper.path(SvgIcon.DISMISS)
+  shareIcon: string = SvgHelper.path(SvgIcon.SHARE)
+  unshareIcon: string = SvgHelper.path(SvgIcon.UNSHARE)
 
   constructor(
     protected router: Router,
@@ -107,6 +126,47 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
           this.reloadSkill.emit()
           this.toastService.hideBlockingLoader()
         })
+      }
+    } else {
+      const url = `skills/${this.skillUuid}`
+      window.open(url, "_blank")
+    }
+  }
+
+  handleShareExternally(): void {
+    if (!this.isExternallyShared) {
+      this.toastService.showBlockingLoader()
+      this.richSkillService.shareSkillExternally(this.skillUuid).subscribe(
+        data => {
+          this.reloadSkill.emit()
+          this.toastService.hideBlockingLoader()
+          alert(ManageRichSkillActionBarComponent.MESSAGES.SHARE.SUCCESS)
+        },
+        error => {
+          this.toastService.hideBlockingLoader()
+          alert(error?.error?.message ?? ManageRichSkillActionBarComponent.MESSAGES.SHARE.ERROR.DEFAULT)
+        }
+      )
+    } else {
+      const url = `skills/${this.skillUuid}`
+      window.open(url, "_blank")
+    }
+  }
+
+  handleUnshareExternally(): void {
+    if (this.isExternallyShared) {
+      if (confirm(ManageRichSkillActionBarComponent.MESSAGES.UNSHARE.CONFIRM)) {
+        this.toastService.showBlockingLoader()
+        this.richSkillService.unshareSkillExternally(this.skillUuid).subscribe(
+          data => {
+            this.reloadSkill.emit()
+            this.toastService.hideBlockingLoader()
+          },
+          error => {
+            this.toastService.hideBlockingLoader()
+            alert(error?.error?.message ?? ManageRichSkillActionBarComponent.MESSAGES.UNSHARE.ERROR.DEFAULT)
+          }
+        )
       }
     } else {
       const url = `skills/${this.skillUuid}`

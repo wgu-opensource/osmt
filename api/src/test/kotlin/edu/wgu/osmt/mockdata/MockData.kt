@@ -354,6 +354,7 @@ class MockData {
                     keywords,
                     lookupKeyword(rsd.categoryKeyword),
                     lookupKeyword(rsd.authorKeyword),
+                    rsd.isExternallyShared,
                     parseDateTime(rsd.archiveDate),
                     parseDateTime(rsd.publishDate),
                     collections

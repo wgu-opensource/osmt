@@ -32,6 +32,10 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
     val status: PublishStatus
         get() = rsd.publishStatus()
 
+	@get:JsonProperty("isExternallyShared")
+	val isExternallyShared: Boolean
+		get() = rsd.isExternallyShared
+
     @get:JsonProperty
     val creationDate: ZonedDateTime
         get() = rsd.creationDate.atZone(ZoneId.of("UTC"))

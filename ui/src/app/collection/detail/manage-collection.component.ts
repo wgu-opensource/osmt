@@ -21,6 +21,22 @@ import {Title} from "@angular/platform-browser";
 })
 export class ManageCollectionComponent extends SkillsListComponent implements OnInit {
 
+  private static MESSAGES = {
+    SHARE: {
+      SUCCESS: "This collection will be available in the Search Hub soon",
+      ERROR: {
+        DEFAULT: "Unable to share to Search Hub"
+      }
+    },
+    UNSHARE: {
+      CONFIRM: "Are you sure you want to remove this collection from the Search Hub? " +
+               "This collection will no longer be available in search results.",
+      ERROR: {
+        DEFAULT: "Unable to unshare from Search Hub"
+      }
+    }
+  }
+
   @ViewChild(TableActionBarComponent) tableActionBar!: TableActionBarComponent
 
   collection?: ApiCollection
@@ -32,6 +48,8 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   unarchiveIcon = SvgHelper.path(SvgIcon.UNARCHIVE)
   addIcon = SvgHelper.path(SvgIcon.ADD)
   searchIcon = SvgHelper.path(SvgIcon.SEARCH)
+  shareIcon = SvgHelper.path(SvgIcon.SHARE)
+  unshareIcon = SvgHelper.path(SvgIcon.UNSHARE)
 
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published, PublishStatus.Archived])
 
@@ -176,6 +194,29 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         visible: () => this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted
       })
     )
+
+    // Add External Share & Unshare actions.
+    actions.push(
+      new TableActionDefinition({
+        label: "Share to Search Hub",
+        icon: this.shareIcon,
+        callback: () => this.shareExternallyAction(),
+        visible: () => {
+          return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
+                  && this.collection?.isExternallyShared !== true
+        }
+      }),
+      new TableActionDefinition({
+        label: "Unshare from Search Hub",
+        icon: this.unshareIcon,
+        callback: () => this.unshareExternallyAction(),
+        visible: () => {
+          return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
+                  && this.collection?.isExternallyShared === true
+        }
+      })
+    )
+
     return actions
   }
 
@@ -212,6 +253,47 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   unarchiveAction(): void {
     this.submitCollectionStatusChange(PublishStatus.Unarchived, "unarchived")
     this.collapseAuditLog.next()
+  }
+
+  shareExternallyAction(): void {
+    if (this.collection?.uuid && this.collection?.isExternallyShared !== true) {
+      this.toastService.showBlockingLoader()
+      this.collectionService.shareCollectionExternally(this.collection.uuid).subscribe(
+        data => {
+          this.collapseAuditLog.next()
+          this.reloadCollection()
+          this.toastService.hideBlockingLoader()
+          alert(ManageCollectionComponent.MESSAGES.SHARE.SUCCESS)
+        },
+        error => {
+          this.toastService.hideBlockingLoader()
+          alert(error?.error?.message ?? ManageCollectionComponent.MESSAGES.SHARE.ERROR.DEFAULT)
+        }
+      )
+    } else {
+      this.router.navigate([`/collections/${this.uuidParam}/manage`])
+    }
+  }
+
+  unshareExternallyAction(): void {
+    if (this.collection?.uuid && this.collection?.isExternallyShared !== false) {
+      if (confirm(ManageCollectionComponent.MESSAGES.UNSHARE.CONFIRM)) {
+        this.toastService.showBlockingLoader()
+        this.collectionService.unshareCollectionExternally(this.collection.uuid).subscribe(
+          data => {
+            this.collapseAuditLog.next()
+            this.reloadCollection()
+            this.toastService.hideBlockingLoader()
+          },
+          error => {
+            this.toastService.hideBlockingLoader()
+            alert(error?.error?.message ?? ManageCollectionComponent.MESSAGES.UNSHARE.ERROR.DEFAULT)
+          }
+        )
+      }
+    } else {
+      this.router.navigate([`/collections/${this.uuidParam}/manage`])
+    }
   }
 
   submitCollectionStatusChange(newStatus: PublishStatus, verb: string): void {

@@ -264,7 +264,8 @@ describe("ManageCollectionComponent", () => {
         new Date("2020-06-25T14:58:46.313Z"),
         new Date("2020-06-25T14:58:46.313Z"),
         params.publishDate,
-        params.status
+        params.status,
+        false
         // The default is to have some skills
       ))
 
@@ -273,7 +274,7 @@ describe("ManageCollectionComponent", () => {
 
       // Assert
       expect(actions).toBeTruthy()
-      expect(actions.length).toEqual(5)
+      expect(actions.length).toEqual(7)
 
       let action = actions[0]
       expect(action.label).toEqual("Add RSDs to This Collection")

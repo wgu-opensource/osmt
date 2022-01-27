@@ -209,7 +209,12 @@ export function createMockTaskResult(): ITaskResult {
   }
 }
 
-export function createMockSkill(creationDate: Date, updateDate: Date, status: PublishStatus): ISkill {
+export function createMockSkill(
+  creationDate: Date,
+  updateDate: Date,
+  status: PublishStatus,
+  isExternallyShared: boolean = false
+): ISkill {
   return {
     creationDate: creationDate.toISOString(),
     updateDate: updateDate.toISOString(),
@@ -219,6 +224,7 @@ export function createMockSkill(creationDate: Date, updateDate: Date, status: Pu
     skillName: "my skill name",
     skillStatement: "my skill statement",
     status,
+    isExternallyShared,
     category: "my skill category",
     collections: [createMockUuidReference()],
     keywords: ["keyword 1", "keyword 2"],
@@ -237,6 +243,7 @@ export function createMockCollection(
   archiveDate: Date | undefined,
   publishDate: Date | undefined,
   status: PublishStatus,
+  isExternallyShared: boolean = false,
   skills: string[] = ["skill 1", "skill 2"]
 ): ICollection {
   return {
@@ -245,6 +252,7 @@ export function createMockCollection(
     archiveDate,
     publishDate,
     status,
+    isExternallyShared,
     id: "id1",
     uuid: "uuid1",
     name: "my collection name",

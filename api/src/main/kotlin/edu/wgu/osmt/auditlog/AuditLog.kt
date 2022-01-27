@@ -10,7 +10,8 @@ import java.time.ZoneOffset
 enum class AuditOperationType {
     Insert,
     Update,
-    PublishStatusChange
+    PublishStatusChange,
+    ExternalSharingChange
 }
 
 data class Change(

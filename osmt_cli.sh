@@ -265,7 +265,7 @@ start_osmt_dev_docker_stack() {
   echo
   echo_info "Starting OSMT Development Docker stack. You can stop it with $(basename "${0}") -e"
   cd "${project_dir}/docker" || return 1
-  docker-compose --file dev-stack.yml -p osmt_dev up --detach
+  docker-compose --file dev-stack.yml --project-name osmt_dev up --detach
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Starting OSMT Development Docker stack failed. Exiting..."
@@ -278,7 +278,7 @@ stop_osmt_dev_docker_stack() {
   echo
   echo_info "Stopping OSMT Development Docker stack"
   cd "${project_dir}/docker" || return 1
-  docker-compose --file dev-stack.yml -p osmt_dev down
+  docker-compose --file dev-stack.yml --project-name osmt_dev down
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Stopping OSMT Development Docker stack failed. Exiting..."
@@ -306,7 +306,7 @@ start_osmt_quickstart() {
 
   echo
   echo_info "Starting OSMT Quickstart with docker-compose using osmt-quickstart.env"
-  docker-compose --env-file "${quickstart_env_file}" -p osmt_quickstart up
+  docker-compose --file docker-compose.quickstart.yml --env-file "${quickstart_env_file}" --project-name osmt_quickstart up
 }
 
 import_osmt_dev_metadata() {

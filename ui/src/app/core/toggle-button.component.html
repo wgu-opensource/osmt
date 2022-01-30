@@ -1,0 +1,34 @@
+<div class="m-togglebutton">
+    <div class="m-togglebutton-option"
+         [attr.data-selected]="isOptionSelected(ToggleButtonOption.Option1)"
+         [attr.data-loading]="isOptionLoading(ToggleButtonOption.Option1)"
+         (click)="handleOptionClicked(ToggleButtonOption.Option1)">
+        <div class="m-togglebutton-option-x-content">
+            <span class="m-togglebutton-option-x-loader">
+                <span class="m-loaderGraphic m-loaderGraphic-medium"></span>
+            </span>
+            <span *ngIf="getOptionIconPath(ToggleButtonOption.Option1); let path" class="m-togglebutton-option-x-icon">
+                <svg aria-hidden="true">
+                    <use [attr.xlink:href]="path"></use>
+                </svg>
+            </span>
+            <span class="m-togglebutton-option-x-text">{{option1Label}}</span>
+        </div>
+    </div>
+    <div class="m-togglebutton-option"
+         [attr.data-selected]="isOptionSelected(ToggleButtonOption.Option2)"
+         [attr.data-loading]="isOptionLoading(ToggleButtonOption.Option2)"
+         (click)="handleOptionClicked(ToggleButtonOption.Option2)">
+        <div class="m-togglebutton-option-x-content">
+            <span class="m-togglebutton-option-x-loader">
+                <span class="m-loaderGraphic m-loaderGraphic-medium"></span>
+            </span>
+            <span *ngIf="getOptionIconPath(ToggleButtonOption.Option2); let path" class="m-togglebutton-option-x-icon">
+                <svg aria-hidden="true">
+                    <use [attr.xlink:href]="path"></use>
+                </svg>
+            </span>
+            <span class="m-togglebutton-option-x-text">{{option2Label}}</span>
+        </div>
+    </div>
+</div>

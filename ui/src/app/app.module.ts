@@ -72,6 +72,7 @@ import {CollectionsListComponent} from "./collection/collections-list.component"
 import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component"
 import {PublicRichSkillActionBarComponent} from "./richskill/detail/rich-skill-public/action-bar/public-rich-skill-action-bar.component"
 import {ManageCollectionComponent} from "./collection/detail/manage-collection.component"
+import {ToggleButtonComponent} from "./core/toggle-button.component"
 import {VerticalActionBarComponent} from "./core/vertical-action-bar.component"
 import {PublishCollectionComponent} from "./collection/detail/publish-collection.component"
 import {BlockingLoaderComponent} from "./core/blocking-loader.component"
@@ -179,6 +180,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CollectionPublicActionBarComponent,
     PublicRichSkillActionBarComponent,
     ManageCollectionComponent,
+    ToggleButtonComponent,
     VerticalActionBarComponent,
     BlockingLoaderComponent,
     CollectionSkillSearchComponent,

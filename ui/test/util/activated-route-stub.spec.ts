@@ -27,7 +27,7 @@ export class ActivatedRouteStubSpec {
     this.setParams(initialParams)
   }
 
-  /** Set the paramMap observables's next value */
+  /** Set the paramMap$ and params$'s next value */
   setParams(params?: Params): void {
     if (params) {
       this.params$.next(this.testParams = params)

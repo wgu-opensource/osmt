@@ -13,8 +13,5 @@ A clear and concise description of the enhancements you want, i.e., _"As a skill
 ### Is your feature request related to a problem? Please describe it.
 A clear and concise description of what is motivating your suggested enhancement.
 
-### Describe alternatives you've considered
-A clear and concise description of any alternative solutions or features you've considered.
-
 ### Additional context
 Add any other context or screenshots about the feature request here.

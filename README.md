@@ -39,7 +39,7 @@ The OSMT source code includes a utility named `osmt_cli.sh`, in the project root
     * If you don't clean up the Docker images and volumes, Quickstart should start very quickly when re-running `osmt_cli.sh -q`.
 
 ### Running the Development configuration
-1. Validate your local environment (for Docker, Java, and other SDKs / runtimes). If this command reports error, you will need to resolve them before running the Quickstart configuration. See more in the [Requirements to Build OSMT](README.md#requirements-to-build-osmt) section
+1. Validate your local environment (for Docker, Java, and other SDKs / runtimes). If this command reports error, you will need to resolve them before running the Development configuration. See more in the [Requirements to Build OSMT](README.md#requirements-to-build-osmt) section
     ```
     ./osmt_cli.sh -v
     ```

@@ -1,9 +1,11 @@
+import { EventEmitter } from "@angular/core"
 import { Navigation } from "@angular/router"
 import { Observable, of, Subject } from "rxjs"
 import { ApiCollection, ICollectionUpdate } from "../../src/app/collection/ApiCollection"
+import { ApiJobCode } from "../../src/app/job-codes/Jobcode"
 import { PublishStatus } from "../../src/app/PublishStatus"
 import { ApiBatchResult } from "../../src/app/richskill/ApiBatchResult"
-import { ApiSkill, ApiSortOrder } from "../../src/app/richskill/ApiSkill"
+import { ApiNamedReference, ApiSkill, ApiSortOrder, KeywordType } from "../../src/app/richskill/ApiSkill"
 import { ApiSkillSummary } from "../../src/app/richskill/ApiSkillSummary"
 import { ApiSkillUpdate } from "../../src/app/richskill/ApiSkillUpdate"
 import {
@@ -13,10 +15,11 @@ import {
   PaginatedCollections,
   PaginatedSkills
 } from "../../src/app/richskill/service/rich-skill-search.service"
-import { ApiTaskResult } from "../../src/app/task/ApiTaskResult"
+import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
 import {
   createMockBatchResult,
   createMockCollection,
+  createMockJobcode,
   createMockPaginatedCollections,
   createMockPaginatedSkills,
   createMockSkill,
@@ -41,9 +44,11 @@ export class RouterStub {
   public navigate(commands: string[], extras: object): Promise<boolean> {
     RouterData.commands = commands
     RouterData.extras = extras
+    // noinspection JSUnusedLocalSymbols
     return new Promise((resolve, reject) => { })
   }
 
+  // noinspection JSUnusedGlobalSymbols
   getCurrentNavigation(): Navigation | null {
     return null
   }
@@ -53,6 +58,7 @@ export let AuthServiceData = { isDown: false }
 export class AuthServiceStub {  // TODO consider using real class
   public logout(): void {
   }
+  // noinspection JSUnusedGlobalSymbols
   public setServerIsDown(isDown: boolean): void {
     AuthServiceData.isDown = isDown
   }
@@ -67,17 +73,25 @@ export let SearchServiceData = {
   _latestQuery: ""
 }
 export class SearchServiceStub {
+  // noinspection JSUnusedGlobalSymbols - used elsewhere
   public searchQuery$ = SearchServiceData.searchQuerySource.asObservable()
 
+  // noinspection JSUnusedGlobalSymbols
   simpleSkillSearch(query: string): void {
     SearchServiceData._latestQuery = query
   }
-  advancedSkillSearch(advanced: ApiAdvancedSearch): void {
+  // noinspection JSUnusedLocalSymbols
+  // tslint:disable-next-line:variable-name
+  advancedSkillSearch(_advanced: ApiAdvancedSearch): void {
+    const advanced = _advanced as ApiAdvancedSearch
+    SearchServiceData.latestSearch = new ApiSearch({ advanced })
+    this.setLatestSearch(new ApiSearch({advanced}))
   }
 
   simpleCollectionSearch(query: string): void {
     SearchServiceData._latestQuery = query
   }
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
   advancedCollectionSearch(advanced: ApiAdvancedSearch): void {
   }
 
@@ -97,6 +111,7 @@ export let CollectionServiceData = {
   apiSearch: new ApiSearch({}) as ApiSearch | undefined,
 }
 export class CollectionServiceStub {
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
   public publishCollectionsWithResult(
     apiSearch: ApiSearch,
     newStatus: PublishStatus = PublishStatus.Published,
@@ -111,16 +126,30 @@ export class CollectionServiceStub {
     }))
   }
 
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
   getCollectionByUUID(uuid: string): Observable<ApiCollection> {
+    const date = new Date("2020-06-25T14:58:46.313Z")
     return of(new ApiCollection(createMockCollection(
-      new Date("2020-06-25T14:58:46.313Z"),
-      new Date("2020-06-25T14:58:46.313Z"),
-      new Date("2020-06-25T14:58:46.313Z"),
-      new Date("2020-06-25T14:58:46.313Z"),
+      date,
+      date,
+      date,
+      date,
       PublishStatus.Draft
     )))
   }
 
+  getCollectionJson(uuid: string): Observable<string> {
+    const date = new Date("2020-06-25T14:58:46.313Z")
+    return of(JSON.stringify(new ApiCollection(createMockCollection(
+      date,
+      date,
+      date,
+      date,
+      PublishStatus.Draft
+    ))))
+  }
+
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols,MagicNumberJS
   getCollections(
     size: number = 50,
     from: number = 0,
@@ -130,6 +159,7 @@ export class CollectionServiceStub {
     return of(createMockPaginatedCollections())
   }
 
+  // noinspection OverlyComplexFunctionJS,JSUnusedLocalSymbols
   getCollectionSkills(
     collectionUuid: string,
     size?: number,
@@ -146,6 +176,19 @@ export class CollectionServiceStub {
     return of(collectionUuid !== "uuid1")
   }
 
+  // tslint:disable-next-line:no-any
+  getCsvTaskResultsIfComplete(uuid: string): Observable<any> {
+    return of({
+      body: createMockTaskResult(uuid),
+      status: 200
+    })
+  }
+
+  requestCollectionSkillsCsv(uuid: string): Observable<ITaskResult> {
+    return of(createMockTaskResult())
+  }
+
+  // noinspection JSUnusedLocalSymbols
   updateSkills(collectionUuid: string,
                skillListUpdate: ApiSkillListUpdate,
                filterByStatuses?: Set<PublishStatus>
@@ -153,6 +196,7 @@ export class CollectionServiceStub {
     return of(new ApiTaskResult(createMockTaskResult()))
   }
 
+  // noinspection JSUnusedLocalSymbols
   updateCollection(uuid: string, updateObject: ICollectionUpdate): Observable<ApiCollection> {
     return of(
       new ApiCollection(createMockCollection(
@@ -166,6 +210,7 @@ export class CollectionServiceStub {
     )
   }
 
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
   updateSkillsWithResult(collectionUuid: string,
                          skillListUpdate: ApiSkillListUpdate,
                          filterByStatus?: Set<PublishStatus>,
@@ -181,6 +226,7 @@ export class CollectionServiceStub {
     }))
   }
 
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
   searchCollections(
     apiSearch: ApiSearch,
     size: number | undefined,
@@ -192,9 +238,11 @@ export class CollectionServiceStub {
   }
 }
 
+// noinspection JSUnusedGlobalSymbols
 export let RichSkillServiceData = {
 }
 export class RichSkillServiceStub {
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
   publishSkillsWithResult(
     apiSearch: ApiSearch,
     newStatus: PublishStatus = PublishStatus.Published,
@@ -205,38 +253,57 @@ export class RichSkillServiceStub {
     return of(createMockBatchResult())
   }
 
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
   getSkillByUUID(uuid: string): Observable<ApiSkill> {
     const date = new Date("2020-06-25T14:58:46.313Z")
     return of(new ApiSkill(createMockSkill(date, date, PublishStatus.Draft)))
   }
 
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
+  getSkillJsonByUuid(uuid: string): Observable<string> {
+    const date = new Date("2020-06-25T14:58:46.313Z")
+    return of(JSON.stringify(createMockSkill(date, date, PublishStatus.Published)))
+  }
+
+  getSkillCsvByUuid(uuid: string): Observable<string> {
+    const date = new Date("2020-06-25T14:58:46.313Z")
+    return of(`x, y, z`)
+  }
+
+  // noinspection JSUnusedLocalSymbols
   createSkill(updateObject: ApiSkillUpdate, pollIntervalMs: number = 1000): Observable<ApiSkill> {
     const date = new Date("2020-06-25T14:58:46.313Z")
     return of(new ApiSkill(createMockSkill(date, date, PublishStatus.Draft)))
   }
 
+  // noinspection JSUnusedLocalSymbols
   createSkills(updateObjects: ApiSkillUpdate[]): Observable<ApiTaskResult> {
     return of(new ApiTaskResult(createMockTaskResult()))
   }
 
+  // noinspection JSUnusedLocalSymbols
   updateSkill(uuid: string, updateObject: ApiSkillUpdate): Observable<ApiSkill> {
     const now = new Date()
     return of(new ApiSkill(createMockSkill(now, now, PublishStatus.Draft)))
   }
 
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
   similarityCheck(statement: string): Observable<ApiSkillSummary[]> {
     const isoDate = new Date().toISOString()
     return of([ new ApiSkillSummary(createMockSkillSummary("id1", PublishStatus.Draft, isoDate)) ])
   }
+  // noinspection JSUnusedLocalSymbols
   similaritiesCheck(statement: string): Observable<boolean[]> {
     const isoDate = new Date().toISOString()
     return of([ true ])
   }
 
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
   pollForTaskResult<T>(obs: Observable<ApiTaskResult>, pollIntervalMs: number = 1000): Observable<T> {
     return new Observable<T>()
   }
 
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
   searchSkills(
     apiSearch: ApiSearch,
     size?: number,
@@ -245,5 +312,41 @@ export class RichSkillServiceStub {
     sort?: ApiSortOrder,
   ): Observable<PaginatedSkills> {
     return of(createMockPaginatedSkills())
+  }
+}
+
+export let KeywordSearchServiceData = {
+}
+export class KeywordSearchServiceStub {
+  searchJobcodes(query: string): Observable<ApiJobCode[]> {
+    switch (query) {
+      case "one":
+        return of([ createMockJobcode(1, query, query) ])
+    }
+    return of([])
+  }
+
+  searchKeywords(type: KeywordType, query: string): Observable<ApiNamedReference[]> {
+    return of([])
+  }
+}
+
+
+// noinspection JSUnusedGlobalSymbols
+export let IdleData = {
+}
+export class IdleStub {
+  onTimeout: EventEmitter<number> = new EventEmitter<number>()
+
+  // noinspection JSUnusedLocalSymbols
+  setIdle(timeout: number): void {
+  }
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
+  setTimeout(timeout: number): void {
+  }
+  // tslint:disable-next-line:no-any
+  setInterrupts(interrupts: any[]): void {
+  }
+  watch(): void {
   }
 }

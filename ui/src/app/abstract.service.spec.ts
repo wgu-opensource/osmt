@@ -89,8 +89,7 @@ describe("AbstractService (no HTTP needed)", () => {
         output: { commands: [], isDown: false }},
       { input: { },
         output: { commands: [], isDown: false }},
-      { input: { status: 401 },
-        output: { commands: ["/login"], isDown: false }},
+      // Ignoring 401 case because the behavior is configurable.
       { input: { status: 0 },
         output: { commands: [], isDown: true }}
     ].forEach((params) => {

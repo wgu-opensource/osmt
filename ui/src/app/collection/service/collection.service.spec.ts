@@ -1,7 +1,9 @@
+// noinspection LocalVariableNamingConventionJS
+
 import { Location } from "@angular/common"
 import { HttpClient, HttpResponse } from "@angular/common/http"
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
-import { async, TestBed } from "@angular/core/testing"
+import { async, fakeAsync, TestBed, tick } from "@angular/core/testing"
 import { Router } from "@angular/router"
 import {
   createMockBatchResult,
@@ -15,7 +17,7 @@ import { AppConfig } from "../../app.config"
 import { AuthService } from "../../auth/auth-service"
 import { EnvironmentService } from "../../core/environment.service"
 import { PublishStatus } from "../../PublishStatus"
-import { ApiBatchResult, IBatchResult } from "../../richskill/ApiBatchResult"
+import { ApiBatchResult } from "../../richskill/ApiBatchResult"
 import { ApiSortOrder } from "../../richskill/ApiSkill"
 import { IStringListUpdate } from "../../richskill/ApiSkillUpdate"
 import {
@@ -28,6 +30,8 @@ import { ApiTaskResult, ITaskResult } from "../../task/ApiTaskResult"
 import { ApiCollection, ApiCollectionUpdate } from "../ApiCollection"
 import { CollectionService } from "./collection.service"
 
+
+const ASYNC_WAIT_PERIOD = 3000
 
 describe("CollectionService", () => {
   let httpClient: HttpClient
@@ -156,14 +160,14 @@ describe("CollectionService", () => {
 
     // Act
     try {
-      const result$ = testService.getCollectionJson(uuid)
+      testService.getCollectionJson(uuid)
     } catch (e) {
       expect(e instanceof Error).toBeTrue()
       expect(e.message).toEqual("No uuid provided for collection json export")
     }
 
     // Assert
-    const req = httpTestingController.expectNone(AppConfig.settings.baseApiUrl + "/" + path)
+    httpTestingController.expectNone(AppConfig.settings.baseApiUrl + "/" + path)
   })
 
   it("getCollectionSkillsCsv should return", () => {
@@ -196,19 +200,17 @@ describe("CollectionService", () => {
     AuthServiceData.isDown = false
     const uuid: string = undefined as unknown as string
     const path = "api/collections/" + uuid + "/csv"
-    const testData = createMockTaskResult()
-    const expected = new ApiTaskResult(testData)
 
     // Act
     try {
-      const result$ = testService.requestCollectionSkillsCsv(uuid)
+      testService.requestCollectionSkillsCsv(uuid)
     } catch (e) {
       expect(e instanceof Error).toBeTrue()
       expect(e.message).toEqual("Invalid collection uuid.")
     }
 
     // Assert
-    const req = httpTestingController.expectNone(AppConfig.settings.baseApiUrl + "/" + path)
+    httpTestingController.expectNone(AppConfig.settings.baseApiUrl + "/" + path)
   })
 
   it("getCsvTaskResultsIfComplete should return", () => {
@@ -406,16 +408,16 @@ describe("CollectionService", () => {
     req.flush(testData)
   })
 
-  // There are 2 REST requests here.  Cannot figure out how to get the task request to return the task.
-  xit("updateSkillsWithResult should return", () => {
+  it("updateSkillsWithResult should return", fakeAsync(() => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const iTaskResult = createMockTaskResult()
-    const testData: IBatchResult = createMockBatchResult()
-    const expected = new ApiBatchResult(testData)
-    const uuid: string = iTaskResult.uuid ? iTaskResult.uuid : ""
-    const path = "api/collections/" + uuid + "/updateSkills"
+    const taskResult = createMockTaskResult()
+    const apiBatchResult = new ApiBatchResult(createMockBatchResult())
+    const expected = apiBatchResult
+    const uuid: string = taskResult.uuid ? taskResult.uuid : ""
+    const path1 = "api/collections/" + uuid + "/updateSkills"
+    const path2 = taskResult.id
     const query = "testQueryString"
     const update = new ApiSkillListUpdate({
       add: new ApiSearch({query}),
@@ -435,22 +437,31 @@ describe("CollectionService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path +
+    /* Service call will make 2 requests: the requested action + the async task result */
+    /* Setup for request 1 */
+    const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path1 +
       `?sort=${sort}&status=${PublishStatus.Published}&status=${PublishStatus.Draft}`)
-    expect(req.request.method).toEqual("POST")
-    req.flush(testData)
-  })
+    expect(req1.request.method).toEqual("POST")
+    req1.flush(taskResult)
 
-  // There are 2 REST requests here.  Cannot figure out how to get the task request to return the task.
-  xit("publishCollectionWithResult should return", () => {
+    tick(ASYNC_WAIT_PERIOD)
+
+    /* Setup for request 2 */
+    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path2)
+    expect(req2.request.method).toEqual("GET")
+    req2.flush(apiBatchResult)
+  }))
+
+  // An example of how to test a multiple requests.  In this case, one service request precipitated the next.
+  it("publishCollectionWithResult should return", fakeAsync(() => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const now = new Date()
-    const iTaskResult = createMockTaskResult()
-    const testData: IBatchResult = createMockBatchResult()
-    const expected = new ApiBatchResult(testData)
-    const path = "api/collections/publish"
+    const taskResult = createMockTaskResult()
+    const apiBatchResult = new ApiBatchResult(createMockBatchResult())
+    const expected = apiBatchResult
+    const path1 = "api/collections/publish"
+    const path2 = taskResult.id
     const query = "testQueryString"
     const apiSearch = new ApiSearch({ query })
     const filter = new Set<PublishStatus>([PublishStatus.Draft])
@@ -467,11 +478,20 @@ describe("CollectionService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path +
+    /* Service call will make 2 requests: the requested action + the async task result */
+    /* Setup for request 1 */
+    const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path1 +
       `?newStatus=${newStatus}&filterByStatus=${PublishStatus.Draft}`)
-    expect(req.request.method).toEqual("POST")
-    req.flush(testData)
-  })
+    expect(req1.request.method).toEqual("POST")
+    req1.flush(taskResult)
+
+    tick(ASYNC_WAIT_PERIOD)
+
+    /* Setup for request 2 */
+    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path2)
+    expect(req2.request.method).toEqual("GET")
+    req2.flush(apiBatchResult)
+  }))
 
   it("collectionReadyToPublish should return", () => {
     // Arrange

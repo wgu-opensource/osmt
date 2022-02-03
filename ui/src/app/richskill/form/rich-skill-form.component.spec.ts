@@ -287,16 +287,16 @@ describe("RichSkillFormComponent", () => {
     // Act
     const update = component.updateObject()
 
-    // Assert`
+    // Assert
     expect(update.skillName).toEqual(skillName)
     expect(update.skillStatement).toEqual(skillStatement)
     expect(update.category).toEqual(category)
     expect((update.keywords as IStringListUpdate).add).toEqual(keywords)
+    expect((update.standards as IReferenceListUpdate).add).toEqual(standards)
     expect((update.collections as IStringListUpdate).add).toEqual(collections)
     expect((update.certifications as IReferenceListUpdate).add).toEqual(certifications)
     expect((update.occupations as IStringListUpdate).add).toEqual(occupations)
     expect((update.employers as IReferenceListUpdate).add).toEqual(employers)
-    expect((update.standards as IReferenceListUpdate).add).toEqual(standards)
 
   })
 

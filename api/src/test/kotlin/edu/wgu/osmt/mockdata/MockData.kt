@@ -245,7 +245,10 @@ class MockData {
             "http://localhost:4200/login/success",
             true,
             true,
-            true)
+            true,
+            false,
+            null,
+            null)
     }
 
     private fun parseDateTime(dateTime: String?): LocalDateTime? {

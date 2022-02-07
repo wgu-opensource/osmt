@@ -11,6 +11,9 @@ import edu.wgu.osmt.keyword.KeywordTable
 import edu.wgu.osmt.richskill.RichSkillDescriptorTable
 import edu.wgu.osmt.richskill.RichSkillJobCodes
 import edu.wgu.osmt.richskill.RichSkillKeywords
+import edu.wgu.osmt.searchhub.client.apis.LibrariesApi
+import edu.wgu.osmt.searchhub.client.apis.SearchingApi
+import edu.wgu.osmt.searchhub.client.apis.SharingApi
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
@@ -48,6 +51,51 @@ class ApiServer {
 
     @Autowired
     private lateinit var auditLogUtils: AuditLogUtils
+
+    @Bean
+    fun searchHubLibarariesApi(): LibrariesApi? {
+        return if (appConfig.searchHubEnabled) {
+            val api = appConfig.searchHubBaseUrl?.let {
+                LibrariesApi(appConfig.searchHubBaseUrl!!)
+            } ?: LibrariesApi()
+
+            appConfig.searchHubAccessToken?.let {
+                api.setAccessToken(appConfig.searchHubAccessToken)
+            }
+
+            api
+        } else null
+    }
+
+    @Bean
+    fun searchHubSearchingApi(): SearchingApi? {
+        return if (appConfig.searchHubEnabled) {
+            val api = appConfig.searchHubBaseUrl?.let {
+                SearchingApi(appConfig.searchHubBaseUrl!!)
+            } ?: SearchingApi()
+
+            appConfig.searchHubAccessToken?.let {
+                api.setAccessToken(appConfig.searchHubAccessToken)
+            }
+
+            api
+        } else null
+    }
+
+    @Bean
+    fun searchHubSharingApi(): SharingApi? {
+        return if (appConfig.searchHubEnabled) {
+            val api = appConfig.searchHubBaseUrl?.let {
+                SharingApi(appConfig.searchHubBaseUrl!!)
+            } ?: SharingApi()
+
+            appConfig.searchHubAccessToken?.let {
+                api.setAccessToken(appConfig.searchHubAccessToken)
+            }
+
+            api
+        } else null
+    }
 
     @Bean
     fun commandLineRunner(): CommandLineRunner {

@@ -38,7 +38,16 @@ class AppConfig(
     val allowPublicLists: Boolean = true,
 
     @Value("\${app.baseLineAuditLogIfEmpty}")
-    val baseLineAuditLogIfEmpty: Boolean
+    val baseLineAuditLogIfEmpty: Boolean,
+
+    @Value("\${app.searchhub.enabled}")
+    val searchHubEnabled: Boolean,
+
+    @Value("\${app.searchhub.baseUrl}")
+    val searchHubBaseUrl: String?,
+
+    @Value("\${app.searchhub.accessToken}")
+    val searchHubAccessToken: String?
 ) {
     @Autowired
     lateinit var environment: Environment

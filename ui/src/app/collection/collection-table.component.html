@@ -1,4 +1,5 @@
 <table class="l-table">
+  <caption> </caption>
   <thead>
     <tr class="m-tableHeader m-tableHeader-bare">
       <th class="t-hidden-tabletMin" scope="col" colspan="3"><span class="t-visuallyHidden">Collections</span></th>
@@ -8,7 +9,7 @@
     </tr>
 
     <tr class="m-tableHeader">
-      <td class="t-hidden-tabletMin" scope="col" aria-hidden="true">
+      <td class="t-hidden-tabletMin" aria-hidden="true">
         <app-label-with-select
           label="Collections"
           [options]="mobileSortOptions"
@@ -17,7 +18,7 @@
         ></app-label-with-select>
       </td>
 
-      <td class="t-hidden-tabletMax" scope="col" aria-hidden="true">
+      <td class="t-hidden-tabletMax"  aria-hidden="true">
         <app-label-with-filter
           *ngIf="allowSorting; else noSortName"
           label="Collection Name"
@@ -31,7 +32,7 @@
         </ng-template>
       </td>
 
-      <td class="t-hidden-tabletMax" scope="col" aria-hidden="true">
+      <td class="t-hidden-tabletMax"  aria-hidden="true">
         <app-label-with-filter
           *ngIf="allowSorting; else noSortSkills"
           [sortAscending]="getSkillSort()"
@@ -44,13 +45,13 @@
         </ng-template>
       </td>
 
-      <td class="t-hidden-tabletMax" scope="col" aria-hidden="true">
+      <td class="t-hidden-tabletMax" aria-hidden="true">
         <span class="m-tableLabel">
           <span class="m-tableLabel-x-text">Status</span>
         </span>
       </td>
 
-      <td class="m-tableHeader-x-actions" scope="col" aria-hidden="true">
+      <td class="m-tableHeader-x-actions" aria-hidden="true">
         <div class="m-tableLabel" *ngIf="selectAllEnabled">
           <label class="m-tableLabel-x-text" for="checkbox">Select ({{getSelectAllCount()}})</label>
 

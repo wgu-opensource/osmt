@@ -1,23 +1,50 @@
 import {Component, OnInit} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
-import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms"
+import {ToggleButtonOption} from "../../core/toggle-button.component"
+import {AbstractControl, FormControl, FormGroup} from "@angular/forms"
 import {AppConfig} from "../../app.config"
 import {urlValidator} from "../../validators/url.validator"
 import {SearchService} from "../search.service"
 import {ApiAdvancedSearch} from "../../richskill/service/rich-skill-search.service"
-import {ApiNamedReference, INamedReference} from "../../richskill/ApiSkill";
+import {INamedReference} from "../../richskill/ApiSkill";
 import {Title} from "@angular/platform-browser";
 import {Whitelabelled} from "../../../whitelabel";
+
+enum SearchType {
+  LOCAL,
+  EXTERNAL
+}
 
 @Component({
   selector: "app-advanced-search",
   templateUrl: "./advanced-search.component.html"
 })
 export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
+  readonly SvgIcon = SvgIcon
+
+  searchType: SearchType = SearchType.LOCAL
 
   skillForm = new FormGroup(this.getFormDefinitions())
 
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)
+
+  private isLoadingExternalLibraries = false
+
+  get searchTypeToggleSelectedOption(): ToggleButtonOption|null {
+    switch (this.searchType) {
+      case SearchType.LOCAL:
+        return ToggleButtonOption.Option1
+      case SearchType.EXTERNAL:
+        return ToggleButtonOption.Option2
+      default:
+        return null
+    }
+  }
+
+  get isExternalLibraryFormLoading(): boolean {
+    return (this.isLoadingExternalLibraries)
+  }
+
   constructor(
     private searchService: SearchService,
     protected titleService: Title
@@ -44,6 +71,17 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
       collectionName: new FormControl(""),
     }
     return fields
+  }
+
+  handleSearchTypeOptionClick(option: ToggleButtonOption): void {
+    switch (option) {
+      case ToggleButtonOption.Option2:
+        this.searchType = SearchType.EXTERNAL
+        this.loadExternalLibraries()
+        break
+      default:
+        this.searchType = SearchType.LOCAL
+    }
   }
 
   handleSearchSkills(): void {
@@ -114,5 +152,9 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
 
   getOccupationHelpMessage(): string {
     return "BLS or O*NET job names or codes"
+  }
+
+  private loadExternalLibraries(): void {
+    this.isLoadingExternalLibraries = true
   }
 }

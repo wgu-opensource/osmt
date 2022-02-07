@@ -19,6 +19,16 @@
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
+          <app-toggle-button
+            [selectedOption]="searchTypeToggleSelectedOption"
+            option1Label="This Library"
+            option2Label="External Libraries"
+            [option2Loading]="isExternalLibraryFormLoading"
+            (optionClick)="handleSearchTypeOptionClick($event)"
+          ></app-toggle-button>
+        </div>
+
+        <div class="t-margin-medium t-margin-bottom">
           <app-formfield-text
             [control]="skillForm.controls.name"
             name="name"

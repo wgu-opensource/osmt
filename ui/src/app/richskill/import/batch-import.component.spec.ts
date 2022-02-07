@@ -287,7 +287,7 @@ describe("BatchImportComponent", () => {
 
     // Act
     const result = component.duplicateFieldNames()
-    console.log("batch-import.spec: result", result)
+
     // Assert
     expect(result).toEqual("\"Skill Statement\"")
   })
@@ -303,7 +303,6 @@ describe("BatchImportComponent", () => {
 
     // Act
     const result = component.duplicateFieldNames()
-    console.log("batch-import.spec: result", result)
     // Assert
     expect(result).toEqual("\"RSD Name\", and \"Skill Statement\"")
   })

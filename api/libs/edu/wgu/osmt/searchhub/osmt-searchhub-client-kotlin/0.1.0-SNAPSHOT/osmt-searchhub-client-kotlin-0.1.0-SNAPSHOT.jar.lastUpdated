@@ -1,0 +1,10 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Thu Feb 10 21:27:54 PST 2022
+https\://repo.spring.io/milestone/.error=
+https\://jcenter.bintray.com/.error=
+https\://repo.spring.io/milestone/.lastUpdated=1644557217455
+file\:///Users/aarterburn/Development/src/osmt/osmt-core/api/libs/.lastUpdated=1644557274351
+https\://jcenter.bintray.com/.lastUpdated=1644557274302
+file\:///Users/aarterburn/Development/src/osmt/osmt-core/api/libs/.error=
+https\://repo.spring.io/release/.lastUpdated=1644557212463
+https\://repo.spring.io/release/.error=

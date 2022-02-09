@@ -1,4 +1,5 @@
 <table class="l-table">
+  <caption></caption>
   <thead>
   <tr class="m-tableHeader m-tableHeader-bare">
     <th class="t-hidden-tabletMin" scope="col" colspan="2"><span class="t-visuallyHidden">RSDs</span></th>
@@ -6,7 +7,7 @@
     <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Rich Skill Descriptor</span></th>
   </tr>
   <tr class="m-tableHeader">
-    <td class="t-hidden-tabletMin" scope="col" colspan="2" aria-hidden="true">
+    <td class="t-hidden-tabletMin"  colspan="2" aria-hidden="true">
       <app-label-with-select
         label="RSDs"
         [options]="mobileSortOptions"
@@ -15,7 +16,7 @@
       ></app-label-with-select>
     </td>
 
-    <td class="t-hidden-tabletMax" scope="col" aria-hidden="true">
+    <td class="t-hidden-tabletMax" aria-hidden="true">
       <app-label-with-filter
         label="Category"
         [sortAscending]="getNameSort()"
@@ -23,7 +24,7 @@
       ></app-label-with-filter>
     </td>
 
-    <td class="t-hidden-tabletMax" scope="col" aria-hidden="true">
+    <td class="t-hidden-tabletMax" aria-hidden="true">
       <app-label-with-filter
         label="Rich Skill Descriptor  "
         [sortAscending]="getSkillSort()"
@@ -31,7 +32,7 @@
       ></app-label-with-filter>
     </td>
 
-    <td class="m-tableHeader-x-actions" scope="col" aria-hidden="true">
+    <td class="m-tableHeader-x-actions" aria-hidden="true">
       <!--{{render '@m-tablelabel&#45;&#45;with-choice'}}-->
       <div class="m-tableLabel">
         <label class="m-tableLabel-x-text" for="checkbox">Select <ng-template [ngIf]="selectAllEnabled">All ({{getSelectAllCount()}})</ng-template></label>

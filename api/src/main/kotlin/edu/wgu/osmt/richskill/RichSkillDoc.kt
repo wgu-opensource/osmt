@@ -165,7 +165,7 @@ data class RichSkillDoc(
             return RichSkillDoc(
                 id = dao.id.value,
                 uuid = dao.uuid,
-                uri = "${appConfig.baseUrl}/api/skills/${dao.uuid}",
+                uri = dao.canonicalUrl(appConfig.baseUrl),
                 name = dao.name,
                 statement = dao.statement,
                 category = dao.category?.value,

@@ -24,6 +24,10 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
     override var publishDate: LocalDateTime? by CollectionTable.publishDate
     override var archiveDate: LocalDateTime? by CollectionTable.archiveDate
 
+    fun canonicalUrl(baseUrl: String): String {
+        return "${baseUrl}/api/collections/${this.uuid}"
+    }
+
     override fun toModel(): Collection {
         return Collection(
             id = id.value,

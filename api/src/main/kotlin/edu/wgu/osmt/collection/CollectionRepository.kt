@@ -16,6 +16,8 @@ import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.*
 import edu.wgu.osmt.task.PublishTask
+import edu.wgu.osmt.task.ShareExternallyTask
+import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
@@ -81,6 +83,7 @@ class CollectionRepositoryImpl @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
     val richSkillEsRepo: RichSkillEsRepo,
     val collectionEsRepo: CollectionEsRepo,
+    val taskMessageService: TaskMessageService,
     val appConfig: AppConfig
 ) : CollectionRepository {
 
@@ -260,7 +263,11 @@ class CollectionRepositoryImpl @Autowired constructor(
 
                 daoObject.isExternallyShared = newValue;
 
-                // TODO: Create Search hub sync task.
+                val task = ShareExternallyTask(
+                        canonicalUrl = daoObject.canonicalUrl(appConfig.baseUrl),
+                        shared = newValue
+                )
+                taskMessageService.enqueueJob(TaskMessageService.shareCollectionExternally, task)
 
                 auditLogRepository.create(
                     AuditLog.fromAtomicOp(

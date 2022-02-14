@@ -7,6 +7,20 @@ export interface ISearch {
   uuids?: string[]
 }
 
+export interface IAdvancedSearch {
+  skillName?: string
+  collectionName?: string
+  category?: string
+  skillStatement?: string
+  keywords?: string[]
+  occupations?: string[]
+  standards?: INamedReference[]
+  certifications?: INamedReference[]
+  employers?: INamedReference[]
+  alignments?: INamedReference[]
+  author?: string
+}
+
 export class ApiSearch implements ISearch {
   query?: string
   advanced?: ApiAdvancedSearch
@@ -26,7 +40,7 @@ export class ApiSearch implements ISearch {
   }
 }
 
-export class ApiAdvancedSearch {
+export class ApiAdvancedSearch implements IAdvancedSearch {
   skillName?: string
   collectionName?: string
   category?: string

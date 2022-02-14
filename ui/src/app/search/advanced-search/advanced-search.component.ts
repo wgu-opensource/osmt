@@ -9,6 +9,8 @@ import {ApiAdvancedSearch} from "../../richskill/service/rich-skill-search.servi
 import {INamedReference} from "../../richskill/ApiSkill";
 import {Title} from "@angular/platform-browser";
 import {Whitelabelled} from "../../../whitelabel";
+import {SearchHubService} from "../searchhub/searchhub.service";
+import {ApiLibrarySummary} from "../searchhub/ApiLibrary";
 
 enum SearchType {
   LOCAL,
@@ -27,6 +29,8 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
   skillForm = new FormGroup(this.getFormDefinitions())
 
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)
+
+  externalLibraries?: ApiLibrarySummary[]
 
   private isLoadingExternalLibraries = false
 
@@ -47,6 +51,7 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
 
   constructor(
     private searchService: SearchService,
+    private searchHubService: SearchHubService,
     protected titleService: Title
   ) {
     super()
@@ -156,5 +161,11 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
 
   private loadExternalLibraries(): void {
     this.isLoadingExternalLibraries = true
+
+    this.searchHubService.getLibraries()
+      .subscribe((libraries) => {
+        this.externalLibraries = libraries.libraries
+        this.isLoadingExternalLibraries = false
+      })
   }
 }

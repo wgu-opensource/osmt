@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.http.HttpMessageConverters
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.HttpMessageConverter
+import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
@@ -31,5 +32,9 @@ class WebMvcConfig : WebMvcConfigurer {
     override fun configureMessageConverters(converters: MutableList<HttpMessageConverter<*>?>) {
         this.messageConvertersProvider
             .ifAvailable({ customConverters -> converters.addAll(customConverters.getConverters()) })
+    }
+
+    override fun addCorsMappings(registry: CorsRegistry) {
+        registry.addMapping("/api/**").allowCredentials(false)
     }
 }

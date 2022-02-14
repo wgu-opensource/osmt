@@ -41,10 +41,10 @@ object RoutePaths {
 
     const val SEARCH_KEYWORDS_PATH = "$SEARCH_PATH/keywords"
 
-    const val SEARCHHUB_PATH = "/api/external"
-    const val SEARCHHUB_LIBRARIES = "$SEARCHHUB_PATH/libraries"
-    const val SEARCHHUB_SEARCH_COLLECTIONS = "$SEARCHHUB_PATH/search/collections"
-    const val SEARCHHUB_SEARCH_SKILLS = "$SEARCHHUB_PATH/search/skills"
+    const val SEARCH_HUB_PATH = "/api/external"
+    const val SEARCH_HUB_LIBRARIES = "$SEARCH_HUB_PATH/libraries"
+    const val SEARCH_HUB_SEARCH_COLLECTIONS = "$SEARCH_HUB_PATH/search/collections"
+    const val SEARCH_HUB_SEARCH_SKILLS = "$SEARCH_HUB_PATH/search/skills"
 
     object QueryParams {
         const val FROM = "from"

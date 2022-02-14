@@ -37,25 +37,31 @@ class SearchHubController @Autowired constructor(
     val sharingApi: SharingApi?
 ) {
 
-    @PostMapping(RoutePaths.SEARCHHUB_LIBRARIES, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.SEARCH_HUB_LIBRARIES, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun getLibraries(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
         @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<List<Any?>> {
-        verifySearchHubConfigured()
+    ): HttpEntity<List<LibrarySummary>> {
+        try {
+            verifySearchHubConfigured()
+        } catch (e: Exception) {
+            throw GeneralApiException(
+                e.message?.let { e.message } ?: "Search Hub is not configured correctly",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
 
         return librariesApi?.let {
             val librariesResult = it.getLibraries(size, from)
-            val responseHeaders = HttpHeaders()
-            ResponseEntity.status(200).headers(responseHeaders).body(librariesResult)
+            ResponseEntity.status(200).body(librariesResult)
         } ?: throw GeneralApiException("Dependency Error", HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
 
-    @PostMapping(RoutePaths.SEARCHHUB_SEARCH_COLLECTIONS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.SEARCH_HUB_SEARCH_COLLECTIONS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCollections(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -69,7 +75,14 @@ class SearchHubController @Autowired constructor(
         @RequestBody apiSearch: ApiSearch,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<CollectionSummary>> {
-        verifySearchHubConfigured()
+        try {
+            verifySearchHubConfigured()
+        } catch (e: Exception) {
+            throw GeneralApiException(
+                e.message?.let { e.message } ?: "Search Hub is not configured correctly",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
 
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
@@ -86,10 +99,10 @@ class SearchHubController @Autowired constructor(
             responseHeaders.add("X-Total-Count", "0")
 
             ResponseEntity.status(200).headers(responseHeaders).body(collectionsResult)
-        } ?: throw GeneralApiException("Dependency Error", HttpStatus.INTERNAL_SERVER_ERROR)
+        } ?: throw GeneralApiException("Dependency Error: searchingApi", HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
-    @PostMapping(RoutePaths.SEARCHHUB_SEARCH_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.SEARCH_HUB_SEARCH_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSkills(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -104,7 +117,14 @@ class SearchHubController @Autowired constructor(
         @RequestBody apiSearch: ApiSearch,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<SkillSummary>> {
-        verifySearchHubConfigured()
+        try {
+            verifySearchHubConfigured()
+        } catch (e: Exception) {
+            throw GeneralApiException(
+                e.message?.let { e.message } ?: "Search Hub is not configured correctly",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
 
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
@@ -121,16 +141,44 @@ class SearchHubController @Autowired constructor(
             responseHeaders.add("X-Total-Count", "0")
 
             ResponseEntity.status(200).headers(responseHeaders).body(skillsResult)
-        } ?: throw GeneralApiException("Dependency Error", HttpStatus.INTERNAL_SERVER_ERROR)
+        } ?: throw GeneralApiException("Dependency Error: searchingApi", HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
+    fun submitCollections(collectionUris: List<String>): List<Result> {
+        verifySearchHubConfigured()
+
+        return sharingApi?.submitCollections(listOf(convertUriStringsToApiUrls(collectionUris)))
+            ?: throw Exception("Dependency Error: sharingApi")
+    }
+
+    fun removeCollections(collectionUris: List<String>): List<Result> {
+        verifySearchHubConfigured()
+
+        return sharingApi?.removeCollections(listOf(convertUriStringsToApiUrls(collectionUris)))
+            ?: throw Exception("Dependency Error: sharingApi")
+    }
+
+    fun submitSkills(skillUris: List<String>): List<Result> {
+        verifySearchHubConfigured()
+
+        return sharingApi?.submitSkills(listOf(convertUriStringsToApiUrls(skillUris)))
+            ?: throw Exception("Dependency Error: sharingApi")
+    }
+
+    fun removeSkills(skillsUris: List<String>): List<Result> {
+        verifySearchHubConfigured()
+
+        return sharingApi?.removeSkills(listOf(convertUriStringsToApiUrls(skillsUris)))
+            ?: throw Exception("Dependency Error: sharingApi")
     }
 
     private fun verifySearchHubConfigured() {
         if (!appConfig.searchHubEnabled) {
-            throw GeneralApiException("Search Hub is not enabled", HttpStatus.NOT_IMPLEMENTED)
+            throw Exception("Search Hub is not enabled")
         }
 
         if (appConfig.searchHubBaseUrl.isNullOrBlank() || appConfig.searchHubAccessToken.isNullOrBlank()) {
-            throw GeneralApiException("Search Hub is not configured correctly", HttpStatus.INTERNAL_SERVER_ERROR)
+            throw Exception("Search Hub is not configured correctly")
         }
     }
 
@@ -164,6 +212,12 @@ class SearchHubController @Autowired constructor(
                 id = apiNamedReference.id?.let { URI(it) },
                 name = apiNamedReference.name
             )
+        }
+
+        fun convertUriStringsToApiUrls(uris: List<String>): Urls {
+            return Urls(uris.map {
+                URI(it)
+            })
         }
     }
 }

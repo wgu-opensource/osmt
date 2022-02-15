@@ -5,7 +5,7 @@ set -eu
 declare BASE_DOMAIN="${BASE_DOMAIN:-}"
 declare ENVIRONMENT="${ENVIRONMENT:-}"
 declare DB_URI="${DB_URI:-}"
-declare REDIS_URI="${REDIS_URI:-}"
+declare REDIS_URL="${REDIS_URL:-}"
 declare ELASTICSEARCH_URI="${ELASTICSEARCH_URI:-}"
 declare OAUTH_ISSUER="${OAUTH_ISSUER:-}"
 declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
@@ -26,7 +26,7 @@ function validate() {
     "BASE_DOMAIN"
     "ENVIRONMENT"
     "DB_URI"
-    "REDIS_URI"
+    "REDIS_URL"
     "ELASTICSEARCH_URI"
     "OAUTH_ISSUER"
     "OAUTH_CLIENTID"
@@ -109,7 +109,7 @@ function reindex_elasticsearch() {
     echo_info "Building initial index in OSMT ElasticSearch using ${reindex_profile_string} Spring profiles..."
     java_cmd="/bin/java
       -Dspring.profiles.active=${reindex_profile_string}
-      -Dspring.redis.url=${REDIS_URI}
+      -Dspring.redis.url=${REDIS_URL}
       -Ddb.uri=${DB_URI}
       -Des.uri=${ELASTICSEARCH_URI}
       -Dspring.flyway.enabled=${MIGRATIONS_ENABLED}
@@ -124,7 +124,7 @@ function start_spring_app() {
       -Dspring.profiles.active=${ENVIRONMENT}
       -Dapp.baseDomain=${BASE_DOMAIN}
       -Dapp.frontendUrl=${FRONTEND_URL}
-      -Dspring.redis.url=redis://${REDIS_URI}
+      -Dspring.redis.url=redis://${REDIS_URL}
       -Ddb.uri=${DB_URI}
       -Des.uri=${ELASTICSEARCH_URI}
       -Dokta.oauth2.issuer=${OAUTH_ISSUER}

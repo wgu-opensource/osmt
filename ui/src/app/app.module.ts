@@ -10,6 +10,8 @@ import {AppConfig} from "./app.config"
 import {RichSkillFormComponent} from "./richskill/form/rich-skill-form.component"
 import {ReactiveFormsModule} from "@angular/forms"
 import {FormField} from "./form/form-field.component"
+import {FormFieldChoiceComponent} from "./form/form-field-choice.component"
+import {FormFieldMultiChoiceComponent} from "./form/form-field-multi-choice.component"
 import {FormFieldText} from "./form/form-field-text.component"
 import {FormFieldTextArea} from "./form/form-field-textarea.component"
 import {LoadingObservablesDirective} from "./loading/loading-observables.directive"
@@ -118,6 +120,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     // Rich skill form
     RichSkillFormComponent,
     FormField,
+    FormFieldChoiceComponent,
+    FormFieldMultiChoiceComponent,
     FormFieldSubmit,
     FormFieldText,
     FormFieldTextArea,

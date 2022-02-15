@@ -1,0 +1,23 @@
+<div class="m-choice">
+  <div class="m-choice-x-body">
+    <label for="formfield-{{name}}">{{label}}<span *ngIf="required">(Required)</span></label>
+    <p *ngIf="helpMessage" class="m-choice-x-note">{{helpMessage}}</p>
+    <p *ngIf="isError()" class="m-choice-x-error">{{errorMessage}}</p>
+  </div>
+  <div class="m-choice-x-input">
+    <div class="m-checkbox">
+      <input
+        type="checkbox"
+        id="formfield-{{name}}"
+        name="checkbox"
+        [attr.checked]="isSelected ? true : null"
+        (change)="handleOnChange($event)"
+      >
+      <div class="m-checkbox-x-icon">
+        <svg class="t-icon" aria-hidden="true">
+          <use [attr.xlink:href]="checkIcon"></use>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>

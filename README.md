@@ -144,16 +144,19 @@ If doing front-end development, start the UI Angular front end. The Angular app 
 To use Okta as your OAuth2 provider, you will need a free developer account with [Okta](https://okta.com). While the user interface at Okta may change, the big ideas of configuring an application for an OAuth/OpenID Connect provider should still apply. From your Okta Dashboard:
 1. Navigate to Applications. Create an Application Integration, using the OpenID Connect option. When prompted, choose the "Web Application" option.
 2. Provide a name that makes sense to you. The intention here is local OSMT development.
-3. In the General tab, under "Client Credentials":
-  - Copy/paste the values for Client ID and Client Secret into a text file, you will need them shortly.
-4. In the General tab, under "Login":
-  - Enter `http://localhost:8080/login/oauth2/code/okta` for the Sign-in redirect URL.
-  - Enter `http://localhost:8080` for the Sign-out redirect URL.
+3. Under "Web App Integration":
+   - For Sign-in redirect URIs, enter `http://localhost:8080/login/oauth2/code/okta`
+   - For the Sign-out redirect URIs, enter `http://localhost:8080`
+4. Under "Assignments", choose "Skip group assignment for now".
+5. Save your new Web Application Integration.
+6. In the General tab, under "Login":
+   - Copy/paste the values for Client ID and Client Secret into your osmt-*.env file.
 5. In the Sign-On tab, under "OpenID Connect ID Token":
-  -  Copy/paste the values for Issuer and Audience into the same text file.
+   - Click "Edit", and for Issuer, choose the option that actually has an Okta URL. Save the OpenID Connect ID Token.
+   - Copy/paste the values for Issuer and Audience into your osmt-*.env file. For OAUTH_ISSUER, ensure your URL has the `https://` protocol.
 6. In the Assignments tab:
-  - Assign your Okta user ID to your web application.
-7. OSMT does not require any scopes.
+   - Click "Assign" and choose "Assign to People" to open the "Assign [your web app] to People" dialog. For your Okta user ID, click "Assign". You do not need to add additional info about for Okta user for OSMT's local purposes. Scroll to the bottom and save/close to go back. Then click "Done".
+7. OSMT does not require any additional scopes.
 
 For Okta, you will use the `oauth2-okta` profile for Spring Boot, which will include the properties from [application-oauth2-okta.properties](api/src/main/resources/config/application-oauth2-okta.properties). This properties file relies on secrets being provided via the environment. The commands in `osmt_cli.sh` automatically provide the appropriate environment files.
 

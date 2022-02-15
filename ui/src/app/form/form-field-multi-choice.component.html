@@ -4,13 +4,13 @@
   [name]="name"
   [required]="required"
 >
-  <!--<label for="formfield-{{name}}">{{label}}<span *ngIf="required">(Required)</span></label>-->
   <div id="formfield-{{name}}" class="t-margin-small t-margin-top">
     <app-formfield-choice *ngFor="let choice of choices"
       [id]="choice.id"
       [name]="choice.name"
       [label]="choice.label"
       [isSelected]="isChoiceSelected(choice.id)"
+      [extraClass]="'t-margin-extraSmall t-margin-top'"
       (onSelected)="onChoiceSelected($event)"
       (onDeselected)="onChoiceDeselected($event)"
     ></app-formfield-choice>

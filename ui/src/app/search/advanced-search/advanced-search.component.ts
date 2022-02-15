@@ -6,11 +6,14 @@ import {AppConfig} from "../../app.config"
 import {urlValidator} from "../../validators/url.validator"
 import {SearchService} from "../search.service"
 import {ApiAdvancedSearch} from "../../richskill/service/rich-skill-search.service"
-import {INamedReference} from "../../richskill/ApiSkill";
-import {Title} from "@angular/platform-browser";
-import {Whitelabelled} from "../../../whitelabel";
-import {SearchHubService} from "../searchhub/searchhub.service";
-import {ApiLibrarySummary} from "../searchhub/ApiLibrary";
+import {INamedReference} from "../../richskill/ApiSkill"
+import {Title} from "@angular/platform-browser"
+import {Whitelabelled} from "../../../whitelabel"
+import {SearchHubService} from "../searchhub/searchhub.service"
+import {ApiLibrarySummary, PaginatedLibraries} from "../searchhub/ApiLibrary"
+import {IChoice} from "../../form/form-field-choice.component"
+import {Observable, of} from "rxjs";
+import {map} from "rxjs/operators";
 
 enum SearchType {
   LOCAL,
@@ -30,7 +33,7 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
 
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)
 
-  externalLibraries?: ApiLibrarySummary[]
+  private externalLibraries: Set<ApiLibrarySummary>|undefined
 
   private isLoadingExternalLibraries = false
 
@@ -45,8 +48,32 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
     }
   }
 
+  get isLocalSearchType(): boolean {
+    return (this.searchType === SearchType.LOCAL)
+  }
+
+  get isExternalSearchType(): boolean {
+    return (this.searchType === SearchType.EXTERNAL)
+  }
+
   get isExternalLibraryFormLoading(): boolean {
     return (this.isLoadingExternalLibraries)
+  }
+
+  get externalLibraryChoices(): IChoice[] {
+    const selectedIds = new Set(
+      ([...this.skillForm.controls.externalLibraries?.value?.values()] ?? []).map((c: IChoice) => c.id)
+    )
+
+    return (this.externalLibraries) ?
+      [...this.externalLibraries].map((l): IChoice => {
+          return {
+            id: l.uuid,
+            name: l.uuid ?? "",
+            label: l.libraryName ?? "",
+            initiallySelected: (l.uuid) ? selectedIds.has(l.uuid) : false
+          }
+        }) : []
   }
 
   constructor(
@@ -63,6 +90,7 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
 
   getFormDefinitions(): {[key: string]: AbstractControl} {
     const fields = {
+      externalLibraries: new FormControl(new Set<ApiLibrarySummary>()),
       name: new FormControl(""),
       author: new FormControl(""),
       skillStatement: new FormControl(""),
@@ -81,8 +109,9 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
   handleSearchTypeOptionClick(option: ToggleButtonOption): void {
     switch (option) {
       case ToggleButtonOption.Option2:
-        this.searchType = SearchType.EXTERNAL
-        this.loadExternalLibraries()
+        this.loadExternalLibraries().subscribe((libraries) => {
+          this.searchType = SearchType.EXTERNAL
+        })
         break
       default:
         this.searchType = SearchType.LOCAL
@@ -159,13 +188,28 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
     return "BLS or O*NET job names or codes"
   }
 
-  private loadExternalLibraries(): void {
-    this.isLoadingExternalLibraries = true
+  private loadExternalLibraries(): Observable<Set<ApiLibrarySummary>> {
+    if (this.externalLibraries) {
+      return of(new Set(this.externalLibraries))
+    }
+    else {
+      this.isLoadingExternalLibraries = true
+      this.externalLibraries = undefined
 
-    this.searchHubService.getLibraries()
-      .subscribe((libraries) => {
-        this.externalLibraries = libraries.libraries
-        this.isLoadingExternalLibraries = false
-      })
+      return this.searchHubService.getLibraries().pipe(
+        map((result) => {
+          this.externalLibraries = new Set(result.libraries)
+          this.skillForm.controls.externalLibraries.setValue(new Set(this.externalLibraryChoices))
+          this.isLoadingExternalLibraries = false
+          return new Set(result.libraries)
+        })
+      )
+    }
+  }
+
+  private resetExternalLibraries(): void {
+    this.isLoadingExternalLibraries = false
+    this.externalLibraries = undefined
+    this.skillForm.controls.externalLibraries.setValue(null)
   }
 }

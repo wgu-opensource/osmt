@@ -8,7 +8,7 @@ import {IChoice} from "./form-field-choice.component"
   selector: "app-formfield-multi-choice",
   templateUrl: "./form-field-multi-choice.component.html"
 })
-export class FormFieldMultiChoiceComponent extends FormField implements OnInit{
+export class FormFieldMultiChoiceComponent extends FormField<Set<IChoice>> implements OnInit{
 
   @Input() control: FormControl = new FormControl("")
   @Input() label: string = ""
@@ -52,6 +52,7 @@ export class FormFieldMultiChoiceComponent extends FormField implements OnInit{
   }
 
   private onSelectedChoicesChanged(): void {
+    this.value = this.selectedChoices
     this.selectedChoicesChanged.emit(this.selectedChoices)
   }
 

@@ -6,7 +6,7 @@ import {AbstractControl, FormControl} from "@angular/forms"
   selector: "app-formfield",
   templateUrl: "./form-field.component.html"
 })
-export class FormField implements OnInit {
+export class FormField<T = string> implements OnInit {
 
   @Input() control = new FormControl()
   @Input() label = ""
@@ -20,12 +20,16 @@ export class FormField implements OnInit {
   constructor() {
   }
 
-  get valueFromControl(): string {
+  get valueFromControl(): T | null {
     return this.control.value
   }
 
+  set value(v: T) {
+    this.control.setValue(v)
+  }
+
   clearField(): void {
-    this.control.setValue("")
+    this.control.setValue(null)
   }
 
   ngOnInit(): void {

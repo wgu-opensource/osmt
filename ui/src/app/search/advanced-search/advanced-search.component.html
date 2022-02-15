@@ -28,6 +28,16 @@
           ></app-toggle-button>
         </div>
 
+        <div *ngIf="isExternalSearchType && !isExternalLibraryFormLoading"
+             class="t-margin-medium t-margin-bottom">
+          <app-formfield-multi-choice
+            [control]="skillForm.controls.externalLibraries"
+            name="external-libraries"
+            label="External Library"
+            [required]="true"
+            [choices]="externalLibraryChoices"
+          ></app-formfield-multi-choice>
+        </div>
         <div class="t-margin-medium t-margin-bottom">
           <app-formfield-text
             [control]="skillForm.controls.name"

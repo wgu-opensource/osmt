@@ -71,7 +71,7 @@ export abstract class AbstractFormFieldSearchSelectComponent extends FormField i
   }
 
   get showResults(): boolean {
-    const isEmpty = this.valueFromControl?.trim()?.length <= 0
+    const isEmpty = (this.valueFromControl?.trim()?.length ?? 0) <= 0
     return !isEmpty && this.results !== undefined
   }
 }

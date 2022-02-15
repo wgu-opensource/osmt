@@ -41,7 +41,7 @@ export class FormFieldSearchSelectJobcodeComponent extends FormField implements 
   }
 
   get showResults(): boolean {
-    const isEmpty = this.valueFromControl?.trim()?.length <= 0
+    const isEmpty = (this.valueFromControl?.trim()?.length ?? 0) <= 0
     const isDirty = this.control.dirty
     return isDirty && !isEmpty && this.results !== undefined
   }

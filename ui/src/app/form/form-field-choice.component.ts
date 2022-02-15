@@ -1,7 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
-import {FormControl} from "@angular/forms";
-import {FormField} from "./form-field.component";
-import {SvgHelper, SvgIcon} from "../core/SvgHelper";
+import {Component, EventEmitter, Input, Output} from "@angular/core"
+import {FormControl} from "@angular/forms"
+import {FormField} from "./form-field.component"
+import {SvgHelper, SvgIcon} from "../core/SvgHelper"
 
 
 export interface IChoice {
@@ -25,10 +25,15 @@ export class FormFieldChoiceComponent extends FormField implements IChoice {
   @Input() helpMessage: string = ""
   @Input() errorMessage: string = ""
   @Input() required: boolean = false
+  @Input() extraClass?: string
   @Output() onSelected: EventEmitter<string|number> = new EventEmitter<string|number>()
   @Output() onDeselected: EventEmitter<string|number> = new EventEmitter<string|number>()
 
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
+
+  get class(): string {
+      return `m-choice${(this.extraClass) ? ` ${this.extraClass}` : ""}`
+  }
 
   constructor() {
     super()

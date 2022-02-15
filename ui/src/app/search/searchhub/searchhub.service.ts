@@ -48,6 +48,11 @@ export class SearchHubService extends AbstractService {
     this.router.navigate(["/skills/search"])
   }
 
+  advancedCollectionSearch(advanced: ApiSearchHubAdvancedSearch): void {
+    this.setLatestSearch(new ApiSearch({advanced}))
+    this.router.navigate(["/collections/search"])
+  }
+
   protected setLatestSearch(apiSearch?: ApiSearch): void {
     this.latestSearch = apiSearch
     this.searchQuerySource.next(this.latestSearch)

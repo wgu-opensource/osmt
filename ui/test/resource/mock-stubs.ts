@@ -1,4 +1,4 @@
-import { Navigation } from "@angular/router"
+import {Navigation, Router} from "@angular/router"
 import { Observable, of, Subject } from "rxjs"
 import { ApiCollection, ICollectionUpdate } from "../../src/app/collection/ApiCollection"
 import { PublishStatus } from "../../src/app/PublishStatus"
@@ -17,12 +17,14 @@ import { ApiTaskResult } from "../../src/app/task/ApiTaskResult"
 import {
   createMockBatchResult,
   createMockCollection,
-  createMockPaginatedCollections,
+  createMockPaginatedCollections, createMockPaginatedLibraries,
   createMockPaginatedSkills,
   createMockSkill,
   createMockSkillSummary,
   createMockTaskResult
 } from "./mock-data"
+import {PaginatedLibraries} from "../../src/app/search/searchhub/ApiLibrary"
+import {ApiSearchHubAdvancedSearch} from "../../src/app/search/searchhub/ApiSearchHubAdvancedSearch"
 
 
 // Add service stubs here.
@@ -246,4 +248,17 @@ export class RichSkillServiceStub {
   ): Observable<PaginatedSkills> {
     return of(createMockPaginatedSkills())
   }
+}
+
+export let SearchHubServiceData = {}
+export class SearchHubServiceStub {
+  get isEnabled(): boolean {
+      return true
+  }
+
+  getLibraries(): Observable<PaginatedLibraries> {
+    return of(createMockPaginatedLibraries())
+  }
+
+  advancedSkillSearch(advanced: ApiSearchHubAdvancedSearch): void { }
 }

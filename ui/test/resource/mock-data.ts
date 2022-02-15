@@ -14,6 +14,7 @@ import { ApiCollectionSummary, ICollectionSummary, ISkillSummary } from "../../s
 import { ApiReferenceListUpdate, IRichSkillUpdate, IStringListUpdate } from "../../src/app/richskill/ApiSkillUpdate"
 import { PaginatedCollections, PaginatedSkills } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ITaskResult } from "../../src/app/task/ApiTaskResult"
+import {ApiLibrarySummary, ILibrarySummary, PaginatedLibraries} from "../../src/app/search/searchhub/ApiLibrary";
 
 // Add mock data here.
 // For more examples, see https://github.com/WGU-edu/ema-eval-ui/blob/develop/src/app/admin/pages/edit-user/edit-user.component.spec.ts
@@ -270,4 +271,35 @@ export function createMockCollectionUpdate(creationDate: Date, updateDate: Date,
     author: "name",
     skills: createMockStringListUpdate()
   }
+}
+
+export function createMockLibrarySummary(
+  uuid: string | undefined,
+  libraryName: string | undefined
+): ILibrarySummary {
+  return {
+    uuid: uuid ?? "uuid1",
+    libraryName: libraryName ?? "my library name"
+  }
+}
+
+export function createMockPaginatedLibraries(libraryCount = 1, total = 10): PaginatedLibraries {
+  if (libraryCount > total) {
+    throw new RangeError(`'pageCount' must be <= 'total'`)
+  }
+
+  const libraries = []
+  for (let i = 1; i <= libraryCount; i++) {
+    libraries.push(
+      new ApiLibrarySummary(createMockLibrarySummary(
+        `id${i}`,
+        `library ${i}`
+      ))
+    )
+  }
+
+  return new PaginatedLibraries(
+    libraries,
+    total
+  )
 }

@@ -48,7 +48,9 @@ describe("AppConfig", () => {
         toolName: "",
         toolNameLong: "",
         loginUrl: "",
-        idleTimeoutInSeconds: 300
+        idleTimeoutInSeconds: 300,
+        dynamicWhitelabel: false,
+        searchHubEnabled: false
       }
 
       environment.baseApiUrl = expectedApiUrl

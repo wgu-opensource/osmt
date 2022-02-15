@@ -1,18 +1,18 @@
 import { HttpClientModule } from "@angular/common/http"
 import { Type } from "@angular/core"
 import { async, ComponentFixture, TestBed } from "@angular/core/testing"
-import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms"
+import { ReactiveFormsModule } from "@angular/forms"
 import { Router } from "@angular/router"
-import { EnvironmentServiceStub } from "test/resource/mock-stubs"
+import { EnvironmentServiceStub, SearchHubServiceStub } from "test/resource/mock-stubs"
 import { ActivatedRouteStubSpec } from "test/util/activated-route-stub.spec"
 import { AppConfig } from "../../app.config"
-import { initializeApp } from "../../app.module"
 import { EnvironmentService } from "../../core/environment.service"
 import { FormFieldText } from "../../form/form-field-text.component"
 import { FormField } from "../../form/form-field.component"
 import { AdvancedSearchHorizontalActionBarComponent } from "./action-bar/advanced-search-horizontal-action-bar.component"
 import { AdvancedSearchVerticalActionBarComponent } from "./action-bar/advanced-search-vertical-action-bar.component"
 import { AdvancedSearchComponent } from "./advanced-search.component"
+import {SearchHubService} from "../searchhub/searchhub.service";
 
 
 export function createComponent(T: Type<AdvancedSearchComponent>): Promise<void> {
@@ -58,6 +58,7 @@ describe("AdvancedSearchComponent", () => {
         AppConfig,
         { provide: EnvironmentService, useClass: EnvironmentServiceStub },  // Example of using a service stub
         { provide: Router, useValue: routerSpy },
+        { provide: SearchHubService, useClass: SearchHubServiceStub }
       ]
     })
     .compileComponents()

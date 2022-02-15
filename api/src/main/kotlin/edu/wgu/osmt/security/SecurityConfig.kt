@@ -11,6 +11,9 @@ import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS
 import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS_UPDATE
 import edu.wgu.osmt.RoutePaths.COLLECTION_UPDATE
 import edu.wgu.osmt.RoutePaths.SEARCH_COLLECTIONS
+import edu.wgu.osmt.RoutePaths.SEARCH_HUB_LIBRARIES
+import edu.wgu.osmt.RoutePaths.SEARCH_HUB_SEARCH_COLLECTIONS
+import edu.wgu.osmt.RoutePaths.SEARCH_HUB_SEARCH_SKILLS
 import edu.wgu.osmt.RoutePaths.SEARCH_JOBCODES_PATH
 import edu.wgu.osmt.RoutePaths.SEARCH_KEYWORDS_PATH
 import edu.wgu.osmt.RoutePaths.SEARCH_SKILLS
@@ -98,6 +101,11 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS)).permitAll()
             .antMatchers(HttpMethod.GET, scrubForConfigure(COLLECTION_CSV)).permitAll()
             .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_TEXT)).permitAll()   // public csv results
+
+            // search hub endpoints
+            .antMatchers(HttpMethod.GET, scrubForConfigure(SEARCH_HUB_LIBRARIES)).permitAll()
+            .antMatchers(HttpMethod.POST, scrubForConfigure(SEARCH_HUB_SEARCH_COLLECTIONS)).permitAll()
+            .antMatchers(HttpMethod.POST, scrubForConfigure(SEARCH_HUB_SEARCH_SKILLS)).permitAll()
 
             // catch-all
             .antMatchers("/**").permitAll()

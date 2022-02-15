@@ -37,7 +37,7 @@ class SearchHubController @Autowired constructor(
     val sharingApi: SharingApi?
 ) {
 
-    @PostMapping(RoutePaths.SEARCH_HUB_LIBRARIES, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.SEARCH_HUB_LIBRARIES, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun getLibraries(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -90,7 +90,7 @@ class SearchHubController @Autowired constructor(
 
         return searchingApi?.let {
             val collectionsResult = it.searchCollections(
-                listOf(convertToSearchHubSearch(apiSearch)),
+                convertToSearchHubSearch(apiSearch),
                 size,
                 from
             )
@@ -132,7 +132,7 @@ class SearchHubController @Autowired constructor(
 
         return searchingApi?.let {
             val skillsResult = it.searchSkills(
-                listOf(convertToSearchHubSearch(apiSearch)),
+                convertToSearchHubSearch(apiSearch),
                 size,
                 from
             )
@@ -144,31 +144,31 @@ class SearchHubController @Autowired constructor(
         } ?: throw GeneralApiException("Dependency Error: searchingApi", HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
-    fun submitCollections(collectionUris: List<String>): List<Result> {
+    fun submitCollections(collectionUris: List<String>): Result {
         verifySearchHubConfigured()
 
-        return sharingApi?.submitCollections(listOf(convertUriStringsToApiUrls(collectionUris)))
+        return sharingApi?.submitCollections(convertUriStringsToApiUrls(collectionUris))
             ?: throw Exception("Dependency Error: sharingApi")
     }
 
-    fun removeCollections(collectionUris: List<String>): List<Result> {
+    fun removeCollections(collectionUris: List<String>): Result {
         verifySearchHubConfigured()
 
-        return sharingApi?.removeCollections(listOf(convertUriStringsToApiUrls(collectionUris)))
+        return sharingApi?.removeCollections(convertUriStringsToApiUrls(collectionUris))
             ?: throw Exception("Dependency Error: sharingApi")
     }
 
-    fun submitSkills(skillUris: List<String>): List<Result> {
+    fun submitSkills(skillUris: List<String>): Result {
         verifySearchHubConfigured()
 
-        return sharingApi?.submitSkills(listOf(convertUriStringsToApiUrls(skillUris)))
+        return sharingApi?.submitSkills(convertUriStringsToApiUrls(skillUris))
             ?: throw Exception("Dependency Error: sharingApi")
     }
 
-    fun removeSkills(skillsUris: List<String>): List<Result> {
+    fun removeSkills(skillsUris: List<String>): Result {
         verifySearchHubConfigured()
 
-        return sharingApi?.removeSkills(listOf(convertUriStringsToApiUrls(skillsUris)))
+        return sharingApi?.removeSkills(convertUriStringsToApiUrls(skillsUris))
             ?: throw Exception("Dependency Error: sharingApi")
     }
 

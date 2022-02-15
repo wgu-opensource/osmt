@@ -3,8 +3,6 @@ package edu.wgu.osmt.searchhub
 import com.github.sonus21.rqueue.annotation.RqueueListener
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.richskill.CreateSkillsTaskProcessor
-import edu.wgu.osmt.searchhub.client.apis.SharingApi
-import edu.wgu.osmt.searchhub.client.models.Urls
 import edu.wgu.osmt.task.ShareExternallyTask
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskStatus
@@ -13,7 +11,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
-import java.net.URI
 import javax.transaction.Transactional
 
 @Component
@@ -29,7 +26,7 @@ class ShareExternallyTaskProcessor {
     private lateinit var appConfig: AppConfig
 
     @Autowired
-    private lateinit var sharingApi: SharingApi
+    private lateinit var searchHubController: SearchHubController
 
     @RqueueListener(
             value = [TaskMessageService.shareSkillExternally],
@@ -40,12 +37,12 @@ class ShareExternallyTaskProcessor {
     fun processShareSkill(task: ShareExternallyTask) {
         logger.info("Started processShareSkill uuid: ${task.uuid}")
 
-        val urls = listOf(Urls(listOf(URI(task.canonicalUrl))))
+        val urls = listOf(task.canonicalUrl)
 
         if (task.shared) {
-            sharingApi.submitSkills(urls=urls)
+            searchHubController.submitSkills(urls)
         } else {
-            sharingApi.removeSkills(urls=urls)
+            searchHubController.removeSkills(urls)
         }
 
         val results = "OK"
@@ -65,12 +62,12 @@ class ShareExternallyTaskProcessor {
     fun processShareCollection(task: ShareExternallyTask) {
         logger.info("Started processShareCollection uuid: ${task.uuid}")
 
-        val urls = listOf(Urls(listOf(URI(task.canonicalUrl))))
+        val urls = listOf(task.canonicalUrl)
 
         if (task.shared) {
-            sharingApi.submitCollections(urls=urls)
+            searchHubController.submitCollections(urls)
         } else {
-            sharingApi.removeCollections(urls=urls)
+            searchHubController.removeCollections(urls)
         }
 
         val results = "OK"

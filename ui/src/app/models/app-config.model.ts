@@ -16,6 +16,7 @@ export interface IAppConfig {
   searchHubEnabled: boolean
   dynamicWhitelabel: boolean
   colorBrandAccent1?: string
+  externalShareEnabled: boolean
 }
 
 // Default configuration
@@ -37,4 +38,5 @@ export class DefaultAppConfig implements IAppConfig {
   searchHubEnabled = false
   dynamicWhitelabel = false
   colorBrandAccent1 = undefined
+  externalShareEnabled = true
 }

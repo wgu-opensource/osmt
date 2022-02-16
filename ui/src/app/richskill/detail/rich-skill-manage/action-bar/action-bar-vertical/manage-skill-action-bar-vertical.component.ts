@@ -31,4 +31,8 @@ export class ManageSkillActionBarVerticalComponent extends ManageRichSkillAction
   ) {
     super(router, richSkillService, toastService, locale)
   }
+
+  public get externalShareEnabled() {
+    return AppConfig.settings.externalShareEnabled
+  }
 }

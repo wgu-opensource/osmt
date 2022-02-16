@@ -14,6 +14,7 @@ import {ApiSkillSummary} from "../../richskill/ApiSkillSummary"
 import {Observable, Subject} from "rxjs"
 import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
 import {Title} from "@angular/platform-browser";
+import { AppConfig } from 'src/app/app.config'
 
 @Component({
   selector: "app-manage-collection",
@@ -196,26 +197,28 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     )
 
     // Add External Share & Unshare actions.
-    actions.push(
-      new TableActionDefinition({
-        label: "Share to Search Hub",
-        icon: this.shareIcon,
-        callback: () => this.shareExternallyAction(),
-        visible: () => {
-          return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
-                  && this.collection?.isExternallyShared !== true
-        }
-      }),
-      new TableActionDefinition({
-        label: "Unshare from Search Hub",
-        icon: this.unshareIcon,
-        callback: () => this.unshareExternallyAction(),
-        visible: () => {
-          return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
-                  && this.collection?.isExternallyShared === true
-        }
-      })
-    )
+    if (AppConfig.settings.externalShareEnabled) {
+      actions.push(
+        new TableActionDefinition({
+          label: "Share to Search Hub",
+          icon: this.shareIcon,
+          callback: () => this.shareExternallyAction(),
+          visible: () => {
+            return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
+                    && this.collection?.isExternallyShared !== true
+          }
+        }),
+        new TableActionDefinition({
+          label: "Unshare from Search Hub",
+          icon: this.unshareIcon,
+          callback: () => this.unshareExternallyAction(),
+          visible: () => {
+            return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
+                    && this.collection?.isExternallyShared === true
+          }
+        })
+      )
+    }
 
     return actions
   }

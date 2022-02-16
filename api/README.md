@@ -23,11 +23,10 @@ The Spring profiles in OSMT can be conceptually grouped as:
   | Security Component Profile | |
   | -------------------------- | -------------------------- |
   | oauth2-okta                | Includes required configuration for OAuth2 OIDC with Okta |
-  | noauth                     | Bypasses API authentication |
 
   | Application Component Profile | |
   | -------------------------- | -------------------------- |
-  | apiserver                  | Starts the API server. API endpoints started with this profile will also require a<br> Security Component Profile (above, either `oauth2-okta` or `noauth`) |
+  | apiserver                  | Starts the API server. API endpoints started with this profile will also require a<br> Security Component Profile (see `oauth2-okta`, above) |
   | import                     | Runs the batch import process, expects `--csv=` argument and `--import-type=` argument.<br>This process terminates when complete, and does not expose API endpoints; no Security profile is needed. |
   | reindex                    | Runs the Elasticsearch re-index process.<br>This process terminates when complete, and does not expose API endpoints; no Security profile is needed.  |
 

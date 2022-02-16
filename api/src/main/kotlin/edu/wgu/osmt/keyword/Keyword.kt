@@ -16,10 +16,10 @@ data class Keyword(
     @Nullable
     override val id: Long?,
 
-    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
+    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second, DateFormat.date_time])
     override val creationDate: LocalDateTime,
 
-    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
+    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second, DateFormat.date_time])
     override val updateDate: LocalDateTime,
 
     @Field(type = FieldType.Keyword)

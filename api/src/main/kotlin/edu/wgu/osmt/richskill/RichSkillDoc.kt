@@ -152,11 +152,11 @@ data class RichSkillDoc(
     @get:JsonIgnore
     val collections: List<CollectionDoc> = listOf(),
 
-    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
+    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second, DateFormat.date_time])
     @get:JsonProperty("publishDate")
     val publishDate: LocalDateTime? = null,
 
-    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
+    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second, DateFormat.date_time])
     @get:JsonProperty("archiveDate")
     val archiveDate: LocalDateTime? = null
 ) {

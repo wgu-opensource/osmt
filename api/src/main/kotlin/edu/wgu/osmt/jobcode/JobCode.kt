@@ -16,7 +16,7 @@ data class JobCode(
     override val id: Long?,
 
     @JsonIgnore
-    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
+    @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second, DateFormat.date_time])
     override val creationDate: LocalDateTime,
 
     @MultiField(

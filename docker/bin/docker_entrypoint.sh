@@ -12,6 +12,9 @@ declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
 declare OAUTH_CLIENTSECRET="${OAUTH_CLIENTSECRET:-}"
 declare OAUTH_AUDIENCE="${OAUTH_AUDIENCE:-}"
 declare MIGRATIONS_ENABLED="${MIGRATIONS_ENABLED:-}"
+declare SEARCHHUB_ENABLED="${SEARCHHUB_ENABLED:-}"
+declare SEARCHHUB_BASE_URL="${SEARCHHUB_BASE_URL:-}"
+declare SEARCHHUB_ACCESS_TOKEN="${SEARCHHUB_ACCESS_TOKEN}"
 declare SKIP_METADATA_IMPORT="${SKIP_METADATA_IMPORT:-}"
 declare REINDEX_ELASTICSEARCH="${REINDEX_ELASTICSEARCH:-}"
 declare FRONTEND_URL="${FRONTEND_URL:-}"
@@ -120,11 +123,12 @@ function reindex_elasticsearch() {
 }
 
 function start_spring_app() {
+  if [[ "${SEARCHHUB_ENABLED}" == "true" ]]; then
     local java_cmd="/bin/java
       -Dspring.profiles.active=${ENVIRONMENT}
       -Dapp.baseDomain=${BASE_DOMAIN}
       -Dapp.frontendUrl=${FRONTEND_URL}
-      -Dspring.redis.url=redis://${REDIS_URL}
+      -Dspring.redis.url=${REDIS_URL}
       -Ddb.uri=${DB_URI}
       -Des.uri=${ELASTICSEARCH_URI}
       -Dokta.oauth2.issuer=${OAUTH_ISSUER}
@@ -132,10 +136,29 @@ function start_spring_app() {
       -Dokta.oauth2.clientSecret=${OAUTH_CLIENTSECRET}
       -Dokta.oauth2.audience=${OAUTH_AUDIENCE}
       -Dspring.flyway.enabled=${MIGRATIONS_ENABLED}
+      -Dapp.searchhub.enabled=true
+      -Dapp.searchhub.baseUrl=${SEARCHHUB_BASE_URL}
+      -Dapp.searchhub.accessToken=${SEARCHHUB_ACCESS_TOKEN}
       -jar ${OSMT_JAR}"
-
-    echo_info "Starting OSMT Spring Boot application using ${ENVIRONMENT} Spring profiles..."
-    run_cmd_with_retry "${java_cmd}"
+      echo_info "Starting OSMT Spring Boot application (with SearchHub ENABLED) using ${ENVIRONMENT} Spring profiles..."
+  else
+    local java_cmd="/bin/java
+      -Dspring.profiles.active=${ENVIRONMENT}
+      -Dapp.baseDomain=${BASE_DOMAIN}
+      -Dapp.frontendUrl=${FRONTEND_URL}
+      -Dspring.redis.url=${REDIS_URL}
+      -Ddb.uri=${DB_URI}
+      -Des.uri=${ELASTICSEARCH_URI}
+      -Dokta.oauth2.issuer=${OAUTH_ISSUER}
+      -Dokta.oauth2.clientId=${OAUTH_CLIENTID}
+      -Dokta.oauth2.clientSecret=${OAUTH_CLIENTSECRET}
+      -Dokta.oauth2.audience=${OAUTH_AUDIENCE}
+      -Dspring.flyway.enabled=${MIGRATIONS_ENABLED}
+      -Dapp.searchhub.enabled=false
+      -jar ${OSMT_JAR}"
+      echo_info "Starting OSMT Spring Boot application (with SearchHub DISABLED) using ${ENVIRONMENT} Spring profiles..."
+  fi
+  run_cmd_with_retry "${java_cmd}"
 }
 
 function run_cmd_with_retry() {

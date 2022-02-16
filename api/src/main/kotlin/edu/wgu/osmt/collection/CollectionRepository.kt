@@ -263,11 +263,13 @@ class CollectionRepositoryImpl @Autowired constructor(
 
                 daoObject.isExternallyShared = newValue;
 
-                val task = ShareExternallyTask(
-                        canonicalUrl = daoObject.canonicalUrl(appConfig.baseUrl),
-                        shared = newValue
-                )
-                taskMessageService.enqueueJob(TaskMessageService.shareCollectionExternally, task)
+                if (appConfig.searchHubConfigured) {
+                    val task = ShareExternallyTask(
+                            canonicalUrl = daoObject.canonicalUrl(appConfig.baseUrl),
+                            shared = newValue
+                    )
+                    taskMessageService.enqueueJob(TaskMessageService.shareCollectionExternally, task)
+                }
 
                 auditLogRepository.create(
                     AuditLog.fromAtomicOp(

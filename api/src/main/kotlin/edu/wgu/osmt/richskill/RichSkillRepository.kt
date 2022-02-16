@@ -340,11 +340,13 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
                 daoObject.isExternallyShared = newValue;
 
-                val task = ShareExternallyTask(
-                    canonicalUrl = daoObject.canonicalUrl(appConfig.baseUrl),
-                    shared = newValue
-                )
-                taskMessageService.enqueueJob(TaskMessageService.shareSkillExternally, task)
+                if (appConfig.searchHubConfigured) {
+                    val task = ShareExternallyTask(
+                        canonicalUrl = daoObject.canonicalUrl(appConfig.baseUrl),
+                        shared = newValue
+                    )
+                    taskMessageService.enqueueJob(TaskMessageService.shareSkillExternally, task)
+                }
 
                 auditLogRepository.create(
                     AuditLog.fromAtomicOp(

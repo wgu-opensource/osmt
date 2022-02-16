@@ -55,4 +55,8 @@ class AppConfig(
     @Autowired
     lateinit var dbConfig: DbConfig
 
+    val searchHubConfigured: Boolean
+        get() = this.searchHubEnabled &&
+                this.searchHubBaseUrl?.isNotBlank() ?: false &&
+                this.searchHubAccessToken?.isNotBlank() ?: false
 }

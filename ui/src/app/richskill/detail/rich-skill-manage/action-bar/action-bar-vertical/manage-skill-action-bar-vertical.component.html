@@ -56,7 +56,7 @@
 
     </ng-template>
 
-    <ng-container *ngIf="published && !archived">
+    <ng-container *ngIf="externalShareEnabled && (published && !archived)">
 
       <button type="button" class="m-actionBarItem" (click)="handleShareExternally()" *ngIf="!isExternallyShared; else unshare">
         <span class="m-actionBarItem-x-icon">

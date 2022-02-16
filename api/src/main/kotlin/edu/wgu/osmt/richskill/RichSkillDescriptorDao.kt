@@ -2,6 +2,7 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionSkills
+import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.MutablePublishStatusDetails
 import edu.wgu.osmt.db.OutputsModel
 import edu.wgu.osmt.jobcode.JobCodeDao
@@ -34,6 +35,11 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
     var category by KeywordDao optionalReferencedOn RichSkillDescriptorTable.category
 
     var collections by CollectionDao via CollectionSkills
+
+
+    fun canonicalUrl(baseUrl: String): String {
+        return "${baseUrl}/api/skills/${this.uuid}"
+    }
 
     override fun toModel(): RichSkillDescriptor {
         val rsd = RichSkillDescriptor(

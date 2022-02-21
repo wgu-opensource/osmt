@@ -66,4 +66,23 @@ data class ApiSkillUpdate(
 
         return if (errors.size > 0) errors else null
     }
+
+    companion object {
+
+        fun fromApiSkill(apiSkill: ApiSkill): ApiSkillUpdate {
+            return ApiSkillUpdate(
+                    skillName=apiSkill.skillName,
+                    skillStatement= apiSkill.skillStatement,
+                    publishStatus= if (apiSkill.archiveDate != null) PublishStatus.Archived else PublishStatus.Published,
+                    category= apiSkill.category,
+                    author= apiSkill.author,
+                    keywords= ApiStringListUpdate(add=apiSkill.keywords),
+                    certifications= ApiReferenceListUpdate(add=apiSkill.certifications),
+                    standards= ApiAlignmentListUpdate(add=apiSkill.standards),
+                    alignments= ApiAlignmentListUpdate(add=apiSkill.alignments),
+                    employers= ApiReferenceListUpdate(add=apiSkill.employers),
+                    occupations= ApiStringListUpdate(add=apiSkill.occupations.map { it.code })
+            )
+        }
+    }
 }

@@ -46,5 +46,7 @@ class TaskMessageService {
 
         const val shareSkillExternally = "share-skill"
         const val shareCollectionExternally = "share-collection"
+
+        const val importSkills = "import-skill"
     }
 }

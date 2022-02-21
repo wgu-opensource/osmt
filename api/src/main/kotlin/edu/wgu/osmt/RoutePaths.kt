@@ -16,6 +16,7 @@ object RoutePaths {
     const val SKILL_SHARE_EXTERNALLY = "$SKILL_DETAIL/share"
     const val SKILL_UNSHARE_EXTERNALLY = "$SKILL_DETAIL/unshare"
     const val SKILL_AUDIT_LOG = "${SKILL_DETAIL}/log"
+    const val SKILL_IMPORT = "$SKILLS_PATH/import"
 
 
     const val COLLECTIONS_PATH = "/api/collections"

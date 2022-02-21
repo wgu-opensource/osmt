@@ -45,6 +45,8 @@ interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
     fun findManyByUUIDs(uuids: List<String>): List<RichSkillDescriptorDao>?
     fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao?
 
+    fun importFromApi(apiSkill: ApiSkill, originalUrl: String, originalLibraryName: String?, user: String): RichSkillDescriptorDao?
+
     fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao>
     fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String): RichSkillDescriptorDao?
     fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject
@@ -132,6 +134,20 @@ class RichSkillRepositoryImpl @Autowired constructor(
         val query = table.select { table.uuid inList uuids }
         return query.map { dao.wrapRow(it) }
 
+    }
+
+    override fun importFromApi(apiSkill: ApiSkill, originalUrl: String, originalLibraryName: String?, user: String): RichSkillDescriptorDao? {
+
+        val skillUpdate = ApiSkillUpdate.fromApiSkill(apiSkill)
+        val rsdUpdate = rsdUpdateFromApi(skillUpdate, user)
+        val skillDao = create(rsdUpdate, user)
+        if (skillDao != null) {
+            skillDao.publishDate = apiSkill.publishDate?.toLocalDateTime()
+            skillDao.archiveDate = apiSkill.archiveDate?.toLocalDateTime()
+            skillDao.importedFrom = originalUrl
+            skillDao.libraryName = originalLibraryName
+        }
+        return skillDao
     }
 
     override fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao? {

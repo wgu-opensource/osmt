@@ -205,4 +205,20 @@ class CollectionController @Autowired constructor(
         val sizedIterable = auditLogRepository.findByTableAndId(CollectionTable.tableName, entityId = collection!!.id.value, offsetPageable = pageable)
         return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
     }
+
+
+    @PostMapping(RoutePaths.COLLECTION_IMPORT, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun importCollection(
+        @RequestBody reference: ApiNamedReference,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
+        val collectionUrl = reference.id ?:  throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        val task = ShareExternallyTask(
+                canonicalUrl = collectionUrl,
+                libraryName = reference.name,
+                userString = readableUsername(user))
+        taskMessageService.enqueueJob(TaskMessageService.importCollections, task)
+        return Task.processingResponse(task)
+    }
 }

@@ -2,8 +2,11 @@ package edu.wgu.osmt.richskill
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
 import edu.wgu.osmt.api.model.ApiBatchResult
+import edu.wgu.osmt.api.model.ApiCollectionUpdate
 import edu.wgu.osmt.api.model.ApiSkill
 import edu.wgu.osmt.api.model.ApiSkillUpdate
+import edu.wgu.osmt.collection.CollectionRepository
+import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.searchhub.SearchHubController
 import edu.wgu.osmt.task.ShareExternallyTask
@@ -37,6 +40,9 @@ class ImportExternalTaskProcessor {
     @Autowired
     private lateinit var richSkillRepository: RichSkillRepository
 
+    @Autowired
+    private lateinit var collectionRepository: CollectionRepository
+
     @RqueueListener(
             value = [TaskMessageService.importSkills],
             deadLetterQueueListenerEnabled = "true",
@@ -63,5 +69,54 @@ class ImportExternalTaskProcessor {
         )
 
         logger.info("processImportSkill ${task.uuid} completed")
+    }
+
+
+    @RqueueListener(
+            value = [TaskMessageService.importCollections],
+            deadLetterQueueListenerEnabled = "true",
+            deadLetterQueue = TaskMessageService.deadLetters,
+            concurrency = "1"
+    )
+    fun processImportCollection(task: ShareExternallyTask) {
+        logger.info("Started processImportCollection uuid: ${task.uuid}")
+
+        var success = false
+        var totalCount = 0
+        var modifiedCount = 0
+        importExternalService.fetchCollectionFromUrl(task.canonicalUrl)?.let { apiCollection ->
+
+            val collectionDao = collectionRepository.importFromApi(apiCollection,
+                    originalUrl=task.canonicalUrl,
+                    originalLibraryName=task.libraryName,
+                    richSkillRepository=richSkillRepository,
+                    user=task.userString)
+
+            if (collectionDao != null) {
+                val skillUrls = apiCollection.skills?.map { it.id }
+                totalCount = skillUrls.size
+                skillUrls.forEach { skillUrl ->
+                    importExternalService.fetchSkillFromUrl(skillUrl)?.let { apiSkill ->
+                        val skillDao = richSkillRepository.importFromApi(apiSkill=apiSkill,
+                                originalUrl=task.canonicalUrl,
+                                originalLibraryName=task.libraryName,
+                                user=task.userString)
+                        if (skillDao != null) {
+                            modifiedCount += 1
+                            CollectionSkills.create(collectionId = collectionDao.id.value, skillId = skillDao.id.value)
+                        }
+                    }
+                }
+                success = true
+            }
+        }
+
+
+        val results = ApiBatchResult(success=success, totalCount=totalCount, modifiedCount = modifiedCount)
+        taskMessageService.publishResult(
+                task.copy(result=results, status=TaskStatus.Ready)
+        )
+
+        logger.info("processImportCollection ${task.uuid} completed")
     }
 }

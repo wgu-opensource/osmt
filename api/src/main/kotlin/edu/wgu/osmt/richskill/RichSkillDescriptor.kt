@@ -33,7 +33,9 @@ data class RichSkillDescriptor(
     val isExternallyShared: Boolean = false,
     override val archiveDate: LocalDateTime? = null,
     override val publishDate: LocalDateTime? = null,
-    val collections: List<Collection> = listOf()
+    val collections: List<Collection> = listOf(),
+    val importedFrom: String? = null,
+    val libraryName: String? = null
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
 
     // Keyword collections

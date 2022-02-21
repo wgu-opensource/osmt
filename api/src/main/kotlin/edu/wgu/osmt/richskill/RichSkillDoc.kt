@@ -158,7 +158,15 @@ data class RichSkillDoc(
 
     @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second, DateFormat.date_time])
     @get:JsonProperty("archiveDate")
-    val archiveDate: LocalDateTime? = null
+    val archiveDate: LocalDateTime? = null,
+
+    @Field(type = Keyword)
+    @get:JsonProperty("importedFrom")
+    val importedFrom: String? = null,
+
+    @Field(type = Keyword)
+    @get:JsonProperty("libraryName")
+    val libraryName: String? = null
 ) {
     companion object {
         fun fromDao(dao: RichSkillDescriptorDao, appConfig: AppConfig): RichSkillDoc {
@@ -180,7 +188,9 @@ data class RichSkillDoc(
                 alignments = dao.keywords.filter { it.type == KeywordTypeEnum.Alignment }.mapNotNull { it.value },
                 collections = dao.collections.map { it.toDoc(embedded = true) },
                 publishDate = dao.publishDate,
-                archiveDate = dao.archiveDate
+                archiveDate = dao.archiveDate,
+                importedFrom = dao.importedFrom,
+                libraryName = dao.libraryName
             )
         }
     }

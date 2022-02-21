@@ -58,7 +58,9 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
             isExternallyShared = isExternallyShared,
             archiveDate = archiveDate,
             publishDate = publishDate,
-            collections = collections.map { it.toModel() }.toList().sortedBy { it.name }
+            collections = collections.map { it.toModel() }.toList().sortedBy { it.name },
+            importedFrom = importedFrom,
+            libraryName = libraryName
         )
         return rsd
     }

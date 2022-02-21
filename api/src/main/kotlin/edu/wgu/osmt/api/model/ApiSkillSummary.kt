@@ -18,7 +18,9 @@ class ApiSkillSummary(
     @JsonProperty val skillStatement: String,
     @JsonProperty val category: String? = null,
     @JsonProperty val keywords: List<String> = listOf(),
-    @JsonProperty val occupations: List<ApiJobCode> = listOf()
+    @JsonProperty val occupations: List<ApiJobCode> = listOf(),
+    @JsonProperty val importedFrom: String?,
+    @JsonProperty val libraryName: String?
 ) {
 
     companion object {
@@ -33,7 +35,9 @@ class ApiSkillSummary(
                 skillStatement = rsd.statement,
                 category = rsd.category?.value,
                 keywords = rsd.keywords.mapNotNull { it.value },
-                occupations = rsd.jobCodes.map { ApiJobCode.fromJobCode(it) }
+                occupations = rsd.jobCodes.map { ApiJobCode.fromJobCode(it) },
+                importedFrom = rsd.importedFrom,
+                libraryName = rsd.libraryName,
             )
         }
 
@@ -53,7 +57,10 @@ class ApiSkillSummary(
                     statement,
                     category,
                     searchingKeywords,
-                    jobCodes.map { ApiJobCode.fromJobCode(it) })
+                    jobCodes.map { ApiJobCode.fromJobCode(it) },
+                    importedFrom,
+                    libraryName
+                )
             }
         }
     }

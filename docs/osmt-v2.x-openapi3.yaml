@@ -1115,6 +1115,9 @@ components:
           $ref: '#/components/schemas/PublishStatus'
         library:
           $ref: '#/components/schemas/NamedReference'
+        importedFrom:
+          type: string
+          format: uri
         skillName:
           type: string
         skillStatement:
@@ -1244,6 +1247,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SkillSummary'
+        library:
+          $ref: '#/components/schemas/NamedReference'
+        importedFrom:
+          type: string
+          format: uri
 
     CollectionDoc:
       type: object
@@ -1255,6 +1263,9 @@ components:
           type: string
         library:
           $ref: '#/components/schemas/NamedReference'
+        importedFrom:
+          type: string
+          format: uri
         status:
           $ref: '#/components/schemas/PublishStatus'
         skillCount:

@@ -41,7 +41,9 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             author = author?.toModel(),
             isExternallyShared = isExternallyShared,
             archiveDate = archiveDate,
-            publishDate = publishDate
+            publishDate = publishDate,
+            importedFrom = importedFrom,
+            libraryName = libraryName
         )
     }
 
@@ -55,7 +57,9 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             skillCount = if (embedded) null else skills.count().toInt(),
             author = author?.value,
             archiveDate = archiveDate,
-            publishDate = publishDate
+            publishDate = publishDate,
+            importedFrom = importedFrom,
+            libraryName = libraryName
         )
     }
 }

@@ -123,6 +123,8 @@ export interface ISkill {
   occupations: IJobCode[]
   employers: INamedReference[]
   author: string
+  importedFrom?: string
+  libraryName?: string
 }
 
 export class ApiSkill {
@@ -146,6 +148,8 @@ export class ApiSkill {
   occupations: IJobCode[]
   employers: INamedReference[]
   author: string
+  importedFrom?: string
+  libraryName?: string
 
   constructor(iRichSkill: ISkill) {
     this.id = iRichSkill.id
@@ -176,6 +180,9 @@ export class ApiSkill {
     this.type = iRichSkill.type
     this.employers = iRichSkill.employers
     this.occupations = iRichSkill.occupations
+    this.importedFrom = iRichSkill.importedFrom
+    this.libraryName = iRichSkill.libraryName
+
   }
 
   get sortedAlignments(): IAlignment[] {

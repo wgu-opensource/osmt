@@ -14,6 +14,8 @@ export interface ICollection {
   isExternallyShared: boolean
   updateDate?: Date
   uuid: string
+  importedFrom?: string
+  libraryName?: string
 }
 
 export class ApiCollection {
@@ -29,6 +31,8 @@ export class ApiCollection {
   isExternallyShared: boolean
   updateDate?: Date
   uuid: string
+  importedFrom?: string
+  libraryName?: string
 
   constructor(
     {
@@ -43,7 +47,9 @@ export class ApiCollection {
       status,
       isExternallyShared,
       updateDate,
-      uuid
+      uuid,
+      importedFrom,
+      libraryName
     }: ICollection
   ) {
     this.archiveDate = archiveDate
@@ -58,6 +64,8 @@ export class ApiCollection {
     this.isExternallyShared = isExternallyShared
     this.updateDate = updateDate
     this.uuid = uuid
+    this.importedFrom = importedFrom
+    this.libraryName = libraryName
   }
 }
 

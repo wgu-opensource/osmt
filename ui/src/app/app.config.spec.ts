@@ -50,7 +50,8 @@ describe("AppConfig", () => {
         loginUrl: "",
         idleTimeoutInSeconds: 300,
         dynamicWhitelabel: false,
-        searchHubEnabled: false
+        searchHubEnabled: false,
+        externalShareEnabled: false
       }
 
       environment.baseApiUrl = expectedApiUrl

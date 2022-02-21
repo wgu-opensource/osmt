@@ -27,6 +27,8 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
     var statement: String by RichSkillDescriptorTable.statement
     var author by KeywordDao optionalReferencedOn RichSkillDescriptorTable.author
     var isExternallyShared: Boolean by RichSkillDescriptorTable.externallyShared
+    var importedFrom: String? by RichSkillDescriptorTable.importedFrom
+    var libraryName: String? by RichSkillDescriptorTable.libraryName
 
     var jobCodes by JobCodeDao via RichSkillJobCodes
 

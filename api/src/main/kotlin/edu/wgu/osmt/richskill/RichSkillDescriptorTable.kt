@@ -36,6 +36,8 @@ object RichSkillDescriptorTable : LongIdTable("RichSkillDescriptor"), TableWithU
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
     val externallyShared = bool("externally_shared")
+    val importedFrom = varchar("imported_from", 768).nullable()
+    val libraryName = text("library_name").nullable()
 }
 
 // many-to-many table for RichSkillDescriptor and JobCode relationship

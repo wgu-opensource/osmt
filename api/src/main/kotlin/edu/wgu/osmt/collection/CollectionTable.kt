@@ -4,6 +4,7 @@ import edu.wgu.osmt.db.PublishStatusUpdate
 import edu.wgu.osmt.db.TableWithUpdate
 import edu.wgu.osmt.keyword.KeywordTable
 import edu.wgu.osmt.richskill.RichSkillDescriptorTable
+import edu.wgu.osmt.richskill.RichSkillDescriptorTable.nullable
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.*
@@ -24,6 +25,8 @@ object CollectionTable: TableWithUpdate<CollectionUpdateObject>, PublishStatusUp
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
     val externallyShared = bool("externally_shared")
+    val importedFrom = varchar("imported_from", 768).nullable()
+    val libraryName = text("library_name").nullable()
 }
 
 object CollectionSkills : Table("CollectionSkills") {

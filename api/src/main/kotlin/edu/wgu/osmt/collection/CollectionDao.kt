@@ -4,6 +4,7 @@ import edu.wgu.osmt.db.MutablePublishStatusDetails
 import edu.wgu.osmt.db.OutputsModel
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
+import edu.wgu.osmt.richskill.RichSkillDescriptorTable
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -18,6 +19,8 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
     var name: String by CollectionTable.name
     var author by KeywordDao optionalReferencedOn CollectionTable.author
     var isExternallyShared: Boolean by CollectionTable.externallyShared
+    var importedFrom: String? by RichSkillDescriptorTable.importedFrom
+    var libraryName: String? by RichSkillDescriptorTable.libraryName
 
     var skills by RichSkillDescriptorDao via CollectionSkills
 

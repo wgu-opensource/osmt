@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
+import java.util.*
 
 @Controller
 @Transactional
@@ -72,6 +73,7 @@ class SearchHubController @Autowired constructor(
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
         @RequestParam(required = false) sort: String?,
+        @RequestParam libraries: List<UUID>,
         @RequestBody apiSearch: ApiSearch,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<CollectionSummary>> {
@@ -90,7 +92,7 @@ class SearchHubController @Autowired constructor(
 
         return searchingApi?.let {
             val collectionsResult = it.searchCollections(
-                convertToSearchHubSearch(apiSearch),
+                convertToSearchHubSearch(apiSearch, libraries),
                 size,
                 from
             )
@@ -114,6 +116,7 @@ class SearchHubController @Autowired constructor(
         ) status: Array<String>,
         @RequestParam(required = false) sort: String?,
         @RequestParam(required = false) collectionId: String?,
+        @RequestBody libraries: List<UUID>,
         @RequestBody apiSearch: ApiSearch,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<SkillSummary>> {
@@ -132,7 +135,7 @@ class SearchHubController @Autowired constructor(
 
         return searchingApi?.let {
             val skillsResult = it.searchSkills(
-                convertToSearchHubSearch(apiSearch),
+                convertToSearchHubSearch(apiSearch, libraries),
                 size,
                 from
             )
@@ -183,9 +186,10 @@ class SearchHubController @Autowired constructor(
     }
 
     companion object {
-        fun convertToSearchHubSearch(apiSearch: ApiSearch): Search {
+        fun convertToSearchHubSearch(apiSearch: ApiSearch, libraries: List<UUID>): Search {
             val advancedSearch: AdvancedSearch? = apiSearch.advanced?.let { apiAdvancedSearch ->
                 AdvancedSearch(
+                    libraries = ArrayList(libraries),
                     skillName = apiAdvancedSearch.skillName,
                     collectionName = apiAdvancedSearch.collectionName,
                     category = apiAdvancedSearch.category,

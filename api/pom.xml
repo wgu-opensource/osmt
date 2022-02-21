@@ -50,7 +50,7 @@
         <spring-data-elasticsearch.version>4.2.4</spring-data-elasticsearch.version>
         <ehcache.version>3.9.2</ehcache.version>
         <bucket4j.version>4.10.0</bucket4j.version>
-        <searchhub.client.version>0.1.0-SNAPSHOT</searchhub.client.version>
+        <searchhub.client.version>1.0.1</searchhub.client.version>
     </properties>
 
     <dependencies>

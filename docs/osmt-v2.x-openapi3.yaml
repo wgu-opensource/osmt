@@ -45,14 +45,6 @@ paths:
             type: string
             format: uuid
             description: Limit skills to those associated with given collection id
-        - in: query
-          name: library
-          description: Limit skills to those contained within the given libraries
-          schema:
-            type: array
-            items:
-              type: string
-              format: uuid
       requestBody:
         required: true
         content:
@@ -451,14 +443,6 @@ paths:
           name: sort
           schema:
             $ref: '#/components/schemas/SortOrder'
-        - in: query
-          name: library
-          description: Limit collections to those contained within the given libraries
-          schema:
-            type: array
-            items:
-              type: string
-              format: uuid
       requestBody:
         required: true
         content:
@@ -1003,6 +987,155 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/NamedReference'
+
+
+  /api/external/libraries:
+    get:
+      tags:
+        - External
+      summary: Get all external libraries
+      description: Returns paginated list of libraries
+      parameters:
+        - in: query
+          name: size
+          description: number of libraries to return per page
+          schema:
+            type: number
+            default: 50
+        - in: query
+          name: from
+          description: zero-indexed offset from beginning of records
+          schema:
+            type: number
+            default: 0
+        - in: query
+          name: sort
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExternalLibrary'
+
+  /api/external/search/collections:
+    post:
+      tags:
+        - External
+        - Search
+      summary: Search for external librarry collections
+      description: Return summaries for collecitons that match the provided query
+      parameters:
+        - in: query
+          name: size
+          description: number of collections to return per page
+          schema:
+            type: number
+            default: 50
+        - in: query
+          name: from
+          description: zero-indexed offset from beginning of records
+          schema:
+            type: number
+            default: 0
+        - in: query
+          name: sort
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                libraries:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                search:
+                  $ref: '#/components/schemas/AdvancedSearch'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExternalCollectionSummary'
+
+  /api/external/search/skills:
+    post:
+      tags:
+        - External
+        - Search
+      summary: Search for external librarry skills
+      description: Return summaries for skills that match the provided query
+      parameters:
+        - in: query
+          name: size
+          description: number of skills to return per page
+          schema:
+            type: number
+            default: 50
+        - in: query
+          name: from
+          description: zero-indexed offset from beginning of records
+          schema:
+            type: number
+            default: 0
+        - in: query
+          name: sort
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                libraries:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                search:
+                  $ref: '#/components/schemas/AdvancedSearch'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExternalSkillSummary'
+
 
 components:
   securitySchemes:
@@ -1609,3 +1742,12 @@ components:
           type: string
       required:
         - statement
+
+    ExternalLibrary:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        libraryName:
+          type: string

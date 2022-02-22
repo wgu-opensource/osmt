@@ -10,6 +10,7 @@ import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
+import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.security.OAuth2Helper
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
@@ -220,5 +221,25 @@ class CollectionController @Autowired constructor(
                 userString = readableUsername(user))
         taskMessageService.enqueueJob(TaskMessageService.importCollections, task)
         return Task.processingResponse(task)
+    }
+
+    @PostMapping(RoutePaths.COLLECTION_REMOVE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun removeCollection(
+            @PathVariable uuid: String,
+            @AuthenticationPrincipal user: Jwt?
+    ): ApiBatchResult {
+        val existing = collectionRepository.findByUUID(uuid)
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        /* can only remove readonly imported collections */
+        if (existing.importedFrom == null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        }
+
+        collectionEsRepo.delete(existing.toDoc())
+        existing.delete()
+
+        return ApiBatchResult(success=true, modifiedCount=1, totalCount=1)
     }
 }

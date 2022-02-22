@@ -12,11 +12,12 @@ object RoutePaths {
     const val SKILLS_CREATE = SKILLS_PATH
     const val SKILL_PUBLISH = "$SKILLS_PATH/publish"
     const val SKILL_DETAIL = "$SKILLS_PATH/{uuid}"
+    const val SKILL_IMPORT = "$SKILLS_PATH/import"
+    const val SKILL_REMOVE = "$SKILL_DETAIL/remove"
     const val SKILL_UPDATE = "$SKILL_DETAIL/update"
     const val SKILL_SHARE_EXTERNALLY = "$SKILL_DETAIL/share"
     const val SKILL_UNSHARE_EXTERNALLY = "$SKILL_DETAIL/unshare"
     const val SKILL_AUDIT_LOG = "${SKILL_DETAIL}/log"
-    const val SKILL_IMPORT = "$SKILLS_PATH/import"
 
 
     const val COLLECTIONS_PATH = "/api/collections"
@@ -24,6 +25,8 @@ object RoutePaths {
     const val COLLECTION_CREATE = COLLECTIONS_PATH
     const val COLLECTION_PUBLISH = "$COLLECTIONS_PATH/publish"
     const val COLLECTION_DETAIL = "${COLLECTIONS_PATH}/{uuid}"
+    const val COLLECTION_IMPORT = "$COLLECTIONS_PATH/import"
+    const val COLLECTION_REMOVE = "${COLLECTION_DETAIL}/emove"
     const val COLLECTION_UPDATE = "${COLLECTION_DETAIL}/update"
     const val COLLECTION_SHARE_EXTERNALLY = "$COLLECTION_DETAIL/share"
     const val COLLECTION_UNSHARE_EXTERNALLY = "$COLLECTION_DETAIL/unshare"
@@ -31,7 +34,6 @@ object RoutePaths {
     const val COLLECTION_SKILLS = "${COLLECTION_DETAIL}/skills"
     const val COLLECTION_AUDIT_LOG = "${COLLECTION_DETAIL}/log"
     const val COLLECTION_CSV = "${COLLECTION_DETAIL}/csv"
-    const val COLLECTION_IMPORT = "$COLLECTIONS_PATH/import"
 
 
     const val TASKS_PATH = "/api/results"

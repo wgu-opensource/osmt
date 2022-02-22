@@ -224,4 +224,25 @@ class RichSkillController @Autowired constructor(
         taskMessageService.enqueueJob(TaskMessageService.importSkills, task)
         return Task.processingResponse(task)
     }
+
+    @PostMapping(RoutePaths.SKILL_REMOVE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun removeSkill(
+        @PathVariable uuid: String,
+        @AuthenticationPrincipal user: Jwt?
+    ): ApiBatchResult {
+        val existingSkill = richSkillRepository.findByUUID(uuid)
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        /* can only remove readonly imported skills */
+        if (existingSkill.importedFrom == null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        }
+
+        val skillDoc = RichSkillDoc.fromDao(existingSkill, appConfig)
+        richSkillEsRepo.delete(skillDoc)
+        existingSkill.delete()
+
+        return ApiBatchResult(success=true, modifiedCount=1, totalCount=1)
+    }
 }

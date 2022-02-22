@@ -47,6 +47,7 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   dismissIcon: string = SvgHelper.path(SvgIcon.DISMISS)
   shareIcon: string = SvgHelper.path(SvgIcon.SHARE)
   unshareIcon: string = SvgHelper.path(SvgIcon.UNSHARE)
+  externalIcon: string = SvgHelper.path(SvgIcon.EXTERNAL)
 
   constructor(
     protected router: Router,
@@ -131,6 +132,10 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
       const url = `skills/${this.skillUuid}`
       window.open(url, "_blank")
     }
+  }
+
+  handleExternalUrl(externalUrl: string): void {
+    window.open(externalUrl, "_blank")
   }
 
   handleShareExternally(): void {

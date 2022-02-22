@@ -64,6 +64,14 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
     return this.richSkill?.isExternallyShared ?? false
   }
 
+  getImportedFrom(): string {
+    return this.richSkill?.importedFrom ?? ""
+  }
+
+  getLibraryName(): string {
+    return this.richSkill?.libraryName ?? ""
+  }
+
   getSkillUrl(): string {
     return this.richSkill?.id ?? ""
   }

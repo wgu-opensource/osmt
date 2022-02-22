@@ -26,15 +26,15 @@ internal class ApiSkillTest {
         val cols = mockData.getCollections().toSet()
 
         // Act
-        val actual = ApiSkill(rsd, cols, mockData.appConfig)
+        val actual = ApiSkill.fromModel(rsd, cols, mockData.appConfig)
 
         // Assert
         Assertions.assertThat(mockData.appConfig.defaultCreatorUri).isEqualTo(actual.creator)
         Assertions.assertThat(rsd.author?.value).isEqualTo(actual.author)
         Assertions.assertThat(rsd.publishStatus()).isEqualTo(actual.status)
         Assertions.assertThat(rsd.isExternallyShared).isEqualTo(actual.isExternallyShared)
-        Assertions.assertThat(rsd.creationDate).isEqualTo(actual.creationDate.toLocalDateTime())
-        Assertions.assertThat(rsd.updateDate).isEqualTo(actual.updateDate.toLocalDateTime())
+        Assertions.assertThat(rsd.creationDate).isEqualTo(actual.creationDate?.toLocalDateTime())
+        Assertions.assertThat(rsd.updateDate).isEqualTo(actual.updateDate?.toLocalDateTime())
         Assertions.assertThat(rsd.publishDate).isEqualTo(actual.publishDate?.toLocalDateTime())
         Assertions.assertThat(rsd.archiveDate).isEqualTo(actual.archiveDate?.toLocalDateTime())
         Assertions.assertThat(rsd.name).isEqualTo(actual.skillName)
@@ -54,7 +54,7 @@ internal class ApiSkillTest {
         val cols = mockData.getCollections().toSet()
 
         // Act
-        val actual = ApiSkill(rsd, cols, mockData.appConfig)
+        val actual = ApiSkill.fromModel(rsd, cols, mockData.appConfig)
 
         // Assert
         Assertions.assertThat(actual.collections.size).isEqualTo(cols.size)
@@ -82,7 +82,7 @@ internal class ApiSkillTest {
         }
 
         // Act
-        val actual = ApiSkill(rsd!!, cols, mockData.appConfig)
+        val actual = ApiSkill.fromModel(rsd!!, cols, mockData.appConfig)
 
         // Assert
         assertTrue(rsd.searchingKeywords.map { it.value }.containsAll(actual.keywords))
@@ -107,7 +107,7 @@ internal class ApiSkillTest {
         }
 
         // Act
-        val actual = ApiSkill(rsd!!, cols, mockData.appConfig)
+        val actual = ApiSkill.fromModel(rsd!!, cols, mockData.appConfig)
 
         // Assert
         Assertions.assertThat(actual.occupations.size).isEqualTo(rsd.jobCodes.size)
@@ -134,7 +134,7 @@ internal class ApiSkillTest {
         }
 
         // Act
-        val actual = ApiSkill(rsd!!, cols, mockData.appConfig)
+        val actual = ApiSkill.fromModel(rsd!!, cols, mockData.appConfig)
 
         // Assert
         Assertions.assertThat(actual.certifications.size).isEqualTo(rsd.certifications.size)
@@ -160,7 +160,7 @@ internal class ApiSkillTest {
         }
 
         // Act
-        val actual = ApiSkill(rsd!!, cols, mockData.appConfig)
+        val actual = ApiSkill.fromModel(rsd!!, cols, mockData.appConfig)
 
         // Assert
         Assertions.assertThat(actual.standards.size).isEqualTo(rsd.standards.size)
@@ -186,7 +186,7 @@ internal class ApiSkillTest {
         }
 
         // Act
-        val actual = ApiSkill(rsd!!, cols, mockData.appConfig)
+        val actual = ApiSkill.fromModel(rsd!!, cols, mockData.appConfig)
 
         // Assert
         Assertions.assertThat(actual.alignments.size).isEqualTo(rsd.alignments.size)
@@ -203,7 +203,7 @@ internal class ApiSkillTest {
         val rsd: RichSkillDescriptor = mockData.getRichSkillDescriptors()[0]
 
         // Act
-        val actual = ApiSkill(rsd, cols, mockData.appConfig)
+        val actual = ApiSkill.fromModel(rsd, cols, mockData.appConfig)
 
         // Assert
         Assertions.assertThat(actual.employers.size).isEqualTo(rsd.employers.size)

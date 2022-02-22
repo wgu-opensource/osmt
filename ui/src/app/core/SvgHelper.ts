@@ -18,7 +18,8 @@ export enum SvgIcon {
   SEARCH = "icon-search",
   SHARE = "icon-share",
   UNSHARE = "icon-unshare",
-  EXTERNAL = "icon-external-link"
+  EXTERNAL = "icon-external-link",
+  REMOVE = "icon-remove"
 }
 
 export class SvgHelper {

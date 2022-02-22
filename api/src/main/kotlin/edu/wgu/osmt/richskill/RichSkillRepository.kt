@@ -140,7 +140,15 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         val skillUpdate = ApiSkillUpdate.fromApiSkill(apiSkill)
         val rsdUpdate = rsdUpdateFromApi(skillUpdate, user)
-        val skillDao = create(rsdUpdate, user)
+
+        val existingDao = table.select { table.importedFrom eq originalUrl }.firstOrNull()?.let { dao.wrapRow(it) }
+
+        val skillDao = if (existingDao != null) {
+            update(rsdUpdate, user)
+        } else {
+            create(rsdUpdate, user)
+        }
+
         if (skillDao != null) {
             skillDao.publishDate = apiSkill.publishDate?.toLocalDateTime()
             skillDao.archiveDate = apiSkill.archiveDate?.toLocalDateTime()

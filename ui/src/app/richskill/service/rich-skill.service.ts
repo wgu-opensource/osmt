@@ -142,6 +142,15 @@ export class RichSkillService extends AbstractService {
       .pipe(map(({body}) => new ApiSkill(this.safeUnwrapBody(body, errorMsg))))
   }
 
+  removeSkill(uuid: string): Observable<ApiBatchResult> {
+    const errorMsg = `Error removing skill`
+    return this.post<ApiBatchResult>({
+      path: `${this.serviceUrl}/${uuid}/remove`,
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiBatchResult(this.safeUnwrapBody(body, errorMsg))))
+  }
+
   searchSkills(
     apiSearch: ApiSearch,
     size?: number,

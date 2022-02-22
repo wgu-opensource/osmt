@@ -146,6 +146,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
             skillDao.archiveDate = apiSkill.archiveDate?.toLocalDateTime()
             skillDao.importedFrom = originalUrl
             skillDao.libraryName = originalLibraryName
+            richSkillEsRepo.save(RichSkillDoc.fromDao(skillDao, appConfig))
         }
         return skillDao
     }

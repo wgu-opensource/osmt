@@ -136,6 +136,7 @@ class CollectionRepositoryImpl @Autowired constructor(
             collectionDao.archiveDate = apiCollection.archiveDate?.toLocalDateTime()
             collectionDao.importedFrom = originalUrl
             collectionDao.libraryName = originalLibraryName
+            collectionEsRepo.save(collectionDao.toDoc())
         }
         return collectionDao
     }

@@ -1,6 +1,7 @@
 package edu.wgu.osmt.richskill
 
 import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import edu.wgu.osmt.api.model.ApiCollection
@@ -14,7 +15,7 @@ import java.net.URL
 @Service
 @Transactional
 class ImportExternalService {
-    val mapper = jacksonObjectMapper()
+    val mapper: ObjectMapper = jacksonObjectMapper().findAndRegisterModules()
 
     private inline fun <reified T>fetchFromUrl(url: String): T? {
         val httpConnection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection

@@ -99,6 +99,10 @@ class CollectionController @Autowired constructor(
         val existing = collectionRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
+        if (existing.importedFrom != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Imported Collections are Read Only")
+        }
+
         val updated = collectionRepository.updateFromApi(
             existing.id.value,
             apiUpdate,
@@ -119,6 +123,10 @@ class CollectionController @Autowired constructor(
         val existingCollection = collectionRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
+        if (existingCollection.importedFrom != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Imported Collections are Read Only")
+        }
+
         val updatedCollection = collectionRepository.updateIsExternallyShared(
                 existingCollection.id.value,
                 true,
@@ -136,6 +144,10 @@ class CollectionController @Autowired constructor(
     ): ApiCollection {
         val existingCollection = collectionRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        if (existingCollection.importedFrom != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Imported Collections are Read Only")
+        }
 
         val updatedCollection = collectionRepository.updateIsExternallyShared(
                 existingCollection.id.value,
@@ -157,6 +169,12 @@ class CollectionController @Autowired constructor(
         ) status: List<String>,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
+        val existingCollection = collectionRepository.findByUUID(uuid)
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        if (existingCollection.importedFrom != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Imported Collections are Read Only")
+        }
+
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = readableUsername(user))
 

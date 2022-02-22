@@ -125,6 +125,10 @@ class RichSkillController @Autowired constructor(
         val existingSkill = richSkillRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
+        if (existingSkill.importedFrom != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Imported Skills are Read Only")
+        }
+
         val updatedSkill =
             richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, readableUsername(user))
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
@@ -140,6 +144,10 @@ class RichSkillController @Autowired constructor(
     ): ApiSkill {
         val existingSkill = richSkillRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        if (existingSkill.importedFrom != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Imported Skills are Read Only")
+        }
 
         val updatedSkill =
             richSkillRepository.updateIsExternallyShared(existingSkill.id.value, true, readableUsername(user))
@@ -212,7 +220,7 @@ class RichSkillController @Autowired constructor(
 
     @PostMapping(RoutePaths.SKILL_IMPORT, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun importSkills(
+    fun importSkill(
         @RequestBody skillReference: ApiNamedReference,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {

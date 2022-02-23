@@ -132,7 +132,7 @@ java -Dspring.profiles.active=<environment profile>,reindex -jar api/target/osmt
 
 Via mvn:
 ```
-mvn -DSpring.profiles.active=<environment profile>,reindex
+mvn -DSpring.profiles.active=<environment profile>,reindex spring-boot:run
 ```
 
 ### Reindex after changes to Elasticsearch `@Document` index classes

@@ -29,6 +29,13 @@
       ></app-status-bar>
     </div>
 
+    <div class="t-margin-small t-margin-bottom" *ngIf="skill.libraryName">
+      <div class="m-inlineHeading m-inlineHeading-is-truncated">
+        <h5 class="m-inlineHeading-x-heading">Library:</h5>
+        <p class="m-inlineHeading-x-text">{{skill.libraryName}}</p>
+      </div>
+    </div>
+
     <div class="t-margin-small t-margin-bottom" *ngIf="getFormattedKeywords()">
       <div class="m-inlineHeading m-inlineHeading-is-truncated">
         <h5 class="m-inlineHeading-x-heading">Keywords:</h5>

@@ -8,18 +8,22 @@ import {LogoutComponent} from "./auth/logout.component"
 import {AuthGuard} from "./auth/auth.guard"
 import {LoginComponent} from "./auth/login.component"
 import {RichSkillManageComponent} from "./richskill/detail/rich-skill-manage/rich-skill-manage.component"
-import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
-import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component";
-import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component";
+import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component"
+import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component"
+import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component"
 import {CollectionFormComponent} from "./collection/create-collection/collection-form.component"
-import {FormDirtyGuard} from "./core/abstract-form.component";
-import {CollectionsLibraryComponent} from "./table/collections-library.component";
-import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component";
-import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component";
-import {ManageCollectionComponent} from "./collection/detail/manage-collection.component";
-import {PublishCollectionComponent} from "./collection/detail/publish-collection.component";
-import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component";
-import {BatchImportComponent} from "./richskill/import/batch-import.component";
+import {FormDirtyGuard} from "./core/abstract-form.component"
+import {CollectionsLibraryComponent} from "./table/collections-library.component"
+import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component"
+import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component"
+import {
+  ExternalSearchResultsComponent,
+  SearchResultType
+} from "./search/external/results/external-search-results.component"
+import {ManageCollectionComponent} from "./collection/detail/manage-collection.component"
+import {PublishCollectionComponent} from "./collection/detail/publish-collection.component"
+import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component"
+import {BatchImportComponent} from "./richskill/import/batch-import.component"
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -31,6 +35,13 @@ const routes: Routes = [
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
     canDeactivate: [FormDirtyGuard]
+  },
+  {path: "skills/search/external",
+    component: ExternalSearchResultsComponent,
+    canActivate: [AuthGuard],
+    data: {
+      searchResultType: SearchResultType.RSD
+    }
   },
   // skill search results
   {path: "skills/search",
@@ -72,6 +83,13 @@ const routes: Routes = [
     component: CollectionFormComponent,
     canActivate: [AuthGuard],
     canDeactivate: [FormDirtyGuard]
+  },
+  {path: "collections/search/external",
+    component: ExternalSearchResultsComponent,
+    canActivate: [AuthGuard],
+    data: {
+      searchResultType: SearchResultType.COLLECTION
+    }
   },
   // collection search results
   {path: "collections/search",

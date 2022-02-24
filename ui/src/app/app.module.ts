@@ -97,6 +97,11 @@ import {SystemMessageComponent} from "./core/system-message.component"
 import {LogoutComponent} from "./auth/logout.component"
 import {NgIdleKeepaliveModule} from "@ng-idle/keepalive"
 import {LabelWithSelectComponent} from "./table/skills-library-table/label-with-select.component"
+import {ExternalSearchResultsComponent} from "./search/external/results/external-search-results.component"
+import {ExternalSearchCollectionTableComponent} from "./search/external/results/collection/external-search-collection-table.component"
+import {ExternalSearchCollectionRowComponent} from "./search/external/results/collection/external-search-collection-row.component"
+import {ExternalSearchSkillTableComponent} from "./search/external/results/skill/external-search-skill-table.component"
+import {ExternalSearchSkillRowComponent} from "./search/external/results/skill/external-search-skill-row.component"
 
 export function initializeApp(appConfig: AppConfig): () => void {
   return () => appConfig.load()
@@ -201,7 +206,14 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AuditLogComponent,
     OccupationsCardSectionComponent,
     CheckerComponent,
-    LabelWithSelectComponent
+    LabelWithSelectComponent,
+
+    // External Search
+    ExternalSearchResultsComponent,
+    ExternalSearchCollectionTableComponent,
+    ExternalSearchCollectionRowComponent,
+    ExternalSearchSkillTableComponent,
+    ExternalSearchSkillRowComponent
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

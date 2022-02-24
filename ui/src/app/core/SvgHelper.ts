@@ -12,6 +12,7 @@ export enum SvgIcon {
   DOWNLOAD = "icon-download",
   DUPLICATE = "icon-duplicate",
   EDIT = "icon-edit",
+  EXTERNAL_LINK = "icon-external-link",
   ICON_UP = "icon-up",
   MORE = "icon-more",
   PUBLISH = "icon-publish",

@@ -1,0 +1,36 @@
+<table class="l-table">
+  <thead>
+    <tr class="m-tableHeader m-tableHeader-bare">
+      <th class="t-hidden-tabletMin" scope="col"><span class="t-visuallyHidden">RSDs</span></th>
+      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Category</span></th>
+      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Rich Skill Descriptor</span></th>
+    </tr>
+    <tr class="m-tableHeader">
+      <td class="t-hidden-tabletMin" scope="col" aria-hidden="true">
+        <div class="m-tableLabel">
+          <span class="m-tableLabel-x-text">RSDs</span>
+        </div>
+      </td>
+      <td class="t-hidden-tabletMax" scope="col" aria-hidden="true">
+        <div class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Category</span>
+        </div>
+      </td>
+      <td class="t-hidden-tabletMax" scope="col" aria-hidden="true">
+        <div class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Rich Skill Descriptor</span>
+        </div>
+      </td>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let skill of items; let i=index"
+      app-external-search-skill-row
+      class="m-tableRow"
+      id="table-row-{{i}}"
+      nextId="table-row-{{i+1}}"
+      [skill]="skill"
+    ></tr>
+  </tbody>
+</table>

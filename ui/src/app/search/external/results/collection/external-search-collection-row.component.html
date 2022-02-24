@@ -1,0 +1,23 @@
+<ng-template [ngIf]="!!collection">
+
+  <th scope="row" id="{{id}}-header">
+    <a id="{{id}}-name" class="l-flex t-focus t-type-bodyLink" target="_blank" href="{{collection.id}}">
+      <span>{{collection.name}}</span>
+      <svg class="t-icon" aria-hidden="true">
+        <use [attr.xlink:href]="externalLinkIcon"></use>
+      </svg>
+    </a>
+  </th>
+
+  <td>{{collection.skillCount}}</td>
+
+  <td>{{collection.libraryName}}</td>
+
+  <td class="m-tableRow-x-actions">
+    <button class="m-buttonSmall" (click)="onImportCollectionClicked()">
+      <span class="m-buttonSmall-x-text t-type-noWrap">Import Collection</span>
+    </button>
+  </td>
+
+</ng-template>
+

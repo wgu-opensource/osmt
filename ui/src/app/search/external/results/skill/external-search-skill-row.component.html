@@ -1,0 +1,57 @@
+<ng-template [ngIf]="!!skill">
+
+  <th scope="row" id="{{id}}-header">
+    <div class="t-hidden-tabletMax">{{skill.category}}</div>
+
+    <div class="t-hidden-tabletMin">
+      <!--{{render '@m-inlineheading'}}-->
+      <div class="m-inlineHeading">
+        <h5 class="m-inlineHeading-x-heading">Category:</h5>
+        <p class="m-inlineHeading-x-text">{{skill.category}}</p>
+      </div>
+    </div>
+  </th>
+
+  <td>
+
+    <h4 class="t-margin-extraSmall t-margin-bottom" tabindex="0">
+      <a id="{{id}}-name" class="l-flex t-focus t-type-bodyLink" target="_blank" href="{{skill.id}}">
+        <span>{{skill.skillName}}</span>
+        <svg class="t-icon" aria-hidden="true">
+          <use [attr.xlink:href]="externalLinkIcon"></use>
+        </svg>
+      </a>
+    </h4>
+
+    <p class="t-margin-small t-margin-bottom t-type-text3">{{skill.skillStatement}}</p>
+
+    <div class="t-margin-small t-margin-bottom">
+      <div class="m-inlineHeading m-inlineHeading-is-truncated">
+        <h5 class="m-inlineHeading-x-heading">Library:</h5>
+        <p class="m-inlineHeading-x-text">{{skill.libraryName}}</p>
+      </div>
+    </div>
+
+    <div class="t-margin-small t-margin-bottom" *ngIf="getFormattedKeywords()">
+      <div class="m-inlineHeading m-inlineHeading-is-truncated">
+        <h5 class="m-inlineHeading-x-heading">Keywords:</h5>
+        <p class="m-inlineHeading-x-text">{{getFormattedKeywords()}}</p>
+      </div>
+    </div>
+
+    <div class="t-margin-small t-margin-bottom" *ngIf="getFormattedOccupations()">
+      <div class="m-inlineHeading m-inlineHeading-is-truncated">
+        <h5 class="m-inlineHeading-x-heading">Detailed Occupations:</h5>
+        <p class="m-inlineHeading-x-text">{{getFormattedOccupations()}}</p>
+      </div>
+    </div>
+
+  </td>
+
+  <td class="m-tableRow-x-actions">
+    <button class="m-buttonSmall" (click)="onImportSkillClicked()">
+      <span class="m-buttonSmall-x-text t-type-noWrap">Import RSD</span>
+    </button>
+  </td>
+
+</ng-template>

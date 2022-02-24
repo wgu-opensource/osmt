@@ -1,0 +1,42 @@
+<table class="l-table">
+  <thead>
+    <tr class="m-tableHeader m-tableHeader-bare">
+      <th class="t-hidden-tabletMin" scope="col" colspan="3"><span class="t-visuallyHidden">Collections</span></th>
+      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Collection Name</span></th>
+      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">RSDs</span></th>
+      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Library</span></th>
+    </tr>
+    <tr class="m-tableHeader">
+      <td class="t-hidden-tabletMin" scope="col" aria-hidden="true">
+        <div class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Collections</span>
+        </div>
+      </td>
+      <td class="t-hidden-tabletMax" scope="col" aria-hidden="true">
+          <div class="m-tableLabel">
+            <span class="m-tableLabel-x-text">Collection Name</span>
+          </div>
+      </td>
+      <td class="t-hidden-tabletMax" scope="col" aria-hidden="true">
+        <div class="m-tableLabel">
+          <span class="m-tableLabel-x-text">RSD<span class="t-type-lowercase">s</span></span>
+        </div>
+      </td>
+      <td class="t-hidden-tabletMax" scope="col" aria-hidden="true">
+        <div class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Library</span>
+        </div>
+      </td>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let collection of items; let i=index"
+      app-external-search-collection-row
+      class="m-tableRow"
+      id="table-row-{{i}}"
+      nextId="table-row-{{i+1}}"
+      [collection]="collection"
+    ></tr>
+  </tbody>
+</table>

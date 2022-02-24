@@ -47,7 +47,7 @@
     </div>
 
     <app-filter-controls
-      *ngIf="totalCount > 0"
+      *ngIf="totalCount > 0 && !collection.importedFrom"
       [selectedFilters]="selectedFilters"
       (filtersChanged)="handleFiltersChanged($event)"
     ></app-filter-controls>
@@ -81,7 +81,7 @@
       ></app-pagination>
     </ng-template>
 
-    <div *ngIf="collection">
+    <div *ngIf="collection && !collection.importedFrom">
       <app-audit-log
         [collectionUuid]="collection.uuid"
         [collapseListener]="collapseAuditLog.asObservable()"

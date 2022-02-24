@@ -12,6 +12,8 @@ export interface ISkillSummary {
   category: string
   keywords: string[]
   occupations: IJobCode[]
+  importedFrom?: string
+  libraryName?: string
 }
 
 export class ApiSkillSummary implements ISkillSummary {
@@ -25,6 +27,8 @@ export class ApiSkillSummary implements ISkillSummary {
   category: string
   keywords: string[]
   occupations: IJobCode[]
+  importedFrom?: string
+  libraryName?: string
 
   constructor({
     id,
@@ -37,6 +41,8 @@ export class ApiSkillSummary implements ISkillSummary {
     skillStatement,
     archiveDate,
     publishDate,
+    importedFrom,
+    libraryName
   }: ISkillSummary) {
     this.id = id
     this.uuid = uuid
@@ -48,6 +54,8 @@ export class ApiSkillSummary implements ISkillSummary {
     this.skillStatement = skillStatement
     this.archiveDate = archiveDate
     this.publishDate = publishDate
+    this.importedFrom = importedFrom
+    this.libraryName = libraryName
   }
 }
 
@@ -61,6 +69,8 @@ export interface ICollectionSummary {
   status?: PublishStatus
   archiveDate?: string
   publishDate?: string
+  importedFrom?: string
+  libraryName?: string
 }
 
 export class ApiCollectionSummary implements ICollectionSummary {
@@ -71,8 +81,10 @@ export class ApiCollectionSummary implements ICollectionSummary {
   status?: PublishStatus
   archiveDate?: string
   publishDate?: string
+  importedFrom?: string
+  libraryName?: string
 
-  constructor({id, uuid, name, skillCount, status, archiveDate, publishDate}: ICollectionSummary)  {
+  constructor({id, uuid, name, skillCount, status, archiveDate, publishDate, importedFrom, libraryName}: ICollectionSummary)  {
     this.id = id
     this.uuid = uuid
     this.name = name
@@ -80,5 +92,7 @@ export class ApiCollectionSummary implements ICollectionSummary {
     this.status = status
     this.archiveDate = archiveDate
     this.publishDate = publishDate
+    this.importedFrom = importedFrom
+    this.libraryName = libraryName
   }
 }

@@ -15,6 +15,7 @@ export class ManageSkillActionBarHorizontalComponent extends ManageRichSkillActi
   @Input() archived = undefined
   @Input() published = undefined
   @Input() isExternallyShared = undefined
+  @Input() importedFrom = undefined
 
   @Output() reloadSkill = new EventEmitter<void>()
 

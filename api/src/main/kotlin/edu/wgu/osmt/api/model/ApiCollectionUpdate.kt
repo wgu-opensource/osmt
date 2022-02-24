@@ -31,4 +31,14 @@ data class ApiCollectionUpdate(
         validate()?.let { errors.addAll(it) }
         return if (errors.size > 0) errors else null
     }
+
+    companion object {
+       fun fromApiCollection(apiCollection: ApiCollection): ApiCollectionUpdate {
+           return ApiCollectionUpdate(
+                   name=apiCollection.name,
+                   publishStatus= if (apiCollection.archiveDate != null) PublishStatus.Archived else PublishStatus.Published,
+                   author=apiCollection.author,
+           )
+       }
+    }
 }

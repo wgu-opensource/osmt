@@ -35,6 +35,12 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       ERROR: {
         DEFAULT: "Unable to unshare from Search Hub"
       }
+    },
+    REMOVE: {
+      CONFIRM: "Are you sure you want to remove this Collection from your library?",
+      ERROR: {
+        DEFAULT: "Unable to remove from library"
+      }
     }
   }
 
@@ -51,6 +57,8 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   searchIcon = SvgHelper.path(SvgIcon.SEARCH)
   shareIcon = SvgHelper.path(SvgIcon.SHARE)
   unshareIcon = SvgHelper.path(SvgIcon.UNSHARE)
+  externalIcon = SvgHelper.path(SvgIcon.EXTERNAL)
+  removeIcon = SvgHelper.path(SvgIcon.REMOVE)
 
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published, PublishStatus.Archived])
 
@@ -154,70 +162,90 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
 
   actionDefinitions(): TableActionDefinition[] {
     const actions = [
-      new TableActionDefinition({
+    ]
+
+    if (this.collection?.importedFrom) {
+      // imported collections are read-only
+
+      actions.push(new TableActionDefinition({
+        label: "View External Collection",
+        icon: this.externalIcon,
+        callback: () => this.viewExternalAction(),
+      }))
+
+      actions.push(new TableActionDefinition({
+        label: "Remove From Library",
+        icon: this.removeIcon,
+        callback: () => this.removeCollectionAction(),
+      }))
+
+    } else {
+
+      actions.push(new TableActionDefinition({
         label: "Add RSDs to This Collection",
         icon: this.addIcon,
         primary: !this.collectionHasSkills, // Primary only if there are no skills
         callback: () => this.addSkillsAction(),
-      }),
-      new TableActionDefinition({
+      }))
+
+      actions.push(new TableActionDefinition({
         label: "Edit Collection Name",
         icon: this.editIcon,
         callback: () => this.editAction()
-      })
-    ]
-
-    if (this.collection?.publishDate) {
-      actions.push(new TableActionDefinition({
-        label: "View Published Collection",
-        icon: this.publishIcon,
-        callback: () => this.viewPublishedAction(),
       }))
-    } else {
-      actions.push(new TableActionDefinition({
-        label: "Publish Collection",
-        icon: this.publishIcon,
-        callback: () => this.publishAction(),
-      }))
-    }
 
-    actions.push(
-      new TableActionDefinition({
-        label: "Archive Collection ",
-        icon: this.archiveIcon,
-        callback: () => this.archiveAction(),
-        visible: () => this.collection?.status !== PublishStatus.Archived && this.collection?.status !== PublishStatus.Deleted
-      }),
-      new TableActionDefinition({
-        label: "Unarchive Collection ",
-        icon: this.unarchiveIcon,
-        callback: () => this.unarchiveAction(),
-        visible: () => this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted
-      })
-    )
+      if (this.collection?.publishDate) {
+        actions.push(new TableActionDefinition({
+          label: "View Published Collection",
+          icon: this.publishIcon,
+          callback: () => this.viewPublishedAction(),
+        }))
+      } else {
+        actions.push(new TableActionDefinition({
+          label: "Publish Collection",
+          icon: this.publishIcon,
+          callback: () => this.publishAction(),
+        }))
+      }
 
-    // Add External Share & Unshare actions.
-    if (AppConfig.settings.externalShareEnabled) {
       actions.push(
         new TableActionDefinition({
-          label: "Share to Search Hub",
-          icon: this.shareIcon,
-          callback: () => this.shareExternallyAction(),
-          visible: () => {
-            return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
-                    && this.collection?.isExternallyShared !== true
-          }
+          label: "Archive Collection ",
+          icon: this.archiveIcon,
+          callback: () => this.archiveAction(),
+          visible: () => this.collection?.status !== PublishStatus.Archived && this.collection?.status !== PublishStatus.Deleted
         }),
         new TableActionDefinition({
-          label: "Unshare from Search Hub",
-          icon: this.unshareIcon,
-          callback: () => this.unshareExternallyAction(),
-          visible: () => {
-            return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
-                    && this.collection?.isExternallyShared === true
-          }
+          label: "Unarchive Collection ",
+          icon: this.unarchiveIcon,
+          callback: () => this.unarchiveAction(),
+          visible: () => this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted
         })
       )
+
+      // Add External Share & Unshare actions.
+      if (AppConfig.settings.externalShareEnabled) {
+        actions.push(
+          new TableActionDefinition({
+            label: "Share to Search Hub",
+            icon: this.shareIcon,
+            callback: () => this.shareExternallyAction(),
+            visible: () => {
+              return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
+                      && this.collection?.isExternallyShared !== true
+            }
+          }),
+          new TableActionDefinition({
+            label: "Unshare from Search Hub",
+            icon: this.unshareIcon,
+            callback: () => this.unshareExternallyAction(),
+            visible: () => {
+              return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
+                      && this.collection?.isExternallyShared === true
+            }
+          })
+        )
+      }
     }
 
     return actions
@@ -232,6 +260,27 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     window.open(url, "_blank")
   }
 
+  viewExternalAction(): void {
+    if (this.collection?.importedFrom) {
+      window.open(this.collection?.importedFrom, "_blank")
+    }
+  }
+
+  removeCollectionAction(): void {
+    if (confirm(ManageCollectionComponent.MESSAGES.REMOVE.CONFIRM)) {
+      this.toastService.showBlockingLoader()
+      this.collectionService.removeCollection(this.uuidParam!).subscribe(
+        result => {
+          this.toastService.hideBlockingLoader()
+          this.router.navigate([""])
+        }, error => {
+          this.toastService.hideBlockingLoader()
+          alert(error?.error?.message ?? ManageCollectionComponent.MESSAGES.REMOVE.ERROR.DEFAULT)
+        }
+      )
+
+    }
+  }
 
   publishAction(): void {
     if (this.uuidParam === undefined) { return }
@@ -382,5 +431,18 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
 
   focusActionBar(): void {
     this.tableActionBar.focus()
+  }
+
+  getSelectAllEnabled(): boolean {
+    return this.actionsVisible()
+  }
+
+  rowActions(): TableActionDefinition[] {
+    if (!this.actionsVisible()) return []
+    return super.rowActions();
+  }
+
+  actionsVisible(): boolean {
+    return !this.collection?.importedFrom
   }
 }

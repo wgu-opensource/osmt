@@ -259,6 +259,32 @@ paths:
                   id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
                   https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac,RichSkillDescriptor,"https://osmt.example.com/organization","Document Saving","The learner copies and saves documents to their local machine.","https://skillsource.example.com/base-skills/simple-compuhacking","documents, file operations, computer basics","Productivity Software","13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
 
+  /api/skills/import:
+    post:
+      tags:
+        - Skills
+      summary: Import an external RSD
+      description: Import a read-only version of an RSD that is hosted elsewhere
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NamedReference'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+
   /api/skills/{uuid}/update:
     parameters:
       - name: uuid
@@ -315,6 +341,32 @@ paths:
                 items:
                   $ref: '#/components/schemas/AuditLog'
 
+  /api/skills/{uuid}/remove:
+    parameters:
+      - name: uuid
+        in: path
+        description: uuid of an imported skill
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - Skills
+      summary: Remove an imported skill
+      description: Remove a previously imported Rich Skill Descriptor
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchResult'
+        '400':
+          description: Bad Request (can only remove imported skills)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
 
   /api/skills/publish:
     post:
@@ -603,6 +655,33 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/AuditLog'
+
+  /api/collections/{uuid}/remove:
+    parameters:
+      - name: uuid
+        in: path
+        description: uuid of an imported collection
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - Collections
+      summary: Remove an imported collection
+      description: Remove a previously imported Collection but not its skills
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchResult'
+        '400':
+          description: Bad Request (can only remove imported collections)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
 
   /api/collections/{uuid}/skills:
     post:
@@ -1089,6 +1168,9 @@ components:
           $ref: '#/components/schemas/PublishStatus'
         library:
           $ref: '#/components/schemas/NamedReference'
+        importedFrom:
+          type: string
+          format: uri
         skillName:
           type: string
         skillStatement:
@@ -1173,6 +1255,8 @@ components:
           $ref: '#/components/schemas/ReferenceListUpdate'
         author:
           type: string
+        clonedFrom:
+          type: string
       example:
         skillName: "New Skill Name"
         keywords:
@@ -1218,6 +1302,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SkillSummary'
+        library:
+          $ref: '#/components/schemas/NamedReference'
+        importedFrom:
+          type: string
+          format: uri
 
     CollectionDoc:
       type: object
@@ -1229,6 +1318,9 @@ components:
           type: string
         library:
           $ref: '#/components/schemas/NamedReference'
+        importedFrom:
+          type: string
+          format: uri
         status:
           $ref: '#/components/schemas/PublishStatus'
         skillCount:

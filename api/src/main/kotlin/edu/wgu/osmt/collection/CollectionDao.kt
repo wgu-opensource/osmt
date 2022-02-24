@@ -18,6 +18,8 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
     var name: String by CollectionTable.name
     var author by KeywordDao optionalReferencedOn CollectionTable.author
     var isExternallyShared: Boolean by CollectionTable.externallyShared
+    var importedFrom: String? by CollectionTable.importedFrom
+    var libraryName: String? by CollectionTable.libraryName
 
     var skills by RichSkillDescriptorDao via CollectionSkills
 
@@ -38,7 +40,9 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             author = author?.toModel(),
             isExternallyShared = isExternallyShared,
             archiveDate = archiveDate,
-            publishDate = publishDate
+            publishDate = publishDate,
+            importedFrom = importedFrom,
+            libraryName = libraryName
         )
     }
 
@@ -52,7 +56,9 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             skillCount = if (embedded) null else skills.count().toInt(),
             author = author?.value,
             archiveDate = archiveDate,
-            publishDate = publishDate
+            publishDate = publishDate,
+            importedFrom = importedFrom,
+            libraryName = libraryName
         )
     }
 }

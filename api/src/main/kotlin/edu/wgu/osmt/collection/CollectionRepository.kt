@@ -3,6 +3,7 @@ package edu.wgu.osmt.collection
 import edu.wgu.osmt.api.FormValidationException
 import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.ApiBatchResult
+import edu.wgu.osmt.api.model.ApiCollection
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
@@ -42,6 +43,14 @@ interface CollectionRepository {
     fun create(name: String, user: String): CollectionDao?
     fun create(updateObject: CollectionUpdateObject, user: String): CollectionDao?
     fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao?
+
+    fun importFromApi(
+        apiCollection: ApiCollection,
+        originalUrl: String,
+        originalLibraryName: String?,
+        richSkillRepository: RichSkillRepository,
+        user: String
+    ): CollectionDao?
 
     fun createFromApi(
         apiUpdates: List<ApiCollectionUpdate>,
@@ -110,6 +119,33 @@ class CollectionRepositoryImpl @Autowired constructor(
 
     override fun create(name: String, user: String): CollectionDao? {
         return create(CollectionUpdateObject(name = name), user)
+    }
+
+    override fun importFromApi(
+            apiCollection: ApiCollection,
+            originalUrl: String,
+            originalLibraryName: String?,
+            richSkillRepository: RichSkillRepository,
+            user: String
+    ): CollectionDao? {
+        val apiCollectionUpdate: ApiCollectionUpdate = ApiCollectionUpdate.fromApiCollection(apiCollection)
+        val collectionUpdateObject = collectionUpdateObjectFromApi(apiCollectionUpdate, richSkillRepository)
+
+        val existingDao = table.select { table.importedFrom eq originalUrl }.firstOrNull()?.let { dao.wrapRow(it) }
+        val collectionDao = if (existingDao != null) {
+            update(collectionUpdateObject.copy(id=existingDao.id.value), user)
+        } else {
+            create(collectionUpdateObject, user)
+        }
+
+        if (collectionDao != null) {
+            collectionDao.publishDate = apiCollection.publishDate?.toLocalDateTime()
+            collectionDao.archiveDate = apiCollection.archiveDate?.toLocalDateTime()
+            collectionDao.importedFrom = originalUrl
+            collectionDao.libraryName = originalLibraryName
+            collectionEsRepo.save(collectionDao.toDoc())
+        }
+        return collectionDao
     }
 
     override fun create(updateObject: CollectionUpdateObject, user: String): CollectionDao? {

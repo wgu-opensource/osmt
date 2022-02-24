@@ -12,6 +12,7 @@ export class DetailCardComponent implements OnInit {
   @Input() title = ""
   @Input() titleLabel = ""
   @Input() author = ""
+  @Input() libraryName = ""
   @Input() publishDate = ""
   @Input() archiveDate = ""
   @Input() status = PublishStatus.Draft

@@ -1,6 +1,7 @@
 package edu.wgu.osmt.searchhub
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
+import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.richskill.CreateSkillsTaskProcessor
 import edu.wgu.osmt.task.ShareExternallyTask
@@ -45,7 +46,7 @@ class ShareExternallyTaskProcessor {
             searchHubController.removeSkills(urls)
         }
 
-        val results = "OK"
+        val results = ApiBatchResult(success=true, totalCount=1)
         taskMessageService.publishResult(
                 task.copy(result=results, status= TaskStatus.Ready)
         )
@@ -70,7 +71,7 @@ class ShareExternallyTaskProcessor {
             searchHubController.removeCollections(urls)
         }
 
-        val results = "OK"
+        val results = ApiBatchResult(success=true, totalCount=1)
         taskMessageService.publishResult(
                 task.copy(result=results, status= TaskStatus.Ready)
         )

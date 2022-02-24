@@ -1,7 +1,7 @@
 import {Router} from "@angular/router"
 import {RichSkillService} from "../../../service/rich-skill.service"
 import {ToastService} from "../../../../toast/toast.service"
-import {Component, EventEmitter, Inject, LOCALE_ID, OnInit} from "@angular/core"
+import {Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit} from "@angular/core"
 import {AppConfig} from "../../../../app.config"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {PublishStatus} from "../../../../PublishStatus"
@@ -24,6 +24,9 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
       ERROR: {
         DEFAULT: "Unable to unshare from Search Hub"
       }
+    },
+    REMOVE: {
+      CONFIRM: "Are you sure you want to remove this RSD from your library? This RSD will be removed from all draft and published collections."
     }
   }
 
@@ -32,6 +35,7 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   abstract archived: string | undefined
   abstract published: string | undefined
   abstract isExternallyShared: boolean | undefined
+  abstract importedFrom: string | undefined
 
   abstract reloadSkill: EventEmitter<void>
 
@@ -40,6 +44,7 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   abstract jsonClipboard: string
 
   // icons
+  addIcon: string = SvgHelper.path(SvgIcon.ADD)
   editIcon: string = SvgHelper.path(SvgIcon.EDIT)
   duplicateIcon: string = SvgHelper.path(SvgIcon.DUPLICATE)
   publishIcon: string = SvgHelper.path(SvgIcon.PUBLISH)
@@ -47,6 +52,8 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   dismissIcon: string = SvgHelper.path(SvgIcon.DISMISS)
   shareIcon: string = SvgHelper.path(SvgIcon.SHARE)
   unshareIcon: string = SvgHelper.path(SvgIcon.UNSHARE)
+  externalIcon: string = SvgHelper.path(SvgIcon.EXTERNAL)
+  removeIcon: string = SvgHelper.path(SvgIcon.REMOVE)
 
   constructor(
     protected router: Router,
@@ -133,6 +140,29 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
     }
   }
 
+  handleExternalUrl(): void {
+    if (this.importedFrom) {
+      window.open(this.importedFrom, "_blank")
+    }
+  }
+
+  handleRemove(): void {
+
+    if (confirm(ManageRichSkillActionBarComponent.MESSAGES.REMOVE.CONFIRM)) {
+      this.toastService.showBlockingLoader()
+      this.richSkillService.removeSkill(this.skillUuid).subscribe(
+        result => {
+          this.toastService.hideBlockingLoader()
+          this.router.navigate([""])
+        },
+        error => {
+          this.toastService.hideBlockingLoader()
+          alert(error?.error?.message ?? ManageRichSkillActionBarComponent.MESSAGES.SHARE.ERROR.DEFAULT)
+        }
+      )
+    }
+  }
+
   handleShareExternally(): void {
     if (!this.isExternallyShared) {
       this.toastService.showBlockingLoader()
@@ -173,4 +203,13 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
       window.open(url, "_blank")
     }
   }
+
+  public get externalShareEnabled() {
+    return !this.isImported && AppConfig.settings.externalShareEnabled
+  }
+
+  public get isImported() {
+    return Boolean(this.importedFrom)
+  }
+
 }

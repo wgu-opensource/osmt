@@ -12,108 +12,121 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
-class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collection>, private val appConfig: AppConfig) {
+class ApiSkill(
 
+    @JsonProperty
+    val creator: String = "",
+
+    @JsonProperty
+    val author: String? = null,
+
+    @JsonProperty
+    val status: PublishStatus = PublishStatus.Draft,
+
+    @JsonProperty
+    val isExternallyShared: Boolean = false,
+
+    @JsonProperty
+    val creationDate: ZonedDateTime? = null,
+
+    @JsonProperty
+    val updateDate: ZonedDateTime? = null,
+
+    @JsonProperty
+    val publishDate: ZonedDateTime? = null,
+
+    @JsonProperty
+    val archiveDate: ZonedDateTime? = null,
+
+    @JsonProperty
+    val skillName: String = "",
+
+    @JsonProperty
+    val skillStatement: String = "",
+
+    @JsonProperty
+    val keywords: List<String> = listOf(),
+
+    @JsonProperty
+    val category: String? = null,
+
+    @JsonProperty
+    val id: String = "",
+
+    @JsonProperty
+    val uuid: String = "",
+
+    @JsonProperty
+    val certifications: List<ApiNamedReference> = listOf(),
+
+    @JsonProperty
+    val standards: List<ApiAlignment> = listOf(),
+
+    @JsonProperty
+    val alignments: List<ApiAlignment> = listOf(),
+
+    @JsonProperty
+    val occupations: List<ApiJobCode> = listOf(),
+
+    @JsonProperty
+    val employers: List<ApiNamedReference> = listOf(),
+
+    @JsonProperty
+    val collections: List<ApiUuidReference> = listOf(),
+
+    @JsonProperty
+    val importedFrom: String? = null,
+
+    @JsonProperty
+    val libraryName: String? = null
+) {
     @JsonProperty("@context")
     val context = "https://rsd.osmt.dev/context-v1.json"
 
     @JsonProperty
     val `type` = "RichSkillDescriptor"
 
-    @get:JsonProperty
-    val creator: String
-        get() = appConfig.defaultCreatorUri
+    companion object {
 
-    @get:JsonProperty
-    val author: String?
-        get() = rsd.author?.let { it.value }
-
-    @get:JsonProperty
-    val status: PublishStatus
-        get() = rsd.publishStatus()
-
-	@get:JsonProperty("isExternallyShared")
-	val isExternallyShared: Boolean
-		get() = rsd.isExternallyShared
-
-    @get:JsonProperty
-    val creationDate: ZonedDateTime
-        get() = rsd.creationDate.atZone(ZoneId.of("UTC"))
-
-    @get:JsonProperty
-    val updateDate: ZonedDateTime
-        get() = rsd.updateDate.atZone(ZoneId.of("UTC"))
-
-    @get:JsonProperty
-    val publishDate: ZonedDateTime?
-        get() = rsd.publishDate?.atZone(ZoneId.of("UTC"))
-
-    @get:JsonProperty
-    val archiveDate: ZonedDateTime?
-        get() = rsd.archiveDate?.atZone(ZoneId.of("UTC"))
-
-    @get:JsonProperty
-    val skillName: String
-        get() = rsd.name
-
-    @get:JsonProperty
-    val skillStatement: String
-        get() = rsd.statement
-
-    @get:JsonProperty
-    val keywords: List<String>
-        get() = rsd.searchingKeywords.mapNotNull { it.value }
-
-    @get:JsonProperty
-    val category: String?
-        get() = rsd.category?.value
-
-    @get:JsonProperty
-    val id: String
-        get() = rsd.canonicalUrl(appConfig.baseUrl)
-
-    @get:JsonProperty
-    val uuid: String
-        get() = rsd.uuid.toString()
-
-    @get:JsonProperty
-    val certifications: List<ApiNamedReference>
-        get() = rsd.certifications.map { ApiNamedReference.fromKeyword(it) }
-
-    @get:JsonProperty
-    val standards: List<ApiAlignment>
-        get() = rsd.standards.map { ApiAlignment.fromKeyword(it) }
-
-    @get:JsonProperty
-    val alignments: List<ApiAlignment>
-        get() = rsd.alignments.map { ApiAlignment.fromKeyword(it) }
-
-    @get:JsonProperty
-    val occupations: List<ApiJobCode>
-        get() {
-            return rsd.jobCodes.filter { it.code.isNotBlank() }.map { jobCode ->
+        fun fromModel(rsd: RichSkillDescriptor, cs: Set<Collection>, appConfig: AppConfig): ApiSkill {
+            val occupations = rsd.jobCodes.filter { it.code.isNotBlank() }.map { jobCode ->
                 val parents = listOfNotNull(
-                    jobCode.major.let {jobCode.majorCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.major, level=JobCodeLevel.Major) }},
-                    jobCode.minor.let{jobCode.minorCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.minor, level=JobCodeLevel.Minor) }},
-                    jobCode.broad?.let {jobCode.broadCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.broad, level=JobCodeLevel.Broad) }},
-                    jobCode.detailed?.let {jobCode.detailedCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.detailed, level=JobCodeLevel.Detailed) }}
+                        jobCode.major.let {jobCode.majorCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.major, level=JobCodeLevel.Major) }},
+                        jobCode.minor.let{jobCode.minorCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.minor, level=JobCodeLevel.Minor) }},
+                        jobCode.broad?.let {jobCode.broadCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.broad, level=JobCodeLevel.Broad) }},
+                        jobCode.detailed?.let {jobCode.detailedCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.detailed, level=JobCodeLevel.Detailed) }}
                 ).distinct()
-
                 ApiJobCode.fromJobCode(jobCode, parents=parents)
             }
+
+            return ApiSkill(
+                creator = appConfig.defaultCreatorUri,
+                author = rsd.author?.let { it.value },
+                status = rsd.publishStatus(),
+                isExternallyShared = rsd.isExternallyShared,
+                creationDate = rsd.creationDate.atZone(ZoneId.of("UTC")),
+                updateDate = rsd.updateDate.atZone(ZoneId.of("UTC")),
+                publishDate = rsd.publishDate?.atZone(ZoneId.of("UTC")),
+                archiveDate = rsd.archiveDate?.atZone(ZoneId.of("UTC")),
+                skillName = rsd.name,
+                skillStatement = rsd.statement,
+                keywords = rsd.searchingKeywords.mapNotNull { it.value },
+                category = rsd.category?.value,
+                id = rsd.canonicalUrl(appConfig.baseUrl),
+                uuid = rsd.uuid.toString(),
+                certifications = rsd.certifications.map { ApiNamedReference.fromKeyword(it) },
+                standards = rsd.standards.map { ApiAlignment.fromKeyword(it) },
+                alignments = rsd.alignments.map { ApiAlignment.fromKeyword(it) },
+                occupations = occupations,
+                employers = rsd.employers.map { ApiNamedReference.fromKeyword(it) },
+                collections = cs.map { ApiUuidReference.fromCollection(it) },
+                importedFrom = rsd.importedFrom,
+                libraryName = rsd.libraryName
+            )
         }
 
-    @get:JsonProperty
-    val employers: List<ApiNamedReference>
-        get() = rsd.employers.map { ApiNamedReference.fromKeyword(it) }
-
-    @get:JsonProperty
-    val collections: List<ApiUuidReference>
-        get() = cs.map { ApiUuidReference.fromCollection(it) }
-
-    companion object {
         fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkill{
-            return ApiSkill(rsdDao.toModel(), rsdDao.collections.map{ it.toModel() }.toSet(), appConfig)
+            return fromModel(rsdDao.toModel(), rsdDao.collections.map{ it.toModel() }.toSet(), appConfig)
         }
     }
 }

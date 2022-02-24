@@ -9,12 +9,13 @@
         [title]="getSkillName()"
         titleLabel="Rich Skill Descriptor"
         [author]="getAuthor()"
+        [libraryName]="getLibraryName()"
         [status]="getPublishStatus()"
         [archiveDate]="getArchivedDate()"
         [publishDate]="getPublishedDate()"
       ></app-detail-card>
 
-      <div *ngIf="uuidParam" class="t-margin-medium t-margin-top">
+      <div *ngIf="!getImportedFrom() && uuidParam" class="t-margin-medium t-margin-top">
         <app-audit-log
           [skillUuid]="uuidParam"
           closedLabel="View Audit Log"
@@ -32,6 +33,7 @@
           [archived]="getArchivedDate()"
           [published]="getPublishedDate()"
           [isExternallyShared]="getIsExternallyShared()"
+          [importedFrom]="getImportedFrom()"
           (reloadSkill)="loadSkill()"
         ></app-manage-skill-action-bar-vertical>
 
@@ -51,6 +53,7 @@
       [archived]="getArchivedDate()"
       [published]="getPublishedDate()"
       [isExternallyShared]="getIsExternallyShared()"
+      [importedFrom]="getImportedFrom()"
       (reloadSkill)="loadSkill()"
     ></app-manage-skill-action-bar-horizontal>
   </div>

@@ -29,6 +29,13 @@
       ></app-status-bar>
     </div>
 
+    <div class="t-margin-small t-margin-bottom" *ngIf="skill.libraryName">
+      <div class="m-inlineHeading m-inlineHeading-is-truncated">
+        <h5 class="m-inlineHeading-x-heading">Library:</h5>
+        <p class="m-inlineHeading-x-text">{{skill.libraryName}}</p>
+      </div>
+    </div>
+
     <div class="t-margin-small t-margin-bottom" *ngIf="getFormattedKeywords()">
       <div class="m-inlineHeading m-inlineHeading-is-truncated">
         <h5 class="m-inlineHeading-x-heading">Keywords:</h5>
@@ -48,7 +55,7 @@
   <td class="m-tableRow-x-actions">
 
     <!-- Items must be grouped-->
-    <div>
+    <div *ngIf="rowActions.length > 0">
       <div class="m-checkbox">
         <label class="t-visuallyHidden" for="{{id}}-toggle" aria-labelledby="{{id}}-header">Select this Skill.</label>
         <input type="checkbox" id="{{id}}-toggle" name="{{id}}-toggle" data-table-row="{{id}}" [checked]="isSelected" (click)="selected()">
@@ -63,7 +70,7 @@
       </div>
     </div>
 
-    <app-dots-menu [actions]="rowActions" [data]="skill"></app-dots-menu>
+    <app-dots-menu *ngIf="rowActions.length > 0" [actions]="rowActions" [data]="skill"></app-dots-menu>
   </td>
 
 

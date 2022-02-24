@@ -58,6 +58,7 @@ export interface IRichSkillUpdate {
   occupations?: ApiStringListUpdate
   employers?: ApiReferenceListUpdate
   author?: string
+  clonedFrom?: string
 }
 
 export class ApiSkillUpdate implements IRichSkillUpdate {
@@ -73,8 +74,9 @@ export class ApiSkillUpdate implements IRichSkillUpdate {
   occupations?: ApiStringListUpdate
   employers?: ApiReferenceListUpdate
   author?: string
+  clonedFrom?: string
 
-  constructor({skillName, skillStatement, status, category, keywords, collections, alignments, certifications, standards, occupations, employers, author}: IRichSkillUpdate) {
+  constructor({skillName, skillStatement, status, category, keywords, collections, alignments, certifications, standards, occupations, employers, author, clonedFrom}: IRichSkillUpdate) {
     this.skillName = skillName
     this.skillStatement = skillStatement
     this.status = status
@@ -87,5 +89,6 @@ export class ApiSkillUpdate implements IRichSkillUpdate {
     this.occupations = occupations
     this.employers = employers
     this.author = author
+    this.clonedFrom = clonedFrom
   }
 }

@@ -10,6 +10,7 @@ import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
+import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.security.OAuth2Helper
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
@@ -98,6 +99,10 @@ class CollectionController @Autowired constructor(
         val existing = collectionRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
+        if (existing.importedFrom != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Imported Collections are Read Only")
+        }
+
         val updated = collectionRepository.updateFromApi(
             existing.id.value,
             apiUpdate,
@@ -118,6 +123,10 @@ class CollectionController @Autowired constructor(
         val existingCollection = collectionRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
+        if (existingCollection.importedFrom != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Imported Collections are Read Only")
+        }
+
         val updatedCollection = collectionRepository.updateIsExternallyShared(
                 existingCollection.id.value,
                 true,
@@ -135,6 +144,10 @@ class CollectionController @Autowired constructor(
     ): ApiCollection {
         val existingCollection = collectionRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        if (existingCollection.importedFrom != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Imported Collections are Read Only")
+        }
 
         val updatedCollection = collectionRepository.updateIsExternallyShared(
                 existingCollection.id.value,
@@ -156,6 +169,12 @@ class CollectionController @Autowired constructor(
         ) status: List<String>,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
+        val existingCollection = collectionRepository.findByUUID(uuid)
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        if (existingCollection.importedFrom != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Imported Collections are Read Only")
+        }
+
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = readableUsername(user))
 
@@ -204,5 +223,41 @@ class CollectionController @Autowired constructor(
 
         val sizedIterable = auditLogRepository.findByTableAndId(CollectionTable.tableName, entityId = collection!!.id.value, offsetPageable = pageable)
         return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
+    }
+
+
+    @PostMapping(RoutePaths.COLLECTION_IMPORT, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun importCollection(
+        @RequestBody reference: ApiNamedReference,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
+        val collectionUrl = reference.id ?:  throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        val task = ShareExternallyTask(
+                canonicalUrl = collectionUrl,
+                libraryName = reference.name,
+                userString = readableUsername(user))
+        taskMessageService.enqueueJob(TaskMessageService.importCollections, task)
+        return Task.processingResponse(task)
+    }
+
+    @PostMapping(RoutePaths.COLLECTION_REMOVE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun removeCollection(
+            @PathVariable uuid: String,
+            @AuthenticationPrincipal user: Jwt?
+    ): ApiBatchResult {
+        val existing = collectionRepository.findByUUID(uuid)
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        /* can only remove readonly imported collections */
+        if (existing.importedFrom == null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        }
+
+        collectionEsRepo.delete(existing.toDoc())
+        existing.delete()
+
+        return ApiBatchResult(success=true, modifiedCount=1, totalCount=1)
     }
 }

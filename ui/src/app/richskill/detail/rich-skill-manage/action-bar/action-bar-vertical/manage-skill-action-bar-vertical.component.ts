@@ -17,6 +17,7 @@ export class ManageSkillActionBarVerticalComponent extends ManageRichSkillAction
   @Input() archived = undefined
   @Input() published = undefined
   @Input() isExternallyShared = undefined
+  @Input() importedFrom = undefined
 
   @Output() reloadSkill = new EventEmitter<void>()
 
@@ -32,7 +33,4 @@ export class ManageSkillActionBarVerticalComponent extends ManageRichSkillAction
     super(router, richSkillService, toastService, locale)
   }
 
-  public get externalShareEnabled() {
-    return AppConfig.settings.externalShareEnabled
-  }
 }

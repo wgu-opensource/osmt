@@ -33,7 +33,10 @@ data class RichSkillDescriptor(
     val isExternallyShared: Boolean = false,
     override val archiveDate: LocalDateTime? = null,
     override val publishDate: LocalDateTime? = null,
-    val collections: List<Collection> = listOf()
+    val collections: List<Collection> = listOf(),
+    val importedFrom: String? = null,
+    val libraryName: String? = null,
+    val clonedFrom: String? = null,
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
 
     // Keyword collections
@@ -102,7 +105,8 @@ fun RichSkillDescriptor.diff(old: RichSkillDescriptor?): List<Change> {
             new
         ),
         Comparison(RichSkillDescriptor::jobCodes.name, RichSkillDescriptorComparisons::compareJobCodes, old, new),
-        Comparison(RichSkillDescriptor::collections.name, RichSkillDescriptorComparisons::compareCollections, old, new)
+        Comparison(RichSkillDescriptor::collections.name, RichSkillDescriptorComparisons::compareCollections, old, new),
+        Comparison(RichSkillDescriptor::clonedFrom.name, RichSkillDescriptorComparisons::compareClonedFrom, old, new),
     )
 
     return comparisons.mapNotNull { it.compare() }
@@ -117,7 +121,8 @@ data class RsdUpdateObject(
     val keywords: ListFieldUpdate<KeywordDao>? = null,
     val jobCodes: ListFieldUpdate<JobCodeDao>? = null,
     val collections: ListFieldUpdate<CollectionDao>? = null,
-    override val publishStatus: PublishStatus? = null
+    override val publishStatus: PublishStatus? = null,
+    val clonedFrom: String? = null,
 ) : UpdateObject<RichSkillDescriptorDao>, HasPublishStatus<RichSkillDescriptorDao> {
 
     init {
@@ -141,6 +146,7 @@ data class RsdUpdateObject(
         applyPublishStatus(dao)
         name?.let { dao.name = it }
         statement?.let { dao.statement = it }
+        clonedFrom?.let { dao.clonedFrom = it }
         category?.let {
             if (it.t != null) {
                 dao.category = it.t
@@ -231,6 +237,10 @@ object RichSkillDescriptorComparisons {
 
     fun compareIsExternallyShared(r: RichSkillDescriptor): String {
         return r.isExternallyShared.toString()
+    }
+
+    fun compareClonedFrom(r: RichSkillDescriptor): String? {
+        return r.clonedFrom
     }
 
     fun compareCertifications(receiver: RichSkillDescriptor): String? {

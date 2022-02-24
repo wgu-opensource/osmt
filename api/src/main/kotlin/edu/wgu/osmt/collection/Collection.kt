@@ -22,7 +22,9 @@ data class Collection(
     val author: Keyword? = null,
     val isExternallyShared: Boolean = false,
     override val archiveDate: LocalDateTime? = null,
-    override val publishDate: LocalDateTime? = null
+    override val publishDate: LocalDateTime? = null,
+    val importedFrom: String? = null,
+    val libraryName: String? = null
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
 
     fun canonicalUrl(baseUrl: String): String = "$baseUrl/api/collections/${uuid}"

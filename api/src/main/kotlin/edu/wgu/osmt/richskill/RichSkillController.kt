@@ -3,10 +3,7 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
-import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.ApiSkill
-import edu.wgu.osmt.api.model.ApiSkillUpdate
-import edu.wgu.osmt.api.model.SkillSortEnum
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
@@ -128,6 +125,10 @@ class RichSkillController @Autowired constructor(
         val existingSkill = richSkillRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
+        if (existingSkill.importedFrom != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Imported Skills are Read Only")
+        }
+
         val updatedSkill =
             richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, readableUsername(user))
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
@@ -143,6 +144,10 @@ class RichSkillController @Autowired constructor(
     ): ApiSkill {
         val existingSkill = richSkillRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        if (existingSkill.importedFrom != null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Imported Skills are Read Only")
+        }
 
         val updatedSkill =
             richSkillRepository.updateIsExternallyShared(existingSkill.id.value, true, readableUsername(user))
@@ -210,5 +215,42 @@ class RichSkillController @Autowired constructor(
 
         val sizedIterable = auditLogRepository.findByTableAndId(RichSkillDescriptorTable.tableName, entityId = skill!!.id.value, offsetPageable = pageable)
         return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
+    }
+
+
+    @PostMapping(RoutePaths.SKILL_IMPORT, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun importSkill(
+        @RequestBody skillReference: ApiNamedReference,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
+        val skillUrl = skillReference.id ?:  throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        val task = ShareExternallyTask(
+                canonicalUrl = skillUrl,
+                libraryName = skillReference.name,
+                userString = readableUsername(user))
+        taskMessageService.enqueueJob(TaskMessageService.importSkills, task)
+        return Task.processingResponse(task)
+    }
+
+    @PostMapping(RoutePaths.SKILL_REMOVE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun removeSkill(
+        @PathVariable uuid: String,
+        @AuthenticationPrincipal user: Jwt?
+    ): ApiBatchResult {
+        val existingSkill = richSkillRepository.findByUUID(uuid)
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        /* can only remove readonly imported skills */
+        if (existingSkill.importedFrom == null) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        }
+
+        val skillDoc = RichSkillDoc.fromDao(existingSkill, appConfig)
+        richSkillEsRepo.delete(skillDoc)
+        existingSkill.delete()
+
+        return ApiBatchResult(success=true, modifiedCount=1, totalCount=1)
     }
 }

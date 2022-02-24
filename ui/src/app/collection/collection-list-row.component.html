@@ -2,6 +2,11 @@
 
   <th scope="row" id="{{id}}-header">
     <a id="{{id}}-header-name" class="t-focus t-type-bodyLink" routerLink="/collections/{{collection.uuid}}/manage">{{collection.name}}</a>
+    <div *ngIf="collection.libraryName" class="m-inlineHeading m-inlineHeading-is-truncated">
+      <h5 class="m-inlineHeading-x-heading">Library:</h5>
+      <p class="m-inlineHeading-x-text">{{collection.libraryName}}</p>
+    </div>
+
   </th>
 
   <td>{{collection.skillCount}}</td>

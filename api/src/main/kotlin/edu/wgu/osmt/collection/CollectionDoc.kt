@@ -67,5 +67,14 @@ data class CollectionDoc(
 
     @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second, DateFormat.date_time])
     @get:JsonProperty("publishDate")
-    val publishDate: LocalDateTime? = null
+    val publishDate: LocalDateTime? = null,
+
+    @Field(type = Keyword)
+    @get:JsonProperty("importedFrom")
+    val importedFrom: String? = null,
+
+    @Field(type = Keyword)
+    @get:JsonProperty("libraryName")
+    val libraryName: String? = null
+
 )

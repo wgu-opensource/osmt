@@ -12,64 +12,69 @@ import java.time.ZonedDateTime
 
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
-class ApiCollection(private val collection: Collection, private val ss: List<RichSkillDescriptor>, private val appConfig: AppConfig) {
-    @get:JsonProperty
-    val id: String
-        get() = collection.canonicalUrl(appConfig.baseUrl)
+class ApiCollection(
+    @JsonProperty
+    val id: String,
 
+    @JsonProperty
+    val uuid: String,
+
+    @JsonProperty
+    val name: String,
+
+    @JsonProperty
+    val creator: String,
+
+    @JsonProperty
+    val author: String?,
+
+    @JsonProperty
+    val status: PublishStatus,
+
+    @JsonProperty
+    val isExternallyShared: Boolean,
+
+    @JsonProperty
+    val creationDate: ZonedDateTime,
+
+    @JsonProperty
+    val updateDate: ZonedDateTime,
+
+    @JsonProperty
+    val publishDate: ZonedDateTime?,
+
+    @JsonProperty
+    val archiveDate: ZonedDateTime?,
+
+    @JsonProperty
+    val skills: List<ApiSkillSummary>,
+) {
     @JsonProperty("@context")
     val context = "https://rsd.osmt.dev/context-v1.json"
 
     @JsonProperty
     val `type` = "RichSkillCollection"
 
-    @get:JsonProperty
-    val uuid: String
-        get() = collection.uuid.toString()
-
-    @get:JsonProperty
-    val name: String
-        get() = collection.name
-
-    @get:JsonProperty
-    val creator: String
-        get() = appConfig.defaultCreatorUri
-
-    @get:JsonProperty
-    val author: String?
-        get() = collection.author?.let { it.value }
-
-    @get:JsonProperty
-    val status: PublishStatus
-        get() = collection.publishStatus()
-
-    @get:JsonProperty("isExternallyShared")
-    val isExternallyShared: Boolean
-        get() = collection.isExternallyShared
-
-    @get:JsonProperty
-    val creationDate: ZonedDateTime
-        get() = collection.creationDate.atZone(ZoneId.of("UTC"))
-
-    @get:JsonProperty
-    val updateDate: ZonedDateTime
-        get() = collection.updateDate.atZone(ZoneId.of("UTC"))
-
-    @get:JsonProperty
-    val publishDate: ZonedDateTime?
-        get() = collection.publishDate?.atZone(ZoneId.of("UTC"))
-
-    @get:JsonProperty
-    val archiveDate: ZonedDateTime?
-        get() = collection.archiveDate?.atZone(ZoneId.of("UTC"))
-
-    @get:JsonProperty
-    val skills: List<ApiSkillSummary>
-        get() = ss.map { ApiSkillSummary.fromSkill(it, appConfig) }
-
     companion object {
+        fun fromModel(collection: Collection, ss: List<RichSkillDescriptor>, appConfig: AppConfig): ApiCollection {
+            return ApiCollection(
+                    id=collection.canonicalUrl(appConfig.baseUrl),
+                    uuid=collection.uuid,
+                    name=collection.name,
+                    creator=appConfig.defaultCreatorUri,
+                    author=collection.author?.let { it.value },
+                    status=collection.publishStatus(),
+                    isExternallyShared=collection.isExternallyShared,
+                    creationDate=collection.creationDate.atZone(ZoneId.of("UTC")),
+                    updateDate=collection.updateDate.atZone(ZoneId.of("UTC")),
+                    publishDate=collection.publishDate?.atZone(ZoneId.of("UTC")),
+                    archiveDate=collection.archiveDate?.atZone(ZoneId.of("UTC")),
+                    skills=ss.map { ApiSkillSummary.fromSkill(it, appConfig) }
+            )
+
+        }
         fun fromDao(collectionDao: CollectionDao, appConfig: AppConfig): ApiCollection {
-            return ApiCollection(collectionDao.toModel(), collectionDao.skills.map{ it.toModel() }, appConfig)
+            return fromModel(collectionDao.toModel(), collectionDao.skills.map{ it.toModel() }, appConfig)
         }
     }
 }

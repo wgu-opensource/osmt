@@ -48,6 +48,12 @@ class ApiCollection(
 
     @JsonProperty
     val skills: List<ApiSkillSummary>,
+
+    @JsonProperty
+    val importedFrom: String? = null,
+
+    @JsonProperty
+    val libraryName: String? = null
 ) {
     @JsonProperty("@context")
     val context = "https://rsd.osmt.dev/context-v1.json"
@@ -69,7 +75,9 @@ class ApiCollection(
                     updateDate=collection.updateDate.atZone(ZoneId.of("UTC")),
                     publishDate=collection.publishDate?.atZone(ZoneId.of("UTC")),
                     archiveDate=collection.archiveDate?.atZone(ZoneId.of("UTC")),
-                    skills=ss.map { ApiSkillSummary.fromSkill(it, appConfig) }
+                    skills=ss.map { ApiSkillSummary.fromSkill(it, appConfig) },
+                    importedFrom=collection.importedFrom,
+                    libraryName=collection.libraryName,
             )
 
         }

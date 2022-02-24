@@ -22,6 +22,7 @@ import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.task.*
+import org.jetbrains.exposed.sql.SizedCollection
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
@@ -45,7 +46,13 @@ interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
     fun findManyByUUIDs(uuids: List<String>): List<RichSkillDescriptorDao>?
     fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao?
 
-    fun importFromApi(apiSkill: ApiSkill, originalUrl: String, originalLibraryName: String?, user: String): RichSkillDescriptorDao?
+    fun importFromApi(
+            apiSkill: ApiSkill,
+            originalUrl: String,
+            originalLibraryName: String?,
+            collectionDao: CollectionDao? = null,
+            user: String,
+    ): RichSkillDescriptorDao?
 
     fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao>
     fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String): RichSkillDescriptorDao?
@@ -136,7 +143,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
     }
 
-    override fun importFromApi(apiSkill: ApiSkill, originalUrl: String, originalLibraryName: String?, user: String): RichSkillDescriptorDao? {
+    override fun importFromApi(apiSkill: ApiSkill, originalUrl: String, originalLibraryName: String?, collectionDao: CollectionDao?, user: String): RichSkillDescriptorDao? {
 
         val skillUpdate = ApiSkillUpdate.fromApiSkill(apiSkill)
         val rsdUpdate = rsdUpdateFromApi(skillUpdate, user)
@@ -144,7 +151,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         val existingDao = table.select { table.importedFrom eq originalUrl }.firstOrNull()?.let { dao.wrapRow(it) }
 
         val skillDao = if (existingDao != null) {
-            update(rsdUpdate, user)
+            update(rsdUpdate.copy(id=existingDao.id.value), user)
         } else {
             create(rsdUpdate, user)
         }
@@ -154,6 +161,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
             skillDao.archiveDate = apiSkill.archiveDate?.toLocalDateTime()
             skillDao.importedFrom = originalUrl
             skillDao.libraryName = originalLibraryName
+            skillDao.collections = if (collectionDao != null) SizedCollection(collectionDao) else SizedCollection()
             richSkillEsRepo.save(RichSkillDoc.fromDao(skillDao, appConfig))
         }
         return skillDao

@@ -26,7 +26,7 @@ object RoutePaths {
     const val COLLECTION_PUBLISH = "$COLLECTIONS_PATH/publish"
     const val COLLECTION_DETAIL = "${COLLECTIONS_PATH}/{uuid}"
     const val COLLECTION_IMPORT = "$COLLECTIONS_PATH/import"
-    const val COLLECTION_REMOVE = "${COLLECTION_DETAIL}/emove"
+    const val COLLECTION_REMOVE = "${COLLECTION_DETAIL}/remove"
     const val COLLECTION_UPDATE = "${COLLECTION_DETAIL}/update"
     const val COLLECTION_SHARE_EXTERNALLY = "$COLLECTION_DETAIL/share"
     const val COLLECTION_UNSHARE_EXTERNALLY = "$COLLECTION_DETAIL/unshare"

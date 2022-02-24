@@ -5,6 +5,7 @@ import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
 import edu.wgu.osmt.api.model.ApiSkill
 import edu.wgu.osmt.api.model.ApiSkillUpdate
+import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.collection.CollectionSkills
 import edu.wgu.osmt.config.AppConfig
@@ -42,6 +43,9 @@ class ImportExternalTaskProcessor {
 
     @Autowired
     private lateinit var collectionRepository: CollectionRepository
+
+    @Autowired
+    private lateinit var collectionEsRepo: CollectionEsRepo
 
     @RqueueListener(
             value = [TaskMessageService.importSkills],
@@ -98,15 +102,18 @@ class ImportExternalTaskProcessor {
                 skillUrls.forEach { skillUrl ->
                     importExternalService.fetchSkillFromUrl(skillUrl)?.let { apiSkill ->
                         val skillDao = richSkillRepository.importFromApi(apiSkill=apiSkill,
-                                originalUrl=task.canonicalUrl,
+                                originalUrl=apiSkill.id,
                                 originalLibraryName=task.libraryName,
+                                collectionDao=collectionDao,
                                 user=task.userString)
                         if (skillDao != null) {
                             modifiedCount += 1
-                            CollectionSkills.create(collectionId = collectionDao.id.value, skillId = skillDao.id.value)
+//                            CollectionSkills.create(collectionId = collectionDao.id.value, skillId = skillDao.id.value)
                         }
                     }
                 }
+
+                collectionEsRepo.save(collectionDao.toDoc())
                 success = true
             }
         }

@@ -130,7 +130,14 @@ class CollectionRepositoryImpl @Autowired constructor(
     ): CollectionDao? {
         val apiCollectionUpdate: ApiCollectionUpdate = ApiCollectionUpdate.fromApiCollection(apiCollection)
         val collectionUpdateObject = collectionUpdateObjectFromApi(apiCollectionUpdate, richSkillRepository)
-        val collectionDao = create(collectionUpdateObject, user)
+
+        val existingDao = table.select { table.importedFrom eq originalUrl }.firstOrNull()?.let { dao.wrapRow(it) }
+        val collectionDao = if (existingDao != null) {
+            update(collectionUpdateObject.copy(id=existingDao.id.value), user)
+        } else {
+            create(collectionUpdateObject, user)
+        }
+
         if (collectionDao != null) {
             collectionDao.publishDate = apiCollection.publishDate?.toLocalDateTime()
             collectionDao.archiveDate = apiCollection.archiveDate?.toLocalDateTime()

@@ -161,6 +161,15 @@ export class CollectionService extends AbstractService {
       .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
   }
 
+  removeCollection(uuid: string): Observable<ApiBatchResult> {
+    const errorMsg = `Error removing Collection`
+    return this.post<ApiBatchResult>({
+      path: `${this.baseServiceUrl}/${uuid}/remove`,
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiBatchResult(this.safeUnwrapBody(body, errorMsg))))
+  }
+
   searchCollections(
     apiSearch: ApiSearch,
     size: number | undefined,

@@ -1,4 +1,4 @@
-<form [formGroup]="skillForm" (ngSubmit)="handleSearchSkills()" class="l-stickyBar">
+<form [formGroup]="searchForm" (ngSubmit)="handleSearchSkills()" class="l-stickyBar">
 
   <div class="l-stickySidebar l-container">
 
@@ -31,7 +31,7 @@
         <div *ngIf="isExternalSearchType && !isExternalLibraryFormLoading"
              class="t-margin-medium t-margin-bottom">
           <app-formfield-multi-choice
-            [control]="skillForm.controls.externalLibraries"
+            [control]="searchForm.controls.externalLibraries"
             name="external-libraries"
             label="External Library"
             [required]="true"
@@ -40,7 +40,7 @@
         </div>
         <div class="t-margin-medium t-margin-bottom">
           <app-formfield-text
-            [control]="skillForm.controls.name"
+            [control]="searchForm.controls.name"
             name="name"
             label="Name"
             [required]="false"
@@ -51,7 +51,7 @@
         <div class="t-margin-medium t-margin-bottom">
           <app-formfield-text
             *ngIf="showAuthor()"
-            [control]="skillForm.controls.author"
+            [control]="searchForm.controls.author"
             name="author"
             label="Author"
             [required]="false"
@@ -60,7 +60,7 @@
         </div>
         <div class="t-margin-medium t-margin-bottom">
           <app-formfield-text
-            [control]="skillForm.controls.skillStatement"
+            [control]="searchForm.controls.skillStatement"
             name="skillStatement"
             label="Skill Statement"
             [required]="false"
@@ -70,7 +70,7 @@
 
         <div class="t-margin-medium t-margin-bottom">
           <app-formfield-text
-            [control]="skillForm.controls.category"
+            [control]="searchForm.controls.category"
             name="category"
             label="Category"
             [required]="false"
@@ -80,7 +80,7 @@
 
         <div class="t-margin-medium t-margin-bottom">
           <app-formfield-text
-            [control]="skillForm.controls.keywords"
+            [control]="searchForm.controls.keywords"
             name="keywords"
             label="Keywords"
             [required]="false"
@@ -90,7 +90,7 @@
 
         <div class="t-margin-medium t-margin-bottom">
           <app-formfield-text
-            [control]="skillForm.controls.standards"
+            [control]="searchForm.controls.standards"
             name="standards"
             label="Standards"
             [required]="false"
@@ -100,7 +100,7 @@
 
         <div class="t-margin-medium t-margin-bottom">
           <app-formfield-text
-            [control]="skillForm.controls.certifications"
+            [control]="searchForm.controls.certifications"
             name="certifications"
             label="Certifications"
             [required]="false"
@@ -110,7 +110,7 @@
 
         <div class="t-margin-medium t-margin-bottom">
           <app-formfield-text
-            [control]="skillForm.controls.occupations"
+            [control]="searchForm.controls.occupations"
             name="occupations"
             label="Occupations"
             [required]="false"
@@ -121,7 +121,7 @@
 
         <div class="t-margin-medium t-margin-bottom">
           <app-formfield-text
-            [control]="skillForm.controls.employers"
+            [control]="searchForm.controls.employers"
             name="employers"
             label="Employers"
             [required]="false"
@@ -131,7 +131,7 @@
 
         <div class="t-margin-medium t-margin-bottom">
           <app-formfield-text
-            [control]="skillForm.controls.alignments"
+            [control]="searchForm.controls.alignments"
             name="alignments"
             label="Alignment"
             [required]="false"

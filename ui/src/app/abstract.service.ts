@@ -146,15 +146,11 @@ export abstract class AbstractService {
     filterByStatuses?: Set<PublishStatus>,
     sort?: ApiSortOrder): any {
 
-    const params: any = {
-      sort
-    }
-    if (filterByStatuses !== undefined) {
-      params.status = Array.from(filterByStatuses).map(s => s.toString())
-    }
+    const params: any = {}
+    if (sort !== undefined) { params.sort = sort.toString()}
+    if (filterByStatuses !== undefined) { params.status = Array.from(filterByStatuses).map(s => s.toString()) }
     if (size !== undefined) { params.size = size }
     if (from !== undefined) { params.from = from }
-    if (sort !== undefined) { params.sort = sort.toString()}
 
     return params
   }

@@ -5,20 +5,20 @@ import {SvgHelper, SvgIcon} from "../core/SvgHelper"
 
 
 export interface IChoice {
-  id: string|number|undefined
+  id: string|number
   name: string
   label: string
   initiallySelected?: boolean
 }
 
 @Component({
-  selector: "app-formfield-choice",
+  selector: "app-formfield-choice[id]",
   templateUrl: "./form-field-choice.component.html"
 })
 export class FormFieldChoiceComponent extends FormField implements IChoice {
 
   @Input() control: FormControl = new FormControl("")
-  @Input() id: string|number|undefined
+  @Input() id!: string|number
   @Input() label: string = ""
   @Input() name: string = ""
   @Input() isSelected: boolean = false

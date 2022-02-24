@@ -1,5 +1,7 @@
 package edu.wgu.osmt.searchhub
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
@@ -68,15 +70,9 @@ class SearchHubController @Autowired constructor(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
-        @RequestParam(
-            required = false,
-            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
-        ) status: Array<String>,
-        @RequestParam(required = false) sort: String?,
-        @RequestParam libraries: List<UUID>,
-        @RequestBody apiSearch: ApiSearch,
+        @RequestBody request: SearchRequest,
         @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<List<CollectionSummary>> {
+    ): HttpEntity<List<ApiCollectionSummary>> {
         try {
             verifySearchHubConfigured()
         } catch (e: Exception) {
@@ -90,17 +86,19 @@ class SearchHubController @Autowired constructor(
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
 
-        return searchingApi?.let {
-            val collectionsResult = it.searchCollections(
-                convertToSearchHubSearch(apiSearch, libraries),
-                size,
-                from
-            )
+        return searchingApi?.let { api ->
+            request.search?.let {
+                val collectionsResult = api.searchCollections(
+                    convertToSearchHubSearch(it, request.libraries),
+                    size,
+                    from
+                ).map { convertToApiCollectionSummary(it) }
 
-            val responseHeaders = HttpHeaders()
-            responseHeaders.add("X-Total-Count", "0")
+                val responseHeaders = HttpHeaders()
+                responseHeaders.add("X-Total-Count", "0")
 
-            ResponseEntity.status(200).headers(responseHeaders).body(collectionsResult)
+                ResponseEntity.status(200).headers(responseHeaders).body(collectionsResult)
+            } ?: throw GeneralApiException("Request did not contain search", HttpStatus.BAD_REQUEST)
         } ?: throw GeneralApiException("Dependency Error: searchingApi", HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
@@ -110,16 +108,9 @@ class SearchHubController @Autowired constructor(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
-        @RequestParam(
-            required = false,
-            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
-        ) status: Array<String>,
-        @RequestParam(required = false) sort: String?,
-        @RequestParam(required = false) collectionId: String?,
-        @RequestBody libraries: List<UUID>,
-        @RequestBody apiSearch: ApiSearch,
+        @RequestBody request: SearchRequest,
         @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<List<SkillSummary>> {
+    ): HttpEntity<List<ApiSkillSummary>> {
         try {
             verifySearchHubConfigured()
         } catch (e: Exception) {
@@ -133,45 +124,47 @@ class SearchHubController @Autowired constructor(
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
 
-        return searchingApi?.let {
-            val skillsResult = it.searchSkills(
-                convertToSearchHubSearch(apiSearch, libraries),
-                size,
-                from
-            )
+        return searchingApi?.let { api ->
+            request.search?.let {
+                val skillsResult = api.searchSkills(
+                    convertToSearchHubSearch(it, request.libraries),
+                    size,
+                    from
+                ).map { convertToApiSkillSummary(it) }
 
-            val responseHeaders = HttpHeaders()
-            responseHeaders.add("X-Total-Count", "0")
+                val responseHeaders = HttpHeaders()
+                responseHeaders.add("X-Total-Count", "0")
 
-            ResponseEntity.status(200).headers(responseHeaders).body(skillsResult)
+                ResponseEntity.status(200).headers(responseHeaders).body(skillsResult)
+            } ?: throw GeneralApiException("Request did not contain search", HttpStatus.BAD_REQUEST)
         } ?: throw GeneralApiException("Dependency Error: searchingApi", HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     fun submitCollections(collectionUris: List<String>): Result {
         verifySearchHubConfigured()
 
-        return sharingApi?.submitCollections(convertUriStringsToApiUrls(collectionUris))
+        return sharingApi?.submitCollections(convertToApiUrls(collectionUris))
             ?: throw Exception("Dependency Error: sharingApi")
     }
 
     fun removeCollections(collectionUris: List<String>): Result {
         verifySearchHubConfigured()
 
-        return sharingApi?.removeCollections(convertUriStringsToApiUrls(collectionUris))
+        return sharingApi?.removeCollections(convertToApiUrls(collectionUris))
             ?: throw Exception("Dependency Error: sharingApi")
     }
 
     fun submitSkills(skillUris: List<String>): Result {
         verifySearchHubConfigured()
 
-        return sharingApi?.submitSkills(convertUriStringsToApiUrls(skillUris))
+        return sharingApi?.submitSkills(convertToApiUrls(skillUris))
             ?: throw Exception("Dependency Error: sharingApi")
     }
 
     fun removeSkills(skillsUris: List<String>): Result {
         verifySearchHubConfigured()
 
-        return sharingApi?.removeSkills(convertUriStringsToApiUrls(skillsUris))
+        return sharingApi?.removeSkills(convertToApiUrls(skillsUris))
             ?: throw Exception("Dependency Error: sharingApi")
     }
 
@@ -186,10 +179,10 @@ class SearchHubController @Autowired constructor(
     }
 
     companion object {
-        fun convertToSearchHubSearch(apiSearch: ApiSearch, libraries: List<UUID>): Search {
+        fun convertToSearchHubSearch(apiSearch: ApiSearch, libraries: List<UUID>?): Search {
             val advancedSearch: AdvancedSearch? = apiSearch.advanced?.let { apiAdvancedSearch ->
                 AdvancedSearch(
-                    libraries = ArrayList(libraries),
+                    libraries = libraries?.let { ArrayList(it) },
                     skillName = apiAdvancedSearch.skillName,
                     collectionName = apiAdvancedSearch.collectionName,
                     category = apiAdvancedSearch.category,
@@ -218,11 +211,57 @@ class SearchHubController @Autowired constructor(
             )
         }
 
-        fun convertUriStringsToApiUrls(uris: List<String>): Urls {
+        fun convertToApiUrls(uris: List<String>): Urls {
             return Urls(uris.map {
                 URI(it)
             })
         }
+
+        fun convertToApiJobCode(jobCode: JobCode): ApiJobCode {
+            return ApiJobCode(
+                code = jobCode.code,
+                frameworkName = jobCode.framework,
+            )
+        }
+
+        fun convertToApiSkillSummary(skillSummary: SkillSummary): ApiSkillSummary {
+            return ApiSkillSummary(
+                id = skillSummary.id?.toString() ?: "",
+                uuid = "",
+                libraryName = skillSummary.library?.libraryName,
+                skillName = skillSummary.skillName ?: "",
+                skillStatement = skillSummary.skillStatement ?: "",
+                // TODO: Hard coded status. Need to either return status from searchhub or make nullable.
+                status = PublishStatus.Published,
+                category = skillSummary.category,
+                keywords = skillSummary.keywords?.map { it } ?: listOf(),
+                occupations = skillSummary.occupations?.map { convertToApiJobCode(it) } ?: listOf(),
+                publishDate = skillSummary.publishDate?.toLocalDateTime(),
+                archiveDate = skillSummary.archiveDate?.toLocalDateTime(),
+                importedFrom = null,
+            )
+        }
+
+        fun convertToApiCollectionSummary(collectionSummary: CollectionSummary): ApiCollectionSummary {
+            return ApiCollectionSummary (
+                id = collectionSummary.id?.toString() ?: "",
+                uuid = null,
+                libraryName = collectionSummary.library?.libraryName,
+                name = collectionSummary.name ?: "",
+                skillCount = collectionSummary.skillCount,
+                publishStatus = null,
+                publishDate = collectionSummary.publishDate?.toLocalDateTime(),
+                archiveDate = collectionSummary.archiveDate?.toLocalDateTime()
+            )
+        }
+
+        @JsonInclude(JsonInclude.Include.ALWAYS)
+        data class SearchRequest(
+            @JsonProperty("libraries")
+            val libraries: List<UUID>? = null,
+
+            @JsonProperty("search")
+            val search: ApiSearch? = null
+        )
     }
 }
-

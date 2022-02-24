@@ -241,7 +241,7 @@ describe("CollectionService", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
-    const path = "api/collections/" + uuid + "/skills?sort=undefined"
+    const path = "api/collections/" + uuid + "/skills"
     const testData = createMockPaginatedSkills()
     const expected = testData
 
@@ -447,7 +447,6 @@ describe("CollectionService", () => {
       remove: new ApiSearch({query})
     })
     const filter = new Set<PublishStatus>([PublishStatus.Published, PublishStatus.Draft])
-    const sort = undefined
 
     // Act
     const result$ = testService.updateSkills(uuid, update, filter)
@@ -461,7 +460,7 @@ describe("CollectionService", () => {
       })
 
     const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path +
-      `?sort=${sort}&status=${PublishStatus.Published}&status=${PublishStatus.Draft}`)
+      `?status=${PublishStatus.Published}&status=${PublishStatus.Draft}`)
     expect(req.request.method).toEqual("POST")
     req.flush(testData)
   })
@@ -543,7 +542,6 @@ describe("CollectionService", () => {
     const expected = true
     const size = 1
     const from = 0
-    const sort = undefined
 
     // Act
     const result$ = testService.collectionReadyToPublish(uuid)
@@ -557,7 +555,7 @@ describe("CollectionService", () => {
       })
 
     const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path +
-      `?sort=${sort}&status=${PublishStatus.Archived}&status=${PublishStatus.Draft}&size=${size}&from=${from}`)
+      `?status=${PublishStatus.Archived}&status=${PublishStatus.Draft}&size=${size}&from=${from}`)
     expect(req.request.method).toEqual("POST")
     req.flush(testData.skills, {
       headers: { "x-total-count": "" + testData.totalCount}

@@ -14,7 +14,7 @@ import { ApiCollectionSummary, ICollectionSummary, ISkillSummary } from "../../s
 import { ApiReferenceListUpdate, IRichSkillUpdate, IStringListUpdate } from "../../src/app/richskill/ApiSkillUpdate"
 import { PaginatedCollections, PaginatedSkills } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ITaskResult } from "../../src/app/task/ApiTaskResult"
-import {ApiLibrarySummary, ILibrarySummary, PaginatedLibraries} from "../../src/app/search/searchhub/ApiLibrary";
+import {ApiLibrarySummary, ILibrarySummary, PaginatedLibraries} from "../../src/app/search/external/api/ApiLibrary"
 
 // Add mock data here.
 // For more examples, see https://github.com/WGU-edu/ema-eval-ui/blob/develop/src/app/admin/pages/edit-user/edit-user.component.spec.ts

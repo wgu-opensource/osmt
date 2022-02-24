@@ -9,11 +9,11 @@ import {ApiAdvancedSearch} from "../../richskill/service/rich-skill-search.servi
 import {INamedReference} from "../../richskill/ApiSkill"
 import {Title} from "@angular/platform-browser"
 import {Whitelabelled} from "../../../whitelabel"
-import {SearchHubService} from "../searchhub/searchhub.service"
-import {ApiLibrarySummary, PaginatedLibraries} from "../searchhub/ApiLibrary"
+import {ExternalSearchService} from "../external/external-search.service"
+import {ApiLibrarySummary, ILibrarySummary} from "../external/api/ApiLibrary"
 import {IChoice} from "../../form/form-field-choice.component"
-import {Observable, of} from "rxjs";
-import {map} from "rxjs/operators";
+import {Observable, of} from "rxjs"
+import {map} from "rxjs/operators"
 
 enum SearchType {
   LOCAL,
@@ -29,7 +29,7 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
 
   searchType: SearchType = SearchType.LOCAL
 
-  skillForm = new FormGroup(this.getFormDefinitions())
+  searchForm = new FormGroup(this.getFormDefinitions())
 
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)
 
@@ -61,24 +61,41 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
   }
 
   get externalLibraryChoices(): IChoice[] {
-    const selectedIds = new Set(
-      ([...this.skillForm.controls.externalLibraries?.value?.values()] ?? []).map((c: IChoice) => c.id)
-    )
+    const selectedLibraryIds = this.selectedExternalLibraryIds
 
     return (this.externalLibraries) ?
-      [...this.externalLibraries].map((l): IChoice => {
+      [...this.externalLibraries].map((l, i): IChoice => {
           return {
-            id: l.uuid,
+            id: l.uuid ?? i,
             name: l.uuid ?? "",
             label: l.libraryName ?? "",
-            initiallySelected: (l.uuid) ? selectedIds.has(l.uuid) : false
+            initiallySelected: (l.uuid !== undefined && selectedLibraryIds.has(l.uuid))
           }
         }) : []
   }
 
+  get selectedExternalLibraryIds(): Set<string | number> {
+    return new Set(
+      ([...this.searchForm.controls.externalLibraries?.value?.values()] ?? []).map((c: IChoice) => c.id)
+    )
+  }
+
+  get selectedExternalLibraries(): ILibrarySummary[] {
+    if (this.externalLibraries
+        && this.searchForm.value.externalLibraries
+        && this.searchForm.value.externalLibraries.size > 0
+    ) {
+      const selectedLibraryIds = this.selectedExternalLibraryIds
+      return Array.from(this.externalLibraries).filter(l => (l.uuid && selectedLibraryIds.has(l.uuid)))
+    }
+    else {
+      return []
+    }
+  }
+
   constructor(
     private searchService: SearchService,
-    private searchHubService: SearchHubService,
+    private externalSearchService: ExternalSearchService,
     protected titleService: Title
   ) {
     super()
@@ -119,17 +136,33 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
   }
 
   handleSearchSkills(): void {
-    this.searchService.advancedSkillSearch(this.collectFieldData())
+    switch (this.searchType) {
+      case SearchType.EXTERNAL:
+        return this.externalSearchService.advancedSkillSearch(
+          this.collectFieldData(),
+          this.selectedExternalLibraries
+        )
+      default:
+        return this.searchService.advancedSkillSearch(this.collectFieldData())
+    }
   }
 
   handleSearchCollections(): void {
-    this.searchService.advancedCollectionSearch(this.collectFieldData(true))
+    switch (this.searchType) {
+      case SearchType.EXTERNAL:
+        return this.externalSearchService.advancedCollectionSearch(
+          this.collectFieldData(true),
+          this.selectedExternalLibraries
+        )
+      default:
+        return this.searchService.advancedCollectionSearch(this.collectFieldData(true))
+    }
   }
 
   private collectFieldData(isSearchingCollections: boolean = false): ApiAdvancedSearch {
-    const form = this.skillForm.value
+    const form = this.searchForm.value
 
-    const name: string = form.name
+    const name: string|undefined = (form.name && form.name !== "") ? form.name : undefined
     const author: string = form.author
     const skillStatement: string = form.skillStatement
     const category: string = form.category
@@ -143,8 +176,8 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
 
     // if a property would be falsey, then completely omit it
     return {
-      ...isSearchingCollections && { collectionName: name },
-      ...!isSearchingCollections && { skillName: name },
+      ...isSearchingCollections && name && { collectionName: name },
+      ...!isSearchingCollections && name && { skillName: name },
       ...author && { author },
       ...skillStatement && { skillStatement },
       ...category && { category},
@@ -196,10 +229,10 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
       this.isLoadingExternalLibraries = true
       this.externalLibraries = undefined
 
-      return this.searchHubService.getLibraries().pipe(
+      return this.externalSearchService.getLibraries().pipe(
         map((result) => {
           this.externalLibraries = new Set(result.libraries)
-          this.skillForm.controls.externalLibraries.setValue(new Set(this.externalLibraryChoices))
+          this.searchForm.controls.externalLibraries.setValue(new Set(this.externalLibraryChoices))
           this.isLoadingExternalLibraries = false
           return new Set(result.libraries)
         })
@@ -210,6 +243,6 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
   private resetExternalLibraries(): void {
     this.isLoadingExternalLibraries = false
     this.externalLibraries = undefined
-    this.skillForm.controls.externalLibraries.setValue(null)
+    this.searchForm.controls.externalLibraries.setValue(null)
   }
 }

@@ -23,8 +23,8 @@ import {
   createMockSkillSummary,
   createMockTaskResult
 } from "./mock-data"
-import {PaginatedLibraries} from "../../src/app/search/searchhub/ApiLibrary"
-import {ApiSearchHubAdvancedSearch} from "../../src/app/search/searchhub/ApiSearchHubAdvancedSearch"
+import {ILibrarySummary, PaginatedLibraries} from "../../src/app/search/external/api/ApiLibrary"
+import {ExternalSearch} from "../../src/app/search/external/external-search.service";
 
 
 // Add service stubs here.
@@ -250,8 +250,8 @@ export class RichSkillServiceStub {
   }
 }
 
-export let SearchHubServiceData = {}
-export class SearchHubServiceStub {
+export let ExternalSearchServiceData = {}
+export class ExternalSearchServiceStub {
   get isEnabled(): boolean {
       return true
   }
@@ -260,5 +260,23 @@ export class SearchHubServiceStub {
     return of(createMockPaginatedLibraries())
   }
 
-  advancedSkillSearch(advanced: ApiSearchHubAdvancedSearch): void { }
+  searchCollections(
+    search: ExternalSearch,
+    size?: number,
+    from?: number,
+  ): Observable<PaginatedCollections> {
+    return of(createMockPaginatedCollections())
+  }
+
+  searchSkills(
+    search: ExternalSearch,
+    size?: number,
+    from?: number,
+  ): Observable<PaginatedSkills> {
+    return of(createMockPaginatedSkills())
+  }
+
+  advancedCollectionSearch(search: ApiAdvancedSearch, libraries: ILibrarySummary[]): void {}
+
+  advancedSkillSearch(search: ApiAdvancedSearch, libraries?: ILibrarySummary[]): void {}
 }

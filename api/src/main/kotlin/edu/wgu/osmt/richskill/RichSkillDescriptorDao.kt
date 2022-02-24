@@ -29,6 +29,7 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
     var isExternallyShared: Boolean by RichSkillDescriptorTable.externallyShared
     var importedFrom: String? by RichSkillDescriptorTable.importedFrom
     var libraryName: String? by RichSkillDescriptorTable.libraryName
+    var clonedFrom: String? by RichSkillDescriptorTable.clonedFrom
 
     var jobCodes by JobCodeDao via RichSkillJobCodes
 
@@ -60,7 +61,8 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
             publishDate = publishDate,
             collections = collections.map { it.toModel() }.toList().sortedBy { it.name },
             importedFrom = importedFrom,
-            libraryName = libraryName
+            libraryName = libraryName,
+            clonedFrom = clonedFrom
         )
         return rsd
     }

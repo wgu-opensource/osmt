@@ -265,6 +265,9 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     if (this.skillUuid && !this.isDuplicating) {
       this.skillSaved = this.richSkillService.updateSkill(this.skillUuid, updateObject)
     } else {
+      if (this.isDuplicating) {
+        updateObject.clonedFrom = this.existingSkill?.importedFrom ?? this.existingSkill?.id
+      }
       this.skillSaved = this.richSkillService.createSkill(updateObject)
     }
 

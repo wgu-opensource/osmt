@@ -38,7 +38,10 @@ data class ApiSkillUpdate(
     val employers: ApiReferenceListUpdate? = null,
 
     @JsonProperty("occupations")
-    val occupations: ApiStringListUpdate? = null
+    val occupations: ApiStringListUpdate? = null,
+
+    @JsonProperty("clonedFrom")
+    val clonedFrom: String? = null,
 ) {
 
     fun validate(rowNumber:Number? = null): List<ApiFieldError>? {
@@ -81,7 +84,7 @@ data class ApiSkillUpdate(
                     standards= ApiAlignmentListUpdate(add=apiSkill.standards),
                     alignments= ApiAlignmentListUpdate(add=apiSkill.alignments),
                     employers= ApiReferenceListUpdate(add=apiSkill.employers),
-                    occupations= ApiStringListUpdate(add=apiSkill.occupations.map { it.code })
+                    occupations= ApiStringListUpdate(add=apiSkill.occupations.map { it.code }),
             )
         }
     }

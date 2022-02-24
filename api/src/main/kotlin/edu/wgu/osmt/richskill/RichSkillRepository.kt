@@ -358,7 +358,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
             collections = if (addingCollections.size + removingCollections.size > 0) ListFieldUpdate(
                 addingCollections,
                 removingCollections
-            ) else null
+            ) else null,
+            clonedFrom = skillUpdate.clonedFrom
         )
     }
 

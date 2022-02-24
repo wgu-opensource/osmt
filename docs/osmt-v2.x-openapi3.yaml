@@ -1255,6 +1255,8 @@ components:
           $ref: '#/components/schemas/ReferenceListUpdate'
         author:
           type: string
+        clonedFrom:
+          type: string
       example:
         skillName: "New Skill Name"
         keywords:

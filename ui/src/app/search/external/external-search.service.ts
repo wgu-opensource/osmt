@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core"
-import {ApiLibrarySummary, ILibrarySummary, PaginatedLibraries} from "./ApiLibrary"
+import {ApiLibrarySummary, ILibrarySummary, PaginatedLibraries} from "./api/ApiLibrary"
 import {ApiSearch} from "../../richskill/service/rich-skill-search.service"
-import {ApiSearchHubAdvancedSearch} from "./ApiSearchHubAdvancedSearch"
+import {ApiExternalAdvancedSearch} from "./api/ApiExternalAdvancedSearch"
 import {Router} from "@angular/router"
 import {Observable, Subject} from "rxjs"
 import {AbstractService} from "../../abstract.service"
@@ -43,14 +43,14 @@ export class SearchHubService extends AbstractService {
       }))
   }
 
-  advancedSkillSearch(advanced: ApiSearchHubAdvancedSearch): void {
+  advancedCollectionSearch(advanced: ApiExternalAdvancedSearch): void {
     this.setLatestSearch(new ApiSearch({advanced}))
-    this.router.navigate(["/skills/search"])
+    this.router.navigate(["/collections/search/external"])
   }
 
-  advancedCollectionSearch(advanced: ApiSearchHubAdvancedSearch): void {
+  advancedSkillSearch(advanced: ApiExternalAdvancedSearch): void {
     this.setLatestSearch(new ApiSearch({advanced}))
-    this.router.navigate(["/collections/search"])
+    this.router.navigate(["/skills/search/external"])
   }
 
   protected setLatestSearch(apiSearch?: ApiSearch): void {

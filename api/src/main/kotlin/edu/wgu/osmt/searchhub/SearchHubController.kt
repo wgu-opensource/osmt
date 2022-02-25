@@ -276,7 +276,9 @@ class SearchHubController @Autowired constructor(
         fun convertToApiJobCode(jobCode: JobCode): ApiJobCode {
             return ApiJobCode(
                 code = jobCode.code,
-                frameworkName = jobCode.framework,
+                frameworkName = jobCode.frameworkName,
+                targetNode = jobCode.targetNode,
+                targetNodeName = jobCode.targetNodeName
             )
         }
 

@@ -3,7 +3,7 @@ package edu.wgu.osmt.elasticsearch
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 
-class OffsetPageable(offset: Int, limit: Int, private val sort: Sort?) : Pageable {
+class OffsetPageable(offset: Int, limit: Int, private val sort: Sort? = null) : Pageable {
     val offset: Int
     val limit: Int
 

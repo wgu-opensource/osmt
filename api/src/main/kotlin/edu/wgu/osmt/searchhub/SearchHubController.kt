@@ -9,12 +9,16 @@ import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.elasticsearch.OffsetPageable
+import edu.wgu.osmt.elasticsearch.PaginatedLinks
 import edu.wgu.osmt.searchhub.client.apis.SearchingApi
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.searchhub.client.apis.LibrariesApi
 import edu.wgu.osmt.searchhub.client.apis.SharingApi
+import edu.wgu.osmt.searchhub.client.infrastructure.ResponseType
+import edu.wgu.osmt.searchhub.client.infrastructure.Success
 import edu.wgu.osmt.searchhub.client.models.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
@@ -87,17 +91,43 @@ class SearchHubController @Autowired constructor(
         }
 
         return searchingApi?.let { api ->
-            request.search?.let {
-                val collectionsResult = api.searchCollections(
-                    convertToSearchHubSearch(it, request.libraries),
+            request.search?.let { search ->
+                val response = api.searchCollectionsWithHttpInfo(
+                    convertToSearchHubSearch(search, request.libraries),
                     size,
                     from
-                ).map { convertToApiCollectionSummary(it) }
+                )
+
+                val collectionResults = if (response.responseType == ResponseType.Success) {
+                    ((response as? Success<*>)?.data as List<*>)
+                        .filterIsInstance<CollectionSummary>()
+                        .map { convertToApiCollectionSummary(it) }
+                } else throw GeneralApiException("Dependency Error: searchingApi", HttpStatus.INTERNAL_SERVER_ERROR)
 
                 val responseHeaders = HttpHeaders()
-                responseHeaders.add("X-Total-Count", "0")
 
-                ResponseEntity.status(200).headers(responseHeaders).body(collectionsResult)
+                response.headers["X-Total-Count"]?.firstOrNull()?.let {
+                    val totalCount = it.toInt()
+
+                    responseHeaders.add("X-Total-Count", totalCount.toString())
+
+                    val pageable = OffsetPageable(from, size)
+
+                    // build up current uri with path and params
+                    uriComponentsBuilder
+                        .path(RoutePaths.SEARCH_HUB_SEARCH_COLLECTIONS)
+                        .queryParam(RoutePaths.QueryParams.FROM, from)
+                        .queryParam(RoutePaths.QueryParams.SIZE, size)
+
+                    PaginatedLinks(
+                        pageable,
+                        totalCount,
+                        uriComponentsBuilder
+                    ).addToHeaders(responseHeaders)
+                }
+
+                ResponseEntity.status(200).headers(responseHeaders).body(collectionResults)
+
             } ?: throw GeneralApiException("Request did not contain search", HttpStatus.BAD_REQUEST)
         } ?: throw GeneralApiException("Dependency Error: searchingApi", HttpStatus.INTERNAL_SERVER_ERROR)
     }
@@ -125,17 +155,43 @@ class SearchHubController @Autowired constructor(
         }
 
         return searchingApi?.let { api ->
-            request.search?.let {
-                val skillsResult = api.searchSkills(
-                    convertToSearchHubSearch(it, request.libraries),
+            request.search?.let { search ->
+                val response = api.searchSkillsWithHttpInfo(
+                    convertToSearchHubSearch(search, request.libraries),
                     size,
                     from
-                ).map { convertToApiSkillSummary(it) }
+                )
+
+                val skillsResults = if (response.responseType == ResponseType.Success) {
+                    ((response as? Success<*>)?.data as List<*>)
+                        .filterIsInstance<SkillSummary>()
+                        .map { convertToApiSkillSummary(it) }
+                } else throw GeneralApiException("Dependency Error: searchingApi", HttpStatus.INTERNAL_SERVER_ERROR)
 
                 val responseHeaders = HttpHeaders()
-                responseHeaders.add("X-Total-Count", "0")
 
-                ResponseEntity.status(200).headers(responseHeaders).body(skillsResult)
+                response.headers["X-Total-Count"]?.firstOrNull()?.let {
+                    val totalCount = it.toInt()
+
+                    responseHeaders.add("X-Total-Count", totalCount.toString())
+
+                    val pageable = OffsetPageable(from, size)
+
+                    // build up current uri with path and params
+                    uriComponentsBuilder
+                        .path(RoutePaths.SEARCH_HUB_SEARCH_SKILLS)
+                        .queryParam(RoutePaths.QueryParams.FROM, from)
+                        .queryParam(RoutePaths.QueryParams.SIZE, size)
+
+                    PaginatedLinks(
+                        pageable,
+                        totalCount,
+                        uriComponentsBuilder
+                    ).addToHeaders(responseHeaders)
+                }
+
+                ResponseEntity.status(200).headers(responseHeaders).body(skillsResults)
+
             } ?: throw GeneralApiException("Request did not contain search", HttpStatus.BAD_REQUEST)
         } ?: throw GeneralApiException("Dependency Error: searchingApi", HttpStatus.INTERNAL_SERVER_ERROR)
     }

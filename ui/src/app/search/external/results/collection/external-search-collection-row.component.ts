@@ -1,7 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
-import {ApiCollectionSummary, ICollectionSummary} from "../../../../richskill/ApiSkillSummary"
-import {TableActionDefinition} from "../../../../table/skills-library-table/has-action-definitions"
+import {Component, Input, OnInit} from "@angular/core"
+import {ApiCollectionSummary} from "../../../../richskill/ApiSkillSummary"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
+import {CollectionService} from "../../../../collection/service/collection.service";
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -14,9 +14,17 @@ export class ExternalSearchCollectionRowComponent implements OnInit {
   @Input() id = "collection-list-row"
   @Input() nextId = ""
 
+  imported = false
+
   externalLinkIcon = SvgHelper.path(SvgIcon.EXTERNAL_LINK)
 
-  constructor() { }
+  get importButtonLabel(): string {
+    return (this.imported) ? "Collection Imported" : "Import Collection"
+  }
+
+  constructor(
+    protected collectionService: CollectionService
+  ) {}
 
   ngOnInit(): void {
     if (!this.id) {
@@ -25,6 +33,13 @@ export class ExternalSearchCollectionRowComponent implements OnInit {
   }
 
   onImportCollectionClicked(): void {
-    // TODO: Call Import.
+    if (this.collection) {
+      this.collectionService.importCollection(
+        this.collection.id,
+        this.collection.name
+      ).subscribe(resp => {
+        this.imported = true
+      })
+    }
   }
 }

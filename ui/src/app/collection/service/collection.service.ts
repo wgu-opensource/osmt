@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {AuthService} from "../../auth/auth-service"
 import {AbstractService} from "../../abstract.service"
 import {PublishStatus} from "../../PublishStatus"
-import {ApiAuditLog, ApiSkill, ApiSortOrder, IAuditLog, ISkill} from "../../richskill/ApiSkill"
+import {ApiAuditLog, ApiNamedReference, ApiSkill, ApiSortOrder, IAuditLog, ISkill} from "../../richskill/ApiSkill"
 import {
   ApiSearch,
   ApiSkillListUpdate,
@@ -159,6 +159,16 @@ export class CollectionService extends AbstractService {
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
+  }
+
+  importCollection(id: string, name: string): Observable<ApiTaskResult> {
+    const errorMsg = `Error importing Collection`
+    return this.post<ApiTaskResult>({
+      path: `${this.baseServiceUrl}/import`,
+      body: new ApiNamedReference({id, name})
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, errorMsg))))
   }
 
   removeCollection(uuid: string): Observable<ApiBatchResult> {

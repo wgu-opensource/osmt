@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {ApiSkillSummary} from "../../../../richskill/ApiSkillSummary"
+import {RichSkillService} from "../../../../richskill/service/rich-skill.service";
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -13,9 +14,17 @@ export class ExternalSearchSkillRowComponent implements OnInit {
   @Input() id = ""
   @Input() nextId = ""
 
+  imported = false
+
   externalLinkIcon = SvgHelper.path(SvgIcon.EXTERNAL_LINK)
 
-  constructor() { }
+  get importButtonLabel(): string {
+    return (this.imported) ? "RSD Imported" : "Import RSD"
+  }
+
+  constructor(
+    protected richSkillService: RichSkillService
+  ) {}
 
   ngOnInit(): void {
     if (!this.id) {
@@ -42,6 +51,13 @@ export class ExternalSearchSkillRowComponent implements OnInit {
   }
 
   onImportSkillClicked(): void {
-    // TODO: Call Import.
+    if (this.skill) {
+      this.richSkillService.importSkill(
+        this.skill.id,
+        this.skill.skillName
+      ).subscribe(resp => {
+        this.imported = true
+      })
+    }
   }
 }

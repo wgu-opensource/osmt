@@ -13,9 +13,9 @@ export interface IAppConfig {
   poweredByUrl: string
   poweredByLabel: string
   idleTimeoutInSeconds: number
-  searchHubEnabled: boolean
   dynamicWhitelabel: boolean
   colorBrandAccent1?: string
+  externalSearchEnabled: boolean
   externalShareEnabled: boolean
 }
 
@@ -35,8 +35,8 @@ export class DefaultAppConfig implements IAppConfig {
   poweredByUrl = "https://rsd.osmt.dev"
   poweredByLabel = "Open Skills Network"
   idleTimeoutInSeconds = 15 * 60
-  searchHubEnabled = false
   dynamicWhitelabel = false
   colorBrandAccent1 = undefined
+  externalSearchEnabled = true
   externalShareEnabled = true
 }

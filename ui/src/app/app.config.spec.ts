@@ -50,7 +50,7 @@ describe("AppConfig", () => {
         loginUrl: "",
         idleTimeoutInSeconds: 300,
         dynamicWhitelabel: false,
-        searchHubEnabled: false,
+        externalSearchEnabled: false,
         externalShareEnabled: false
       }
 

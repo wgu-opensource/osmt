@@ -48,6 +48,14 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
     }
   }
 
+  get isSearchTypeToggleVisible(): boolean {
+    return AppConfig.settings.externalSearchEnabled
+  }
+
+  get isLibrarySelectionVisible(): boolean {
+    return AppConfig.settings.externalSearchEnabled && this.isExternalSearchType && !this.isExternalLibraryFormLoading
+  }
+
   get isLocalSearchType(): boolean {
     return (this.searchType === SearchType.LOCAL)
   }

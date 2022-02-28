@@ -18,7 +18,8 @@
 
         </div>
 
-        <div class="t-margin-medium t-margin-bottom">
+        <div *ngIf="isSearchTypeToggleVisible"
+            class="t-margin-medium t-margin-bottom">
           <app-toggle-button
             [selectedOption]="searchTypeToggleSelectedOption"
             option1Label="This Library"
@@ -28,7 +29,7 @@
           ></app-toggle-button>
         </div>
 
-        <div *ngIf="isExternalSearchType && !isExternalLibraryFormLoading"
+        <div *ngIf="isLibrarySelectionVisible"
              class="t-margin-medium t-margin-bottom">
           <app-formfield-multi-choice
             [control]="searchForm.controls.externalLibraries"

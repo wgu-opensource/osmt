@@ -474,8 +474,11 @@ class CollectionRepositoryImpl @Autowired constructor(
 
         fun handleCollectionDao(collectionDao: CollectionDao?): Unit {
             collectionDao?.let {
-                if (publishCollection(it, publishTask)) {
-                    modifiedCount += 1
+                // imported skills are readonly
+                if (it.importedFrom == null) {
+                    if (publishCollection(it, publishTask)) {
+                        modifiedCount += 1
+                    }
                 }
             }
         }

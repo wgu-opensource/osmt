@@ -112,32 +112,32 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   publishVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.publishDate === undefined
+      return !skill.importedFrom && skill.publishDate === undefined
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
-      const unpublishedSkill = this.selectedSkills?.find(s => s.publishDate === undefined)
+      const unpublishedSkill = this.selectedSkills?.find(s => !s.importedFrom && s.publishDate === undefined)
       return unpublishedSkill !== undefined
     }
   }
   archiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return !checkArchived(skill)
+      return !skill.importedFrom && !checkArchived(skill)
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
-      const unarchivedSkills = this.selectedSkills?.find(s => !checkArchived(s))
+      const unarchivedSkills = this.selectedSkills?.find(s => !s.importedFrom && !checkArchived(s))
       return unarchivedSkills !== undefined
     }
   }
 
   unarchiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return checkArchived(skill)
+      return !skill.importedFrom && checkArchived(skill)
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
-      const archivedSkill = this.selectedSkills?.find(checkArchived)
+      const archivedSkill = this.selectedSkills?.find(s => !s.importedFrom && checkArchived(s))
       return archivedSkill !== undefined
     }
   }

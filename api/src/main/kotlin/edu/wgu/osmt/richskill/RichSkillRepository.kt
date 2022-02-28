@@ -421,8 +421,11 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         val handle_skill_dao = { skillDao: RichSkillDescriptorDao? ->
             skillDao?.let {
-                if (publish_skill(it, publishTask)) {
-                    modifiedCount += 1
+                // imported skills are readonly
+                if (it.importedFrom == null) {
+                    if (publish_skill(it, publishTask)) {
+                        modifiedCount += 1
+                    }
                 }
             }
         }

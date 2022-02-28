@@ -31,7 +31,7 @@
 
     <ng-template #dotActions>
       <!-- Items must be grouped-->
-      <div>
+      <div *ngIf="!collection.importedFrom">
         <div class="m-checkbox">
           <label class="t-visuallyHidden" for="{{id}}-toggle" aria-labelledby="{{id}}-header">Select</label>
           <input type="checkbox" id="{{id}}-toggle" name="{{id}}-toggle" data-table-row="{{id}}" [checked]="isSelected" (click)="selected()">
@@ -46,7 +46,7 @@
         </div>
       </div>
 
-      <app-dots-menu [actions]="rowActions" [data]="collection"></app-dots-menu>
+      <app-dots-menu *ngIf="!collection.importedFrom" [actions]="rowActions" [data]="collection"></app-dots-menu>
     </ng-template>
 
   </td>

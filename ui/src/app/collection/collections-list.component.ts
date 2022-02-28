@@ -111,34 +111,34 @@ export class CollectionsListComponent extends Whitelabelled {
     // return (this.selectedCollections?.length ?? 0) > 0
   }
 
-  publishVisible(skill?: ApiCollectionSummary): boolean {
-    if (skill !== undefined) {
-      return skill.publishDate === undefined
+  publishVisible(collection?: ApiCollectionSummary): boolean {
+    if (collection !== undefined) {
+      return !collection.importedFrom && collection.publishDate === undefined
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
-      const unpublishedSkill = this.selectedCollections?.find(s => s.publishDate === undefined)
-      return unpublishedSkill !== undefined
+      const anyUnpublished = this.selectedCollections?.find(c => !c.importedFrom && c.publishDate === undefined)
+      return anyUnpublished !== undefined
     }
   }
-  archiveVisible(skill?: ApiCollectionSummary): boolean {
-    if (skill !== undefined) {
-      return !checkArchived(skill)
+  archiveVisible(collection?: ApiCollectionSummary): boolean {
+    if (collection !== undefined) {
+      return !collection.importedFrom && !checkArchived(collection)
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
-      const unarchivedSkills = this.selectedCollections?.find(s => !checkArchived(s))
-      return unarchivedSkills !== undefined
+      const anyUnarchived = this.selectedCollections?.find(c => !c.importedFrom && !checkArchived(c))
+      return anyUnarchived !== undefined
     }
   }
-  unarchiveVisible(skill?: ApiCollectionSummary): boolean {
-    if (skill !== undefined) {
-      return checkArchived(skill)
+  unarchiveVisible(collection?: ApiCollectionSummary): boolean {
+    if (collection !== undefined) {
+      return !collection.importedFrom && checkArchived(collection)
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
-      const archivedSkill = this.selectedCollections?.find(checkArchived)
-      return archivedSkill !== undefined
+      const anyArchived = this.selectedCollections?.find(c => !c.importedFrom && checkArchived(c))
+      return anyArchived !== undefined
     }
   }
 

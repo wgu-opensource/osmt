@@ -1,7 +1,6 @@
 export enum SvgIcon {
   ADD = "icon-add",
   ARCHIVE = "icon-archive",
-  UNARCHIVE = "icon-unarchive",
   CANCEL = "icon-cancel",
   CHECK = "icon-check",
   CHECK_OUTLINE = "icon-check-outline",
@@ -12,15 +11,17 @@ export enum SvgIcon {
   DOWNLOAD = "icon-download",
   DUPLICATE = "icon-duplicate",
   EDIT = "icon-edit",
+  ERROR = "icon-error",
   EXTERNAL_LINK = "icon-external-link",
   ICON_UP = "icon-up",
   MORE = "icon-more",
   PUBLISH = "icon-publish",
+  REMOVE = "icon-remove",
   SEARCH = "icon-search",
   SHARE = "icon-share",
+  UNARCHIVE = "icon-unarchive",
   UNSHARE = "icon-unshare",
-  EXTERNAL = "icon-external-link",
-  REMOVE = "icon-remove"
+  WARNING = "icon-warning"
 }
 
 export class SvgHelper {

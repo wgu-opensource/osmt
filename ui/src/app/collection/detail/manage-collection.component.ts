@@ -57,7 +57,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   searchIcon = SvgHelper.path(SvgIcon.SEARCH)
   shareIcon = SvgHelper.path(SvgIcon.SHARE)
   unshareIcon = SvgHelper.path(SvgIcon.UNSHARE)
-  externalIcon = SvgHelper.path(SvgIcon.EXTERNAL)
+  externalIcon = SvgHelper.path(SvgIcon.EXTERNAL_LINK)
   removeIcon = SvgHelper.path(SvgIcon.REMOVE)
 
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published, PublishStatus.Archived])

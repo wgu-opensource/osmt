@@ -5,8 +5,8 @@ import {Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit} from "@angula
 import {AppConfig} from "../../../../app.config"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {PublishStatus} from "../../../../PublishStatus"
-import {ExtrasSelectedSkillsState} from "../../../../collection/add-skills-collection.component";
-import {ApiSkillSummary} from "../../../ApiSkillSummary";
+import {ExtrasSelectedSkillsState} from "../../../../collection/add-skills-collection.component"
+import {ApiSkillSummary} from "../../../ApiSkillSummary"
 
 @Component({template: ""})
 export abstract class ManageRichSkillActionBarComponent implements OnInit {
@@ -52,7 +52,7 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   dismissIcon: string = SvgHelper.path(SvgIcon.DISMISS)
   shareIcon: string = SvgHelper.path(SvgIcon.SHARE)
   unshareIcon: string = SvgHelper.path(SvgIcon.UNSHARE)
-  externalIcon: string = SvgHelper.path(SvgIcon.EXTERNAL)
+  externalIcon: string = SvgHelper.path(SvgIcon.EXTERNAL_LINK)
   removeIcon: string = SvgHelper.path(SvgIcon.REMOVE)
 
   constructor(

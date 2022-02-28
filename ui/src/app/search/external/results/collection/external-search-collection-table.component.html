@@ -31,12 +31,12 @@
   </thead>
 
   <tbody>
-    <tr *ngFor="let collection of items; let i=index"
+    <tr *ngFor="let searchResult of items; let i=index"
       app-external-search-collection-row
       class="m-tableRow"
       id="table-row-{{i}}"
       nextId="table-row-{{i+1}}"
-      [collection]="collection"
+      [searchResult]="searchResult"
     ></tr>
   </tbody>
 </table>

@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from "@angular/core"
-import {ApiCollectionSummary} from "../../../../richskill/ApiSkillSummary"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
-import {CollectionService} from "../../../../collection/service/collection.service";
+import {CollectionService} from "../../../../collection/service/collection.service"
+import {ApiCollectionSearchResult} from "../../api/ApiCollectionSearchResult"
+import {ApiCollectionSummary} from "../../../../richskill/ApiSkillSummary";
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -10,13 +11,17 @@ import {CollectionService} from "../../../../collection/service/collection.servi
 })
 export class ExternalSearchCollectionRowComponent implements OnInit {
 
-  @Input() collection?: ApiCollectionSummary
+  @Input() searchResult?: ApiCollectionSearchResult
   @Input() id = "collection-list-row"
   @Input() nextId = ""
 
   imported = false
 
   externalLinkIcon = SvgHelper.path(SvgIcon.EXTERNAL_LINK)
+
+  get collection(): ApiCollectionSummary | undefined {
+    return this.searchResult?.collection
+  }
 
   get importButtonLabel(): string {
     return (this.imported) ? "Collection Imported" : "Import Collection"

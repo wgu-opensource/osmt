@@ -25,12 +25,12 @@
   </thead>
 
   <tbody>
-    <tr *ngFor="let skill of items; let i=index"
+    <tr *ngFor="let searchResult of items; let i=index"
       app-external-search-skill-row
       class="m-tableRow"
       id="table-row-{{i}}"
       nextId="table-row-{{i+1}}"
-      [skill]="skill"
+      [searchResult]="searchResult"
     ></tr>
   </tbody>
 </table>

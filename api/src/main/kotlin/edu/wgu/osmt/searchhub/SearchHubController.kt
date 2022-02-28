@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
 import java.util.*
+import kotlin.streams.toList
 
 @Controller
 @Transactional
@@ -74,9 +75,9 @@ class SearchHubController @Autowired constructor(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
-        @RequestBody request: SearchRequest,
+        @RequestBody request: ApiSearchRequest,
         @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<List<ApiCollectionSummary>> {
+    ): HttpEntity<List<ApiCollectionSearchResult>> {
         try {
             verifySearchHubConfigured()
         } catch (e: Exception) {
@@ -102,6 +103,7 @@ class SearchHubController @Autowired constructor(
                     ((response as? Success<*>)?.data as List<*>)
                         .filterIsInstance<CollectionSummary>()
                         .map { convertToApiCollectionSummary(it) }
+                        .map { ApiCollectionSearchResult(it) }
                 } else throw GeneralApiException("Dependency Error: searchingApi", HttpStatus.INTERNAL_SERVER_ERROR)
 
                 val responseHeaders = HttpHeaders()
@@ -138,9 +140,9 @@ class SearchHubController @Autowired constructor(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
-        @RequestBody request: SearchRequest,
+        @RequestBody request: ApiSearchRequest,
         @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<List<ApiSkillSummary>> {
+    ): HttpEntity<List<ApiSkillSearchResult>> {
         try {
             verifySearchHubConfigured()
         } catch (e: Exception) {
@@ -162,11 +164,16 @@ class SearchHubController @Autowired constructor(
                     from
                 )
 
-                val skillsResults = if (response.responseType == ResponseType.Success) {
+                val skills = if (response.responseType == ResponseType.Success) {
                     ((response as? Success<*>)?.data as List<*>)
                         .filterIsInstance<SkillSummary>()
                         .map { convertToApiSkillSummary(it) }
                 } else throw GeneralApiException("Dependency Error: searchingApi", HttpStatus.INTERNAL_SERVER_ERROR)
+
+                // Check for local similar skills and convert to Skill Search Result
+                val skillsResults = skills.parallelStream().map {
+                    ApiSkillSearchResult(it, performSimilarityCheck(it))
+                }.toList()
 
                 val responseHeaders = HttpHeaders()
 
@@ -232,6 +239,10 @@ class SearchHubController @Autowired constructor(
         if (appConfig.searchHubBaseUrl.isNullOrBlank() || appConfig.searchHubAccessToken.isNullOrBlank()) {
             throw Exception("Search Hub is not configured correctly")
         }
+    }
+
+    private fun performSimilarityCheck(rsd: ApiSkillSummary): Boolean {
+        return this.richSkillEsRepo.findSimilar(ApiSimilaritySearch(rsd.skillStatement)).hasSearchHits()
     }
 
     companion object {
@@ -314,12 +325,27 @@ class SearchHubController @Autowired constructor(
         }
 
         @JsonInclude(JsonInclude.Include.ALWAYS)
-        data class SearchRequest(
+        data class ApiSearchRequest(
             @JsonProperty("libraries")
             val libraries: List<UUID>? = null,
 
             @JsonProperty("search")
             val search: ApiSearch? = null
+        )
+
+        @JsonInclude(JsonInclude.Include.ALWAYS)
+        data class ApiCollectionSearchResult(
+            @JsonProperty("collection")
+            val collection: ApiCollectionSummary? = null,
+        )
+
+        @JsonInclude(JsonInclude.Include.ALWAYS)
+        data class ApiSkillSearchResult(
+            @JsonProperty("skill")
+            val skill: ApiSkillSummary? = null,
+
+            @JsonProperty("similarToLocalSkill")
+            val isSimilarToLocalSkill: Boolean? = null
         )
     }
 }

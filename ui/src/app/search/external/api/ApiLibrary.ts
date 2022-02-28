@@ -3,7 +3,7 @@ export interface ILibrarySummary {
   libraryName?: string
 }
 
-export class ApiLibrarySummary {
+export class ApiLibrarySummary implements ILibrarySummary{
   uuid?: string
   libraryName?: string
 
@@ -16,6 +16,7 @@ export class ApiLibrarySummary {
 export class PaginatedLibraries {
   totalCount = 0
   libraries: ILibrarySummary[] = []
+
   constructor(libraries: ILibrarySummary[], totalCount: number) {
     this.libraries = libraries
     this.totalCount = totalCount

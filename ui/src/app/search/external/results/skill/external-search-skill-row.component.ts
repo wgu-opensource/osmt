@@ -1,7 +1,8 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {Component, Input, OnInit} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
+import {RichSkillService} from "../../../../richskill/service/rich-skill.service"
+import {ApiSkillSearchResult} from "../../api/ApiSkillSearchResult"
 import {ApiSkillSummary} from "../../../../richskill/ApiSkillSummary"
-import {RichSkillService} from "../../../../richskill/service/rich-skill.service";
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -10,13 +11,22 @@ import {RichSkillService} from "../../../../richskill/service/rich-skill.service
 })
 export class ExternalSearchSkillRowComponent implements OnInit {
 
-  @Input() skill: ApiSkillSummary | null = null
+  @Input() searchResult: ApiSkillSearchResult | null = null
   @Input() id = ""
   @Input() nextId = ""
 
   imported = false
 
   externalLinkIcon = SvgHelper.path(SvgIcon.EXTERNAL_LINK)
+  errorIcon = SvgHelper.path(SvgIcon.ERROR)
+
+  get skill(): ApiSkillSummary | undefined {
+    return this.searchResult?.skill
+  }
+
+  get isSimilarToLocalSkill(): boolean {
+    return !!(this.searchResult?.similarToLocalSkill)
+  }
 
   get importButtonLabel(): string {
     return (this.imported) ? "RSD Imported" : "Import RSD"

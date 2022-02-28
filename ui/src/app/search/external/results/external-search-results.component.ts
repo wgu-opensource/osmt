@@ -1,13 +1,13 @@
 import {Component, ElementRef, OnInit, ViewChild} from "@angular/core"
 import {ActivatedRoute, Router} from "@angular/router"
 import {ToastService} from "../../../toast/toast.service"
-import {ApiCollectionSummary, ApiSkillSummary} from "../../../richskill/ApiSkillSummary"
 import {Title} from "@angular/platform-browser"
 import {ExternalSearch, ExternalSearchService} from "../external-search.service"
 import {Observable} from "rxjs"
-import {PaginatedCollections, PaginatedSkills} from "../../../richskill/service/rich-skill-search.service"
 import {QuickLinksHelper} from "../../../core/quick-links-helper"
 import {first} from "rxjs/operators"
+import {ApiSkillSearchResult, PaginatedSkillSearchResults} from "../api/ApiSkillSearchResult"
+import {ApiCollectionSearchResult, PaginatedCollectionSearchResults} from "../api/ApiCollectionSearchResult"
 
 
 export enum SearchResultType {
@@ -38,9 +38,9 @@ export class ExternalSearchResultsComponent extends QuickLinksHelper implements 
 
   externalSearch: ExternalSearch | undefined
 
-  resultsLoaded: Observable<PaginatedSkills> | Observable<PaginatedCollections> | undefined
+  resultsLoaded: Observable<PaginatedCollectionSearchResults> | Observable<PaginatedSkillSearchResults> | undefined
 
-  private apiResults: PaginatedSkills | PaginatedCollections | undefined
+  private apiResults: PaginatedCollectionSearchResults | PaginatedSkillSearchResults | undefined
 
   get isCollectionSearchResults(): boolean {
     return (this.searchResultType === SearchResultType.COLLECTION)
@@ -73,12 +73,8 @@ export class ExternalSearchResultsComponent extends QuickLinksHelper implements 
     }
   }
 
-  get results(): ApiSkillSummary[] | ApiCollectionSummary[] {
-    if (this.apiResults) {
-      return (this.apiResults instanceof PaginatedCollections) ? this.apiResults.collections : this.apiResults.skills
-    }
-
-    return []
+  get results(): ApiCollectionSearchResult[] | ApiSkillSearchResult[] {
+    return (this.apiResults) ? this.apiResults.results : []
   }
 
   get resultsCountLabel(): string {
@@ -166,7 +162,7 @@ export class ExternalSearchResultsComponent extends QuickLinksHelper implements 
     this.navigateToPage(newPageNo)
   }
 
-  protected setResults(results: PaginatedCollections | PaginatedSkills): void {
+  protected setResults(results: PaginatedCollectionSearchResults | PaginatedSkillSearchResults): void {
     this.apiResults = results
   }
 

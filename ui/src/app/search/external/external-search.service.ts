@@ -9,11 +9,10 @@ import {Location} from "@angular/common"
 import {map, share} from "rxjs/operators"
 import {
   ApiAdvancedSearch,
-  ApiSearch,
-  PaginatedCollections,
-  PaginatedSkills
+  ApiSearch
 } from "../../richskill/service/rich-skill-search.service"
-import {ApiCollectionSummary, ApiSkillSummary} from "../../richskill/ApiSkillSummary"
+import {ApiSkillSearchResult, PaginatedSkillSearchResults} from "./api/ApiSkillSearchResult"
+import {ApiCollectionSearchResult, PaginatedCollectionSearchResults} from "./api/ApiCollectionSearchResult"
 
 @Injectable({
   providedIn: "root"
@@ -52,12 +51,12 @@ export class ExternalSearchService extends AbstractService {
     search: ExternalSearch,
     size?: number,
     from?: number,
-  ): Observable<PaginatedCollections> {
+  ): Observable<PaginatedCollectionSearchResults> {
     const errorMsg = `Failed to unwrap response for external collections search`
 
     const params = this.buildTableParams(size, from, undefined, undefined)
 
-    return this.post<ApiCollectionSummary[]>({
+    return this.post<ApiCollectionSearchResult[]>({
       path: "api/external/search/collections",
       params,
       body: {
@@ -69,7 +68,7 @@ export class ExternalSearchService extends AbstractService {
       .pipe(map(({body, headers}) => {
         const totalCount = Number(headers.get("X-Total-Count"))
         const collections = this.safeUnwrapBody(body, errorMsg)?.map(collection => collection) || []
-        return new PaginatedCollections(collections, !isNaN(totalCount) ? totalCount : collections.length)
+        return new PaginatedCollectionSearchResults(collections, !isNaN(totalCount) ? totalCount : collections.length)
       }))
   }
 
@@ -77,12 +76,12 @@ export class ExternalSearchService extends AbstractService {
     search: ExternalSearch,
     size?: number,
     from?: number,
-  ): Observable<PaginatedSkills> {
+  ): Observable<PaginatedSkillSearchResults> {
     const errorMsg = `Failed to unwrap response for external skill search`
 
     const params = this.buildTableParams(size, from, undefined, undefined)
 
-    return this.post<ApiSkillSummary[]>({
+    return this.post<ApiSkillSearchResult[]>({
       path: "/api/external/search/skills",
       params,
       body: {
@@ -94,7 +93,7 @@ export class ExternalSearchService extends AbstractService {
       .pipe(map(({body, headers}) => {
         const totalCount = Number(headers.get("X-Total-Count"))
         const skills = this.safeUnwrapBody(body, errorMsg)?.map(skill => skill) || []
-        return new PaginatedSkills(skills, !isNaN(totalCount) ? totalCount : skills.length)
+        return new PaginatedSkillSearchResults(skills, !isNaN(totalCount) ? totalCount : skills.length)
       }))
   }
 

@@ -43,7 +43,7 @@ internal class ApiSkillTest {
         Assertions.assertThat(mockData.appConfig.baseUrl + "/api/skills/" + rsd.uuid).isEqualTo(actual.id)
         Assertions.assertThat(rsd.uuid).isEqualTo(actual.uuid)
 
-        Assertions.assertThat("https://rsd.osmt.dev/context-v1.json").isEqualTo(actual.context)
+        Assertions.assertThat("https://rsd.openskillsnetwork.org/context-v1.json").isEqualTo(actual.context)
         Assertions.assertThat("RichSkillDescriptor").isEqualTo(actual.type)
     }
 

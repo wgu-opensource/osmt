@@ -1,4 +1,4 @@
-FROM wguopensource/osmt-base:latest
+FROM wguopensource/osmt-base:latest as osmt-build
 
 ENV M2_VERSION=3.8.4
 ENV M2_HOME=/usr/local/maven

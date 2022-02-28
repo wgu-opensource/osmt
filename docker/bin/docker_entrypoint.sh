@@ -76,13 +76,37 @@ function validate() {
   fi
 }
 
+function build_reindex_profile_string() {
+  # accept the $ENVIRONMENT env var, i.e. "test,apiserver,oauth2-okta"
+  declare env_arg=${1}
+
+  echo "reindex,$(get_config_profile_from_env "${env_arg}")"
+}
+
+function get_config_profile_from_env() {
+  # accept the $ENVIRONMENT env var, i.e. "test,apiserver,oauth2-okta"
+  declare env_arg=${1}
+
+  # If $ENVIRONMENT contains the config profile from one of these Spring application profiles,
+  # then append it to the reindex profile string
+  declare -ar config_profile_list=("dev" "test" "review" "stage")
+
+  for config_profile in "${config_profile_list[@]}"; do
+    if grep -q "${config_profile}" <<<"${env_arg}"; then
+      echo "${config_profile}"
+      return
+    fi
+  done
+
+}
+
 function import_metadata() {
   if [[ "${SKIP_METADATA_IMPORT}" == "true" ]]; then
     echo_info "Skipping BLS and O*NET metadata import"
   else
     echo_info "Importing BLS metadata"
     local java_cmd="/bin/java -jar
-      -Dspring.profiles.active=dev,import
+      -Dspring.profiles.active=$(get_config_profile_from_env "${ENVIRONMENT}"),import
       -Ddb.uri=${DB_URI}
       -Dspring.flyway.enabled=${MIGRATIONS_ENABLED}
       /opt/osmt/bin/osmt.jar
@@ -93,7 +117,7 @@ function import_metadata() {
 
     echo_info "Importing O*NET metadata"
     local java_cmd="/bin/java -jar
-      -Dspring.profiles.active=dev,import
+      -Dspring.profiles.active=$(get_config_profile_from_env "${ENVIRONMENT}"),import
       -Ddb.uri=${DB_URI}
       -Dspring.flyway.enabled=${MIGRATIONS_ENABLED}
       /opt/osmt/bin/osmt.jar
@@ -107,7 +131,7 @@ function import_metadata() {
 function reindex_elasticsearch() {
   # The containerized Spring app needs an initial ElasticSearch index, or it returns 500s.
   if [[ "${REINDEX_ELASTICSEARCH}" == "true" ]]; then
-    local reindex_profile_string; reindex_profile_string="$(build_reindex_profile_string "${ENVIRONMENT}")"
+    local reindex_profile_string; reindex_profile_string="reindex,$(get_config_profile_from_env "${ENVIRONMENT}")"
 
     echo_info "Building initial index in OSMT ElasticSearch using ${reindex_profile_string} Spring profiles..."
     java_cmd="/bin/java
@@ -174,25 +198,6 @@ function run_cmd_with_retry() {
       sleep 10
   done
   set -e
-}
-
-function build_reindex_profile_string() {
-  # accept the $ENVIRONMENT env var, i.e. "test,apiserver,oauth2-okta"
-  declare env_arg=${1}
-
-  declare reindex_profile="reindex"
-
-  # If $ENVIRONMENT contains the SDLC env from one of these Spring application profiles,
-  # then append it to the reindex profile string
-  declare -ar sdlc_env_list=("dev" "test" "review" "stage")
-
-  for sdlc_env in "${sdlc_env_list[@]}"; do
-    if grep -q "${sdlc_env}" <<<"${env_arg}"; then
-      reindex_profile="${reindex_profile},${sdlc_env}"
-    fi
-  done
-
-  echo "${reindex_profile}"
 }
 
 function echo_info() {

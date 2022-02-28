@@ -246,6 +246,8 @@ class MockData {
             true,
             true,
             true,
+            "https://rsd.openskillsnetwork.org/context-v1.json",
+            "http://localhost:4200",
             false,
             null,
             null)

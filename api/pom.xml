@@ -5,7 +5,7 @@
     <parent>
         <groupId>edu.wgu.osmt</groupId>
         <artifactId>osmt-parent</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>1.1.1-SNAPSHOT</version>
     </parent>
 
     <repositories>
@@ -32,7 +32,7 @@
 
     <groupId>edu.wgu.osmt</groupId>
     <artifactId>osmt-api</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
     <description>WGU Open Skills Management Toolset</description>
 
     <properties>
@@ -49,6 +49,7 @@
         <testcontainers.version>1.15.3</testcontainers.version>
         <spring-data-elasticsearch.version>4.2.4</spring-data-elasticsearch.version>
         <ehcache.version>3.9.2</ehcache.version>
+        <log4j.version>2.17.1</log4j.version>
         <bucket4j.version>4.10.0</bucket4j.version>
         <searchhub.client.version>1.0.1</searchhub.client.version>
     </properties>
@@ -57,7 +58,7 @@
         <dependency>
             <groupId>edu.wgu.osmt</groupId>
             <artifactId>osmt-ui</artifactId>
-            <version>1.0.5-SNAPSHOT</version>
+            <version>1.1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>edu.wgu.osmt.searchhub</groupId>
@@ -122,13 +123,13 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.17.0</version>
+            <version>${log4j.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-to-slf4j</artifactId>
-            <version>2.17.0</version>
+            <version>${log4j.version}</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>

@@ -13,6 +13,8 @@ import java.time.ZonedDateTime
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 class ApiSkill(
+    @JsonProperty("@context")
+    val context: String = "",
 
     @JsonProperty
     val creator: String = "",
@@ -80,9 +82,6 @@ class ApiSkill(
     @JsonProperty
     val libraryName: String? = null
 ) {
-    @JsonProperty("@context")
-    val context = "https://rsd.osmt.dev/context-v1.json"
-
     @JsonProperty
     val `type` = "RichSkillDescriptor"
 
@@ -100,6 +99,7 @@ class ApiSkill(
             }
 
             return ApiSkill(
+                context = appConfig.rsdContextUrl,
                 creator = appConfig.defaultCreatorUri,
                 author = rsd.author?.let { it.value },
                 status = rsd.publishStatus(),

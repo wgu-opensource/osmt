@@ -60,7 +60,7 @@ let hostComponent: TestHostComponent
 let childComponent: SkillCollectionsDisplayComponent
 
 
-describe("TestHostComponent", () => {
+describe("SkillCollectionsDisplayComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [

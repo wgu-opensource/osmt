@@ -1,3 +1,5 @@
+// noinspection OverlyComplexFunctionJS,MagicNumberJS
+
 import { ICollection, ICollectionUpdate } from "../../src/app/collection/ApiCollection"
 import { IJobCode } from "../../src/app/job-codes/Jobcode"
 import { PublishStatus } from "../../src/app/PublishStatus"
@@ -29,9 +31,11 @@ export function createMockBatchResult(): IBatchResult {
   }
 }
 
-export function createMockJobcode(): IJobCode {
+export function createMockJobcode(targetNode = 42, targetNodeName = "my jobcode name", code = "my jobcode"): IJobCode {
   return {
-    code: "my jobcode",
+    targetNode,
+    targetNodeName,
+    code,
     broad: "my jobcode broad",
     broadCode: "my jobcode broadCode",
     detailed: "my jobcode detailed",
@@ -201,12 +205,12 @@ export function createMockPaginatedCollections(collectionCount = 1, total = 10):
   )
 }
 
-export function createMockTaskResult(): ITaskResult {
+export function createMockTaskResult(uuid: string = "uuid1"): ITaskResult {
   return {
     status: PublishStatus.Draft,
     contentType: "my content type",
-    id: "my collection summary id",
-    uuid: "my collection summary uuid"
+    id: "api/tasks/" + uuid,
+    uuid
   }
 }
 
@@ -227,13 +231,13 @@ export function createMockSkill(
     status,
     isExternallyShared,
     category: "my skill category",
-    collections: [createMockUuidReference()],
+    collections: [createMockUuidReference("1", "coll")],
     keywords: ["keyword 1", "keyword 2"],
-    alignments: [createMockNamedReference()],
-    standards: [createMockNamedReference()],
-    certifications: [createMockNamedReference()],
-    occupations: [createMockJobcode()],
-    employers: [createMockNamedReference()],
+    alignments: [createMockNamedReference("2", "alignment")],
+    standards: [createMockNamedReference("3", "standard")],
+    certifications: [createMockNamedReference("4", "cert")],
+    occupations: [createMockJobcode(5, "jobcode", "my jobcode")],
+    employers: [createMockNamedReference("6", "employer")],
     author: "name"
   }
 }

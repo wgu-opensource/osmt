@@ -3,6 +3,7 @@ import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {RichSkillService} from "../../../../richskill/service/rich-skill.service"
 import {ApiSkillSearchResult} from "../../api/ApiSkillSearchResult"
 import {ApiSkillSummary} from "../../../../richskill/ApiSkillSummary"
+import {ToastService} from "../../../../toast/toast.service"
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -10,6 +11,12 @@ import {ApiSkillSummary} from "../../../../richskill/ApiSkillSummary"
   templateUrl: "./external-search-skill-row.component.html"
 })
 export class ExternalSearchSkillRowComponent implements OnInit {
+
+  static IMPORT_SUCCESS_TITLE = "Success!"
+  static IMPORT_SUCCESS_MSG = "You added 1 RSD to the library."
+  static IMPORT_CONFIRMATION_MSG =
+    "Skill statement is very similar to one already in the library.\n\n" +
+    "OK to import?"
 
   @Input() searchResult: ApiSkillSearchResult | null = null
   @Input() id = ""
@@ -33,12 +40,9 @@ export class ExternalSearchSkillRowComponent implements OnInit {
     return !!(this.searchResult?.similarToLocalSkill)
   }
 
-  get importButtonLabel(): string {
-    return (this.imported) ? "RSD Imported" : "Import RSD"
-  }
-
   constructor(
-    protected richSkillService: RichSkillService
+    protected richSkillService: RichSkillService,
+    protected toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -67,12 +71,19 @@ export class ExternalSearchSkillRowComponent implements OnInit {
 
   onImportSkillClicked(): void {
     if (this.skill) {
-      this.richSkillService.importSkill(
-        this.skill.id,
-        this.skill.skillName
-      ).subscribe(resp => {
-        this.imported = true
-      })
+      // If similar to a local skill confirm import.
+      if (!this.isSimilarToLocalSkill || confirm(ExternalSearchSkillRowComponent.IMPORT_CONFIRMATION_MSG)) {
+        this.richSkillService.importSkill(
+          this.skill.id,
+          this.skill.skillName
+        ).subscribe(resp => {
+          this.imported = true
+          this.toastService.showToast(
+            ExternalSearchSkillRowComponent.IMPORT_SUCCESS_TITLE,
+            ExternalSearchSkillRowComponent.IMPORT_SUCCESS_MSG
+          )
+        })
+      }
     }
   }
 }

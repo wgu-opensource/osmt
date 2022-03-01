@@ -103,6 +103,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   }
 
   reloadCollection(): void {
+    this.apiSearch = undefined
     this.collectionService.getCollectionByUUID(this.uuidParam ?? "").subscribe(collection => {
       this.titleService.setTitle(`${collection.name} | Collection | ${this.whitelabel.toolName}`)
 

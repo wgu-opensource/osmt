@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core"
+import {Component, HostBinding, Input, OnInit} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {RichSkillService} from "../../../../richskill/service/rich-skill.service"
 import {ApiSkillSearchResult} from "../../api/ApiSkillSearchResult"
@@ -14,6 +14,11 @@ export class ExternalSearchSkillRowComponent implements OnInit {
   @Input() searchResult: ApiSkillSearchResult | null = null
   @Input() id = ""
   @Input() nextId = ""
+
+  @HostBinding("class.m-tableRow-is-warning")
+  get isWarning(): boolean {
+    return this.isSimilarToLocalSkill
+  }
 
   imported = false
 

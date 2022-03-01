@@ -50,7 +50,7 @@
         <p *ngIf="!review.nameMissing; else nameMissing" class="t-margin-extraSmall t-margin-bottom">{{review.skill.skillName}}</p>
         <ng-template #nameMissing><app-inline-error message="RSD name required"></app-inline-error></ng-template>
 
-        <app-inline-error *ngIf="review.isWarning" message="Skill statement is very similar to one already in the library."></app-inline-error>
+        <app-inline-warning *ngIf="review.isWarning" message="Skill statement is very similar to one already in the library."></app-inline-warning>
 
         <p *ngIf="!review.statementMissing; else statementMissing" class="t-margin-small t-margin-bottom t-type-text3">{{review.skill.skillStatement}}</p>
         <ng-template #statementMissing><app-inline-error message="Skill statement required"></app-inline-error></ng-template>

@@ -83,10 +83,13 @@ import {BatchImportComponent} from "./richskill/import/batch-import.component"
 import {FieldMappingSelectComponent, FieldMappingTableComponent} from "./richskill/import/field-mapping-table.component"
 import {
   ImportPreviewTableComponent,
-  InlineErrorComponent,
-  InlineHeadingComponent,
   NamedReferenceComponent
 } from "./richskill/import/import-preview-table.component"
+import {
+  InlineHeadingComponent,
+  InlineErrorComponent,
+  InlineWarningComponent
+} from "./core/inline.component"
 import {FormFieldSearchSelectComponent} from "./form/form-field-search-select/single-select/form-field-search-select.component"
 import {FormFieldSearchMultiSelectComponent} from "./form/form-field-search-select/mulit-select/form-field-search-multi-select.component"
 import {FormFieldSearchSelectJobcodeComponent} from "./form/form-field-search-select/jobcode-select/form-field-search-select-jobcode.component"
@@ -200,6 +203,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     InlineHeadingComponent,
     NamedReferenceComponent,
     InlineErrorComponent,
+    InlineWarningComponent,
     FormFieldSearchSelectComponent,
     FormFieldSearchMultiSelectComponent,
     FormFieldSearchSelectJobcodeComponent,

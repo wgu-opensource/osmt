@@ -23,12 +23,8 @@
       </a>
     </h4>
 
-    <div *ngIf="isSimilarToLocalSkill"
-        class="l-flex t-margin-small t-margin-top t-type-attention">
-      <svg class="t-icon" aria-hidden="true">
-        <use [attr.xlink:href]="errorIcon"></use>
-      </svg>
-      <span class="t-type-body">Skill statement is very similar to one already in the library.</span>
+    <div *ngIf="isSimilarToLocalSkill" class="t-margin-small t-margin-top">
+      <app-inline-warning message="Skill statement is very similar to one already in the library."></app-inline-warning>
     </div>
 
     <p class="t-margin-small t-margin-top t-type-text3">{{skill.skillStatement}}</p>

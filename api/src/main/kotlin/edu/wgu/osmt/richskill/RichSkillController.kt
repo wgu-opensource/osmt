@@ -221,13 +221,13 @@ class RichSkillController @Autowired constructor(
     @PostMapping(RoutePaths.SKILL_IMPORT, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun importSkill(
-        @RequestBody skillReference: ApiNamedReference,
+        @RequestBody skillReference: ApiImportReference,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
-        val skillUrl = skillReference.id ?:  throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        val skillUrl = skillReference.canonicalUrl
         val task = ShareExternallyTask(
                 canonicalUrl = skillUrl,
-                libraryName = skillReference.name,
+                libraryName = skillReference.libraryName,
                 userString = readableUsername(user))
         taskMessageService.enqueueJob(TaskMessageService.importSkills, task)
         return Task.processingResponse(task)

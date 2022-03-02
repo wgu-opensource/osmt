@@ -229,13 +229,13 @@ class CollectionController @Autowired constructor(
     @PostMapping(RoutePaths.COLLECTION_IMPORT, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun importCollection(
-        @RequestBody reference: ApiNamedReference,
+        @RequestBody reference: ApiImportReference,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
-        val collectionUrl = reference.id ?:  throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        val collectionUrl = reference.canonicalUrl ?:  throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         val task = ShareExternallyTask(
                 canonicalUrl = collectionUrl,
-                libraryName = reference.name,
+                libraryName = reference.libraryName,
                 userString = readableUsername(user))
         taskMessageService.enqueueJob(TaskMessageService.importCollections, task)
         return Task.processingResponse(task)

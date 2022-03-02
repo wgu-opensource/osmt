@@ -20,6 +20,13 @@ data class ApiNamedReference(
     }
 }
 
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+data class ApiImportReference(
+        val canonicalUrl: String = "",
+        val libraryName: String = ""
+) {
+}
+
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class ApiAlignment(

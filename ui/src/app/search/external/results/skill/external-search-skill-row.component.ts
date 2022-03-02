@@ -70,12 +70,12 @@ export class ExternalSearchSkillRowComponent implements OnInit {
   }
 
   onImportSkillClicked(): void {
-    if (this.skill) {
+    if (this.skill && this.skill.libraryName) {
       // If similar to a local skill confirm import.
       if (!this.isSimilarToLocalSkill || confirm(ExternalSearchSkillRowComponent.IMPORT_CONFIRMATION_MSG)) {
         this.richSkillService.importSkill(
           this.skill.id,
-          this.skill.skillName
+          this.skill.libraryName
         ).subscribe(resp => {
           this.imported = true
           this.toastService.showToast(

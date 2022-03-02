@@ -42,11 +42,11 @@ export class ExternalSearchCollectionRowComponent implements OnInit {
   }
 
   onImportCollectionClicked(): void {
-    if (this.collection) {
+    if (this.collection && this.collection.libraryName) {
       if (confirm(ExternalSearchCollectionRowComponent.IMPORT_CONFIRMATION_MSG)) {
         this.collectionService.importCollection(
           this.collection.id,
-          this.collection.name
+          this.collection.libraryName
         ).subscribe(resp => {
           this.imported = true
           this.toastService.showToast(

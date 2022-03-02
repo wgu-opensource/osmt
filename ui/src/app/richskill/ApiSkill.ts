@@ -14,10 +14,23 @@ export interface INamedReference {
   id?: string
   name?: string
 }
+export interface IImportReference {
+  canonicalUrl: string
+  libraryName: string
+}
 export interface IAlignment {
   id?: string
   skillName?: string
   isPartOf?: INamedReference
+}
+
+export class ApiImportReference implements IImportReference {
+  canonicalUrl: string
+  libraryName: string
+  constructor(ref: IImportReference) {
+    this.canonicalUrl = ref.canonicalUrl
+    this.libraryName = ref.libraryName
+  }
 }
 
 export class ApiNamedReference implements INamedReference {

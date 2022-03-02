@@ -262,7 +262,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NamedReference'
+              $ref: '#/components/schemas/ImportReference'
       responses:
         '200':
           description: OK
@@ -583,6 +583,32 @@ paths:
                 example: >-
                   id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
                   https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac,RichSkillDescriptor,"https://osmt.example.com/organization","Document Saving","The learner copies and saves documents to their local machine.","https://skillsource.example.com/base-skills/simple-compuhacking","documents, file operations, computer basics","Productivity Software","13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
+
+  /api/collections/import:
+    post:
+      tags:
+        - Collections
+      summary: Import an external Collection of RSDs, and all its RSDs
+      description: Import a read-only version of an Open Sills Collection and all its RSDs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportReference'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
 
   /api/collections/{uuid}/update:
     parameters:
@@ -1488,6 +1514,18 @@ components:
           format: uri
         name:
           type: string
+
+    ImportReference:
+      type: object
+      properties:
+        canonicalUrl:
+          type: string
+          format: uri
+        libraryName:
+          type: string
+      required:
+        - canonicalUrl
+        - libraryName
 
     Alignment:
       type: object

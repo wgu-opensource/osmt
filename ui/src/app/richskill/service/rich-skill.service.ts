@@ -1,7 +1,15 @@
 import {Injectable} from "@angular/core"
 import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {Observable} from "rxjs"
-import {ApiAuditLog, ApiNamedReference, ApiSkill, ApiSortOrder, IAuditLog, ISkill} from "../ApiSkill"
+import {
+  ApiAuditLog,
+  ApiImportReference,
+  ApiNamedReference,
+  ApiSkill,
+  ApiSortOrder,
+  IAuditLog,
+  ISkill
+} from "../ApiSkill"
 import {map, share} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate"
@@ -142,11 +150,11 @@ export class RichSkillService extends AbstractService {
       .pipe(map(({body}) => new ApiSkill(this.safeUnwrapBody(body, errorMsg))))
   }
 
-  importSkill(id: string, name: string): Observable<ApiTaskResult> {
+  importSkill(canonicalUrl: string, libraryName: string): Observable<ApiTaskResult> {
     const errorMsg = `Error importing Collection`
     return this.post<ApiTaskResult>({
       path: `${this.serviceUrl}/import`,
-      body: new ApiNamedReference({id, name})
+      body: new ApiImportReference({canonicalUrl, libraryName})
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, errorMsg))))

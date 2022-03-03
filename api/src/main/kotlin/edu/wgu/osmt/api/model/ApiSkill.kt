@@ -24,6 +24,7 @@ class ApiSkill(
     val status: PublishStatus = PublishStatus.Draft,
 
     @JsonProperty
+    @get:JsonProperty("isExternallyShared")
     val isExternallyShared: Boolean = false,
 
     @JsonProperty

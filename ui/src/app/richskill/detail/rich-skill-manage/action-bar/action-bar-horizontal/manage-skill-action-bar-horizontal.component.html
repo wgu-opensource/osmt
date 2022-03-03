@@ -112,7 +112,7 @@
         <use [attr.xlink:href]="shareIcon"></use>
       </svg>
       <span class="m-actionBarItemHorizontal-x-label m-buttonText">
-            <span class="button-x-text">Share from Search Hub</span>
+            <span class="button-x-text">Share to Search Hub</span>
           </span>
       <div class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></div>
     </button>
@@ -121,7 +121,6 @@
         type="button"
         class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary"
         (click)="handleUnshareExternally()"
-        *ngIf="archived"
       >
         <svg class="m-actionBarItemHorizontal-x-icon t-icon">
           <use [attr.xlink:href]="shareIcon"></use>

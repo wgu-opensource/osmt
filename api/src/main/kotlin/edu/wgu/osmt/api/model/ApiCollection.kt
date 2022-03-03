@@ -32,6 +32,7 @@ class ApiCollection(
     val status: PublishStatus,
 
     @JsonProperty
+    @get:JsonProperty("isExternallyShared")
     val isExternallyShared: Boolean,
 
     @JsonProperty

@@ -1,4 +1,4 @@
-import {Component, OnInit, Output, EventEmitter} from "@angular/core"
+import {Component, OnInit, Output, EventEmitter, Input} from "@angular/core"
 
 @Component({
   selector: "app-abstract-advanced-search-action-bar",
@@ -6,6 +6,8 @@ import {Component, OnInit, Output, EventEmitter} from "@angular/core"
 })
 export class AbstractAdvancedSearchActionBarComponent implements OnInit {
 
+  @Input() searchSkillsDisabled = false
+  @Input() searchCollectionsDisabled = false
   @Output() searchSkillsClicked = new EventEmitter<void>()
   @Output() searchCollectionsClicked = new EventEmitter<void>()
 

@@ -6,7 +6,9 @@ import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-sear
   selector: "app-advanced-search-horizontal-action-bar",
   template: `
     <nav class="l-flex l-flex-alignCenter l-flex-0 t-elevation-large">
-      <button class="m-actionBarItemHorizontal" (click)="skillButtonClicked()">
+      <button class="m-actionBarItemHorizontal"
+            [disabled]="searchSkillsDisabled"
+            (click)="skillButtonClicked()">
         <span class="m-actionBarItemHorizontal-x-icon">
           <svg aria-hidden="true">
             <use [attr.xlink:href]="iconSearch"></use>
@@ -16,7 +18,9 @@ import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-sear
         <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
       </button>
 
-      <button class="m-actionBarItemHorizontal" (click)="collectionButtonClicked()">
+      <button class="m-actionBarItemHorizontal"
+            [disabled]="searchCollectionsDisabled"
+            (click)="collectionButtonClicked()">
         <span class="m-actionBarItemHorizontal-x-icon">
           <svg aria-hidden="true">
             <use [attr.xlink:href]="iconSearch"></use>

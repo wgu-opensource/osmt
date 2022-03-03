@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {ToggleButtonOption} from "../../core/toggle-button.component"
-import {AbstractControl, FormControl, FormGroup} from "@angular/forms"
+import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms"
 import {AppConfig} from "../../app.config"
 import {urlValidator} from "../../validators/url.validator"
 import {SearchService} from "../search.service"
@@ -27,15 +27,28 @@ enum SearchType {
 export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
   readonly SvgIcon = SvgIcon
 
-  searchType: SearchType = SearchType.LOCAL
-
   searchForm = new FormGroup(this.getFormDefinitions())
 
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)
 
-  private externalLibraries: Set<ApiLibrarySummary>|undefined
+  private searchTypeVal: SearchType = SearchType.LOCAL
+
+  private externalLibrariesCtrl = new FormControl(new Array<string>(), Validators.required)
+  private externalLibraries: Array<ApiLibrarySummary>|undefined
 
   private isLoadingExternalLibraries = false
+
+  get searchType(): SearchType {
+    return this.searchTypeVal
+  }
+
+  get searchCollectionsEnabled(): boolean {
+    return !this.searchForm.invalid
+  }
+
+  get searchSkillsEnabled(): boolean {
+    return !this.searchForm.invalid
+  }
 
   get searchTypeToggleSelectedOption(): ToggleButtonOption|null {
     switch (this.searchType) {
@@ -69,32 +82,28 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
   }
 
   get externalLibraryChoices(): IChoice[] {
-    const selectedLibraryIds = this.selectedExternalLibraryIds
-
     return (this.externalLibraries) ?
       [...this.externalLibraries].map((l, i): IChoice => {
           return {
             id: l.uuid ?? i,
             name: l.uuid ?? "",
             label: l.libraryName ?? "",
-            initiallySelected: (l.uuid !== undefined && selectedLibraryIds.has(l.uuid))
+            initiallySelected: (l.uuid !== undefined && this.selectedExternalLibraryIds.includes(l.uuid))
           }
         }) : []
   }
 
-  get selectedExternalLibraryIds(): Set<string | number> {
-    return new Set(
-      ([...this.searchForm.controls.externalLibraries?.value?.values()] ?? []).map((c: IChoice) => c.id)
-    )
+  get selectedExternalLibraryIds(): Array<string | number> {
+    return (this.externalLibrariesCtrl?.value as Array<string> ?? []).map(id => id)
   }
 
   get selectedExternalLibraries(): ILibrarySummary[] {
     if (this.externalLibraries
-        && this.searchForm.value.externalLibraries
-        && this.searchForm.value.externalLibraries.size > 0
+        && this.externalLibrariesCtrl.value
+        && this.externalLibrariesCtrl.value.size > 0
     ) {
       const selectedLibraryIds = this.selectedExternalLibraryIds
-      return Array.from(this.externalLibraries).filter(l => (l.uuid && selectedLibraryIds.has(l.uuid)))
+      return Array.from(this.externalLibraries).filter(l => (l.uuid && selectedLibraryIds.includes(l.uuid)))
     }
     else {
       return []
@@ -115,7 +124,6 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
 
   getFormDefinitions(): {[key: string]: AbstractControl} {
     const fields = {
-      externalLibraries: new FormControl(new Set<ApiLibrarySummary>()),
       name: new FormControl(""),
       author: new FormControl(""),
       skillStatement: new FormControl(""),
@@ -131,39 +139,89 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
     return fields
   }
 
+  scrubReference(value: string): INamedReference | undefined {
+    value = value.trim()
+    return (value.length > 0) ? {name: value} : undefined
+  }
+
+  prepareNamedReferences(value: string, token: string = ";"): INamedReference[] | undefined {
+    return this.tokenizeString(value, token)?.map(v => ({name: v})) || undefined
+  }
+
+  // used for advance search to tokenize string fields
+  tokenizeString(value: string, token: string = ";"): string[] | undefined {
+    return value
+        .split(token)
+        .map(v => v.trim())
+        .filter(v => v.length > 0)
+      || undefined
+  }
+
+  showAuthor(): boolean {
+    return AppConfig.settings.editableAuthor
+  }
+
+  getSemicolonHelpMessage(): string {
+    return "Use a semicolon to separate multiple entries in a field."
+  }
+
+  getOccupationHelpMessage(): string {
+    return "BLS or O*NET job names or codes"
+  }
+
   handleSearchTypeOptionClick(option: ToggleButtonOption): void {
     switch (option) {
       case ToggleButtonOption.Option2:
         this.loadExternalLibraries().subscribe((libraries) => {
-          this.searchType = SearchType.EXTERNAL
+          this.setSearchType(SearchType.EXTERNAL)
         })
         break
       default:
-        this.searchType = SearchType.LOCAL
+        this.setSearchType(SearchType.LOCAL)
     }
   }
 
+  handleSelectedLibrariesChanged(choices: Set<IChoice>): void {
+    this.searchForm.controls.externalLibraries.setValue([...choices].map(c => c.id))
+    this.searchForm.controls.externalLibraries.markAsDirty()
+  }
+
   handleSearchSkills(): void {
-    switch (this.searchType) {
-      case SearchType.EXTERNAL:
-        return this.externalSearchService.advancedSkillSearch(
-          this.collectFieldData(),
-          this.selectedExternalLibraries
-        )
-      default:
-        return this.searchService.advancedSkillSearch(this.collectFieldData())
+    if (!this.searchForm.invalid) {
+      switch (this.searchType) {
+        case SearchType.EXTERNAL:
+          return this.externalSearchService.advancedSkillSearch(
+            this.collectFieldData(),
+            this.selectedExternalLibraries
+          )
+        default:
+          return this.searchService.advancedSkillSearch(this.collectFieldData())
+      }
     }
   }
 
   handleSearchCollections(): void {
-    switch (this.searchType) {
-      case SearchType.EXTERNAL:
-        return this.externalSearchService.advancedCollectionSearch(
-          this.collectFieldData(true),
-          this.selectedExternalLibraries
-        )
-      default:
-        return this.searchService.advancedCollectionSearch(this.collectFieldData(true))
+    if (!this.searchForm.invalid) {
+      switch (this.searchType) {
+        case SearchType.EXTERNAL:
+          return this.externalSearchService.advancedCollectionSearch(
+            this.collectFieldData(true),
+            this.selectedExternalLibraries
+          )
+        default:
+          return this.searchService.advancedCollectionSearch(this.collectFieldData(true))
+      }
+    }
+  }
+
+  protected setSearchType(searchType: SearchType): void {
+    this.searchTypeVal = searchType
+
+    if (this.searchTypeVal === SearchType.EXTERNAL) {
+      this.addExternalLibrariesToForm()
+    }
+    else {
+      this.removeExternalLibrariesToForm()
     }
   }
 
@@ -199,39 +257,17 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
     }
   }
 
-  scrubReference(value: string): INamedReference | undefined {
-    value = value.trim()
-    return (value.length > 0) ? {name: value} : undefined
+  private addExternalLibrariesToForm(): void {
+    this.searchForm.addControl("externalLibraries", this.externalLibrariesCtrl)
   }
 
-  prepareNamedReferences(value: string, token: string = ";"): INamedReference[] | undefined {
-    return this.tokenizeString(value, token)?.map(v => ({name: v})) || undefined
+  private removeExternalLibrariesToForm(): void {
+    this.searchForm.removeControl("externalLibraries")
   }
 
-  // used for advance search to tokenize string fields
-  tokenizeString(value: string, token: string = ";"): string[] | undefined {
-    return value
-        .split(token)
-        .map(v => v.trim())
-        .filter(v => v.length > 0)
-      || undefined
-  }
-
-  showAuthor(): boolean {
-    return AppConfig.settings.editableAuthor
-  }
-
-  getSemicolonHelpMessage(): string {
-    return "Use a semicolon to separate multiple entries in a field."
-  }
-
-  getOccupationHelpMessage(): string {
-    return "BLS or O*NET job names or codes"
-  }
-
-  private loadExternalLibraries(): Observable<Set<ApiLibrarySummary>> {
+  private loadExternalLibraries(): Observable<Array<ApiLibrarySummary>> {
     if (this.externalLibraries) {
-      return of(new Set(this.externalLibraries))
+      return of(this.externalLibraries.map(l => l))
     }
     else {
       this.isLoadingExternalLibraries = true
@@ -239,10 +275,12 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
 
       return this.externalSearchService.getLibraries().pipe(
         map((result) => {
-          this.externalLibraries = new Set(result.libraries)
-          this.searchForm.controls.externalLibraries.setValue(new Set(this.externalLibraryChoices))
+          this.externalLibraries = result.libraries.map((r) => r)
+          this.externalLibrariesCtrl.setValue(
+            this.externalLibraries.map(l => l.uuid).filter((id): id is string => !!id)
+          )
           this.isLoadingExternalLibraries = false
-          return new Set(result.libraries)
+          return result.libraries
         })
       )
     }

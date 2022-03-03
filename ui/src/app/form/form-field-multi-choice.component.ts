@@ -14,6 +14,8 @@ export class FormFieldMultiChoiceComponent extends FormField<Set<IChoice>> imple
   @Input() label: string = ""
   @Input() name: string = ""
   @Input() choices: IChoice[] = []
+  @Input() helpMessage: string = ""
+  @Input() errorMessage: string = ""
   @Input() required: boolean = false
   @Output() selectedChoicesChanged: EventEmitter<Set<IChoice>> = new EventEmitter<Set<IChoice>>()
 

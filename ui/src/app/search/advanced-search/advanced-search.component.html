@@ -35,8 +35,10 @@
             [control]="searchForm.controls.externalLibraries"
             name="external-libraries"
             label="External Library"
+            [errorMessage]="'External Library required'"
             [required]="true"
             [choices]="externalLibraryChoices"
+            (selectedChoicesChanged)="handleSelectedLibrariesChanged($event)"
           ></app-formfield-multi-choice>
         </div>
         <div class="t-margin-medium t-margin-bottom">
@@ -145,6 +147,8 @@
     <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
       <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
         <app-advanced-search-vertical-action-bar
+          [searchSkillsDisabled]="!searchSkillsEnabled"
+          [searchCollectionsDisabled]="!searchCollectionsEnabled"
           (searchSkillsClicked)="handleSearchSkills()"
           (searchCollectionsClicked)="handleSearchCollections()"
         ></app-advanced-search-vertical-action-bar>
@@ -155,6 +159,8 @@
 
   <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
     <app-advanced-search-horizontal-action-bar
+      [searchSkillsDisabled]="!searchSkillsEnabled"
+      [searchCollectionsDisabled]="!searchCollectionsEnabled"
       (searchSkillsClicked)="handleSearchSkills()"
       (searchCollectionsClicked)="handleSearchCollections()"
     ></app-advanced-search-horizontal-action-bar>

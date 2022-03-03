@@ -30,6 +30,15 @@
     <p class="t-margin-small t-margin-top t-type-text3">{{skill.skillStatement}}</p>
 
     <div class="t-margin-small t-margin-top">
+      <app-status-bar
+        [status]="skill.status"
+        [publishDate]="skill.publishDate"
+        [archiveDate]="skill.archiveDate"
+        [showDates]="false"
+      ></app-status-bar>
+    </div>
+
+    <div class="t-margin-small t-margin-top">
       <div class="m-inlineHeading m-inlineHeading-is-truncated">
         <h5 class="m-inlineHeading-x-heading">Library:</h5>
         <p class="m-inlineHeading-x-text">{{skill.libraryName}}</p>

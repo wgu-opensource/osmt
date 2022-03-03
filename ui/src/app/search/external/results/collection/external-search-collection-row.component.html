@@ -7,11 +7,24 @@
         <use [attr.xlink:href]="externalLinkIcon"></use>
       </svg>
     </a>
+    <div class="t-margin-small t-margin-top">
+      <div class="m-inlineHeading m-inlineHeading-is-truncated">
+        <h5 class="m-inlineHeading-x-heading">Library:</h5>
+        <p class="m-inlineHeading-x-text">{{collection.libraryName}}</p>
+      </div>
+    </div>
   </th>
 
   <td>{{collection.skillCount}}</td>
 
-  <td>{{collection.libraryName}}</td>
+  <td>
+    <app-status-bar
+      [status]="collection.status"
+      [publishDate]="collection.publishDate"
+      [archiveDate]="collection.archiveDate"
+      [showDates]="false"
+    ></app-status-bar>
+  </td>
 
   <td class="m-tableRow-x-actions">
     <button class="m-buttonSmall" (click)="onImportCollectionClicked()" [disabled]="imported">

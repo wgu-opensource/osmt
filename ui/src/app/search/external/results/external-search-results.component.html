@@ -6,17 +6,16 @@
     <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
       <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom" tabindex="0" #titleHeading>{{title}}</h2>
       <p class="t-type-bodyLarge t-type-text3">
-        {{resultsCountLabel}}
-        found based on
+        <span>{{resultsCountLabel}} found</span>
         <ng-template [ngIf]="matchingQuery !== undefined">
+          <span> based on </span>
           <ng-template ngFor let-q [ngForOf]="matchingQuery" let-last="last">
             <span class="t-type-bodyLargeBold t-type-text1">{{q}}</span>
             <ng-template [ngIf]="!last && matchingQuery.length > 1">, </ng-template>
           </ng-template>
         </ng-template>
-        <ng-template [ngIf]="totalCount > 0">
-          Viewing {{firstRecordNo}}-{{lastRecordNo}}.
-        </ng-template>
+        <span>&#46;</span>
+        <ng-template [ngIf]="totalCount > 0"> Viewing {{firstRecordNo}}-{{lastRecordNo}}.</ng-template>
       </p>
     </div>
 

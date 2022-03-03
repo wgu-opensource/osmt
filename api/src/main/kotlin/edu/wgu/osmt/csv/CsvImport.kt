@@ -14,13 +14,13 @@ interface CsvImport<T> where T : CsvRow {
 
     fun handleRows(rows: List<T>): Unit
 
-    fun processCsv(csv_path: String) {
-        log.info("Starting to process csv: ${csv_path}")
+    fun processCsv(csvPath: String) {
+        log.info("Starting to process csv: ${csvPath}")
 
         var fileReader: BufferedReader? = null
 
         try {
-            fileReader = BufferedReader(FileReader(csv_path))
+            fileReader = BufferedReader(FileReader(csvPath))
             val csvToBean = CsvToBeanBuilder<T>(fileReader)
                 .withType(csvRowClass)
                 .withIgnoreLeadingWhiteSpace(true)
@@ -29,7 +29,7 @@ interface CsvImport<T> where T : CsvRow {
             val rows = csvToBean.parse()
             handleRows(rows)
         } catch (e: FileNotFoundException) {
-            log.error("Could not find file: ${csv_path}")
+            log.error("Could not find file: ${csvPath}")
         } finally {
             fileReader?.close()
         }

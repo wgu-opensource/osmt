@@ -102,6 +102,8 @@ export class AuditLogComponent extends AccordianComponent {
       case "searchingkeywords": return "Keywords"
       case "alignments": return "Alignment"
       case "jobcodes": return "Occupations"
+      case "clonedFrom": return "Original URL"
+      case "isExternallyShared": return "Shared Externally"
       default: return fieldName
     }
   }

@@ -32,6 +32,10 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
 
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
 
+  get hasRowActions(): boolean {
+    return (this.rowActions.length > 0)
+  }
+
   constructor() { }
 
   ngOnInit(): void {

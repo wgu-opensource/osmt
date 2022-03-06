@@ -33,7 +33,7 @@
 
     <td class="m-tableHeader-x-actions" scope="col" aria-hidden="true">
       <!--{{render '@m-tablelabel&#45;&#45;with-choice'}}-->
-      <div class="m-tableLabel">
+      <div *ngIf="hasRowActions" class="m-tableLabel">
         <label class="m-tableLabel-x-text" for="checkbox">Select <ng-template [ngIf]="selectAllEnabled">All ({{getSelectAllCount()}})</ng-template></label>
         <div class="m-tableLabel-x-control" *ngIf="selectAllEnabled">
           <div class="m-checkbox">

@@ -41,7 +41,7 @@
                 <!-- {{render '@m-sectionlabel&#45;&#45;shadow'}} -->
                 <div class="m-sectionLabel m-sectionLabel-shadow">{{visibleFieldName(change.fieldName)}}</div>
               </div>
-              <div class="t-margin-small t-margin-bottom">
+              <div *ngIf="entry.operationType != 'Insert'" class="t-margin-small t-margin-bottom" >
                 <!-- {{render '@entryitem&#45;&#45;changed-from'}} -->
                 <h6 class="t-type-smallBoldCaps t-margin-extraSmall t-margin-bottom">Changed From</h6>
                 <p *ngIf="change.old" class="t-type-bodyStrikethrough t-type-text3">{{change.old}}<p>
@@ -52,7 +52,7 @@
               </div>
               <div class="t-margin-small t-margin-bottom">
                 <!-- {{render '@entryitem'}} -->
-                <h6 class="t-type-smallBoldCaps t-margin-extraSmall t-margin-bottom">Changed To</h6>
+                <h6 *ngIf="entry.operationType != 'Insert'" class="t-type-smallBoldCaps t-margin-extraSmall t-margin-bottom">Changed To</h6>
                 <p>{{change.new}}</p>
               </div>
 

@@ -1,11 +1,11 @@
-import {ApiCollectionSummary} from "../../../richskill/ApiSkillSummary";
+import {ICollectionSummary} from "../../../richskill/ApiSkillSummary";
 
 export interface ICollectionSearchResult {
-  collection: ApiCollectionSummary
+  collection: ICollectionSummary
 }
 
 export class ApiCollectionSearchResult implements ICollectionSearchResult{
-  collection: ApiCollectionSummary
+  collection: ICollectionSummary
 
   constructor(collectionSearchResult: ICollectionSearchResult) {
     this.collection = collectionSearchResult.collection

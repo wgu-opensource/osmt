@@ -1,12 +1,12 @@
-import {ApiSkillSummary} from "../../../richskill/ApiSkillSummary";
+import {ISkillSummary} from "../../../richskill/ApiSkillSummary";
 
 export interface ISkillSearchResult {
-  skill: ApiSkillSummary
+  skill: ISkillSummary
   similarToLocalSkill?: boolean
 }
 
 export class ApiSkillSearchResult implements ISkillSearchResult {
-  skill: ApiSkillSummary
+  skill: ISkillSummary
   similarToLocalSkill?: boolean
 
   constructor(skillSearchResult: ISkillSearchResult) {

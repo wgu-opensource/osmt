@@ -14,7 +14,12 @@ import { ApiCollectionSummary, ICollectionSummary, ISkillSummary } from "../../s
 import { ApiReferenceListUpdate, IRichSkillUpdate, IStringListUpdate } from "../../src/app/richskill/ApiSkillUpdate"
 import { PaginatedCollections, PaginatedSkills } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ITaskResult } from "../../src/app/task/ApiTaskResult"
-import {ApiLibrarySummary, ILibrarySummary, PaginatedLibraries} from "../../src/app/search/external/api/ApiLibrary"
+import { ApiLibrarySummary, ILibrarySummary, PaginatedLibraries } from "../../src/app/search/external/api/ApiLibrary"
+import {
+  ICollectionSearchResult,
+  PaginatedCollectionSearchResults
+} from "../../src/app/search/external/api/ApiCollectionSearchResult"
+import { ISkillSearchResult, PaginatedSkillSearchResults } from "../../src/app/search/external/api/ApiSkillSearchResult"
 
 // Add mock data here.
 // For more examples, see https://github.com/WGU-edu/ema-eval-ui/blob/develop/src/app/admin/pages/edit-user/edit-user.component.spec.ts
@@ -274,8 +279,8 @@ export function createMockCollectionUpdate(creationDate: Date, updateDate: Date,
 }
 
 export function createMockLibrarySummary(
-  uuid: string | undefined,
-  libraryName: string | undefined
+  uuid?: string,
+  libraryName?: string
 ): ILibrarySummary {
   return {
     uuid: uuid ?? "uuid1",
@@ -300,6 +305,71 @@ export function createMockPaginatedLibraries(libraryCount = 1, total = 10): Pagi
 
   return new PaginatedLibraries(
     libraries,
+    total
+  )
+}
+
+export function createMockApiCollectionSearchResult(
+  collectionSummary?: ICollectionSummary
+): ICollectionSearchResult {
+  return {
+    collection: collectionSummary ?? createMockCollectionSummary()
+  }
+}
+
+export function createMockPaginatedCollectionSearchResults(
+  collectionCount = 1,
+  total = 10
+): PaginatedCollectionSearchResults {
+  if (collectionCount > total) {
+    throw new RangeError(`'pageCount' must be <= 'total'`)
+  }
+
+  const collections = new Array<ICollectionSearchResult>()
+  for (let i = 1; i <= collectionCount; i++) {
+    collections.push(
+      createMockApiCollectionSearchResult(
+        createMockCollectionSummary(`id-${i}`)
+      )
+    )
+  }
+
+  return new PaginatedCollectionSearchResults(
+    collections,
+    total
+  )
+}
+
+export function createMockApiSkillSearchResult(
+  skillSummary?: ISkillSummary,
+  similarToLocalSkill?: boolean
+): ISkillSearchResult {
+  return {
+    skill: skillSummary ?? createMockSkillSummary(),
+    similarToLocalSkill: similarToLocalSkill ?? false
+  }
+}
+
+export function createMockPaginatedSkillSearchResults(
+  skillCount = 1,
+  total = 10
+): PaginatedSkillSearchResults {
+  if (skillCount > total) {
+    throw new RangeError(`'pageCount' must be <= 'total'`)
+  }
+
+  const skills = new Array<ISkillSearchResult>()
+  for (let i = 1; i <= skillCount; i++) {
+    skills.push(
+      createMockApiSkillSearchResult(
+        createMockSkillSummary(`id-${i}`),
+        (i % 1 === 0)
+      )
+    )
+  }
+
+  return new PaginatedSkillSearchResults(
+    skills,
     total
   )
 }

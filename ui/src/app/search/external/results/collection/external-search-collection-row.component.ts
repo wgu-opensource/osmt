@@ -19,7 +19,7 @@ export class ExternalSearchCollectionRowComponent implements OnInit {
     "Please confirm that the RSDs are not similar to those already in your library."
 
   @Input() searchResult?: ApiCollectionSearchResult
-  @Input() id = "collection-list-row"
+  @Input() id = ""
   @Input() nextId = ""
 
   imported = false

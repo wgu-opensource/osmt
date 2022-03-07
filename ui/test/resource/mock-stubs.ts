@@ -1,4 +1,4 @@
-import {Navigation, Router} from "@angular/router"
+import { Navigation } from "@angular/router"
 import { Observable, of, Subject } from "rxjs"
 import { ApiCollection, ICollectionUpdate } from "../../src/app/collection/ApiCollection"
 import { PublishStatus } from "../../src/app/PublishStatus"
@@ -17,14 +17,17 @@ import { ApiTaskResult } from "../../src/app/task/ApiTaskResult"
 import {
   createMockBatchResult,
   createMockCollection,
-  createMockPaginatedCollections, createMockPaginatedLibraries,
-  createMockPaginatedSkills,
+  createMockPaginatedCollections, createMockPaginatedCollectionSearchResults, createMockPaginatedLibraries,
+  createMockPaginatedSkills, createMockPaginatedSkillSearchResults,
   createMockSkill,
   createMockSkillSummary,
   createMockTaskResult
 } from "./mock-data"
-import {ILibrarySummary, PaginatedLibraries} from "../../src/app/search/external/api/ApiLibrary"
-import {ExternalSearch} from "../../src/app/search/external/external-search.service";
+import { ILibrarySummary, PaginatedLibraries } from "../../src/app/search/external/api/ApiLibrary"
+import { ExternalSearch, ExternalSearchService } from "../../src/app/search/external/external-search.service"
+import { PaginatedSkillSearchResults } from "../../src/app/search/external/api/ApiSkillSearchResult"
+import { PaginatedCollectionSearchResults } from "../../src/app/search/external/api/ApiCollectionSearchResult"
+import { Injectable } from "@angular/core"
 
 
 // Add service stubs here.
@@ -251,7 +254,9 @@ export class RichSkillServiceStub {
 }
 
 export let ExternalSearchServiceData = {}
-export class ExternalSearchServiceStub {
+
+@Injectable()
+export class ExternalSearchServiceStub extends ExternalSearchService {
   get isEnabled(): boolean {
       return true
   }
@@ -264,19 +269,19 @@ export class ExternalSearchServiceStub {
     search: ExternalSearch,
     size?: number,
     from?: number,
-  ): Observable<PaginatedCollections> {
-    return of(createMockPaginatedCollections())
+  ): Observable<PaginatedCollectionSearchResults> {
+    return of(createMockPaginatedCollectionSearchResults())
   }
 
   searchSkills(
     search: ExternalSearch,
     size?: number,
     from?: number,
-  ): Observable<PaginatedSkills> {
-    return of(createMockPaginatedSkills())
+  ): Observable<PaginatedSkillSearchResults> {
+    return of(createMockPaginatedSkillSearchResults())
   }
 
-  advancedCollectionSearch(search: ApiAdvancedSearch, libraries: ILibrarySummary[]): void {}
-
-  advancedSkillSearch(search: ApiAdvancedSearch, libraries?: ILibrarySummary[]): void {}
+  setLatestSearch(search?: ApiAdvancedSearch, libraries?: ILibrarySummary[]): void {
+    super.setLatestSearch(search, libraries)
+  }
 }

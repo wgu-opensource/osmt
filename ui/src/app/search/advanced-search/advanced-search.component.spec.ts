@@ -3,7 +3,7 @@ import { Type } from "@angular/core"
 import { async, ComponentFixture, TestBed } from "@angular/core/testing"
 import { ReactiveFormsModule } from "@angular/forms"
 import { Router } from "@angular/router"
-import { EnvironmentServiceStub, ExternalSearchServiceStub } from "test/resource/mock-stubs"
+import { AuthServiceStub, EnvironmentServiceStub, ExternalSearchServiceStub } from "test/resource/mock-stubs"
 import { ActivatedRouteStubSpec } from "test/util/activated-route-stub.spec"
 import { AppConfig } from "../../app.config"
 import { EnvironmentService } from "../../core/environment.service"
@@ -13,6 +13,7 @@ import { AdvancedSearchHorizontalActionBarComponent } from "./action-bar/advance
 import { AdvancedSearchVerticalActionBarComponent } from "./action-bar/advanced-search-vertical-action-bar.component"
 import { AdvancedSearchComponent } from "./advanced-search.component"
 import { ExternalSearchService } from "../external/external-search.service"
+import { AuthService } from "../../auth/auth-service"
 
 
 export function createComponent(T: Type<AdvancedSearchComponent>): Promise<void> {
@@ -56,6 +57,7 @@ describe("AdvancedSearchComponent", () => {
       ],
       providers: [
         AppConfig,
+        { provide: AuthService, useClass: AuthServiceStub },
         { provide: EnvironmentService, useClass: EnvironmentServiceStub },  // Example of using a service stub
         { provide: Router, useValue: routerSpy },
         { provide: ExternalSearchService, useClass: ExternalSearchServiceStub }

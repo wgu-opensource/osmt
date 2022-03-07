@@ -1,22 +1,21 @@
-# A dockerized stack for development
+# A dockerized stack for the non-production Quickstart configuration
 version: '3.3'
 services:
   app:
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    image: "wguopensource/osmt-app:${OSMT_APP_IMAGE_TAG:-latest}"
     volumes:
       - ./import:/opt/osmt/import:rw
     environment:
-      - "ENVIRONMENT=${ENVIRONMENT:-dev,apiserver,bucket4j,oauth2-okta}"
+      - "ENVIRONMENT=${ENVIRONMENT:-dev,apiserver,oauth2-okta}"
       - "BASE_DOMAIN=${BASE_DOMAIN}"
       - "FRONTEND_URL=${FRONTEND_URL}"
       - "DB_NAME=${DB_NAME}"
       - "DB_USER=${DB_USER}"
       - "DB_PASSWORD=${DB_PASSWORD}"
       - "DB_URI=${DB_USER}:${DB_PASSWORD}@db:3306"
-      - "MIGRATIONS_ENABLED=${MIGRATIONS_ENABLED}"
-      - "REINDEX_ELASTICSEARCH=${REINDEX_ELASTICSEARCH}"
+      - "MIGRATIONS_ENABLED=${MIGRATIONS_ENABLED:-true}"
+      - "REINDEX_ELASTICSEARCH=${REINDEX_ELASTICSEARCH:-true}"
+      - "SKIP_METADATA_IMPORT=${SKIP_METADATA_IMPORT:-false}"
       - "ELASTICSEARCH_URI=${ELASTICSEARCH_URI}"
       - "REDIS_URI=${REDIS_URI}"
       - "OAUTH_ISSUER=${OAUTH_ISSUER}"
@@ -36,7 +35,7 @@ services:
     image: library/mysql:8.0
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb3 --collation-server=utf8mb3_unicode_ci
     volumes:
-      - osmt_sql_db:/var/lib/mysql:rw
+      - sql_db:/var/lib/mysql:rw
       - ./docker/mysql-init:/docker-entrypoint-initdb.d
     environment:
       - "MYSQL_PASSWORD=${DB_PASSWORD}"
@@ -56,7 +55,7 @@ services:
     environment:
       - "discovery.type=single-node"
       - "net=host"
-      - "xpack.security.enabled: false"
+      - "xpack.security.enabled=false"
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -75,5 +74,5 @@ networks:
     driver: bridge
 
 volumes:
-  osmt_sql_db:
+  sql_db:
   elastic_data:

@@ -40,6 +40,12 @@ class AppConfig(
     @Value("\${app.baseLineAuditLogIfEmpty}")
     val baseLineAuditLogIfEmpty: Boolean,
 
+    @Value("\${app.rsd-context-url}")
+    val rsdContextUrl: String,
+
+    @Value("\${app.security.cors.allowedOrigins}")
+    val corsAllowedOrigins: String,
+
     @Value("\${app.searchhub.enabled}")
     val searchHubEnabled: Boolean,
 

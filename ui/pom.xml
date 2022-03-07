@@ -5,12 +5,12 @@
   <parent>
     <groupId>edu.wgu.osmt</groupId>
     <artifactId>osmt-parent</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.1.1-SNAPSHOT</version>
   </parent>
 
   <groupId>edu.wgu.osmt</groupId>
   <artifactId>osmt-ui</artifactId>
-  <version>1.0.5-SNAPSHOT</version>
+  <version>1.1.1-SNAPSHOT</version>
 
   <packaging>jar</packaging>
 
@@ -63,7 +63,7 @@
             </configuration>
           </execution>
           <execution>
-            <id>npm run build-prod</id>
+            <id>npm-build-prod</id>
             <goals>
               <goal>npm</goal>
             </goals>
@@ -93,7 +93,6 @@
                 <phase>none</phase>
               </execution>
             </executions>
-
           </plugin>
         </plugins>
       </build>

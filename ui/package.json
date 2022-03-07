@@ -1,6 +1,6 @@
 {
   "name": "ui",
-  "version": "1.0.5",
+  "version": "1.1.1-SNAPSHOT",
   "scripts": {
     "ng": "./node_modules/@angular/cli/bin/ng",
     "start": "./node_modules/@angular/cli/bin/ng serve",
@@ -11,7 +11,7 @@
     "lint": "./node_modules/@angular/cli/bin/ng lint",
     "e2e": "./node_modules/@angular/cli/bin/ng e2e",
     "ci-test": "./node_modules/@angular/cli/bin/ng test --no-watch --no-progress --karma-config=karma.ci.conf.js",
-    "clean": "rm -rf dist; rm -rf coverage; rm -rf reports; rm -rf test-results; rm -rf node_modules; rm -rf src/env.js"
+    "clean": "rm -rf dist; rm -rf coverage; rm -rf reports; rm -rf test-results; rm -rf node_modules"
   },
   "private": true,
   "dependencies": {
@@ -49,7 +49,7 @@
     "codelyzer": "^6.0.0",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~5.0.0",
-    "karma": "~5.0.0",
+    "karma": "^6.3.15",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "^2.0.3",
     "karma-jasmine": "~3.3.0",

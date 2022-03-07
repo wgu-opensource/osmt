@@ -32,7 +32,7 @@ function prepare() {
 }
 
 function authenticate() {
-  local rc
+  local -i rc
 
   if [[ -z "${DOCKERHUB_USER_ID}" || -z "${DOCKERHUB_PASSWORD}" ]]; then
     echo_err "Pushing Docker images to DockerHub requires environment variables for DOCKERHUB_USER_ID and DOCKERHUB_PASSWORD. Exiting..."
@@ -62,7 +62,7 @@ function push() {
 }
 
 function push_image() {
-  local rc
+  local -i rc
   local tag; tag="${1}"
   echo_info "Pushing image for ${tag} to DockerHub"
 

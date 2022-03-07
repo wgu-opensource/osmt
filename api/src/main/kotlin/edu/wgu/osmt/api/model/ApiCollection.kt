@@ -19,6 +19,9 @@ class ApiCollection(
     @JsonProperty
     val uuid: String,
 
+    @JsonProperty("@context")
+    val context: String,
+
     @JsonProperty
     val name: String,
 
@@ -56,15 +59,13 @@ class ApiCollection(
     @JsonProperty
     val libraryName: String? = null
 ) {
-    @JsonProperty("@context")
-    val context = "https://rsd.osmt.dev/context-v1.json"
-
     @JsonProperty
     val `type` = "RichSkillCollection"
 
     companion object {
         fun fromModel(collection: Collection, ss: List<RichSkillDescriptor>, appConfig: AppConfig): ApiCollection {
             return ApiCollection(
+                    context=appConfig.rsdContextUrl,
                     id=collection.canonicalUrl(appConfig.baseUrl),
                     uuid=collection.uuid,
                     name=collection.name,

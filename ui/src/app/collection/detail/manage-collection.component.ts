@@ -13,8 +13,8 @@ import {determineFilters, PublishStatus} from "../../PublishStatus"
 import {ApiSkillSummary} from "../../richskill/ApiSkillSummary"
 import {Observable, Subject} from "rxjs"
 import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
-import {Title} from "@angular/platform-browser";
-import { AppConfig } from 'src/app/app.config'
+import {Title} from "@angular/platform-browser"
+import {AppConfig} from "src/app/app.config"
 
 @Component({
   selector: "app-manage-collection",
@@ -232,8 +232,8 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
             icon: this.shareIcon,
             callback: () => this.shareExternallyAction(),
             visible: () => {
-              return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
-                      && this.collection?.isExternallyShared !== true
+              return this.collection?.isExternallyShared !== true &&
+                (this.collection?.status === PublishStatus.Published || this.collection?.status === PublishStatus.Unarchived)
             }
           }),
           new TableActionDefinition({
@@ -241,8 +241,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
             icon: this.unshareIcon,
             callback: () => this.unshareExternallyAction(),
             visible: () => {
-              return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
-                      && this.collection?.isExternallyShared === true
+              return (this.collection?.isExternallyShared === true)
             }
           })
         )
@@ -439,8 +438,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   }
 
   rowActions(): TableActionDefinition[] {
-    if (!this.actionsVisible()) return []
-    return super.rowActions();
+    return (this.actionsVisible()) ? super.rowActions() : []
   }
 
   actionsVisible(): boolean {

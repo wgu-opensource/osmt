@@ -101,7 +101,7 @@
     </button>
   </ng-template>
 
-  <ng-container *ngIf="externalShareEnabled && published && !archived">
+  <ng-container *ngIf="externalShareEnabled && ((published && !archived) || isExternallyShared)">
     <button
       type="button"
       class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary"

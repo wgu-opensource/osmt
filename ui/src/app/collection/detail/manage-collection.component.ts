@@ -37,7 +37,8 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       }
     },
     REMOVE: {
-      CONFIRM: "Are you sure you want to remove this Collection from your library?",
+      CONFIRM: "Are you sure you want to remove this Collection from your library? " +
+               "All RSDs will remain in your library — only the Collection name will be removed.",
       ERROR: {
         DEFAULT: "Unable to remove from library"
       }

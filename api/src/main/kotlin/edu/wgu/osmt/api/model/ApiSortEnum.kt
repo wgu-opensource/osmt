@@ -4,6 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
 
+const val nameKeyword: String = "name.keyword";
 
 interface SortOrder {
     val apiValue: String
@@ -42,10 +43,10 @@ enum class SkillSortEnum(override val apiValue: String) : SortOrder {
         override val sort = Sort.by("category.keyword").descending()
     },
     NameAsc("skill.asc") {
-        override val sort = Sort.by("name.keyword").ascending()
+        override val sort = Sort.by(nameKeyword).ascending()
     },
     NameDesc("skill.desc") {
-        override val sort = Sort.by("name.keyword").descending()
+        override val sort = Sort.by(nameKeyword).descending()
     };
 
     companion object : SortOrderCompanion<SkillSortEnum> {
@@ -72,10 +73,10 @@ enum class CollectionSortEnum(override val apiValue: String) : SortOrder {
         override val sort = Sort.by("skillCount").descending()
     },
     CollectionNameAsc("name.asc") {
-        override val sort = Sort.by("name.keyword").ascending()
+        override val sort = Sort.by(nameKeyword).ascending()
     },
     CollectionNameDesc("name.desc") {
-        override val sort = Sort.by("name.keyword").descending()
+        override val sort = Sort.by(nameKeyword).descending()
     };
 
     companion object : SortOrderCompanion<CollectionSortEnum> {

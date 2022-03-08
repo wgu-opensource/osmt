@@ -24,7 +24,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
-const val collectionsUuid = "collections.uuid";
+const val collectionsUuid = "collections.uuid"
 
 interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch)

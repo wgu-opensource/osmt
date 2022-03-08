@@ -273,7 +273,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       this.collectionService.removeCollection(this.uuidParam!).subscribe(
         result => {
           this.toastService.hideBlockingLoader()
-          this.router.navigate([""])
+          this.router.navigate(["/collections"])
         }, error => {
           this.toastService.hideBlockingLoader()
           alert(error?.error?.message ?? ManageCollectionComponent.MESSAGES.REMOVE.ERROR.DEFAULT)

@@ -149,7 +149,7 @@ function setupForm(isBlank: boolean): object {
       certifications: ["certification1", "certification2", "certification3"].join(";"),
       occupations: ["occupation1", "occupation2", "occupation3"].join(";"),
       employers: ["employer1", "employer2", "employer3"].join(";"),
-      alignments: ["alignment1", "alignment2"].join(";"),
+      alignments: ["http://unit-test.osmt.dev/alignment1", "http://unit-test.osmt.dev/alignment2"].join(";"),
       collectionName: "collection 1"
     }
   form.setValue(fields)

@@ -474,8 +474,9 @@ describe("CollectionService", () => {
     const taskResult = createMockTaskResult()
     const apiBatchResult = new ApiBatchResult(createMockBatchResult())
     const expected = apiBatchResult
+    const collectionUuid: string = "collection-uuid-1"
     const uuid: string = taskResult.uuid ? taskResult.uuid : ""
-    const path1 = "api/collections/" + uuid + "/updateSkills"
+    const path1 = "api/collections/" + collectionUuid + "/updateSkills"
     const path2 = taskResult.id
     const query = "testQueryString"
     const update = new ApiSkillListUpdate({
@@ -483,10 +484,9 @@ describe("CollectionService", () => {
       remove: new ApiSearch({query})
     })
     const filter = new Set<PublishStatus>([PublishStatus.Published, PublishStatus.Draft])
-    const sort = undefined
 
     // Act
-    const result$ = testService.updateSkillsWithResult(uuid, update, filter)
+    const result$ = testService.updateSkillsWithResult(collectionUuid, update, filter)
 
     // Assert
     result$
@@ -499,7 +499,7 @@ describe("CollectionService", () => {
     /* Service call will make 2 requests: the requested action + the async task result */
     /* Setup for request 1 */
     const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path1 +
-      `?sort=${sort}&status=${PublishStatus.Published}&status=${PublishStatus.Draft}`)
+      `?status=${PublishStatus.Published}&status=${PublishStatus.Draft}`)
     expect(req1.request.method).toEqual("POST")
     req1.flush(taskResult)
 

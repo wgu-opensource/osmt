@@ -24,6 +24,8 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
+const val collectionsUuid = "collections.uuid"
+
 interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch)
     fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder
@@ -234,7 +236,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 bq.must(
                     nestedQuery(
                         RichSkillDoc::collections.name,
-                        QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("collections.uuid", collectionId)),
+                        QueryBuilders.boolQuery().must(QueryBuilders.matchQuery(collectionsUuid, collectionId)),
                         ScoreMode.Avg
                     )
                 )
@@ -257,7 +259,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 bq.must(
                     QueryBuilders.nestedQuery(
                         RichSkillDoc::collections.name,
-                        QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("collections.uuid", collectionId)),
+                        QueryBuilders.boolQuery().must(QueryBuilders.matchQuery(collectionsUuid, collectionId)),
                         ScoreMode.Avg
                     )
                 )
@@ -280,7 +282,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                     QueryBuilders.nestedQuery(
                         RichSkillDoc::collections.name,
                         QueryBuilders.boolQuery()
-                            .must(QueryBuilders.matchQuery("collections.uuid", collectionId)),
+                            .must(QueryBuilders.matchQuery(collectionsUuid, collectionId)),
                         ScoreMode.Avg
                     )
                 )

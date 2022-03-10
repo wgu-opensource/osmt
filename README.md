@@ -79,6 +79,26 @@ You can surgically clean up OSMT-related Docker images and data volumes. This st
 ./osmt_cli.sh -c
 ```
 
+## Configuring to use External Search with the Open Skills Search Hub
+You can configure OSMT to enable searching of external instances by registering with the Open Skills Search Hub.
+1. Visit https://search.review.osmt.dev/
+2. Signup and register your library name you will receive a Configuration Token (make sure to save this as you can not retrieve it!)
+3. Configure the following spring properties when starting spring:\
+   ```
+   -Dapp.searchhub.enabled=true
+   -Dapp.searchhub.baseUrl=https://search.review.osmt.dev
+   -Dapp.searchhub.accessToken=<Configuration Token Received During Signup>
+   ```
+   _note: docker_entrypoint.sh supports passing these as environment variables:_
+         `SEARCHHUB_ENABLED`,
+         `SEARCHHUB_BASE_URL`,
+         `SEARCHHUB_ACCESS_TOKEN`
+4. You can finetune which features are enabled in the UI by adjusting the following properties of the UI Whitelabel:
+    ```
+    externalSearchEnabled = true
+    externalShareEnabled = true
+    ```
+   
 ## Building OSMT
 
 ### Requirements to Build OSMT Locally

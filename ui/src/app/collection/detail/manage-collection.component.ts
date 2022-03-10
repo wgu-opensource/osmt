@@ -13,8 +13,8 @@ import {determineFilters, PublishStatus} from "../../PublishStatus"
 import {ApiSkillSummary} from "../../richskill/ApiSkillSummary"
 import {Observable, Subject} from "rxjs"
 import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
-import {Title} from "@angular/platform-browser";
-import { AppConfig } from 'src/app/app.config'
+import {Title} from "@angular/platform-browser"
+import {AppConfig} from "src/app/app.config"
 
 @Component({
   selector: "app-manage-collection",
@@ -37,7 +37,8 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       }
     },
     REMOVE: {
-      CONFIRM: "Are you sure you want to remove this Collection from your library?",
+      CONFIRM: "Are you sure you want to remove this Collection from your library? " +
+               "All RSDs will remain in your library — only the Collection name will be removed.",
       ERROR: {
         DEFAULT: "Unable to remove from library"
       }
@@ -232,8 +233,8 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
             icon: this.shareIcon,
             callback: () => this.shareExternallyAction(),
             visible: () => {
-              return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
-                      && this.collection?.isExternallyShared !== true
+              return this.collection?.isExternallyShared !== true &&
+                (this.collection?.status === PublishStatus.Published || this.collection?.status === PublishStatus.Unarchived)
             }
           }),
           new TableActionDefinition({
@@ -241,8 +242,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
             icon: this.unshareIcon,
             callback: () => this.unshareExternallyAction(),
             visible: () => {
-              return (this.collection?.status === PublishStatus.Archived || this.collection?.status !== PublishStatus.Deleted)
-                      && this.collection?.isExternallyShared === true
+              return (this.collection?.isExternallyShared === true)
             }
           })
         )
@@ -273,7 +273,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       this.collectionService.removeCollection(this.uuidParam!).subscribe(
         result => {
           this.toastService.hideBlockingLoader()
-          this.router.navigate([""])
+          this.router.navigate(["/collections"])
         }, error => {
           this.toastService.hideBlockingLoader()
           alert(error?.error?.message ?? ManageCollectionComponent.MESSAGES.REMOVE.ERROR.DEFAULT)
@@ -439,8 +439,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   }
 
   rowActions(): TableActionDefinition[] {
-    if (!this.actionsVisible()) return []
-    return super.rowActions();
+    return (this.actionsVisible()) ? super.rowActions() : []
   }
 
   actionsVisible(): boolean {

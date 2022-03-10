@@ -1,7 +1,26 @@
-import { DebugElement } from "@angular/core"
+import { DebugElement, Type } from "@angular/core"
+import { TestBed } from "@angular/core/testing"
 
 // Various testing helpers
 
+export async function createComponent(T: Type<any>, f?: (component: any) => void): Promise<any> {
+    const fixture = TestBed.createComponent(T)
+    const component = fixture.componentInstance
+
+    if (f) {
+      f(component)
+    }
+
+    // 1st change detection triggers ngOnInit
+    fixture.detectChanges()
+
+    await fixture.whenStable().then(() => {
+      // 2nd change detection
+      fixture.detectChanges()
+    })
+
+    return Promise.resolve(component)
+}
 
 /**
  * Button events to pass to `DebugElement.triggerEventHandler` for RouterLink event handler

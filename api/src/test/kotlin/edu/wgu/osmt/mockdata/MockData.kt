@@ -12,16 +12,22 @@ import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptor
 import edu.wgu.osmt.richskill.RichSkillDoc
+import edu.wgu.osmt.searchhub.client.models.CollectionSummary
+import edu.wgu.osmt.searchhub.client.models.LibrarySummary
+import edu.wgu.osmt.searchhub.client.models.SkillSummary
 import edu.wgu.skills.service.mockdata.xml.Collection
 import edu.wgu.skills.service.mockdata.xml.OsmtData
 import org.slf4j.LoggerFactory
 import java.io.IOException
+import java.net.URI
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.stream.Collectors
 import javax.xml.stream.XMLStreamException
+import kotlin.collections.HashMap
+import kotlin.streams.toList
 
 class MockData {
     private val log = LoggerFactory.getLogger(MockData::class.java)
@@ -29,6 +35,7 @@ class MockData {
     private val collections: MutableMap<Long?, CollectionDoc> = HashMap()
     private val jobCodes: MutableMap<Long?, JobCode> = HashMap()
     private val richSkillDescriptor: MutableMap<String?, RichSkillDescriptor> = HashMap()
+    private val librarySummaries: MutableMap<UUID?, LibrarySummary> = HashMap()
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.nnnnnn")
 
     var appConfig: AppConfig
@@ -53,6 +60,7 @@ class MockData {
                 populateJobCodes(osmtData)
                 populateCollections(osmtData)
                 populateRichSkillDescriptor(osmtData)
+                populateLibrarySummaries(osmtData)
             }
         } catch (e: IOException) {
             e.printStackTrace()
@@ -135,6 +143,64 @@ class MockData {
         return jobCodes.values.stream()
                 .map{ onet -> jobCode2OnetJobCode(onet)}
                 .collect(Collectors.toList()).filter { it.code !=null }
+    }
+
+    fun getSearchHubLibrarySummaries(): List<LibrarySummary> {
+        return librarySummaries.values.toList()
+    }
+
+    fun getSearchHubCollectionSummaries(): List<CollectionSummary> {
+        val librarySummaries = getSearchHubLibrarySummaries()
+        val collectionSummaries = mutableListOf<CollectionSummary>()
+
+        collections.values.forEachIndexed { i, c ->
+            val librarySummary= librarySummaries[i % librarySummaries.size]
+
+            collectionSummaries.add(
+                i,
+                CollectionSummary(
+                    library = librarySummary,
+                    id = URI("http://${librarySummary.uuid}/api/collections/${c.uuid}"),
+                    name = c.name,
+                    skillCount = c.skillCount,
+                    publishDate = c.publishDate?.atOffset(ZoneOffset.UTC),
+                    archiveDate = c.archiveDate?.atOffset(ZoneOffset.UTC)
+                )
+            )
+        }
+
+        return collectionSummaries
+    }
+
+    fun getSearchHubSkillSummaries(): List<SkillSummary> {
+        val librarySummaries = getSearchHubLibrarySummaries()
+        val skillSummaries = mutableListOf<SkillSummary>()
+
+        richSkillDescriptor.values.forEachIndexed { i, s ->
+            val librarySummary = librarySummaries[i % librarySummaries.size]
+
+            skillSummaries.add(
+                i,
+                SkillSummary(
+                    library = librarySummary,
+                    id = URI(s.canonicalUrl("http://${librarySummary.uuid}")),
+                    skillName = s.name,
+                    skillStatement = s.statement,
+                    category = s.category?.value,
+                    keywords = s.keywords.map { kw -> kw.value ?: "" },
+                    occupations = s.jobCodes.map { jc ->
+                        edu.wgu.osmt.searchhub.client.models.JobCode(
+                            code = jc.code,
+                            frameworkName = jc.framework
+                        )
+                    },
+                    publishDate = s.publishDate?.atOffset(ZoneOffset.UTC),
+                    archiveDate = s.archiveDate?.atOffset(ZoneOffset.UTC)
+                )
+            )
+        }
+
+        return skillSummaries
     }
 
     fun richSkillDescriptor2RichSkillDoc(rsd: RichSkillDescriptor?, appConfig: AppConfig): RichSkillDoc {
@@ -365,6 +431,15 @@ class MockData {
             }
     }
 
+    private fun populateLibrarySummaries(osmtData: OsmtData) {
+        osmtData.librarySummaries!!.stream().forEach { ls: edu.wgu.skills.service.mockdata.xml.LibrarySummary ->
+            librarySummaries[ls.uuid] = LibrarySummary(
+                ls.uuid,
+                ls.libraryName
+            )
+        }
+    }
+
     private fun collectionDoc2Collection(doc: CollectionDoc?): edu.wgu.osmt.collection.Collection {
         val now = LocalDateTime.now(ZoneOffset.UTC)
         return edu.wgu.osmt.collection.Collection(
@@ -470,6 +545,7 @@ class MockData {
             println("collections count: " + mockData.collections.size)
             println("jobCodes count: " + mockData.jobCodes.size)
             println("richSkillDescriptors count: " + mockData.richSkillDescriptor.size)
+            println("librarySummaries count: " + mockData.librarySummaries.size)
         }
     }
 }

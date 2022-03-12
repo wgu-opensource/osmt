@@ -9,7 +9,7 @@ import edu.wgu.osmt.db.PublishStatus
 import java.time.LocalDateTime
 
 
-class ApiCollectionSummary(
+data class ApiCollectionSummary(
     @JsonProperty val id: String?,
     @JsonProperty val uuid: String?,
     @JsonProperty val name: String?,

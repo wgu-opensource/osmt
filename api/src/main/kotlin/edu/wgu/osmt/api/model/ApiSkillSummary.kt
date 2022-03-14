@@ -8,7 +8,7 @@ import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillDoc
 import java.time.LocalDateTime
 
-class ApiSkillSummary(
+data class ApiSkillSummary(
     @JsonProperty val id: String,
     @JsonProperty val uuid: String,
     @JsonProperty val status: PublishStatus,

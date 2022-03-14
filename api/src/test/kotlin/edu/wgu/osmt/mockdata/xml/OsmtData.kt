@@ -5,4 +5,5 @@ class OsmtData {
     var keywords: List<Keyword>? = null
     var collections: List<Collection>? = null
     var richSkillDocs: List<RichSkillDoc>? = null
+    var librarySummaries: List<LibrarySummary>? = null
 }

@@ -14,12 +14,15 @@ import edu.wgu.osmt.elasticsearch.PaginatedLinks
 import edu.wgu.osmt.searchhub.client.apis.SearchingApi
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
+import edu.wgu.osmt.richskill.CreateSkillsTaskProcessor
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.searchhub.client.apis.LibrariesApi
 import edu.wgu.osmt.searchhub.client.apis.SharingApi
 import edu.wgu.osmt.searchhub.client.infrastructure.ResponseType
 import edu.wgu.osmt.searchhub.client.infrastructure.Success
 import edu.wgu.osmt.searchhub.client.models.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -44,6 +47,7 @@ class SearchHubController @Autowired constructor(
     val searchingApi: SearchingApi?,
     val sharingApi: SharingApi?
 ) {
+    val logger: Logger = LoggerFactory.getLogger(CreateSkillsTaskProcessor::class.java)
 
     @GetMapping(RoutePaths.SEARCH_HUB_LIBRARIES, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -55,7 +59,7 @@ class SearchHubController @Autowired constructor(
     ): HttpEntity<List<LibrarySummary>> {
         try {
             verifySearchHubConfigured()
-        } catch (e: Exception) {
+        } catch (e: Error) {
             throw GeneralApiException(
                 e.message?.let { e.message } ?: "Search Hub is not configured correctly",
                 HttpStatus.INTERNAL_SERVER_ERROR
@@ -63,11 +67,16 @@ class SearchHubController @Autowired constructor(
         }
 
         return librariesApi?.let {
-            val librariesResult = it.getLibraries(size, from)
-            ResponseEntity.status(200).body(librariesResult)
-        } ?: throw GeneralApiException("Dependency Error", HttpStatus.INTERNAL_SERVER_ERROR)
+            try {
+                val librariesResult = it.getLibraries(size, from)
+                ResponseEntity.status(200).body(librariesResult)
+            }
+            catch (e: Error) {
+                logger.error("Search Hub API Error", e)
+                throw GeneralApiException("Dependency Error: librariesApi", HttpStatus.INTERNAL_SERVER_ERROR)
+            }
+        } ?: throw GeneralApiException("Dependency Error: librariesApi", HttpStatus.INTERNAL_SERVER_ERROR)
     }
-
 
     @PostMapping(RoutePaths.SEARCH_HUB_SEARCH_COLLECTIONS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -80,7 +89,7 @@ class SearchHubController @Autowired constructor(
     ): HttpEntity<List<ApiCollectionSearchResult>> {
         try {
             verifySearchHubConfigured()
-        } catch (e: Exception) {
+        } catch (e: Error) {
             throw GeneralApiException(
                 e.message?.let { e.message } ?: "Search Hub is not configured correctly",
                 HttpStatus.INTERNAL_SERVER_ERROR
@@ -93,11 +102,17 @@ class SearchHubController @Autowired constructor(
 
         return searchingApi?.let { api ->
             request.search?.let { search ->
-                val response = api.searchCollectionsWithHttpInfo(
-                    convertToSearchHubSearch(search, request.libraries),
-                    size,
-                    from
-                )
+                val response = try {
+                    api.searchCollectionsWithHttpInfo(
+                        convertToSearchHubSearch(search, request.libraries),
+                        size,
+                        from
+                    )
+                }
+                catch (e: Error) {
+                    logger.error("Search Hub API Error", e)
+                    throw GeneralApiException("Dependency Error: searchingApi", HttpStatus.INTERNAL_SERVER_ERROR)
+                }
 
                 val collectionResults = if (response.responseType == ResponseType.Success) {
                     ((response as? Success<*>)?.data as List<*>)
@@ -145,7 +160,7 @@ class SearchHubController @Autowired constructor(
     ): HttpEntity<List<ApiSkillSearchResult>> {
         try {
             verifySearchHubConfigured()
-        } catch (e: Exception) {
+        } catch (e: Error) {
             throw GeneralApiException(
                 e.message?.let { e.message } ?: "Search Hub is not configured correctly",
                 HttpStatus.INTERNAL_SERVER_ERROR
@@ -158,11 +173,17 @@ class SearchHubController @Autowired constructor(
 
         return searchingApi?.let { api ->
             request.search?.let { search ->
-                val response = api.searchSkillsWithHttpInfo(
-                    convertToSearchHubSearch(search, request.libraries),
-                    size,
-                    from
-                )
+                val response = try {
+                    api.searchSkillsWithHttpInfo(
+                        convertToSearchHubSearch(search, request.libraries),
+                        size,
+                        from
+                    )
+                }
+                catch (e: Error) {
+                    logger.error("Search Hub API Error", e)
+                    throw GeneralApiException("Dependency Error: searchingApi", HttpStatus.INTERNAL_SERVER_ERROR)
+                }
 
                 val skills = if (response.responseType == ResponseType.Success) {
                     ((response as? Success<*>)?.data as List<*>)
@@ -207,37 +228,37 @@ class SearchHubController @Autowired constructor(
         verifySearchHubConfigured()
 
         return sharingApi?.submitCollections(convertToApiUrls(collectionUris))
-            ?: throw Exception("Dependency Error: sharingApi")
+            ?: throw GeneralApiException("Dependency Error: sharingApi", HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     fun removeCollections(collectionUris: List<String>): Result {
         verifySearchHubConfigured()
 
         return sharingApi?.removeCollections(convertToApiUrls(collectionUris))
-            ?: throw Exception("Dependency Error: sharingApi")
+            ?: throw GeneralApiException("Dependency Error: sharingApi", HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     fun submitSkills(skillUris: List<String>): Result {
         verifySearchHubConfigured()
 
         return sharingApi?.submitSkills(convertToApiUrls(skillUris))
-            ?: throw Exception("Dependency Error: sharingApi")
+            ?: throw GeneralApiException("Dependency Error: sharingApi", HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     fun removeSkills(skillsUris: List<String>): Result {
         verifySearchHubConfigured()
 
         return sharingApi?.removeSkills(convertToApiUrls(skillsUris))
-            ?: throw Exception("Dependency Error: sharingApi")
+            ?: throw GeneralApiException("Dependency Error: sharingApi", HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     private fun verifySearchHubConfigured() {
         if (!appConfig.searchHubEnabled) {
-            throw Exception("Search Hub is not enabled")
+            throw Error("Search Hub is not enabled")
         }
 
         if (appConfig.searchHubBaseUrl.isNullOrBlank() || appConfig.searchHubAccessToken.isNullOrBlank()) {
-            throw Exception("Search Hub is not configured correctly")
+            throw Error("Search Hub is not configured correctly")
         }
     }
 

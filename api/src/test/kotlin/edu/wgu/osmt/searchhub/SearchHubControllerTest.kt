@@ -8,7 +8,6 @@ import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.mockdata.MockData
-import edu.wgu.osmt.searchhub.SearchHubController
 import edu.wgu.osmt.searchhub.client.apis.LibrariesApi
 import edu.wgu.osmt.searchhub.client.apis.SearchingApi
 import edu.wgu.osmt.searchhub.client.apis.SharingApi

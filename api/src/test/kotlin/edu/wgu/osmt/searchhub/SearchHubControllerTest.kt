@@ -320,12 +320,10 @@ internal class SearchHubControllerTest @Autowired constructor(): SpringTest(), B
         // Arrange
         val collections = mockData.getCollections()
         val collectionUris = collections.map { c -> c.canonicalUrl("http://test.test") }
-        val responseStatus = Result.Status.success
-        val responseMessage = "message"
+        val responseStatus = Result.Status.processing
 
         val searchHubResponse = Result(
             status = responseStatus,
-            message = responseMessage
         )
 
         every { sharingApi.submitCollections(any()) } returns searchHubResponse
@@ -335,7 +333,6 @@ internal class SearchHubControllerTest @Autowired constructor(): SpringTest(), B
 
         // Assert
         assertThat(response.status).isEqualTo(responseStatus)
-        assertThat(response.message).isEqualTo(responseMessage)
     }
 
     @Test
@@ -360,12 +357,11 @@ internal class SearchHubControllerTest @Autowired constructor(): SpringTest(), B
         // Arrange
         val collections = mockData.getCollections()
         val collectionUris = collections.map { c -> c.canonicalUrl("http://test.test") }
-        val responseStatus = Result.Status.success
+        val responseStatus = Result.Status.processing
         val responseMessage = "message"
 
         val searchHubResponse = Result(
             status = responseStatus,
-            message = responseMessage
         )
 
         every { sharingApi.removeCollections(any()) } returns searchHubResponse
@@ -375,7 +371,6 @@ internal class SearchHubControllerTest @Autowired constructor(): SpringTest(), B
 
         // Assert
         assertThat(response.status).isEqualTo(responseStatus)
-        assertThat(response.message).isEqualTo(responseMessage)
     }
 
     @Test
@@ -400,12 +395,10 @@ internal class SearchHubControllerTest @Autowired constructor(): SpringTest(), B
         // Arrange
         val skills = mockData.getRichSkillDescriptors()
         val skillUris = skills.map { s -> s.canonicalUrl("http://test.test") }
-        val responseStatus = Result.Status.success
-        val responseMessage = "message"
+        val responseStatus = Result.Status.processing
 
         val searchHubResponse = Result(
             status = responseStatus,
-            message = responseMessage
         )
 
         every { sharingApi.submitSkills(any()) } returns searchHubResponse
@@ -415,7 +408,6 @@ internal class SearchHubControllerTest @Autowired constructor(): SpringTest(), B
 
         // Assert
         assertThat(response.status).isEqualTo(responseStatus)
-        assertThat(response.message).isEqualTo(responseMessage)
     }
 
     @Test
@@ -440,12 +432,11 @@ internal class SearchHubControllerTest @Autowired constructor(): SpringTest(), B
         // Arrange
         val skills = mockData.getRichSkillDescriptors()
         val skillUris = skills.map { s -> s.canonicalUrl("http://test.test") }
-        val responseStatus = Result.Status.success
+        val responseStatus = Result.Status.processing
         val responseMessage = "message"
 
         val searchHubResponse = Result(
             status = responseStatus,
-            message = responseMessage
         )
 
         every { sharingApi.removeSkills(any()) } returns searchHubResponse
@@ -455,7 +446,6 @@ internal class SearchHubControllerTest @Autowired constructor(): SpringTest(), B
 
         // Assert
         assertThat(response.status).isEqualTo(responseStatus)
-        assertThat(response.message).isEqualTo(responseMessage)
     }
 
     @Test

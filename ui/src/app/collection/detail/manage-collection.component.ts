@@ -233,8 +233,10 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
             icon: this.shareIcon,
             callback: () => this.shareExternallyAction(),
             visible: () => {
-              return this.collection?.isExternallyShared !== true &&
-                (this.collection?.status === PublishStatus.Published || this.collection?.status === PublishStatus.Unarchived)
+              return (this.collection?.isExternallyShared !== true &&
+                (this.collection?.status === PublishStatus.Published
+                  || this.collection?.status === PublishStatus.Archived
+                  || this.collection?.status === PublishStatus.Unarchived))
             }
           }),
           new TableActionDefinition({

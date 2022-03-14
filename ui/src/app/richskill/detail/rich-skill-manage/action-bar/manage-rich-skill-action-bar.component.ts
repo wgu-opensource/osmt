@@ -63,6 +63,14 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   ) {
   }
 
+  public get externalShareEnabled(): boolean {
+    return !this.isImported && AppConfig.settings.externalShareEnabled
+  }
+
+  public get isImported(): boolean {
+    return Boolean(this.importedFrom)
+  }
+
   ngOnInit(): void {
     this.href = `${AppConfig.settings.baseApiUrl}${this.router.url}`
     this.richSkillService.getSkillJsonByUuid(this.skillUuid)
@@ -178,7 +186,7 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
         }
       )
     } else {
-      const url = `skills/${this.skillUuid}`
+      const url = `skills/${this.skillUuid}/manage`
       window.open(url, "_blank")
     }
   }
@@ -199,17 +207,8 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
         )
       }
     } else {
-      const url = `skills/${this.skillUuid}`
+      const url = `skills/${this.skillUuid}/manage`
       window.open(url, "_blank")
     }
   }
-
-  public get externalShareEnabled() {
-    return !this.isImported && AppConfig.settings.externalShareEnabled
-  }
-
-  public get isImported() {
-    return Boolean(this.importedFrom)
-  }
-
 }

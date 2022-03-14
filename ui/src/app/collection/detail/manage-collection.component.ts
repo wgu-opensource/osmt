@@ -24,21 +24,21 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
 
   private static MESSAGES = {
     SHARE: {
-      SUCCESS: "This collection will be available in the Search Hub soon",
+      SUCCESS: "This Collection has been shared to the Search Hub. There may be a delay before it appears in external search results.",
       ERROR: {
         DEFAULT: "Unable to share to Search Hub"
       }
     },
     UNSHARE: {
-      CONFIRM: "Are you sure you want to remove this collection from the Search Hub? " +
-               "This collection will no longer be available in search results.",
+      CONFIRM: "Are you sure you want to remove this Collection from the Search Hub? " +
+               "This Collection will no longer be available in search results for external users.",
       ERROR: {
         DEFAULT: "Unable to unshare from Search Hub"
       }
     },
     REMOVE: {
       CONFIRM: "Are you sure you want to remove this Collection from your library? " +
-               "All RSDs will remain in your library — only the Collection name will be removed.",
+               "This action will only remove the Collection name from your list — all RSDs will remain in your library.",
       ERROR: {
         DEFAULT: "Unable to remove from library"
       }

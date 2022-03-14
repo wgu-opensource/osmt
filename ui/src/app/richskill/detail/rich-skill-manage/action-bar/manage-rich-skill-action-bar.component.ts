@@ -13,14 +13,14 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
 
   private static MESSAGES = {
     SHARE: {
-      SUCCESS: "This RSD will be available in the Search Hub soon",
+      SUCCESS: "This RSD has been shared to the Search Hub. There may be a delay before it appears in external search results.",
       ERROR: {
         DEFAULT: "Unable to share to Search Hub"
       }
     },
     UNSHARE: {
       CONFIRM: "Are you sure you want to remove this RSD from the Search Hub? " +
-               "This RSD will no longer be available in search results.",
+               "This RSD will no longer be available in search results for external users.",
       ERROR: {
         DEFAULT: "Unable to unshare from Search Hub"
       }

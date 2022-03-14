@@ -13,14 +13,14 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
 
   private static MESSAGES = {
     SHARE: {
-      SUCCESS: "This RSD will be available in the Search Hub soon",
+      SUCCESS: "This RSD has been shared to the Search Hub. There may be a delay before it appears in external search results.",
       ERROR: {
         DEFAULT: "Unable to share to Search Hub"
       }
     },
     UNSHARE: {
       CONFIRM: "Are you sure you want to remove this RSD from the Search Hub? " +
-               "This RSD will no longer be available in search results.",
+               "This RSD will no longer be available in search results for external users.",
       ERROR: {
         DEFAULT: "Unable to unshare from Search Hub"
       }
@@ -61,6 +61,14 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
     protected toastService: ToastService,
     @Inject(LOCALE_ID) protected locale: string
   ) {
+  }
+
+  public get externalShareEnabled(): boolean {
+    return !this.isImported && AppConfig.settings.externalShareEnabled
+  }
+
+  public get isImported(): boolean {
+    return Boolean(this.importedFrom)
   }
 
   ngOnInit(): void {
@@ -178,7 +186,7 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
         }
       )
     } else {
-      const url = `skills/${this.skillUuid}`
+      const url = `skills/${this.skillUuid}/manage`
       window.open(url, "_blank")
     }
   }
@@ -199,17 +207,8 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
         )
       }
     } else {
-      const url = `skills/${this.skillUuid}`
+      const url = `skills/${this.skillUuid}/manage`
       window.open(url, "_blank")
     }
   }
-
-  public get externalShareEnabled() {
-    return !this.isImported && AppConfig.settings.externalShareEnabled
-  }
-
-  public get isImported() {
-    return Boolean(this.importedFrom)
-  }
-
 }

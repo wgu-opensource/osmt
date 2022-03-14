@@ -293,7 +293,8 @@ class CollectionRepositoryImpl @Autowired constructor(
 
         daoObject?.let {
             if (daoObject.isExternallyShared != newValue) {
-                if (newValue && !PublishStatus.isCurrentlyPublished(daoObject.publishStatus())) {
+                if (newValue && !(PublishStatus.isCurrentlyPublished(daoObject.publishStatus())
+                    || daoObject.publishStatus() == PublishStatus.Archived)) {
                     throw GeneralApiException("Collection must be published to share externally", HttpStatus.FORBIDDEN)
                 }
 

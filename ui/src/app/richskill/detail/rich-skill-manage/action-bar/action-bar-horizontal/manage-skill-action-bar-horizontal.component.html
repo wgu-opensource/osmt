@@ -101,7 +101,7 @@
     </button>
   </ng-template>
 
-  <ng-container *ngIf="externalShareEnabled && ((published && !archived) || isExternallyShared)">
+  <ng-container *ngIf="externalShareEnabled && (published || isExternallyShared)">
     <button
       type="button"
       class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary"
@@ -123,7 +123,7 @@
         (click)="handleUnshareExternally()"
       >
         <svg class="m-actionBarItemHorizontal-x-icon t-icon">
-          <use [attr.xlink:href]="shareIcon"></use>
+          <use [attr.xlink:href]="unshareIcon"></use>
         </svg>
         <span class="m-actionBarItemHorizontal-x-label m-buttonText">
             <span class="button-x-text">Unshare from Search Hub</span>

@@ -42,6 +42,7 @@ interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
     fun update(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao?
     fun findAll(): SizedIterable<RichSkillDescriptorDao>
     fun findById(id: Long): RichSkillDescriptorDao?
+    fun findByOriginalUrl(originalUrl: String): RichSkillDescriptorDao?
     fun findByUUID(uuid: String): RichSkillDescriptorDao?
     fun findManyByUUIDs(uuids: List<String>): List<RichSkillDescriptorDao>?
     fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao?
@@ -143,12 +144,18 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
     }
 
+    override fun findByOriginalUrl(originalUrl: String): RichSkillDescriptorDao? {
+        return table.select {
+            table.importedFrom eq originalUrl
+        }.firstOrNull()?.let { dao.wrapRow(it) }
+    }
+
     override fun importFromApi(apiSkill: ApiSkill, originalUrl: String, originalLibraryName: String?, collectionDao: CollectionDao?, user: String): RichSkillDescriptorDao? {
 
         val skillUpdate = ApiSkillUpdate.fromApiSkill(apiSkill)
         val rsdUpdate = rsdUpdateFromApi(skillUpdate, user)
 
-        val existingDao = table.select { table.importedFrom eq originalUrl }.firstOrNull()?.let { dao.wrapRow(it) }
+        val existingDao = findByOriginalUrl(originalUrl)
 
         val skillDao = if (existingDao != null) {
             update(rsdUpdate.copy(id=existingDao.id.value), user)

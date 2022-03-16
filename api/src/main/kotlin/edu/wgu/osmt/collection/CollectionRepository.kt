@@ -39,6 +39,7 @@ interface CollectionRepository {
     fun findAll(): SizedIterable<CollectionDao>
     fun findById(id: Long): CollectionDao?
     fun findByUUID(uuid: String): CollectionDao?
+    fun findByOriginalUrl(originalUrl: String): CollectionDao?
     fun findByName(name: String): CollectionDao?
     fun create(name: String, user: String): CollectionDao?
     fun create(updateObject: CollectionUpdateObject, user: String): CollectionDao?
@@ -121,6 +122,12 @@ class CollectionRepositoryImpl @Autowired constructor(
         return create(CollectionUpdateObject(name = name), user)
     }
 
+    override fun findByOriginalUrl(originalUrl: String): CollectionDao? {
+        return table.select {
+            table.importedFrom eq originalUrl
+        }.firstOrNull()?.let { dao.wrapRow(it) }
+    }
+
     override fun importFromApi(
             apiCollection: ApiCollection,
             originalUrl: String,
@@ -131,7 +138,7 @@ class CollectionRepositoryImpl @Autowired constructor(
         val apiCollectionUpdate: ApiCollectionUpdate = ApiCollectionUpdate.fromApiCollection(apiCollection)
         val collectionUpdateObject = collectionUpdateObjectFromApi(apiCollectionUpdate, richSkillRepository)
 
-        val existingDao = table.select { table.importedFrom eq originalUrl }.firstOrNull()?.let { dao.wrapRow(it) }
+        val existingDao = findByOriginalUrl(originalUrl)
         val collectionDao = if (existingDao != null) {
             update(collectionUpdateObject.copy(id=existingDao.id.value), user)
         } else {

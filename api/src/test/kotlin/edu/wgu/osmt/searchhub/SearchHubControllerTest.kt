@@ -2,6 +2,7 @@ package edu.wgu.osmt.searchhub
 
 import com.ninjasquad.springmockk.MockkBean
 import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.GeneralApiException
@@ -26,6 +27,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
 
 @ExtendWith(SpringExtension::class)
@@ -34,7 +36,8 @@ import org.springframework.web.util.UriComponentsBuilder
     "app.searchhub.baseUrl=http://searchhub.test",
     "app.searchhub.accessToken=token1"
 ])
-internal class SearchHubControllerTest @Autowired constructor(): SpringTest(), BaseDockerizedTest {
+@Transactional
+internal class SearchHubControllerTest @Autowired constructor(): SpringTest(), BaseDockerizedTest, HasDatabaseReset {
 
     @MockkBean
     private lateinit var librariesApi: LibrariesApi

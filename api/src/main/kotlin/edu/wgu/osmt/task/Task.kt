@@ -51,7 +51,6 @@ interface Task {
             val taskResult = TaskResult.fromTask(task)
             val responseHeaders = HttpHeaders()
             responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-            val tr = TaskResult.fromTask(task)
             return ResponseEntity.status(202).headers(responseHeaders).body(taskResult)
         }
     }
@@ -74,7 +73,7 @@ data class CreateSkillsTask(
     val userString: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
-    override val result: List<String>? = null, // return list of new skill uuids
+    override val result: List<String>? = null,
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE

@@ -94,13 +94,13 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
     @Autowired
     private lateinit var collectionRepository: CollectionRepository
 
-    fun split_field(value: String?, delimiters: String = ";"): List<String>? {
+    fun splitField(value: String?, delimiters: String = ";"): List<String>? {
         val strings = value?.let { it.split(delimiters).map { it.trim() } }?.distinct()
         return strings?.map{if (it.isBlank()) null else it}?.filterNotNull()
     }
 
-    fun parse_keywords(keywordType: KeywordTypeEnum, rowValue: String?, useUri: Boolean = false): List<KeywordDao>? {
-        return split_field(rowValue)?.map {
+    fun parseKeywords(keywordType: KeywordTypeEnum, rowValue: String?, useUri: Boolean = false): List<KeywordDao>? {
+        return splitField(rowValue)?.map {
             if (useUri)
                 keywordRepository.findOrCreate(keywordType, uri = it)
             else
@@ -108,15 +108,15 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
         }?.filterNotNull()
     }
 
-    fun parse_jobcodes(rowValue: String?, parserFunction:
+    fun parseJobCodes(rowValue: String?, parserFunction:
         (codeParam: String) -> String?): List<JobCodeDao>? {
-        return split_field(rowValue)?.map {
+        return splitField(rowValue)?.map {
                 code -> jobCodeRepository.findByCodeOrCreate(parserFunction(code)!!)
         }
     }
 
-    fun parse_collections(rowValue: String?): List<CollectionDao>? {
-        return split_field(rowValue)?.filter { it.isNotBlank() }?.mapNotNull { collectionName ->
+    fun parseCollections(rowValue: String?): List<CollectionDao>? {
+        return splitField(rowValue)?.filter { it.isNotBlank() }?.mapNotNull { collectionName ->
             val collection = collectionRepository.findByName(collectionName)
             collection ?:  collectionRepository.create(CollectionUpdateObject(name = collectionName, author = NullableFieldUpdate(keywordRepository.getDefaultAuthor())), user)
         }
@@ -149,22 +149,22 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
 
             category = row.skillCategory?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Category, value = it) }
 
-            keywords = parse_keywords(KeywordTypeEnum.Keyword, row.keywords)
-            standards = parse_keywords(KeywordTypeEnum.Standard, row.standards)
-            certifications = parse_keywords(KeywordTypeEnum.Certification, row.certifications)
-            employers = parse_keywords(KeywordTypeEnum.Employer, row.employer)
-            blsMajor = parse_jobcodes(row.blsMajors, JobCodeBreakout::majorCode)
-            blsMinor = parse_jobcodes(row.blsMinors, JobCodeBreakout::minorCode)
-            blsBroad = parse_jobcodes(row.blsBroads, JobCodeBreakout::broadCode)
-            blsDetailed = parse_jobcodes(row.blsDetaileds, JobCodeBreakout::detailedCode)
-            occupations = parse_jobcodes(row.jobRoles, JobCodeBreakout::jobRoleCode)
-            collections = parse_collections(row.collections)
+            keywords = parseKeywords(KeywordTypeEnum.Keyword, row.keywords)
+            standards = parseKeywords(KeywordTypeEnum.Standard, row.standards)
+            certifications = parseKeywords(KeywordTypeEnum.Certification, row.certifications)
+            employers = parseKeywords(KeywordTypeEnum.Employer, row.employer)
+            blsMajor = parseJobCodes(row.blsMajors, JobCodeBreakout::majorCode)
+            blsMinor = parseJobCodes(row.blsMinors, JobCodeBreakout::minorCode)
+            blsBroad = parseJobCodes(row.blsBroads, JobCodeBreakout::broadCode)
+            blsDetailed = parseJobCodes(row.blsDetaileds, JobCodeBreakout::detailedCode)
+            occupations = parseJobCodes(row.jobRoles, JobCodeBreakout::jobRoleCode)
+            collections = parseCollections(row.collections)
 
             if (row.alignmentTitle != null || row.alignmentUri != null) {
                 alignments = listOf( keywordRepository.findOrCreate(KeywordTypeEnum.Alignment, value = row.alignmentTitle, uri = row.alignmentUri) ).filterNotNull()
             }
 
-            val all_keywords = concatenate(keywords, standards, certifications, employers, alignments)
+            val allKeyWords = concatenate(keywords, standards, certifications, employers, alignments)
             val allJobcodes = concatenate(blsMajor,blsMinor,blsBroad,blsDetailed,occupations)
 
             if (row.skillName != null && row.skillStatement != null) {
@@ -172,7 +172,7 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
                     name = row.skillName!!,
                     statement = row.skillStatement!!,
                     category = NullableFieldUpdate(category),
-                    keywords = all_keywords?.let { ListFieldUpdate(add = it) },
+                    keywords = allKeyWords?.let { ListFieldUpdate(add = it) },
                     collections = collections?.let {ListFieldUpdate(add = it)},
                     jobCodes = allJobcodes?.let { ListFieldUpdate(add = it) },
                     author = NullableFieldUpdate(keywordRepository.getDefaultAuthor())

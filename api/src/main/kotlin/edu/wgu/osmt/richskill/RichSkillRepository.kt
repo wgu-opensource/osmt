@@ -275,7 +275,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
             }
         }
 
-        fun lookup_references(lud: ApiReferenceListUpdate, keywordType: KeywordTypeEnum) {
+        fun lookupReferences(lud: ApiReferenceListUpdate, keywordType: KeywordTypeEnum) {
             lud.add?.map {
                 keywordRepository.findOrCreate(keywordType, value = it.name, uri = it.id)
             }?.filterNotNull()?.let {
@@ -289,7 +289,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
             }
         }
 
-        fun lookup_alignments(lud: ApiAlignmentListUpdate, keywordType: KeywordTypeEnum) {
+        fun lookupAlignments(lud: ApiAlignmentListUpdate, keywordType: KeywordTypeEnum) {
             lud.add?.map {
                 keywordRepository.findOrCreate(keywordType, value = it.skillName, uri = it.id, framework = it.isPartOf?.name)
             }?.filterNotNull()?.let {
@@ -303,7 +303,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
             }
         }
 
-        fun lookup_keywords(slud: ApiStringListUpdate, keywordType: KeywordTypeEnum) {
+        fun lookupKeywords(slud: ApiStringListUpdate, keywordType: KeywordTypeEnum) {
             slud.add?.map {
                 keywordRepository.findOrCreate(keywordType, value = it)
             }?.filterNotNull()?.let {
@@ -327,11 +327,11 @@ class RichSkillRepositoryImpl @Autowired constructor(
             }?.let { jobsToRemove.addAll(it.filterNotNull()) }
         }
 
-        skillUpdate.keywords?.let { lookup_keywords(it, KeywordTypeEnum.Keyword) }
-        skillUpdate.certifications?.let { lookup_references(it, KeywordTypeEnum.Certification) }
-        skillUpdate.standards?.let { lookup_alignments(it, KeywordTypeEnum.Standard) }
-        skillUpdate.alignments?.let { lookup_alignments(it, KeywordTypeEnum.Alignment) }
-        skillUpdate.employers?.let { lookup_references(it, KeywordTypeEnum.Employer) }
+        skillUpdate.keywords?.let { lookupKeywords(it, KeywordTypeEnum.Keyword) }
+        skillUpdate.certifications?.let { lookupReferences(it, KeywordTypeEnum.Certification) }
+        skillUpdate.standards?.let { lookupAlignments(it, KeywordTypeEnum.Standard) }
+        skillUpdate.alignments?.let { lookupAlignments(it, KeywordTypeEnum.Alignment) }
+        skillUpdate.employers?.let { lookupReferences(it, KeywordTypeEnum.Employer) }
 
         val allKeywordsUpdate = if (addingKeywords.size > 0 || removingKeywords.size > 0) {
             ListFieldUpdate<KeywordDao>(
@@ -416,7 +416,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         var modifiedCount = 0
         var totalCount = 0
 
-        val publish_skill = { skillDao: RichSkillDescriptorDao, task: PublishTask ->
+        val publishSkill = { skillDao: RichSkillDescriptorDao, task: PublishTask ->
             val oldStatus = skillDao.publishStatus()
             if (oldStatus != task.publishStatus) {
                 val updateObj = RsdUpdateObject(id = skillDao.id.value, publishStatus = task.publishStatus)
@@ -427,11 +427,11 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         }
 
-        val handle_skill_dao = { skillDao: RichSkillDescriptorDao? ->
+        val handleSkillDao = { skillDao: RichSkillDescriptorDao? ->
             skillDao?.let {
                 // imported skills are readonly
                 if (it.importedFrom == null) {
-                    if (publish_skill(it, publishTask)) {
+                    if (publishSkill(it, publishTask)) {
                         modifiedCount += 1
                     }
                 }
@@ -441,7 +441,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         if (!publishTask.search.uuids.isNullOrEmpty()) {
             totalCount = publishTask.search.uuids.size
             publishTask.search.uuids.forEach { uuid ->
-                handle_skill_dao(this.findByUUID(uuid))
+                handleSkillDao(this.findByUUID(uuid))
             }
         } else {
             val searchHits = richSkillEsRepo.byApiSearch(
@@ -452,7 +452,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
             )
             totalCount = searchHits.totalHits.toInt()
             searchHits.forEach { hit ->
-                handle_skill_dao(this.findById(hit.content.id))
+                handleSkillDao(this.findById(hit.content.id))
             }
         }
 

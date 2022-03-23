@@ -334,11 +334,12 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                            <classifier>app-to-import</classifier>
+                            <classifier>lib</classifier>
                             <excludes>
                                 <exclude>**/edu/wgu/osmt/Application</exclude>
                                 <exclude>**/edu/wgu/osmt/ImportCommandRunner</exclude>
                                 <exclude>**/edu/wgu/osmt/security/SecurityConfig**</exclude>
+                                <exclude>**src/main/resources/ui/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>

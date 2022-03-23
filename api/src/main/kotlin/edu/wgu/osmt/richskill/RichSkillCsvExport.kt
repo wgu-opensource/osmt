@@ -8,7 +8,7 @@ import edu.wgu.osmt.jobcode.JobCodeBreakout
 
 class RichSkillCsvExport(
     private val appConfig: AppConfig
-): CsvResource<RichSkillAndCollections>("RichSkillCsvExport") {
+) : CsvResource<RichSkillAndCollections>("RichSkillCsvExport") {
     val listDelimiter = "; "
 
     override fun columnTranslations(data: List<RichSkillAndCollections>): Array<CsvColumn<RichSkillAndCollections>> {
@@ -26,29 +26,29 @@ class RichSkillCsvExport(
             CsvColumn("Broad Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::broadCode) },
             CsvColumn("Detailed Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::detailedCode) },
             CsvColumn("O*Net Job Codes") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::jobRoleCode) },
-            CsvColumn("Employers") { it.rs.employers.map {keyword -> keyword.value ?: ""}.joinToString(listDelimiter) }
+            CsvColumn("Employers") { it.rs.employers.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) }
         )
         val alignmentCount = data.map { s -> s.rs.alignments.size }.maxOrNull() ?: 0
         val alignmentColumns = (0 until alignmentCount).flatMap { i ->
-            val label = if (i > 0) " ${i+1}" else ""
+            val label = if (i > 0) " ${i + 1}" else ""
             listOf(
-                CsvColumn<RichSkillAndCollections>("Alignment${label} Name") { it.rs.alignments[i].value ?: "" },
-                CsvColumn<RichSkillAndCollections>("Alignment${label} URL") { it.rs.alignments[i].uri ?: "" },
-                CsvColumn<RichSkillAndCollections>("Alignment${label} Framework") { it.rs.alignments[i].framework ?: "" }
+                CsvColumn<RichSkillAndCollections>("Alignment${label} Name") { it.rs.alignments.getOrNull(i)?.value ?: "" },
+                CsvColumn<RichSkillAndCollections>("Alignment${label} URL") { it.rs.alignments.getOrNull(i)?.uri ?: "" },
+                CsvColumn<RichSkillAndCollections>("Alignment${label} Framework") { it.rs.alignments.getOrNull(i)?.framework ?: "" }
             )
         }
         return columns + alignmentColumns
     }
 
     private fun prepareJobCodePart(
-            codes: List<JobCode>,
-            partTransformation: (String) -> String?
+        codes: List<JobCode>,
+        partTransformation: (String) -> String?
     ): String = codes
-            .asSequence()
-            .map { it.code }
-            .map(partTransformation)
-            .filterNotNull()
-            .distinct()
-            .joinToString(listDelimiter)
+        .asSequence()
+        .map { it.code }
+        .map(partTransformation)
+        .filterNotNull()
+        .distinct()
+        .joinToString(listDelimiter)
 
-    }
+}

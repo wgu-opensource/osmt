@@ -323,6 +323,30 @@
                 </dependencies>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>build-api-jar</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <classifier>lib</classifier>
+                            <excludes>
+                                <exclude>**/edu/wgu/osmt/Application</exclude>
+                                <exclude>**/edu/wgu/osmt/ImportCommandRunner</exclude>
+                                <exclude>**/edu/wgu/osmt/security/SecurityConfig**</exclude>
+                                <exclude>**src/main/resources/ui/**</exclude>
+                                <exclude>**src/main/resources/config/application-oauth2-okta.properties</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${flywaydb.version}</version>

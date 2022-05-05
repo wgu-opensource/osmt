@@ -340,6 +340,7 @@
                                 <exclude>**/edu/wgu/osmt/ImportCommandRunner</exclude>
                                 <exclude>**/edu/wgu/osmt/security/SecurityConfig**</exclude>
                                 <exclude>**src/main/resources/ui/**</exclude>
+                                <exclude>**src/main/resources/config/application-oauth2-okta.properties</exclude>
                             </excludes>
                         </configuration>
                     </execution>

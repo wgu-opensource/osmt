@@ -87,11 +87,14 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
   }
 
   handleClickAddCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    const selectedSkills = this.getSelectedSkills(skill)
+
     this.router.navigate(["/collections/add-skills"], {
+      // If there are selected skills, use them.  Otherwise, use the search results.
       state: {
-        selectedSkills: this.getSelectedSkills(skill),
-        totalCount: this.totalCount,
-        search: this.apiSearch
+        selectedSkills,
+        totalCount: selectedSkills?.length ? selectedSkills?.length : this.totalCount,
+        search: selectedSkills?.length ? null : this.apiSearch
       } as ExtrasSelectedSkillsState
     })
     return false

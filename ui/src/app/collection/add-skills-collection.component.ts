@@ -161,8 +161,19 @@ export class AddSkillsCollectionComponent extends Whitelabelled implements OnIni
   private handleSelectCollection(action: TableActionDefinition, collection?: ApiCollectionSummary): boolean {
     if (collection?.uuid === undefined) { return false }
 
+    const selection: string[] | undefined = this.state?.selectedSkills?.map(it => it.uuid)
+
+    let toAdd
+    // If there are selected skills, use them.  Otherwise, use the search results.
+    if (selection !== undefined && selection?.length > 0) {
+      toAdd = new ApiSearch({ uuids: selection })
+    }
+    else {
+      toAdd = (this.state?.search !== undefined) ? this.state?.search : new ApiSearch({ uuids: selection })
+    }
+
     const update = new ApiSkillListUpdate({
-      add: (this.state?.search !== undefined) ? this.state?.search : new ApiSearch({uuids: this.state?.selectedSkills?.map(it => it.uuid) })
+      add: toAdd
     })
 
     this.toastService.showBlockingLoader()

@@ -11,14 +11,18 @@ import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.db.ARCHIVED
 import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.db.UNARCHIVED
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.keyword.KeywordDao
+import edu.wgu.osmt.security.OAuth2Helper
 import edu.wgu.osmt.security.OAuth2Helper.readableUsername
 import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
@@ -125,6 +129,29 @@ class RichSkillController @Autowired constructor(
         @RequestBody skillUpdate: ApiSkillUpdate,
         @AuthenticationPrincipal user: Jwt?
     ): ApiSkill {
+
+//        val roles = SecurityContextHolder.getContext().authentication.authorities.toString()
+//        val status = skillUpdate.publishStatus.toString()
+
+//        //TODO: Extract the value of role and scope to a confi file.
+//        if ((roles.contains(appConfig.roleCurator)) && (status.lowercase() !in listOf(
+//                ARCHIVED,
+//                UNARCHIVED
+//            ))
+//        ) {
+//            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+//        }
+
+
+
+        if (OAuth2Helper.hasRole(appConfig.roleCurator) && !OAuth2Helper.isArchiveRelated(skillUpdate.publishStatus)) {
+                throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        }
+
+
+
+
+
         val existingSkill = richSkillRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 

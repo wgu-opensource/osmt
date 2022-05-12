@@ -22,12 +22,6 @@ object OAuth2Helper {
     }
 
     fun isArchiveRelated(status: PublishStatus, vararg statuses: PublishStatus): Boolean {
-        return (status != null) &&
-            status in listOf(
-                PublishStatus.Archived.apiValue,
-                PublishStatus.Unarchived.apiValue
-            )
-
-        statuses.any(it == s)
+        return (status != null) && statuses.any{it == status}
     }
 }

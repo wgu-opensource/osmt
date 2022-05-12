@@ -143,8 +143,7 @@ class RichSkillController @Autowired constructor(
 //        }
 
 
-
-        if (OAuth2Helper.hasRole(appConfig.roleCurator) && !OAuth2Helper.isArchiveRelated(skillUpdate.publishStatus)) {
+        if (OAuth2Helper.hasRole(appConfig.roleCurator) && !OAuth2Helper.isArchiveRelated(skillUpdate.publishStatus,listOf(ARCHIVED, UNARCHIVED) )) {
                 throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
 

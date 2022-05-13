@@ -1,6 +1,8 @@
 package edu.wgu.osmt.security
 
 import edu.wgu.osmt.db.PublishStatus
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.oauth2.jwt.Jwt
@@ -17,12 +19,20 @@ object OAuth2Helper {
     }
 
     fun hasRole(role: String): Boolean {
-        val roles = SecurityContextHolder.getContext().authentication.authorities.toString()
+//        val roles = SecurityContextHolder.getContext().authentication.authorities.toString()
+        val roles = getRoles()
         return roles.contains(role)
     }
 
     fun isArchiveRelated(status: PublishStatus?, statuses: List<PublishStatus>): Boolean {
         return (status != null) && statuses.any { it == status }
 //        return (status != null) && statuses.contains(status.toString())
+    }
+
+    fun getSecurityContext() : SecurityContext {
+        return SecurityContextHolder.getContext();
+    }
+    fun getRoles() : String {
+        return SecurityContextHolder.getContext().authentication.authorities.toString();
     }
 }

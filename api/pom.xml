@@ -287,6 +287,12 @@
             <artifactId>jackson-dataformat-xml</artifactId>
             <version>2.11.1</version>
         </dependency>
+        <dependency>
+            <groupId>io.mockk</groupId>
+            <artifactId>mockk</artifactId>
+            <version>1.12.4</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

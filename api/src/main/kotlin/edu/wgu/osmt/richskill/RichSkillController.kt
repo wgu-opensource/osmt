@@ -23,6 +23,7 @@ import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
@@ -141,7 +142,6 @@ class RichSkillController @Autowired constructor(
 //        ) {
 //            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
 //        }
-
 
         if (hasRole(appConfig.roleCurator) && !isArchiveRelated(skillUpdate.publishStatus,listOf(Archived, Unarchived) )) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)

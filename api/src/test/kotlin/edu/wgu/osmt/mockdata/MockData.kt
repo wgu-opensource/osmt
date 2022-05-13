@@ -247,7 +247,11 @@ class MockData {
             true,
             true,
             "https://rsd.openskillsnetwork.org/context-v1.json",
-            "http://localhost:4200"
+            "http://localhost:4200",
+             roleAdmin = "Osmt_Admin",
+             roleCurator = "Osmt_Curator",
+             roleView = "Osmt_View",
+             scopeRead = "SCOPE_osmt.read"
         )
     }
 

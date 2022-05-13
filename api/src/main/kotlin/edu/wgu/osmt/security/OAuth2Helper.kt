@@ -21,8 +21,8 @@ object OAuth2Helper {
         return roles.contains(role)
     }
 
-    fun isArchiveRelated(status: PublishStatus?, vararg statuses: List<String>): Boolean {
-        //return (status != null) && statuses.any{it == status}
-        return (status != null) && statuses.contains(status.toString())
+    fun isArchiveRelated(status: PublishStatus?, statuses: List<PublishStatus>): Boolean {
+        return (status != null) && statuses.any { it == status }
+//        return (status != null) && statuses.contains(status.toString())
     }
 }

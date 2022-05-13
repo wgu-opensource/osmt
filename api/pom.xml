@@ -141,7 +141,6 @@
             <artifactId>exposed-spring-boot-starter</artifactId>
             <version>${exposed.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.jetbrains.exposed</groupId>
             <artifactId>exposed-java-time</artifactId>
@@ -350,6 +349,7 @@
                                 <exclude>**/edu/wgu/osmt/ImportCommandRunner</exclude>
                                 <exclude>**/edu/wgu/osmt/security/SecurityConfig**</exclude>
                                 <exclude>**src/main/resources/ui/**</exclude>
+                                <exclude>**src/main/resources/config/application-oauth2-okta.properties</exclude>
                             </excludes>
                         </configuration>
                     </execution>

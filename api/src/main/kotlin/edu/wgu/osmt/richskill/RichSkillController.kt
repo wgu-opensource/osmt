@@ -130,25 +130,9 @@ class RichSkillController @Autowired constructor(
         @AuthenticationPrincipal user: Jwt?
     ): ApiSkill {
 
-//        val roles = SecurityContextHolder.getContext().authentication.authorities.toString()
-//        val status = skillUpdate.publishStatus.toString()
-
-//        //TODO: Extract the value of role and scope to a confi file.
-//        if ((roles.contains(appConfig.roleCurator)) && (status.lowercase() !in listOf(
-//                ARCHIVED,
-//                UNARCHIVED
-//            ))
-//        ) {
-//            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
-//        }
-
         if (hasRole(appConfig.roleCurator) && !isArchiveRelated(skillUpdate.publishStatus,listOf(Archived, Unarchived) )) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
-
-
-
-
 
         val existingSkill = richSkillRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)

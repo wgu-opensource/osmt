@@ -1,12 +1,13 @@
 package edu.wgu.osmt.security
 
 import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.db.PublishStatus.Archived
+import edu.wgu.osmt.db.PublishStatus.Unarchived
 import org.springframework.security.core.context.SecurityContext
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.oauth2.jwt.Jwt
 
-object OAuth2Helper {
+open class AuthHelper(val securityContext: SecurityContext) {
     val UNAUTHENTICATED_USERNAME = "unauthenticated"
 
     fun readableUsername(user: OAuth2User?, default: String = UNAUTHENTICATED_USERNAME): String {
@@ -18,18 +19,15 @@ object OAuth2Helper {
     }
 
     fun hasRole(role: String): Boolean {
-        val roles = getSecurityContext().authentication.authorities.toString()
-        return roles.contains(role)
+        val roles = securityContext.authentication.authorities.toString()
+        return roles.contains(role);
     }
 
-    fun isArchiveRelated(status: PublishStatus?, statuses: List<PublishStatus>): Boolean {
+    fun hasPublishStatus(status: PublishStatus?, statuses: List<PublishStatus>): Boolean {
         return (status != null) && statuses.any { it == status }
     }
 
-    /**
-     * Mock this method to facilitate JUnit testing
-     */
-    fun getSecurityContext() : SecurityContext {
-        return SecurityContextHolder.getContext();
+    fun isArchiveRelated(status: PublishStatus?): Boolean {
+        return hasPublishStatus(status, listOf(Archived, Unarchived))
     }
 }

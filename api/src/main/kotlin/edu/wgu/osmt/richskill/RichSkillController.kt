@@ -12,15 +12,12 @@ import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.db.PublishStatus.Archived
-import edu.wgu.osmt.db.PublishStatus.Unarchived
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.keyword.KeywordDao
-import edu.wgu.osmt.security.OAuth2Helper.hasRole
-import edu.wgu.osmt.security.OAuth2Helper.isArchiveRelated
-import edu.wgu.osmt.security.OAuth2Helper.readableUsername
+import edu.wgu.osmt.security.AuthHelper
 import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
@@ -39,6 +36,9 @@ class RichSkillController @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
     val appConfig: AppConfig
 ): HasAllPaginated<RichSkillDoc> {
+    @Lazy
+    @Autowired
+    lateinit var authHelper: AuthHelper
 
     override val elasticRepository = richSkillEsRepo
 
@@ -126,8 +126,7 @@ class RichSkillController @Autowired constructor(
     @ResponseBody
     fun updateSkill(
         @PathVariable uuid: String,
-        @RequestBody skillUpdate: ApiSkillUpdate,
-        @AuthenticationPrincipal user: Jwt?
+        @RequestBody skillUpdate: ApiSkillUpdate, @AuthenticationPrincipal user: Jwt?
     ): ApiSkill {
 
 //        val roles = SecurityContextHolder.getContext().authentication.authorities.toString()
@@ -142,7 +141,7 @@ class RichSkillController @Autowired constructor(
 //            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
 //        }
 
-        if (hasRole(appConfig.roleCurator) && !isArchiveRelated(skillUpdate.publishStatus,listOf(Archived, Unarchived) )) {
+        if (authHelper.hasRole(appConfig.roleCurator) && !authHelper.isArchiveRelated(skillUpdate.publishStatus)) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
 
@@ -154,7 +153,7 @@ class RichSkillController @Autowired constructor(
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
         val updatedSkill =
-            richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, readableUsername(user))
+            richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, authHelper.readableUsername(user))
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
         return ApiSkill.fromDao(updatedSkill, appConfig)
@@ -185,7 +184,7 @@ class RichSkillController @Autowired constructor(
             search,
             filterByStatus=filterStatuses,
             publishStatus = publishStatus,
-            userString = readableUsername(user),
+            userString = authHelper.readableUsername(user),
             collectionUuid = if (collectionUuid.isNullOrBlank()) null else collectionUuid
         )
 

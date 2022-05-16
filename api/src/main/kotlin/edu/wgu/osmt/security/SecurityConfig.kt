@@ -83,12 +83,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
                 // authorization required
                 .antMatchers(HttpMethod.POST, SKILLS_CREATE)
-                .hasAnyAuthority(
-                        appConfig.roleAdmin,
-                        appConfig.roleCurator,
-                        appConfig.roleView,
-                        appConfig.scopeRead
-                )
+                .hasAnyAuthority(appConfig.roleAdmin)
                 .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_UPDATE))
                 .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
                 .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_PUBLISH))
@@ -99,7 +94,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_PUBLISH))
                 .hasAnyAuthority(appConfig.roleAdmin)
                 .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_UPDATE))
-                .hasAnyAuthority(appConfig.roleAdmin)
+                .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
                 .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS_UPDATE))
                 .hasAnyAuthority(appConfig.roleAdmin)
                 .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_AUDIT_LOG)).permitAll()
@@ -124,10 +119,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
                 // catch-all
                 .antMatchers("/**").hasAnyAuthority(
-                        appConfig.roleAdmin,
-                        appConfig.roleCurator,
-                        appConfig.roleView,
-                        appConfig.scopeRead
+                    appConfig.roleAdmin,
+                    appConfig.roleCurator,
+                    appConfig.roleView,
+                    appConfig.scopeRead
                 )
                 .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
                 //.and().oauth2Login().successHandler(redirectToFrontend)

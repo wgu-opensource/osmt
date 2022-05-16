@@ -98,6 +98,11 @@ class CollectionController @Autowired constructor(
         @RequestBody apiUpdate: ApiCollectionUpdate,
         @AuthenticationPrincipal user: Jwt?
     ): ApiCollection {
+
+        if (authHelper.hasRole(appConfig.roleCurator) && !authHelper.isArchiveRelated(apiUpdate.publishStatus)) {
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        }
+
         val existing = collectionRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 

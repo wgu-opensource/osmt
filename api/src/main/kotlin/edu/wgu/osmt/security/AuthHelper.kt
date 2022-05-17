@@ -6,28 +6,37 @@ import edu.wgu.osmt.db.PublishStatus.Unarchived
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.oauth2.jwt.Jwt
+import edu.wgu.osmt.config.UNAUTHENTICATED_USERNAME
 
-open class AuthHelper(val securityContext: SecurityContext) {
-    val UNAUTHENTICATED_USERNAME = "unauthenticated"
 
-    fun readableUsername(user: OAuth2User?, default: String = UNAUTHENTICATED_USERNAME): String {
+interface AuthHelper {
+    fun readableUsername(user: OAuth2User?, default: String = UNAUTHENTICATED_USERNAME): String
+    fun readableUsername(jwt: Jwt?, default: String = UNAUTHENTICATED_USERNAME): String
+    fun hasRole(role: String): Boolean
+    fun hasPublishStatus(status: PublishStatus?, statuses: List<PublishStatus>): Boolean
+    fun isArchiveRelated(status: PublishStatus?): Boolean
+}
+
+class AuthHelperImpl(val securityContext: SecurityContext) : AuthHelper {
+
+    override fun readableUsername(user: OAuth2User?, default: String): String {
         return user?.name ?: default
     }
 
-    fun readableUsername(jwt: Jwt?, default: String = UNAUTHENTICATED_USERNAME): String {
+    override fun readableUsername(jwt: Jwt?, default: String): String {
         return jwt?.claims?.get("name") as String? ?: default
     }
 
-    fun hasRole(role: String): Boolean {
+    override fun hasRole(role: String): Boolean {
         val roles = securityContext.authentication.authorities.toString()
         return roles.contains(role);
     }
 
-    fun hasPublishStatus(status: PublishStatus?, statuses: List<PublishStatus>): Boolean {
+    override fun hasPublishStatus(status: PublishStatus?, statuses: List<PublishStatus>): Boolean {
         return (status != null) && statuses.any { it == status }
     }
 
-    fun isArchiveRelated(status: PublishStatus?): Boolean {
+    override fun isArchiveRelated(status: PublishStatus?): Boolean {
         return hasPublishStatus(status, listOf(Archived, Unarchived))
     }
 }

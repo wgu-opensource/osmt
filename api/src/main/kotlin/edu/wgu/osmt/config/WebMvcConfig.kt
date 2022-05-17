@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.util.StdDateFormat
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import edu.wgu.osmt.security.AuthHelper
+import edu.wgu.osmt.security.*
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters
@@ -38,7 +38,8 @@ class WebMvcConfig : WebMvcConfigurer {
 
     @Lazy
     @Bean
-    fun getOauth2Helper(): AuthHelper {
-        return AuthHelper(SecurityContextHolder.getContext())
+    fun getAuthHelper(): AuthHelper {
+        println("AuthHelper creation")
+        return AuthHelperImpl(SecurityContextHolder.getContext())
     }
 }

@@ -15,7 +15,7 @@ internal class AuthHelperTest {
 
     @BeforeEach
     fun setUp() {
-        helper = AuthHelper(securityContext)
+        helper = AuthHelperImpl(securityContext)
     }
 
     @Test

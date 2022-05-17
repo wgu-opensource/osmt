@@ -14,7 +14,7 @@ import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.keyword.KeywordDao
-import edu.wgu.osmt.security.AuthHelper
+import edu.wgu.osmt.security.*
 import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -36,8 +36,9 @@ class RichSkillController @Autowired constructor(
     val auditLogRepository: AuditLogRepository,
     val appConfig: AppConfig
 ): HasAllPaginated<RichSkillDoc> {
-    @Lazy
+
     @Autowired
+    @Lazy
     lateinit var authHelper: AuthHelper
 
     override val elasticRepository = richSkillEsRepo

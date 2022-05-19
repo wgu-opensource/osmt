@@ -11,10 +11,9 @@ import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.richskill.RichSkillRepository
-import edu.wgu.osmt.security.AuthHelper
+import edu.wgu.osmt.security.AuthHelperService
 import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Lazy
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -38,7 +37,7 @@ class CollectionController @Autowired constructor(
     val appConfig: AppConfig
 ): HasAllPaginated<CollectionDoc> {
     @Autowired
-    lateinit var authHelper: AuthHelper
+    lateinit var authHelperService: AuthHelperService
 
     override val elasticRepository = collectionEsRepo
 
@@ -83,7 +82,7 @@ class CollectionController @Autowired constructor(
         return collectionRepository.createFromApi(
             apiCollectionUpdates,
             richSkillRepository,
-            authHelper.readableUsername(user)
+            authHelperService.readableUsername(user)
         ).map {
             ApiCollection.fromDao(it, appConfig)
         }
@@ -98,7 +97,7 @@ class CollectionController @Autowired constructor(
         @AuthenticationPrincipal user: Jwt?
     ): ApiCollection {
 
-        if (authHelper.hasRole(appConfig.roleCurator) && !authHelper.isArchiveRelated(apiUpdate.publishStatus)) {
+        if (authHelperService.hasRole(appConfig.roleCurator) && !authHelperService.isArchiveRelated(apiUpdate.publishStatus)) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
 
@@ -109,7 +108,7 @@ class CollectionController @Autowired constructor(
             existing.id.value,
             apiUpdate,
             richSkillRepository,
-            authHelper.readableUsername(user)
+            authHelperService.readableUsername(user)
         )
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
@@ -129,7 +128,7 @@ class CollectionController @Autowired constructor(
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = authHelper.readableUsername(user))
+        val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = authHelperService.readableUsername(user))
 
         taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
         return Task.processingResponse(task)
@@ -151,7 +150,7 @@ class CollectionController @Autowired constructor(
     ): HttpEntity<TaskResult> {
         val filterStatuses = filterByStatus.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val publishStatus = PublishStatus.forApiValue(newStatus) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
-        val task = PublishTask(AppliesToType.Collection, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = authHelper.readableUsername(user))
+        val task = PublishTask(AppliesToType.Collection, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = authHelperService.readableUsername(user))
 
         taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
         return Task.processingResponse(task)

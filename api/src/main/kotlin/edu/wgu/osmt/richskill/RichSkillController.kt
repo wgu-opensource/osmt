@@ -17,7 +17,6 @@ import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.security.*
 import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Lazy
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
@@ -38,7 +37,7 @@ class RichSkillController @Autowired constructor(
 ): HasAllPaginated<RichSkillDoc> {
 
     @Autowired
-    lateinit var authHelper: AuthHelper
+    lateinit var authHelperService: AuthHelperService
 
     override val elasticRepository = richSkillEsRepo
 
@@ -129,7 +128,7 @@ class RichSkillController @Autowired constructor(
         @RequestBody skillUpdate: ApiSkillUpdate, @AuthenticationPrincipal user: Jwt?
     ): ApiSkill {
 
-        if (authHelper.hasRole(appConfig.roleCurator) && !authHelper.isArchiveRelated(skillUpdate.publishStatus)) {
+        if (authHelperService.hasRole(appConfig.roleCurator) && !authHelperService.isArchiveRelated(skillUpdate.publishStatus)) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
 
@@ -137,7 +136,7 @@ class RichSkillController @Autowired constructor(
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
         val updatedSkill =
-            richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, authHelper.readableUsername(user))
+            richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, authHelperService.readableUsername(user))
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
         return ApiSkill.fromDao(updatedSkill, appConfig)
@@ -168,7 +167,7 @@ class RichSkillController @Autowired constructor(
             search,
             filterByStatus=filterStatuses,
             publishStatus = publishStatus,
-            userString = authHelper.readableUsername(user),
+            userString = authHelperService.readableUsername(user),
             collectionUuid = if (collectionUuid.isNullOrBlank()) null else collectionUuid
         )
 

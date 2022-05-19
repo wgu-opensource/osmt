@@ -4,23 +4,14 @@ import edu.wgu.osmt.config.UNAUTHENTICATED_USERNAME
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.db.PublishStatus.Archived
 import edu.wgu.osmt.db.PublishStatus.Unarchived
-import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.oauth2.jwt.Jwt
 
-//
-//interface AuthHelper {
-//    fun readableUsername(user: OAuth2User?, default: String = UNAUTHENTICATED_USERNAME): String
-//    fun readableUsername(jwt: Jwt?, default: String = UNAUTHENTICATED_USERNAME): String
-//    fun hasRole(role: String): Boolean
-//    fun hasPublishStatus(status: PublishStatus?, statuses: List<PublishStatus>): Boolean
-//    fun isArchiveRelated(status: PublishStatus?): Boolean
-//}
 
 @Service
-class AuthHelper {
+class AuthHelperService {
 
     fun readableUsername(user: OAuth2User?, default: String = UNAUTHENTICATED_USERNAME): String {
         return user?.name ?: default

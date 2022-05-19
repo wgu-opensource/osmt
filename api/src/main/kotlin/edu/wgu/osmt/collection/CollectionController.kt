@@ -34,11 +34,9 @@ class CollectionController @Autowired constructor(
     val taskMessageService: TaskMessageService,
     val auditLogRepository: AuditLogRepository,
     val collectionEsRepo: CollectionEsRepo,
-    val appConfig: AppConfig
+    val appConfig: AppConfig,
+    val authHelperService: AuthHelperService
 ): HasAllPaginated<CollectionDoc> {
-    @Autowired
-    lateinit var authHelperService: AuthHelperService
-
     override val elasticRepository = collectionEsRepo
 
     override val allPaginatedPath: String = RoutePaths.COLLECTIONS_LIST

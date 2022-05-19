@@ -33,12 +33,9 @@ class RichSkillController @Autowired constructor(
     val taskMessageService: TaskMessageService,
     val richSkillEsRepo: RichSkillEsRepo,
     val auditLogRepository: AuditLogRepository,
-    val appConfig: AppConfig
+    val appConfig: AppConfig,
+    val authHelperService: AuthHelperService
 ): HasAllPaginated<RichSkillDoc> {
-
-    @Autowired
-    lateinit var authHelperService: AuthHelperService
-
     override val elasticRepository = richSkillEsRepo
 
     val keywordDao = KeywordDao.Companion

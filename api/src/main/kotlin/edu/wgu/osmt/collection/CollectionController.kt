@@ -38,7 +38,6 @@ class CollectionController @Autowired constructor(
     val appConfig: AppConfig
 ): HasAllPaginated<CollectionDoc> {
     @Autowired
-    @Lazy
     lateinit var authHelper: AuthHelper
 
     override val elasticRepository = collectionEsRepo

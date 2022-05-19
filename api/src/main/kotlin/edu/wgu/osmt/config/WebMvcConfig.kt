@@ -36,10 +36,10 @@ class WebMvcConfig : WebMvcConfigurer {
             .ifAvailable({ customConverters -> converters.addAll(customConverters.getConverters()) })
     }
 
-    @Lazy
-    @Bean
-    fun getAuthHelper(): AuthHelper {
-        println("AuthHelper creation")
-        return AuthHelperImpl(SecurityContextHolder.getContext())
-    }
+//    @Lazy
+//    @Bean
+//    fun getAuthHelper(): AuthHelper {
+//        println("AuthHelper creation")
+//        return AuthHelperImpl(SecurityContextHolder.getContext())
+//    }
 }

@@ -3,24 +3,25 @@ package edu.wgu.osmt.security
 import edu.wgu.osmt.db.PublishStatus.*
 import io.mockk.every
 import io.mockk.mockk
+
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
 
 internal class AuthHelperTest {
-    val securityContext: SecurityContext = mockk()
+    val contextHolder: mockkStatic(SecurityContextHolder::class)
     lateinit var helper: AuthHelper
 
     @BeforeEach
     fun setUp() {
-        helper = AuthHelperImpl(securityContext)
+        helper = AuthHelper()
     }
 
     @Test
     fun hasRole_emptyStr() {
-        every { securityContext.authentication.authorities.toString() } returns ""
+        every { contextHolder.context.authentication.authorities.toString() } returns ""
 
         assertFalse(helper.hasRole("ROLE_NGP_Osmt_Admin"))
         assertTrue(helper.hasRole(""))
@@ -28,7 +29,7 @@ internal class AuthHelperTest {
 
     @Test
     fun hasRole() {
-        every { securityContext.authentication.authorities.toString() } returns "[ROLE_NGP_Staff, ROLE_NGP_Osmt_Admin]"
+        every { contextHolder.context.authentication.authorities.toString() } returns "[ROLE_NGP_Staff, ROLE_NGP_Osmt_Admin]"
         assertFalse(helper.hasRole("blah"))
         assertTrue(helper.hasRole("ROLE_NGP_Osmt_Admin"))
     }

@@ -38,7 +38,6 @@ class RichSkillController @Autowired constructor(
 ): HasAllPaginated<RichSkillDoc> {
 
     @Autowired
-    @Lazy
     lateinit var authHelper: AuthHelper
 
     override val elasticRepository = richSkillEsRepo

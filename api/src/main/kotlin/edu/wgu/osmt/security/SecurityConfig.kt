@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import org.springframework.core.annotation.Order
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -58,8 +57,7 @@ import javax.servlet.http.HttpServletResponse
  */
 @Configuration
 @EnableWebSecurity
-@Profile("oauth2")
-@Order(101)
+@Profile("oauth2-okta | oauth2-custom")
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
@@ -165,7 +163,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
 
 @Component
-@Profile("oauth2")
 class RedirectToFrontend : AuthenticationSuccessHandler {
     @Autowired
     lateinit var appConfig: AppConfig
@@ -184,7 +181,6 @@ class RedirectToFrontend : AuthenticationSuccessHandler {
 }
 
 @Component
-@Profile("oauth2")
 class ReturnUnauthorized : AuthenticationEntryPoint {
     override fun commence(request: HttpServletRequest?, response: HttpServletResponse?, authentication: AuthenticationException?) {
         response?.let {

@@ -78,14 +78,14 @@
             <artifactId>rqueue-spring-boot-starter</artifactId>
             <version>2.0.4-RELEASE</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-jose</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-resource-server</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.security</groupId>-->
+<!--            <artifactId>spring-security-oauth2-jose</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.security</groupId>-->
+<!--            <artifactId>spring-security-oauth2-resource-server</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
@@ -141,11 +141,11 @@
             <artifactId>exposed-spring-boot-starter</artifactId>
             <version>${exposed.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.okta.spring</groupId>-->
-<!--            <artifactId>okta-spring-boot-starter</artifactId>-->
-<!--            <version>${okta.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.okta.spring</groupId>
+            <artifactId>okta-spring-boot-starter</artifactId>
+            <version>${okta.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.jetbrains.exposed</groupId>
             <artifactId>exposed-java-time</artifactId>
@@ -352,9 +352,9 @@
                             <excludes>
                                 <exclude>**/edu/wgu/osmt/Application</exclude>
                                 <exclude>**/edu/wgu/osmt/ImportCommandRunner</exclude>
-                                <exclude>**/edu/wgu/osmt/security/SecurityConfig**</exclude>
-                                <exclude>**src/main/resources/ui/**</exclude>
-                                <exclude>**src/main/resources/config/application-oauth2-okta.properties</exclude>
+<!--                                <exclude>**/edu/wgu/osmt/security/SecurityConfig**</exclude>-->
+                                <exclude>**/ui/**</exclude>
+                                <exclude>**/config/application-oauth2*</exclude>
                             </excludes>
                         </configuration>
                     </execution>

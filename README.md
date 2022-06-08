@@ -141,7 +141,9 @@ If doing front-end development, start the UI Angular front end. The Angular app 
   - Open your browser to `http://localhost:4200`.
 
 ### OAuth2 and Okta Configuration
-To use Okta as your OAuth2 provider, you will need a free developer account with [Okta](https://okta.com). While the user interface at Okta may change, the big ideas of configuring an application for an OAuth/OpenID Connect provider should still apply. From your Okta Dashboard:
+To use Okta as your OAuth2 provider, you will need a free developer account with [Okta Free Account](https://developer.okta.com/signup). While the user interface at Okta may change, the big ideas of configuring an application for an OAuth/OpenID Connect provider should still apply. From your Okta Dashboard:
+
+Before you start with these steps, you may be required to update your goals on the Okta website. 
 1. If given the option, navigate to the "Admin" section.
 2. Navigate to Applications. Create an Application Integration, using the "OpenID Connect" option. When prompted, choose the "Web Application" option. Okta should show you some kind of "New Web App Integration" screen. 
 3. Under the "General Settings" area:

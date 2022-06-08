@@ -37,9 +37,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.oauth2.core.oidc.user.OidcUser
-import org.springframework.security.oauth2.server.resource.authentication.DelegatingJwtGrantedAuthoritiesConverter
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.DefaultRedirectStrategy
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
@@ -71,76 +68,59 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Override
     override fun configure(http: HttpSecurity) {
-        val composite = DelegatingJwtGrantedAuthoritiesConverter(roles(), scopes())
-
         http
-                .cors().and()
-                .csrf().disable()
-                .httpBasic().disable()
-                .authorizeRequests()
+            .cors().and()
+            .csrf().disable()
+            .httpBasic().disable()
+            .authorizeRequests()
 
-                // authorization required
-                .antMatchers(HttpMethod.POST, SKILLS_CREATE)
-                .hasAnyAuthority(appConfig.roleAdmin)
-                .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_UPDATE))
-                .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
-                .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_PUBLISH))
-                .hasAnyAuthority(appConfig.roleAdmin)
-                .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_AUDIT_LOG)).authenticated()
-                .antMatchers(HttpMethod.POST, COLLECTION_CREATE)
-                .hasAnyAuthority(appConfig.roleAdmin)
-                .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_PUBLISH))
-                .hasAnyAuthority(appConfig.roleAdmin)
-                .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_UPDATE))
-                .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
-                .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS_UPDATE))
-                .hasAnyAuthority(appConfig.roleAdmin)
-                .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_AUDIT_LOG)).permitAll()
-                .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_SKILLS)).permitAll()
-                .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_BATCH)).permitAll()
+            // authorization required
+            .antMatchers(HttpMethod.POST, SKILLS_CREATE)
+            .hasAnyAuthority(appConfig.roleAdmin)
+            .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_UPDATE))
+            .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
+            .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_PUBLISH))
+            .hasAnyAuthority(appConfig.roleAdmin)
+            .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_AUDIT_LOG)).authenticated()
+            .antMatchers(HttpMethod.POST, COLLECTION_CREATE)
+            .hasAnyAuthority(appConfig.roleAdmin)
+            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_PUBLISH))
+            .hasAnyAuthority(appConfig.roleAdmin)
+            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_UPDATE))
+            .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
+            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS_UPDATE))
+            .hasAnyAuthority(appConfig.roleAdmin)
+            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_AUDIT_LOG)).permitAll()
+            .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_SKILLS)).permitAll()
+            .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_BATCH)).permitAll()
 
-                .antMatchers(HttpMethod.GET, SEARCH_JOBCODES_PATH).authenticated()
-                .antMatchers(HttpMethod.GET, SEARCH_KEYWORDS_PATH).authenticated()
+            .antMatchers(HttpMethod.GET, SEARCH_JOBCODES_PATH).authenticated()
+            .antMatchers(HttpMethod.GET, SEARCH_KEYWORDS_PATH).authenticated()
 
-                // public search endpoints
-                .antMatchers(HttpMethod.GET,  SKILLS_LIST).permitAll()
-                .antMatchers(HttpMethod.POST, SEARCH_SKILLS).permitAll()
-                .antMatchers(HttpMethod.GET,  COLLECTIONS_LIST).permitAll()
-                .antMatchers(HttpMethod.POST, SEARCH_COLLECTIONS).permitAll()
+            // public search endpoints
+            .antMatchers(HttpMethod.GET,  SKILLS_LIST).permitAll()
+            .antMatchers(HttpMethod.POST, SEARCH_SKILLS).permitAll()
+            .antMatchers(HttpMethod.GET,  COLLECTIONS_LIST).permitAll()
+            .antMatchers(HttpMethod.POST, SEARCH_COLLECTIONS).permitAll()
 
-                // public canonical URL endpoints
-                .antMatchers(HttpMethod.GET, scrubForConfigure(SKILL_DETAIL)).permitAll()
-                .antMatchers(HttpMethod.GET, scrubForConfigure(COLLECTION_DETAIL)).permitAll()
-                .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS)).permitAll()
-                .antMatchers(HttpMethod.GET, scrubForConfigure(COLLECTION_CSV)).permitAll()
-                .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_TEXT)).permitAll()   // public csv results
+            // public canonical URL endpoints
+            .antMatchers(HttpMethod.GET, scrubForConfigure(SKILL_DETAIL)).permitAll()
+            .antMatchers(HttpMethod.GET, scrubForConfigure(COLLECTION_DETAIL)).permitAll()
+            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS)).permitAll()
+            .antMatchers(HttpMethod.GET, scrubForConfigure(COLLECTION_CSV)).permitAll()
+            .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_TEXT)).permitAll()   // public csv results
 
-                // catch-all
-                .antMatchers("/**").hasAnyAuthority(
-                    appConfig.roleAdmin,
-                    appConfig.roleCurator,
-                    appConfig.roleView,
-                    appConfig.scopeRead
-                )
-                .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
-                //.and().oauth2Login().successHandler(redirectToFrontend)
-                .and().oauth2ResourceServer().jwt().jwtAuthenticationConverter { jwt ->
-                    JwtAuthenticationToken(
-                            jwt,
-                            composite.convert(jwt)
-                    )
-                }
-    }
-
-    fun roles(): JwtGrantedAuthoritiesConverter {
-        val authorities = JwtGrantedAuthoritiesConverter()
-        authorities.setAuthorityPrefix("ROLE_")
-        authorities.setAuthoritiesClaimName("roles")
-        return authorities
-    }
-
-    fun scopes(): JwtGrantedAuthoritiesConverter {
-        return JwtGrantedAuthoritiesConverter()
+            // catch-all
+            .antMatchers("/**").permitAll()
+//            .antMatchers("/**").hasAnyAuthority(
+//                appConfig.roleAdmin,
+//                appConfig.roleCurator,
+//                appConfig.roleView,
+//                appConfig.scopeRead
+//            )
+            .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
+            .and().oauth2Login().successHandler(redirectToFrontend)
+            .and().oauth2ResourceServer().jwt()
     }
 
     @Bean

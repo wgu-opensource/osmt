@@ -14,7 +14,10 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const loginUrl = AppConfig.settings.loginUrl
+    const loginUrl = AppConfig.settings.authUrl + "/as/authorization.oauth2?"
+      + "client_id=" + AppConfig.settings.clientId
+      + "&response_type=code"
+      + "&redirect_uri=" + AppConfig.settings.redirectUrl
 
     if (this.authService.isAuthenticated()) {
       this.router.navigate([""])

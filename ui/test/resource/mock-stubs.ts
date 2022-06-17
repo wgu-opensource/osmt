@@ -65,6 +65,12 @@ export class AuthServiceStub {  // TODO consider using real class
   public currentAuthToken(): string | null {
     return "fake-token"
   }
+  public getRole(): string | null {
+    return "NGP_Osmt_Admin"
+  }
+  public isAuthenticated(): boolean {
+    return true
+  }
 }
 
 export let SearchServiceData = {

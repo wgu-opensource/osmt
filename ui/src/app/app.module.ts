@@ -3,6 +3,7 @@ import {APP_INITIALIZER, NgModule} from "@angular/core"
 import {AppRoutingModule} from "./app-routing.module"
 import {AppComponent} from "./app.component"
 import {HttpClientModule} from "@angular/common/http"
+import { LoginSuccessComponent } from "./auth/login-success.component"
 import {EnvironmentService} from "./core/environment.service"
 import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-library.component"
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
@@ -113,6 +114,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     ToastComponent,
     SystemMessageComponent,
     LogoutComponent,
+    LoginSuccessComponent,
 
     // Rich skill form
     RichSkillFormComponent,

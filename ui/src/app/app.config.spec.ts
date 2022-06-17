@@ -1,14 +1,13 @@
 import {AppConfig} from "./app.config"
 import {getTestBed, TestBed} from "@angular/core/testing"
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing"
+import {EnvironmentService} from "./core/environment.service"
 import {IAppConfig} from "./models/app-config.model"
-import {environment} from "../environments/environment"
-import {APP_INITIALIZER} from "@angular/core"
-import {initializeApp} from "./app.module"
 
 describe("AppConfig", () => {
   let injector: TestBed
-  let service: AppConfig
+  let environmentService: EnvironmentService
+  let settingsService: AppConfig
   let httpMock: HttpTestingController
 
   beforeEach(() => {
@@ -16,13 +15,16 @@ describe("AppConfig", () => {
       imports: [HttpClientTestingModule],
       providers: [
         AppConfig,
-        { provide: APP_INITIALIZER,
-          useFactory: initializeApp,
-          deps: [AppConfig], multi: true }
+        EnvironmentService,
       ]
     })
+
+    const appConfig = TestBed.inject(AppConfig)
+    AppConfig.settings = appConfig.defaultConfig()
+
     injector = getTestBed()
-    service = TestBed.inject(AppConfig)
+    environmentService = TestBed.inject(EnvironmentService)
+    settingsService = TestBed.inject(AppConfig)
     httpMock = TestBed.inject(HttpTestingController)
   })
 
@@ -47,14 +49,20 @@ describe("AppConfig", () => {
         publicSkillTitle: "",
         toolName: "",
         toolNameLong: "",
-        loginUrl: "",
-        idleTimeoutInSeconds: 300
+        clientId: "",
+        clientIdHash: "",
+        authUrl: "https://id.sbx.wgu.edu",
+        logoutUrl: "https://id.sbx.wgu.edu/idp/startSLO.ping?redirect_url=\"https://localhost:4200\"",
+        redirectUrl: "http://localhost:4200/login/success",
+        idleTimeoutInSeconds: 300,
+        dynamicWhitelabel: true
       }
 
-      environment.baseApiUrl = expectedApiUrl
-      environment.dynamicWhitelabel = false
+      environmentService.environment.baseApiUrl = expectedApiUrl
+      environmentService.environment.dynamicWhitelabel = false
 
-      service.load().finally(() => {
+      settingsService.load().finally(() => {
+        expect(environmentService.environment.baseApiUrl).toBe(dummyConfig.baseApiUrl)
         expect(AppConfig.settings.baseApiUrl).toBe(dummyConfig.baseApiUrl)
       })
 

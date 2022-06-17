@@ -21,6 +21,9 @@ import {PublishCollectionComponent} from "./collection/detail/publish-collection
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component";
 import {BatchImportComponent} from "./richskill/import/batch-import.component";
 
+export const OSMT_ADMIN = "NGP_Osmt_Admin"
+export const OSMT_CURATOR = "NGP_Osmt_Curator"
+
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
 
@@ -30,6 +33,9 @@ const routes: Routes = [
   {path: "skills/create",
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
+    data: {
+      roles: [OSMT_ADMIN, OSMT_CURATOR]
+    },
     canDeactivate: [FormDirtyGuard]
   },
   // skill search results
@@ -41,6 +47,9 @@ const routes: Routes = [
   {path: "skills/:uuid/edit",
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
+    data: {
+      roles: [OSMT_ADMIN]
+    },
     canDeactivate: [FormDirtyGuard]
   },
   // clone skill
@@ -63,6 +72,9 @@ const routes: Routes = [
   {path: "skills/import",
     component: BatchImportComponent,
     canActivate: [AuthGuard],
+    data: {
+      roles: [OSMT_ADMIN, OSMT_CURATOR]
+    },
   },
 
   /* COLLECTIONS */
@@ -71,6 +83,9 @@ const routes: Routes = [
   {path: "collections/create",
     component: CollectionFormComponent,
     canActivate: [AuthGuard],
+    data: {
+      roles: [OSMT_ADMIN, OSMT_CURATOR]
+    },
     canDeactivate: [FormDirtyGuard]
   },
   // collection search results
@@ -82,6 +97,9 @@ const routes: Routes = [
   {path: "collections/:uuid/edit",
     component: CollectionFormComponent,
     canActivate: [AuthGuard],
+    data: {
+      roles: [OSMT_ADMIN]
+    },
     canDeactivate: [FormDirtyGuard]
   },
   // manage collection
@@ -92,12 +110,18 @@ const routes: Routes = [
   // publish collection guard wizard
   {path: "collections/:uuid/publish",
     component: PublishCollectionComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: {
+      roles: [OSMT_ADMIN]
+    },
   },
   // find skills to add to a collection
   {path: "collections/:uuid/add-skills",
     component: CollectionSkillSearchComponent,
     canActivate: [AuthGuard],
+    data: {
+      roles: [OSMT_ADMIN]
+    },
   },
   // find a collection to add a selection of skills to
   {path: "collections/add-skills",

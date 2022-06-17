@@ -1,0 +1,13 @@
+{
+  "Common": {
+    "ApplicationName": "osmt-ui",
+    "ApplicationHostname": "osmt",
+    "ProductTeam": "Diamond",
+    "RootObject": "index.html",
+    "DefaultTTL": 300
+  },
+  "Sandbox": {},
+  "Development": {},
+  "Stage": {},
+  "Production": {}
+}

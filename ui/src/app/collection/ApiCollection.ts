@@ -4,7 +4,7 @@ import {IStringListUpdate} from "../richskill/ApiSkillUpdate"
 export interface ICollection {
   archiveDate?: Date
   author?: string
-  creationDate?: Date
+  creationDate?: Date   // TODO: Type mismatch with dates in ISkill interface.  Why?
   creator: string
   id: string
   name: string

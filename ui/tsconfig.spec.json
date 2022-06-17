@@ -6,6 +6,10 @@
     "types": [
       "jasmine"
     ]
+/*
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true
+*/
   },
   "files": [
     "src/test.ts",

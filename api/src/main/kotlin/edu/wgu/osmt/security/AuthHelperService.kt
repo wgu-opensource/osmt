@@ -27,7 +27,7 @@ class AuthHelperService {
     }
 
     fun hasPublishStatus(status: PublishStatus?, statuses: List<PublishStatus>): Boolean {
-        return (status != null) && statuses.any { it == status }
+        return (status == null) || statuses.any { it == status }
     }
 
     fun isArchiveRelated(status: PublishStatus?): Boolean {

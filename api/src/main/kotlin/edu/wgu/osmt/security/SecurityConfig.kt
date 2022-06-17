@@ -37,6 +37,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.oauth2.core.oidc.user.OidcUser
+import org.springframework.security.oauth2.server.resource.authentication.DelegatingJwtGrantedAuthoritiesConverter
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.DefaultRedirectStrategy
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
@@ -76,20 +79,20 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
             // authorization required
             .antMatchers(HttpMethod.POST, SKILLS_CREATE)
-            .hasAnyAuthority(appConfig.roleAdmin)
+                .hasAnyAuthority(appConfig.roleAdmin)
             .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_UPDATE))
-            .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
+                .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
             .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_PUBLISH))
-            .hasAnyAuthority(appConfig.roleAdmin)
+                .hasAnyAuthority(appConfig.roleAdmin)
             .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_AUDIT_LOG)).authenticated()
             .antMatchers(HttpMethod.POST, COLLECTION_CREATE)
-            .hasAnyAuthority(appConfig.roleAdmin)
+                .hasAnyAuthority(appConfig.roleAdmin)
             .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_PUBLISH))
-            .hasAnyAuthority(appConfig.roleAdmin)
+                .hasAnyAuthority(appConfig.roleAdmin)
             .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_UPDATE))
-            .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
+                .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
             .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS_UPDATE))
-            .hasAnyAuthority(appConfig.roleAdmin)
+                .hasAnyAuthority(appConfig.roleAdmin)
             .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_AUDIT_LOG)).permitAll()
             .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_SKILLS)).permitAll()
             .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_BATCH)).permitAll()
@@ -97,10 +100,13 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers(HttpMethod.GET, SEARCH_JOBCODES_PATH).authenticated()
             .antMatchers(HttpMethod.GET, SEARCH_KEYWORDS_PATH).authenticated()
 
+            .antMatchers(HttpMethod.GET,  SKILLS_LIST)
+                .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator, appConfig.roleView, appConfig.scopeRead)
+            .antMatchers(HttpMethod.GET,  COLLECTIONS_LIST)
+                .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator, appConfig.roleView, appConfig.scopeRead)
+
             // public search endpoints
-            .antMatchers(HttpMethod.GET,  SKILLS_LIST).permitAll()
             .antMatchers(HttpMethod.POST, SEARCH_SKILLS).permitAll()
-            .antMatchers(HttpMethod.GET,  COLLECTIONS_LIST).permitAll()
             .antMatchers(HttpMethod.POST, SEARCH_COLLECTIONS).permitAll()
 
             // public canonical URL endpoints
@@ -112,12 +118,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
             // catch-all
             .antMatchers("/**").permitAll()
-//            .antMatchers("/**").hasAnyAuthority(
-//                appConfig.roleAdmin,
-//                appConfig.roleCurator,
-//                appConfig.roleView,
-//                appConfig.scopeRead
-//            )
+
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
             .and().oauth2Login().successHandler(redirectToFrontend)
             .and().oauth2ResourceServer().jwt()

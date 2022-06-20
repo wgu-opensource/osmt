@@ -59,6 +59,6 @@ internal class AuthHelperServiceTest {
     }
     @Test
     fun isArchiveRelated_null() {
-        assertFalse(helper.isArchiveRelated(null))
+        assertTrue(helper.isArchiveRelated(null))
     }
 }

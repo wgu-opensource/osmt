@@ -18,6 +18,7 @@ import edu.wgu.osmt.security.*
 import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
@@ -44,6 +45,7 @@ class RichSkillController @Autowired constructor(
     override val sortOrderCompanion = SkillSortEnum.Companion
 
     @GetMapping(RoutePaths.SKILLS_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PreAuthorize("isAuthenticated() and hasAnyAuthority(@AppConfig.roleAdmin, @AppConfig.roleCurator, @AppConfig.roleView)")
     @ResponseBody
     override fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -60,6 +62,7 @@ class RichSkillController @Autowired constructor(
     }
 
     @PostMapping(RoutePaths.SKILLS_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PreAuthorize("isAuthenticated() and hasAnyAuthority(@AppConfig.roleAdmin)")
     @ResponseBody
     fun createSkills(
         @RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
@@ -119,6 +122,7 @@ class RichSkillController @Autowired constructor(
     }
 
     @PostMapping(RoutePaths.SKILL_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PreAuthorize("isAuthenticated() and hasAnyAuthority(@AppConfig.roleAdmin, @AppConfig.roleCurator)")
     @ResponseBody
     fun updateSkill(
         @PathVariable uuid: String,
@@ -140,6 +144,7 @@ class RichSkillController @Autowired constructor(
     }
 
     @PostMapping(RoutePaths.SKILL_PUBLISH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PreAuthorize("isAuthenticated() and hasAnyAuthority(@AppConfig.roleAdmin)")
     @ResponseBody
     fun publishSkills(
         @RequestBody search: ApiSearch,

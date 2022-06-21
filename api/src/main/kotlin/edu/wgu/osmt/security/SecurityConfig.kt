@@ -31,6 +31,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpMethod
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -57,6 +58,7 @@ import javax.servlet.http.HttpServletResponse
  */
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @Profile("oauth2-okta | oauth2-custom")
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
@@ -78,21 +80,21 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .authorizeRequests()
 
             // authorization required
-            .antMatchers(HttpMethod.POST, SKILLS_CREATE)
-                .hasAnyAuthority(appConfig.roleAdmin)
-            .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_UPDATE))
-                .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
-            .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_PUBLISH))
-                .hasAnyAuthority(appConfig.roleAdmin)
+          //  .antMatchers(HttpMethod.POST, SKILLS_CREATE)
+           //     .hasAnyAuthority(appConfig.roleAdmin)
+          //  .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_UPDATE))
+           //     .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
+           // .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_PUBLISH))
+            //    .hasAnyAuthority(appConfig.roleAdmin)
             .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_AUDIT_LOG)).authenticated()
-            .antMatchers(HttpMethod.POST, COLLECTION_CREATE)
-                .hasAnyAuthority(appConfig.roleAdmin)
-            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_PUBLISH))
-                .hasAnyAuthority(appConfig.roleAdmin)
-            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_UPDATE))
-                .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
-            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS_UPDATE))
-                .hasAnyAuthority(appConfig.roleAdmin)
+            //.antMatchers(HttpMethod.POST, COLLECTION_CREATE)
+             //   .hasAnyAuthority(appConfig.roleAdmin)
+            //.antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_PUBLISH))
+             //   .hasAnyAuthority(appConfig.roleAdmin)
+           // .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_UPDATE))
+            //    .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
+           // .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS_UPDATE))
+            //    .hasAnyAuthority(appConfig.roleAdmin)
             .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_AUDIT_LOG)).permitAll()
             .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_SKILLS)).permitAll()
             .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_BATCH)).permitAll()
@@ -100,10 +102,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers(HttpMethod.GET, SEARCH_JOBCODES_PATH).authenticated()
             .antMatchers(HttpMethod.GET, SEARCH_KEYWORDS_PATH).authenticated()
 
-            .antMatchers(HttpMethod.GET,  SKILLS_LIST)
-                .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator, appConfig.roleView, appConfig.scopeRead)
-            .antMatchers(HttpMethod.GET,  COLLECTIONS_LIST)
-                .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator, appConfig.roleView, appConfig.scopeRead)
+       //     .antMatchers(HttpMethod.GET,  SKILLS_LIST)
+        //        .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator, appConfig.roleView, appConfig.scopeRead)
+        //    .antMatchers(HttpMethod.GET,  COLLECTIONS_LIST)
+         //       .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator, appConfig.roleView, appConfig.scopeRead)
 
             // public search endpoints
             .antMatchers(HttpMethod.POST, SEARCH_SKILLS).permitAll()

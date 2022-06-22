@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletResponse
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@Profile("oauth2-okta | oauth2-custom")
+@Profile("oauth2-okta | OTHER-OAUTH-PROFILE")
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
@@ -73,6 +73,11 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Override
     override fun configure(http: HttpSecurity) {
+        val ADMIN = appConfig.roleAdmin
+        val CURATOR = appConfig.roleCurator
+        val VIEW = appConfig.roleView
+        val READ = appConfig.scopeRead
+        
         http
             .cors().and()
             .csrf().disable()
@@ -80,21 +85,18 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .authorizeRequests()
 
             // authorization required
-          //  .antMatchers(HttpMethod.POST, SKILLS_CREATE)
-           //     .hasAnyAuthority(appConfig.roleAdmin)
-          //  .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_UPDATE))
-           //     .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
-           // .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_PUBLISH))
-            //    .hasAnyAuthority(appConfig.roleAdmin)
+            .antMatchers(HttpMethod.GET,  SKILLS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+            .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
+            .antMatchers(HttpMethod.POST, SKILLS_CREATE).hasAnyAuthority(ADMIN)
+            .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_PUBLISH)).hasAnyAuthority(ADMIN)
             .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_AUDIT_LOG)).authenticated()
-            //.antMatchers(HttpMethod.POST, COLLECTION_CREATE)
-             //   .hasAnyAuthority(appConfig.roleAdmin)
-            //.antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_PUBLISH))
-             //   .hasAnyAuthority(appConfig.roleAdmin)
-           // .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_UPDATE))
-            //    .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator)
-           // .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS_UPDATE))
-            //    .hasAnyAuthority(appConfig.roleAdmin)
+
+            .antMatchers(HttpMethod.GET,  COLLECTIONS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
+            .antMatchers(HttpMethod.POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN)
+            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_PUBLISH)).hasAnyAuthority(ADMIN)
+            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS_UPDATE)).hasAnyAuthority(ADMIN)
+
             .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_AUDIT_LOG)).permitAll()
             .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_SKILLS)).permitAll()
             .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_BATCH)).permitAll()
@@ -102,18 +104,15 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers(HttpMethod.GET, SEARCH_JOBCODES_PATH).authenticated()
             .antMatchers(HttpMethod.GET, SEARCH_KEYWORDS_PATH).authenticated()
 
-       //     .antMatchers(HttpMethod.GET,  SKILLS_LIST)
-        //        .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator, appConfig.roleView, appConfig.scopeRead)
-        //    .antMatchers(HttpMethod.GET,  COLLECTIONS_LIST)
-         //       .hasAnyAuthority(appConfig.roleAdmin, appConfig.roleCurator, appConfig.roleView, appConfig.scopeRead)
-
             // public search endpoints
             .antMatchers(HttpMethod.POST, SEARCH_SKILLS).permitAll()
             .antMatchers(HttpMethod.POST, SEARCH_COLLECTIONS).permitAll()
 
+            // These 2 lines should be the only permitAll!!!
             // public canonical URL endpoints
             .antMatchers(HttpMethod.GET, scrubForConfigure(SKILL_DETAIL)).permitAll()
             .antMatchers(HttpMethod.GET, scrubForConfigure(COLLECTION_DETAIL)).permitAll()
+
             .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS)).permitAll()
             .antMatchers(HttpMethod.GET, scrubForConfigure(COLLECTION_CSV)).permitAll()
             .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_TEXT)).permitAll()   // public csv results

@@ -18,7 +18,6 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
@@ -44,7 +43,6 @@ class CollectionController @Autowired constructor(
     override val sortOrderCompanion = CollectionSortEnum.Companion
 
     @GetMapping(RoutePaths.COLLECTIONS_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
-    @PreAuthorize("isAuthenticated() and hasAnyAuthority(@AppConfig.roleAdmin, @AppConfig.roleCurator, @AppConfig.roleView)")
     @ResponseBody
     override fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -74,7 +72,6 @@ class CollectionController @Autowired constructor(
     }
 
     @PostMapping(RoutePaths.COLLECTION_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])
-    @PreAuthorize("isAuthenticated() and hasAnyAuthority(@AppConfig.roleAdmin)")
     @ResponseBody
     fun createCollections(
         @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
@@ -91,7 +88,6 @@ class CollectionController @Autowired constructor(
     }
 
     @PostMapping(RoutePaths.COLLECTION_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
-    @PreAuthorize("isAuthenticated() and hasAnyAuthority(@AppConfig.roleAdmin, @AppConfig.roleCurator)")
     @ResponseBody
     fun updateCollection(
         @PathVariable uuid: String,
@@ -119,7 +115,6 @@ class CollectionController @Autowired constructor(
 
 
     @PostMapping(RoutePaths.COLLECTION_SKILLS_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
-    @PreAuthorize("isAuthenticated() and hasAnyAuthority(@AppConfig.roleAdmin)")
     @ResponseBody
     fun updateSkills(
         @PathVariable uuid: String,
@@ -138,7 +133,6 @@ class CollectionController @Autowired constructor(
     }
 
     @PostMapping(RoutePaths.COLLECTION_PUBLISH, produces = [MediaType.APPLICATION_JSON_VALUE])
-    @PreAuthorize("isAuthenticated() and hasAnyAuthority(@AppConfig.roleAdmin)")
     @ResponseBody
     fun publishCollections(
         @RequestBody search: ApiSearch,

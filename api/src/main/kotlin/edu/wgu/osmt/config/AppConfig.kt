@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
 
-@Component("AppConfig")
+@Component
 @ConfigurationProperties(prefix = "app", ignoreInvalidFields = true)
 class AppConfig(
     @Value("\${app.baseDomain}")

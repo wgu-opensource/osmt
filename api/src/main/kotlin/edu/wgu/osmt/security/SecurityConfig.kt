@@ -11,19 +11,16 @@ import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS
 import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS_UPDATE
 import edu.wgu.osmt.RoutePaths.COLLECTION_UPDATE
 import edu.wgu.osmt.RoutePaths.SEARCH_COLLECTIONS
-import edu.wgu.osmt.RoutePaths.SEARCH_JOBCODES_PATH
-import edu.wgu.osmt.RoutePaths.SEARCH_KEYWORDS_PATH
 import edu.wgu.osmt.RoutePaths.SEARCH_SKILLS
 import edu.wgu.osmt.RoutePaths.SKILLS_CREATE
 import edu.wgu.osmt.RoutePaths.SKILLS_LIST
-import edu.wgu.osmt.RoutePaths.SKILL_AUDIT_LOG
 import edu.wgu.osmt.RoutePaths.SKILL_DETAIL
 import edu.wgu.osmt.RoutePaths.SKILL_PUBLISH
 import edu.wgu.osmt.RoutePaths.SKILL_UPDATE
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_BATCH
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_SKILLS
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_TEXT
-import edu.wgu.osmt.RoutePaths.scrubForConfigure
+import edu.wgu.osmt.RoutePaths.createRegex
 import edu.wgu.osmt.api.model.ApiError
 import edu.wgu.osmt.config.AppConfig
 import org.springframework.beans.factory.annotation.Autowired
@@ -81,39 +78,34 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
             // authorization required
             .antMatchers(HttpMethod.GET,  SKILLS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-            .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
+            .regexMatchers(HttpMethod.POST, createRegex(SKILL_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
             .antMatchers(HttpMethod.POST, SKILLS_CREATE).hasAnyAuthority(ADMIN)
-            .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_PUBLISH)).hasAnyAuthority(ADMIN)
-            .antMatchers(HttpMethod.POST, scrubForConfigure(SKILL_AUDIT_LOG)).authenticated()
+            .antMatchers(HttpMethod.POST, SKILL_PUBLISH).hasAnyAuthority(ADMIN)
 
             .antMatchers(HttpMethod.GET,  COLLECTIONS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
+            .regexMatchers(HttpMethod.POST, createRegex(COLLECTION_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
             .antMatchers(HttpMethod.POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN)
-            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_PUBLISH)).hasAnyAuthority(ADMIN)
-            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS_UPDATE)).hasAnyAuthority(ADMIN)
+            .antMatchers(HttpMethod.POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
+            .regexMatchers(HttpMethod.POST, createRegex(COLLECTION_SKILLS_UPDATE)).hasAnyAuthority(ADMIN)
 
-            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_AUDIT_LOG)).permitAll()
-            .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_SKILLS)).permitAll()
-            .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_BATCH)).permitAll()
-
-            .antMatchers(HttpMethod.GET, SEARCH_JOBCODES_PATH).authenticated()
-            .antMatchers(HttpMethod.GET, SEARCH_KEYWORDS_PATH).authenticated()
+            .regexMatchers(HttpMethod.POST, createRegex(COLLECTION_AUDIT_LOG)).permitAll()
+            .regexMatchers(HttpMethod.GET, createRegex(TASK_DETAIL_SKILLS)).permitAll()
+            .regexMatchers(HttpMethod.GET, createRegex(TASK_DETAIL_BATCH)).permitAll()
 
             // public search endpoints
             .antMatchers(HttpMethod.POST, SEARCH_SKILLS).permitAll()
             .antMatchers(HttpMethod.POST, SEARCH_COLLECTIONS).permitAll()
 
-            // These 2 lines should be the only permitAll!!!
             // public canonical URL endpoints
-            .antMatchers(HttpMethod.GET, scrubForConfigure(SKILL_DETAIL)).permitAll()
-            .antMatchers(HttpMethod.GET, scrubForConfigure(COLLECTION_DETAIL)).permitAll()
+            .regexMatchers(HttpMethod.GET, createRegex(SKILL_DETAIL)).permitAll()
+            .regexMatchers(HttpMethod.GET, createRegex(COLLECTION_DETAIL)).permitAll()
 
-            .antMatchers(HttpMethod.POST, scrubForConfigure(COLLECTION_SKILLS)).permitAll()
-            .antMatchers(HttpMethod.GET, scrubForConfigure(COLLECTION_CSV)).permitAll()
-            .antMatchers(HttpMethod.GET, scrubForConfigure(TASK_DETAIL_TEXT)).permitAll()   // public csv results
+            .regexMatchers(HttpMethod.POST, createRegex(COLLECTION_SKILLS)).permitAll()
+            .regexMatchers(HttpMethod.GET, createRegex(COLLECTION_CSV)).permitAll()
+            .regexMatchers(HttpMethod.GET, createRegex(TASK_DETAIL_TEXT)).permitAll()   // public csv results
 
             // catch-all
-            .antMatchers("/**").permitAll()
+            .antMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
 
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
             .and().oauth2Login().successHandler(redirectToFrontend)

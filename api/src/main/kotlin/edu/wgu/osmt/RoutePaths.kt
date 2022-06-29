@@ -45,7 +45,7 @@ object RoutePaths {
         const val COLLECTION_ID = "collectionId"
     }
 
-    fun scrubForConfigure(routePath: String): String {
-        return routePath.replace("{uuid}", "*")
+    fun createRegex(routePath: String): String {
+        return routePath.replace("{uuid}", "[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
     }
 }

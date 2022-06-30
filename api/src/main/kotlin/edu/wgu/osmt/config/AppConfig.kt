@@ -44,7 +44,20 @@ class AppConfig(
     val rsdContextUrl: String,
 
     @Value("\${app.security.cors.allowedOrigins}")
-    val corsAllowedOrigins: String
+    val corsAllowedOrigins: String,
+
+    //This next values are WGU specific.
+    @Value("\${osmt.security.role.admin:Osmt_Admin}")
+    val roleAdmin: String,
+
+    @Value("\${osmt.security.role.curator:Osmt_Curator}")
+    val roleCurator: String,
+
+    @Value("\${osmt.security.role.view:Osmt_View}")
+    val roleView: String,
+
+    @Value("\${osmt.security.scope.read:SCOPE_osmt.read}")
+    val scopeRead: String
 ) {
     @Autowired
     lateinit var environment: Environment

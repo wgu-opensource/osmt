@@ -11,8 +11,7 @@ import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.richskill.RichSkillRepository
-import edu.wgu.osmt.security.OAuth2Helper
-import edu.wgu.osmt.security.OAuth2Helper.readableUsername
+import edu.wgu.osmt.security.OAuthHelper
 import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
@@ -35,9 +34,9 @@ class CollectionController @Autowired constructor(
     val taskMessageService: TaskMessageService,
     val auditLogRepository: AuditLogRepository,
     val collectionEsRepo: CollectionEsRepo,
-    val appConfig: AppConfig
+    val appConfig: AppConfig,
+    val oAuthHelper: OAuthHelper
 ): HasAllPaginated<CollectionDoc> {
-
     override val elasticRepository = collectionEsRepo
 
     override val allPaginatedPath: String = RoutePaths.COLLECTIONS_LIST
@@ -80,8 +79,7 @@ class CollectionController @Autowired constructor(
     ): List<ApiCollection> {
         return collectionRepository.createFromApi(
             apiCollectionUpdates,
-            richSkillRepository,
-            OAuth2Helper.readableUsername(user)
+            richSkillRepository, oAuthHelper.readableUsername(user)
         ).map {
             ApiCollection.fromDao(it, appConfig)
         }
@@ -95,14 +93,18 @@ class CollectionController @Autowired constructor(
         @RequestBody apiUpdate: ApiCollectionUpdate,
         @AuthenticationPrincipal user: Jwt?
     ): ApiCollection {
+
+        if (oAuthHelper.hasRole(appConfig.roleCurator) && !oAuthHelper.isArchiveRelated(apiUpdate.publishStatus)) {
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        }
+
         val existing = collectionRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
         val updated = collectionRepository.updateFromApi(
             existing.id.value,
             apiUpdate,
-            richSkillRepository,
-            readableUsername(user)
+            richSkillRepository, oAuthHelper.readableUsername(user)
         )
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
@@ -122,7 +124,7 @@ class CollectionController @Autowired constructor(
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = readableUsername(user))
+        val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = oAuthHelper.readableUsername(user))
 
         taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
         return Task.processingResponse(task)
@@ -144,7 +146,7 @@ class CollectionController @Autowired constructor(
     ): HttpEntity<TaskResult> {
         val filterStatuses = filterByStatus.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val publishStatus = PublishStatus.forApiValue(newStatus) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
-        val task = PublishTask(AppliesToType.Collection, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = readableUsername(user))
+        val task = PublishTask(AppliesToType.Collection, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = oAuthHelper.readableUsername(user))
 
         taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
         return Task.processingResponse(task)

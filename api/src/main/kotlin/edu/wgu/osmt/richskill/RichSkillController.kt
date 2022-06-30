@@ -14,7 +14,7 @@ import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.keyword.KeywordDao
-import edu.wgu.osmt.security.OAuth2Helper.readableUsername
+import edu.wgu.osmt.security.*
 import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
@@ -33,9 +33,9 @@ class RichSkillController @Autowired constructor(
     val taskMessageService: TaskMessageService,
     val richSkillEsRepo: RichSkillEsRepo,
     val auditLogRepository: AuditLogRepository,
-    val appConfig: AppConfig
+    val appConfig: AppConfig,
+    val oAuthHelper: OAuthHelper
 ): HasAllPaginated<RichSkillDoc> {
-
     override val elasticRepository = richSkillEsRepo
 
     val keywordDao = KeywordDao.Companion
@@ -122,14 +122,18 @@ class RichSkillController @Autowired constructor(
     @ResponseBody
     fun updateSkill(
         @PathVariable uuid: String,
-        @RequestBody skillUpdate: ApiSkillUpdate,
-        @AuthenticationPrincipal user: Jwt?
+        @RequestBody skillUpdate: ApiSkillUpdate, @AuthenticationPrincipal user: Jwt?
     ): ApiSkill {
+
+        if (oAuthHelper.hasRole(appConfig.roleCurator) && !oAuthHelper.isArchiveRelated(skillUpdate.publishStatus)) {
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        }
+
         val existingSkill = richSkillRepository.findByUUID(uuid)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
         val updatedSkill =
-            richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, readableUsername(user))
+            richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, oAuthHelper.readableUsername(user))
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
         return ApiSkill.fromDao(updatedSkill, appConfig)
@@ -160,7 +164,7 @@ class RichSkillController @Autowired constructor(
             search,
             filterByStatus=filterStatuses,
             publishStatus = publishStatus,
-            userString = readableUsername(user),
+            userString = oAuthHelper.readableUsername(user),
             collectionUuid = if (collectionUuid.isNullOrBlank()) null else collectionUuid
         )
 

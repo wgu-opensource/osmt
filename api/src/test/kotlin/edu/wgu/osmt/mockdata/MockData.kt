@@ -247,7 +247,11 @@ class MockData {
             true,
             true,
             "https://rsd.openskillsnetwork.org/context-v1.json",
-            "http://localhost:4200"
+            "http://localhost:4200",
+            "Osmt_Admin",
+            "Osmt_Curator",
+            "Osmt_View",
+            "SCOPE_osmt.read"
         )
     }
 

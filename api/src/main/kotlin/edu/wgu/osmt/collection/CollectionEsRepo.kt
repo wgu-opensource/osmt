@@ -76,7 +76,12 @@ class CustomCollectionQueriesImpl @Autowired constructor(
     ): SearchHits<CollectionDoc> {
         val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(Pageable.unpaged())
         val bq = QueryBuilders.boolQuery()
-        val filter = BoolQueryBuilder().must(QueryBuilders.termsQuery(RichSkillDoc::publishStatus.name, publishStatus))
+        val filter = BoolQueryBuilder().must(
+                QueryBuilders.termsQuery(
+                        RichSkillDoc::publishStatus.name,
+                        publishStatus.map { ps -> ps.toString() }
+                )
+        )
         nsq.withFilter(filter)
         nsq.withQuery(bq)
 

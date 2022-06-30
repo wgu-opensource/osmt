@@ -20,7 +20,7 @@ import edu.wgu.osmt.RoutePaths.SKILL_UPDATE
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_BATCH
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_SKILLS
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_TEXT
-import edu.wgu.osmt.RoutePaths.createRegex
+import edu.wgu.osmt.RoutePaths.createUuidRegex
 import edu.wgu.osmt.api.model.ApiError
 import edu.wgu.osmt.config.AppConfig
 import org.springframework.beans.factory.annotation.Autowired
@@ -78,31 +78,31 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
             // authorization required
             .antMatchers(HttpMethod.GET,  SKILLS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-            .regexMatchers(HttpMethod.POST, createRegex(SKILL_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
+            .regexMatchers(HttpMethod.POST, createUuidRegex(SKILL_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
             .antMatchers(HttpMethod.POST, SKILLS_CREATE).hasAnyAuthority(ADMIN)
             .antMatchers(HttpMethod.POST, SKILL_PUBLISH).hasAnyAuthority(ADMIN)
 
             .antMatchers(HttpMethod.GET,  COLLECTIONS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-            .regexMatchers(HttpMethod.POST, createRegex(COLLECTION_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
+            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
             .antMatchers(HttpMethod.POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN)
             .antMatchers(HttpMethod.POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
-            .regexMatchers(HttpMethod.POST, createRegex(COLLECTION_SKILLS_UPDATE)).hasAnyAuthority(ADMIN)
+            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_SKILLS_UPDATE)).hasAnyAuthority(ADMIN)
 
-            .regexMatchers(HttpMethod.POST, createRegex(COLLECTION_AUDIT_LOG)).permitAll()
-            .regexMatchers(HttpMethod.GET, createRegex(TASK_DETAIL_SKILLS)).permitAll()
-            .regexMatchers(HttpMethod.GET, createRegex(TASK_DETAIL_BATCH)).permitAll()
+            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_AUDIT_LOG)).permitAll()
+            .regexMatchers(HttpMethod.GET, createUuidRegex(TASK_DETAIL_SKILLS)).permitAll()
+            .regexMatchers(HttpMethod.GET, createUuidRegex(TASK_DETAIL_BATCH)).permitAll()
 
             // public search endpoints
             .antMatchers(HttpMethod.POST, SEARCH_SKILLS).permitAll()
             .antMatchers(HttpMethod.POST, SEARCH_COLLECTIONS).permitAll()
 
             // public canonical URL endpoints
-            .regexMatchers(HttpMethod.GET, createRegex(SKILL_DETAIL)).permitAll()
-            .regexMatchers(HttpMethod.GET, createRegex(COLLECTION_DETAIL)).permitAll()
+            .regexMatchers(HttpMethod.GET, createUuidRegex(SKILL_DETAIL)).permitAll()
+            .regexMatchers(HttpMethod.GET, createUuidRegex(COLLECTION_DETAIL)).permitAll()
 
-            .regexMatchers(HttpMethod.POST, createRegex(COLLECTION_SKILLS)).permitAll()
-            .regexMatchers(HttpMethod.GET, createRegex(COLLECTION_CSV)).permitAll()
-            .regexMatchers(HttpMethod.GET, createRegex(TASK_DETAIL_TEXT)).permitAll()   // public csv results
+            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_SKILLS)).permitAll()
+            .regexMatchers(HttpMethod.GET, createUuidRegex(COLLECTION_CSV)).permitAll()
+            .regexMatchers(HttpMethod.GET, createUuidRegex(TASK_DETAIL_TEXT)).permitAll()   // public csv results
 
             // catch-all
             .antMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)

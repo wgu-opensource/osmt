@@ -34,7 +34,7 @@ class RichSkillController @Autowired constructor(
     val richSkillEsRepo: RichSkillEsRepo,
     val auditLogRepository: AuditLogRepository,
     val appConfig: AppConfig,
-    val authHelperService: AuthHelperService
+    val oAuthHelper: OAuthHelper
 ): HasAllPaginated<RichSkillDoc> {
     override val elasticRepository = richSkillEsRepo
 
@@ -125,7 +125,7 @@ class RichSkillController @Autowired constructor(
         @RequestBody skillUpdate: ApiSkillUpdate, @AuthenticationPrincipal user: Jwt?
     ): ApiSkill {
 
-        if (authHelperService.hasRole(appConfig.roleCurator) && !authHelperService.isArchiveRelated(skillUpdate.publishStatus)) {
+        if (oAuthHelper.hasRole(appConfig.roleCurator) && !oAuthHelper.isArchiveRelated(skillUpdate.publishStatus)) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
 
@@ -133,7 +133,7 @@ class RichSkillController @Autowired constructor(
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
         val updatedSkill =
-            richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, authHelperService.readableUsername(user))
+            richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, oAuthHelper.readableUsername(user))
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
         return ApiSkill.fromDao(updatedSkill, appConfig)
@@ -164,7 +164,7 @@ class RichSkillController @Autowired constructor(
             search,
             filterByStatus=filterStatuses,
             publishStatus = publishStatus,
-            userString = authHelperService.readableUsername(user),
+            userString = oAuthHelper.readableUsername(user),
             collectionUuid = if (collectionUuid.isNullOrBlank()) null else collectionUuid
         )
 

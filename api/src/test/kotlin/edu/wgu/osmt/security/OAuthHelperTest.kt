@@ -11,13 +11,13 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.security.core.context.SecurityContextHolder
 
-internal class AuthHelperServiceTest {
-    lateinit var helper: AuthHelperService
+internal class OAuthHelperTest {
+    lateinit var helper: OAuthHelper
 
     @BeforeEach
     fun setUp() {
         mockkStatic(SecurityContextHolder::class)
-        helper = AuthHelperService()
+        helper = OAuthHelper()
     }
 
     @Test

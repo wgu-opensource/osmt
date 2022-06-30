@@ -4,14 +4,14 @@ import edu.wgu.osmt.config.UNAUTHENTICATED_USERNAME
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.db.PublishStatus.Archived
 import edu.wgu.osmt.db.PublishStatus.Unarchived
-import org.springframework.stereotype.Service
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.stereotype.Component
 
 
-@Service
-class AuthHelperService {
+@Component
+class OAuthHelper {
 
     fun readableUsername(user: OAuth2User?, default: String = UNAUTHENTICATED_USERNAME): String {
         return user?.name ?: default

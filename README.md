@@ -152,17 +152,18 @@ Before you start with these steps, you may be required to update your goals on t
    - Enter a "Sign-out redirect URIs", use `http://localhost:8080`
 4. Under the "Assignments" area:
    - Choose "Skip group assignment for now".
-6. Save your new Web Application Integration. Okta should show your new Wep App, with a few tabs towards the top.
-7. In the "General" tab, under "Client Credentials":
+5. Save your new Web Application Integration. Okta should show your new Wep App, with a few tabs towards the top.
+6. In the "General" tab, under "Client Credentials":
    - Copy/paste the value for Client ID into your osmt-*.env file, for `OAUTH_CLIENTID`.
    - Copy/paste the value for Client Secret into your osmt-*.env file, for `OAUTH_CLIENTSECRET`.
-8. In the "Sign-On" tab, under "OpenID Connect ID Token":
+7. In the "Sign-On" tab, under "OpenID Connect ID Token":
    - Click "Edit", and for Issuer, choose the option that actually has an Okta URL. Save the OpenID Connect ID Token.
    - Copy/paste the value for Issuer into your osmt-*.env file, for OAUTH_ISSUER. Ensure your URL has the `https://` protocol.
+     - You may need to ensure your issuer URL ends with `/oauth2/default` ie `https://dev-XXXXX.okta.com/oauth2/default`
    - Copy/paste the value for Audience into your osmt-*.env file, for OAUTH_AUDIENCE.
-9. In the Assignments tab:
+8. In the Assignments tab:
    - Click "Assign", and choose "Assign to People". For your Okta user ID, click "Assign". Leave defaults; then click "Save and Go Back".
-10. OSMT does not require any additional scopes.
+9. OSMT does not require any additional scopes.
 
 For Okta, you will use the `oauth2-okta` profile for Spring Boot, which will include the properties from [application-oauth2-okta.properties](api/src/main/resources/config/application-oauth2-okta.properties). This properties file relies on secrets being provided via the environment. The commands in `osmt_cli.sh` automatically provide the appropriate environment files.
 

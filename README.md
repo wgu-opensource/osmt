@@ -163,8 +163,15 @@ Before you start with these steps, you may be required to update your goals on t
    - Copy/paste the value for Audience into your osmt-*.env file, for OAUTH_AUDIENCE.
 8. In the Assignments tab:
    - Click "Assign", and choose "Assign to People". For your Okta user ID, click "Assign". Leave defaults; then click "Save and Go Back".
-9. OSMT does not require any additional scopes.
-
+9. Update application.properties with unique values
+  - ![pix](./ui/src/assets/OsmtGroups_roles.png)
+10. Create 3 groups with names that matches the above osmt.security.roles 
+![pix](./ui/src/assets/OsmtGroups.png) 
+11. Create people and assign them to the 3 above groups
+12. From Okta Console page go to Security -> Api -> Default; from the Claims tab, add 2 claims for "roles"  
+![pix](./ui/src/assets/okta_claims.png)
+13. From the Scopes tab, add a scope with name that matches osmt.security.scope.read in application.properties
+    ![pix](./ui/src/assets/okta_scope.png)
 For Okta, you will use the `oauth2-okta` profile for Spring Boot, which will include the properties from [application-oauth2-okta.properties](api/src/main/resources/config/application-oauth2-okta.properties). This properties file relies on secrets being provided via the environment. The commands in `osmt_cli.sh` automatically provide the appropriate environment files.
 
 ### Environment Files for Quickstart and Development Stacks

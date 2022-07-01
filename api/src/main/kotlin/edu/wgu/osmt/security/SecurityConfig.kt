@@ -122,10 +122,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
         http.authorizeRequests()
             .regexMatchers(HttpMethod.POST, createUuidRegex(SKILL_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
-            .antMatchers(HttpMethod.POST, SKILLS_CREATE).hasAnyAuthority(ADMIN)
+            .antMatchers(HttpMethod.POST, SKILLS_CREATE).hasAnyAuthority(ADMIN, CURATOR)
             .antMatchers(HttpMethod.POST, SKILL_PUBLISH).hasAnyAuthority(ADMIN)
 
-            .antMatchers(HttpMethod.POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN)
+            .antMatchers(HttpMethod.POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN, CURATOR)
             .antMatchers(HttpMethod.POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
             .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
             .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_SKILLS_UPDATE)).hasAnyAuthority(ADMIN)

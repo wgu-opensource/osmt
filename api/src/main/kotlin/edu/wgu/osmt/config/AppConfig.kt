@@ -37,6 +37,9 @@ class AppConfig(
     @Value("\${app.allowPublicLists}")
     val allowPublicLists: Boolean = true,
 
+    @Value("\${app.enableRoles}")
+    val enableRoles: Boolean = false,
+
     @Value("\${app.baseLineAuditLogIfEmpty}")
     val baseLineAuditLogIfEmpty: Boolean,
 

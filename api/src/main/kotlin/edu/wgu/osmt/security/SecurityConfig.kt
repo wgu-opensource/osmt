@@ -11,9 +11,12 @@ import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS
 import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS_UPDATE
 import edu.wgu.osmt.RoutePaths.COLLECTION_UPDATE
 import edu.wgu.osmt.RoutePaths.SEARCH_COLLECTIONS
+import edu.wgu.osmt.RoutePaths.SEARCH_JOBCODES_PATH
+import edu.wgu.osmt.RoutePaths.SEARCH_KEYWORDS_PATH
 import edu.wgu.osmt.RoutePaths.SEARCH_SKILLS
 import edu.wgu.osmt.RoutePaths.SKILLS_CREATE
 import edu.wgu.osmt.RoutePaths.SKILLS_LIST
+import edu.wgu.osmt.RoutePaths.SKILL_AUDIT_LOG
 import edu.wgu.osmt.RoutePaths.SKILL_DETAIL
 import edu.wgu.osmt.RoutePaths.SKILL_PUBLISH
 import edu.wgu.osmt.RoutePaths.SKILL_UPDATE
@@ -65,32 +68,18 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Override
     override fun configure(http: HttpSecurity) {
-        val ADMIN = appConfig.roleAdmin
-        val CURATOR = appConfig.roleCurator
-        val VIEW = appConfig.roleView
-        val READ = appConfig.scopeRead
-        
         http
             .cors().and()
             .csrf().disable()
             .httpBasic().disable()
             .authorizeRequests()
 
-            // authorization required
-            .antMatchers(HttpMethod.GET,  SKILLS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-            .regexMatchers(HttpMethod.POST, createUuidRegex(SKILL_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
-            .antMatchers(HttpMethod.POST, SKILLS_CREATE).hasAnyAuthority(ADMIN)
-            .antMatchers(HttpMethod.POST, SKILL_PUBLISH).hasAnyAuthority(ADMIN)
-
-            .antMatchers(HttpMethod.GET,  COLLECTIONS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
-            .antMatchers(HttpMethod.POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN)
-            .antMatchers(HttpMethod.POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
-            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_SKILLS_UPDATE)).hasAnyAuthority(ADMIN)
-
-            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_AUDIT_LOG)).permitAll()
-            .regexMatchers(HttpMethod.GET, createUuidRegex(TASK_DETAIL_SKILLS)).permitAll()
-            .regexMatchers(HttpMethod.GET, createUuidRegex(TASK_DETAIL_BATCH)).permitAll()
+            .antMatchers(HttpMethod.POST, createUuidRegex(SKILL_AUDIT_LOG)).authenticated()
+            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_AUDIT_LOG)).authenticated()
+            .regexMatchers(HttpMethod.GET, createUuidRegex(TASK_DETAIL_SKILLS)).authenticated()
+            .regexMatchers(HttpMethod.GET, createUuidRegex(TASK_DETAIL_BATCH)).authenticated()
+            .antMatchers(HttpMethod.GET, SEARCH_JOBCODES_PATH).authenticated()
+            .antMatchers(HttpMethod.GET, SEARCH_KEYWORDS_PATH).authenticated()
 
             // public search endpoints
             .antMatchers(HttpMethod.POST, SEARCH_SKILLS).permitAll()
@@ -104,12 +93,62 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .regexMatchers(HttpMethod.GET, createUuidRegex(COLLECTION_CSV)).permitAll()
             .regexMatchers(HttpMethod.GET, createUuidRegex(TASK_DETAIL_TEXT)).permitAll()   // public csv results
 
-            // catch-all
-            .antMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
             .and().oauth2Login().successHandler(redirectToFrontend)
             .and().oauth2ResourceServer().jwt()
+
+        if (appConfig.enableRoles) {
+            configureForRoles(http)
+        } else {
+            configureForNoRoles(http)
+        }
+    }
+
+    fun configureForRoles(http: HttpSecurity) {
+        val ADMIN = appConfig.roleAdmin
+        val CURATOR = appConfig.roleCurator
+        val VIEW = appConfig.roleView
+        val READ = appConfig.scopeRead
+
+        if (appConfig.allowPublicLists) {
+            http.authorizeRequests()
+                .antMatchers(HttpMethod.GET, SKILLS_LIST).permitAll()
+                .antMatchers(HttpMethod.GET, COLLECTIONS_LIST).permitAll()
+        } else {
+            http.authorizeRequests()
+                .antMatchers(HttpMethod.GET, SKILLS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+                .antMatchers(HttpMethod.GET, COLLECTIONS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+        }
+
+        http.authorizeRequests()
+            .regexMatchers(HttpMethod.POST, createUuidRegex(SKILL_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
+            .antMatchers(HttpMethod.POST, SKILLS_CREATE).hasAnyAuthority(ADMIN)
+            .antMatchers(HttpMethod.POST, SKILL_PUBLISH).hasAnyAuthority(ADMIN)
+
+            .antMatchers(HttpMethod.POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN)
+            .antMatchers(HttpMethod.POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
+            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
+            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_SKILLS_UPDATE)).hasAnyAuthority(ADMIN)
+
+            .antMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+    }
+
+    fun configureForNoRoles(http: HttpSecurity) {
+        http.authorizeRequests()
+            .antMatchers(HttpMethod.GET, SKILLS_LIST).permitAll()
+            .antMatchers(HttpMethod.GET, COLLECTIONS_LIST).permitAll()
+
+            .regexMatchers(HttpMethod.POST, createUuidRegex(SKILL_UPDATE)).authenticated()
+            .antMatchers(HttpMethod.POST, SKILLS_CREATE).authenticated()
+            .antMatchers(HttpMethod.POST, SKILL_PUBLISH).authenticated()
+
+            .antMatchers(HttpMethod.POST, COLLECTION_CREATE).authenticated()
+            .antMatchers(HttpMethod.POST, COLLECTION_PUBLISH).authenticated()
+            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_UPDATE)).authenticated()
+            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_SKILLS_UPDATE)).authenticated()
+
+            // fall-through
+            .antMatchers("/api/**").permitAll()
     }
 
     @Bean

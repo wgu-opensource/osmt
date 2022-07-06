@@ -46,6 +46,6 @@ object RoutePaths {
     }
 
     fun createUuidRegex(routePath: String): String {
-        return routePath.replace("{uuid}", "[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
+        return routePath.replace("{uuid}", "[a-z0-9-]{36}")
     }
 }

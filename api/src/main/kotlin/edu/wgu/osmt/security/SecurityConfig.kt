@@ -74,8 +74,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .httpBasic().disable()
             .authorizeRequests()
 
-            .antMatchers(HttpMethod.POST, createUuidRegex(SKILL_AUDIT_LOG)).authenticated()
-            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_AUDIT_LOG)).authenticated()
+            .regexMatchers(HttpMethod.GET, createUuidRegex(SKILL_AUDIT_LOG)).permitAll()
+            .regexMatchers(HttpMethod.GET, createUuidRegex(COLLECTION_AUDIT_LOG)).authenticated()
             .regexMatchers(HttpMethod.GET, createUuidRegex(TASK_DETAIL_SKILLS)).authenticated()
             .regexMatchers(HttpMethod.GET, createUuidRegex(TASK_DETAIL_BATCH)).authenticated()
             .antMatchers(HttpMethod.GET, SEARCH_JOBCODES_PATH).authenticated()

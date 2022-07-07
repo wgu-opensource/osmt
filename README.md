@@ -152,19 +152,21 @@ Before you start with these steps, you may be required to update your goals on t
    - Enter a "Sign-out redirect URIs", use `http://localhost:8080`
 4. Under the "Assignments" area:
    - Choose "Skip group assignment for now".
-6. Save your new Web Application Integration. Okta should show your new Wep App, with a few tabs towards the top.
-7. In the "General" tab, under "Client Credentials":
+5. Save your new Web Application Integration. Okta should show your new Wep App, with a few tabs towards the top.
+6. In the "General" tab, under "Client Credentials":
    - Copy/paste the value for Client ID into your osmt-*.env file, for `OAUTH_CLIENTID`.
    - Copy/paste the value for Client Secret into your osmt-*.env file, for `OAUTH_CLIENTSECRET`.
-8. In the "Sign-On" tab, under "OpenID Connect ID Token":
+7. In the "Sign-On" tab, under "OpenID Connect ID Token":
    - Click "Edit", and for Issuer, choose the option that actually has an Okta URL. Save the OpenID Connect ID Token.
    - Copy/paste the value for Issuer into your osmt-*.env file, for OAUTH_ISSUER. Ensure your URL has the `https://` protocol.
+     - You may need to ensure your issuer URL ends with `/oauth2/default` ie `https://dev-XXXXX.okta.com/oauth2/default`
    - Copy/paste the value for Audience into your osmt-*.env file, for OAUTH_AUDIENCE.
-9. In the Assignments tab:
+8. In the Assignments tab:
    - Click "Assign", and choose "Assign to People". For your Okta user ID, click "Assign". Leave defaults; then click "Save and Go Back".
-10. OSMT does not require any additional scopes.
 
-For Okta, you will use the `oauth2-okta` profile for Spring Boot, which will include the properties from [application-oauth2-okta.properties](api/src/main/resources/config/application-oauth2-okta.properties). This properties file relies on secrets being provided via the environment. The commands in `osmt_cli.sh` automatically provide the appropriate environment files.
+When using Okta, you will use the `oauth2-okta` profile for Spring Boot, which will include the properties from [application-oauth2-okta.properties](api/src/main/resources/config/application-oauth2-okta.properties). This properties file relies on secrets being provided via the environment. The commands in `osmt_cli.sh` automatically provide the appropriate environment files.
+
+If you want to enable OSMT user permissions by roles, see additional details in [Role-based Access in OSMT](README.md#role-based-access-in-osmt).
 
 ### Environment Files for Quickstart and Development Stacks
 There are many ways to provide environment values to a Spring application. That said, you should never push secrets to GitHub, so you should never store secrets in source code. The OSMT project is configured to git ignore files named `osmt*.env`, and we recommend you follow this approach. The OSMT source code includes example environment files for the Quickstart and Development configurations (`osmt-quickstart.env.example` and `api/osmt-dev-stack.env.example`). Running `./osmt_cli.sh -i` will create env files for you, but you will need to replace the 'xxxxxx' values with your OAUTH2/OIDC values, following the guidance in the [OAuth2 and Okta Configuration](README.md#oauth2-and-okta-configuration) section.
@@ -187,6 +189,38 @@ The Quickstart configuration automatically imports the default BLS and O*NET job
 osmt_cli.sh -m
 ```
 Keep in mind that removing Docker volumes will also remove this metadata. For more information, see the section for [Importing Data](api/README.md#importing-data) in the API README file.
+
+### Role-based Access in OSMT
+OSMT optionally supports role-based access, with these roles:
+- Admin: an OSMT user with an admin role can change RSDs and Collections in any way.
+- Curator: an OSMT user with a curator role can update but not create RSDs and collections. This role is for someone who would publish and unpublish RSDs and Collections
+- Viewer: an OSMT user with a viewer role is a logged-in user who can not make modifications to RSDs or Collections.
+
+Role-based access is disabled by default. You can follow these steps to enable it.
+
+In your [`application.properties`](api/src/main/resources/config/application.properties) file, configure these values:
+```
+# Roles settings
+app.enableRoles=true
+osmt.security.role.admin=ROLE_Osmt_Admin
+osmt.security.role.curator=ROLE_Osmt_Curator
+osmt.security.role.view=ROLE_Osmt_View
+osmt.security.scope.read=SCOPE_osmt.read
+```
+* You can use these values, or you can provide your own based on your own authorization tooling. For Okta, you will need to use the uppercase `ROLE_` prefix on your role.
+* `read` is a scope, not a role. This is for machine-to-machine access, rather than for authenticated OSMT users.
+
+In Okta, navigate to "Directory" and "Groups". You will need to create 3 groups with names that match your `osmt.security.role` values in `application.properties`.
+
+![pix](./ui/src/assets/OsmtGroups.png)
+
+You can assign your Okta user accounts to these groups from the Security -> Api -> Default; from the Claims tab, add 2 claims for "roles"
+
+![pix](./ui/src/assets/okta_claims.png)
+
+From the Scopes tab, add a scope with name that matches osmt.security.scope.read in application.properties
+
+![pix](./ui/src/assets/okta_scope.png)
 
 ## How to get help
 This project includes [./api/HELP.md](api/HELP.md), with links to relevant references and tutorials.

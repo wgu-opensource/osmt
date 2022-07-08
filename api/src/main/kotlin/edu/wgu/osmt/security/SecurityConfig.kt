@@ -116,19 +116,19 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 .antMatchers(HttpMethod.GET, COLLECTIONS_LIST).permitAll()
         } else {
             http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, SKILLS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-                .antMatchers(HttpMethod.GET, COLLECTIONS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+                .mvcMatchers(HttpMethod.GET, SKILLS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+                .mvcMatchers(HttpMethod.GET, COLLECTIONS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
         }
 
         http.authorizeRequests()
-            .regexMatchers(HttpMethod.POST, createUuidRegex(SKILL_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
-            .antMatchers(HttpMethod.POST, SKILLS_CREATE).hasAnyAuthority(ADMIN, CURATOR)
-            .antMatchers(HttpMethod.POST, SKILL_PUBLISH).hasAnyAuthority(ADMIN)
+            .mvcMatchers(HttpMethod.POST, SKILL_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(HttpMethod.POST, SKILLS_CREATE).hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(HttpMethod.POST, SKILL_PUBLISH).hasAnyAuthority(ADMIN)
 
-            .antMatchers(HttpMethod.POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN, CURATOR)
-            .antMatchers(HttpMethod.POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
-            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_UPDATE)).hasAnyAuthority(ADMIN, CURATOR)
-            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_SKILLS_UPDATE)).hasAnyAuthority(ADMIN)
+            .mvcMatchers(HttpMethod.POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(HttpMethod.POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
+            .mvcMatchers(HttpMethod.POST, COLLECTION_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(HttpMethod.POST, COLLECTION_SKILLS_UPDATE).hasAnyAuthority(ADMIN)
 
             .antMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
     }

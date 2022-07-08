@@ -23,14 +23,14 @@ import edu.wgu.osmt.RoutePaths.SKILL_UPDATE
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_BATCH
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_SKILLS
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_TEXT
-import edu.wgu.osmt.RoutePaths.createUuidRegex
 import edu.wgu.osmt.api.model.ApiError
 import edu.wgu.osmt.config.AppConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import org.springframework.http.HttpMethod
+import org.springframework.http.HttpMethod.GET
+import org.springframework.http.HttpMethod.POST
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -74,24 +74,24 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .httpBasic().disable()
             .authorizeRequests()
 
-            .regexMatchers(HttpMethod.GET, createUuidRegex(SKILL_AUDIT_LOG)).permitAll()
-            .regexMatchers(HttpMethod.GET, createUuidRegex(COLLECTION_AUDIT_LOG)).authenticated()
-            .regexMatchers(HttpMethod.GET, createUuidRegex(TASK_DETAIL_SKILLS)).authenticated()
-            .regexMatchers(HttpMethod.GET, createUuidRegex(TASK_DETAIL_BATCH)).authenticated()
-            .antMatchers(HttpMethod.GET, SEARCH_JOBCODES_PATH).authenticated()
-            .antMatchers(HttpMethod.GET, SEARCH_KEYWORDS_PATH).authenticated()
+            .mvcMatchers(GET, SKILL_AUDIT_LOG).permitAll()
+            .mvcMatchers(GET, COLLECTION_AUDIT_LOG).authenticated()
+            .mvcMatchers(GET, TASK_DETAIL_SKILLS).authenticated()
+            .mvcMatchers(GET, TASK_DETAIL_BATCH).authenticated()
+            .mvcMatchers(GET, SEARCH_JOBCODES_PATH).authenticated()
+            .mvcMatchers(GET, SEARCH_KEYWORDS_PATH).authenticated()
 
             // public search endpoints
-            .antMatchers(HttpMethod.POST, SEARCH_SKILLS).permitAll()
-            .antMatchers(HttpMethod.POST, SEARCH_COLLECTIONS).permitAll()
+            .mvcMatchers(POST, SEARCH_SKILLS).permitAll()
+            .mvcMatchers(POST, SEARCH_COLLECTIONS).permitAll()
 
             // public canonical URL endpoints
-            .regexMatchers(HttpMethod.GET, createUuidRegex(SKILL_DETAIL)).permitAll()
-            .regexMatchers(HttpMethod.GET, createUuidRegex(COLLECTION_DETAIL)).permitAll()
+            .mvcMatchers(GET, SKILL_DETAIL).permitAll()
+            .mvcMatchers(GET, COLLECTION_DETAIL).permitAll()
 
-            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_SKILLS)).permitAll()
-            .regexMatchers(HttpMethod.GET, createUuidRegex(COLLECTION_CSV)).permitAll()
-            .regexMatchers(HttpMethod.GET, createUuidRegex(TASK_DETAIL_TEXT)).permitAll()   // public csv results
+            .mvcMatchers(POST, COLLECTION_SKILLS).permitAll()
+            .mvcMatchers(GET, COLLECTION_CSV).permitAll()
+            .mvcMatchers(GET, TASK_DETAIL_TEXT).permitAll()   // public csv results
 
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
             .and().oauth2Login().successHandler(redirectToFrontend)
@@ -112,43 +112,43 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
         if (appConfig.allowPublicLists) {
             http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, SKILLS_LIST).permitAll()
-                .antMatchers(HttpMethod.GET, COLLECTIONS_LIST).permitAll()
+                .mvcMatchers(GET, SKILLS_LIST).permitAll()
+                .mvcMatchers(GET, COLLECTIONS_LIST).permitAll()
         } else {
             http.authorizeRequests()
-                .mvcMatchers(HttpMethod.GET, SKILLS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-                .mvcMatchers(HttpMethod.GET, COLLECTIONS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+                .mvcMatchers(GET, SKILLS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+                .mvcMatchers(GET, COLLECTIONS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
         }
 
         http.authorizeRequests()
-            .mvcMatchers(HttpMethod.POST, SKILL_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(HttpMethod.POST, SKILLS_CREATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(HttpMethod.POST, SKILL_PUBLISH).hasAnyAuthority(ADMIN)
+            .mvcMatchers(POST, SKILL_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(POST, SKILLS_CREATE).hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(POST, SKILL_PUBLISH).hasAnyAuthority(ADMIN)
 
-            .mvcMatchers(HttpMethod.POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(HttpMethod.POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
-            .mvcMatchers(HttpMethod.POST, COLLECTION_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(HttpMethod.POST, COLLECTION_SKILLS_UPDATE).hasAnyAuthority(ADMIN)
+            .mvcMatchers(POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
+            .mvcMatchers(POST, COLLECTION_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(POST, COLLECTION_SKILLS_UPDATE).hasAnyAuthority(ADMIN)
 
-            .antMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+            .mvcMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
     }
 
     fun configureForNoRoles(http: HttpSecurity) {
         http.authorizeRequests()
-            .antMatchers(HttpMethod.GET, SKILLS_LIST).permitAll()
-            .antMatchers(HttpMethod.GET, COLLECTIONS_LIST).permitAll()
+            .mvcMatchers(GET, SKILLS_LIST).permitAll()
+            .mvcMatchers(GET, COLLECTIONS_LIST).permitAll()
 
-            .regexMatchers(HttpMethod.POST, createUuidRegex(SKILL_UPDATE)).authenticated()
-            .antMatchers(HttpMethod.POST, SKILLS_CREATE).authenticated()
-            .antMatchers(HttpMethod.POST, SKILL_PUBLISH).authenticated()
+            .mvcMatchers(POST, SKILL_UPDATE).authenticated()
+            .mvcMatchers(POST, SKILLS_CREATE).authenticated()
+            .mvcMatchers(POST, SKILL_PUBLISH).authenticated()
 
-            .antMatchers(HttpMethod.POST, COLLECTION_CREATE).authenticated()
-            .antMatchers(HttpMethod.POST, COLLECTION_PUBLISH).authenticated()
-            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_UPDATE)).authenticated()
-            .regexMatchers(HttpMethod.POST, createUuidRegex(COLLECTION_SKILLS_UPDATE)).authenticated()
+            .mvcMatchers(POST, COLLECTION_CREATE).authenticated()
+            .mvcMatchers(POST, COLLECTION_PUBLISH).authenticated()
+            .mvcMatchers(POST, COLLECTION_UPDATE).authenticated()
+            .mvcMatchers(POST, COLLECTION_SKILLS_UPDATE).authenticated()
 
             // fall-through
-            .antMatchers("/api/**").permitAll()
+            .mvcMatchers("/api/**").permitAll()
     }
 
     @Bean

@@ -102,7 +102,7 @@ describe("RichSkillManageComponent", () => {
         {
           label: "Alignments",
           bodyString: skill.alignments.map(
-            it => `<p class="t-type-body"><a class="t-link" target="_blank" href="${it.id}">${it.skillName || it.id}</a></p>`
+            it => `<p class="t-type-body">${it.isPartOf?.name + ": "}<a class="t-link" target="_blank" href="${it.id}">${it.skillName || it.id}</a></p>`
           ).join("; "),
           showIfEmpty: true
         },

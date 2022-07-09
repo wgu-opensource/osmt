@@ -16,6 +16,7 @@ import {
 import {forkJoin, Observable} from "rxjs"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {Title} from "@angular/platform-browser";
+import {AppConfig} from "../../app.config"
 
 
 export enum ImportStep {
@@ -370,6 +371,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
       const alignmentsHolder: ApiAlignment[] = []
       const jobcodes: string[] = []
+      let haveAuthor = false
       var alignMatches
 
       Object.keys(row).forEach(uploadedKey => {
@@ -380,6 +382,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
           if (["author"].indexOf(fieldName) !== -1) {
             newSkill[fieldName] = value
+            haveAuthor = true
           }
           else if (["certifications", "employers"].indexOf(fieldName) !== -1) {
             newSkill[fieldName] = new ApiReferenceListUpdate(
@@ -425,6 +428,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         newSkill.alignments = new ApiAlignmentListUpdate(Array.from(alignmentsHolder))
       }
 
+      if (!haveAuthor) {
+        const fieldName = "author"
+        newSkill[fieldName] = new ApiNamedReference({name: AppConfig.settings.defaultAuthorValue})
+      }
       return newSkill
     })
     let deduped = [...new Map(skillUpdates.map((item: { [x: string]: any }) =>[item["skillStatement"], item])).values()]

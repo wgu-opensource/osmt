@@ -426,8 +426,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
       }
 
       return newSkill
-    }).map((it: IRichSkillUpdate) => new ApiSkillUpdate(it))
-    return skillUpdates
+    })
+    let deduped = [...new Map(skillUpdates.map((item: { [x: string]: any }) =>[item["skillStatement"], item])).values()]
+    let apiSkillUpdates = deduped.map(it => new ApiSkillUpdate(<IRichSkillUpdate>it))
+    return apiSkillUpdates
   }
 
   private initializeMapping(): void {

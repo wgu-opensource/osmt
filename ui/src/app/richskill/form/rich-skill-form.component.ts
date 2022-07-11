@@ -183,10 +183,10 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       update.skillStatement = inputStatement
     }
 
-      const author = formValue.author
-      if (!this.existingSkill || this.isDuplicating || this.existingSkill.author !== formValue.author) {
-        update.author = author
-      }
+    const author = formValue.author
+    if (!this.existingSkill || this.isDuplicating || this.existingSkill.author !== formValue.author) {
+      update.author = author
+    }
 
     const inputCategory = this.nonEmptyOrNull(formValue.category)
     if (this.isDuplicating || this.existingSkill?.category !== inputCategory) {

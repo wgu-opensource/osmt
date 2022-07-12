@@ -74,7 +74,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .httpBasic().disable()
             .authorizeRequests()
 
-            .mvcMatchers(GET, SKILL_AUDIT_LOG).permitAll()
+            .mvcMatchers(GET, SKILL_AUDIT_LOG).authenticated()
             .mvcMatchers(GET, COLLECTION_AUDIT_LOG).authenticated()
             .mvcMatchers(GET, TASK_DETAIL_SKILLS).authenticated()
             .mvcMatchers(GET, TASK_DETAIL_BATCH).authenticated()

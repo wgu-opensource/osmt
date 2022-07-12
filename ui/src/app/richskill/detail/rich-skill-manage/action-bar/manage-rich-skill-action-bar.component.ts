@@ -7,6 +7,8 @@ import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {PublishStatus} from "../../../../PublishStatus"
 import {ExtrasSelectedSkillsState} from "../../../../collection/add-skills-collection.component";
 import {ApiSkillSummary} from "../../../ApiSkillSummary";
+import {AuthService} from "../../../../auth/auth-service"
+import { OSMT_ADMIN } from "../../../../auth/auth-roles"
 
 @Component({template: ""})
 export abstract class ManageRichSkillActionBarComponent implements OnInit {
@@ -33,7 +35,8 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
     protected router: Router,
     protected richSkillService: RichSkillService,
     protected toastService: ToastService,
-    @Inject(LOCALE_ID) protected locale: string
+    @Inject(LOCALE_ID) protected locale: string,
+    private authService: AuthService
   ) {
   }
 
@@ -98,19 +101,31 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   }
 
   handlePublish(): void {
-    if (!this.published) {
-      if (confirm("Are you sure you want to publish this RSD?")) {
-        this.toastService.showBlockingLoader()
-        this.richSkillService.updateSkill(this.skillUuid, {
-          status: PublishStatus.Published
-        }).subscribe(() => {
-          this.reloadSkill.emit()
-          this.toastService.hideBlockingLoader()
-        })
+    const allowedRoles = [ OSMT_ADMIN ]
+    const userRoles = this.authService.getRole()?.split(",")
+    let allowed = false
+
+    for (const roles of userRoles) {
+      if (allowedRoles.indexOf(roles) !== -1) {
+        allowed = true
+        if (!this.published) {
+          if (confirm("Are you sure you want to publish this RSD?")) {
+            this.toastService.showBlockingLoader()
+            this.richSkillService.updateSkill(this.skillUuid, {
+              status: PublishStatus.Published
+            }).subscribe(() => {
+              this.reloadSkill.emit()
+              this.toastService.hideBlockingLoader()
+            })
+          }
+        } else {
+          const url = `skills/${this.skillUuid}`
+          window.open(url, "_blank")
+        }
       }
-    } else {
-      const url = `skills/${this.skillUuid}`
-      window.open(url, "_blank")
+    }
+    if (!allowed) {
+      this.toastService.showToast("Whoops!", "You need permission to perform this action. If this seems to be an error, please contact your OSMT administrator.")
     }
   }
 }

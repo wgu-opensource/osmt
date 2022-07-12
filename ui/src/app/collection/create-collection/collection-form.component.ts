@@ -57,7 +57,7 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
       })
     }
 
-      this.collectionForm.controls.author.setValue(AppConfig.settings.defaultAuthorValue)
+    this.collectionForm.controls.author.setValue(AppConfig.settings.defaultAuthorValue)
 
     this.titleService.setTitle(`${this.pageTitle()} | ${this.whitelabel.toolName}`)
   }

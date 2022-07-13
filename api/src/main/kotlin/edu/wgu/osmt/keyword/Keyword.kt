@@ -1,7 +1,7 @@
 package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.db.*
-import org.elasticsearch.common.Nullable
+import org.elasticsearch.core.Nullable
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.`java-time`.datetime

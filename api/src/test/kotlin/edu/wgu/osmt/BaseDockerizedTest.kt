@@ -31,7 +31,7 @@ interface BaseDockerizedTest {
 }
 
 object Containers {
-    val elasticContainer = GenericContainer<Nothing>("docker.elastic.co/elasticsearch/elasticsearch:7.9.2").apply{
+    val elasticContainer = GenericContainer<Nothing>("docker.elastic.co/elasticsearch/elasticsearch:7.17.4").apply{
         withExposedPorts(9200, 9300)
         withEnv("discovery.type","single-node")
         withEnv("net","host")

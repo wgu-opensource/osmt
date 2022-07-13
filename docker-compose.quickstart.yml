@@ -49,7 +49,7 @@ services:
       - osmt
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.4
     volumes:
       - elastic_data:/usr/share/elasticsearch/data
     environment:

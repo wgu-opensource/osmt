@@ -4,7 +4,7 @@ import {ToastService} from "../../../../toast/toast.service"
 import {formatDate} from "@angular/common"
 import {Component, Inject, Input, LOCALE_ID, OnInit} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
-import {saveAs} from "file-saver"
+import * as FileSaver from "file-saver"
 import {Observable} from "rxjs"
 
 @Component({
@@ -50,7 +50,7 @@ export class PublicRichSkillActionBarComponent implements OnInit {
       .subscribe((csv: string) => {
         const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"})
         const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
-        saveAs(blob, `RSD Skill - ${skillExportName} ${date}.csv`)
+        FileSaver.saveAs(blob, `RSD Skill - ${skillExportName} ${date}.csv`)
       })
   }
 

@@ -39,6 +39,10 @@
         ></app-public-table>
       </div>
 
+      <app-empty-message *ngIf="loadingResults">
+        <p class="m-emptyMessage-x-message">Loading information...</p>
+      </app-empty-message>
+
       <app-empty-message *ngIf="emptyResults">
         <p class="m-emptyMessage-x-message">0 RSDs associated with this collection</p>
       </app-empty-message>

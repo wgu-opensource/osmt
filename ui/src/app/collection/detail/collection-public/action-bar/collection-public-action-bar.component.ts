@@ -6,7 +6,7 @@ import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {formatDate} from "@angular/common"
 import {ITaskResult} from "../../../../task/ApiTaskResult"
 import { Observable } from "rxjs"
-import {saveAs} from "file-saver";
+import * as FileSaver from "file-saver";
 
 @Component({
   selector: "app-collection-public-action-bar",
@@ -60,7 +60,7 @@ export class CollectionPublicActionBarComponent implements OnInit {
 
           const blob = new Blob([body], { type: "text/csv;charset=utf-8;" })
           const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
-          saveAs(blob, `RSD Skills - ${this.collectionName} ${date}.csv`)
+          FileSaver.saveAs(blob, `RSD Skills - ${this.collectionName} ${date}.csv`)
         }
       })
   }

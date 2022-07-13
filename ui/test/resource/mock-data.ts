@@ -7,6 +7,7 @@ import { IBatchResult } from "../../src/app/richskill/ApiBatchResult"
 import {
   ApiNamedReference,
   AuditOperationType,
+  IAlignment,
   IAuditLog,
   INamedReference,
   ISkill,
@@ -60,6 +61,15 @@ export function createMockNamedReference(id = "id", name = "name"): INamedRefere
   return {
     id,
     name
+  }
+}
+
+export function createMockAlignment(id = "id", skillName = "name", isPartOf = {
+  id: "fid", name: "myFramework" }): IAlignment {
+  return {
+    id,
+    skillName,
+    isPartOf
   }
 }
 
@@ -226,7 +236,7 @@ export function createMockSkill(creationDate: Date, updateDate: Date, status: Pu
     category: "my skill category",
     collections: [createMockUuidReference("1", "coll")],
     keywords: ["keyword 1", "keyword 2"],
-    alignments: [createMockNamedReference("2", "alignment")],
+    alignments: [createMockAlignment("2", "alignment", { id: "22", name: "myFramework" })],
     standards: [createMockNamedReference("3", "standard")],
     certifications: [createMockNamedReference("4", "cert")],
     occupations: [createMockJobcode(5, "jobcode", "my jobcode")],

@@ -55,10 +55,14 @@ export class CollectionPublicComponent extends Whitelabelled implements OnInit {
   }
 
   get emptyResults(): boolean {
-    return this.curPageCount < 1
+    return  this.curPageCount === 0
   }
+  get loadingResults(): boolean {
+    return this.curPageCount < 0
+  }
+
   get curPageCount(): number {
-    return this.results?.skills.length ?? 0
+    return this.results?.skills.length ?? -1
   }
 
   get totalPageCount(): number {

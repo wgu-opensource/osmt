@@ -2,7 +2,7 @@ package edu.wgu.osmt.jobcode
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import edu.wgu.osmt.db.DatabaseData
-import org.elasticsearch.common.Nullable
+import org.elasticsearch.core.Nullable
 import org.springframework.data.elasticsearch.annotations.*
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -100,28 +100,28 @@ data class JobCode(
     val framework: String? = null,               // e.g.: "bls" or "o*net"
 
     @Field
-    val url: String? = null                     // e.g.: "http://onetonline/an/example/of/a/jobcode/canonicalUri"
-) : DatabaseData {
+    val url: String? = null,                     // e.g.: "http://onetonline/an/example/of/a/jobcode/canonicalUri"
 
     @Field
     @Nullable
-    val majorCode: String? = JobCodeBreakout.majorCode(code)
+    val majorCode: String? = JobCodeBreakout.majorCode(code),
 
     @Field
     @Nullable
-    val minorCode: String? = JobCodeBreakout.minorCode(code)
+    val minorCode: String? = JobCodeBreakout.minorCode(code),
 
     @Field
     @Nullable
-    val broadCode: String? = JobCodeBreakout.broadCode(code)
+    val broadCode: String? = JobCodeBreakout.broadCode(code),
 
     @Field
     @Nullable
-    val detailedCode: String? = JobCodeBreakout.detailedCode(code)
+    val detailedCode: String? = JobCodeBreakout.detailedCode(code),
 
     @Field
     @Nullable
     val jobRoleCode: String? = JobCodeBreakout.jobRoleCode(code)
+) : DatabaseData {
 
     companion object {
         fun create(code: String): JobCode {

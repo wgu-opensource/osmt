@@ -44,8 +44,4 @@ object RoutePaths {
         const val SORT = "sort"
         const val COLLECTION_ID = "collectionId"
     }
-
-    fun createUuidRegex(routePath: String): String {
-        return routePath.replace("{uuid}", "[a-z0-9-]{36}")
-    }
 }

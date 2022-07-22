@@ -15,16 +15,126 @@
     <version>1.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <name>OSMT</name>
+    <description>The Open Skills Management Tool (OSMT) makes it possible for employers, educators, military, and other stakeholders to create and share open skills libraries. OSMT advances skills-based education and hiring.</description>
+    <url>https://osmt.io</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Open Source at WGU</name>
+            <email>opensource@wgu.edu</email>
+            <organization>Western Governors University</organization>
+            <organizationUrl>http://www.wgu.edu</organizationUrl>
+        </developer>
+    </developers>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
     </properties>
 
+    <scm>
+        <connection>scm:git:git://github.com/wgu-opensource/osmt.git</connection>
+        <developerConnection>scm:git:ssh://github.com:wgu-opensource/osmt.git</developerConnection>
+        <url>https://github.com/wgu-opensource/osmt.git</url>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <modules>
         <module>ui</module>
         <module>api</module>
     </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+                <version>1.7.0</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>javadocJar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <configuration>
+                            <keyname>${gpg.keyname}</keyname>
+                            <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <profiles>
         <profile>

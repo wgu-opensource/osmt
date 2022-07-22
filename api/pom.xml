@@ -5,7 +5,7 @@
     <parent>
         <groupId>edu.wgu.osmt</groupId>
         <artifactId>osmt-parent</artifactId>
-        <version>1.1.1-SNAPSHOT</version>
+        <version>2.0.0</version>
     </parent>
 
     <repositories>
@@ -28,7 +28,7 @@
 
     <groupId>edu.wgu.osmt</groupId>
     <artifactId>osmt-api</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>2.0.0</version>
     <description>WGU Open Skills Management Toolset</description>
 
     <properties>
@@ -54,7 +54,7 @@
         <dependency>
             <groupId>edu.wgu.osmt</groupId>
             <artifactId>osmt-ui</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

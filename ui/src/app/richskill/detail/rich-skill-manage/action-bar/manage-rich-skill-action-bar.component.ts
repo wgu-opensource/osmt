@@ -5,10 +5,10 @@ import {Component, EventEmitter, Inject, LOCALE_ID, OnInit} from "@angular/core"
 import {AppConfig} from "../../../../app.config"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import {PublishStatus} from "../../../../PublishStatus"
-import {ExtrasSelectedSkillsState} from "../../../../collection/add-skills-collection.component";
-import {ApiSkillSummary} from "../../../ApiSkillSummary";
+import {ExtrasSelectedSkillsState} from "../../../../collection/add-skills-collection.component"
+import {ApiSkillSummary} from "../../../ApiSkillSummary"
 import {AuthService} from "../../../../auth/auth-service"
-import { OSMT_ADMIN } from "../../../../auth/auth-roles"
+import {ENABLE_ROLES, OSMT_ADMIN} from "../../../../auth/auth-roles"
 
 @Component({template: ""})
 export abstract class ManageRichSkillActionBarComponent implements OnInit {
@@ -105,26 +105,32 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
     const userRoles = this.authService.getRole()?.split(",")
     let allowed = false
 
+    if (!ENABLE_ROLES) {
+      allowed = true
+    }
     for (const roles of userRoles) {
       if (allowedRoles.indexOf(roles) !== -1) {
         allowed = true
-        if (!this.published) {
-          if (confirm("Are you sure you want to publish this RSD?")) {
-            this.toastService.showBlockingLoader()
-            this.richSkillService.updateSkill(this.skillUuid, {
-              status: PublishStatus.Published
-            }).subscribe(() => {
-              this.reloadSkill.emit()
-              this.toastService.hideBlockingLoader()
-            })
-          }
-        } else {
-          const url = `skills/${this.skillUuid}`
-          window.open(url, "_blank")
-        }
       }
     }
-    if (!allowed) {
+
+    if (allowed) {
+      if (!this.published) {
+        if (confirm("Are you sure you want to publish this RSD?")) {
+          this.toastService.showBlockingLoader()
+          this.richSkillService.updateSkill(this.skillUuid, {
+            status: PublishStatus.Published
+          }).subscribe(() => {
+            this.reloadSkill.emit()
+            this.toastService.hideBlockingLoader()
+          })
+        }
+      } else {
+        const url = `skills/${this.skillUuid}`
+        window.open(url, "_blank")
+      }
+    }
+    else {
       this.toastService.showToast("Whoops!", "You need permission to perform this action. If this seems to be an error, please contact your OSMT administrator.")
     }
   }

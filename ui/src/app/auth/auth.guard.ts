@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core"
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router"
+import {ENABLE_ROLES} from "./auth-roles"
 import {AuthService} from "./auth-service"
 import {ToastService} from "../toast/toast.service"
 
@@ -14,12 +15,11 @@ export class AuthGuard implements CanActivate {
 
     if (this.authService.isAuthenticated()) {
 
-      if (route.data.roles){
+      const requiredRoles = route.data?.roles
+      if (requiredRoles) {
         const userRoles = this.authService.getRole()?.split(",")
-        for (const roles of userRoles){
-          if (route.data.roles.indexOf(roles) !== -1) {
-            return true
-          }
+        if (!ENABLE_ROLES || this.hasRole(requiredRoles, userRoles)) {
+          return true
         }
         this.toastService.showToast("Whoops!", "You need permission to perform this action. If this seems to be an error, please contact your OSMT administrator.")
         return false
@@ -28,6 +28,15 @@ export class AuthGuard implements CanActivate {
     }
 
     this.router.navigate(["/login"], {queryParams: {return: state.url}})
+    return false
+  }
+
+  private hasRole(requiredRoles: string[], userRoles: string[]): boolean {
+    for (const role of userRoles) {
+      if (requiredRoles?.indexOf(role) !== -1) {
+        return true
+      }
+    }
     return false
   }
 

@@ -4,7 +4,7 @@ import { AuthService } from "./auth-service"
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot} from "@angular/router"
 import { HttpClientTestingModule } from "@angular/common/http/testing"
 import { AuthServiceStub, RouterStub } from "../../../test/resource/mock-stubs"
-import { OSMT_ADMIN, OSMT_CURATOR } from "./auth-roles"
+import {ENABLE_ROLES, OSMT_ADMIN, OSMT_CURATOR} from "./auth-roles"
 
 
 describe("AuthGuard", () => {
@@ -46,13 +46,15 @@ describe("AuthGuard", () => {
   })
 
   it("should return false", () => {
-    // Arrange
-    const route = Object.assign({}, ActivatedRouteSnapshot.prototype, {
-      data: {roles: "WRONG_ROLE"}
-    })
+    if (ENABLE_ROLES) {
+      // Arrange
+      const route = Object.assign({}, ActivatedRouteSnapshot.prototype, {
+        data: {roles: "WRONG_ROLE"}
+      })
 
-    // Act and Assert
-    expect(authGuard.canActivate(route, routeStateMock)).toEqual(false)
+      // Act and Assert
+      expect(authGuard.canActivate(route, routeStateMock)).toEqual(false)
+    }
   })
 
   it("should return true without role needed", () => {

@@ -51,7 +51,7 @@ describe("AuthGuard", () => {
       const route = Object.assign({}, ActivatedRouteSnapshot.prototype, {
         data: {roles: "WRONG_ROLE"}
       })
-    const expected = !ENABLE_ROLES
+      const expected = !ENABLE_ROLES
 
       // Act and Assert
       expect(authGuard.canActivate(route, routeStateMock)).toEqual(expected)

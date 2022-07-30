@@ -45,16 +45,15 @@ describe("AuthGuard", () => {
     expect(authGuard.canActivate(route, routeStateMock)).toEqual(true)
   })
 
-  it("should return false", () => {
-    if (ENABLE_ROLES) {
-      // Arrange
-      const route = Object.assign({}, ActivatedRouteSnapshot.prototype, {
-        data: {roles: "WRONG_ROLE"}
-      })
+  it("should return false with roles enabled", () => {
+    // Arrange
+    const route = Object.assign({}, ActivatedRouteSnapshot.prototype, {
+      data: {roles: "WRONG_ROLE"}
+    })
+    const expected = !ENABLE_ROLES
 
-      // Act and Assert
-      expect(authGuard.canActivate(route, routeStateMock)).toEqual(false)
-    }
+    // Act and Assert
+    expect(authGuard.canActivate(route, routeStateMock)).toEqual(expected)
   })
 
   it("should return true without role needed", () => {

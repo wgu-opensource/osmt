@@ -1,5 +1,6 @@
 export const STORAGE_KEY_TOKEN = "OSMT.AuthService.accessToken"
 export const STORAGE_KEY_RETURN = "OSMT.AuthService.return"
+export const STORAGE_KEY_ROLE = "OSMT.AuthService.role"
 
 export class AuthService {
   serverIsDown = false
@@ -9,6 +10,7 @@ export class AuthService {
 
   storeToken(accessToken: string): void {
     localStorage.setItem(STORAGE_KEY_TOKEN, accessToken)
+    localStorage.setItem(STORAGE_KEY_ROLE, JSON.parse(atob(accessToken.split(".")[1])).roles)
   }
 
   storeReturn(returnRoute: string): void {
@@ -35,5 +37,9 @@ export class AuthService {
 
   setServerIsDown(isDown: boolean): void {
     this.serverIsDown = isDown
+  }
+
+  getRole(): string {
+    return localStorage.getItem(STORAGE_KEY_ROLE) as string
   }
 }

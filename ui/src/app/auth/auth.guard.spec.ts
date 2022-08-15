@@ -4,7 +4,7 @@ import { AuthService } from "./auth-service"
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot} from "@angular/router"
 import { HttpClientTestingModule } from "@angular/common/http/testing"
 import { AuthServiceStub, RouterStub } from "../../../test/resource/mock-stubs"
-import {ENABLE_ROLES, OSMT_ADMIN, OSMT_CURATOR} from "./auth-roles"
+import { ENABLE_ROLES, OSMT_ADMIN, OSMT_CURATOR } from "./auth-roles"
 
 
 describe("AuthGuard", () => {

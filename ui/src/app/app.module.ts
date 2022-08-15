@@ -92,11 +92,17 @@ import {AuditLogComponent} from "./richskill/detail/audit-log.component"
 import {OccupationsCardSectionComponent} from "./richskill/detail/occupations-card-section/occupations-card-section.component"
 import {CheckerComponent} from "./richskill/form/checker.component"
 import {SystemMessageComponent} from "./core/system-message.component"
+import {LoginComponent} from "./auth/login.component"
 import {LogoutComponent} from "./auth/logout.component"
 import {NgIdleKeepaliveModule} from "@ng-idle/keepalive"
 import {LabelWithSelectComponent} from "./table/skills-library-table/label-with-select.component"
 
-export function initializeApp(appConfig: AppConfig): () => void {
+export function initializeApp(
+  appConfig: AppConfig,
+  authService: AuthService
+): () => void {
+  // AppConfig.settings is initialized lazily (on the next line), but authService must be initialized sooner.
+  authService.init()
   return () => appConfig.load()
 }
 
@@ -114,6 +120,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     ToastComponent,
     SystemMessageComponent,
     LogoutComponent,
+    LoginComponent,
     LoginSuccessComponent,
 
     // Rich skill form
@@ -216,7 +223,7 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AuthGuard,
     { provide: APP_INITIALIZER,
       useFactory: initializeApp,
-      deps: [AppConfig], multi: true }
+      deps: [AppConfig, AuthService], multi: true }
   ],
   bootstrap: [AppComponent]
 })

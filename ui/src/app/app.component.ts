@@ -1,9 +1,8 @@
 import {Component, OnInit} from "@angular/core"
 import {Title} from "@angular/platform-browser"
 import {Whitelabelled} from "../whitelabel"
+import {AuthService} from "./auth/auth-service"
 import {ToastService} from "./toast/toast.service"
-import {DEFAULT_INTERRUPTSOURCES, Idle} from "@ng-idle/core"
-import {Keepalive} from "@ng-idle/keepalive"
 import {NavigationEnd, Router} from "@angular/router"
 import * as chroma from "chroma-js"
 import {SearchService} from "./search/search.service"
@@ -19,13 +18,12 @@ export class AppComponent extends Whitelabelled implements OnInit {
     private titleService: Title,
     private toastService: ToastService,
     private searchService: SearchService,
-    private idle: Idle,
-    private keepalive: Keepalive,
+    private authService: AuthService,
     private router: Router
   ) {
     super()
 
-    this.watchForIdle()
+    this.authService.setup()
 
     this.toastService.loaderSubject.subscribe(visible =>  {
       this.blockingLoaderVisible = visible
@@ -59,20 +57,6 @@ export class AppComponent extends Whitelabelled implements OnInit {
     const currentUrl = this.router.url
     return pattern.test(currentUrl)
   }
-
-  watchForIdle(): void {
-    this.idle.setIdle(this.whitelabel.idleTimeoutInSeconds)
-    this.idle.setTimeout(1)
-    this.idle.setInterrupts(DEFAULT_INTERRUPTSOURCES)
-
-    this.idle.onTimeout.subscribe(() => {
-      console.log("Idle time out!")
-      this.router.navigate(["/logout"], {queryParams: {timeout: true}})
-    })
-    this.keepalive.interval(15)
-    this.idle.watch()
-  }
-
 
   setWhiteLabelColor(newBrandAccent1: string): void {
     // Set new brand color

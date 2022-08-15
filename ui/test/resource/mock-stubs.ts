@@ -57,6 +57,12 @@ export class RouterStub {
 
 export let AuthServiceData = { isDown: false }
 export class AuthServiceStub {  // TODO consider using real class
+  init(): void {
+  }
+  setup(): void {
+  }
+  start(returnPath: string): void {
+  }
   public logout(): void {
   }
   // noinspection JSUnusedGlobalSymbols

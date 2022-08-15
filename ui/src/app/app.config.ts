@@ -8,8 +8,9 @@ export class AppConfig {
 
   static settings: IAppConfig
 
-  constructor(private http: HttpClient) {
-
+  constructor(
+    private http: HttpClient
+  ) {
   }
 
   defaultConfig(): IAppConfig {

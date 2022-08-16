@@ -127,6 +127,20 @@ describe("RichSkillSearchResultsComponent", () => {
     expect(component.matchingQuery).toEqual(expected)
   })
 
+  xit("should have state passed in navigation", () => {
+    const advanced = new ApiAdvancedSearch()
+    advanced.keywords = ["test keywords"]
+    const apiSearch = new ApiSearch({ advanced })
+    const historyState = activatedRoute.setHistory(apiSearch);
+
+    component.matchingQuery = undefined;
+
+    (searchService as unknown as SearchServiceStub).setLatestSearch(apiSearch)
+    while (!component.matchingQuery) {}
+
+    expect(historyState).toContain(advanced);
+  })
+
   it("loadNextPage with no filter should return", () => {
     // Arrange
     component.selectedFilters = new Set<PublishStatus>()  // Force setResults to be called

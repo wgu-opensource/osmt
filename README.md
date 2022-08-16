@@ -198,6 +198,11 @@ OSMT optionally supports role-based access, with these roles:
 
 Role-based access is disabled by default. You can follow these steps to enable it.
 
+* Note: if the role value is false, all endpoints will be exposed, make sure to enable this value to use Roles 
+```text
+  app.enableRole=true
+```
+
 In your [`application.properties`](api/src/main/resources/config/application.properties) file, configure these values:
 ```
 # Roles settings

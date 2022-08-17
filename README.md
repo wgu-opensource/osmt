@@ -200,7 +200,11 @@ Role-based access is disabled by default. You can follow these steps to enable i
 
 * Note: if the role value is false, all endpoints will be exposed, make sure to enable this value to use Roles 
 ```text
+  BACKEND: application.properties file
   app.enableRole=true
+  
+  FRONTEND: ui/src/app/auth/auth-roles.ts
+  export const ENABLE_ROLES = true
 ```
 
 In your [`application.properties`](api/src/main/resources/config/application.properties) file, configure these values:

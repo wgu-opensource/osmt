@@ -22,6 +22,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 
   title = "Search Results"
 
+  selectAllChecked = false
   showSearchEmptyMessage = true
   private multiplePagesSelected: boolean = false
 
@@ -80,6 +81,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 
   handleSelectAll(selectAllChecked: boolean): void {
     this.multiplePagesSelected = this.totalPageCount > 1
+    this.selectAllChecked = selectAllChecked
   }
 
   getSelectAllCount(): number {
@@ -87,11 +89,14 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
   }
 
   handleClickAddCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    const selectedSkills = this.getSelectedSkills(skill)
+
     this.router.navigate(["/collections/add-skills"], {
+      // If there are selected skills, use them.  Otherwise, use the search results.
       state: {
-        selectedSkills: this.getSelectedSkills(skill),
-        totalCount: this.totalCount,
-        search: this.apiSearch
+        selectedSkills,
+        totalCount: this.selectAllChecked || !selectedSkills?.length ? this.totalCount : selectedSkills?.length,
+        search: this.selectAllChecked || !selectedSkills?.length ? this.apiSearch : undefined
       } as ExtrasSelectedSkillsState
     })
     return false

@@ -5,7 +5,7 @@ import { Title } from "@angular/platform-browser"
 import { ActivatedRoute, Router } from "@angular/router"
 import { ActivatedRouteStubSpec } from "test/util/activated-route-stub.spec"
 import { createMockPaginatedSkills, createMockSkillSummary } from "../../../test/resource/mock-data"
-import { RichSkillServiceStub, SearchServiceStub } from "../../../test/resource/mock-stubs"
+import {RichSkillServiceStub, SearchServiceData,SearchServiceStub} from "../../../test/resource/mock-stubs"
 import { AppConfig } from "../app.config"
 import { EnvironmentService } from "../core/environment.service"
 import { PublishStatus } from "../PublishStatus"
@@ -309,5 +309,58 @@ describe("RichSkillSearchResultsComponent with params", () => {
   it("ngOnInit should handle latestSearch", () => {
     // Assert
     expect(component.apiSearch).toBeTruthy()
+  })
+})
+
+describe("RichSkillSearchResultsComponent with advance search params in history.state", () => {
+  let searchService: SearchService
+  let advanced: any
+
+  beforeEach(() => {
+    activatedRoute = new ActivatedRouteStubSpec()
+  })
+
+  beforeEach(async(() => {
+    const routerSpy = ActivatedRouteStubSpec.createRouterSpy()
+
+    TestBed.configureTestingModule({
+      declarations: [
+        RichSkillSearchResultsComponent
+      ],
+      imports: [
+        HttpClientTestingModule,  // Needed to avoid the toolName race condition below
+      ],
+      providers: [
+        EnvironmentService,  // Needed to avoid the toolName race condition below
+        AppConfig,  // Needed to avoid the toolName race condition below
+        Title,
+        ToastService,
+        { provide: SearchService, useClass: SearchServiceStub },
+        { provide: RichSkillService, useClass: RichSkillServiceStub },
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: Router, useValue: routerSpy },
+      ]
+    })
+      .compileComponents()
+
+    const appConfig = TestBed.inject(AppConfig)
+    AppConfig.settings = appConfig.defaultConfig()  // This avoids the race condition on reading the config's whitelabel.toolName
+    searchService = TestBed.inject(SearchService)
+
+    createComponent(RichSkillSearchResultsComponent, () => {
+      // Arrange - Setup for ngOnInit alternate path
+      advanced = new ApiAdvancedSearch()
+      advanced.keywords = ["test keywords"]
+
+      searchService.advancedSkillSearch(advanced)
+      history.pushState(SearchServiceData.latestSearch, "advanced");
+      component.apiSearch = new ApiSearch({advanced})
+    })
+  }))
+
+  it("ngOnInit should handle latestSearch", () => {
+    // Assert
+    expect(component.apiSearch).toBeTruthy()
+    expect(history.state.advanced).toBeTruthy()
   })
 })

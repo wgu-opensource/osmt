@@ -1,7 +1,6 @@
 import { convertToParamMap, ParamMap, Params } from "@angular/router"
 import { Observable, ReplaySubject } from "rxjs"
 import SpyObj = jasmine.SpyObj
-import {ApiSearch} from "../../src/app/richskill/service/rich-skill-search.service";
 
 
 /**
@@ -17,7 +16,6 @@ export class ActivatedRouteStubSpec {
 
   private testParams: Params = {}
   private testQueryParams: Params = {}
-  private history: any = {}
 
   // tslint:disable-next-line:no-any
   static createRouterSpy(): any {
@@ -35,10 +33,6 @@ export class ActivatedRouteStubSpec {
       this.params$.next(this.testParams = params)
       this.paramMap$.next(convertToParamMap(params))
     }
-  }
-
-  setHistory(advanced: ApiSearch): any {
-    return this.history.state = advanced
   }
 
   /** Set the queryParams$'s next value */

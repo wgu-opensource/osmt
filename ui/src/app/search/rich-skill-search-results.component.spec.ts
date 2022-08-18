@@ -5,7 +5,7 @@ import { Title } from "@angular/platform-browser"
 import { ActivatedRoute, Router } from "@angular/router"
 import { ActivatedRouteStubSpec } from "test/util/activated-route-stub.spec"
 import { createMockPaginatedSkills, createMockSkillSummary } from "../../../test/resource/mock-data"
-import {RichSkillServiceStub, SearchServiceData,SearchServiceStub} from "../../../test/resource/mock-stubs"
+import {RichSkillServiceStub, SearchServiceData, SearchServiceStub} from "../../../test/resource/mock-stubs"
 import { AppConfig } from "../app.config"
 import { EnvironmentService } from "../core/environment.service"
 import { PublishStatus } from "../PublishStatus"
@@ -300,7 +300,7 @@ describe("RichSkillSearchResultsComponent with params", () => {
 
 describe("RichSkillSearchResultsComponent with advance search params in history.state", () => {
   let searchService: SearchService
-  let advanced: any
+  let advanced: ApiAdvancedSearch
 
   beforeEach(() => {
     activatedRoute = new ActivatedRouteStubSpec()
@@ -339,7 +339,7 @@ describe("RichSkillSearchResultsComponent with advance search params in history.
       advanced.keywords = ["test keywords"]
 
       searchService.advancedSkillSearch(advanced)
-      history.pushState(SearchServiceData.latestSearch, "advanced");
+      history.pushState(SearchServiceData.latestSearch, "advanced")
       component.apiSearch = new ApiSearch({advanced})
     })
   }))
@@ -348,5 +348,6 @@ describe("RichSkillSearchResultsComponent with advance search params in history.
     // Assert
     expect(component.apiSearch).toBeTruthy()
     expect(history.state.advanced).toBeTruthy()
+    expect(history.state.advanced).toEqual({keywords: ["test keywords"]})
   })
 })

@@ -1,11 +1,37 @@
+import { Injectable } from "@angular/core"
+import { Router } from "@angular/router"
+import { DEFAULT_INTERRUPTSOURCES, Idle } from "@ng-idle/core"
+import { Keepalive } from "@ng-idle/keepalive"
+import { Whitelabelled } from "../../whitelabel"
+import { IAuthService } from "./iauth-service"
+
+
 export const STORAGE_KEY_TOKEN = "OSMT.AuthService.accessToken"
 export const STORAGE_KEY_RETURN = "OSMT.AuthService.return"
 export const STORAGE_KEY_ROLE = "OSMT.AuthService.role"
 
-export class AuthService {
+@Injectable()
+export class AuthService extends Whitelabelled implements IAuthService {
   serverIsDown = false
 
-  constructor() {
+  constructor(
+    private router: Router,
+    private idle: Idle,
+    private keepalive: Keepalive,
+  ) {
+    super()
+  }
+
+  init(): void {
+    // N/A
+  }
+
+  setup(): void {
+    this.watchForIdle()
+  }
+
+  start(returnPath: string): void {
+    this.router.navigate(["/login"], { queryParams: { return: returnPath } })
   }
 
   storeToken(accessToken: string): void {
@@ -15,6 +41,9 @@ export class AuthService {
 
   storeReturn(returnRoute: string): void {
     localStorage.setItem(STORAGE_KEY_RETURN, returnRoute)
+  }
+
+  restoreReturnAsync(): void {
   }
 
   popReturn(): string | null {
@@ -41,5 +70,18 @@ export class AuthService {
 
   getRole(): string {
     return localStorage.getItem(STORAGE_KEY_ROLE) as string
+  }
+
+  private watchForIdle(): void {
+    this.idle.setIdle(this.whitelabel.idleTimeoutInSeconds)
+    this.idle.setTimeout(1)
+    this.idle.setInterrupts(DEFAULT_INTERRUPTSOURCES)
+
+    this.idle.onTimeout.subscribe(() => {
+      console.log("Idle time out!")
+      this.router.navigate(["/logout"], {queryParams: {timeout: true}})
+    })
+    this.keepalive.interval(15)
+    this.idle.watch()
   }
 }

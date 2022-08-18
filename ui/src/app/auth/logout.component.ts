@@ -9,7 +9,7 @@ import {Whitelabelled} from "../../whitelabel";
   templateUrl: "./logout.component.html"
 })
 export class LogoutComponent extends Whitelabelled implements OnInit {
-  private isTimeout: boolean = false
+  private isTimeout = false
 
   constructor(private router: Router,
               private route: ActivatedRoute,

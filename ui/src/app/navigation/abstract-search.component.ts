@@ -49,4 +49,9 @@ export class AbstractSearchComponent {
     return false
   }
 
+  isDisabled(): boolean {
+    //return this.AuthService.isDisabledByRoles("SKILLS_CREATE");
+    return true
+  }
+
 }

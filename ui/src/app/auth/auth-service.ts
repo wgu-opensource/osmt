@@ -1,3 +1,5 @@
+import {ENABLE_ROLES, ROLES_AUTHORITY} from "./auth-roles";
+
 export const STORAGE_KEY_TOKEN = "OSMT.AuthService.accessToken"
 export const STORAGE_KEY_RETURN = "OSMT.AuthService.return"
 export const STORAGE_KEY_ROLE = "OSMT.AuthService.role"
@@ -41,5 +43,23 @@ export class AuthService {
 
   getRole(): string {
     return localStorage.getItem(STORAGE_KEY_ROLE) as string
+  }
+
+  isDisabledByRoles(path : string): boolean {
+    let disabled = true;
+    const allowedRoles = ROLES_AUTHORITY[path];
+    const userRoles = this.getRole()?.split(",");
+
+    if (!ENABLE_ROLES) {
+      return false;
+    }
+
+    for (const roles of userRoles) {
+      if (allowedRoles.indexOf(roles) !== -1) {
+        disabled = true
+      }
+    }
+
+    return disabled
   }
 }

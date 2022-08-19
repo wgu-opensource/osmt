@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "./node_modules/@angular/cli/bin/ng",
     "start": "./node_modules/@angular/cli/bin/ng serve",
+    "start-debug": "./node_modules/@angular/cli/bin/ng serve --source-map",
     "start-hotreload": "./node_modules/@angular/cli/bin/ng serve --live-reload",
     "build": "./node_modules/@angular/cli/bin/ng build",
     "build-prod": "./node_modules/@angular/cli/bin/ng build --prod",

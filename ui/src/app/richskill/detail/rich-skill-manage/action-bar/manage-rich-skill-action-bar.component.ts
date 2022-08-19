@@ -134,4 +134,9 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
       this.toastService.showToast("Whoops!", "You need permission to perform this action. If this seems to be an error, please contact your OSMT administrator.")
     }
   }
+
+  isDisabled(): boolean {
+    return this.authService.isDisabledByRoles("SKILL_PUBLISH");
+  }
+
 }

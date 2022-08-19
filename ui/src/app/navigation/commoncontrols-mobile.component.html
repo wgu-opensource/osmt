@@ -55,7 +55,7 @@
 <ul class="m-navBar-x-nav">
 
   <li>
-    <button class="m-buttonText m-buttonText-onDark" routerLink="/skills/create" type="button">
+    <button class="m-buttonText m-buttonText-onDark" routerLink="/skills/create" type="button" [disabled]="isDisabled()">
       <span class="m-buttonText-x-icon">
         <svg class="t-icon" aria-hidden="true">
           <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>

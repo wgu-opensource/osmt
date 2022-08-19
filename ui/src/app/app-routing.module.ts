@@ -55,7 +55,10 @@ const routes: Routes = [
   {path: "skills/:uuid/duplicate",
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
-    canDeactivate: [FormDirtyGuard]
+    canDeactivate: [FormDirtyGuard],
+    data: {
+      roles: [OSMT_ADMIN, OSMT_CURATOR]
+    },
   },
   // manage skill
   {path: "skills/:uuid/manage",
@@ -126,6 +129,9 @@ const routes: Routes = [
   {path: "collections/add-skills",
     component: AddSkillsCollectionComponent,
     canActivate: [AuthGuard],
+    data: {
+      roles: [OSMT_ADMIN]
+    },
   },
   // collections library
   {path: "collections",

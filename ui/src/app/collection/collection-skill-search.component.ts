@@ -13,6 +13,7 @@ import {TableActionDefinition} from "../table/skills-library-table/has-action-de
 import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
 import {SkillsListComponent} from "../richskill/list/skills-list.component";
 import {ApiTaskResult} from "../task/ApiTaskResult";
+import {AuthService} from "../auth/auth-service";
 
 @Component({
   selector: "app-collection-skill-search",
@@ -40,9 +41,10 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
               protected location: Location,
               protected collectionService: CollectionService,
               protected richSkillService: RichSkillService,
-              protected toastService: ToastService
+              protected toastService: ToastService,
+              protected authService: AuthService,
   ) {
-    super(router, richSkillService, toastService)
+    super(router, richSkillService, toastService, authService)
     this.titleService.setTitle(`Add RSDs to Collection | ${this.whitelabel.toolName}`)
 
     this.uuidParam = this.route.snapshot.paramMap.get("uuid") || undefined

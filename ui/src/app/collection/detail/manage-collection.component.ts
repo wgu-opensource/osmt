@@ -14,6 +14,7 @@ import {ApiSkillSummary} from "../../richskill/ApiSkillSummary"
 import {Observable, Subject} from "rxjs"
 import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
 import {Title} from "@angular/platform-browser";
+import {AuthService} from "../../auth/auth-service";
 
 @Component({
   selector: "app-manage-collection",
@@ -56,9 +57,10 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
               protected toastService: ToastService,
               protected collectionService: CollectionService,
               protected route: ActivatedRoute,
-              protected titleService: Title
+              protected titleService: Title,
+              protected authService: AuthService,
   ) {
-    super(router, richSkillService, toastService)
+    super(router, richSkillService, toastService, authService)
   }
 
   ngOnInit(): void {

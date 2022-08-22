@@ -13,8 +13,8 @@ import { AbstractSearchComponent } from "./abstract-search.component"
   template: ``
 })
 export class ConcreteSearchComponent extends AbstractSearchComponent {
-  constructor(searchService: SearchService, route: ActivatedRoute) {
-    super(searchService, route)
+  constructor(searchService: SearchService, route: ActivatedRoute, authService: ActivatedRoute) {
+    super(searchService, route, authService)
   }
 }
 

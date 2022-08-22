@@ -232,7 +232,7 @@ export class SkillsListComponent extends QuickLinksHelper {
 
     if (this.showAddToCollection) {
       actions.push(new TableActionDefinition({
-        label: "Add to Collection",
+        label: "Add to Collection test",
         icon: "collection",
         primary: true,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),

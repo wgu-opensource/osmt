@@ -1,13 +1,14 @@
 import {FormControl, FormGroup} from "@angular/forms";
 import {SearchService} from "../search/search.service";
 import {ActivatedRoute} from "@angular/router";
+import {AuthService} from "../auth/auth-service";
 
 export class AbstractSearchComponent {
   searchForm = new FormGroup({
     search: new FormControl("")
   })
 
-  constructor(protected searchService: SearchService, protected route: ActivatedRoute) {
+  constructor(protected searchService: SearchService, protected route: ActivatedRoute, protected  authService: AuthService) {
     this.searchService.searchQuery$.subscribe(apiSearch => {
       if (apiSearch === undefined) {
         this.clearSearch()
@@ -49,9 +50,8 @@ export class AbstractSearchComponent {
     return false
   }
 
-  isDisabled(): boolean {
-    //return this.AuthService.isDisabledByRoles("SKILLS_CREATE");
-    return true
+  isDisabled(path: string): boolean {
+    return this.authService.isDisabledByRoles(path);
   }
 
 }

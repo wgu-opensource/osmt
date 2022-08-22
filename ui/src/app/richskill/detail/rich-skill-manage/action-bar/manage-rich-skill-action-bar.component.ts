@@ -135,8 +135,8 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
     }
   }
 
-  isDisabled(): boolean {
-    return this.authService.isDisabledByRoles("SKILL_PUBLISH");
+  isDisabled(path: string): boolean {
+    return this.authService.isDisabledByRoles(path);
   }
 
 }

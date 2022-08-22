@@ -14,14 +14,14 @@ export class CommoncontrolsComponent extends AbstractSearchComponent implements 
   searchIcon = SvgHelper.path(SvgIcon.SEARCH)
   dismissIcon = SvgHelper.path(SvgIcon.DISMISS)
 
-  constructor(protected searchService: SearchService, protected route: ActivatedRoute, private authService: AuthService) {
-    super(searchService, route)
+  constructor(protected searchService: SearchService, protected route: ActivatedRoute, protected authService: AuthService) {
+    super(searchService, route, authService)
   }
 
   ngOnInit(): void {
   }
 
-  isDisabled(): boolean {
-    return this.authService.isDisabledByRoles("SKILLS_CREATE");
+  isDisabled(path : string): boolean {
+    return this.authService.isDisabledByRoles(path);
   }
 }

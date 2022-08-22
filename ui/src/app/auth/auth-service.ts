@@ -46,17 +46,17 @@ export class AuthService {
   }
 
   isDisabledByRoles(path : string): boolean {
-    let disabled = true;
-    const allowedRoles = ROLES_AUTHORITY[path];
-    const userRoles = this.getRole()?.split(",");
-
     if (!ENABLE_ROLES) {
       return false;
     }
 
+    let disabled = true;
+    const allowedRoles = ROLES_AUTHORITY[path];
+    const userRoles = this.getRole()?.split(",");
+
     for (const roles of userRoles) {
       if (allowedRoles.indexOf(roles) !== -1) {
-        disabled = true
+        disabled = false
       }
     }
 

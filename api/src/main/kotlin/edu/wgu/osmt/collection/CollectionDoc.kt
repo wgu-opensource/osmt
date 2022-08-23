@@ -45,7 +45,7 @@ data class CollectionDoc(
     @get:JsonIgnore
     val skillIds: List<String>?,
 
-    @Field
+    @Field(type = Integer)
     @Nullable
     val skillCount: Int?,
 

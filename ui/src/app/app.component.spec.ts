@@ -5,18 +5,16 @@ import { FormsModule } from "@angular/forms"
 import { Title } from "@angular/platform-browser"
 import { NavigationEnd, Router } from "@angular/router"
 import { RouterTestingModule } from "@angular/router/testing"
-import { Idle } from "@ng-idle/core"
-import { Keepalive, NgIdleKeepaliveModule } from "@ng-idle/keepalive"
 import { of } from "rxjs"
 import { AppConfig } from "src/app/app.config"
 import { EnvironmentService } from "src/app/core/environment.service"
 import { ActivatedRouteStubSpec } from "test/util/activated-route-stub.spec"
-import { IdleStub, SearchServiceStub } from "../../test/resource/mock-stubs"
+import { AuthServiceStub, SearchServiceStub } from "../../test/resource/mock-stubs"
 import { RouterStubSpec } from "../../test/util/router-stub.spec"
 import { AppComponent } from "./app.component"
+import { AuthService } from "./auth/auth-service"
 import { SearchService } from "./search/search.service"
 import { ToastService } from "./toast/toast.service"
-import any = jasmine.any
 
 
 export function createComponent(T: Type<AppComponent>): Promise<void> {
@@ -52,15 +50,13 @@ describe("AppComponent construction", () => {
       imports: [
         RouterTestingModule,  // Required for routerLink
         HttpClientTestingModule,  // Needed to avoid the toolName race condition below
-        NgIdleKeepaliveModule.forRoot(),
       ],
       providers: [
         EnvironmentService,  // Needed to avoid the toolName race condition below
         AppConfig,  // Needed to avoid the toolName race condition below
         Title,
         ToastService,
-        Keepalive,
-        { provide: Idle, useClass: IdleStub },
+        { provide: AuthService, useClass: AuthServiceStub },
         { provide: SearchService, useClass: SearchServiceStub },
         { provide: Router, useValue: routerStub },
       ]
@@ -93,15 +89,13 @@ describe("AppComponent methods", () => {
         FormsModule,  // Required for ([ngModel])
         RouterTestingModule,  // Required for routerLink
         HttpClientTestingModule,  // Needed to avoid the toolName race condition below
-        NgIdleKeepaliveModule.forRoot(),
       ],
       providers: [
         EnvironmentService,  // Needed to avoid the toolName race condition below
         AppConfig,  // Needed to avoid the toolName race condition below
         Title,
         ToastService,
-        Keepalive,
-        { provide: Idle, useClass: IdleStub },
+        { provide: AuthService, useClass: AuthServiceStub },
         { provide: SearchService, useClass: SearchServiceStub },
         { provide: Router, useValue: routerSpy },
       ]
@@ -120,18 +114,6 @@ describe("AppComponent methods", () => {
 
     createComponent(AppComponent)
   }))
-
-  it("watchForIdle should return", () => {
-    // Arrange
-    const idleStub = TestBed.inject(Idle) as IdleStub
-    const router = TestBed.inject(Router)
-
-    // Act
-    idleStub.onTimeout.next(1)
-
-    // Assert
-    expect(router.navigate).toHaveBeenCalledWith([ "/logout" ], any(Object) )
-  })
 
   it("setWhiteLabelColor should return", () => {
     // Arrange

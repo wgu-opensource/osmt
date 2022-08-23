@@ -41,6 +41,9 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 
   ngOnInit(): void {
     this.titleService.setTitle(`Search Results | ${this.whitelabel.toolName}`)
+    if (history.state?.advanced) {
+      this.searchService.latestSearch = new ApiSearch(history.state);
+    }
 
     if (this.searchService.latestSearch !== undefined) {
       this.handleNewSearch(this.searchService.latestSearch)

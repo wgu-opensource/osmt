@@ -190,11 +190,13 @@ export class SkillsListComponent extends QuickLinksHelper {
       actions.push(new TableActionDefinition({
         label: "Add to Collection",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
       }))
     } else {
       actions.push(new TableActionDefinition({
         label: "Remove from Collection",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickRemoveCollection(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
       }))
     }
     return actions

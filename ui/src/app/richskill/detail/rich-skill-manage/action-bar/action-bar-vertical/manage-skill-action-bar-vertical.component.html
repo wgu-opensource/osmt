@@ -25,7 +25,7 @@
       <span class="m-actionBarItem-x-text">Make Copy</span>
     </button>
 
-    <button type="button" class="m-actionBarItem" (click)="handlePublish()" [disabled]="isDisabled('SKILL_PUBLISH')">
+    <button type="button" class="m-actionBarItem" (click)="handlePublish()" [disabled]="isDraftAndDisabled('SKILL_PUBLISH')">
       <span class="m-actionBarItem-x-icon">
         <svg class="t-icon" aria-hidden="true">
           <use [attr.xlink:href]="publishIcon"></use>

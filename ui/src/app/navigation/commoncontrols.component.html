@@ -45,8 +45,7 @@
 
     <div class="m-commonControls-x-controls">
       <div>
-
-        <a class="m-button" routerLink="/skills/create" [ngClass]="isDisabled('SKILLS_CREATE') ? 'disabled-content' : ''">
+        <a class="m-button" routerLink="/skills/create" [class.disabled-content]="isDisabled('SKILLS_CREATE')">
           <svg class="m-button-x-icon t-icon">
             <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
           </svg>

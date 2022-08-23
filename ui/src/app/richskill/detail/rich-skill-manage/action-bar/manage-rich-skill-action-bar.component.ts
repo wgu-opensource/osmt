@@ -101,20 +101,6 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   }
 
   handlePublish(): void {
-    const allowedRoles = [ OSMT_ADMIN ]
-    const userRoles = this.authService.getRole()?.split(",")
-    let allowed = false
-
-    if (!ENABLE_ROLES) {
-      allowed = true
-    }
-    for (const roles of userRoles) {
-      if (allowedRoles.indexOf(roles) !== -1) {
-        allowed = true
-      }
-    }
-
-    if (allowed) {
       if (!this.published) {
         if (confirm("Are you sure you want to publish this RSD?")) {
           this.toastService.showBlockingLoader()
@@ -129,10 +115,10 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
         const url = `skills/${this.skillUuid}`
         window.open(url, "_blank")
       }
-    }
-    else {
-      this.toastService.showToast("Whoops!", "You need permission to perform this action. If this seems to be an error, please contact your OSMT administrator.")
-    }
+  }
+
+  isDraftAndDisabled(path: string): boolean {
+    return !this.isPublished() && this.isDisabled(path);
   }
 
   isDisabled(path: string): boolean {

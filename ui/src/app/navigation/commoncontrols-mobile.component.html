@@ -66,7 +66,7 @@
   </li>
 
   <li>
-    <button class="m-buttonText m-buttonText-onDark" routerLink="/collections/create" type="button">
+    <button class="m-buttonText m-buttonText-onDark" routerLink="/collections/create" type="button" [disabled]="isDisabled('COLLECTION_CREATE')">
       <span class="m-buttonText-x-icon">
         <svg class="t-icon" aria-hidden="true">
           <use xlink:href="/assets/images/svg-defs.svg#icon-collection"></use>
@@ -77,7 +77,7 @@
   </li>
 
   <li>
-    <button class="m-buttonText m-buttonText-onDark" routerLink="/skills/import">
+    <button class="m-buttonText m-buttonText-onDark" routerLink="/skills/import" type="button" [disabled]="isDisabled('SKILLS_CREATE')">
       <span class="m-buttonText-x-icon">
         <svg class="t-icon" aria-hidden="true">
           <use xlink:href="/assets/images/svg-defs.svg#icon-upload"></use>

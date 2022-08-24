@@ -2,7 +2,7 @@
 export const OSMT_ADMIN = "ROLE_Osmt_Admin"
 export const OSMT_CURATOR = "ROLE_Osmt_Curator"
 
-export const ENABLE_ROLES = true
+export const ENABLE_ROLES = false
 
 export const ROLES_AUTHORITY : any  = {
   SKILL_UPDATE : [OSMT_ADMIN, OSMT_CURATOR],

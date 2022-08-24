@@ -36,7 +36,7 @@ export class AuthService extends Whitelabelled implements IAuthService {
 
   storeToken(accessToken: string): void {
     localStorage.setItem(STORAGE_KEY_TOKEN, accessToken)
-    localStorage.setItem(STORAGE_KEY_ROLE, JSON.parse(atob(accessToken.split(".")[1])).roles)
+    localStorage.setItem(STORAGE_KEY_ROLE, JSON.parse(atob(accessToken.split(".")[1]))?.roles)
   }
 
   storeReturn(returnRoute: string): void {

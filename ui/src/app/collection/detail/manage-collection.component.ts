@@ -142,11 +142,13 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         icon: this.addIcon,
         primary: !this.collectionHasSkills, // Primary only if there are no skills
         callback: () => this.addSkillsAction(),
+        visible: () => !this.authService.isDisabledByRoles("COLLECTION_SKILLS_UPDATE")
       }),
       new TableActionDefinition({
         label: "Edit Collection Name",
         icon: this.editIcon,
-        callback: () => this.editAction()
+        callback: () => this.editAction(),
+        visible: () => !this.authService.isDisabledByRoles("COLLECTION_UPDATE")
       })
     ]
 
@@ -161,23 +163,27 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         label: "Publish Collection",
         icon: this.publishIcon,
         callback: () => this.publishAction(),
+        visible: () => !this.authService.isDisabledByRoles("COLLECTION_PUBLISH")
       }))
     }
 
-    actions.push(
-      new TableActionDefinition({
-        label: "Archive Collection ",
-        icon: this.archiveIcon,
-        callback: () => this.archiveAction(),
-        visible: () => this.collection?.status !== PublishStatus.Archived && this.collection?.status !== PublishStatus.Deleted
-      }),
-      new TableActionDefinition({
-        label: "Unarchive Collection ",
-        icon: this.unarchiveIcon,
-        callback: () => this.unarchiveAction(),
-        visible: () => this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted
-      })
-    )
+    if(this.collection?.status !== PublishStatus.Archived && this.collection?.status !== PublishStatus.Deleted){
+      actions.push(
+        new TableActionDefinition({
+          label: "Archive Collection ",
+          icon: this.archiveIcon,
+          callback: () => this.archiveAction(),
+          visible: () =>  !this.authService.isDisabledByRoles("COLLECTION_UPDATE")
+      }))
+    } else if (this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted) {
+      actions.push(
+        new TableActionDefinition({
+          label: "Unarchive Collection ",
+          icon: this.unarchiveIcon,
+          callback: () => this.unarchiveAction(),
+          visible: () => !this.authService.isDisabledByRoles("COLLECTION_UPDATE")
+      }))
+    }
     return actions
   }
 

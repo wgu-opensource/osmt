@@ -52,7 +52,7 @@
           <span class="m-button-x-text">Create RSD</span>
         </a>
 
-        <a class="m-button" routerLink="/collections/create">
+        <a class="m-button" routerLink="/collections/create" [class.disabled-content]="isDisabled('COLLECTION_CREATE')">
           <svg class="m-button-x-icon t-icon">
             <use xlink:href="/assets/images/svg-defs.svg#icon-collection"></use>
           </svg>

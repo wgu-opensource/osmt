@@ -24,6 +24,7 @@ export class VerticalActionBarComponent {
   }
 
   get secondaryActions(): TableActionDefinition[] {
-    return this.visibleActions.filter(it => !it.primary)
+    //return this.visibleActions.filter(it => !it.primary)
+    return this.actions.filter(it => !it.primary)
   }
 }

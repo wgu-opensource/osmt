@@ -6,6 +6,7 @@ import { SearchServiceStub } from "../../../test/resource/mock-stubs"
 import { ActivatedRouteStubSpec } from "../../../test/util/activated-route-stub.spec"
 import { SearchService } from "../search/search.service"
 import { AbstractSearchComponent } from "./abstract-search.component"
+import {AuthService} from "../auth/auth-service";
 
 
 @Component({
@@ -13,7 +14,7 @@ import { AbstractSearchComponent } from "./abstract-search.component"
   template: ``
 })
 export class ConcreteSearchComponent extends AbstractSearchComponent {
-  constructor(searchService: SearchService, route: ActivatedRoute, authService: ActivatedRoute) {
+  constructor(searchService: SearchService, route: ActivatedRoute, authService: AuthService) {
     super(searchService, route, authService)
   }
 }

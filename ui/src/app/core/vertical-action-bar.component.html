@@ -5,6 +5,7 @@
       type="button"
       class="m-actionBarItem"
       (click)="action.fire(data)"
+      [disabled]="!action.isVisible"
     >
     <span class="m-actionBarItem-x-icon">
       <svg class="t-icon" aria-hidden="true">

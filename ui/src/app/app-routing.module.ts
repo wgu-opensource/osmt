@@ -20,7 +20,7 @@ import {ManageCollectionComponent} from "./collection/detail/manage-collection.c
 import {PublishCollectionComponent} from "./collection/detail/publish-collection.component";
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component";
 import {BatchImportComponent} from "./richskill/import/batch-import.component";
-import { OSMT_ADMIN, OSMT_CURATOR } from "./auth/auth-roles"
+import { ROLES_AUTHORITY } from "./auth/auth-roles"
 
 
 const routes: Routes = [
@@ -33,7 +33,7 @@ const routes: Routes = [
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN, OSMT_CURATOR]
+      roles: ROLES_AUTHORITY.SKILLS_CREATE
     },
     canDeactivate: [FormDirtyGuard]
   },
@@ -47,7 +47,7 @@ const routes: Routes = [
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN]
+      roles: ROLES_AUTHORITY.SKILL_UPDATE
     },
     canDeactivate: [FormDirtyGuard]
   },
@@ -57,7 +57,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     canDeactivate: [FormDirtyGuard],
     data: {
-      roles: [OSMT_ADMIN, OSMT_CURATOR]
+      roles: ROLES_AUTHORITY.SKILLS_CREATE
     },
   },
   // manage skill
@@ -75,7 +75,7 @@ const routes: Routes = [
     component: BatchImportComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN, OSMT_CURATOR]
+      roles: ROLES_AUTHORITY.SKILLS_CREATE
     },
   },
 
@@ -86,7 +86,7 @@ const routes: Routes = [
     component: CollectionFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN, OSMT_CURATOR]
+      roles: ROLES_AUTHORITY.COLLECTION_CREATE
     },
     canDeactivate: [FormDirtyGuard]
   },
@@ -100,7 +100,7 @@ const routes: Routes = [
     component: CollectionFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN]
+      role: ROLES_AUTHORITY.COLLECTION_UPDATE
     },
     canDeactivate: [FormDirtyGuard]
   },
@@ -114,7 +114,7 @@ const routes: Routes = [
     component: PublishCollectionComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN]
+      roles: ROLES_AUTHORITY.COLLECTION_PUBLISH
     },
   },
   // find skills to add to a collection
@@ -122,7 +122,7 @@ const routes: Routes = [
     component: CollectionSkillSearchComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN]
+      roles: ROLES_AUTHORITY.COLLECTION_SKILLS_UPDATE
     },
   },
   // find a collection to add a selection of skills to
@@ -130,7 +130,7 @@ const routes: Routes = [
     component: AddSkillsCollectionComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN]
+      roles: ROLES_AUTHORITY.COLLECTION_SKILLS_UPDATE
     },
   },
   // collections library

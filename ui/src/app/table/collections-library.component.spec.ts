@@ -4,13 +4,14 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing"
 import { Title } from "@angular/platform-browser"
 import { RouterTestingModule } from "@angular/router/testing"
 import { createMockCollectionSummary } from "../../../test/resource/mock-data"
-import { CollectionServiceStub } from "../../../test/resource/mock-stubs"
+import {AuthServiceStub, CollectionServiceStub} from "../../../test/resource/mock-stubs"
 import { AppConfig } from "../app.config"
 import { CollectionService } from "../collection/service/collection.service"
 import { EnvironmentService } from "../core/environment.service"
 import { PaginatedCollections } from "../richskill/service/rich-skill-search.service"
 import { ToastService } from "../toast/toast.service"
 import { CollectionsLibraryComponent } from "./collections-library.component"
+import {AuthService} from "../auth/auth-service";
 
 
 export function createComponent(T: Type<CollectionsLibraryComponent>): Promise<void> {
@@ -49,6 +50,7 @@ describe("CollectionsLibraryComponent", () => {
         Title,
         ToastService,
         { provide: CollectionService, useClass: CollectionServiceStub },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
     .compileComponents()

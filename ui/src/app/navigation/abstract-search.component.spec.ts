@@ -2,7 +2,7 @@ import { HttpClientModule } from "@angular/common/http"
 import { Component, Type } from "@angular/core"
 import { async, ComponentFixture, TestBed } from "@angular/core/testing"
 import { ActivatedRoute, Router } from "@angular/router"
-import { SearchServiceStub } from "../../../test/resource/mock-stubs"
+import {AuthServiceStub, SearchServiceStub} from "../../../test/resource/mock-stubs"
 import { ActivatedRouteStubSpec } from "../../../test/util/activated-route-stub.spec"
 import { SearchService } from "../search/search.service"
 import { AbstractSearchComponent } from "./abstract-search.component"
@@ -57,8 +57,8 @@ describe("AbstractSearchComponent", () => {
       providers: [
         { provide: SearchService, useClass: SearchServiceStub },
         { provide: Router, useValue: routerSpy },
-        { provide: ActivatedRoute, useValue: activatedRoute }
-
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
       .compileComponents()

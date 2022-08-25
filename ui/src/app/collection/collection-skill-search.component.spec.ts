@@ -5,7 +5,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing"
 import { Title } from "@angular/platform-browser"
 import { RouterTestingModule } from "@angular/router/testing"
 import { createMockPaginatedSkills, createMockSkillSummary } from "../../../test/resource/mock-data"
-import { CollectionServiceStub, RichSkillServiceStub } from "../../../test/resource/mock-stubs"
+import {AuthServiceStub, CollectionServiceStub, RichSkillServiceStub} from "../../../test/resource/mock-stubs"
 import { AppConfig } from "../app.config"
 import { EnvironmentService } from "../core/environment.service"
 import { ApiSearch, PaginatedSkills } from "../richskill/service/rich-skill-search.service"
@@ -14,6 +14,7 @@ import { TableActionDefinition } from "../table/skills-library-table/has-action-
 import { ToastService } from "../toast/toast.service"
 import { CollectionSkillSearchComponent } from "./collection-skill-search.component"
 import { CollectionService } from "./service/collection.service"
+import {AuthService} from "../auth/auth-service";
 
 
 export function createComponent(T: Type<CollectionSkillSearchComponent>): Promise<void> {
@@ -52,6 +53,7 @@ describe("CollectionSkillSearchComponent", () => {
         ToastService,
         { provide: CollectionService, useClass: CollectionServiceStub },
         { provide: RichSkillService, useClass: RichSkillServiceStub },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
     .compileComponents()

@@ -13,6 +13,7 @@ import {
   createMockSkillSummary
 } from "../../../../test/resource/mock-data"
 import {
+  AuthServiceStub,
   CollectionServiceStub,
   EnvironmentServiceStub,
   RichSkillServiceStub
@@ -28,6 +29,7 @@ import { ToastService } from "../../toast/toast.service"
 import { ApiCollection } from "../ApiCollection"
 import { CollectionService } from "../service/collection.service"
 import { ManageCollectionComponent } from "./manage-collection.component"
+import {AuthService} from "../../auth/auth-service";
 
 
 @Component({
@@ -79,6 +81,7 @@ describe("ManageCollectionComponent", () => {
         { provide: EnvironmentService, useClass: EnvironmentServiceStub },  // Example of using a service stub
         { provide: RichSkillService, useClass: RichSkillServiceStub },
         { provide: CollectionService, useClass: CollectionServiceStub },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
 

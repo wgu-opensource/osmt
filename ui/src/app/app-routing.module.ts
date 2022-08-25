@@ -100,7 +100,7 @@ const routes: Routes = [
     component: CollectionFormComponent,
     canActivate: [AuthGuard],
     data: {
-      role: ROLES_AUTHORITY.COLLECTION_UPDATE
+      roles: ROLES_AUTHORITY.COLLECTION_UPDATE
     },
     canDeactivate: [FormDirtyGuard]
   },

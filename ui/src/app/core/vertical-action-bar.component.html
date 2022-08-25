@@ -22,6 +22,7 @@
       type="button"
       class="m-button"
       (click)="action.fire(data)"
+      [disabled]="!action.isVisible"
     >
       <span class="m-button-x-loader">
         <span class="m-loaderGraphic m-loaderGraphic-medium"></span>

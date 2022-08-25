@@ -276,7 +276,7 @@ describe("ManageCollectionComponent", () => {
 
       // Assert
       expect(actions).toBeTruthy()
-      expect(actions.length).toEqual(5)
+      expect(actions.length).toEqual(4)
 
       let action = actions[0]
       expect(action.label).toEqual("Add RSDs to This Collection")
@@ -305,16 +305,9 @@ describe("ManageCollectionComponent", () => {
       action.callback?.(action)
       expect(action.visible?.()).toBeTruthy()  // !== PublishStatus.Archived  && !== PublishStatus.Deleted
 
-      action = actions[4]
-      expect(action.label).toEqual("Unarchive Collection ")
-      expect(action.primary).toBeFalsy()
-      expect(action && action.callback).toBeTruthy()
-      action.callback?.(action)
-      expect(action.visible?.()).toBeFalsy()  // === PublishStatus.Archived  || === PublishStatus.Deleted
     })
   })
-
-  it("publishAction should be correct", () => {
+ it("publishAction should be correct", () => {
     // Arrange for all
     const router = TestBed.inject(Router)
     const collectionService = TestBed.inject(CollectionService)

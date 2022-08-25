@@ -79,7 +79,7 @@ export class AuthServiceStub {  // TODO consider using real class
     return true
   }
   public isDisabledByRoles(path : string): boolean {
-    return true
+    return false
   }
 }
 

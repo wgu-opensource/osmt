@@ -7,23 +7,25 @@ import {HttpClient} from "@angular/common/http"
 export class AppConfig {
 
   static settings: IAppConfig
+  environment: { production: boolean; baseApiUrl: string; loginUrl: string; dynamicWhitelabel: boolean }
 
   constructor(
     private http: HttpClient
   ) {
+    this.environment = environment
   }
 
   defaultConfig(): IAppConfig {
     const settings = new DefaultAppConfig()
-    settings.baseApiUrl = environment.baseApiUrl
-    settings.loginUrl = environment.loginUrl
+    settings.baseApiUrl = this.environment.baseApiUrl
+    settings.loginUrl = this.environment.loginUrl
     return settings
   }
 
   load(): Promise<object> {
-    const baseUrl = environment.baseApiUrl
+    const baseUrl = this.environment.baseApiUrl
 
-    if (environment.dynamicWhitelabel) {
+    if (this.environment.dynamicWhitelabel) {
       return this.http.get(`${baseUrl}/whitelabel/whitelabel.json`)
         .toPromise()
         .then(value => {
@@ -31,8 +33,8 @@ export class AppConfig {
           Object.assign(AppConfig.settings, value as IAppConfig)
 
           // baseApiUrl and loginUrl are not runtime whitelabellable
-          AppConfig.settings.baseApiUrl = environment.baseApiUrl
-          AppConfig.settings.loginUrl = environment.loginUrl
+          AppConfig.settings.baseApiUrl = this.environment.baseApiUrl
+          AppConfig.settings.loginUrl = this.environment.loginUrl
           return value
         }).catch(reason => {
           AppConfig.settings = this.defaultConfig()

@@ -369,6 +369,31 @@ start_osmt_dev_spring_app() {
   cd "${project_dir}" || return 1
 }
 
+start_osmt_dev_spring_app_reindex() {
+  echo
+  local -i rc
+  _validate_osmt_dev_docker_stack
+  rc=$?
+  if [[ $rc -ne 0 ]]; then
+    echo_err "Starting OSMT Spring app requires the backend Development Docker stack. First, run $(basename "${0}") -d."
+    return 1
+  fi
+
+  _cd_osmt_project_dir || return 1
+  _source_osmt_dev_env_file || return 1
+  echo
+  echo_info "Starting OSMT via Maven Spring Boot plug-in to reindex ElasticSearch..."
+  cd api || return 1
+  mvn -Dspring-boot.run.profiles=dev,reindex spring-boot:run
+  rc=$?
+  if [[ $rc -ne 0 ]]; then
+    echo_err "Error running OSMT Spring app with Maven. Returning to project root (${project_dir})"
+    return 1
+  fi
+  echo_info "Exited OSMT Spring app with Maven. Returning to project root (${project_dir})"
+  cd "${project_dir}" || return 1
+}
+
 _remove_osmt_docker_artifacts() {
   echo
   echo_info "Stopping OSMT-related Docker containers..."
@@ -442,6 +467,7 @@ Usage:
   -e   Stop the detached backend Development Docker stack (MySQL, ElasticSearch, Redis).
   -s   Start the local Spring app, as built from source code. This also sources the api/osmt-dev-stack.env file
        for OAUTH2-related environment variables.
+  -r   Start the local Spring app to reindex ElasticSearch.
   -m   Import default BLS and O*NET metadata into local Development instance
   -c   Surgically clean up OSMT-related Docker images and data volumes. This step will delete data from local OSMT
        Quickstart and Development configurations. It does not remove the mysql/redis/elasticsearch images, as
@@ -474,7 +500,7 @@ if [[ $# == 0 ]]; then
   exit 135
 fi
 
-while getopts "ivqdesmch" flag; do
+while getopts "ivqdersmch" flag; do
   case "${flag}" in
     i)
       init_osmt_env_files || exit 135
@@ -498,6 +524,10 @@ while getopts "ivqdesmch" flag; do
       ;;
     s)
       start_osmt_dev_spring_app || exit 135
+      exit 0
+      ;;
+    r)
+      start_osmt_dev_spring_app_reindex || exit 135
       exit 0
       ;;
     m)

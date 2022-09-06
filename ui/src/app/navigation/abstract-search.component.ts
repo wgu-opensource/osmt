@@ -50,8 +50,8 @@ export class AbstractSearchComponent {
     return false
   }
 
-  isDisabled(path: string): boolean {
-    return this.authService.isDisabledByRoles(path);
+  isEnabled(path: string): boolean {
+    return this.authService.isEnabledByRoles(path);
   }
 
 }

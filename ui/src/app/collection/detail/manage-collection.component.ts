@@ -142,13 +142,13 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         icon: this.addIcon,
         primary: !this.collectionHasSkills, // Primary only if there are no skills
         callback: () => this.addSkillsAction(),
-        visible: () => !this.authService.isDisabledByRoles("COLLECTION_SKILLS_UPDATE")
+        visible: () => this.authService.isEnabledByRoles("COLLECTION_SKILLS_UPDATE")
       }),
       new TableActionDefinition({
         label: "Edit Collection Name",
         icon: this.editIcon,
         callback: () => this.editAction(),
-        visible: () => !this.authService.isDisabledByRoles("COLLECTION_UPDATE")
+        visible: () => this.authService.isEnabledByRoles("COLLECTION_UPDATE")
       })
     ]
 
@@ -163,7 +163,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         label: "Publish Collection",
         icon: this.publishIcon,
         callback: () => this.publishAction(),
-        visible: () => !this.authService.isDisabledByRoles("COLLECTION_PUBLISH")
+        visible: () => this.authService.isEnabledByRoles("COLLECTION_PUBLISH")
       }))
     }
 
@@ -173,7 +173,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
           label: "Archive Collection ",
           icon: this.archiveIcon,
           callback: () => this.archiveAction(),
-          visible: () =>  !this.authService.isDisabledByRoles("COLLECTION_UPDATE")
+          visible: () =>  this.authService.isEnabledByRoles("COLLECTION_UPDATE")
       }))
     } else if (this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted) {
       actions.push(
@@ -181,7 +181,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
           label: "Unarchive Collection ",
           icon: this.unarchiveIcon,
           callback: () => this.unarchiveAction(),
-          visible: () => !this.authService.isDisabledByRoles("COLLECTION_UPDATE")
+          visible: () => this.authService.isEnabledByRoles("COLLECTION_UPDATE")
       }))
     }
     return actions

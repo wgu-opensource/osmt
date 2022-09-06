@@ -16,7 +16,7 @@ import {
   PaginatedSkills
 } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
-import {ENABLE_ROLES, OSMT_ADMIN, ROLES_AUTHORITY} from "../../src/app/auth/auth-roles"
+import {ACTION_ROLES} from "../../src/app/auth/auth-roles"
 import {
   createMockBatchResult,
   createMockCollection,
@@ -73,13 +73,16 @@ export class AuthServiceStub {  // TODO consider using real class
     return "fake-token"
   }
   public getRole(): string | null {
-    return OSMT_ADMIN
+    return ACTION_ROLES.SKILLS_PUBLISH
+  }
+  public hasRole(requiredRoles: string[], userRoles: string[]): boolean {
+    return true;
   }
   public isAuthenticated(): boolean {
     return true
   }
-  public isDisabledByRoles(path : string): boolean {
-    return false
+  public isEnabledByRoles(path : string): boolean {
+    return true
   }
 }
 

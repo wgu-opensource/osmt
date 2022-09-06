@@ -1,10 +1,10 @@
 // Default values of OSMT Roles
-export const OSMT_ADMIN = "ROLE_Osmt_Admin"
-export const OSMT_CURATOR = "ROLE_Osmt_Curator"
+const OSMT_ADMIN = "ROLE_Osmt_Admin"
+const OSMT_CURATOR = "ROLE_Osmt_Curator"
 
 export const ENABLE_ROLES = false
 
-export const ROLES_AUTHORITY : any  = {
+export const ACTION_ROLES : any  = {
   SKILL_UPDATE : [OSMT_ADMIN, OSMT_CURATOR],
   SKILLS_CREATE : [OSMT_ADMIN, OSMT_CURATOR],
   SKILL_PUBLISH : [OSMT_ADMIN],

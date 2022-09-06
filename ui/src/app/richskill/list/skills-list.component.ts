@@ -114,38 +114,38 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   publishVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.publishDate === undefined && !this.authService.isDisabledByRoles("SKILL_PUBLISH")
+      return skill.publishDate === undefined && this.authService.isEnabledByRoles("SKILL_PUBLISH")
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
       const unpublishedSkill = this.selectedSkills?.find(s => s.publishDate === undefined)
-      return unpublishedSkill !== undefined && !this.authService.isDisabledByRoles("SKILL_PUBLISH")
+      return unpublishedSkill !== undefined && this.authService.isEnabledByRoles("SKILL_PUBLISH")
     }
   }
   archiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return !checkArchived(skill) && !this.authService.isDisabledByRoles("SKILL_UPDATE")
+      return !checkArchived(skill) && this.authService.isEnabledByRoles("SKILL_UPDATE")
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
       const unarchivedSkills = this.selectedSkills?.find(s => !checkArchived(s))
-      return unarchivedSkills !== undefined && !this.authService.isDisabledByRoles("SKILL_UPDATE")
+      return unarchivedSkills !== undefined && this.authService.isEnabledByRoles("SKILL_UPDATE")
     }
   }
 
   unarchiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return checkArchived(skill) && !this.authService.isDisabledByRoles("SKILL_UPDATE")
+      return checkArchived(skill) && this.authService.isEnabledByRoles("SKILL_UPDATE")
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
       const archivedSkill = this.selectedSkills?.find(checkArchived)
-      return archivedSkill !== undefined && !this.authService.isDisabledByRoles("SKILL_UPDATE")
+      return archivedSkill !== undefined && this.authService.isEnabledByRoles("SKILL_UPDATE")
     }
   }
 
   addToCollectionVisible(skill?: ApiSkillSummary): boolean {
-    return ((this.selectedSkills?.length ?? 0) > 0) && !this.authService.isDisabledByRoles("COLLECTION_SKILLS_UPDATE")
+    return ((this.selectedSkills?.length ?? 0) > 0) && this.authService.isEnabledByRoles("COLLECTION_SKILLS_UPDATE")
   }
 
   handleFiltersChanged(newFilters: Set<PublishStatus>): void {
@@ -240,7 +240,7 @@ export class SkillsListComponent extends QuickLinksHelper {
         icon: "collection",
         primary: true,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
-        visible: ((skill?: ApiSkillSummary) => this.addToCollectionVisible(skill))
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
       }))
     } else {
       actions.push(new TableActionDefinition({

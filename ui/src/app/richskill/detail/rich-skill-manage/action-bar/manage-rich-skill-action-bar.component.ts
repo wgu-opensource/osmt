@@ -8,7 +8,6 @@ import {PublishStatus} from "../../../../PublishStatus"
 import {ExtrasSelectedSkillsState} from "../../../../collection/add-skills-collection.component"
 import {ApiSkillSummary} from "../../../ApiSkillSummary"
 import {AuthService} from "../../../../auth/auth-service"
-import {ENABLE_ROLES, OSMT_ADMIN} from "../../../../auth/auth-roles"
 
 @Component({template: ""})
 export abstract class ManageRichSkillActionBarComponent implements OnInit {
@@ -118,11 +117,11 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   }
 
   isDraftAndDisabled(path: string): boolean {
-    return !this.isPublished() && this.isDisabled(path);
+    return !this.isPublished() && !this.isEnabled(path);
   }
 
-  isDisabled(path: string): boolean {
-    return this.authService.isDisabledByRoles(path);
+  isEnabled(path: string): boolean {
+    return this.authService.isEnabledByRoles(path);
   }
 
 }

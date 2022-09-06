@@ -115,33 +115,33 @@ export class CollectionsListComponent extends Whitelabelled {
 
   publishVisible(collection?: ApiCollectionSummary): boolean {
     if (collection !== undefined) {
-      return collection.publishDate === undefined && !this.authService.isDisabledByRoles("COLLECTION_PUBLISH")
+      return collection.publishDate === undefined && this.authService.isEnabledByRoles("COLLECTION_PUBLISH")
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
-      const unpubCollection = this.selectedCollections?.find(s => s.publishDate === undefined)
-      return unpubCollection !== undefined && !this.authService.isDisabledByRoles("COLLECTION_PUBLISH")
+      const unpublishCollection = this.selectedCollections?.find(s => s.publishDate === undefined)
+      return (unpublishCollection !== undefined) && (this.authService.isEnabledByRoles("COLLECTION_PUBLISH"))
     }
   }
 
   archiveVisible(collection?: ApiCollectionSummary): boolean {
     if (collection !== undefined) {
-      return !checkArchived(collection) && !this.authService.isDisabledByRoles("COLLECTION_UPDATE")
+      return !checkArchived(collection) && this.authService.isEnabledByRoles("COLLECTION_UPDATE")
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
       const unarchCollection = this.selectedCollections?.find(s => !checkArchived(s))
-      return unarchCollection !== undefined && !this.authService.isDisabledByRoles("COLLECTION_UPDATE")
+      return unarchCollection !== undefined && this.authService.isEnabledByRoles("COLLECTION_UPDATE")
     }
   }
   unarchiveVisible(collection?: ApiCollectionSummary): boolean {
     if (collection !== undefined) {
-      return checkArchived(collection) && !this.authService.isDisabledByRoles("COLLECTION_UPDATE")
+      return checkArchived(collection) && this.authService.isEnabledByRoles("COLLECTION_UPDATE")
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
       const archCollection = this.selectedCollections?.find(checkArchived)
-      return archCollection !== undefined && !this.authService.isDisabledByRoles("COLLECTION_UPDATE")
+      return archCollection !== undefined && this.authService.isEnabledByRoles("COLLECTION_UPDATE")
     }
   }
 

@@ -1,13 +1,13 @@
 <div class="l-actionBarVertical">
 
   <div class="l-actionBarVertical-x-action">
-    <button class="m-button" (click)="onAddToCollection()" [disabled]="isDisabled('COLLECTION_SKILLS_UPDATE')">
+    <button class="m-button" (click)="onAddToCollection()" [disabled]="!isEnabled('COLLECTION_SKILLS_UPDATE')">
       <span class="m-button-x-text">Add to Collection</span>
     </button>
   </div>
 
   <div class="l-actionBarVertical-x-items">
-    <button type="button" class="m-actionBarItem" routerLink="../edit" [disabled]="isDisabled('SKILL_UPDATE')">
+    <button type="button" class="m-actionBarItem" routerLink="../edit" [disabled]="!isEnabled('SKILL_UPDATE')">
       <span class="m-actionBarItem-x-icon">
         <svg class="t-icon" aria-hidden="true">
           <use [attr.xlink:href]="editIcon"></use>
@@ -16,7 +16,7 @@
       <span class="m-actionBarItem-x-text">Edit</span>
     </button>
 
-    <button type="button" class="m-actionBarItem" routerLink="../duplicate" [disabled]="isDisabled('SKILLS_CREATE')">
+    <button type="button" class="m-actionBarItem" routerLink="../duplicate" [disabled]="!isEnabled('SKILLS_CREATE')">
       <span class="m-actionBarItem-x-icon">
         <svg class="t-icon" aria-hidden="true">
           <use [attr.xlink:href]="duplicateIcon"></use>
@@ -34,7 +34,7 @@
       <span class="m-actionBarItem-x-text">{{publishLinkText()}}</span>
     </button>
 
-    <button type="button" class="m-actionBarItem" (click)="handleArchive()" *ngIf="!archived; else unarchive" [disabled]="isDisabled('SKILL_UPDATE')">
+    <button type="button" class="m-actionBarItem" (click)="handleArchive()" *ngIf="!archived; else unarchive" [disabled]="!isEnabled('SKILL_UPDATE')">
       <span class="m-actionBarItem-x-icon">
         <svg class="t-icon" aria-hidden="true">
           <use [attr.xlink:href]="archiveIcon"></use>
@@ -45,7 +45,7 @@
 
     <ng-template #unarchive>
 
-      <button type="button" class="m-actionBarItem" (click)="handleUnarchive()" *ngIf="archived" [disabled]="isDisabled('SKILL_UPDATE')">
+      <button type="button" class="m-actionBarItem" (click)="handleUnarchive()" *ngIf="archived" [disabled]="!isEnabled('SKILL_UPDATE')">
         <span class="m-actionBarItem-x-icon">
           <svg class="t-icon" aria-hidden="true">
             <use [attr.xlink:href]="archiveIcon"></use>

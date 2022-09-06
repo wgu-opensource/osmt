@@ -1,4 +1,4 @@
-import {ENABLE_ROLES, ROLES_AUTHORITY} from "./auth-roles";
+import {ENABLE_ROLES, ACTION_ROLES} from "./auth-roles";
 import { Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { DEFAULT_INTERRUPTSOURCES, Idle } from "@ng-idle/core"
@@ -72,21 +72,22 @@ export class AuthService extends Whitelabelled implements IAuthService {
     return localStorage.getItem(STORAGE_KEY_ROLE) as string
   }
 
-  isDisabledByRoles(path : string): boolean {
-    if (!ENABLE_ROLES) {
-      return false;
-    }
-
-    let disabled = true;
-    const allowedRoles = ROLES_AUTHORITY[path];
-    const userRoles = this.getRole()?.split(",");
-
-    for (const roles of userRoles) {
-      if (allowedRoles.indexOf(roles) !== -1) {
-        disabled = false
+  hasRole(requiredRoles: string[], userRoles: string[]): boolean {
+    for (const role of userRoles) {
+      if (requiredRoles?.indexOf(role) !== -1) {
+        return true
       }
     }
-    return disabled
+    return false
+  }
+
+  isEnabledByRoles(key : string): boolean {
+    if (ENABLE_ROLES) {
+      const allowedRoles = ACTION_ROLES[key];
+      const userRoles = this.getRole()?.split(",");
+      return this.hasRole(allowedRoles, userRoles);
+    }
+    return true;
   }
 
   private watchForIdle(): void {

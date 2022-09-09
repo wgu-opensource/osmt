@@ -18,7 +18,7 @@ export class AuthGuard implements CanActivate {
       const requiredRoles = route.data?.roles
       if (requiredRoles) {
         const userRoles = this.authService.getRole()?.split(",")
-        if (!ENABLE_ROLES || this.hasRole(requiredRoles, userRoles)) {
+        if (!ENABLE_ROLES || this.authService.hasRole(requiredRoles, userRoles)) {
           return true
         }
         this.toastService.showToast("Whoops!", "You need permission to perform this action. If this seems to be an error, please contact your OSMT administrator.")
@@ -28,15 +28,6 @@ export class AuthGuard implements CanActivate {
     }
 
     this.authService.start(state.url)
-    return false
-  }
-
-  private hasRole(requiredRoles: string[], userRoles: string[]): boolean {
-    for (const role of userRoles) {
-      if (requiredRoles?.indexOf(role) !== -1) {
-        return true
-      }
-    }
     return false
   }
 

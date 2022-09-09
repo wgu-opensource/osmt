@@ -5,7 +5,12 @@ import { Title } from "@angular/platform-browser"
 import { ActivatedRoute, Router } from "@angular/router"
 import { ActivatedRouteStubSpec } from "test/util/activated-route-stub.spec"
 import { createMockPaginatedSkills, createMockSkillSummary } from "../../../test/resource/mock-data"
-import {RichSkillServiceStub, SearchServiceData, SearchServiceStub} from "../../../test/resource/mock-stubs"
+import {
+  AuthServiceStub,
+  RichSkillServiceStub,
+  SearchServiceData,
+  SearchServiceStub
+} from "../../../test/resource/mock-stubs"
 import { AppConfig } from "../app.config"
 import { EnvironmentService } from "../core/environment.service"
 import { PublishStatus } from "../PublishStatus"
@@ -16,6 +21,7 @@ import { ToastService } from "../toast/toast.service"
 import { RichSkillSearchResultsComponent } from "./rich-skill-search-results.component"
 import { SearchService } from "./search.service"
 import any = jasmine.any
+import {AuthService} from "../auth/auth-service";
 
 
 export function createComponent(T: Type<RichSkillSearchResultsComponent>, f?: () => void): Promise<void> {
@@ -67,6 +73,7 @@ describe("RichSkillSearchResultsComponent", () => {
         { provide: RichSkillService, useClass: RichSkillServiceStub },
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
     .compileComponents()
@@ -227,6 +234,7 @@ describe("RichSkillSearchResultsComponent with latestSearch", () => {
         { provide: RichSkillService, useClass: RichSkillServiceStub },
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
     .compileComponents()
@@ -276,6 +284,7 @@ describe("RichSkillSearchResultsComponent with params", () => {
         { provide: RichSkillService, useClass: RichSkillServiceStub },
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
     .compileComponents()
@@ -325,6 +334,7 @@ describe("RichSkillSearchResultsComponent with advance search params in history.
         { provide: RichSkillService, useClass: RichSkillServiceStub },
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
       .compileComponents()

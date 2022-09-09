@@ -12,6 +12,8 @@ import {Router} from "@angular/router";
 import {QuickLinksHelper} from "../../core/quick-links-helper";
 import {ExtrasSelectedSkillsState} from "../../collection/add-skills-collection.component";
 import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component";
+import {AuthService} from "../../auth/auth-service";
+import {ButtonAction} from "../../auth/auth-roles";
 
 
 @Component({
@@ -48,7 +50,8 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   constructor(protected router: Router,
               protected richSkillService: RichSkillService,
-              protected toastService: ToastService
+              protected toastService: ToastService,
+              protected authService: AuthService,
   ) {
     super()
   }
@@ -112,38 +115,38 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   publishVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.publishDate === undefined
+      return skill.publishDate === undefined && this.authService.isEnabledByRoles(ButtonAction.SkillPublish)
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
       const unpublishedSkill = this.selectedSkills?.find(s => s.publishDate === undefined)
-      return unpublishedSkill !== undefined
+      return unpublishedSkill !== undefined && this.authService.isEnabledByRoles(ButtonAction.SkillPublish)
     }
   }
   archiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return !checkArchived(skill)
+      return !checkArchived(skill) && this.authService.isEnabledByRoles(ButtonAction.SkillUpdate)
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
       const unarchivedSkills = this.selectedSkills?.find(s => !checkArchived(s))
-      return unarchivedSkills !== undefined
+      return unarchivedSkills !== undefined && this.authService.isEnabledByRoles(ButtonAction.SkillUpdate)
     }
   }
 
   unarchiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return checkArchived(skill)
+      return checkArchived(skill) && this.authService.isEnabledByRoles(ButtonAction.SkillUpdate)
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
       const archivedSkill = this.selectedSkills?.find(checkArchived)
-      return archivedSkill !== undefined
+      return archivedSkill !== undefined && this.authService.isEnabledByRoles(ButtonAction.SkillUpdate)
     }
   }
 
   addToCollectionVisible(skill?: ApiSkillSummary): boolean {
-    return ((this.selectedSkills?.length ?? 0) > 0)
+    return ((this.selectedSkills?.length ?? 0) > 0) && this.authService.isEnabledByRoles(ButtonAction.CollectionSkillsUpdate)
   }
 
   handleFiltersChanged(newFilters: Set<PublishStatus>): void {
@@ -188,11 +191,13 @@ export class SkillsListComponent extends QuickLinksHelper {
       actions.push(new TableActionDefinition({
         label: "Add to Collection",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
       }))
     } else {
       actions.push(new TableActionDefinition({
         label: "Remove from Collection",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickRemoveCollection(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
       }))
     }
     return actions

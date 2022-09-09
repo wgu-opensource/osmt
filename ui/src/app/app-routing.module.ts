@@ -20,7 +20,7 @@ import {ManageCollectionComponent} from "./collection/detail/manage-collection.c
 import {PublishCollectionComponent} from "./collection/detail/publish-collection.component";
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component";
 import {BatchImportComponent} from "./richskill/import/batch-import.component";
-import { OSMT_ADMIN, OSMT_CURATOR } from "./auth/auth-roles"
+import { ActionByRoles, ButtonAction } from "./auth/auth-roles"
 
 
 const routes: Routes = [
@@ -33,7 +33,7 @@ const routes: Routes = [
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN, OSMT_CURATOR]
+      roles: ActionByRoles.get(ButtonAction.SkillCreate)
     },
     canDeactivate: [FormDirtyGuard]
   },
@@ -47,7 +47,7 @@ const routes: Routes = [
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN]
+      roles: ActionByRoles.get(ButtonAction.SkillUpdate)
     },
     canDeactivate: [FormDirtyGuard]
   },
@@ -55,7 +55,10 @@ const routes: Routes = [
   {path: "skills/:uuid/duplicate",
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
-    canDeactivate: [FormDirtyGuard]
+    canDeactivate: [FormDirtyGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.SkillCreate)
+    },
   },
   // manage skill
   {path: "skills/:uuid/manage",
@@ -72,7 +75,7 @@ const routes: Routes = [
     component: BatchImportComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN, OSMT_CURATOR]
+      roles: ActionByRoles.get(ButtonAction.SkillCreate)
     },
   },
 
@@ -83,7 +86,7 @@ const routes: Routes = [
     component: CollectionFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN, OSMT_CURATOR]
+      roles: ActionByRoles.get(ButtonAction.CollectionCreate)
     },
     canDeactivate: [FormDirtyGuard]
   },
@@ -97,7 +100,7 @@ const routes: Routes = [
     component: CollectionFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN]
+      roles: ActionByRoles.get(ButtonAction.CollectionUpdate)
     },
     canDeactivate: [FormDirtyGuard]
   },
@@ -111,7 +114,7 @@ const routes: Routes = [
     component: PublishCollectionComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN]
+      roles: ActionByRoles.get(ButtonAction.CollectionPublish)
     },
   },
   // find skills to add to a collection
@@ -119,13 +122,16 @@ const routes: Routes = [
     component: CollectionSkillSearchComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: [OSMT_ADMIN]
+      roles: ActionByRoles.get(ButtonAction.CollectionSkillsUpdate)
     },
   },
   // find a collection to add a selection of skills to
   {path: "collections/add-skills",
     component: AddSkillsCollectionComponent,
     canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.CollectionSkillsUpdate)
+    },
   },
   // collections library
   {path: "collections",

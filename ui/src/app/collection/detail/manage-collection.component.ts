@@ -14,6 +14,8 @@ import {ApiSkillSummary} from "../../richskill/ApiSkillSummary"
 import {Observable, Subject} from "rxjs"
 import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
 import {Title} from "@angular/platform-browser";
+import {AuthService} from "../../auth/auth-service";
+import {ButtonAction} from "../../auth/auth-roles";
 
 @Component({
   selector: "app-manage-collection",
@@ -56,9 +58,10 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
               protected toastService: ToastService,
               protected collectionService: CollectionService,
               protected route: ActivatedRoute,
-              protected titleService: Title
+              protected titleService: Title,
+              protected authService: AuthService,
   ) {
-    super(router, richSkillService, toastService)
+    super(router, richSkillService, toastService, authService)
   }
 
   ngOnInit(): void {
@@ -140,11 +143,13 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         icon: this.addIcon,
         primary: !this.collectionHasSkills, // Primary only if there are no skills
         callback: () => this.addSkillsAction(),
+        visible: () => this.authService.isEnabledByRoles(ButtonAction.CollectionSkillsUpdate)
       }),
       new TableActionDefinition({
         label: "Edit Collection Name",
         icon: this.editIcon,
-        callback: () => this.editAction()
+        callback: () => this.editAction(),
+        visible: () => this.authService.isEnabledByRoles(ButtonAction.CollectionUpdate)
       })
     ]
 
@@ -159,23 +164,27 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         label: "Publish Collection",
         icon: this.publishIcon,
         callback: () => this.publishAction(),
+        visible: () => this.authService.isEnabledByRoles(ButtonAction.CollectionPublish)
       }))
     }
 
-    actions.push(
-      new TableActionDefinition({
-        label: "Archive Collection ",
-        icon: this.archiveIcon,
-        callback: () => this.archiveAction(),
-        visible: () => this.collection?.status !== PublishStatus.Archived && this.collection?.status !== PublishStatus.Deleted
-      }),
-      new TableActionDefinition({
-        label: "Unarchive Collection ",
-        icon: this.unarchiveIcon,
-        callback: () => this.unarchiveAction(),
-        visible: () => this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted
-      })
-    )
+    if(this.collection?.status !== PublishStatus.Archived && this.collection?.status !== PublishStatus.Deleted){
+      actions.push(
+        new TableActionDefinition({
+          label: "Archive Collection ",
+          icon: this.archiveIcon,
+          callback: () => this.archiveAction(),
+          visible: () =>  this.authService.isEnabledByRoles(ButtonAction.CollectionUpdate)
+      }))
+    } else if (this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted) {
+      actions.push(
+        new TableActionDefinition({
+          label: "Unarchive Collection ",
+          icon: this.unarchiveIcon,
+          callback: () => this.unarchiveAction(),
+          visible: () => this.authService.isEnabledByRoles(ButtonAction.CollectionUpdate)
+      }))
+    }
     return actions
   }
 

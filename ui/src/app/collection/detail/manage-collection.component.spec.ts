@@ -13,6 +13,7 @@ import {
   createMockSkillSummary
 } from "../../../../test/resource/mock-data"
 import {
+  AuthServiceStub,
   CollectionServiceStub,
   EnvironmentServiceStub,
   RichSkillServiceStub
@@ -28,6 +29,7 @@ import { ToastService } from "../../toast/toast.service"
 import { ApiCollection } from "../ApiCollection"
 import { CollectionService } from "../service/collection.service"
 import { ManageCollectionComponent } from "./manage-collection.component"
+import {AuthService} from "../../auth/auth-service";
 
 
 @Component({
@@ -79,6 +81,7 @@ describe("ManageCollectionComponent", () => {
         { provide: EnvironmentService, useClass: EnvironmentServiceStub },  // Example of using a service stub
         { provide: RichSkillService, useClass: RichSkillServiceStub },
         { provide: CollectionService, useClass: CollectionServiceStub },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
 
@@ -273,7 +276,7 @@ describe("ManageCollectionComponent", () => {
 
       // Assert
       expect(actions).toBeTruthy()
-      expect(actions.length).toEqual(5)
+      expect(actions.length).toEqual(4)
 
       let action = actions[0]
       expect(action.label).toEqual("Add RSDs to This Collection")
@@ -302,16 +305,9 @@ describe("ManageCollectionComponent", () => {
       action.callback?.(action)
       expect(action.visible?.()).toBeTruthy()  // !== PublishStatus.Archived  && !== PublishStatus.Deleted
 
-      action = actions[4]
-      expect(action.label).toEqual("Unarchive Collection ")
-      expect(action.primary).toBeFalsy()
-      expect(action && action.callback).toBeTruthy()
-      action.callback?.(action)
-      expect(action.visible?.()).toBeFalsy()  // === PublishStatus.Archived  || === PublishStatus.Deleted
     })
   })
-
-  it("publishAction should be correct", () => {
+ it("publishAction should be correct", () => {
     // Arrange for all
     const router = TestBed.inject(Router)
     const collectionService = TestBed.inject(CollectionService)

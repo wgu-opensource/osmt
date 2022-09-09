@@ -10,6 +10,7 @@ import {determineFilters} from "../PublishStatus";
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
 import {ExtrasSelectedSkillsState} from "../collection/add-skills-collection.component";
 import {Title} from "@angular/platform-browser";
+import {AuthService} from "../auth/auth-service";
 
 
 @Component({
@@ -31,9 +32,10 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
               protected toastService: ToastService,
               protected searchService: SearchService,
               protected route: ActivatedRoute,
-              protected titleService: Title
+              protected titleService: Title,
+              protected authService: AuthService
 ) {
-    super(router, richSkillService, toastService)
+    super(router, richSkillService, toastService, authService)
     this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
   }
 

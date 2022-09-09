@@ -196,18 +196,15 @@ OSMT optionally supports role-based access, with these roles:
 - Curator: an OSMT user with a curator role can update but not create RSDs and collections. This role is for someone who would publish and unpublish RSDs and Collections
 - Viewer: an OSMT user with a viewer role is a logged-in user who can not make modifications to RSDs or Collections.
 
-Role-based access is disabled by default. You can follow these steps to enable it.
+Role-based access is disabled by default for the UI (front end) and REST (back end). Use these steps to enable roles.
 
-* Note: if the role value is false, all endpoints will be exposed, make sure to enable this value to use Roles 
+
+Front End: In your [`auth-roles.ts`](ui/src/app/auth/auth-roles.ts) file, configure these values:
 ```text
-  BACKEND: application.properties file
-  app.enableRole=true
-  
-  FRONTEND: ui/src/app/auth/auth-roles.ts
-  export const ENABLE_ROLES = true
+export const ENABLE_ROLES = true
 ```
 
-In your [`application.properties`](api/src/main/resources/config/application.properties) file, configure these values:
+Back End: In your [`application.properties`](api/src/main/resources/config/application.properties) file, configure these values:
 ```
 # Roles settings
 app.enableRoles=true
@@ -216,6 +213,7 @@ osmt.security.role.curator=ROLE_Osmt_Curator
 osmt.security.role.view=ROLE_Osmt_View
 osmt.security.scope.read=SCOPE_osmt.read
 ```
+* NOTE: if app.enableRoles=false, all endpoints will be accessible by any authenticated user.
 * You can use these values, or you can provide your own based on your own authorization tooling. For Okta, you will need to use the uppercase `ROLE_` prefix on your role.
 * `read` is a scope, not a role. This is for machine-to-machine access, rather than for authenticated OSMT users.
 

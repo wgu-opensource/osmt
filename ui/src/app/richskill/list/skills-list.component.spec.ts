@@ -4,13 +4,14 @@ import { Component, ElementRef, Type } from "@angular/core"
 import { async, ComponentFixture, TestBed } from "@angular/core/testing"
 import { RouterTestingModule } from "@angular/router/testing"
 import { createMockPaginatedSkills, createMockSkillSummary } from "../../../../test/resource/mock-data"
-import { RichSkillServiceStub } from "../../../../test/resource/mock-stubs"
+import {AuthServiceStub, RichSkillServiceStub} from "../../../../test/resource/mock-stubs"
 import { PublishStatus } from "../../PublishStatus"
 import { ToastService } from "../../toast/toast.service"
 import { ApiSortOrder } from "../ApiSkill"
 import { ApiSearch, PaginatedSkills } from "../service/rich-skill-search.service"
 import { RichSkillService } from "../service/rich-skill.service"
 import { SkillsListComponent } from "./skills-list.component"
+import {AuthService} from "../../auth/auth-service";
 
 
 @Component({
@@ -63,6 +64,7 @@ describe("SkillsListComponent", () => {
       providers: [
         ToastService,
         { provide: RichSkillService, useClass: RichSkillServiceStub },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
 

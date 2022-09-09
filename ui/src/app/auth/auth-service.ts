@@ -1,10 +1,10 @@
+import {ENABLE_ROLES, ButtonAction, ActionByRoles} from "./auth-roles";
 import { Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { DEFAULT_INTERRUPTSOURCES, Idle } from "@ng-idle/core"
 import { Keepalive } from "@ng-idle/keepalive"
 import { Whitelabelled } from "../../whitelabel"
 import { IAuthService } from "./iauth-service"
-
 
 export const STORAGE_KEY_TOKEN = "OSMT.AuthService.accessToken"
 export const STORAGE_KEY_RETURN = "OSMT.AuthService.return"
@@ -70,6 +70,24 @@ export class AuthService extends Whitelabelled implements IAuthService {
 
   getRole(): string {
     return localStorage.getItem(STORAGE_KEY_ROLE) as string
+  }
+
+  hasRole(requiredRoles: string[], userRoles: string[]): boolean {
+    for (const role of userRoles) {
+      if (requiredRoles?.indexOf(role) !== -1) {
+        return true
+      }
+    }
+    return false
+  }
+
+  isEnabledByRoles(buttonAction : ButtonAction): boolean {
+    if (ENABLE_ROLES) {
+      const allowedRoles = ActionByRoles.get(buttonAction) ?? [];
+      const userRoles = this.getRole()?.split(",");
+      return this.hasRole(allowedRoles, userRoles);
+    }
+    return true;
   }
 
   private watchForIdle(): void {

@@ -4,13 +4,14 @@ import { Component, Type } from "@angular/core"
 import { async, ComponentFixture, TestBed } from "@angular/core/testing"
 import { RouterTestingModule } from "@angular/router/testing"
 import { createMockCollectionSummary, createMockPaginatedCollections } from "../../../test/resource/mock-data"
-import { CollectionServiceStub } from "../../../test/resource/mock-stubs"
+import {AuthServiceStub, CollectionServiceStub} from "../../../test/resource/mock-stubs"
 import { PublishStatus } from "../PublishStatus"
 import { ApiSortOrder } from "../richskill/ApiSkill"
 import { ApiSearch, PaginatedCollections } from "../richskill/service/rich-skill-search.service"
 import { ToastService } from "../toast/toast.service"
 import { CollectionsListComponent } from "./collections-list.component"
 import { CollectionService } from "./service/collection.service"
+import {AuthService} from "../auth/auth-service";
 
 
 @Component({
@@ -61,6 +62,7 @@ describe("CollectionsListComponent", () => {
       providers: [
         ToastService,
         { provide: CollectionService, useClass: CollectionServiceStub },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
 

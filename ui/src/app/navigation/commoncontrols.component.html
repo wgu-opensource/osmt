@@ -45,21 +45,21 @@
 
     <div class="m-commonControls-x-controls">
       <div>
-        <a class="m-button" routerLink="/skills/create" [class.disabled-content]="!isEnabled('SKILLS_CREATE')">
+        <a class="m-button" routerLink="/skills/create" [class.disabled-content]="!canSkillCreate">
           <svg class="m-button-x-icon t-icon">
             <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
           </svg>
           <span class="m-button-x-text">Create RSD</span>
         </a>
 
-        <a class="m-button" routerLink="/collections/create" [class.disabled-content]="!isEnabled('COLLECTION_CREATE')">
+        <a class="m-button" routerLink="/collections/create" [class.disabled-content]="!canCollectionCreate">
           <svg class="m-button-x-icon t-icon">
             <use xlink:href="/assets/images/svg-defs.svg#icon-collection"></use>
           </svg>
           <span class="m-button-x-text">Create Collection</span>
         </a>
 
-        <a class="m-button" routerLink="/skills/import" [class.disabled-content]="!isEnabled('SKILLS_CREATE')">
+        <a class="m-button" routerLink="/skills/import" [class.disabled-content]="!canSkillCreate">
           <svg class="m-button-x-icon t-icon">
             <use xlink:href="/assets/images/svg-defs.svg#icon-upload"></use>
           </svg>

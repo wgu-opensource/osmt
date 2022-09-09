@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core"
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router"
-import {ENABLE_ROLES, ACTION_ROLES} from "./auth-roles"
+import {ENABLE_ROLES} from "./auth-roles"
 import {AuthService} from "./auth-service"
 import {ToastService} from "../toast/toast.service"
 

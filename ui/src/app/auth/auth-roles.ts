@@ -1,15 +1,25 @@
-// Default values of OSMT Roles
-const OSMT_ADMIN = "ROLE_Osmt_Admin"
-const OSMT_CURATOR = "ROLE_Osmt_Curator"
+export const OSMT_ADMIN = "ROLE_Osmt_Admin"
+export const OSMT_CURATOR = "ROLE_Osmt_Curator"
 
 export const ENABLE_ROLES = false
 
-export const ACTION_ROLES : any  = {
-  SKILL_UPDATE : [OSMT_ADMIN, OSMT_CURATOR],
-  SKILLS_CREATE : [OSMT_ADMIN, OSMT_CURATOR],
-  SKILL_PUBLISH : [OSMT_ADMIN],
-  COLLECTION_CREATE : [OSMT_ADMIN, OSMT_CURATOR],
-  COLLECTION_PUBLISH : [OSMT_ADMIN],
-  COLLECTION_UPDATE : [OSMT_ADMIN, OSMT_CURATOR],
-  COLLECTION_SKILLS_UPDATE : [OSMT_ADMIN]
+export enum ButtonAction {
+  SkillUpdate,
+  SkillCreate,
+  SkillPublish,
+  CollectionUpdate,
+  CollectionCreate,
+  CollectionPublish,
+  CollectionSkillsUpdate
 }
+
+export const ActionByRoles = new Map<number, string[]>([
+  [ButtonAction.SkillUpdate,            [OSMT_ADMIN, OSMT_CURATOR]],
+  [ButtonAction.SkillCreate,            [OSMT_ADMIN, OSMT_CURATOR]],
+  [ButtonAction.SkillPublish,           [OSMT_ADMIN]],
+  [ButtonAction.CollectionUpdate,       [OSMT_ADMIN, OSMT_CURATOR]],
+  [ButtonAction.CollectionCreate,       [OSMT_ADMIN, OSMT_CURATOR]],
+  [ButtonAction.CollectionPublish,      [OSMT_ADMIN]],
+  [ButtonAction.CollectionSkillsUpdate, [OSMT_ADMIN]],
+]);
+

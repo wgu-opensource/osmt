@@ -1,4 +1,4 @@
-import {ENABLE_ROLES, ACTION_ROLES} from "./auth-roles";
+import {ENABLE_ROLES, ButtonAction, ActionByRoles} from "./auth-roles";
 import { Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { DEFAULT_INTERRUPTSOURCES, Idle } from "@ng-idle/core"
@@ -81,9 +81,9 @@ export class AuthService extends Whitelabelled implements IAuthService {
     return false
   }
 
-  isEnabledByRoles(key : string): boolean {
+  isEnabledByRoles(buttonAction : ButtonAction): boolean {
     if (ENABLE_ROLES) {
-      const allowedRoles = ACTION_ROLES[key];
+      const allowedRoles = ActionByRoles.get(buttonAction) ?? [];
       const userRoles = this.getRole()?.split(",");
       return this.hasRole(allowedRoles, userRoles);
     }

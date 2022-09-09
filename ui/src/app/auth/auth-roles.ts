@@ -1,10 +1,7 @@
-// Default values of OSMT Roles
-import {Button} from "protractor";
+export const OSMT_ADMIN = "ROLE_Osmt_Admin"
+export const OSMT_CURATOR = "ROLE_Osmt_Curator"
 
-const OSMT_ADMIN = "ROLE_Osmt_Admin"
-const OSMT_CURATOR = "ROLE_Osmt_Curator"
-
-export const ENABLE_ROLES = true
+export const ENABLE_ROLES = false
 
 export enum ButtonAction {
   SkillUpdate,
@@ -24,5 +21,5 @@ export const ActionByRoles = new Map<number, string[]>([
   [ButtonAction.CollectionCreate,       [OSMT_ADMIN, OSMT_CURATOR]],
   [ButtonAction.CollectionPublish,      [OSMT_ADMIN]],
   [ButtonAction.CollectionSkillsUpdate, [OSMT_ADMIN]],
-  ]);
+]);
 

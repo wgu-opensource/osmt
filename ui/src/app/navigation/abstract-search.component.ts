@@ -69,9 +69,4 @@ export class AbstractSearchComponent {
     }
     return false
   }
-
-  // isEnabled(path: string): boolean {
-  //   return this.authService.isEnabledByRoles(path);
-  // }
-
 }

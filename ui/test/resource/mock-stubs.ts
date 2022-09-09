@@ -26,7 +26,7 @@ import {
   createMockSkillSummary,
   createMockTaskResult
 } from "./mock-data"
-import {ButtonAction} from "../../src/app/auth/auth-roles";
+import {ButtonAction, OSMT_ADMIN} from "../../src/app/auth/auth-roles";
 
 
 // Add service stubs here.
@@ -71,6 +71,12 @@ export class AuthServiceStub {  // TODO consider using real class
   }
   public currentAuthToken(): string | null {
     return "fake-token"
+  }
+  public getRole(): string | null {
+    return OSMT_ADMIN;
+  }
+  public hasRole(requiredRoles: string[], userRoles: string[]): boolean {
+    return true;
   }
   public isAuthenticated(): boolean {
     return true

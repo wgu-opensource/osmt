@@ -33,7 +33,6 @@ const routes: Routes = [
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
     data: {
-      // roles: ACTION_ROLES.SKILLS_CREATE
       roles: ActionByRoles.get(ButtonAction.SkillCreate)
     },
     canDeactivate: [FormDirtyGuard]

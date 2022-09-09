@@ -4,7 +4,7 @@ import { AuthService } from "./auth-service"
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot} from "@angular/router"
 import { HttpClientTestingModule } from "@angular/common/http/testing"
 import { AuthServiceStub, RouterStub } from "../../../test/resource/mock-stubs"
-import {ENABLE_ROLES, ActionByRoles, ButtonAction} from "./auth-roles"
+import {ActionByRoles, ButtonAction, ENABLE_ROLES} from "./auth-roles"
 
 
 describe("AuthGuard", () => {

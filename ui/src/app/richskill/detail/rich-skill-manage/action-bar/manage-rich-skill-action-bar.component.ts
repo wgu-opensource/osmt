@@ -127,14 +127,6 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
       }
   }
 
-  // isDraftAndDisabled(path: string): boolean {
-  //   return !this.isPublished() && !this.isEnabled(path);
-  // }
-  //
-  // isEnabled(path: string): boolean {
-  //   return this.authService.isEnabledByRoles(path);
-  // }
-
   setEnableFlags(): void {
     this.canSkillUpdate = this.authService.isEnabledByRoles(ButtonAction.SkillUpdate);
     this.canSkillCreate = this.authService.isEnabledByRoles(ButtonAction.SkillCreate);

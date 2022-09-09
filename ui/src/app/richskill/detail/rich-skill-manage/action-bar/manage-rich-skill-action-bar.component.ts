@@ -8,6 +8,7 @@ import {PublishStatus} from "../../../../PublishStatus"
 import {ExtrasSelectedSkillsState} from "../../../../collection/add-skills-collection.component"
 import {ApiSkillSummary} from "../../../ApiSkillSummary"
 import {AuthService} from "../../../../auth/auth-service"
+import {ButtonAction} from "../../../../auth/auth-roles";
 
 @Component({template: ""})
 export abstract class ManageRichSkillActionBarComponent implements OnInit {
@@ -30,6 +31,15 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   archiveIcon: string = SvgHelper.path(SvgIcon.ARCHIVE)
   dismissIcon: string = SvgHelper.path(SvgIcon.DISMISS)
 
+  canSkillUpdate: boolean = false
+  canSkillCreate: boolean = false
+  canSkillPublish: boolean = false
+  canCollectionUpdate: boolean = false
+  canCollectionCreate: boolean = false
+  canCollectionPublish: boolean = false
+  canCollectionSkillsUpdate: boolean = false
+  isDraftAndDisabled: boolean = false
+
   constructor(
     protected router: Router,
     protected richSkillService: RichSkillService,
@@ -45,6 +55,7 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
       .subscribe( (json: string) => {
         this.jsonClipboard = json
       })
+    this.setEnableFlags()
   }
 
   onAddToCollection(): void {
@@ -116,12 +127,24 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
       }
   }
 
-  isDraftAndDisabled(path: string): boolean {
-    return !this.isPublished() && !this.isEnabled(path);
-  }
+  // isDraftAndDisabled(path: string): boolean {
+  //   return !this.isPublished() && !this.isEnabled(path);
+  // }
+  //
+  // isEnabled(path: string): boolean {
+  //   return this.authService.isEnabledByRoles(path);
+  // }
 
-  isEnabled(path: string): boolean {
-    return this.authService.isEnabledByRoles(path);
+  setEnableFlags(): void {
+    this.canSkillUpdate = this.authService.isEnabledByRoles(ButtonAction.SkillUpdate);
+    this.canSkillCreate = this.authService.isEnabledByRoles(ButtonAction.SkillCreate);
+    this.canSkillPublish = this.authService.isEnabledByRoles(ButtonAction.SkillPublish);
+    this.canCollectionUpdate = this.authService.isEnabledByRoles(ButtonAction.CollectionUpdate);
+    this.canCollectionCreate = this.authService.isEnabledByRoles(ButtonAction.CollectionCreate);
+    this.canCollectionPublish = this.authService.isEnabledByRoles(ButtonAction.CollectionPublish);
+    this.canCollectionSkillsUpdate = this.authService.isEnabledByRoles(ButtonAction.CollectionSkillsUpdate);
+
+    this.isDraftAndDisabled = !this.isPublished() && !this.canSkillPublish;
   }
 
 }

@@ -16,7 +16,6 @@ import {
   PaginatedSkills
 } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
-import {ACTION_ROLES} from "../../src/app/auth/auth-roles"
 import {
   createMockBatchResult,
   createMockCollection,
@@ -27,6 +26,7 @@ import {
   createMockSkillSummary,
   createMockTaskResult
 } from "./mock-data"
+import {ButtonAction} from "../../src/app/auth/auth-roles";
 
 
 // Add service stubs here.
@@ -72,16 +72,10 @@ export class AuthServiceStub {  // TODO consider using real class
   public currentAuthToken(): string | null {
     return "fake-token"
   }
-  public getRole(): string | null {
-    return ACTION_ROLES.SKILLS_PUBLISH
-  }
-  public hasRole(requiredRoles: string[], userRoles: string[]): boolean {
-    return true;
-  }
   public isAuthenticated(): boolean {
     return true
   }
-  public isEnabledByRoles(path : string): boolean {
+  public isEnabledByRoles(buttonAction : ButtonAction): boolean {
     return true
   }
 }

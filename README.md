@@ -213,7 +213,7 @@ osmt.security.role.curator=ROLE_Osmt_Curator
 osmt.security.role.view=ROLE_Osmt_View
 osmt.security.scope.read=SCOPE_osmt.read
 ```
-* NOTE: if app.enableRoles=false, all endpoints will be exposed!!
+* NOTE: if app.enableRoles=false, all endpoints will be accessible by any authenticated user.
 * You can use these values, or you can provide your own based on your own authorization tooling. For Okta, you will need to use the uppercase `ROLE_` prefix on your role.
 * `read` is a scope, not a role. This is for machine-to-machine access, rather than for authenticated OSMT users.
 

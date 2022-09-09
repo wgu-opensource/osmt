@@ -4,7 +4,7 @@ import { AuthService } from "./auth-service"
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot} from "@angular/router"
 import { HttpClientTestingModule } from "@angular/common/http/testing"
 import { AuthServiceStub, RouterStub } from "../../../test/resource/mock-stubs"
-import {ACTION_ROLES, ENABLE_ROLES} from "./auth-roles"
+import {ENABLE_ROLES, ActionByRoles, ButtonAction} from "./auth-roles"
 
 
 describe("AuthGuard", () => {
@@ -38,7 +38,7 @@ describe("AuthGuard", () => {
   it("should return true", () => {
     // Arrange
     const route = Object.assign({}, ActivatedRouteSnapshot.prototype, {
-      data: {roles: ACTION_ROLES.SKILLS_CREATE}
+      data: {roles: ActionByRoles.get(ButtonAction.SkillCreate)}
     })
 
     // Act and Assert

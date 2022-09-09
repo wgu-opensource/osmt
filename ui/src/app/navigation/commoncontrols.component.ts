@@ -20,11 +20,4 @@ export class CommoncontrolsComponent extends AbstractSearchComponent implements 
 
   ngOnInit(): void {
   }
-
-  // isDisabled(path : string): boolean {
-  //   return this.authService.isDisabledByRoles(path);
-  // }
-  isEnabled(path: string): boolean {
-    return this.authService.isEnabledByRoles(path);
-  }
 }

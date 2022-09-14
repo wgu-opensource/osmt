@@ -5,21 +5,23 @@ The Open Skills Management Tool (OSMT, pronounced "oz-mit") is a free, open-sour
 
 ## Architecture
 OSMT is written in Kotlin with Spring Boot, and Angular. It uses backend-instances of MySQL, Redis, and Elastisearch.
-![High-level architecture diagram](./ui/src/assets/Architectural-Diagram.png "High-level architecture diagram")
+
+[<img src="./docs/Architectural-Diagram.png" width="800" alt="High-level architecture diagram" />](./docs/Architectural-Diagram.png)
 
 ## Dependencies
-OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. Any OSMT instance beyond a local development server also requires an OAuth2 provider. Local / non-production configurations can be stood up using only Docker. See additional notes below for [Configuration](README.md#configuration).
+OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. OSMT also requires an OAuth2 provider. Local / non-production configurations can be stood up using only Docker. See additional notes below for [Configuration](README.md#configuration).
 
 ## Getting started
 Follow the steps in the [Pre-requisites](README.md#pre-requisites) and [Running the Quickstart](README.md#running-the-quickstart) sections to bootstrap a local Quickstart OSMT instance (you can see more details in the [Quickstart Configuration](README.md#quickstart-configuration) section).
-* NOTE: A Quickstart OSMT instance should be for demo purposes only. The data is stored on a Docker volume. Unless your organization has taken technical steps to ensure the backing data will remain available, you should consider Quickstart data to be temporary. If you create RSDs or Collections, you should export them before shutting down the Quickstart. See the [How-To](https://osmt.io/docs.html) section of osmt.io for more information on exporting.
+* NOTE: A Quickstart OSMT instance should be for demo purposes only. The Docker images are fixed/pinned, and the data is stored on a Docker volume. Unless your organization has taken technical steps to ensure the backing data will remain available, you should consider Quickstart data to be temporary. If you create RSDs or Collections, you should export them before shutting down the Quickstart. See the [How-To](https://osmt.io/docs.html) section of osmt.io for more information on exporting.
 * Please have the right technical people in your organization deploy a production OSMT instance before making any real investment in effort for building skills.
 
 ### Using the OSMT CLI utility (`osmt_cli.sh`)
-The OSMT source code includes a utility named `osmt_cli.sh`, in the project root directory. `osmt_cli.sh` simplifies setting up an OSMT environment and doing routine tasks. It uses BASH, and works on MacOS and Linux. It may work with a BASH interpreter in Windows, but we have not yet tested this. You can run `./osmt_cli.sh -h` for the help text.
+The OSMT source code includes a utility named `osmt_cli.sh`, in the project root directory. `osmt_cli.sh` simplifies setting up a local OSMT environment and doing routine tasks. It uses BASH, and works on MacOS and Linux. We have had some success with a BASH interpreter in Windows. You can run `./osmt_cli.sh -h` for the help text.
 * `osmt_cli.sh` uses git to help identify directory context. If you downloaded the source code as a ZIP file, you will need to have git installed to use `osmt_cli.sh`.
 
 ### Pre-requisites
+By default, OSMT is wired up for Okta as an OAuth2 provider. While you can change this, these documents will only address configuring Okta.
 1. Obtain a "free developer" Okta account. This is required to log in to a local OSMT. Please follow the steps in [OAuth2 and Okta Configuration](README.md#oauth2-and-okta-configuration) below, and return here when complete. You can refer to [Environment files for Quickstart and Development Stacks](README.md#environment-files-for-quickstart-and-development-stacks) for more details.
 
 2. Initialize your environment files. After running this, update the OAUTH2/OIDC values in the env files (replace the `xxxxxx` values with the correct values from your Okta account)
@@ -35,7 +37,7 @@ The OSMT source code includes a utility named `osmt_cli.sh`, in the project root
 
 2. Open your browser to `http://localhost:8080`.
 
-3. You can exit the Quickstart configuration by pressing [Ctrl-C].
+3. You can exit the Quickstart configuration by pressing [Ctrl-C] from your terminal window.
     * If you don't clean up the Docker images and volumes, Quickstart should start very quickly when re-running `osmt_cli.sh -q`.
 
 ### Running the Development configuration
@@ -44,12 +46,13 @@ The OSMT source code includes a utility named `osmt_cli.sh`, in the project root
     ./osmt_cli.sh -v
     ```
 
-2. **From the project root**, run a Maven build. The API module currently depends on the UI module, so 'mvn package' will not be sufficient.
+2. **From the project root**, run a Maven build. The API module currently depends on the UI module.
     ```
     mvn clean install
     ```
+   * The Maven build starts its own Docker containers for testing purposes. It may disrupt any existing OSMT-related Docker containers you have running. 
 
-3. Start the back-end MySQL/Redis/ElasticSearch dependencies.
+3. Start (restart) the back-end MySQL/Redis/ElasticSearch dependencies.
     * This starts the dev-stack.yml docker-compose stack. It will run "detached", meaning running in the background. You can use `docker ps` and `docker logs` to see what the services are doing.
     ```
     ./osmt_cli.sh -d
@@ -74,7 +77,7 @@ The OSMT source code includes a utility named `osmt_cli.sh`, in the project root
     ```
 
 ### Housekeeping with `osmt_cli.sh`
-You can surgically clean up OSMT-related Docker images and data volumes. This step **will** delete data from local OSMT Quickstart and Development configurations. It does not remove the mysql/redis/elasticsearch images, as those may be available locally for other purposes.
+You can surgically clean up OSMT-related Docker images and data volumes. This step **will** delete data from local OSMT Quickstart and Development configurations. It does not remove the mysql/redis/elasticsearch Docker images, as those may be available locally for other purposes.
 ```
 ./osmt_cli.sh -c
 ```
@@ -100,7 +103,7 @@ OSMT is a multi-module Maven project. pom.xml files exist in the project root, `
     -- project root
      |-- api                - Spring Boot, Kotlin-based backend
      |-- docs               - Techincal and OpenAPI documentation
-     |-- import             - Example CSV files for importing
+     |-- import             - CSV files for importing
      |-- docker             - Docker resources for base images and development
      \-- ui                 - Angular frontend
 
@@ -147,7 +150,7 @@ Before you start with these steps, you may be required to update your goals on t
 1. If given the option, navigate to the "Admin" section.
 2. Navigate to Applications. Create an Application Integration, select the "OIDC - OpenID Connect" option and "Web Application" option.
 3. Under the "General Settings" area:
-   - Enter an "App integeration name". The intention here is local OSMT development.
+   - Enter an "App integration name". The intention here is local OSMT development.
    - Enter a "Sign-in redirect URIs", use `http://localhost:8080/login/oauth2/code/okta`
    - Enter a "Sign-out redirect URIs", use `http://localhost:8080`
 4. Under the "Assignments" area:
@@ -188,23 +191,23 @@ The Quickstart configuration automatically imports the default BLS and O*NET job
 ```
 osmt_cli.sh -m
 ```
-Keep in mind that removing Docker volumes will also remove this metadata. For more information, see the section for [Importing Data](api/README.md#importing-data) in the API README file.
+* Keep in mind that removing Docker volumes will also remove this metadata. For more information, see the section for [Importing Data](api/README.md#importing-data) in the API README file.
 
 ### Role-based Access in OSMT
 OSMT optionally supports role-based access, with these roles:
-- Admin: an OSMT user with an admin role can change RSDs and Collections in any way.
-- Curator: an OSMT user with a curator role can update but not create RSDs and collections. This role is for someone who would publish and unpublish RSDs and Collections
-- Viewer: an OSMT user with a viewer role is a logged-in user who can not make modifications to RSDs or Collections.
+- **Admin**: an OSMT user with an admin role can change RSDs and Collections in any way.
+- **Curator**: an OSMT user with a curator role can update but not create RSDs and collections. This role is for someone who would publish and unpublish RSDs and Collections
+- **Viewer**: an OSMT user with a viewer role is a logged-in user who can not make modifications to RSDs or Collections.
 
-Role-based access is disabled by default for the UI (front end) and REST (back end). Use these steps to enable roles.
+Role-based access is disabled by default for the Angular UI and Spring REST API. Use these steps to enable roles.
 
-
-Front End: In your [`auth-roles.ts`](ui/src/app/auth/auth-roles.ts) file, configure these values:
-```text
+#### Configuration in OSMT Code
+Angular UI: In [`auth-roles.ts`](ui/src/app/auth/auth-roles.ts) file, configure these values:
+```
 export const ENABLE_ROLES = true
 ```
 
-Back End: In your [`application.properties`](api/src/main/resources/config/application.properties) file, configure these values:
+Spring REST API: In [`application.properties`](api/src/main/resources/config/application.properties) file, configure these values:
 ```
 # Roles settings
 app.enableRoles=true
@@ -213,21 +216,33 @@ osmt.security.role.curator=ROLE_Osmt_Curator
 osmt.security.role.view=ROLE_Osmt_View
 osmt.security.scope.read=SCOPE_osmt.read
 ```
-* NOTE: if app.enableRoles=false, all endpoints will be accessible by any authenticated user.
-* You can use these values, or you can provide your own based on your own authorization tooling. For Okta, you will need to use the uppercase `ROLE_` prefix on your role.
+* NOTE: if app.enableRoles=false, all authenticated endpoints will be accessible by any authenticated user.
+* You can use these role values, or you can provide your own based on your own authorization tooling. For Okta, you will need to use the uppercase `ROLE_` prefix on your role.
 * `read` is a scope, not a role. This is for machine-to-machine access, rather than for authenticated OSMT users.
 
-In Okta, navigate to "Directory" and "Groups". You will need to create 3 groups with names that match your `osmt.security.role` values in `application.properties`.
 
-![pix](./ui/src/assets/OsmtGroups.png)
+#### Configuration in Okta
+In Okta, navigate to "Directory", then "Groups". You will need to create 3 groups with names that match your `osmt.security.role` values in `application.properties`.
 
-You can assign your Okta user accounts to these groups from the Security -> Api -> Default; from the Claims tab, add 2 claims for "roles"
+[<img src="./docs/okta/okta_groups_for_osmt_roles.png" width="600" alt="Okta Groups for OSMT Roles" />](./docs/okta/okta_groups_for_osmt_roles.png)
 
-![pix](./ui/src/assets/okta_claims.png)
+You can assign your Okta user accounts to these groups. In Okta, navigate to "Security", then "API". Open the "default" API, and navigate to the "Claims" tab.
+
+* Add claim for "Access"
+
+  [<img src="./docs/okta/okta_claims_access.png" width="600" alt="Claim for 'Access'" />](./docs/okta/okta_claims_access.png)
+
+* Add a claim for  "ID Token"
+
+  [<img src="./docs/okta/okta_claims_id.png" width="600" alt="Claim for 'ID Token'" />](./docs/okta/okta_claims_id.png)
+
+* Your end result should look like this:
+
+  [<img src="./docs/okta/okta_claims.png" width="600" alt="Added Claims" />](./docs/okta/okta_claims.png)
 
 From the Scopes tab, add a scope with name that matches osmt.security.scope.read in application.properties
 
-![pix](./ui/src/assets/okta_scope.png)
+[<img src="./docs/okta/okta_scopes.png" width="600" alt="Scopes" />](./docs/okta/okta_scopes.png)
 
 ## How to get help
 This project includes [./api/HELP.md](api/HELP.md), with links to relevant references and tutorials.

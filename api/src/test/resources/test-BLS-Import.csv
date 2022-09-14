@@ -1,0 +1,19 @@
+SOC Group,SOC Code,SOC Title,SOC Definition
+Major,37-0000,Building and Grounds Cleaning and Maintenance Occupations,
+Minor,37-1000,Supervisors of Building and Grounds Cleaning and Maintenance Workers,
+Broad,37-1010,First-Line Supervisors of Building and Grounds Cleaning and Maintenance Workers,
+Detailed,37-1011,First-Line Supervisors of Housekeeping and Janitorial Workers,"Directly supervise and coordinate work activities of cleaning personnel in hotels, hospitals, offices, and other establishments."
+Detailed,37-1012,"First-Line Supervisors of Landscaping, Lawn Service, and Groundskeeping Workers","Directly supervise and coordinate activities of workers engaged in landscaping or groundskeeping activities. Work may involve reviewing contracts to ascertain service, machine, and workforce requirements; answering inquiries from potential customers regarding methods, material, and price ranges; and preparing estimates according to labor, material, and machine costs."
+Minor,37-2000,Building Cleaning and Pest Control Workers,
+Broad,37-2010,Building Cleaning Workers,
+Detailed,37-2011,"Janitors and Cleaners, Except Maids and Housekeeping Cleaners","Keep buildings in clean and orderly condition. Perform heavy cleaning duties, such as cleaning floors, shampooing rugs, washing walls and glass, and removing rubbish. Duties may include tending furnace and boiler, performing routine maintenance activities, notifying management of need for repairs, and cleaning snow or debris from sidewalk."
+Detailed,37-2012,Maids and Housekeeping Cleaners,"Perform any combination of light cleaning duties to maintain private households or commercial establishments, such as hotels and hospitals, in a clean and orderly manner. Duties may include making beds, replenishing linens, cleaning rooms and halls, and vacuuming."
+Detailed,37-2019,"Building Cleaning Workers, All Other",All building cleaning workers not listed separately.
+Broad,37-2020,Pest Control Workers,
+Detailed,37-2021,Pest Control Workers,Apply or release chemical solutions or toxic gases and set traps to kill or remove pests and vermin that infest buildings and surrounding areas.
+Minor,37-3000,Grounds Maintenance Workers,
+Broad,37-3010,Grounds Maintenance Workers,
+Detailed,37-3011,Landscaping and Groundskeeping Workers,"Landscape or maintain grounds of property using hand or power tools or equipment. Workers typically perform a variety of tasks, which may include any combination of the following: sod laying, mowing, trimming, planting, watering, fertilizing, digging, raking, sprinkler installation, and installation of mortarless segmental concrete masonry wall units. Excludes “Farmworkers and Laborers, Crop, Nursery, and Greenhouse” (45-2092)."
+Detailed,37-3012,"Pesticide Handlers, Sprayers, and Applicators, Vegetation","Mix or apply pesticides, herbicides, fungicides, or insecticides through sprays, dusts, vapors, soil incorporation, or chemical application on trees, shrubs, lawns, or crops. Usually requires specific training and state or federal certification. Crop dusters are included in “Commercial Pilots” (53-2012)."
+Detailed,37-3013,Tree Trimmers and Pruners,"Using sophisticated climbing and rigging techniques, cut away dead or excess branches from trees or shrubs to maintain right-of-way for roads, sidewalks, or utilities, or to improve appearance, health, and value of tree. Prune or treat trees or shrubs using handsaws, hand pruners, clippers, and power pruners. Works off the ground in the tree canopy and may use truck-mounted lifts. Excludes workers who primarily perform duties of “Landscaping and Groundskeeping Workers” (37-3011) and “Pesticide Handlers, Sprayers, and Applicators, Vegetation” (37-3012)."
+Detailed,37-3019,"Grounds Maintenance Workers, All Other",All grounds maintenance workers not listed separately.

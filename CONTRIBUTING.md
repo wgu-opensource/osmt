@@ -13,7 +13,7 @@ We use GitHub's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues).
 - If you don't feel ready to make a code contribution yet, no problem! Check out the [existing issues](https://github.com/wgu-opensource/osmt/issues) to see if an issue exists already for the change you want.
 
 ### Expectations for contributed code
-- OSMT project uses Kotlin 1.3.72 and Angular Front-end 10.0, with MySQL DB, redis and Elasticsearch. See the [Architecture](README.md#architecture) section in the README file.
+- OSMT project uses Kotlin and Angular, with MySQL, ElasticSearch, and Redis. See the [Architecture](README.md#architecture) section in the README file.
 - Contributed code needs to follow appropriate style guides. Coding style isn't only a matter of preference, but is essential in managing an effective branching and release strategy. Trivial or unrelated code changes create merge conflicts, and introduce risk and wasted time in resolving them.
   - Kotlin - https://developer.android.com/kotlin/style-guide
   - Angular - https://angular.io/guide/styleguide

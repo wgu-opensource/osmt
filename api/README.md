@@ -5,7 +5,7 @@ This Maven module represents the Spring Boot API application.
 Spring Boot uses profiles to manage its runtime configuration. While these can be provided in different ways, osmt_cli.sh uses `-D` to set a `spring-boot.run.profiles` system property in the JVM. A typical OSMT profile list will look like `dev,apiserver,oauth2-okta`. In OSMT, this list of profiles informs which property files are loaded, and which Spring Boot components are run.
 
 * Property files -- If a profile from the active profiles list (`dev`) matches a property file (`application-dev.properties`), then that property file is loaded. Spring Boot's property files are located in `./api/src/main/resources/config/`.
-* Spring Boot components -- When Spring Boot starts, it scans for classes with a `@Component` annotation. If a profile from the active profiles list (`apieserver`) matches a @Profile annotation in a @Component class (`@Profile("apiserver")`), then that class is loaded.
+* Spring Boot components -- When Spring Boot starts, it scans for classes with a `@Component` annotation. If a profile from the active profiles list (`apiserver`) matches a @Profile annotation in a @Component class (`@Profile("apiserver")`), then that class is loaded.
 
 The Spring profiles in OSMT can be conceptually grouped as:
 * Configuration Profiles - these contextualize an SDLC environment (i.e., the `dev` profile for local development). If no Configuration Profile is provided, the values in application.properties will be used without override.
@@ -55,7 +55,8 @@ Examples:
     ```
 
 ## OAuth2 
-An example profile and Spring Boot components (edu.wgu.osmt.security.SecurityConfig) are provided to support OAuth2 with Okta. To use a different provider, create an additional profile-scoped Spring @Component that implements org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter, and activate that security profile. Additional Spring Boot components may also be required to support the chosen provider. See [Okta Configuration](../README.md#oauth2-and-okta-configuration) in the project [README](../README.md) for more details.
+An example profile and Spring Boot components (edu.wgu.osmt.security.SecurityConfig) are provided to support OAuth2 with Okta. To use a different provider, create an additional profile-scoped Spring @Component that implements `org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter`, and activate that security profile. Additional Spring Boot components may also be required to support the chosen provider. See [Okta Configuration](../README.md#oauth2-and-okta-configuration) in the project [README](../README.md) for more details.
+* It is possible that you will need to exclude the `com.okta.spring.okta-spring-boot-starter` Maven dependency.
 
 ## Database Configurations
 This project uses [FlywayDb](https://flywaydb.org/). SQL Migrations can be placed in `./api/src/main/resources/db/migration/`.
@@ -112,7 +113,7 @@ BLS codes will not be duplicated if imported multiple times
     java -jar -Dspring.profiles.active=dev,import api/target/osmt-api-<version>.jar --csv=path/to/bls_csv --import-type=bls    
     ```
 
-### Importing O*NET
+### Importing O*NET codes
 O*NET codes will not be duplicated if imported multiple times
 * Note - BLS codes should be imported before O*NET codes
 1. Download O*NET `Occupation Data` in Excel format from [https://www.onetcenter.org/database.html#occ]("https://www.onetcenter.org/database.html#occ")

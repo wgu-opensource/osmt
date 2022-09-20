@@ -21,7 +21,6 @@ describe("AuthGuard", () => {
       imports: [HttpClientTestingModule]
     })
     injector = getTestBed()
-    // authService = injector.get(AuthService)
     authGuard = injector.get(AuthGuard)
     AuthServiceData.authenticatedFlag = true
     AuthServiceData.hasRoleFlag = true

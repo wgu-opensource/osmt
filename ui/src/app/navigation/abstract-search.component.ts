@@ -1,8 +1,8 @@
-import {FormControl, FormGroup} from "@angular/forms";
-import {SearchService} from "../search/search.service";
-import {ActivatedRoute} from "@angular/router";
-import {AuthService} from "../auth/auth-service";
-import {ButtonAction} from "../auth/auth-roles";
+import {FormControl, FormGroup} from "@angular/forms"
+import {SearchService} from "../search/search.service"
+import {ActivatedRoute} from "@angular/router"
+import {AuthService} from "../auth/auth-service"
+import {ButtonAction} from "../auth/auth-roles"
 
 export class AbstractSearchComponent {
   searchForm = new FormGroup({

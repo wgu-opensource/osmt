@@ -1,12 +1,12 @@
 import {Component, OnInit} from "@angular/core"
 import {RichSkillService} from "../service/rich-skill.service"
-import {SkillsListComponent} from "../list/skills-list.component";
-import {ToastService} from "../../toast/toast.service";
-import {PaginatedSkills} from "../service/rich-skill-search.service";
-import {Router} from "@angular/router";
-import {determineFilters} from "../../PublishStatus";
-import {Title} from "@angular/platform-browser";
-import {AuthService} from "../../auth/auth-service";
+import {SkillsListComponent} from "../list/skills-list.component"
+import {ToastService} from "../../toast/toast.service"
+import {PaginatedSkills} from "../service/rich-skill-search.service"
+import {Router} from "@angular/router"
+import {determineFilters} from "../../PublishStatus"
+import {Title} from "@angular/platform-browser"
+import {AuthService} from "../../auth/auth-service"
 
 @Component({
   selector: "app-rich-skills-library",

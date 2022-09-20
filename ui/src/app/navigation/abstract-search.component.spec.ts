@@ -2,11 +2,11 @@ import { HttpClientModule } from "@angular/common/http"
 import { Component, Type } from "@angular/core"
 import { async, ComponentFixture, TestBed } from "@angular/core/testing"
 import { ActivatedRoute, Router } from "@angular/router"
-import {AuthServiceStub, SearchServiceStub} from "../../../test/resource/mock-stubs"
+import { AuthServiceStub, SearchServiceStub } from "../../../test/resource/mock-stubs"
 import { ActivatedRouteStubSpec } from "../../../test/util/activated-route-stub.spec"
 import { SearchService } from "../search/search.service"
 import { AbstractSearchComponent } from "./abstract-search.component"
-import {AuthService} from "../auth/auth-service";
+import {AuthService} from "../auth/auth-service"
 
 
 @Component({

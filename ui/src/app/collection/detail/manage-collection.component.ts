@@ -175,7 +175,8 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
           icon: this.archiveIcon,
           callback: () => this.archiveAction(),
           visible: () =>  this.authService.isEnabledByRoles(ButtonAction.CollectionUpdate)
-      }))
+        })
+      )
     } else if (this.collection?.status === PublishStatus.Archived || this.collection?.status === PublishStatus.Deleted) {
       actions.push(
         new TableActionDefinition({
@@ -183,7 +184,8 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
           icon: this.unarchiveIcon,
           callback: () => this.unarchiveAction(),
           visible: () => this.authService.isEnabledByRoles(ButtonAction.CollectionUpdate)
-      }))
+        })
+      )
     }
     return actions
   }

@@ -16,6 +16,7 @@ import {
   PaginatedSkills
 } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
+import {ButtonAction, OSMT_ADMIN} from "../../src/app/auth/auth-roles"
 import {
   createMockBatchResult,
   createMockCollection,
@@ -26,7 +27,6 @@ import {
   createMockSkillSummary,
   createMockTaskResult
 } from "./mock-data"
-import {ButtonAction, OSMT_ADMIN} from "../../src/app/auth/auth-roles";
 
 
 // Add service stubs here.
@@ -55,7 +55,11 @@ export class RouterStub {
   }
 }
 
-export let AuthServiceData = { isDown: false }
+export let AuthServiceData = {
+  isDown: false,
+  authenticatedFlag: true,
+  hasRoleFlag: true
+}
 export class AuthServiceStub {  // TODO consider using real class
   init(): void {
   }
@@ -73,15 +77,15 @@ export class AuthServiceStub {  // TODO consider using real class
     return "fake-token"
   }
   public getRole(): string | null {
-    return OSMT_ADMIN;
-  }
-  public hasRole(requiredRoles: string[], userRoles: string[]): boolean {
-    return true;
+    return OSMT_ADMIN
   }
   public isAuthenticated(): boolean {
-    return true
+    return AuthServiceData.authenticatedFlag
   }
-  public isEnabledByRoles(buttonAction : ButtonAction): boolean {
+  hasRole(requiredRoles: string[], userRoles: string[]): boolean {
+    return AuthServiceData.hasRoleFlag
+  }
+  isEnabledByRoles(buttonAction : ButtonAction): boolean {
     return true
   }
 }

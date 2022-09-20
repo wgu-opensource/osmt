@@ -3,7 +3,7 @@ import {AbstractSearchComponent} from "./abstract-search.component"
 import {SearchService} from "../search/search.service"
 import {ActivatedRoute} from "@angular/router"
 import {SvgHelper, SvgIcon} from "../core/SvgHelper"
-import {AuthService} from "../auth/auth-service";
+import {AuthService} from "../auth/auth-service"
 
 @Component({
   selector: "app-commoncontrols",

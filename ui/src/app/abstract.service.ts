@@ -1,15 +1,14 @@
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http"
 import {AppConfig} from "./app.config"
-import {Observable, Subscription} from "rxjs"
-import {AuthService} from "./auth/auth-service";
-import {ApiTaskResult, ITaskResult} from "./task/ApiTaskResult";
-import {PublishStatus} from "./PublishStatus";
-import {ApiSortOrder} from "./richskill/ApiSkill";
-import {ApiBatchResult} from "./richskill/ApiBatchResult";
-import {ApiSearch} from "./richskill/service/rich-skill-search.service";
-import {map, share} from "rxjs/operators";
-import {DefaultUrlSerializer, Router, UrlSerializer} from "@angular/router";
-import {Location} from "@angular/common";
+import {Observable} from "rxjs"
+import {IAuthService} from "./auth/iauth-service"
+import {ApiTaskResult, ITaskResult} from "./task/ApiTaskResult"
+import {PublishStatus} from "./PublishStatus"
+import {ApiSortOrder} from "./richskill/ApiSkill"
+import {ApiSearch} from "./richskill/service/rich-skill-search.service"
+import {map, share} from "rxjs/operators"
+import {Router} from "@angular/router"
+import {Location} from "@angular/common"
 
 interface ApiGetParams {
   path: string,
@@ -23,7 +22,7 @@ interface ApiGetParams {
 export abstract class AbstractService {
 
   constructor(protected httpClient: HttpClient,
-              protected authService: AuthService,
+              protected authService: IAuthService,
               protected router: Router,
               protected location: Location
   )

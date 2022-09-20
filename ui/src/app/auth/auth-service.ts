@@ -1,4 +1,4 @@
-import {ENABLE_ROLES, ButtonAction, ActionByRoles} from "./auth-roles";
+import { ENABLE_ROLES, ButtonAction, ActionByRoles} from "./auth-roles"
 import { Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { DEFAULT_INTERRUPTSOURCES, Idle } from "@ng-idle/core"

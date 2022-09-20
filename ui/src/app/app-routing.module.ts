@@ -8,18 +8,18 @@ import {LogoutComponent} from "./auth/logout.component"
 import {AuthGuard} from "./auth/auth.guard"
 import {LoginComponent} from "./auth/login.component"
 import {RichSkillManageComponent} from "./richskill/detail/rich-skill-manage/rich-skill-manage.component"
-import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component";
-import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component";
-import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component";
+import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component"
+import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component"
+import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component"
 import {CollectionFormComponent} from "./collection/create-collection/collection-form.component"
-import {FormDirtyGuard} from "./core/abstract-form.component";
-import {CollectionsLibraryComponent} from "./table/collections-library.component";
-import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component";
-import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component";
-import {ManageCollectionComponent} from "./collection/detail/manage-collection.component";
-import {PublishCollectionComponent} from "./collection/detail/publish-collection.component";
-import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component";
-import {BatchImportComponent} from "./richskill/import/batch-import.component";
+import {FormDirtyGuard} from "./core/abstract-form.component"
+import {CollectionsLibraryComponent} from "./table/collections-library.component"
+import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component"
+import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component"
+import {ManageCollectionComponent} from "./collection/detail/manage-collection.component"
+import {PublishCollectionComponent} from "./collection/detail/publish-collection.component"
+import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component"
+import {BatchImportComponent} from "./richskill/import/batch-import.component"
 import { ActionByRoles, ButtonAction } from "./auth/auth-roles"
 
 

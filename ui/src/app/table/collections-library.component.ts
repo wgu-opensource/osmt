@@ -1,12 +1,12 @@
-import {Component, OnInit} from "@angular/core";
-import {Router} from "@angular/router";
-import {ToastService} from "../toast/toast.service";
-import {PaginatedCollections} from "../richskill/service/rich-skill-search.service";
-import {CollectionService} from "../collection/service/collection.service";
-import {CollectionsListComponent} from "../collection/collections-list.component";
-import {determineFilters} from "../PublishStatus";
-import {Title} from "@angular/platform-browser";
-import {AuthService} from "../auth/auth-service";
+import {Component, OnInit} from "@angular/core"
+import {Router} from "@angular/router"
+import {ToastService} from "../toast/toast.service"
+import {PaginatedCollections} from "../richskill/service/rich-skill-search.service"
+import {CollectionService} from "../collection/service/collection.service"
+import {CollectionsListComponent} from "../collection/collections-list.component"
+import {determineFilters} from "../PublishStatus"
+import {Title} from "@angular/platform-browser"
+import {AuthService} from "../auth/auth-service"
 
 @Component({
   selector: "app-collections-library",
@@ -21,7 +21,7 @@ export class CollectionsLibraryComponent extends CollectionsListComponent implem
     protected collectionService: CollectionService,
     protected titleService: Title,
     protected authService: AuthService
-) {
+  ) {
     super(router, toastService, collectionService, authService)
   }
 

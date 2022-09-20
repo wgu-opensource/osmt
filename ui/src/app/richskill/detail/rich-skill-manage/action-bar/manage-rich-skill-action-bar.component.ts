@@ -8,7 +8,7 @@ import {PublishStatus} from "../../../../PublishStatus"
 import {ExtrasSelectedSkillsState} from "../../../../collection/add-skills-collection.component"
 import {ApiSkillSummary} from "../../../ApiSkillSummary"
 import {AuthService} from "../../../../auth/auth-service"
-import {ButtonAction} from "../../../../auth/auth-roles";
+import {ButtonAction} from "../../../../auth/auth-roles"
 
 @Component({template: ""})
 export abstract class ManageRichSkillActionBarComponent implements OnInit {
@@ -111,20 +111,20 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
   }
 
   handlePublish(): void {
-      if (!this.published) {
-        if (confirm("Are you sure you want to publish this RSD?")) {
-          this.toastService.showBlockingLoader()
-          this.richSkillService.updateSkill(this.skillUuid, {
-            status: PublishStatus.Published
-          }).subscribe(() => {
-            this.reloadSkill.emit()
-            this.toastService.hideBlockingLoader()
-          })
-        }
-      } else {
-        const url = `skills/${this.skillUuid}`
-        window.open(url, "_blank")
+    if (!this.published) {
+      if (confirm("Are you sure you want to publish this RSD?")) {
+        this.toastService.showBlockingLoader()
+        this.richSkillService.updateSkill(this.skillUuid, {
+          status: PublishStatus.Published
+        }).subscribe(() => {
+          this.reloadSkill.emit()
+          this.toastService.hideBlockingLoader()
+        })
       }
+    } else {
+      const url = `skills/${this.skillUuid}`
+      window.open(url, "_blank")
+    }
   }
 
   setEnableFlags(): void {

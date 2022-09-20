@@ -304,10 +304,10 @@ describe("ManageCollectionComponent", () => {
       expect(action && action.callback).toBeTruthy()
       action.callback?.(action)
       expect(action.visible?.()).toBeTruthy()  // !== PublishStatus.Archived  && !== PublishStatus.Deleted
-
     })
   })
- it("publishAction should be correct", () => {
+
+  it("publishAction should be correct", () => {
     // Arrange for all
     const router = TestBed.inject(Router)
     const collectionService = TestBed.inject(CollectionService)

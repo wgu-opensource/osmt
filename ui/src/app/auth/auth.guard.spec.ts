@@ -3,18 +3,13 @@ import { AuthGuard } from "./auth.guard"
 import { AuthService } from "./auth-service"
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot} from "@angular/router"
 import { HttpClientTestingModule } from "@angular/common/http/testing"
-import { AuthServiceStub, RouterStub } from "../../../test/resource/mock-stubs"
-import {ActionByRoles, ButtonAction, ENABLE_ROLES} from "./auth-roles"
-
+import { AuthServiceData, AuthServiceStub, RouterStub } from "../../../test/resource/mock-stubs"
 
 describe("AuthGuard", () => {
   let injector: TestBed
-  let authService: AuthService
   let authGuard: AuthGuard
-  const routeStateMock = Object.assign({}, RouterStateSnapshot.prototype, {
-      url: "/cookies"
-    }
-  )
+  const routeMock = Object.assign({}, ActivatedRouteSnapshot.prototype, { data: {roles: "ADMIN"} })
+  const stateMock = Object.assign({}, RouterStateSnapshot.prototype, { url: "/cookies" } )
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -26,8 +21,9 @@ describe("AuthGuard", () => {
       imports: [HttpClientTestingModule]
     })
     injector = getTestBed()
-    authService = injector.get(AuthService)
     authGuard = injector.get(AuthGuard)
+    AuthServiceData.authenticatedFlag = true
+    AuthServiceData.hasRoleFlag = true
   })
 
   it("should be created", () => {
@@ -36,35 +32,30 @@ describe("AuthGuard", () => {
   })
 
   it("should return true", () => {
-    // Arrange
-    const route = Object.assign({}, ActivatedRouteSnapshot.prototype, {
-      data: {roles: ActionByRoles.get(ButtonAction.SkillCreate)}
-    })
-
     // Act and Assert
-    expect(authGuard.canActivate(route, routeStateMock)).toEqual(true)
+    expect(authGuard.canActivate(routeMock, stateMock)).toEqual(true)
   })
 
-  it("should return false with roles enabled", () => {
-    if (ENABLE_ROLES) {
-      // Arrange
-      const route = Object.assign({}, ActivatedRouteSnapshot.prototype, {
-        data: {roles: "WRONG_ROLE"}
-      })
-      const expected = !ENABLE_ROLES
-
-      // Act and Assert
-      expect(authGuard.canActivate(route, routeStateMock)).toEqual(expected)
-    }
+  it("should return false when when authService is NOT authenticated", () => {
+    // Arrange
+    AuthServiceData.authenticatedFlag = false
+    // Act and Assert
+    expect(authGuard.canActivate(routeMock, stateMock)).toEqual(false)
   })
 
-  it("should return true without role needed", () => {
+  it("should return true even without appropriate roles because ENABLE_ROLES is false for OS OSMT UI", () => {
     // Arrange
-    const route = Object.assign({}, ActivatedRouteSnapshot.prototype, {
-      data: {roles: ""}
-    })
-
+    AuthServiceData.hasRoleFlag = false
     // Act and Assert
-    expect(authGuard.canActivate(route, routeStateMock)).toEqual(true)
+    expect(authGuard.canActivate(routeMock, stateMock)).toEqual(true)
+  })
+
+  it("should return true with undefined route.data.roles", () => {
+    // Arrange
+    const routeWithUndefinedRoles = Object.assign({}, ActivatedRouteSnapshot.prototype, {
+      data: {roles: undefined}
+    })
+    // Act and Assert
+    expect(authGuard.canActivate(routeWithUndefinedRoles, stateMock)).toEqual(true)
   })
 })

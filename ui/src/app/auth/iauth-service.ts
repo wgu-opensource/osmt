@@ -1,3 +1,5 @@
+import {ButtonAction} from "./auth-roles"
+
 export interface IAuthService {
   // Initialize auth service synchronously.  Must be called in main thread and not via async mechanism.
   init(): void
@@ -34,4 +36,8 @@ export interface IAuthService {
 
   // Get the user's roles.
   getRole(): string
+
+  hasRole(requiredRoles: string[], userRoles: string[]): boolean
+
+  isEnabledByRoles(buttonAction: ButtonAction): boolean
 }

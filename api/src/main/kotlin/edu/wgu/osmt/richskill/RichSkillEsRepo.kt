@@ -35,6 +35,12 @@ interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
         pageable: Pageable = Pageable.unpaged(),
         collectionId: String? = null
     ): SearchHits<RichSkillDoc>
+    fun countByApiSearch(
+        apiSearch: ApiSearch,
+        publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
+        pageable: Pageable = Pageable.unpaged(),
+        collectionId: String? = null
+    ): Long
 
     fun findSimilar(apiSimilaritySearch: ApiSimilaritySearch): SearchHits<RichSkillDoc>
 
@@ -207,6 +213,28 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         pageable: Pageable,
         collectionId: String?
     ): SearchHits<RichSkillDoc> {
+        val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
+
+        return elasticSearchTemplate.search(nsq.build(), RichSkillDoc::class.java)
+    }
+
+    override fun countByApiSearch(
+        apiSearch: ApiSearch,
+        publishStatus: Set<PublishStatus>,
+        pageable: Pageable,
+        collectionId: String?
+    ): Long {
+        val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
+
+        return elasticSearchTemplate.count(nsq.build(), RichSkillDoc::class.java)
+    }
+
+    fun buildQuery(
+        pageable: Pageable,
+        publishStatus: Set<PublishStatus>,
+        apiSearch: ApiSearch,
+        collectionId: String?
+    ): NativeSearchQueryBuilder {
         val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
         val bq = boolQuery()
 
@@ -236,7 +264,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 bq.must(
                     nestedQuery(
                         RichSkillDoc::collections.name,
-                        QueryBuilders.boolQuery().must(QueryBuilders.matchQuery(collectionsUuid, collectionId)),
+                        boolQuery().must(matchQuery(collectionsUuid, collectionId)),
                         ScoreMode.Avg
                     )
                 )
@@ -246,9 +274,9 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)
 
             if (collectionId.isNullOrBlank()) {
-                apiSearch.advanced.collectionName?.let {
+                apiSearch?.advanced.collectionName?.let {
                     bq.must(
-                        QueryBuilders.nestedQuery(
+                        nestedQuery(
                             RichSkillDoc::collections.name,
                             simpleQueryStringQuery(it).field("collections.name.raw").defaultOperator(Operator.AND),
                             ScoreMode.Avg
@@ -257,9 +285,9 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 }
             } else {
                 bq.must(
-                    QueryBuilders.nestedQuery(
+                    nestedQuery(
                         RichSkillDoc::collections.name,
-                        QueryBuilders.boolQuery().must(QueryBuilders.matchQuery(collectionsUuid, collectionId)),
+                        boolQuery().must(matchQuery(collectionsUuid, collectionId)),
                         ScoreMode.Avg
                     )
                 )
@@ -279,18 +307,17 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             }
             if (!collectionId.isNullOrBlank()) {
                 bq.must(
-                    QueryBuilders.nestedQuery(
+                    nestedQuery(
                         RichSkillDoc::collections.name,
-                        QueryBuilders.boolQuery()
-                            .must(QueryBuilders.matchQuery(collectionsUuid, collectionId)),
+                        boolQuery()
+                            .must(matchQuery(collectionsUuid, collectionId)),
                         ScoreMode.Avg
                     )
                 )
 
             }
         }
-
-        return elasticSearchTemplate.search(nsq.build(), RichSkillDoc::class.java)
+        return nsq
     }
 
     override fun findSimilar(apiSimilaritySearch: ApiSimilaritySearch): SearchHits<RichSkillDoc> {

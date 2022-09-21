@@ -14,6 +14,19 @@ interface FindsAllByPublishStatus<T> {
     val javaClass: Class<T>
 
     fun findAllFilteredByPublishStatus(publishStatus: Set<PublishStatus>, pageable: Pageable): SearchHits<T> {
+        val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus)
+        return elasticSearchTemplate.search(nsq.build(), javaClass)
+    }
+
+    fun countAllFilteredByPublishStatus(publishStatus: Set<PublishStatus>, pageable: Pageable): Long {
+        val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus)
+        return elasticSearchTemplate.count(nsq.build(), javaClass)
+    }
+
+    fun buildQuery(
+        pageable: Pageable,
+        publishStatus: Set<PublishStatus>
+    ): NativeSearchQueryBuilder {
         val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
         nsq.withQuery(QueryBuilders.matchAllQuery())
         nsq.withFilter(
@@ -22,8 +35,9 @@ interface FindsAllByPublishStatus<T> {
                     "publishStatus",
                     publishStatus.map { ps -> ps.toString() }
                 )
-            )        )
-        return elasticSearchTemplate.search(nsq.build(), javaClass)
+            )
+        )
+        return nsq
     }
 }
 

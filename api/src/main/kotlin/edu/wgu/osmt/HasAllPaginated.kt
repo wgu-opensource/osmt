@@ -6,6 +6,7 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.elasticsearch.PaginatedLinks
+import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
@@ -48,10 +49,11 @@ interface HasAllPaginated<T> {
         val sortEnum: SortOrder = sortOrderCompanion.forValueOrDefault(sort)
         val pageable = OffsetPageable(from, size, sortEnum.sort)
 
-        val searchHits = elasticRepository.findAllFilteredByPublishStatus(publishStatuses, pageable)
+        val searchHits: SearchHits<T> = elasticRepository.findAllFilteredByPublishStatus(publishStatuses, pageable)
 
         val responseHeaders = HttpHeaders()
-        responseHeaders.add("X-Total-Count", searchHits.totalHits.toString())
+        val countAllFilteredByPublishStatus: Long = elasticRepository.countAllFilteredByPublishStatus(publishStatuses, pageable)
+        responseHeaders.add("X-Total-Count", countAllFilteredByPublishStatus.toString())
 
         // build up current uri with path and params
         uriComponentsBuilder

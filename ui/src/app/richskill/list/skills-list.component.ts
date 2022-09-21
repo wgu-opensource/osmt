@@ -21,11 +21,6 @@ import {ButtonAction} from "../../auth/auth-roles";
   templateUrl: "./skills-list.component.html"
 })
 export class SkillsListComponent extends QuickLinksHelper {
-  /*
-   * In default configuration, ElasticSearch has an upper limit of returning 10000 elements.  For a short-term
-   * usability fix, we're simply going to add a "+" character when displaying 10000 (or more) total hits.
-   */
-  readonly upperLimit = 10000
 
   from = 0
   size = 50
@@ -72,7 +67,7 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   get skillCountLabel(): string {
     if (this.totalCount > 0)  {
-      return `${this.totalCount}${this.totalCount >= this.upperLimit ? "+" : ""} RSD${this.totalCount > 1 ? "s" : ""}`
+      return `${this.totalCount} RSD${this.totalCount > 1 ? "s" : ""}`
     }
     return `0 RSDs`
   }

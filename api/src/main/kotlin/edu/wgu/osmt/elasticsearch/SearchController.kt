@@ -123,8 +123,14 @@ class SearchController @Autowired constructor(
         sort?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.SORT, it) }
         collectionId?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.COLLECTION_ID, it) }
 
+        val countByApiSearch = richSkillEsRepo.countByApiSearch(
+            apiSearch,
+            publishStatuses,
+            pageable,
+            collectionId
+        )
         val responseHeaders = HttpHeaders()
-        responseHeaders.add("X-Total-Count", searchHits.totalHits.toString())
+        responseHeaders.add("X-Total-Count", countByApiSearch.toString())
 
         PaginatedLinks(
             pageable,

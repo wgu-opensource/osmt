@@ -26,44 +26,33 @@ class BlsImport : CsvImport<BlsJobCode> {
 
     override val csvRowClass = BlsJobCode::class.java
 
-    @Autowired
     private lateinit var jobCodeRepository: JobCodeRepository
-
-    @Autowired
     private lateinit var jobCodeEsRepo: JobCodeEsRepo
-
-    @Autowired
     private lateinit var richSkillRepository: RichSkillRepository
-
-    @Autowired
     private lateinit var richSkillEsRepo: RichSkillEsRepo
-
-    @Autowired
     private lateinit var appConfig: AppConfig
 
+    constructor(
+        jobCodeRepository: JobCodeRepository,
+        jobCodeEsRepo: JobCodeEsRepo,
+        richSkillRepository: RichSkillRepository,
+        richSkillEsRepo: RichSkillEsRepo,
+        appConfig: AppConfig
+    ) {
+        this.jobCodeRepository = jobCodeRepository
+        this.jobCodeEsRepo = jobCodeEsRepo
+        this.richSkillRepository = richSkillRepository
+        this.richSkillEsRepo = richSkillEsRepo
+        this.appConfig = appConfig
+    }
+
     override fun handleRows(rows: List<BlsJobCode>) {
-        val detailed = rows.filter { it.socGroup == "Detailed" }
         val broad = rows.filter { it.socGroup == "Broad" }
         val minor = rows.filter { it.socGroup == "Minor" }
         val major = rows.filter { it.socGroup == "Major" }
 
-        val rowsSansDetailed = broad + minor + major
-        log.info("Processing ${rowsSansDetailed.size} non-detail rows...")
-        for (row in rowsSansDetailed) transaction {
-            val jobCode = row.code?.let { jobCodeRepository.findByCodeOrCreate(it, JobCodeRepository.BLS_FRAMEWORK) }
-            jobCode?.let {
-                it.name = null
-                it.description = row.socDefinition
-                when (row.socGroup) {
-                    "Broad" -> it.broad = row.socTitle
-                    "Major" -> it.major = row.socTitle
-                    "Minor" -> it.minor = row.socTitle
-                }
-            }
-        }
-
-        log.info("Processing ${detailed.size} detailed rows...")
-        for (row in detailed) transaction {
+        log.info("Processing ${rows.size} rows...")
+        for (row in rows) transaction {
             log.info("Importing ${row.socTitle} - ${row.code}")
             val broadTitle = broad.find { it.code == row.broad() }?.socTitle
             val minorTitle = minor.find { it.code == row.minor() }?.socTitle

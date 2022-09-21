@@ -38,12 +38,15 @@ internal class BlsImportTest @Autowired constructor(
 
         // Act
         blsImport.handleRows(listOfBlsJobCodes)
-        val result = listOfBlsJobCodes[0].code?.let { searchController.searchJobCodes(UriComponentsBuilder.newInstance(), it) }
 
+        // this major code should pull back many related minor, borad, and detailed job codes
+        val expectedMajorCode = "15-0000"
+        // searchJobCodes will only return 10 items in the list
+        val result = expectedMajorCode?.let { searchController.searchJobCodes(UriComponentsBuilder.newInstance(), it) }
         val listOfApiJobCodes = result?.body?.map { it.code }
 
         // Assert
         assertThat(result).isNotNull
-        assertThat(listOfApiJobCodes).contains(listOfBlsJobCodes[0].code)
+        assertThat(listOfApiJobCodes).contains(expectedMajorCode)
     }
 }

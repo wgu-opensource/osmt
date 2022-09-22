@@ -155,6 +155,7 @@ class SearchController @Autowired constructor(
             .body(searchHits.map { it.content }.toList())
     }
 
+    @Transactional(readOnly = true)
     @PostMapping(RoutePaths.SEARCH_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSkillsStream(
@@ -231,38 +232,7 @@ class SearchController @Autowired constructor(
             }
         }
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(responseBody)
-
-
-//        return ResponseEntity.status(200).headers(responseHeaders)
-//            .body(searchHits.map { it.content }.toList())
     }
-
-//
-//    @Transactional(readOnly = true)
-//    fun findActiveEmployee(): ResponseEntity<StreamingResponseBody?>? {
-//        val employees: Stream<Employee> = employeeRepository.getAllEmployees().map(EmployeePhysical::toModel)
-//        val responseBody = StreamingResponseBody { httpResponseOutputStream: OutputStream? ->
-//            try {
-//                BufferedWriter(OutputStreamWriter(httpResponseOutputStream)).use { writer ->
-//                    employees.forEach { employee ->
-//                        try {
-//                            writer.write(gson.toJson(employee))
-//                            logger.info("streamed record")
-//                            writer.flush()
-//                        } catch (exception: IOException) {
-//                            logger.error("exception occurred while writing object to stream", exception)
-//                        }
-//                    }
-//                }
-//            } catch (exception: Exception) {
-//                logger.error("exception occurred while publishing data", exception)
-//            }
-//            logger.info("finished streaming records")
-//        }
-//        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(responseBody)
-//    }
-//
-
 
     @PostMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody

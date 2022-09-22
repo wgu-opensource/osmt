@@ -19,10 +19,14 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
+import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.data.elasticsearch.core.SearchHits
+import org.springframework.data.elasticsearch.core.SearchHitsIterator
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
+import java.util.stream.Stream
+
 
 const val collectionsUuid = "collections.uuid"
 
@@ -35,6 +39,12 @@ interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
         pageable: Pageable = Pageable.unpaged(),
         collectionId: String? = null
     ): SearchHits<RichSkillDoc>
+    fun streamByApiSearch(
+        apiSearch: ApiSearch,
+        publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
+        pageable: Pageable = Pageable.unpaged(),
+        collectionId: String? = null
+    ): Stream<SearchHit<RichSkillDoc>>
     fun countByApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
@@ -216,6 +226,18 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
 
         return elasticSearchTemplate.search(nsq.build(), RichSkillDoc::class.java)
+    }
+
+    override fun streamByApiSearch(
+        apiSearch: ApiSearch,
+        publishStatus: Set<PublishStatus>,
+        pageable: Pageable,
+        collectionId: String?
+    ): Stream<SearchHit<RichSkillDoc>> {
+        val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
+        val searchForStream: SearchHitsIterator<RichSkillDoc> = elasticSearchTemplate.searchForStream(nsq.build(), RichSkillDoc::class.java)
+
+        return Stream.generate { searchForStream.next() }
     }
 
     override fun countByApiSearch(

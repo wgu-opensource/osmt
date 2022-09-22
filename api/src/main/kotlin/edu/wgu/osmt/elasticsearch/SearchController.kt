@@ -1,5 +1,6 @@
 package edu.wgu.osmt.elasticsearch
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
@@ -13,7 +14,10 @@ import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
@@ -21,7 +25,14 @@ import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import org.springframework.web.util.UriComponentsBuilder
+import java.io.BufferedWriter
+import java.io.IOException
+import java.io.OutputStream
+import java.io.OutputStreamWriter
+import java.util.stream.Stream
+
 
 @Controller
 @Transactional
@@ -32,6 +43,8 @@ class SearchController @Autowired constructor(
     val jobCodeEsRepo: JobCodeEsRepo,
     val appConfig: AppConfig
 ) {
+
+    val logger: Logger = LoggerFactory.getLogger(SearchController::class.java)
 
     @PostMapping(RoutePaths.SEARCH_COLLECTIONS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -53,7 +66,7 @@ class SearchController @Autowired constructor(
 
         val publishStatuses = status.mapNotNull {
             val status = PublishStatus.forApiValue(it)
-            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+            if (user == null && (status == PublishStatus.Deleted || status == PublishStatus.Draft)) null else status
         }.toSet()
         val sortEnum: CollectionSortEnum = CollectionSortEnum.forValueOrDefault(sort)
         val pageable = OffsetPageable(from, size, sortEnum.sort)
@@ -81,7 +94,7 @@ class SearchController @Autowired constructor(
         return ResponseEntity.status(200).headers(responseHeaders).body(searchHits.map { it.content }.toList())
     }
 
-    @PostMapping(RoutePaths.SEARCH_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.SEARCH_SKILLS_2, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSkills(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -102,9 +115,9 @@ class SearchController @Autowired constructor(
 
         val publishStatuses = status.mapNotNull {
             val status = PublishStatus.forApiValue(it)
-            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+            if (user == null && (status == PublishStatus.Deleted || status == PublishStatus.Draft)) null else status
         }.toSet()
-        val sortEnum = sort?.let{SkillSortEnum.forApiValue(it)}
+        val sortEnum = sort?.let { SkillSortEnum.forApiValue(it) }
         val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum?.sort)
 
         val searchHits = richSkillEsRepo.byApiSearch(
@@ -141,6 +154,115 @@ class SearchController @Autowired constructor(
         return ResponseEntity.status(200).headers(responseHeaders)
             .body(searchHits.map { it.content }.toList())
     }
+
+    @PostMapping(RoutePaths.SEARCH_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun searchSkillsStream(
+        uriComponentsBuilder: UriComponentsBuilder,
+        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = "0") from: Int,
+        @RequestParam(
+            required = false,
+            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+        ) status: Array<String>,
+        @RequestParam(required = false) sort: String?,
+        @RequestParam(required = false) collectionId: String?,
+        @RequestBody apiSearch: ApiSearch,
+        @AuthenticationPrincipal user: Jwt?
+    ): ResponseEntity<StreamingResponseBody> {
+        if (!appConfig.allowPublicSearching && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+
+        val publishStatuses = status.mapNotNull {
+            val status = PublishStatus.forApiValue(it)
+            if (user == null && (status == PublishStatus.Deleted || status == PublishStatus.Draft)) null else status
+        }.toSet()
+        val sortEnum = sort?.let { SkillSortEnum.forApiValue(it) }
+        val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum?.sort)
+
+
+        // build up current uri with path and params
+        uriComponentsBuilder
+            .path(RoutePaths.SEARCH_SKILLS)
+            .queryParam(RoutePaths.QueryParams.FROM, from)
+            .queryParam(RoutePaths.QueryParams.SIZE, size)
+            .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
+        sort?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.SORT, it) }
+        collectionId?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.COLLECTION_ID, it) }
+
+        val countByApiSearch = richSkillEsRepo.countByApiSearch(
+            apiSearch,
+            publishStatuses,
+            pageable,
+            collectionId
+        )
+        val responseHeaders = HttpHeaders()
+        responseHeaders.add("X-Total-Count", countByApiSearch.toString())
+
+        PaginatedLinks(
+            pageable,
+            countByApiSearch.toInt(),
+            uriComponentsBuilder
+        ).addToHeaders(responseHeaders)
+
+        val searchHits: Stream<SearchHit<RichSkillDoc>> = richSkillEsRepo.streamByApiSearch(
+            apiSearch,
+            publishStatuses,
+            pageable,
+            collectionId
+        )
+        val objectMapper = ObjectMapper();
+        val responseBody = StreamingResponseBody { httpResponseOutputStream: OutputStream? ->
+            try {
+                BufferedWriter(OutputStreamWriter(httpResponseOutputStream)).use { writer ->
+                    searchHits.forEach { hit ->
+                        try {
+                            writer.write(objectMapper.writeValueAsString(hit))
+//                            logger.info("streamed record")
+                            writer.flush()
+                        } catch (exception: IOException) {
+//                            logger.error("exception occurred while writing object to stream", exception)
+                        }
+                    }
+                }
+            } catch (exception: Exception) {
+                logger.error("exception occurred while publishing data", exception)
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(responseBody)
+
+
+//        return ResponseEntity.status(200).headers(responseHeaders)
+//            .body(searchHits.map { it.content }.toList())
+    }
+
+//
+//    @Transactional(readOnly = true)
+//    fun findActiveEmployee(): ResponseEntity<StreamingResponseBody?>? {
+//        val employees: Stream<Employee> = employeeRepository.getAllEmployees().map(EmployeePhysical::toModel)
+//        val responseBody = StreamingResponseBody { httpResponseOutputStream: OutputStream? ->
+//            try {
+//                BufferedWriter(OutputStreamWriter(httpResponseOutputStream)).use { writer ->
+//                    employees.forEach { employee ->
+//                        try {
+//                            writer.write(gson.toJson(employee))
+//                            logger.info("streamed record")
+//                            writer.flush()
+//                        } catch (exception: IOException) {
+//                            logger.error("exception occurred while writing object to stream", exception)
+//                        }
+//                    }
+//                }
+//            } catch (exception: Exception) {
+//                logger.error("exception occurred while publishing data", exception)
+//            }
+//            logger.info("finished streaming records")
+//        }
+//        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(responseBody)
+//    }
+//
+
 
     @PostMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -187,17 +309,17 @@ class SearchController @Autowired constructor(
     @ResponseBody
     fun searchSimilarSkills(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<ApiSkillSummary>> {
         val hits = richSkillEsRepo.findSimilar(apiSimilaritySearch).toList()
-        return ResponseEntity.status(200).body(hits.map{ApiSkillSummary.fromDoc(it.content)})
+        return ResponseEntity.status(200).body(hits.map { ApiSkillSummary.fromDoc(it.content) })
     }
 
     @PostMapping(RoutePaths.SEARCH_SIMILARITIES, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun similarSkillWarnings(@RequestBody(required = true) similarities: Array<ApiSimilaritySearch>): HttpEntity<List<Boolean>> {
         val arrayLimit = 100
-        if (similarities.count() > arrayLimit){
+        if (similarities.count() > arrayLimit) {
             throw GeneralApiException("Request contained more than $arrayLimit objects", HttpStatus.BAD_REQUEST)
         }
-        val hits = similarities.map{richSkillEsRepo.findSimilar(it).count() > 0}
+        val hits = similarities.map { richSkillEsRepo.findSimilar(it).count() > 0 }
         return ResponseEntity.status(200).body(hits)
     }
 }

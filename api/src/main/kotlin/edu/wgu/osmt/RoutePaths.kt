@@ -3,6 +3,7 @@ package edu.wgu.osmt
 object RoutePaths {
     const val SEARCH_PATH = "/api/search"
     const val SEARCH_SKILLS = "$SEARCH_PATH/skills"
+    const val SEARCH_SKILLS_2 = "$SEARCH_PATH/skills/stream"
     const val SEARCH_SIMILAR_SKILLS = "$SEARCH_SKILLS/similarity"
     const val SEARCH_SIMILARITIES = "$SEARCH_SKILLS/similarities"
     const val SEARCH_COLLECTIONS = "$SEARCH_PATH/collections"

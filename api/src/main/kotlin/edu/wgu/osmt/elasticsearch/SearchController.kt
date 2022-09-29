@@ -213,22 +213,21 @@ class SearchController @Autowired constructor(
             pageable,
             collectionId
         )
+        var counter = 0
         val objectMapper = ObjectMapper();
         val responseBody = StreamingResponseBody { httpResponseOutputStream: OutputStream? ->
-            try {
-                BufferedWriter(OutputStreamWriter(httpResponseOutputStream)).use { writer ->
-                    searchHits.forEach { hit ->
-                        try {
-                            writer.write(objectMapper.writeValueAsString(hit))
+            BufferedWriter(OutputStreamWriter(httpResponseOutputStream)).use { writer ->
+                searchHits.forEach { hit ->
+                    counter++
+                    logger.info("Counter: ${counter}")
+                    try {
+                        writer.write(objectMapper.writeValueAsString(hit))
 //                            logger.info("streamed record")
-                            writer.flush()
-                        } catch (exception: IOException) {
+                        writer.flush()
+                    } catch (exception: IOException) {
 //                            logger.error("exception occurred while writing object to stream", exception)
-                        }
                     }
                 }
-            } catch (exception: Exception) {
-                logger.error("exception occurred while publishing data", exception)
             }
         }
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(responseBody)

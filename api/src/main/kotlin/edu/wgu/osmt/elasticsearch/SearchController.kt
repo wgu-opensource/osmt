@@ -1,6 +1,7 @@
 package edu.wgu.osmt.elasticsearch
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.json.JsonMapper
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
@@ -214,14 +215,18 @@ class SearchController @Autowired constructor(
             collectionId
         )
         var counter = 0
-        val objectMapper = ObjectMapper();
+        val objectMapper: ObjectMapper = JsonMapper.builder()
+            .findAndAddModules()
+            .build()
+        var writeValueAsString: String
         val responseBody = StreamingResponseBody { httpResponseOutputStream: OutputStream? ->
             BufferedWriter(OutputStreamWriter(httpResponseOutputStream)).use { writer ->
                 searchHits.forEach { hit ->
                     counter++
                     logger.info("Counter: ${counter}")
                     try {
-                        writer.write(objectMapper.writeValueAsString(hit))
+                        writeValueAsString = objectMapper.writeValueAsString(hit.content)
+                        writer.write(writeValueAsString)
 //                            logger.info("streamed record")
                         writer.flush()
                     } catch (exception: IOException) {

@@ -223,14 +223,14 @@ class SearchController @Autowired constructor(
             BufferedWriter(OutputStreamWriter(httpResponseOutputStream)).use { writer ->
                 searchHits.forEach { hit ->
                     counter++
-                    logger.info("Counter: ${counter}")
                     try {
                         writeValueAsString = objectMapper.writeValueAsString(hit.content)
                         writer.write(writeValueAsString)
 //                            logger.info("streamed record")
                         writer.flush()
+                        logger.info("Counter: ${counter}")
                     } catch (exception: IOException) {
-//                            logger.error("exception occurred while writing object to stream", exception)
+                            logger.error("exception occurred while writing object to stream", exception)
                     }
                 }
             }

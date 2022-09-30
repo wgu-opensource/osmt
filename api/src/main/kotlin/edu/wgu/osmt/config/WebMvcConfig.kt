@@ -11,13 +11,15 @@ import org.springframework.boot.autoconfigure.http.HttpMessageConverters
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.HttpMessageConverter
-import org.springframework.lang.NonNull
+import org.springframework.scheduling.annotation.AsyncConfigurer
+import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
+import java.util.concurrent.Executor
 import java.util.concurrent.Executors
-import java.util.concurrent.ThreadFactory
-import java.util.concurrent.atomic.AtomicInteger
 
 
 @Configuration
@@ -40,22 +42,23 @@ class WebMvcConfig : WebMvcConfigurer {
     }
 }
 
-@Bean
-fun webMvcConfigurer(concurrentTaskExecutor: ConcurrentTaskExecutor?): WebMvcConfigurer? {
-    return object : WebMvcConfigurer {
-        override fun configureAsyncSupport(@NonNull configurer: AsyncSupportConfigurer) {
-            configurer.setDefaultTimeout(-1)
-            configurer.setTaskExecutor(concurrentTaskExecutor!!)
+@Configuration
+@EnableAsync
+class AsyncConfig : AsyncConfigurer {
+    @Bean
+    protected fun webMvcConfigurer(): WebMvcConfigurer {
+        return object : WebMvcConfigurerAdapter() {
+            override fun configureAsyncSupport(configurer: AsyncSupportConfigurer) {
+                configurer.setTaskExecutor(taskExecutor)
+            }
         }
     }
-}
 
-@Bean
-fun concurrentTaskExecutor(): ConcurrentTaskExecutor? {
-    return ConcurrentTaskExecutor(Executors.newFixedThreadPool(5, object : ThreadFactory {
-        private val threadCounter = AtomicInteger(0)
-        override fun newThread(@NonNull runnable: Runnable): Thread {
-            return Thread(runnable, "asyncThread-" + threadCounter.incrementAndGet())
+    @get:Bean
+    protected val taskExecutor: ConcurrentTaskExecutor
+        protected get() {
+            // TODO - make this value runtime configurable with sensible default
+            val threadCount = 5
+            return ConcurrentTaskExecutor(Executors.newFixedThreadPool(threadCount))
         }
-    }))
 }

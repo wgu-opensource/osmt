@@ -235,12 +235,11 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         collectionId: String?
     ): Stream<SearchHit<RichSkillDoc>> {
         val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
-        val searchForStream: SearchHitsIterator<RichSkillDoc> = elasticSearchTemplate.searchForStream(nsq.build(), RichSkillDoc::class.java)
+        val searchHitsIterator: SearchHitsIterator<RichSkillDoc> = elasticSearchTemplate.searchForStream(nsq.build(), RichSkillDoc::class.java)
 
+//        TODO - return the Stream.generate
+        val searchHitStream: Stream<SearchHit<RichSkillDoc>> = Stream.generate { searchHitsIterator.next() }
 
-//        elasticSearchTemplate.search
-
-        val searchHitStream: Stream<SearchHit<RichSkillDoc>> = Stream.generate { searchForStream.next() }
         return searchHitStream
     }
 

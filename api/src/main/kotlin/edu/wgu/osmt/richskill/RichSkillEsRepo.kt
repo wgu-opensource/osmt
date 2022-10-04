@@ -238,7 +238,9 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         val searchHitsIterator: SearchHitsIterator<RichSkillDoc> = elasticSearchTemplate.searchForStream(nsq.build(), RichSkillDoc::class.java)
 
 //        TODO - return the Stream.generate
-        val searchHitStream: Stream<SearchHit<RichSkillDoc>> = Stream.generate { searchHitsIterator.next() }
+        val searchHitStream: Stream<SearchHit<RichSkillDoc>> = Stream.generate {
+            searchHitsIterator.next()
+        }
 
         return searchHitStream
     }

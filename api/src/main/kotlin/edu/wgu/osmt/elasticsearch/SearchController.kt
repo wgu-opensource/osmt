@@ -228,7 +228,7 @@ class SearchController @Autowired constructor(
                         writer.write(writeValueAsString)
 //                            logger.info("streamed record")
                         writer.flush()
-                        logger.info("Counter: ${counter}")
+//                        logger.info("Counter: ${counter}")
                     } catch (exception: IOException) {
                             logger.error("exception occurred while writing object to stream", exception)
                     }

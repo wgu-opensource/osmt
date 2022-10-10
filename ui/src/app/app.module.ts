@@ -39,7 +39,6 @@ import {SkillTableComponent} from "./table/skills-library-table/skill-table.comp
 import {SkillListRowComponent} from "./richskill/list/skill-list-row.component"
 import {TableLabelComponent} from "./table/skills-library-table/table-label.component"
 import {LabelWithFilterComponent} from "./table/skills-library-table/label-with-filter.component"
-import {AccordianComponent} from "./core/accordian.component"
 import {FilterControlsComponent} from "./table/filter-controls/filter-controls.component"
 import {FilterChoiceComponent} from "./table/filter-controls/filter-choice.component"
 import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component"
@@ -96,6 +95,7 @@ import {LoginComponent} from "./auth/login.component"
 import {LogoutComponent} from "./auth/logout.component"
 import {NgIdleKeepaliveModule} from "@ng-idle/keepalive"
 import {LabelWithSelectComponent} from "./table/skills-library-table/label-with-select.component"
+import {CoreModule} from "./core/core.module";
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -157,7 +157,6 @@ export function initializeApp(
     DetailCardSectionComponent,
     StatusBarComponent,
     CardDetailTitleComponent,
-    AccordianComponent,
     AbstractTableComponent,
     SkillTableComponent,
     SkillListRowComponent,
@@ -212,7 +211,8 @@ export function initializeApp(
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    CoreModule
   ],
   providers: [
     EnvironmentService,

@@ -228,6 +228,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         return elasticSearchTemplate.search(nsq.build(), RichSkillDoc::class.java)
     }
 
+
     override fun streamByApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus>,

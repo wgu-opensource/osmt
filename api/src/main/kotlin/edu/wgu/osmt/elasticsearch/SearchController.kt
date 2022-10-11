@@ -148,7 +148,7 @@ class SearchController @Autowired constructor(
 
         PaginatedLinks(
             pageable,
-            searchHits.totalHits.toInt(),
+            countByApiSearch.toInt(),
             uriComponentsBuilder
         ).addToHeaders(responseHeaders)
 
@@ -164,8 +164,7 @@ class SearchController @Autowired constructor(
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
         @RequestParam(
-            required = false,
-            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+            required = false, defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
         @RequestParam(required = false) sort: String?,
         @RequestParam(required = false) collectionId: String?,
@@ -185,8 +184,7 @@ class SearchController @Autowired constructor(
 
 
         // build up current uri with path and params
-        uriComponentsBuilder
-            .path(RoutePaths.SEARCH_SKILLS)
+        uriComponentsBuilder.path(RoutePaths.SEARCH_SKILLS)
             .queryParam(RoutePaths.QueryParams.FROM, from)
             .queryParam(RoutePaths.QueryParams.SIZE, size)
             .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
@@ -194,43 +192,27 @@ class SearchController @Autowired constructor(
         collectionId?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.COLLECTION_ID, it) }
 
         val countByApiSearch = richSkillEsRepo.countByApiSearch(
-            apiSearch,
-            publishStatuses,
-            pageable,
-            collectionId
+            apiSearch, publishStatuses, pageable, collectionId
         )
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", countByApiSearch.toString())
 
         PaginatedLinks(
-            pageable,
-            countByApiSearch.toInt(),
-            uriComponentsBuilder
+            pageable, countByApiSearch.toInt(), uriComponentsBuilder
         ).addToHeaders(responseHeaders)
 
         val searchHits: Stream<SearchHit<RichSkillDoc>> = richSkillEsRepo.streamByApiSearch(
-            apiSearch,
-            publishStatuses,
-            pageable,
-            collectionId
+            apiSearch, publishStatuses, pageable, collectionId
         )
-        var counter = 0
-        val objectMapper: ObjectMapper = JsonMapper.builder()
-            .findAndAddModules()
-            .build()
-        var writeValueAsString: String
+        val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
         val responseBody = StreamingResponseBody { httpResponseOutputStream: OutputStream? ->
             BufferedWriter(OutputStreamWriter(httpResponseOutputStream)).use { writer ->
                 searchHits.forEach { hit ->
-                    counter++
                     try {
-                        writeValueAsString = objectMapper.writeValueAsString(hit.content)
-                        writer.write(writeValueAsString)
-//                            logger.info("streamed record")
+                        writer.write(objectMapper.writeValueAsString(hit.content))
                         writer.flush()
-//                        logger.info("Counter: ${counter}")
                     } catch (exception: IOException) {
-                            logger.error("exception occurred while writing object to stream", exception)
+                        logger.error("exception occurred while writing object to stream", exception)
                     }
                 }
             }

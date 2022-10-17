@@ -95,71 +95,10 @@ class SearchController @Autowired constructor(
         return ResponseEntity.status(200).headers(responseHeaders).body(searchHits.map { it.content }.toList())
     }
 
-    @PostMapping(RoutePaths.SEARCH_SKILLS_2, produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun searchSkills(
-        uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
-        @RequestParam(required = false, defaultValue = "0") from: Int,
-        @RequestParam(
-            required = false,
-            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
-        ) status: Array<String>,
-        @RequestParam(required = false) sort: String?,
-        @RequestParam(required = false) collectionId: String?,
-        @RequestBody apiSearch: ApiSearch,
-        @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<List<RichSkillDoc>> {
-        if (!appConfig.allowPublicSearching && user === null) {
-            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
-        }
-
-        val publishStatuses = status.mapNotNull {
-            val status = PublishStatus.forApiValue(it)
-            if (user == null && (status == PublishStatus.Deleted || status == PublishStatus.Draft)) null else status
-        }.toSet()
-        val sortEnum = sort?.let { SkillSortEnum.forApiValue(it) }
-        val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum?.sort)
-
-        val searchHits = richSkillEsRepo.byApiSearch(
-            apiSearch,
-            publishStatuses,
-            pageable,
-            collectionId
-        )
-
-        // build up current uri with path and params
-        uriComponentsBuilder
-            .path(RoutePaths.SEARCH_SKILLS)
-            .queryParam(RoutePaths.QueryParams.FROM, from)
-            .queryParam(RoutePaths.QueryParams.SIZE, size)
-            .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
-        sort?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.SORT, it) }
-        collectionId?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.COLLECTION_ID, it) }
-
-        val countByApiSearch = richSkillEsRepo.countByApiSearch(
-            apiSearch,
-            publishStatuses,
-            pageable,
-            collectionId
-        )
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("X-Total-Count", countByApiSearch.toString())
-
-        PaginatedLinks(
-            pageable,
-            countByApiSearch.toInt(),
-            uriComponentsBuilder
-        ).addToHeaders(responseHeaders)
-
-        return ResponseEntity.status(200).headers(responseHeaders)
-            .body(searchHits.map { it.content }.toList())
-    }
-
     @Transactional(readOnly = true)
     @PostMapping(RoutePaths.SEARCH_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun searchSkillsStream(
+    fun searchSkills(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
@@ -234,7 +173,7 @@ class SearchController @Autowired constructor(
         @PathVariable uuid: String,
         @RequestBody apiSearch: ApiSearch,
         @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<List<RichSkillDoc>> {
+    ): ResponseEntity<StreamingResponseBody> {
         return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
     }
 

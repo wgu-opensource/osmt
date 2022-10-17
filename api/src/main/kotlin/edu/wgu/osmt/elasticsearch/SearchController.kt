@@ -147,12 +147,8 @@ class SearchController @Autowired constructor(
         val responseBody = StreamingResponseBody { httpResponseOutputStream: OutputStream? ->
             BufferedWriter(OutputStreamWriter(httpResponseOutputStream)).use { writer ->
                 searchHits.forEach { hit ->
-                    try {
-                        writer.write(objectMapper.writeValueAsString(hit.content))
-                        writer.flush()
-                    } catch (exception: IOException) {
-                        logger.error("exception occurred while writing object to stream", exception)
-                    }
+                    writer.write(objectMapper.writeValueAsString(hit.content))
+                    writer.flush()
                 }
             }
         }

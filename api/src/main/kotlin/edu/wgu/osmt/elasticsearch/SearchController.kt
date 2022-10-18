@@ -146,10 +146,13 @@ class SearchController @Autowired constructor(
         val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
         val responseBody = StreamingResponseBody { httpResponseOutputStream: OutputStream? ->
             BufferedWriter(OutputStreamWriter(httpResponseOutputStream)).use { writer ->
+                writer.write("[")
                 searchHits.forEach { hit ->
                     writer.write(objectMapper.writeValueAsString(hit.content))
+                    writer.write(",")
                     writer.flush()
                 }
+                writer.write("]")
             }
         }
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(responseBody)

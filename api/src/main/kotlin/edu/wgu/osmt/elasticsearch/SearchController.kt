@@ -1,7 +1,9 @@
 package edu.wgu.osmt.elasticsearch
 
+import com.fasterxml.jackson.core.JsonEncoding
+import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.json.JsonMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
@@ -29,7 +31,7 @@ import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import org.springframework.web.util.UriComponentsBuilder
 import java.io.BufferedWriter
-import java.io.IOException
+import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.io.OutputStreamWriter
 import java.util.stream.Stream
@@ -143,19 +145,24 @@ class SearchController @Autowired constructor(
         val searchHits: Stream<SearchHit<RichSkillDoc>> = richSkillEsRepo.streamByApiSearch(
             apiSearch, publishStatuses, pageable, collectionId
         )
-        val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
-        val responseBody = StreamingResponseBody { httpResponseOutputStream: OutputStream? ->
-            BufferedWriter(OutputStreamWriter(httpResponseOutputStream)).use { writer ->
-                writer.write("[")
-                searchHits.forEach { hit ->
-                    writer.write(objectMapper.writeValueAsString(hit.content))
-                    writer.write(",")
-                    writer.flush()
-                }
-                writer.write("]")
+        val objectMapper = jacksonObjectMapper()
+        val jfactory = JsonFactory()
+
+
+        val responseBody = StreamingResponseBody { response: OutputStream ->
+            val jGenerator = jfactory.createGenerator(response, JsonEncoding.UTF8)
+            jGenerator.writeStartArray()
+
+            searchHits.forEach { hit ->
+                jGenerator.writeRaw(hit.content)
+                response.flush()
             }
+
+            jGenerator.writeEndArray()
         }
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(responseBody)
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(responseBody)
     }
 
     @PostMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])

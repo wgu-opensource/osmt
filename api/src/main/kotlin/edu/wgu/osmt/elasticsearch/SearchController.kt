@@ -2,8 +2,9 @@ package edu.wgu.osmt.elasticsearch
 
 import com.fasterxml.jackson.core.JsonEncoding
 import com.fasterxml.jackson.core.JsonFactory
+import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.databind.json.JsonMapper
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
@@ -30,10 +31,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import org.springframework.web.util.UriComponentsBuilder
-import java.io.BufferedWriter
-import java.io.ByteArrayOutputStream
 import java.io.OutputStream
-import java.io.OutputStreamWriter
 import java.util.stream.Stream
 
 
@@ -145,23 +143,24 @@ class SearchController @Autowired constructor(
         val searchHits: Stream<SearchHit<RichSkillDoc>> = richSkillEsRepo.streamByApiSearch(
             apiSearch, publishStatuses, pageable, collectionId
         )
-        val objectMapper = jacksonObjectMapper()
+        val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
         val jfactory = JsonFactory()
-
+//        jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT);
 
         val responseBody = StreamingResponseBody { response: OutputStream ->
             val jGenerator = jfactory.createGenerator(response, JsonEncoding.UTF8)
+            jGenerator.codec = objectMapper
+
             jGenerator.writeStartArray()
-
             searchHits.forEach { hit ->
-                jGenerator.writeRaw(hit.content)
-                response.flush()
+                jGenerator.writeObject(hit.content)
             }
-
             jGenerator.writeEndArray()
         }
+
         return ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_STREAM_JSON)
             .body(responseBody)
     }
 

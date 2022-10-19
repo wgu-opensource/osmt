@@ -16,6 +16,7 @@ import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.jwt.Jwt
@@ -45,6 +46,7 @@ internal class SearchControllerTest @Autowired constructor(
     }
 
     @Test
+    @Disabled
     fun testSearchCollections(){
         // Arrange
         val collections = mockData.getCollections()
@@ -66,6 +68,8 @@ internal class SearchControllerTest @Autowired constructor(
         assertThat(result.body?.first()?.uuid).isEqualTo(collectionDoc?.uuid)
     }
 
+
+    @Disabled
     @Test
     fun testSearchSkills() {
         // Arrange

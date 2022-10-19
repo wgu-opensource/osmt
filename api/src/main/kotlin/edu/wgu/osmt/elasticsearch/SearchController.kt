@@ -33,6 +33,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import org.springframework.web.util.UriComponentsBuilder
 import java.io.OutputStream
 import java.util.stream.Stream
+import kotlin.streams.toList
 
 
 @Controller
@@ -145,19 +146,13 @@ class SearchController @Autowired constructor(
         )
         val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
         val jfactory = JsonFactory()
-        jfactory.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
-        jfactory.disable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT);
+        jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT);
 
         val responseBody = StreamingResponseBody { response: OutputStream ->
             val jGenerator = jfactory.createGenerator(response, JsonEncoding.UTF8)
             jGenerator.codec = objectMapper
-
-            jGenerator.writeStartArray()
-            searchHits.forEach { hit ->
-                jGenerator.writeObject(hit.content)
-            }
-            // regardless, we aren't getting here. Looks like it closes the stream and ships it
-            jGenerator.writeRaw("]")
+            jGenerator.writeObject(searchHits.toList())
         }
 
         return ResponseEntity.ok()

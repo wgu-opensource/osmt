@@ -145,8 +145,8 @@ class SearchController @Autowired constructor(
         )
         val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
         val jfactory = JsonFactory()
-//        jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
-        jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT);
+        jfactory.disable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        jfactory.disable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT);
 
         val responseBody = StreamingResponseBody { response: OutputStream ->
             val jGenerator = jfactory.createGenerator(response, JsonEncoding.UTF8)
@@ -156,7 +156,8 @@ class SearchController @Autowired constructor(
             searchHits.forEach { hit ->
                 jGenerator.writeObject(hit.content)
             }
-            jGenerator.writeEndArray()
+            // regardless, we aren't getting here. Looks like it closes the stream and ships it
+            jGenerator.writeRaw("]")
         }
 
         return ResponseEntity.ok()

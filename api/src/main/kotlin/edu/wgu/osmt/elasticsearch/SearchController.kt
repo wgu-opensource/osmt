@@ -145,27 +145,22 @@ class SearchController @Autowired constructor(
         )
         val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
         val jfactory = JsonFactory()
-        jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+//        jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
         jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT);
 
         val responseBody = StreamingResponseBody { response: OutputStream ->
             val jGenerator = jfactory.createGenerator(response, JsonEncoding.UTF8)
             jGenerator.codec = objectMapper
+
             jGenerator.writeStartArray()
-
             searchHits.forEach { hit ->
-                val value = objectMapper.writeValueAsString(hit.content)
-//                jGenerator.writeRaw(value)
                 jGenerator.writeObject(hit.content)
-                response.flush()
             }
-
             jGenerator.writeEndArray()
-            response.flush()
         }
 
         return ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_STREAM_JSON)
             .body(responseBody)
     }
 

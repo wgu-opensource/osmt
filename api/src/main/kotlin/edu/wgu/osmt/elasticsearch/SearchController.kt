@@ -156,7 +156,8 @@ class SearchController @Autowired constructor(
             searchHits.forEach { hit ->
                 jGenerator.writeObject(hit.content)
             }
-            jGenerator.writeEndArray()
+            // regardless, we aren't getting here. Looks like it closes the stream and ships it
+            jGenerator.writeRaw("]")
         }
 
         return ResponseEntity.ok()

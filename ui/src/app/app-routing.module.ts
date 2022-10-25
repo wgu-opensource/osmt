@@ -20,7 +20,7 @@ import {ManageCollectionComponent} from "./collection/detail/manage-collection.c
 import {PublishCollectionComponent} from "./collection/detail/publish-collection.component"
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component"
 import {BatchImportComponent} from "./richskill/import/batch-import.component"
-import { ActionByRoles, ButtonAction } from "./auth/auth-roles"
+import { AuthRoles, ButtonAction } from "./auth/auth-roles"
 
 
 const routes: Routes = [
@@ -33,7 +33,7 @@ const routes: Routes = [
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.SkillCreate)
+      roles: AuthRoles.instance.rolesByAction(ButtonAction.SkillCreate)
     },
     canDeactivate: [FormDirtyGuard]
   },
@@ -47,7 +47,7 @@ const routes: Routes = [
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.SkillUpdate)
+      roles: AuthRoles.instance.rolesByAction(ButtonAction.SkillUpdate)
     },
     canDeactivate: [FormDirtyGuard]
   },
@@ -57,7 +57,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     canDeactivate: [FormDirtyGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.SkillCreate)
+      roles: AuthRoles.instance.rolesByAction(ButtonAction.SkillCreate)
     },
   },
   // manage skill
@@ -75,7 +75,7 @@ const routes: Routes = [
     component: BatchImportComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.SkillCreate)
+      roles: AuthRoles.instance.rolesByAction(ButtonAction.SkillCreate)
     },
   },
 
@@ -86,7 +86,7 @@ const routes: Routes = [
     component: CollectionFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.CollectionCreate)
+      roles: AuthRoles.instance.rolesByAction(ButtonAction.CollectionCreate)
     },
     canDeactivate: [FormDirtyGuard]
   },
@@ -100,7 +100,7 @@ const routes: Routes = [
     component: CollectionFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.CollectionUpdate)
+      roles: AuthRoles.instance.rolesByAction(ButtonAction.CollectionUpdate)
     },
     canDeactivate: [FormDirtyGuard]
   },
@@ -114,7 +114,7 @@ const routes: Routes = [
     component: PublishCollectionComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.CollectionPublish)
+      roles: AuthRoles.instance.rolesByAction(ButtonAction.CollectionPublish)
     },
   },
   // find skills to add to a collection
@@ -122,7 +122,7 @@ const routes: Routes = [
     component: CollectionSkillSearchComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.CollectionSkillsUpdate)
+      roles: AuthRoles.instance.rolesByAction(ButtonAction.CollectionSkillsUpdate)
     },
   },
   // find a collection to add a selection of skills to
@@ -130,7 +130,7 @@ const routes: Routes = [
     component: AddSkillsCollectionComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.CollectionSkillsUpdate)
+      roles: AuthRoles.instance.rolesByAction(ButtonAction.CollectionSkillsUpdate)
     },
   },
   // collections library

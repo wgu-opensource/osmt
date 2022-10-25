@@ -10,11 +10,17 @@ import {AppComponent} from "./app.component"
 import {AppConfig} from "./app.config";
 import {AuthService} from "./auth/auth-service";
 import {AuthGuard} from "./auth/auth.guard";
+import {AuthRoles} from "./auth/auth-roles";
 
 export function initializeApp(
   appConfig: AppConfig,
   authService: AuthService
 ): () => void {
+  AuthRoles.instance.init({
+    isEnabled: true,
+    admin_role: "ROLE_Osmt_Admin",
+    curator_role: "ROLE_Osmt_Curator"
+  })
   // AppConfig.settings is initialized lazily (on the next line), but authService must be initialized sooner.
   authService.init()
   return () => appConfig.load()

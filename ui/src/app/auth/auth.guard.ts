@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core"
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router"
-import {ENABLE_ROLES} from "./auth-roles"
+import {AuthRoles} from "./auth-roles"
 import {AuthService} from "./auth-service"
 import {ToastService} from "../toast/toast.service"
 
@@ -18,7 +18,7 @@ export class AuthGuard implements CanActivate {
       const requiredRoles = route.data?.roles
       if (requiredRoles) {
         const userRoles = this.authService.getRole()?.split(",")
-        if (!ENABLE_ROLES || this.authService.hasRole(requiredRoles, userRoles)) {
+        if (!AuthRoles.instance.isEnabled || this.authService.hasRole(requiredRoles, userRoles)) {
           return true
         }
         this.toastService.showToast("Whoops!", "You need permission to perform this action. If this seems to be an error, please contact your OSMT administrator.")

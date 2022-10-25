@@ -16,7 +16,7 @@ import {
   PaginatedSkills
 } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
-import {ButtonAction, OSMT_ADMIN} from "../../src/app/auth/auth-roles"
+import {ButtonAction} from "../../src/app/auth/auth-roles"
 import {
   createMockBatchResult,
   createMockCollection,
@@ -77,7 +77,7 @@ export class AuthServiceStub {  // TODO consider using real class
     return "fake-token"
   }
   public getRole(): string | null {
-    return OSMT_ADMIN
+    return "ROLE_Osmt_Admin"
   }
   public isAuthenticated(): boolean {
     return AuthServiceData.authenticatedFlag

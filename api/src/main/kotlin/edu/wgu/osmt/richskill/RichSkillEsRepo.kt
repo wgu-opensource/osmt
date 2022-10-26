@@ -44,7 +44,8 @@ interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
         pageable: Pageable = Pageable.unpaged(),
         collectionId: String? = null
-    ): Stream<SearchHit<RichSkillDoc>>
+
+    ): SearchHitsIterator<RichSkillDoc>
     fun countByApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
@@ -234,11 +235,12 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         publishStatus: Set<PublishStatus>,
         pageable: Pageable,
         collectionId: String?
-    ): Stream<SearchHit<RichSkillDoc>> {
+
+    ): SearchHitsIterator<RichSkillDoc> {
         val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
         val searchHitsIterator: SearchHitsIterator<RichSkillDoc> = elasticSearchTemplate.searchForStream(nsq.build(), RichSkillDoc::class.java)
 
-        return searchHitsIterator.stream()
+        return searchHitsIterator
     }
 
     override fun countByApiSearch(

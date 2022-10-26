@@ -22,6 +22,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.elasticsearch.core.SearchHit
+import org.springframework.data.elasticsearch.core.SearchHitsIterator
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
@@ -141,7 +142,8 @@ class SearchController @Autowired constructor(
             pageable, countByApiSearch.toInt(), uriComponentsBuilder
         ).addToHeaders(responseHeaders)
 
-        val searchHits: Stream<SearchHit<RichSkillDoc>> = richSkillEsRepo.streamByApiSearch(
+
+        val searchHits: SearchHitsIterator<RichSkillDoc> = richSkillEsRepo.streamByApiSearch(
             apiSearch, publishStatuses, pageable, collectionId
         )
         val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
@@ -152,7 +154,7 @@ class SearchController @Autowired constructor(
         val responseBody = StreamingResponseBody { response: OutputStream ->
             val jGenerator = jfactory.createGenerator(response, JsonEncoding.UTF8)
             jGenerator.codec = objectMapper
-            jGenerator.writeObject(searchHits.toList())
+            jGenerator.writeObject(searchHits.asSequence().map { it.content })
         }
 
         return ResponseEntity.ok()

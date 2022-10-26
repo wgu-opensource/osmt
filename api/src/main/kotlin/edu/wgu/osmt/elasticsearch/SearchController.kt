@@ -21,7 +21,6 @@ import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.data.elasticsearch.core.SearchHitsIterator
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -33,8 +32,6 @@ import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import org.springframework.web.util.UriComponentsBuilder
 import java.io.OutputStream
-import java.util.stream.Stream
-import kotlin.streams.toList
 
 
 @Controller

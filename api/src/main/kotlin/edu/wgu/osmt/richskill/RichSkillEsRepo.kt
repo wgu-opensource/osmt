@@ -236,9 +236,8 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
     ): SearchHitsIterator<RichSkillDoc> {
         val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
-        val searchHitsIterator: SearchHitsIterator<RichSkillDoc> = elasticSearchTemplate.searchForStream(nsq.build(), RichSkillDoc::class.java)
 
-        return searchHitsIterator
+        return elasticSearchTemplate.searchForStream(nsq.build(), RichSkillDoc::class.java)
     }
 
     override fun countByApiSearch(

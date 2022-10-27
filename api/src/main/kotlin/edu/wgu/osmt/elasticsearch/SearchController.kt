@@ -33,7 +33,6 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import org.springframework.web.util.UriComponentsBuilder
 import java.io.OutputStream
 
-
 @Controller
 @Transactional
 class SearchController @Autowired constructor(
@@ -43,9 +42,6 @@ class SearchController @Autowired constructor(
     val jobCodeEsRepo: JobCodeEsRepo,
     val appConfig: AppConfig
 ) {
-
-    val logger: Logger = LoggerFactory.getLogger(SearchController::class.java)
-
     @PostMapping(RoutePaths.SEARCH_COLLECTIONS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCollections(

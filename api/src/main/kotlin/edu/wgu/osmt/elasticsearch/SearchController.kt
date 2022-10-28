@@ -21,6 +21,7 @@ import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.data.elasticsearch.core.SearchHitsIterator
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -136,7 +137,7 @@ class SearchController @Autowired constructor(
         ).addToHeaders(responseHeaders)
 
 
-        val searchHits: SearchHitsIterator<RichSkillDoc> = richSkillEsRepo.streamByApiSearch(
+        val searchHits: Sequence<SearchHit<RichSkillDoc>> = richSkillEsRepo.streamByApiSearch(
             apiSearch, publishStatuses, pageable, collectionId
         )
         val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()

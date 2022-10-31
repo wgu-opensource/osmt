@@ -1,0 +1,30 @@
+# This workflow will build maven releases
+
+name: Maven version release
+
+on:
+  push:
+    branches: release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]')"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Release
+        uses: qcastel/github-actions-maven-release@master
+        env:
+          JAVA_HOME: /usr/lib/jvm/java-11-openjdk/
+        with:
+          git-release-bot-name: "WGU-Opensource-Bot"
+          git-release-bot-email: "opensource@wgu.edu"
+          ssh-private-key:
+
+          version-minor: true
+
+          gpg-enabled: true
+          gpg-key-id: ${{ secrets.MAVEN_CENTRAL_GPG_KEY_ID }}
+          gpg-key: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}

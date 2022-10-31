@@ -18,11 +18,8 @@ import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.elasticsearch.core.SearchHit
-import org.springframework.data.elasticsearch.core.SearchHitsIterator
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
@@ -33,6 +30,7 @@ import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import org.springframework.web.util.UriComponentsBuilder
 import java.io.OutputStream
+import edu.wgu.osmt.config.SEARCH_BY_API_THRESHOLD
 
 @Controller
 @Transactional
@@ -129,6 +127,7 @@ class SearchController @Autowired constructor(
         val countByApiSearch = richSkillEsRepo.countByApiSearch(
             apiSearch, publishStatuses, pageable, collectionId
         )
+
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", countByApiSearch.toString())
 
@@ -137,9 +136,6 @@ class SearchController @Autowired constructor(
         ).addToHeaders(responseHeaders)
 
 
-        val searchHits: Sequence<SearchHit<RichSkillDoc>> = richSkillEsRepo.streamByApiSearch(
-            apiSearch, publishStatuses, pageable, collectionId
-        )
         val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
         val jfactory = JsonFactory()
         jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
@@ -148,13 +144,29 @@ class SearchController @Autowired constructor(
         val responseBody = StreamingResponseBody { response: OutputStream ->
             val jGenerator = jfactory.createGenerator(response, JsonEncoding.UTF8)
             jGenerator.codec = objectMapper
-            jGenerator.writeObject(searchHits.asSequence().map { it.content })
+            //Will use streamByApiSearch if searchHits results are greater than 10k
+            if (countByApiSearch >= SEARCH_BY_API_THRESHOLD) {
+                val searchHits: Sequence<SearchHit<RichSkillDoc>> = richSkillEsRepo.streamByApiSearch(
+                    apiSearch, publishStatuses, pageable, collectionId
+                )
+                jGenerator.writeObject(searchHits.asSequence().map { it.content })
+            } else {
+                val searchHits = richSkillEsRepo.byApiSearch(
+                    apiSearch,
+                    publishStatuses,
+                    pageable,
+                    collectionId
+                )
+                jGenerator.writeObject(searchHits)
+            }
         }
-
         return ResponseEntity.ok()
             .contentType(MediaType.APPLICATION_STREAM_JSON)
+            .headers(responseHeaders)
             .body(responseBody)
     }
+
+
 
     @PostMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody

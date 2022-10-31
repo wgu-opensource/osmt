@@ -248,9 +248,13 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         collectionId: String?
 
     ): Sequence<SearchHit<RichSkillDoc>> {
-        val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
+
+        val nsq: NativeSearchQueryBuilder = buildQuery(PageRequest.of(0,pageable.pageSize), publishStatus, apiSearch, collectionId)
 
         val searchResults = elasticSearchTemplate.searchForStream(nsq.build(), RichSkillDoc::class.java)
+        val searchResultsSize = searchResults.totalHits
+        val searchHitsToSkip = searchResultsSize
+
 
         return searchResults.asSequence()
     }

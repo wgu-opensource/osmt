@@ -1,10 +1,10 @@
 # This workflow will build maven releases
 
-name: Maven version release
+name: Release to Maven Central
 
 on:
   push:
-    branches: release
+    branches: release-*
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
         with:
           git-release-bot-name: "WGU-Opensource-Bot"
           git-release-bot-email: "opensource@wgu.edu"
-          ssh-private-key:
+          ssh-private-key: ${{ secrets.WGU_OPENSOURCE_SSH_PRIVATE_KEY }}
 
           version-minor: true
 

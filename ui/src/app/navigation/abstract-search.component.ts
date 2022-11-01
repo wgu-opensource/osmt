@@ -16,6 +16,7 @@ export class AbstractSearchComponent {
   canCollectionCreate: boolean = false
   canCollectionPublish: boolean = false
   canCollectionSkillsUpdate: boolean = false
+  canExportLibrary: boolean = false
 
   constructor(protected searchService: SearchService, protected route: ActivatedRoute, protected  authService: AuthService) {
     this.searchService.searchQuery$.subscribe(apiSearch => {
@@ -41,6 +42,7 @@ export class AbstractSearchComponent {
     this.canCollectionCreate = this.authService.isEnabledByRoles(ButtonAction.CollectionCreate);
     this.canCollectionPublish = this.authService.isEnabledByRoles(ButtonAction.CollectionPublish);
     this.canCollectionSkillsUpdate = this.authService.isEnabledByRoles(ButtonAction.CollectionSkillsUpdate);
+    this.canExportLibrary = this.authService.isEnabledByRoles(ButtonAction.LibraryExport);
   }
 
   clearSearch(): boolean {

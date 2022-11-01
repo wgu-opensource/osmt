@@ -65,7 +65,12 @@
           </svg>
           <span class="m-button-x-text">Batch Import RSD<span class="t-type-lowercase">s</span></span>
         </a>
-
+        <button class="m-button" type="button" (click)=onDownloadCsv() *ngIf="canExportLibrary">
+          <svg class="m-button-x-icon t-icon">
+            <use xlink:href="/assets/images/svg-defs.svg#icon-download"></use>
+          </svg>
+          <span class="m-button-x-text">Export RSD Library<span class="t-type-lowercase"></span></span>
+        </button>
       </div>
       <div>
         <a class="m-buttonText m-buttonText-onBrand" routerLink="/search">

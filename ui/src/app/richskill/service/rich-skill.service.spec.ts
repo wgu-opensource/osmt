@@ -306,6 +306,23 @@ describe("RichSkillService", () => {
     })
   })
 
+  it("libraryExport should return", () => {
+    RouterData.commands = []
+
+    // Act
+    const result$ = testService.libraryExport()
+
+    // Assert
+    result$.subscribe( (data: string) => {
+      expect(RouterData.commands).toEqual([]) // No Errors
+    })
+
+    const req = httpTestingController.expectOne("/api/export/library")
+    expect(req.request.method).toEqual("GET")
+    expect(req.request.headers.get("Accept")).toEqual("text/csv")
+    req.flush(result$)
+  })
+
   it("publishSkillsWithResult should return", fakeAsync(() => {
     // Arrange
     RouterData.commands = []

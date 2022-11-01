@@ -4,7 +4,7 @@ name: Release to Maven Central
 
 on:
   push:
-    branches: release-*
+    branches: 'release-**'
 
 jobs:
   build:

@@ -13,19 +13,22 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+
+      - name: Build and Test
+        uses: qcastel/github-actions-maven-cmd@master
+        with:
+          maven-args: 'clean install'
+
       - name: Release
         uses: qcastel/github-actions-maven-release@v1.12.37
         env:
           JAVA_HOME: /usr/lib/jvm/java-11-openjdk/
         with:
-          git-release-bot-name: "WGU-Opensource-Bot"
-          git-release-bot-email: "opensource@wgu.edu"
+          git-release-bot-name: 'WGU-Opensource-Bot'
+          git-release-bot-email: 'opensource@wgu.edu'
           ssh-private-key: ${{ secrets.WGU_OPENSOURCE_SSH_PRIVATE_KEY }}
-
           version-minor: true
-
-          maven-args: "-P sign-with-gpg-for-release"
-
+          maven-args: '-P sign-with-gpg-for-release'
           gpg-enabled: true
           gpg-key-id: ${{ secrets.MAVEN_CENTRAL_GPG_KEY_ID }}
           gpg-key: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}

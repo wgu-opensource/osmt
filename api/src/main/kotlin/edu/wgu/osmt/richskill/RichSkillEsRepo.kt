@@ -26,6 +26,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQuery
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
+import java.util.stream.Stream
 
 
 const val collectionsUuid = "collections.uuid"
@@ -45,7 +46,7 @@ interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
         pageable: Pageable = Pageable.unpaged(),
         collectionId: String? = null
 
-    ): Sequence<SearchHit<RichSkillDoc>>
+    ): Stream<SearchHit<RichSkillDoc>>
     fun countByApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
@@ -247,16 +248,11 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         pageable: Pageable,
         collectionId: String?
 
-    ): Sequence<SearchHit<RichSkillDoc>> {
+    ): Stream<SearchHit<RichSkillDoc>> {
 
         val nsq: NativeSearchQueryBuilder = buildQuery(PageRequest.of(0,pageable.pageSize), publishStatus, apiSearch, collectionId)
 
-        val searchResults = elasticSearchTemplate.searchForStream(nsq.build(), RichSkillDoc::class.java)
-        val searchResultsSize = searchResults.totalHits
-        val searchHitsToSkip = searchResultsSize
-
-
-        return searchResults.asSequence()
+        return elasticSearchTemplate.searchForStream(nsq.build(), RichSkillDoc::class.java).stream()
     }
 
     override fun countByApiSearch(

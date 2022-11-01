@@ -5,6 +5,9 @@ import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.json.JsonMapper
+import com.opencsv.CSVWriter
+import com.opencsv.bean.StatefulBeanToCsv
+import com.opencsv.bean.StatefulBeanToCsvBuilder
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
@@ -29,8 +32,11 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import org.springframework.web.util.UriComponentsBuilder
+import java.io.FileWriter
 import java.io.OutputStream
-import edu.wgu.osmt.config.SEARCH_BY_API_THRESHOLD
+import java.io.StringWriter
+import java.util.stream.Stream
+
 
 @Controller
 @Transactional
@@ -89,10 +95,71 @@ class SearchController @Autowired constructor(
         return ResponseEntity.status(200).headers(responseHeaders).body(searchHits.map { it.content }.toList())
     }
 
-    @Transactional(readOnly = true)
     @PostMapping(RoutePaths.SEARCH_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSkills(
+        uriComponentsBuilder: UriComponentsBuilder,
+        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = "0") from: Int,
+        @RequestParam(
+            required = false,
+            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+        ) status: Array<String>,
+        @RequestParam(required = false) sort: String?,
+        @RequestParam(required = false) collectionId: String?,
+        @RequestBody apiSearch: ApiSearch,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<List<RichSkillDoc>> {
+        if (!appConfig.allowPublicSearching && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+
+        val publishStatuses = status.mapNotNull {
+            val status = PublishStatus.forApiValue(it)
+            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+        }.toSet()
+        val sortEnum = sort?.let{SkillSortEnum.forApiValue(it)}
+        val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum?.sort)
+
+        val searchHits = richSkillEsRepo.byApiSearch(
+            apiSearch,
+            publishStatuses,
+            pageable,
+            collectionId
+        )
+
+        // build up current uri with path and params
+        uriComponentsBuilder
+            .path(RoutePaths.SEARCH_SKILLS)
+            .queryParam(RoutePaths.QueryParams.FROM, from)
+            .queryParam(RoutePaths.QueryParams.SIZE, size)
+            .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
+        sort?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.SORT, it) }
+        collectionId?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.COLLECTION_ID, it) }
+
+        val countByApiSearch = richSkillEsRepo.countByApiSearch(
+            apiSearch,
+            publishStatuses,
+            pageable,
+            collectionId
+        )
+        val responseHeaders = HttpHeaders()
+        responseHeaders.add("X-Total-Count", countByApiSearch.toString())
+
+        PaginatedLinks(
+            pageable,
+            searchHits.totalHits.toInt(),
+            uriComponentsBuilder
+        ).addToHeaders(responseHeaders)
+
+        return ResponseEntity.status(200).headers(responseHeaders)
+            .body(searchHits.map { it.content }.toList())
+    }
+
+    @Transactional(readOnly = true)
+    @PostMapping(RoutePaths.SCROLL_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun scrollSkills(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
@@ -116,56 +183,40 @@ class SearchController @Autowired constructor(
         val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum?.sort)
 
 
-        // build up current uri with path and params
-        uriComponentsBuilder.path(RoutePaths.SEARCH_SKILLS)
-            .queryParam(RoutePaths.QueryParams.FROM, from)
-            .queryParam(RoutePaths.QueryParams.SIZE, size)
-            .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
-        sort?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.SORT, it) }
-        collectionId?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.COLLECTION_ID, it) }
-
-        val countByApiSearch = richSkillEsRepo.countByApiSearch(
-            apiSearch, publishStatuses, pageable, collectionId
-        )
-
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("X-Total-Count", countByApiSearch.toString())
-
-        PaginatedLinks(
-            pageable, countByApiSearch.toInt(), uriComponentsBuilder
-        ).addToHeaders(responseHeaders)
-
-
         val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
+        val searchHits: Stream<SearchHit<RichSkillDoc>> = richSkillEsRepo
+            .streamByApiSearch(apiSearch, publishStatuses, pageable, collectionId)
+
         val jfactory = JsonFactory()
         jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
-        jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT);
+        jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT)
 
         val responseBody = StreamingResponseBody { response: OutputStream ->
             val jGenerator = jfactory.createGenerator(response, JsonEncoding.UTF8)
             jGenerator.codec = objectMapper
-            //Will use streamByApiSearch if searchHits results are greater than 10k
-            if (countByApiSearch >= SEARCH_BY_API_THRESHOLD) {
-                val searchHits: Sequence<SearchHit<RichSkillDoc>> = richSkillEsRepo.streamByApiSearch(
-                    apiSearch, publishStatuses, pageable, collectionId
-                )
-                jGenerator.writeObject(searchHits.asSequence().map { it.content })
-            } else {
-                val searchHits = richSkillEsRepo.byApiSearch(
-                    apiSearch,
-                    publishStatuses,
-                    pageable,
-                    collectionId
-                )
-                jGenerator.writeObject(searchHits)
-            }
+
+            jGenerator.writeObject( writeCsvFromBean(searchHits.map { it.content }) )
         }
         return ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_STREAM_JSON)
-            .headers(responseHeaders)
+            .contentType(MediaType.TEXT_PLAIN)
             .body(responseBody)
     }
 
+
+    private fun writeCsvFromBean(data : Stream<RichSkillDoc>): String? {
+
+        val sw = StringWriter()
+        sw.use { writer ->
+            val sbc: StatefulBeanToCsv<RichSkillDoc> = StatefulBeanToCsvBuilder<RichSkillDoc>(writer)
+                .withQuotechar('\'')
+                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+                .build()
+            sbc.write(data)
+        }
+
+        return sw.toString()
+
+    }
 
 
     @PostMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -182,7 +233,7 @@ class SearchController @Autowired constructor(
         @PathVariable uuid: String,
         @RequestBody apiSearch: ApiSearch,
         @AuthenticationPrincipal user: Jwt?
-    ): ResponseEntity<StreamingResponseBody> {
+    ): HttpEntity<List<RichSkillDoc>> {
         return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
     }
 

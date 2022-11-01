@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core"
-import {HttpClient, HttpHeaders} from "@angular/common/http"
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http"
 import {Observable} from "rxjs"
 import {ApiAuditLog, ApiSkill, ApiSortOrder, IAuditLog, ISkill} from "../ApiSkill"
 import {map, share} from "rxjs/operators"
@@ -147,6 +147,23 @@ export class RichSkillService extends AbstractService {
         const skills = body?.map(skill => skill) || []
         return new PaginatedSkills(skills, !isNaN(totalCount) ? totalCount : skills.length)
       }))
+  }
+
+  libraryExport(): Observable<string> {
+
+    const errorMsg = "Could not export to CSV"
+
+    return this.httpClient
+      .get(this.buildUrl("api/export/library"), {
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "text/csv"
+          }
+        )),
+        responseType: "text",
+        observe: "response"
+      })
+      .pipe(share())
+      .pipe(map((response) => this.safeUnwrapBody(response.body, errorMsg)))
   }
 
   publishSkillsWithResult(

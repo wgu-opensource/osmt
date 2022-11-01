@@ -21,6 +21,7 @@ import {PublishCollectionComponent} from "./collection/detail/publish-collection
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component"
 import {BatchImportComponent} from "./richskill/import/batch-import.component"
 import { ActionByRoles, ButtonAction } from "./auth/auth-roles"
+import {CommoncontrolsComponent} from "./navigation/commoncontrols.component"
 
 
 const routes: Routes = [

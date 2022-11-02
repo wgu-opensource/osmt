@@ -42,8 +42,8 @@
     </properties>
 
     <scm>
-        <connection>scm:git:git://github.com/wgu-opensource/osmt.git</connection>
-        <developerConnection>scm:git:ssh://github.com:wgu-opensource/osmt.git</developerConnection>
+        <connection>scm:git:ssh://git@github.com/wgu-opensource/osmt.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/wgu-opensource/osmt.git</developerConnection>
         <url>https://github.com/wgu-opensource/osmt.git</url>
     </scm>
 
@@ -103,6 +103,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <goals>install</goals>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>

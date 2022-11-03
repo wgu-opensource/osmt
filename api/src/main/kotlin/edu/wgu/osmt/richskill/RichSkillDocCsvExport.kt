@@ -25,7 +25,6 @@ class RichSkillDocCsvExport(
             CsvColumn("Alignments") { it.alignments.joinToString(listDelimiter) },
             CsvColumn("Publish Date") { it.publishDate.toString()},
             CsvColumn("Archive Date") { it.archiveDate.toString()},
-
         )
 
         return columns

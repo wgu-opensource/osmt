@@ -19,10 +19,7 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.richskill.RichSkillAndCollections
-import edu.wgu.osmt.richskill.RichSkillCsvExport
-import edu.wgu.osmt.richskill.RichSkillDoc
-import edu.wgu.osmt.richskill.RichSkillEsRepo
+import edu.wgu.osmt.richskill.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.http.*
@@ -38,6 +35,7 @@ import java.io.FileWriter
 import java.io.OutputStream
 import java.io.StringWriter
 import java.util.stream.Stream
+import kotlin.streams.toList
 
 
 @Controller
@@ -159,7 +157,7 @@ class SearchController @Autowired constructor(
     }
 
     @Transactional(readOnly = true)
-    @PostMapping(RoutePaths.SCROLL_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.SCROLL_SKILLS, produces = ["text/csv"])
     @ResponseBody
     fun scrollSkills(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -197,7 +195,7 @@ class SearchController @Autowired constructor(
             val jGenerator = jfactory.createGenerator(response, JsonEncoding.UTF8)
             jGenerator.codec = objectMapper
 
-            jGenerator.writeObject( writeCsvFromBean(searchHits.map { it.content }) )
+            jGenerator.writeObject( RichSkillDocCsvExport(appConfig).toCsv(searchHits.map { it.content }.toList()) )
         }
         return ResponseEntity.ok()
             .contentType(MediaType.TEXT_PLAIN)

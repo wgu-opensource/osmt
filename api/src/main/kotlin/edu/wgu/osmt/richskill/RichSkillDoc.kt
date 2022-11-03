@@ -28,18 +28,15 @@ data class RichSkillDoc(
     @Nullable
     @get:JsonIgnore
     @get:JsonProperty("db_id")
-    @CsvBindByName
     val id: Long,
 
     @Id
     @Field(type = Keyword)
     @get:JsonProperty
-    @CsvBindByName
     val uuid: String,
 
     @Field(type = Keyword)
     @get:JsonProperty("id")
-    @CsvBindByName
     val uri: String,
 
     @MultiField(
@@ -51,7 +48,6 @@ data class RichSkillDoc(
         ]
     )
     @get:JsonProperty("skillName")
-    @CsvBindByName
     val name: String,
 
     @MultiField(
@@ -63,7 +59,6 @@ data class RichSkillDoc(
         ]
     )
     @get:JsonProperty("skillStatement")
-    @CsvBindByName
     val statement: String,
 
     @Nullable
@@ -76,7 +71,6 @@ data class RichSkillDoc(
         ]
     )
     @get:JsonProperty
-    @CsvBindByName
     val category: String? = null,
 
     @Nullable
@@ -89,12 +83,10 @@ data class RichSkillDoc(
         ]
     )
     @get:JsonProperty("author")
-    @CsvBindByName
     val author: String? = null,
 
     @Field(type = Keyword)
     @get:JsonProperty("status")
-    @CsvBindByName
     val publishStatus: PublishStatus,
 
     @MultiField(
@@ -106,12 +98,10 @@ data class RichSkillDoc(
         ]
     )
     @get:JsonProperty("keywords")
-    @CsvBindByName
     val searchingKeywords: List<String> = listOf(),
 
     @Field(type = Nested)
     @get:JsonProperty("occupations")
-    @CsvBindByName
     val jobCodes: List<JobCode> = listOf(),
 
     @MultiField(
@@ -123,7 +113,6 @@ data class RichSkillDoc(
         ]
     )
     @get:JsonIgnore
-    @CsvBindByName
     val standards: List<String> = listOf(),
 
     @MultiField(
@@ -135,7 +124,6 @@ data class RichSkillDoc(
         ]
     )
     @get:JsonIgnore
-    @CsvBindByName
     val certifications: List<String> = listOf(),
 
     @MultiField(
@@ -147,7 +135,6 @@ data class RichSkillDoc(
         ]
     )
     @get:JsonIgnore
-    @CsvBindByName
     val employers: List<String> = listOf(),
 
     @MultiField(
@@ -159,22 +146,18 @@ data class RichSkillDoc(
         ]
     )
     @get:JsonIgnore
-    @CsvBindByName
     val alignments: List<String> = listOf(),
 
     @Field(type = Nested)
     @get:JsonIgnore
-    @CsvBindByName
     val collections: List<CollectionDoc> = listOf(),
 
     @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     @get:JsonProperty("publishDate")
-    @CsvBindByName
     val publishDate: LocalDateTime? = null,
 
     @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     @get:JsonProperty("archiveDate")
-    @CsvBindByName
     val archiveDate: LocalDateTime? = null
 ) {
     companion object {

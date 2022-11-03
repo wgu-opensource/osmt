@@ -19,6 +19,8 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordTypeEnum
+import edu.wgu.osmt.richskill.RichSkillAndCollections
+import edu.wgu.osmt.richskill.RichSkillCsvExport
 import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.springframework.beans.factory.annotation.Autowired

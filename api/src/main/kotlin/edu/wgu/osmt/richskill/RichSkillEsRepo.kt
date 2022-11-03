@@ -250,7 +250,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
     ): Stream<SearchHit<RichSkillDoc>> {
 
-        val nsq: NativeSearchQueryBuilder = buildQuery(PageRequest.of(0,pageable.pageSize), publishStatus, apiSearch, collectionId)
+        val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
 
         return elasticSearchTemplate.searchForStream(nsq.build(), RichSkillDoc::class.java).stream()
     }

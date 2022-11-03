@@ -1,10 +1,7 @@
 package edu.wgu.osmt.elasticsearch
 
-import com.fasterxml.jackson.core.JsonEncoding
 import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.json.JsonMapper
 import com.opencsv.CSVWriter
 import com.opencsv.bean.StatefulBeanToCsv
 import com.opencsv.bean.StatefulBeanToCsvBuilder
@@ -21,6 +18,7 @@ import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -29,10 +27,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import org.springframework.web.util.UriComponentsBuilder
-import java.io.FileWriter
-import java.io.OutputStream
 import java.io.StringWriter
 import java.util.stream.Stream
 import kotlin.streams.toList
@@ -161,16 +156,13 @@ class SearchController @Autowired constructor(
     @ResponseBody
     fun scrollSkills(
         uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
-        @RequestParam(required = false, defaultValue = "0") from: Int,
         @RequestParam(
             required = false, defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
         @RequestParam(required = false) sort: String?,
-        @RequestParam(required = false) collectionId: String?,
         @RequestBody apiSearch: ApiSearch,
         @AuthenticationPrincipal user: Jwt?
-    ): ResponseEntity<StreamingResponseBody> {
+    ): ResponseEntity<*> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
@@ -179,26 +171,24 @@ class SearchController @Autowired constructor(
             val status = PublishStatus.forApiValue(it)
             if (user == null && (status == PublishStatus.Deleted || status == PublishStatus.Draft)) null else status
         }.toSet()
-        val sortEnum = sort?.let { SkillSortEnum.forApiValue(it) }
-        val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum?.sort)
+        val pageable = PageRequest.of(0, 1)
+        val responseHeaders = HttpHeaders()
+        responseHeaders.add("Content-Type", "text/csv")
 
 
-        val objectMapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
         val searchHits: Stream<SearchHit<RichSkillDoc>> = richSkillEsRepo
-            .streamByApiSearch(apiSearch, publishStatuses, pageable, collectionId)
+            .streamByApiSearch(apiSearch, publishStatuses, pageable, null)
 
-        val jfactory = JsonFactory()
-        jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
-        jfactory.enable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT)
+        val jFactory = JsonFactory()
+        jFactory.enable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+        jFactory.enable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT)
 
-        val responseBody = StreamingResponseBody { response: OutputStream ->
-            val jGenerator = jfactory.createGenerator(response, JsonEncoding.UTF8)
-            jGenerator.codec = objectMapper
 
-            jGenerator.writeObject( RichSkillDocCsvExport(appConfig).toCsv(searchHits.map { it.content }.toList()) )
-        }
+        val searchHitsAsList = searchHits.toList()
+        val responseBody = RichSkillDocCsvExport(appConfig).toCsv(searchHitsAsList.map { it.content })
+
         return ResponseEntity.ok()
-            .contentType(MediaType.TEXT_PLAIN)
+            .headers(responseHeaders)
             .body(responseBody)
     }
 

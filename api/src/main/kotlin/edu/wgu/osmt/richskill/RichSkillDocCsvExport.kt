@@ -14,11 +14,12 @@ class RichSkillDocCsvExport(
     override fun columnTranslations(data: List<RichSkillDoc>): Array<CsvColumn<RichSkillDoc>> {
         val columns = arrayOf(
             CsvColumn<RichSkillDoc>("RSD Name") { it.name },
+            CsvColumn("Author") { it.author.toString() },
             CsvColumn("Skill Statement") { it.statement },
             CsvColumn("Category") { it.category.toString() },
             CsvColumn("Publish Status") { it.publishStatus.toString() },
             CsvColumn("Keywords") { it.searchingKeywords.joinToString(listDelimiter) },
-            CsvColumn("Job Codes") { it.jobCodes.map{jobCode ->  jobCode.toString()}.joinToString { listDelimiter }},
+            CsvColumn("Job Codes") { prepareJobCodePart(it.jobCodes, JobCodeBreakout::jobRoleCode) },
             CsvColumn("Standards") { it.standards.joinToString(listDelimiter) },
             CsvColumn("Certifications") { it.certifications.joinToString(listDelimiter) },
             CsvColumn("Employers") { it.employers.joinToString(listDelimiter) },
@@ -29,5 +30,16 @@ class RichSkillDocCsvExport(
 
         return columns
     }
+
+    private fun prepareJobCodePart(
+        codes: List<JobCode>,
+        partTransformation: (String) -> String?
+    ): String = codes
+        .asSequence()
+        .map { it.code }
+        .map(partTransformation)
+        .filterNotNull()
+        .distinct()
+        .joinToString(listDelimiter)
 
 }

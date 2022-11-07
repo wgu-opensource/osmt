@@ -65,7 +65,27 @@ data class RichSkillDescriptor(
                 updateDate = now
             )
         }
+
+        fun fromRichSkillDoc(richSkillDoc: RichSkillDoc) : RichSkillDescriptor {
+            val now = LocalDateTime.now(ZoneOffset.UTC)
+
+            return RichSkillDescriptor(
+                id = richSkillDoc.id,
+                uuid = richSkillDoc.uuid,
+                name = richSkillDoc.name,
+                statement = richSkillDoc.statement,
+                creationDate = now,
+                updateDate = now,
+                category = Keyword(creationDate = now, id = 0,type =  KeywordTypeEnum.Category, updateDate = now, value = richSkillDoc.category),
+                keywords = richSkillDoc.searchingKeywords.map { Keyword(creationDate = now, id = 0,type =  KeywordTypeEnum.Category, updateDate = now, value = it) },
+                jobCodes = richSkillDoc.jobCodes,
+                publishDate = richSkillDoc.publishDate,
+                archiveDate = richSkillDoc.archiveDate
+            )
+        }
     }
+
+
 }
 
 fun RichSkillDescriptor.diff(old: RichSkillDescriptor?): List<Change> {

@@ -9,6 +9,7 @@ import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
@@ -29,6 +30,9 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 import java.io.StringWriter
+import java.time.LocalDateTime
+import java.util.Collections
+import java.util.UUID
 import java.util.stream.Stream
 import kotlin.streams.toList
 
@@ -184,8 +188,12 @@ class SearchController @Autowired constructor(
         jFactory.enable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT)
 
 
-        val searchHitsAsList = searchHits.toList()
-        val responseBody = RichSkillDocCsvExport(appConfig).toCsv(searchHitsAsList.map { it.content })
+        val collection: Set<Collection> = HashSet(listOf(
+            Collection(creationDate = LocalDateTime.now(), id = 0, name = "name", updateDate = LocalDateTime.now(), uuid = UUID.randomUUID().toString())))
+
+        val responseBody = RichSkillCsvExport(appConfig).toCsv(
+            searchHits.map { RichSkillAndCollections(RichSkillDescriptor.fromRichSkillDoc(it.content), collection) }.toList()
+        )
 
         return ResponseEntity.ok()
             .headers(responseHeaders)

@@ -1,8 +1,8 @@
 package edu.wgu.osmt.csv
 
 import com.opencsv.CSVWriter
-import java.io.StringWriter
-import java.io.Writer
+import java.io.*
+
 
 abstract class CsvResource<T>(val debugName: String) {
 

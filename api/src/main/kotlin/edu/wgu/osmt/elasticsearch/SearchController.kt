@@ -8,12 +8,14 @@ import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.config.SEARCH_BY_API_THRESHOLD
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.*
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.http.*
@@ -153,7 +155,7 @@ class SearchController @Autowired constructor(
     }
 
     @Transactional(readOnly = true)
-    @PostMapping(RoutePaths.EXPORT_SKILLS, produces = ["text/csv"])
+    @GetMapping(RoutePaths.EXPORT_SKILLS, produces = ["text/csv"])
     @ResponseBody
     fun scrollSkills(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -168,13 +170,23 @@ class SearchController @Autowired constructor(
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
 
+
+
         val publishStatuses = status.mapNotNull {
             val status = PublishStatus.forApiValue(it)
             if (user == null && (status == PublishStatus.Deleted || status == PublishStatus.Draft)) null else status
         }.toSet()
-        val pageable = PageRequest.of(0, 1)
+        val pageable = PageRequest.of(0, SEARCH_BY_API_THRESHOLD)
         val responseHeaders = HttpHeaders()
         responseHeaders.add("Content-Type", "text/csv")
+
+        val countByApiSearch = richSkillEsRepo.countByApiSearch(
+            apiSearch,
+            publishStatuses,
+            pageable,
+            null
+        )
+        responseHeaders.add("X-Total-Count", countByApiSearch.toString())
 
         val searchHits: Stream<SearchHit<RichSkillDoc>> = richSkillEsRepo
             .streamByApiSearch(apiSearch, publishStatuses, pageable, null)
@@ -184,30 +196,11 @@ class SearchController @Autowired constructor(
 
         val csvList = searchHits.map { RichSkillAndCollections(RichSkillDescriptor.fromRichSkillDoc(it.content), collection) }
 
-        val responseBody = StreamingResponseBody { response: OutputStream -> writeCsvFromBean(response, csvList) }
+        val responseBody = StreamingResponseBody { response: OutputStream -> RichSkillCsvExport(appConfig).writeCsvToOutputStream(response, csvList) }
 
         return ResponseEntity.ok()
             .headers(responseHeaders)
             .body(responseBody)
-    }
-
-    private fun writeCsvFromBean(response: OutputStream, data : Stream<RichSkillAndCollections>): OutputStream? {
-
-        val csvList = RichSkillCsvExport(appConfig).toCsv(data.toList())
-        try {
-            OutputStreamWriter(response).use { writer ->
-                csvList.forEach { rsd ->
-                    try {
-                        writer.write(rsd.toString())
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return response
     }
 
     @PostMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])

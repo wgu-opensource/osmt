@@ -73,15 +73,15 @@ data class RichSkillDescriptor(
                 id = richSkillDoc.id,
                 uuid = richSkillDoc.uuid,
                 name = richSkillDoc.name,
+                author = Keyword(creationDate = now, id = 0,type =  KeywordTypeEnum.Author, updateDate = now, value = richSkillDoc.author),
                 statement = richSkillDoc.statement,
                 creationDate = now,
                 updateDate = now,
                 category = Keyword(creationDate = now, id = 0,type =  KeywordTypeEnum.Category, updateDate = now, value = richSkillDoc.category),
-                keywords = richSkillDoc.searchingKeywords.map { Keyword(creationDate = now, id = 0,type =  KeywordTypeEnum.Category, updateDate = now, value = it) },
+                keywords = richSkillDoc.searchingKeywords.map { Keyword(creationDate = now, id = 0,type =  KeywordTypeEnum.Keyword, updateDate = now, value = it) },
                 jobCodes = richSkillDoc.jobCodes,
                 publishDate = richSkillDoc.publishDate,
-                archiveDate = richSkillDoc.archiveDate
-            )
+                archiveDate = richSkillDoc.archiveDate)
         }
     }
 

@@ -1,7 +1,11 @@
 package edu.wgu.osmt.csv
 
 import com.opencsv.CSVWriter
+import edu.wgu.osmt.richskill.RichSkillAndCollections
+import edu.wgu.osmt.richskill.RichSkillCsvExport
 import java.io.*
+import java.util.stream.Stream
+import kotlin.streams.toList
 
 
 abstract class CsvResource<T>(val debugName: String) {
@@ -30,6 +34,25 @@ abstract class CsvResource<T>(val debugName: String) {
         writeRows(data, csvWriter)
 
         return stringWriter.toString()
+    }
+
+    fun writeCsvToOutputStream(response: OutputStream, data : Stream<T>): OutputStream? {
+
+        val csvList = toCsv(data.toList())
+        try {
+            OutputStreamWriter(response).use { writer ->
+                csvList.forEach { rsd ->
+                    try {
+                        writer.write(rsd.toString())
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return response
     }
 
     /*

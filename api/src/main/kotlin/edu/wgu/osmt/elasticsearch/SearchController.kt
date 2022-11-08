@@ -1,10 +1,5 @@
 package edu.wgu.osmt.elasticsearch
 
-import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.core.JsonGenerator
-import com.opencsv.CSVWriter
-import com.opencsv.bean.StatefulBeanToCsv
-import com.opencsv.bean.StatefulBeanToCsvBuilder
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
@@ -28,11 +23,13 @@ import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import org.springframework.web.util.UriComponentsBuilder
-import java.io.StringWriter
+import java.io.IOException
+import java.io.OutputStream
+import java.io.OutputStreamWriter
 import java.time.LocalDateTime
-import java.util.Collections
-import java.util.UUID
+import java.util.*
 import java.util.stream.Stream
 import kotlin.streams.toList
 
@@ -156,7 +153,7 @@ class SearchController @Autowired constructor(
     }
 
     @Transactional(readOnly = true)
-    @PostMapping(RoutePaths.SCROLL_SKILLS, produces = ["text/csv"])
+    @PostMapping(RoutePaths.EXPORT_SKILLS, produces = ["text/csv"])
     @ResponseBody
     fun scrollSkills(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -166,7 +163,7 @@ class SearchController @Autowired constructor(
         @RequestParam(required = false) sort: String?,
         @RequestBody apiSearch: ApiSearch,
         @AuthenticationPrincipal user: Jwt?
-    ): ResponseEntity<*> {
+    ): ResponseEntity<StreamingResponseBody> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
@@ -179,43 +176,39 @@ class SearchController @Autowired constructor(
         val responseHeaders = HttpHeaders()
         responseHeaders.add("Content-Type", "text/csv")
 
-
         val searchHits: Stream<SearchHit<RichSkillDoc>> = richSkillEsRepo
             .streamByApiSearch(apiSearch, publishStatuses, pageable, null)
-
-        val jFactory = JsonFactory()
-        jFactory.enable(JsonGenerator.Feature.AUTO_CLOSE_TARGET);
-        jFactory.enable(JsonGenerator.Feature.AUTO_CLOSE_JSON_CONTENT)
-
 
         val collection: Set<Collection> = HashSet(listOf(
             Collection(creationDate = LocalDateTime.now(), id = 0, name = "name", updateDate = LocalDateTime.now(), uuid = UUID.randomUUID().toString())))
 
-        val responseBody = RichSkillCsvExport(appConfig).toCsv(
-            searchHits.map { RichSkillAndCollections(RichSkillDescriptor.fromRichSkillDoc(it.content), collection) }.toList()
-        )
+        val csvList = searchHits.map { RichSkillAndCollections(RichSkillDescriptor.fromRichSkillDoc(it.content), collection) }
+
+        val responseBody = StreamingResponseBody { response: OutputStream -> writeCsvFromBean(response, csvList) }
 
         return ResponseEntity.ok()
             .headers(responseHeaders)
             .body(responseBody)
     }
 
+    private fun writeCsvFromBean(response: OutputStream, data : Stream<RichSkillAndCollections>): OutputStream? {
 
-    private fun writeCsvFromBean(data : Stream<RichSkillDoc>): String? {
-
-        val sw = StringWriter()
-        sw.use { writer ->
-            val sbc: StatefulBeanToCsv<RichSkillDoc> = StatefulBeanToCsvBuilder<RichSkillDoc>(writer)
-                .withQuotechar('\'')
-                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
-                .build()
-            sbc.write(data)
+        val csvList = RichSkillCsvExport(appConfig).toCsv(data.toList())
+        try {
+            OutputStreamWriter(response).use { writer ->
+                csvList.forEach { rsd ->
+                    try {
+                        writer.write(rsd.toString())
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
-
-        return sw.toString()
-
+        return response
     }
-
 
     @PostMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody

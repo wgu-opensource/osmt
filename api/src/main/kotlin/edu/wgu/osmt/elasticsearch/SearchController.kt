@@ -163,14 +163,11 @@ class SearchController @Autowired constructor(
             required = false, defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
         @RequestParam(required = false) sort: String?,
-        @RequestBody apiSearch: ApiSearch,
         @AuthenticationPrincipal user: Jwt?
     ): ResponseEntity<StreamingResponseBody> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
-
-
 
         val publishStatuses = status.mapNotNull {
             val status = PublishStatus.forApiValue(it)
@@ -181,7 +178,7 @@ class SearchController @Autowired constructor(
         responseHeaders.add("Content-Type", "text/csv")
 
         val countByApiSearch = richSkillEsRepo.countByApiSearch(
-            apiSearch,
+            ApiSearch(""),
             publishStatuses,
             pageable,
             null
@@ -189,7 +186,7 @@ class SearchController @Autowired constructor(
         responseHeaders.add("X-Total-Count", countByApiSearch.toString())
 
         val searchHits: Stream<SearchHit<RichSkillDoc>> = richSkillEsRepo
-            .streamByApiSearch(apiSearch, publishStatuses, pageable, null)
+            .streamByApiSearch(ApiSearch(""), publishStatuses, pageable, null)
 
         val collection: Set<Collection> = HashSet(listOf(
             Collection(creationDate = LocalDateTime.now(), id = 0, name = "name", updateDate = LocalDateTime.now(), uuid = UUID.randomUUID().toString())))

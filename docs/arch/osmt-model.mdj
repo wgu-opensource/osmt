@@ -17,7 +17,7 @@
 					"_parent": {
 						"$ref": "AAAAAAGEU3B4W7BtW2M="
 					},
-					"name": "Conceptual Diagram",
+					"name": "osmt-conceptual-ldd",
 					"ownedViews": [
 						{
 							"_type": "UMLNodeView",
@@ -2492,7 +2492,7 @@
 											"top": 377,
 											"width": 144.4853515625,
 											"height": 13,
-											"text": "Brower - OSMT User"
+											"text": "Browser - OSMT User"
 										},
 										{
 											"_type": "LabelView",
@@ -3596,7 +3596,7 @@
 					"_parent": {
 						"$ref": "AAAAAAGEU3B4W7BtW2M="
 					},
-					"name": "SDLC Dev Deployment Diagram",
+					"name": "osmt-sdlc-dev-ldd",
 					"ownedViews": [
 						{
 							"_type": "UMLNodeView",

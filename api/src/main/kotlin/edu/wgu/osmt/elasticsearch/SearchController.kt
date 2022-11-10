@@ -3,37 +3,54 @@ package edu.wgu.osmt.elasticsearch
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
-import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.api.model.ApiJobCode
+import edu.wgu.osmt.api.model.ApiNamedReference
+import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.ApiSimilaritySearch
+import edu.wgu.osmt.api.model.ApiSkillSummary
+import edu.wgu.osmt.api.model.CollectionSortEnum
+import edu.wgu.osmt.api.model.SkillSortEnum
 import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.config.EMPTY_STRING
 import edu.wgu.osmt.config.SEARCH_BY_API_THRESHOLD
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.richskill.*
+import edu.wgu.osmt.richskill.RichSkillAndCollections
+import edu.wgu.osmt.richskill.RichSkillCsvExport
+import edu.wgu.osmt.richskill.RichSkillDescriptor
+import edu.wgu.osmt.richskill.RichSkillDoc
+import edu.wgu.osmt.richskill.RichSkillEsRepo
+import edu.wgu.osmt.security.OAuthHelper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.elasticsearch.core.SearchHit
-import org.springframework.http.*
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import org.springframework.web.util.UriComponentsBuilder
-import java.io.IOException
 import java.io.OutputStream
-import java.io.OutputStreamWriter
 import java.time.LocalDateTime
 import java.util.*
 import java.util.stream.Stream
-import kotlin.streams.toList
 
 
 @Controller
@@ -43,8 +60,12 @@ class SearchController @Autowired constructor(
     val richSkillEsRepo: RichSkillEsRepo,
     val collectionEsRepo: CollectionEsRepo,
     val jobCodeEsRepo: JobCodeEsRepo,
-    val appConfig: AppConfig
+    val appConfig: AppConfig,
+    val oAuthHelper: OAuthHelper
+
 ) {
+    private val emptyApiSearch = ApiSearch(EMPTY_STRING)
+
     @PostMapping(RoutePaths.SEARCH_COLLECTIONS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCollections(
@@ -116,7 +137,7 @@ class SearchController @Autowired constructor(
             val status = PublishStatus.forApiValue(it)
             if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
         }.toSet()
-        val sortEnum = sort?.let{SkillSortEnum.forApiValue(it)}
+        val sortEnum = sort?.let{ SkillSortEnum.forApiValue(it) }
         val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum?.sort)
 
         val searchHits = richSkillEsRepo.byApiSearch(
@@ -155,38 +176,30 @@ class SearchController @Autowired constructor(
     }
 
     @Transactional(readOnly = true)
-    @GetMapping(RoutePaths.EXPORT_SKILLS, produces = ["text/csv"])
+    @GetMapping(RoutePaths.EXPORT_LIBRARY, produces = ["text/csv"])
     @ResponseBody
-    fun scrollSkills(
-        uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(
-            required = false, defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
-        ) status: Array<String>,
-        @RequestParam(required = false) sort: String?,
-        @AuthenticationPrincipal user: Jwt?
+    fun exportLibrary(
+        uriComponentsBuilder: UriComponentsBuilder,        @AuthenticationPrincipal user: Jwt?
     ): ResponseEntity<StreamingResponseBody> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
+        //if (!oAuthHelper.hasRole(appConfig.roleAdmin)) { throw ResponseStatusException(HttpStatus.UNAUTHORIZED) }
 
-        val publishStatuses = status.mapNotNull {
-            val status = PublishStatus.forApiValue(it)
-            if (user == null && (status == PublishStatus.Deleted || status == PublishStatus.Draft)) null else status
-        }.toSet()
         val pageable = PageRequest.of(0, SEARCH_BY_API_THRESHOLD)
         val responseHeaders = HttpHeaders()
         responseHeaders.add("Content-Type", "text/csv")
 
         val countByApiSearch = richSkillEsRepo.countByApiSearch(
-            ApiSearch(""),
-            publishStatuses,
+            emptyApiSearch,
+            PublishStatus.values().toSet(),
             pageable,
             null
         )
         responseHeaders.add("X-Total-Count", countByApiSearch.toString())
 
         val searchHits: Stream<SearchHit<RichSkillDoc>> = richSkillEsRepo
-            .streamByApiSearch(ApiSearch(""), publishStatuses, pageable, null)
+            .streamByApiSearch(ApiSearch(""), PublishStatus.values().toSet(), pageable, null)
 
         val collection: Set<Collection> = HashSet(listOf(
             Collection(creationDate = LocalDateTime.now(), id = 0, name = "name", updateDate = LocalDateTime.now(), uuid = UUID.randomUUID().toString())))

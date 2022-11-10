@@ -3,7 +3,6 @@ package edu.wgu.osmt.richskill
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.opencsv.bean.CsvBindByName
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus

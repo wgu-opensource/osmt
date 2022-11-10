@@ -4,7 +4,7 @@ object RoutePaths {
     const val API = "/api"
     const val SEARCH_PATH = "$API/search"
     const val SEARCH_SKILLS = "$SEARCH_PATH/skills"
-    const val EXPORT_SKILLS = "$API/export/library"
+    const val EXPORT_LIBRARY = "$API/export/library"
     const val SEARCH_SIMILAR_SKILLS = "$SEARCH_SKILLS/similarity"
     const val SEARCH_SIMILARITIES = "$SEARCH_SKILLS/similarities"
     const val SEARCH_COLLECTIONS = "$SEARCH_PATH/collections"

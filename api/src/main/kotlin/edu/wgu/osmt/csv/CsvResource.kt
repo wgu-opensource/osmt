@@ -1,9 +1,11 @@
 package edu.wgu.osmt.csv
 
 import com.opencsv.CSVWriter
-import edu.wgu.osmt.richskill.RichSkillAndCollections
-import edu.wgu.osmt.richskill.RichSkillCsvExport
-import java.io.*
+import java.io.IOException
+import java.io.OutputStream
+import java.io.OutputStreamWriter
+import java.io.StringWriter
+import java.io.Writer
 import java.util.stream.Stream
 import kotlin.streams.toList
 

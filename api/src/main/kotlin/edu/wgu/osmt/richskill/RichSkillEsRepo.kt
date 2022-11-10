@@ -21,8 +21,6 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
 import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.data.elasticsearch.core.SearchHits
-import org.springframework.data.elasticsearch.core.SearchHitsIterator
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
@@ -79,9 +77,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             // boolQuery.should for logical OR
             skillName.nullIfEmpty()?.let {
                 if (it.contains("\"")) {
-                    bq.must(
-                        simpleQueryStringQuery(it).field("${RichSkillDoc::name.name}.raw").defaultOperator(Operator.AND)
-                    )
+                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::name.name}.raw").defaultOperator(Operator.AND))
                 } else {
                     bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::name.name, it))
                 }
@@ -89,20 +85,14 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             }
             category.nullIfEmpty()?.let {
                 if (it.contains("\"")) {
-                    bq.must(
-                        simpleQueryStringQuery(it).field("${RichSkillDoc::category.name}.raw")
-                            .defaultOperator(Operator.AND)
-                    )
+                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::category.name}.raw").defaultOperator(Operator.AND))
                 } else {
                     bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::category.name, it))
                 }
             }
             author.nullIfEmpty()?.let {
                 if (it.contains("\"")) {
-                    bq.must(
-                        simpleQueryStringQuery(it).field("${RichSkillDoc::author.name}.raw")
-                            .defaultOperator(Operator.AND)
-                    )
+                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::author.name}.raw").defaultOperator(Operator.AND))
                 } else {
                     bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::author.name, it))
                 }
@@ -110,8 +100,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             skillStatement.nullIfEmpty()?.let {
                 if (it.contains("\"")) {
                     bq.must(
-                        simpleQueryStringQuery(it).field("${RichSkillDoc::statement.name}.raw")
-                            .defaultOperator(Operator.AND)
+                        simpleQueryStringQuery(it).field("${RichSkillDoc::statement.name}.raw").defaultOperator(Operator.AND)
                     )
                 } else {
                     bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::statement.name, it))
@@ -140,8 +129,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 it.mapNotNull { it.name }.map { s ->
                     if (s.contains("\"")) {
                         bq.must(
-                            simpleQueryStringQuery(s).field("${RichSkillDoc::standards.name}.raw")
-                                .defaultOperator(Operator.AND)
+                            simpleQueryStringQuery(s).field("${RichSkillDoc::standards.name}.raw").defaultOperator(Operator.AND)
                         )
                     } else {
                         bq.must(matchBoolPrefixQuery(RichSkillDoc::standards.name, s))
@@ -166,8 +154,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 it.mapNotNull { it.name }.map { s ->
                     if (s.contains("\"")) {
                         bq.must(
-                            simpleQueryStringQuery(s).field("${RichSkillDoc::employers.name}.raw")
-                                .defaultOperator(Operator.AND)
+                            simpleQueryStringQuery(s).field("${RichSkillDoc::employers.name}.raw").defaultOperator(Operator.AND)
                         )
                     } else {
                         bq.must(matchBoolPrefixQuery(RichSkillDoc::employers.name, s))
@@ -364,13 +351,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         )
         return elasticSearchTemplate.search(nsq.build(), RichSkillDoc::class.java)
     }
-
 }
-
-    fun buildScrollQuery( pageable: Pageable) : NativeSearchQueryBuilder {
-        return NativeSearchQueryBuilder().withPageable(PageRequest.of(pageable.pageNumber, pageable.pageSize))
-    }
-
 
 
 @Configuration

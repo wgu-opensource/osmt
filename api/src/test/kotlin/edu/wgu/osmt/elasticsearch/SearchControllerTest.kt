@@ -64,7 +64,6 @@ internal class SearchControllerTest @Autowired constructor(
     }
 
 
-    @Disabled
     @Test
     fun testSearchSkills() {
         // Arrange

@@ -28,7 +28,13 @@ export class CommoncontrolsComponent extends AbstractSearchComponent implements 
 
   ngOnInit(): void {
   }
-
+  /**
+  * Added the logic for export library here because this controllers template holds the button
+  * The other links on the template link out to other templates and controllers while the export
+  * button required us to have a click action and call a method from this controller. We could possibly
+  * move it to the abstract search component or a helper since there are other onDownloadCsv functions
+  * that are similar to this
+  **/
   onDownloadCsv(): void {
     this.richSkillService.libraryExport()
       .subscribe((csv: string) => {

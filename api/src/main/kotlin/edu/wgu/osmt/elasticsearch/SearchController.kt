@@ -184,7 +184,7 @@ class SearchController @Autowired constructor(
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
-        //if (!oAuthHelper.hasRole(appConfig.roleAdmin)) { throw ResponseStatusException(HttpStatus.UNAUTHORIZED) }
+        if (!oAuthHelper.hasRole(appConfig.roleAdmin)) { throw ResponseStatusException(HttpStatus.UNAUTHORIZED) }
 
         val pageable = PageRequest.of(0, SEARCH_BY_API_THRESHOLD)
         val responseHeaders = HttpHeaders()

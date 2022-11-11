@@ -317,7 +317,7 @@ describe("RichSkillService", () => {
       expect(RouterData.commands).toEqual([]) // No Errors
     })
 
-    const req = httpTestingController.expectOne("/api/export/library")
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/export/library")
     expect(req.request.method).toEqual("GET")
     expect(req.request.headers.get("Accept")).toEqual("text/csv")
     req.flush(result$)

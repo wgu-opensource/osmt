@@ -15,7 +15,6 @@ import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.config.EMPTY_STRING
-import edu.wgu.osmt.config.SEARCH_BY_API_THRESHOLD
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
@@ -184,9 +183,9 @@ class SearchController @Autowired constructor(
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
-        if (!oAuthHelper.hasRole(appConfig.roleAdmin)) { throw ResponseStatusException(HttpStatus.UNAUTHORIZED) }
+//        if (!oAuthHelper.hasRole(appConfig.roleAdmin)) { throw ResponseStatusException(HttpStatus.UNAUTHORIZED) }
 
-        val pageable = PageRequest.of(0, SEARCH_BY_API_THRESHOLD)
+        val pageable = PageRequest.of(0, 1000)
         val responseHeaders = HttpHeaders()
         responseHeaders.add("Content-Type", "text/csv")
 

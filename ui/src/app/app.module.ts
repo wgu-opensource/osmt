@@ -96,6 +96,7 @@ import {LoginComponent} from "./auth/login.component"
 import {LogoutComponent} from "./auth/logout.component"
 import {NgIdleKeepaliveModule} from "@ng-idle/keepalive"
 import {LabelWithSelectComponent} from "./table/skills-library-table/label-with-select.component"
+import {LibraryExportComponent} from "./navigation/libraryexport.component"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -133,6 +134,7 @@ export function initializeApp(
     // Rich skills
     RichSkillsLibraryComponent,
     SkillCollectionsDisplayComponent,
+    LibraryExportComponent,
 
     // Rich skill detail
     RichSkillPublicComponent,

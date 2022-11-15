@@ -6,7 +6,6 @@ import {ActivatedRoute} from "@angular/router"
 import {AuthService} from "../auth/auth-service"
 import * as FileSaver from "file-saver"
 import {SvgHelper, SvgIcon} from "../core/SvgHelper"
-import {CommoncontrolsComponent} from "./commoncontrols.component"
 import {AbstractSearchComponent} from "./abstract-search.component"
 
 @Component({

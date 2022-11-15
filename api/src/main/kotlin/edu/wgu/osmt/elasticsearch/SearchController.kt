@@ -27,7 +27,6 @@ import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.security.OAuthHelper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -49,7 +48,6 @@ import org.springframework.web.util.UriComponentsBuilder
 import java.io.OutputStream
 import java.time.LocalDateTime
 import java.util.*
-import java.util.stream.Stream
 
 
 @Controller
@@ -197,15 +195,13 @@ class SearchController @Autowired constructor(
         )
         responseHeaders.add("X-Total-Count", countByApiSearch.toString())
 
-        val searchHits: Stream<SearchHit<RichSkillDoc>> = richSkillEsRepo
+        val searchHits = richSkillEsRepo
             .streamByApiSearch(ApiSearch(""), PublishStatus.values().toSet(), pageable, null)
-
         val collection: Set<Collection> = HashSet(listOf(
             Collection(creationDate = LocalDateTime.now(), id = 0, name = "name", updateDate = LocalDateTime.now(), uuid = UUID.randomUUID().toString())))
+        val searchHitsSequence = searchHits.map { RichSkillAndCollections(RichSkillDescriptor.fromRichSkillDoc(it.content), collection) }
 
-        val csvList = searchHits.map { RichSkillAndCollections(RichSkillDescriptor.fromRichSkillDoc(it.content), collection) }
-
-        val responseBody = StreamingResponseBody { response: OutputStream -> RichSkillCsvExport(appConfig).writeCsvToOutputStream(response, csvList) }
+        val responseBody = StreamingResponseBody { response: OutputStream -> RichSkillCsvExport(appConfig).writeCsvToOutputStream(response.bufferedWriter(), searchHitsSequence) }
 
         return ResponseEntity.ok()
             .headers(responseHeaders)

@@ -14,11 +14,9 @@ import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.scheduling.annotation.AsyncConfigurer
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
-import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 
@@ -50,6 +48,7 @@ class AsyncConfig : AsyncConfigurer {
         return object : WebMvcConfigurerAdapter() {
             override fun configureAsyncSupport(configurer: AsyncSupportConfigurer) {
                 configurer.setTaskExecutor(taskExecutor)
+                configurer.setDefaultTimeout(360000)
             }
         }
     }

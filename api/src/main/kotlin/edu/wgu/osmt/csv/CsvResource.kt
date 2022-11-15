@@ -1,9 +1,8 @@
 package edu.wgu.osmt.csv
 
 import com.opencsv.CSVWriter
-import java.io.BufferedOutputStream
+import java.io.BufferedWriter
 import java.io.IOException
-import java.io.OutputStream
 import java.io.StringWriter
 import java.io.Writer
 import java.util.stream.Stream
@@ -38,19 +37,10 @@ abstract class CsvResource<T>(val debugName: String) {
         return stringWriter.toString()
     }
 
-    fun writeCsvToOutputStream(response: OutputStream, data : Stream<T>) {
-
-        val csvList = toCsv(data.toList().take(12000))
+    fun writeCsvToOutputStream(response: BufferedWriter, data : Stream<T>) {
+        val csvList = toCsv(data.toList())
         try {
-            BufferedOutputStream(response).use { writer ->
-                csvList.forEach { rsd ->
-                    try {
-                        writer.write(rsd.code)
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
-                }
-            }
+            response.write(csvList)
         } catch (e: IOException) {
             e.printStackTrace()
         }

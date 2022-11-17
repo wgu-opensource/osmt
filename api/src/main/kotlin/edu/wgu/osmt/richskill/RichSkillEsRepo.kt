@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
 import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.data.elasticsearch.core.SearchHits
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
@@ -45,6 +46,13 @@ interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
         collectionId: String? = null
 
     ): Stream<SearchHit<RichSkillDoc>>
+
+    fun scrollByApiSearch(apiSearch: ApiSearch,
+                          publishStatus: Set<PublishStatus>,
+                          pageable: Pageable,
+                          collectionId: String?
+
+    ): Sequence<SearchHit<RichSkillDoc>>
     fun countByApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
@@ -228,7 +236,6 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         return elasticSearchTemplate.search(nsq.build(), RichSkillDoc::class.java)
     }
 
-
     override fun streamByApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus>,
@@ -240,6 +247,23 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
 
         return elasticSearchTemplate.searchForStream(nsq.build(), RichSkillDoc::class.java).stream()
+    }
+
+    override fun scrollByApiSearch(apiSearch: ApiSearch,
+                                   publishStatus: Set<PublishStatus>,
+                                   pageable: Pageable,
+                                   collectionId: String?
+
+    ): Sequence<SearchHit<RichSkillDoc>> {
+
+        val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
+        val index = IndexCoordinates.of("sample-index")
+
+
+        return  elasticSearchTemplate.searchScrollStart(
+            1000, nsq.build(),
+            RichSkillDoc::class.java, index).asSequence()
+
     }
 
     override fun countByApiSearch(

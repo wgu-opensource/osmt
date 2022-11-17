@@ -197,6 +197,9 @@ class SearchController @Autowired constructor(
 
         val searchHits = richSkillEsRepo
             .streamByApiSearch(ApiSearch(""), PublishStatus.values().toSet(), pageable, null)
+
+        val scrollResult = richSkillEsRepo.scrollByApiSearch()
+
         val collection: Set<Collection> = HashSet(listOf(
             Collection(creationDate = LocalDateTime.now(), id = 0, name = "name", updateDate = LocalDateTime.now(), uuid = UUID.randomUUID().toString())))
         val searchHitsSequence = searchHits.map { RichSkillAndCollections(RichSkillDescriptor.fromRichSkillDoc(it.content), collection) }

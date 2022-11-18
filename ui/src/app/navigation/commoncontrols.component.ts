@@ -14,10 +14,7 @@ export class CommoncontrolsComponent extends AbstractSearchComponent implements 
   searchIcon = SvgHelper.path(SvgIcon.SEARCH)
   dismissIcon = SvgHelper.path(SvgIcon.DISMISS)
 
-  constructor(
-    protected searchService: SearchService,
-    protected route: ActivatedRoute,
-    protected authService: AuthService) {
+  constructor(protected searchService: SearchService, protected route: ActivatedRoute, protected authService: AuthService) {
     super(searchService, route, authService)
   }
 

@@ -306,12 +306,13 @@ describe("RichSkillService", () => {
     })
   })
 
-  it("libraryExport should return", () => {
+  it("libraryExport should return", fakeAsync(() => {
     RouterData.commands = []
 
     // Act
     const result$ = testService.libraryExport()
 
+    tick(ASYNC_WAIT_PERIOD)
     // Assert
     result$.subscribe( (data: string) => {
       expect(RouterData.commands).toEqual([]) // No Errors
@@ -321,7 +322,7 @@ describe("RichSkillService", () => {
     expect(req.request.method).toEqual("GET")
     expect(req.request.headers.get("Accept")).toEqual("text/csv")
     req.flush(result$)
-  })
+  }))
 
   it("publishSkillsWithResult should return", fakeAsync(() => {
     // Arrange

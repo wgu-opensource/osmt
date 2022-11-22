@@ -4,6 +4,9 @@ import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSimilaritySearch
+import edu.wgu.osmt.collection.Collection
+import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.config.RICHSKILLDOC_INDEX_NAME
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
@@ -21,10 +24,13 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
 import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.data.elasticsearch.core.SearchHits
+import org.springframework.data.elasticsearch.core.SearchScrollHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
+import java.time.LocalDateTime
+import java.util.*
 import java.util.stream.Stream
 
 
@@ -50,9 +56,10 @@ interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun scrollByApiSearch(apiSearch: ApiSearch,
                           publishStatus: Set<PublishStatus>,
                           pageable: Pageable,
-                          collectionId: String?
+                          collectionId: String?,
+                          filename: String?
 
-    ): Sequence<SearchHit<RichSkillDoc>>
+    ): String
     fun countByApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus> = PublishStatus.publishStatusSet,
@@ -65,7 +72,7 @@ interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun occupationQueries(query: String): NestedQueryBuilder
 }
 
-class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :
+class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate, val appConfig: AppConfig) :
     CustomRichSkillQueries {
     override val javaClass = RichSkillDoc::class.java
 
@@ -252,17 +259,35 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     override fun scrollByApiSearch(apiSearch: ApiSearch,
                                    publishStatus: Set<PublishStatus>,
                                    pageable: Pageable,
-                                   collectionId: String?
-
-    ): Sequence<SearchHit<RichSkillDoc>> {
+                                   collectionId: String?,
+                                   filename: String?
+    ): String {
 
         val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
-        val index = IndexCoordinates.of("sample-index")
+        val index = IndexCoordinates.of(RICHSKILLDOC_INDEX_NAME)
 
-
-        return  elasticSearchTemplate.searchScrollStart(
+        var scroll: SearchScrollHits<RichSkillDoc?> = elasticSearchTemplate.searchScrollStart(
             1000, nsq.build(),
-            RichSkillDoc::class.java, index).asSequence()
+            RichSkillDoc::class.java, index
+        )
+
+        var scrollId: String?
+        val collection: Set<Collection> = HashSet(listOf(
+            Collection(creationDate = LocalDateTime.now(), id = 0, name = "name", updateDate = LocalDateTime.now(), uuid = UUID.randomUUID().toString())
+        ))
+
+        var searchHitsSequence = scroll.map { RichSkillAndCollections(RichSkillDescriptor.fromRichSkillDoc(it.content), collection) }
+        RichSkillCsvExport(appConfig).writeCsvHeadersToFile(filename!!, searchHitsSequence.stream())
+        while (scroll.hasSearchHits()) {
+            scrollId = scroll.scrollId
+            scroll = elasticSearchTemplate.searchScrollContinue(scrollId!!, 1000, RichSkillDoc::class.java, index)
+            if (scroll.searchHits.size > 0) {
+                searchHitsSequence = scroll.map { RichSkillAndCollections(RichSkillDescriptor.fromRichSkillDoc(it.content), collection) }
+                RichSkillCsvExport(appConfig).writeCsvLinesToFile(filename!!, searchHitsSequence.stream())
+            }
+        }
+
+        return filename
 
     }
 

@@ -1,8 +1,9 @@
 package edu.wgu.osmt.csv
 
+import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
-import java.io.BufferedWriter
-import java.io.IOException
+import java.io.FileReader
+import java.io.FileWriter
 import java.io.StringWriter
 import java.io.Writer
 import java.util.stream.Stream
@@ -37,13 +38,17 @@ abstract class CsvResource<T>(val debugName: String) {
         return stringWriter.toString()
     }
 
-    fun writeCsvToOutputStream(response: BufferedWriter, data : Stream<T>) {
-        val csvList = toCsv(data.toList())
-        try {
-            response.write(csvList)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+    fun writeCsvHeadersToFile(fileName: String, data : Stream<T>) {
+        val writer =   FileWriter(fileName, true)
+        val csvWriter = getCsvWriter(writer)
+        writeHeaderRow(data.toList(), csvWriter)
+        writer.close()
+    }
+    fun writeCsvLinesToFile(fileName: String, data : Stream<T>) {
+        val writer =   FileWriter(fileName, true)
+        val csvWriter = getCsvWriter(writer)
+        writeRows(data.toList(), csvWriter)
+        writer.close()
     }
 
     /*
@@ -83,6 +88,14 @@ abstract class CsvResource<T>(val debugName: String) {
 
     private fun writeRow(rowData: Array<String>, csvWriter: CSVWriter) {
         csvWriter.writeNext(rowData)
+    }
+
+    private fun readAllLines(fileName: String) : String {
+        val filereader = FileReader(fileName)
+        val csvReader = CSVReader(filereader)
+        return ""
+
+
     }
 }
 

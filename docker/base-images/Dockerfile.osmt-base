@@ -1,4 +1,4 @@
-FROM centos:centos8.3.2011 as osmt-base
+FROM rockylinux:9.0.20220720 as osmt-base
 
 LABEL Maintainer="WGU / OSN"
 

@@ -19,6 +19,7 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordTypeEnum
+import edu.wgu.osmt.richskill.RichSkillCsvExport
 import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.security.OAuthHelper
@@ -195,13 +196,13 @@ class SearchController @Autowired constructor(
 
         val responseBody = StreamingResponseBody{response: OutputStream -> BufferedOutputStream(response).use { writer ->
 
-            richSkillEsRepo.scrollByApiSearch(
+            RichSkillCsvExport(appConfig).readAllLinesFromFile(richSkillEsRepo.scrollByApiSearch(
                 emptyApiSearch,
                 PublishStatus.values().toSet(),
                 pageable,
                 null,
                 OsmtUtils.generateCsvFileName()
-            )
+            )).toString()
                 .forEach { rsd -> writer.write(rsd.code) }
         }}
         return ResponseEntity.ok()

@@ -1,8 +1,8 @@
 package edu.wgu.osmt.csv
 
-import com.opencsv.CSVReader
 import com.opencsv.CSVWriter
-import java.io.FileReader
+import edu.wgu.osmt.config.LINE_FEED
+import java.io.File
 import java.io.FileWriter
 import java.io.StringWriter
 import java.io.Writer
@@ -90,12 +90,16 @@ abstract class CsvResource<T>(val debugName: String) {
         csvWriter.writeNext(rowData)
     }
 
-    private fun readAllLines(fileName: String) : String {
-        val filereader = FileReader(fileName)
-        val csvReader = CSVReader(filereader)
-        return ""
-
-
+    fun readAllLinesFromFile(fileName: String) : StringBuilder {
+        val result = StringBuilder()
+        File (fileName).bufferedReader().useLines {
+                lines -> lines.forEach{
+                result.append(it)
+                result.append(LINE_FEED)
+            }
+        }
+        File(fileName).delete()
+        return result
     }
 }
 

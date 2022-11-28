@@ -4,6 +4,7 @@ import com.opencsv.CSVWriter
 import edu.wgu.osmt.config.LINE_FEED
 import java.io.File
 import java.io.FileWriter
+import java.io.IOException
 import java.io.StringWriter
 import java.io.Writer
 import java.util.stream.Stream
@@ -92,13 +93,19 @@ abstract class CsvResource<T>(val debugName: String) {
 
     fun readAllLinesFromFile(fileName: String) : StringBuilder {
         val result = StringBuilder()
-        File (fileName).bufferedReader().useLines {
-                lines -> lines.forEach{
-                result.append(it)
-                result.append(LINE_FEED)
+        try {
+            File(fileName).bufferedReader().useLines { lines ->
+                lines.forEach {
+                    result.append(it)
+                    result.append(LINE_FEED)
+                }
             }
+            File(fileName).delete()
+        } catch (e : IOException) {
+
         }
-        File(fileName).delete()
+
+
         return result
     }
 }

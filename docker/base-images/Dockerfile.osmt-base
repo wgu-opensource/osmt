@@ -1,4 +1,4 @@
-FROM centos:centos8.3.2011 as osmt-base
+FROM oraclelinux:9 as osmt-base
 
 LABEL Maintainer="WGU / OSN"
 

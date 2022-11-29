@@ -11,18 +11,37 @@ import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.config.EMPTY_STRING
+import edu.wgu.osmt.config.SCROLL_BY_API_THRESHOLD
+import edu.wgu.osmt.csv.CsvResource
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.keyword.KeywordDao
-import edu.wgu.osmt.security.*
-import edu.wgu.osmt.task.*
+import edu.wgu.osmt.security.OAuthHelper
+import edu.wgu.osmt.task.AppliesToType
+import edu.wgu.osmt.task.CreateSkillsTask
+import edu.wgu.osmt.task.PublishTask
+import edu.wgu.osmt.task.Task
+import edu.wgu.osmt.task.TaskMessageService
+import edu.wgu.osmt.task.TaskResult
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.*
+import org.springframework.data.domain.PageRequest
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -182,5 +201,46 @@ class RichSkillController @Autowired constructor(
 
         val sizedIterable = auditLogRepository.findByTableAndId(RichSkillDescriptorTable.tableName, entityId = skill!!.id.value, offsetPageable = pageable)
         return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping(RoutePaths.EXPORT_LIBRARY, produces = ["text/csv"])
+    @ResponseBody
+    fun exportLibrary(
+        uriComponentsBuilder: UriComponentsBuilder,
+        @AuthenticationPrincipal user: Jwt?
+    ): ResponseEntity<String> {
+        if (!appConfig.allowPublicSearching && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+//        if (!oAuthHelper.hasRole(appConfig.roleAdmin)) { throw ResponseStatusException(HttpStatus.UNAUTHORIZED) }
+
+        val pageable = PageRequest.of(0, SCROLL_BY_API_THRESHOLD)
+        val responseHeaders = HttpHeaders()
+        responseHeaders.add("Content-Type", "text/csv")
+
+
+        val countByApiSearch = richSkillEsRepo.countByApiSearch(
+            ApiSearch(EMPTY_STRING),
+            PublishStatus.values().toSet(),
+            pageable,
+            null
+        )
+        responseHeaders.add("X-Total-Count", countByApiSearch.toString())
+
+        val responseBody =
+
+            RichSkillCsvExport(appConfig).readAllLinesFromFile(richSkillEsRepo.scrollByApiSearch(
+                ApiSearch(EMPTY_STRING),
+                PublishStatus.values().toSet(),
+                pageable,
+                null,
+                CsvResource.generateCsvFileName()
+            )).toString()
+
+
+        return ResponseEntity.ok()
+            .headers(responseHeaders)
+            .body(responseBody)
     }
 }

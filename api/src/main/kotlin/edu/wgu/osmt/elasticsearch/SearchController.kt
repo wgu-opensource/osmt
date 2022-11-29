@@ -13,19 +13,14 @@ import edu.wgu.osmt.api.model.SkillSortEnum
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.config.EMPTY_STRING
-import edu.wgu.osmt.config.SCROLL_BY_API_THRESHOLD
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.richskill.RichSkillCsvExport
 import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.util.OsmtUtils
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -42,10 +37,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.server.ResponseStatusException
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import org.springframework.web.util.UriComponentsBuilder
-import java.io.BufferedOutputStream
-import java.io.OutputStream
 
 
 @Controller
@@ -59,7 +51,7 @@ class SearchController @Autowired constructor(
     val oAuthHelper: OAuthHelper
 
 ) {
-    private val emptyApiSearch = ApiSearch(EMPTY_STRING)
+
 
     @PostMapping(RoutePaths.SEARCH_COLLECTIONS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -168,46 +160,6 @@ class SearchController @Autowired constructor(
 
         return ResponseEntity.status(200).headers(responseHeaders)
             .body(searchHits.map { it.content }.toList())
-    }
-
-    @Transactional(readOnly = true)
-    @GetMapping(RoutePaths.EXPORT_LIBRARY, produces = ["text/csv"])
-    @ResponseBody
-    fun exportLibrary(
-        uriComponentsBuilder: UriComponentsBuilder,
-        @AuthenticationPrincipal user: Jwt?
-    ): ResponseEntity<StreamingResponseBody> {
-        if (!appConfig.allowPublicSearching && user === null) {
-            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
-        }
-//        if (!oAuthHelper.hasRole(appConfig.roleAdmin)) { throw ResponseStatusException(HttpStatus.UNAUTHORIZED) }
-
-        val pageable = PageRequest.of(0, SCROLL_BY_API_THRESHOLD)
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("Content-Type", "text/csv")
-
-        val countByApiSearch = richSkillEsRepo.countByApiSearch(
-            emptyApiSearch,
-            PublishStatus.values().toSet(),
-            pageable,
-            null
-        )
-        responseHeaders.add("X-Total-Count", countByApiSearch.toString())
-
-        val responseBody = StreamingResponseBody{response: OutputStream -> BufferedOutputStream(response).use { writer ->
-
-            RichSkillCsvExport(appConfig).readAllLinesFromFile(richSkillEsRepo.scrollByApiSearch(
-                emptyApiSearch,
-                PublishStatus.values().toSet(),
-                pageable,
-                null,
-                OsmtUtils.generateCsvFileName()
-            )).toString()
-                .forEach { rsd -> writer.write(rsd.code) }
-        }}
-        return ResponseEntity.ok()
-            .headers(responseHeaders)
-            .body(responseBody)
     }
 
     @PostMapping(RoutePaths.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])

@@ -6,7 +6,7 @@ import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSimilaritySearch
 import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.config.RICHSKILLDOC_INDEX_NAME
+import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
@@ -264,7 +264,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     ): String {
 
         val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
-        val index = IndexCoordinates.of(RICHSKILLDOC_INDEX_NAME)
+        val index = IndexCoordinates.of(INDEX_RICHSKILL_DOC)
 
         var scroll: SearchScrollHits<RichSkillDoc?> = elasticSearchTemplate.searchScrollStart(
             1000, nsq.build(),

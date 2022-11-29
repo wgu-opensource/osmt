@@ -1,7 +1,11 @@
 package edu.wgu.osmt.csv
 
 import com.opencsv.CSVWriter
+import edu.wgu.osmt.config.CSV_FILE_EXTENSION
+import edu.wgu.osmt.config.LIBRARY_EXPORT_PREFIX
 import edu.wgu.osmt.config.LINE_FEED
+import edu.wgu.osmt.config.RESOURCE_PATH
+import org.joda.time.DateTime
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
@@ -12,6 +16,13 @@ import kotlin.streams.toList
 
 
 abstract class CsvResource<T>(val debugName: String) {
+
+    companion object {
+        fun generateCsvFileName() : String {
+            val fileLocation: String = File(RESOURCE_PATH).absolutePath + "/"
+            return fileLocation.plus(LIBRARY_EXPORT_PREFIX).plus(DateTime.now().toString()).plus(CSV_FILE_EXTENSION)
+        }
+    }
 
     /**
      * Defines the columns of this csv in their desired order.

@@ -6,7 +6,7 @@ The Open Skills Management Tool (OSMT, pronounced "oz-mit") is a free, open-sour
 ## Architecture
 OSMT is written in Kotlin with Spring Boot, and Angular. It uses backend-instances of MySQL, Redis, and Elastisearch.
 
-[<img src="./docs/Architectural-Diagram.png" width="800" alt="High-level architecture diagram" />](./docs/Architectural-Diagram.png)
+[<img src="./docs/arch/Architectural-Diagram.png" width="800" alt="High-level architecture diagram" />](docs/arch/Architectural-Diagram.png)
 
 ## Dependencies
 OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. OSMT also requires an OAuth2 provider. Local / non-production configurations can be stood up using only Docker. See additional notes below for [Configuration](README.md#configuration).
@@ -224,25 +224,25 @@ osmt.security.scope.read=SCOPE_osmt.read
 #### Configuration in Okta
 In Okta, navigate to "Directory", then "Groups". You will need to create 3 groups with names that match your `osmt.security.role` values in `application.properties`.
 
-[<img src="./docs/okta/okta_groups_for_osmt_roles.png" width="600" alt="Okta Groups for OSMT Roles" />](./docs/okta/okta_groups_for_osmt_roles.png)
+[<img src="./docs/int/okta/okta_groups_for_osmt_roles.png" width="600" alt="Okta Groups for OSMT Roles" />](docs/int/okta/okta_groups_for_osmt_roles.png)
 
 You can assign your Okta user accounts to these groups. In Okta, navigate to "Security", then "API". Open the "default" API, and navigate to the "Claims" tab.
 
 * Add claim for "Access"
 
-  [<img src="./docs/okta/okta_claims_access.png" width="600" alt="Claim for 'Access'" />](./docs/okta/okta_claims_access.png)
+  [<img src="./docs/int/okta/okta_claims_access.png" width="600" alt="Claim for 'Access'" />](docs/int/okta/okta_claims_access.png)
 
 * Add a claim for  "ID Token"
 
-  [<img src="./docs/okta/okta_claims_id.png" width="600" alt="Claim for 'ID Token'" />](./docs/okta/okta_claims_id.png)
+  [<img src="./docs/int/okta/okta_claims_id.png" width="600" alt="Claim for 'ID Token'" />](docs/int/okta/okta_claims_id.png)
 
 * Your end result should look like this:
 
-  [<img src="./docs/okta/okta_claims.png" width="600" alt="Added Claims" />](./docs/okta/okta_claims.png)
+  [<img src="./docs/int/okta/okta_claims.png" width="600" alt="Added Claims" />](docs/int/okta/okta_claims.png)
 
 From the Scopes tab, add a scope with name that matches osmt.security.scope.read in application.properties
 
-[<img src="./docs/okta/okta_scopes.png" width="600" alt="Scopes" />](./docs/okta/okta_scopes.png)
+[<img src="./docs/int/okta/okta_scopes.png" width="600" alt="Scopes" />](docs/int/okta/okta_scopes.png)
 
 ## How to get help
 This project includes [./api/HELP.md](api/HELP.md), with links to relevant references and tutorials.

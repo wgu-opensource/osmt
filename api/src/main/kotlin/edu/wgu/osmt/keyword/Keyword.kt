@@ -1,5 +1,6 @@
 package edu.wgu.osmt.keyword
 
+import edu.wgu.osmt.config.INDEX_KEYWORD_DOC
 import edu.wgu.osmt.db.*
 import org.elasticsearch.core.Nullable
 import org.jetbrains.exposed.dao.id.LongIdTable
@@ -9,7 +10,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.*
 import java.time.LocalDateTime
 
-@Document(indexName = "keyword", createIndex = true)
+@Document(indexName = INDEX_KEYWORD_DOC, createIndex = true)
 @Setting(settingPath = "/elasticsearch/settings.json")
 data class Keyword(
     @Id

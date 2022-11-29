@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.KeywordTypeEnum
@@ -19,7 +20,7 @@ import java.time.LocalDateTime
  * Elasticsearch representation of a Rich Skill.
  * Also corresponds to `SkillSummary` API response object
  */
-@Document(indexName = "richskill_v1", createIndex = true, versionType = Document.VersionType.EXTERNAL)
+@Document(indexName = INDEX_RICHSKILL_DOC, createIndex = true, versionType = Document.VersionType.EXTERNAL)
 @Setting(settingPath = "/elasticsearch/settings.json")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class RichSkillDoc(

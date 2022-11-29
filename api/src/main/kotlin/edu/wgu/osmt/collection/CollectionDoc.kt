@@ -3,6 +3,7 @@ package edu.wgu.osmt.collection
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import edu.wgu.osmt.config.INDEX_COLLECTION_DOC
 import edu.wgu.osmt.db.PublishStatus
 import org.elasticsearch.core.Nullable
 import org.springframework.data.annotation.Id
@@ -15,7 +16,7 @@ import java.time.LocalDateTime
  * Also corresponds to `CollectionSummary` API response object
  */
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
-@Document(indexName = "collection_v1", createIndex = true)
+@Document(indexName = INDEX_COLLECTION_DOC, createIndex = true)
 @Setting(settingPath = "/elasticsearch/settings.json")
 data class CollectionDoc(
     @Field(name = "db_id")

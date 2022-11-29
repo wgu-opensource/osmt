@@ -1,4 +1,4 @@
-FROM rockylinux:9.0.20220720 as osmt-base
+FROM oraclelinux:9 as osmt-base
 
 LABEL Maintainer="WGU / OSN"
 

@@ -4,7 +4,6 @@
 set -u
 
 declare debug=${DEBUG:-0}
-declare verbose=${VERBOSE:-}
 declare project_dir
 declare quickstart_env_file
 declare dev_env_file
@@ -120,15 +119,10 @@ _validate_docker_version() {
 _validate_java_version() {
   echo
   echo_info "Checking Java..."
-  # OSMT requires Java 11
+  # OSMT requires at least Java 11
   local -i req_java_major=11
-  local -i req_java_minor=0
-  local -i req_java_patch=0
-
   local det_java_version
   local -i det_java_major
-  local -i det_java_minor
-  local -i det_java_patch
 
   which java &> /dev/null
   if [[ $? -eq 0 ]]; then
@@ -140,25 +134,17 @@ _validate_java_version() {
 
   echo_info "Checking Java JDK for version 11 or greater..."
   det_java_version="$(java -version 2>&1 | head -n 1 | cut -d'"' -f2)"
-  det_java_version="${det_java_version#[vV]}"
     echo_debug "1 - ${det_java_version}"
+  det_java_version="${det_java_version#[vV]}"
+    echo_debug "2 - ${det_java_version}"
   det_java_major="${det_java_version%%\.*}"
-    echo_debug "2 - ${det_java_major}"
-  local tmp_minor="${det_java_version#*.}"
-    echo_debug "3 - ${tmp_minor}"
-  det_java_minor="${tmp_minor%.*}"
-    echo_debug "4 - ${det_java_minor}"
-  det_java_patch="${det_java_version##*.}"
-    echo_debug "5 - ${det_java_patch}"
+    echo_debug "3 - ${det_java_major}"
 
-  if [[ "${det_java_major}" -gt "${req_java_major}" || \
-      ("${det_java_major}" -eq "${req_java_major}" && "${det_java_minor}" -ge "${req_java_minor}") || \
-      ("${det_java_major}" -eq "${req_java_major}" && "${det_java_minor}" -eq "${req_java_minor}" && "${det_java_patch}" -ge "${req_java_patch}") \
-    ]]; then
-    echo_info "Java version ${det_java_version} is >= ${req_java_major}.${req_java_minor}.${req_java_patch}"
+  if [[ "${det_java_major}" -ge "${req_java_major}" ]]; then
+    echo_info "Java version ${det_java_version} is >= ${req_java_major}"
     return 0
   else
-    echo_err "Java version must be >= ${req_java_major}.${req_java_minor}.${req_java_patch}. Current version here is ${det_java_version}."
+    echo_err "Java version must be >= ${req_java_major}. Current version detected is ${det_java_version}."
     return 1
   fi
 }
@@ -170,10 +156,10 @@ _validate_osmt_dev_dependencies() {
   echo_info "Maven version: $(mvn --version)"
 
   echo
-  echo_info "OSMT development recommends NodeJS version v16.13.0 or greater. Maven uses an embedded copy of NodeJS v16.13.0."
+  echo_info "OSMT development recommends NodeJS version v16.13.0 or greater. Maven uses an embedded copy of NodeJS v16.13.0 via frontend-maven-plugin."
   echo_info "NodeJS version: $(node --version)"
   echo
-  echo_info "OSMT development recommends npm version 8.1.0 or greater. Maven uses an embedded copy of npm 8.1.0."
+  echo_info "OSMT development recommends npm version 8.1.0 or greater. Maven uses an embedded copy of npm 8.1.0 via frontend-maven-plugin."
   echo_info "npm version: $(npm --version)"
   if [[ "${is_dependency_valid}" -ne 0 ]]; then
     echo

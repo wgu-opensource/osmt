@@ -6,15 +6,22 @@ import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionEsRepo
+import edu.wgu.osmt.collection.CsvTaskProcessor
 import edu.wgu.osmt.csv.BatchImportRichSkill
 import edu.wgu.osmt.csv.RichSkillRow
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
+import edu.wgu.osmt.task.CsvTask
+import edu.wgu.osmt.task.TaskMessageService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
@@ -33,12 +40,22 @@ internal class RichSkillControllerTest @Autowired constructor(
     @Autowired
     lateinit var batchImportRichSkill: BatchImportRichSkill
 
+    @Autowired
+    lateinit var tms: TaskMessageService
+
+    lateinit var csvtp: CsvTaskProcessor
+
     private lateinit var mockData : MockData
     val nullJwt : Jwt? = null
+
+    companion object {
+        const val skillsForFullLibraryCsv = "full-library-skills-csv-process"
+    }
 
     @BeforeAll
     fun setup() {
         mockData = MockData()
+        csvtp = CsvTaskProcessor()
     }
 
     @Test
@@ -149,4 +166,19 @@ internal class RichSkillControllerTest @Autowired constructor(
         assertThat(result.body?.get(0)?.operationType).isEqualTo("Insert")
         assertThat(result.body?.get(0)?.user).isEqualTo("Batch Import")
     }
+
+    @Disabled
+    @Test
+    fun testExportLibrary() {
+
+        val responseHeaders = HttpHeaders()
+        responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+        val task = CsvTask(collectionUuid = "FullLibrary")
+
+        Mockito.`when`(tms.enqueueJob(Mockito.anyString(), task)).thenReturn(Unit)
+
+        val result = richSkillController.getSkillsForLibraryCsv()
+        assertThat(result.body?.uuid).isNotBlank()
+    }
+
 }

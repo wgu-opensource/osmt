@@ -43,5 +43,6 @@ class TaskMessageService {
         const val publishSkills = "batch-publish-skills"
         const val updateCollectionSkills = "update-collection-skills"
         const val skillsForCollectionCsv = "collection-skills-csv-process"
+        const val skillsForFullLibraryCsv = "full-library-skills-csv-process"
     }
 }

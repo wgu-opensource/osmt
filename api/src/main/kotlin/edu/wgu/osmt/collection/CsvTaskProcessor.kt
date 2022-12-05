@@ -5,6 +5,7 @@ import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.richskill.RichSkillAndCollections
 import edu.wgu.osmt.richskill.RichSkillCsvExport
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
+import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.task.CsvTask
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskStatus
@@ -29,6 +30,9 @@ class CsvTaskProcessor {
     lateinit var collectionRepository: CollectionRepository
 
     @Autowired
+    lateinit var richSkillRepository: RichSkillRepository
+
+    @Autowired
     lateinit var appConfig: AppConfig
 
     @RqueueListener(
@@ -50,6 +54,26 @@ class CsvTaskProcessor {
             csvTask.copy(result = csv, status = TaskStatus.Ready)
         )
         logger.info("Task ${csvTask.uuid} completed")
+    }
+
+    @RqueueListener(
+        value = [TaskMessageService.skillsForFullLibraryCsv],
+        deadLetterQueueListenerEnabled = "true",
+        deadLetterQueue = TaskMessageService.deadLetters,
+        concurrency = "1"
+    )
+    fun csvSkillsInFullLibraryProcessor(csvTask: CsvTask) {
+        logger.info("Started processing task for Full Library export")
+
+        val csv = richSkillRepository.findAll()
+            ?.with(RichSkillDescriptorDao::collections)
+            ?.map { RichSkillAndCollections.fromDao(it) }
+            ?.let { RichSkillCsvExport(appConfig).toCsv(it) }
+
+        taskMessageService.publishResult(
+            csvTask.copy(result = csv, status = TaskStatus.Ready)
+        )
+        logger.info("Full Library export task completed")
     }
 
 }

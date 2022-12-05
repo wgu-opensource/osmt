@@ -41,7 +41,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
-import java.util.*
 
 @Controller
 @Transactional
@@ -191,29 +190,34 @@ class RichSkillController @Autowired constructor(
 
     @GetMapping(RoutePaths.SKILL_AUDIT_LOG, produces = ["application/json"])
     fun skillAuditLog(
-        @AuthenticationPrincipal user: Jwt?
+        @PathVariable uuid: String
     ): HttpEntity<List<AuditLog>> {
+
+        val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateDesc.apiValue).sort)
+
+        val skill = richSkillRepository.findByUUID(uuid)
+
+        val sizedIterable = auditLogRepository.findByTableAndId(RichSkillDescriptorTable.tableName, entityId = skill!!.id.value, offsetPageable = pageable)
+        return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping(RoutePaths.EXPORT_LIBRARY, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun exportLibrary(
+        uriComponentsBuilder: UriComponentsBuilder,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
         if (!oAuthHelper.hasRole(appConfig.roleAdmin)) {
             throw GeneralApiException("OSMT user must have an Admin role.", HttpStatus.UNAUTHORIZED)
         }
-        val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateDesc.apiValue).sort)
 
-        val skill = richSkillRepository.findByUUID(UUID.randomUUID().toString())
-
-        val sizedIterable = auditLogRepository.findByTableAndId(RichSkillDescriptorTable.tableName, entityId = skill!!.id.value, offsetPageable = pageable)
-        return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
-    }
-
-    @GetMapping(RoutePaths.EXPORT_LIBRARY, produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getSkillsForLibraryCsv(
-    ): HttpEntity<TaskResult> {
         val task = CsvTask(collectionUuid = "FullLibrary")
         taskMessageService.enqueueJob(TaskMessageService.skillsForFullLibraryCsv, task)
-        val processingResponse = Task.processingResponse(task)
-        return processingResponse
 
+        return Task.processingResponse(task)
     }
 }

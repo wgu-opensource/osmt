@@ -177,7 +177,7 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         Mockito.`when`(tms.enqueueJob(Mockito.anyString(), task)).thenReturn(Unit)
 
-        val result = richSkillController.getSkillsForLibraryCsv()
+        val result = richSkillController.exportLibrary(user = nullJwt)
         assertThat(result.body?.uuid).isNotBlank()
     }
 

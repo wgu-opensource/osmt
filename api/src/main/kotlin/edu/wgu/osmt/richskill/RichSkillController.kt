@@ -205,7 +205,6 @@ class RichSkillController @Autowired constructor(
     @GetMapping(RoutePaths.EXPORT_LIBRARY, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportLibrary(
-        uriComponentsBuilder: UriComponentsBuilder,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         if (!appConfig.allowPublicSearching && user === null) {

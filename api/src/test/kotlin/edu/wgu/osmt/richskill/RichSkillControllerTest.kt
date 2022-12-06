@@ -3,36 +3,58 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.BaseDockerizedTest
 import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.HasElasticsearchReset
+import edu.wgu.osmt.RoutePaths.EXPORT_LIBRARY
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionEsRepo
-import edu.wgu.osmt.collection.CsvTaskProcessor
+import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.csv.BatchImportRichSkill
 import edu.wgu.osmt.csv.RichSkillRow
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
+import edu.wgu.osmt.security.OAuthHelper
 import edu.wgu.osmt.task.CsvTask
+import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
+import edu.wgu.osmt.task.TaskResult
+import edu.wgu.osmt.task.TaskStatus
+import io.mockk.every
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority
 import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
+import java.time.Instant
+import java.util.*
+
 
 @Transactional
 internal class RichSkillControllerTest @Autowired constructor(
         override val richSkillEsRepo: RichSkillEsRepo,
+        val taskMessageService: TaskMessageService,
+        val oAuthHelper: OAuthHelper,
+        val appConfig: AppConfig,
         override val collectionEsRepo: CollectionEsRepo,
         override val keywordEsRepo: KeywordEsRepo,
         override val jobCodeEsRepo: JobCodeEsRepo
 ): SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset {
+
+    var authentication: Authentication = Mockito.mock(Authentication::class.java)
 
     @Autowired
     lateinit var richSkillController: RichSkillController
@@ -40,22 +62,14 @@ internal class RichSkillControllerTest @Autowired constructor(
     @Autowired
     lateinit var batchImportRichSkill: BatchImportRichSkill
 
-    @Autowired
-    lateinit var tms: TaskMessageService
-
-    lateinit var csvtp: CsvTaskProcessor
-
     private lateinit var mockData : MockData
     val nullJwt : Jwt? = null
 
-    companion object {
-        const val skillsForFullLibraryCsv = "full-library-skills-csv-process"
-    }
 
     @BeforeAll
     fun setup() {
         mockData = MockData()
-        csvtp = CsvTaskProcessor()
+        ReflectionTestUtils.setField(appConfig, "roleAdmin", "ROLE_Osmt_Admin");
     }
 
     @Test
@@ -167,18 +181,53 @@ internal class RichSkillControllerTest @Autowired constructor(
         assertThat(result.body?.get(0)?.user).isEqualTo("Batch Import")
     }
 
+
     @Disabled
     @Test
     fun testExportLibrary() {
 
+        val securityContext: SecurityContext = Mockito.mock(SecurityContext::class.java)
+        SecurityContextHolder.setContext(securityContext)
+
+        val attributes: MutableMap<String, Any> = HashMap()
+        attributes["id"] = "joeg"
+        attributes["first-name"] = "Joe"
+        attributes["last-name"] = "Grandja"
+        attributes["email"] = "joeg@springsecurity.io"
+
+        val authority: GrantedAuthority = OAuth2UserAuthority("ROLE_Osmt_Admin", attributes)
+        val authorities: MutableSet<GrantedAuthority> = HashSet()
+        authorities.add(authority)
+
+
+        Mockito.`when`(securityContext.authentication).thenReturn(authentication)
+        Mockito.`when`(SecurityContextHolder.getContext().authentication.authorities).thenReturn(authorities)
+
+
         val responseHeaders = HttpHeaders()
         responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-        val task = CsvTask(collectionUuid = "FullLibrary")
+        val headers : MutableMap<String, Any> = HashMap()
+        headers["key"] = "value"
+        val notNullJwt : Jwt? = Jwt("tokenValue", Instant.MIN, Instant.MAX,headers,headers)
+//        val task = CsvTask(collectionUuid = "FullLibrary")
+        val csvTaskResult = TaskResult(UUID.randomUUID().toString(),MediaType.APPLICATION_JSON_VALUE,TaskStatus.Processing, EXPORT_LIBRARY)
 
-        Mockito.`when`(tms.enqueueJob(Mockito.anyString(), task)).thenReturn(Unit)
+//        Mockito.doNothing().`when`(taskMessageService.enqueueJob(TaskMessageService.skillsForFullLibraryCsv, any()))
+//        Mockito.`when`(Task.processingResponse(any())).thenReturn(HttpEntity(csvTaskResult))
 
-        val result = richSkillController.exportLibrary(user = nullJwt)
+        val service = mockk<TaskMessageService>()
+        val task = mockk<CsvTask>()
+        val uuid = UUID.randomUUID()
+        every { task.uuid } returns uuid.toString()
+        every { TaskResult.fromTask(any()) } returns csvTaskResult
+        every { service.enqueueJob(any(), any()) } returns Unit
+        every { Task.processingResponse(any()) } returns HttpEntity(csvTaskResult)
+
+        val result = richSkillController.exportLibrary(user = notNullJwt)
         assertThat(result.body?.uuid).isNotBlank()
     }
+
+//    private fun <T> any(): T = Mockito.any<T>()
+
 
 }

@@ -4,6 +4,8 @@ import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSimilaritySearch
+import edu.wgu.osmt.config.CATEGORY_FIELD_NAME
+import edu.wgu.osmt.config.QUOTED_SEARCH_REGEX_PATTERN
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
@@ -74,10 +76,12 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
             }
             category.nullIfEmpty()?.let {
-                if (it.contains("\"")) {
-                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::category.name}.raw").defaultOperator(Operator.AND))
+                if (it.matches(Regex(QUOTED_SEARCH_REGEX_PATTERN))) {
+                    //bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::category.name}.raw").defaultOperator(Operator.AND))
+                    bq.must(
+                        wrapperQuery(buildManualQuery(CATEGORY_FIELD_NAME, it)))
                 } else {
-                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::category.name, it))
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::category.name, it))
                 }
             }
             author.nullIfEmpty()?.let {
@@ -318,6 +322,16 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             }
         }
         return nsq
+    }
+
+    fun buildManualQuery(fieldName: String, fieldValue: String) : String {
+        return String()
+            .plus("{")
+            .plus("\"term\": {")
+            .plus("\"" + fieldName).plus(".keyword\": {")
+            .plus("\"value\":")
+            .plus(fieldValue)
+            .plus("}}}")
     }
 
     override fun findSimilar(apiSimilaritySearch: ApiSimilaritySearch): SearchHits<RichSkillDoc> {

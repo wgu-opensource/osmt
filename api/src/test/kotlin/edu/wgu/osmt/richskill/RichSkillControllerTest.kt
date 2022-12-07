@@ -21,6 +21,7 @@ import edu.wgu.osmt.task.TaskResult
 import edu.wgu.osmt.task.TaskStatus
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
@@ -190,16 +191,11 @@ internal class RichSkillControllerTest @Autowired constructor(
         SecurityContextHolder.setContext(securityContext)
 
         val attributes: MutableMap<String, Any> = HashMap()
-        attributes["id"] = "joeg"
-        attributes["first-name"] = "Joe"
-        attributes["last-name"] = "Grandja"
-        attributes["email"] = "joeg@springsecurity.io"
+        attributes["email"] = "j.chavez@wgu.edu"
 
         val authority: GrantedAuthority = OAuth2UserAuthority("ROLE_Osmt_Admin", attributes)
         val authorities: MutableSet<GrantedAuthority> = HashSet()
         authorities.add(authority)
-
-
         Mockito.`when`(securityContext.authentication).thenReturn(authentication)
         Mockito.`when`(SecurityContextHolder.getContext().authentication.authorities).thenReturn(authorities)
 
@@ -209,25 +205,19 @@ internal class RichSkillControllerTest @Autowired constructor(
         val headers : MutableMap<String, Any> = HashMap()
         headers["key"] = "value"
         val notNullJwt : Jwt? = Jwt("tokenValue", Instant.MIN, Instant.MAX,headers,headers)
-//        val task = CsvTask(collectionUuid = "FullLibrary")
         val csvTaskResult = TaskResult(UUID.randomUUID().toString(),MediaType.APPLICATION_JSON_VALUE,TaskStatus.Processing, EXPORT_LIBRARY)
 
-//        Mockito.doNothing().`when`(taskMessageService.enqueueJob(TaskMessageService.skillsForFullLibraryCsv, any()))
-//        Mockito.`when`(Task.processingResponse(any())).thenReturn(HttpEntity(csvTaskResult))
 
         val service = mockk<TaskMessageService>()
-        val task = mockk<CsvTask>()
-        val uuid = UUID.randomUUID()
-        every { task.uuid } returns uuid.toString()
-        every { TaskResult.fromTask(any()) } returns csvTaskResult
         every { service.enqueueJob(any(), any()) } returns Unit
+        mockkStatic(CsvTask::class)
+        mockkStatic(TaskResult::class)
         every { Task.processingResponse(any()) } returns HttpEntity(csvTaskResult)
 
         val result = richSkillController.exportLibrary(user = notNullJwt)
         assertThat(result.body?.uuid).isNotBlank()
     }
 
-//    private fun <T> any(): T = Mockito.any<T>()
 
 
 }

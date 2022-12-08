@@ -252,6 +252,13 @@
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-data-redis</artifactId>
         </dependency>
+        <!--https://github.com/testcontainers/testcontainers-java/issues/3834-->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.giffing.bucket4j.spring.boot.starter</groupId>
             <artifactId>bucket4j-spring-boot-starter</artifactId>

@@ -4,7 +4,6 @@ import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSimilaritySearch
-import edu.wgu.osmt.config.CATEGORY_FIELD_NAME
 import edu.wgu.osmt.config.QUOTED_SEARCH_REGEX_PATTERN
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
@@ -79,7 +78,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 if (it.matches(Regex(QUOTED_SEARCH_REGEX_PATTERN))) {
                     //bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::category.name}.raw").defaultOperator(Operator.AND))
                     bq.must(
-                        wrapperQuery(buildManualQuery(CATEGORY_FIELD_NAME, it)))
+                        wrapperQuery(buildManualQuery(RichSkillDoc::category.name, it)))
                 } else {
                     bq.must(matchBoolPrefixQuery(RichSkillDoc::category.name, it))
                 }

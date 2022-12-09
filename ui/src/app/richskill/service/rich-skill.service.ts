@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core"
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http"
-import {Observable} from "rxjs"
+import {concat, Observable, of, throwError} from "rxjs"
 import {ApiAuditLog, ApiSkill, ApiSortOrder, IAuditLog, ISkill} from "../ApiSkill"
-import {map, share} from "rxjs/operators"
+import {delay, map, retryWhen, scan, share, switchMap, takeWhile} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate"
 import {AuthService} from "../../auth/auth-service"
@@ -11,8 +11,8 @@ import {PublishStatus} from "../../PublishStatus"
 import {ApiBatchResult} from "../ApiBatchResult"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
 import {ApiSkillSummary, ISkillSummary} from "../ApiSkillSummary"
-import {Router} from "@angular/router";
-import {Location} from "@angular/common";
+import {Router} from "@angular/router"
+import {Location} from "@angular/common"
 
 
 @Injectable({
@@ -43,7 +43,7 @@ export class RichSkillService extends AbstractService {
         return new PaginatedSkills(
           body?.map(skill => skill) || [],
           Number(headers.get("X-Total-Count"))
-      )
+        )
       }))
   }
 
@@ -149,12 +149,32 @@ export class RichSkillService extends AbstractService {
       }))
   }
 
-  libraryExport(): Observable<string> {
+  other(): Observable<any> {
+    return this.pollForTaskResult(
+      this.libraryExport(),
+      1000
+    )
+  }
+
+  libraryExport(): Observable<ApiTaskResult> {
 
     const errorMsg = "Could not export to CSV"
 
     return this.httpClient
-      .get(this.buildUrl("api/export/library"), {
+      .get<ApiTaskResult>(this.buildUrl("api/export/library"), {
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "application/json"
+          }
+        )),
+        observe: "response"
+      })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
+  }
+
+  getResultExportedLibrary(url: string): Observable<any> {
+    return this.httpClient
+      .get(this.buildUrl(url), {
         headers: this.wrapHeaders(new HttpHeaders({
             Accept: "text/csv"
           }
@@ -162,8 +182,20 @@ export class RichSkillService extends AbstractService {
         responseType: "text",
         observe: "response"
       })
-      .pipe(share())
-      .pipe(map((response) => this.safeUnwrapBody(response.body, errorMsg)))
+      .pipe(
+        retryWhen(errors => errors.pipe(
+          switchMap((error) => {
+            if (error.status === 404) {
+              return of(error.status)
+            }
+            return throwError(error)
+            // return _throw({message: error.error.message || 'Notification.Core.loginError'});
+          }),
+          // scan(acc => acc + 1, 0),
+          // takeWhile(acc => acc < 3),
+          delay(1000),
+          // concat(_throw({message: 'Notification.Core.networkError'}))
+      )))
   }
 
   publishSkillsWithResult(

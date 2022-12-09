@@ -8,7 +8,6 @@ import * as FileSaver from "file-saver"
 import {SvgHelper, SvgIcon} from "../core/SvgHelper"
 import {AbstractSearchComponent} from "./abstract-search.component"
 import {ApiTaskResult} from "../task/ApiTaskResult"
-import {Observable} from "rxjs"
 
 @Component({
   selector: "app-libraryexport",
@@ -32,17 +31,25 @@ export class LibraryExportComponent extends AbstractSearchComponent implements O
   }
 
   onDownloadLibrary(): void {
+    /* this.richSkillService.exportLibraryWithResult().subscribe(
+      csv => {
+        if (csv) {
+          this.downloadAsCsvFile(csv.body)
+        }
+      }
+    ) */
     this.richSkillService.libraryExport()
-      .subscribe((response: ApiTaskResult) => {
-        this.richSkillService.getResultExportedLibrary(response.id.slice(1)).subscribe(
-          csv => {
-            console.log(csv.body)
-            const blob = new Blob([csv.body], {type: "text/csv;charset=utf-8;"})
-            const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
-            FileSaver.saveAs(blob, `RSD Library - OSMT ${date}.csv`)
-          }
+      .subscribe((apiTaskResult: ApiTaskResult) => {
+        this.richSkillService.getResultExportedLibrary(apiTaskResult.id.slice(1)).subscribe(
+          response => this.downloadAsCsvFile(response.body)
         )
       })
+  }
+
+  private downloadAsCsvFile(csv: string): void {
+    const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"})
+    const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
+    FileSaver.saveAs(blob, `RSD Library - OSMT ${date}.csv`)
   }
 
 }

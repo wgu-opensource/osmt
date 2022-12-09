@@ -149,7 +149,7 @@ export class RichSkillService extends AbstractService {
       }))
   }
 
-  other(): Observable<any> {
+  exportLibraryWithResult(): Observable<any> {
     return this.pollForTaskResult(
       this.libraryExport(),
       1000
@@ -157,9 +157,6 @@ export class RichSkillService extends AbstractService {
   }
 
   libraryExport(): Observable<ApiTaskResult> {
-
-    const errorMsg = "Could not export to CSV"
-
     return this.httpClient
       .get<ApiTaskResult>(this.buildUrl("api/export/library"), {
         headers: this.wrapHeaders(new HttpHeaders({
@@ -172,6 +169,10 @@ export class RichSkillService extends AbstractService {
       .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }
 
+  /**
+   * Check if result exported with libraryExport() is ready if not check again every 1000 milliseconds.
+   * @param url Url to get RSD library exported as csv
+   */
   getResultExportedLibrary(url: string): Observable<any> {
     return this.httpClient
       .get(this.buildUrl(url), {
@@ -189,12 +190,10 @@ export class RichSkillService extends AbstractService {
               return of(error.status)
             }
             return throwError(error)
-            // return _throw({message: error.error.message || 'Notification.Core.loginError'});
           }),
           // scan(acc => acc + 1, 0),
           // takeWhile(acc => acc < 3),
           delay(1000),
-          // concat(_throw({message: 'Notification.Core.networkError'}))
       )))
   }
 
@@ -243,5 +242,26 @@ export class RichSkillService extends AbstractService {
       .pipe(map(({body, headers}) => {
         return body || []
       }))
+  }
+
+  observableForTaskResult<T>(task: ApiTaskResult, pollIntervalMs: number = 1000): Observable<any> {
+    return new Observable((observer) => {
+      const tick = () => {
+        this.httpClient.get(this.buildUrl(task.id), {
+          headers: this.wrapHeaders(),
+          observe: "response",
+          responseType: "text"
+        }).subscribe((body) => {
+          observer.next(body)
+          observer.complete()
+        }, (error) => {
+          if (error.status === 404) {
+            observer.next(undefined)
+            setTimeout(() => tick(), pollIntervalMs)
+          }
+        })
+      }
+      tick()
+    })
   }
 }

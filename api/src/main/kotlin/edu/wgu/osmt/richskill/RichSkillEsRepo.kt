@@ -4,6 +4,7 @@ import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSimilaritySearch
+import edu.wgu.osmt.config.QUOTED_SEARCH_REGEX_PATTERN
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
@@ -71,13 +72,12 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 } else {
                     bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::name.name, it))
                 }
-
             }
             category.nullIfEmpty()?.let {
-                if (it.contains("\"")) {
-                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::category.name}.raw").defaultOperator(Operator.AND))
+                if (it.matches(Regex(QUOTED_SEARCH_REGEX_PATTERN))) {
+                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::category.name}.keyword").defaultOperator(Operator.AND))
                 } else {
-                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::category.name, it))
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::category.name, it))
                 }
             }
             author.nullIfEmpty()?.let {

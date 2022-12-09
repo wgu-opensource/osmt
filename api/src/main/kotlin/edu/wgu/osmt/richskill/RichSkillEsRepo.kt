@@ -72,13 +72,10 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 } else {
                     bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::name.name, it))
                 }
-
             }
             category.nullIfEmpty()?.let {
                 if (it.matches(Regex(QUOTED_SEARCH_REGEX_PATTERN))) {
-                    //bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::category.name}.raw").defaultOperator(Operator.AND))
-                    bq.must(
-                        wrapperQuery(buildManualQuery(RichSkillDoc::category.name, it)))
+                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::category.name}.keyword").defaultOperator(Operator.AND))
                 } else {
                     bq.must(matchBoolPrefixQuery(RichSkillDoc::category.name, it))
                 }
@@ -321,16 +318,6 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             }
         }
         return nsq
-    }
-
-    fun buildManualQuery(fieldName: String, fieldValue: String) : String {
-        return String()
-            .plus("{")
-            .plus("\"term\": {")
-            .plus("\"" + fieldName).plus(".keyword\": {")
-            .plus("\"value\":")
-            .plus(fieldValue)
-            .plus("}}}")
     }
 
     override fun findSimilar(apiSimilaritySearch: ApiSimilaritySearch): SearchHits<RichSkillDoc> {

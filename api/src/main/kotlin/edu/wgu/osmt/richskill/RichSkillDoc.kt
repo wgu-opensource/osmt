@@ -44,7 +44,8 @@ data class RichSkillDoc(
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
-            InnerField(suffix = "keyword", type = Keyword)
+            InnerField(suffix = "keyword", type = Keyword),
+            InnerField(suffix = "sort_insensitive", type = Keyword, normalizer = "lowercase_normalizer")
         ]
     )
     @get:JsonProperty("skillName")
@@ -55,7 +56,8 @@ data class RichSkillDoc(
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
-            InnerField(suffix = "keyword", type = Keyword)
+            InnerField(suffix = "keyword", type = Keyword),
+            InnerField(suffix = "sort_insensitive", type = Keyword, normalizer = "lowercase_normalizer")
         ]
     )
     @get:JsonProperty("skillStatement")
@@ -67,7 +69,8 @@ data class RichSkillDoc(
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
-            InnerField(suffix = "keyword", type = Keyword)
+            InnerField(suffix = "keyword", type = Keyword),
+            InnerField(suffix = "sort_insensitive", type = Keyword, normalizer = "lowercase_normalizer")
         ]
     )
     @get:JsonProperty
@@ -79,7 +82,8 @@ data class RichSkillDoc(
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
-            InnerField(suffix = "keyword", type = Keyword)
+            InnerField(suffix = "keyword", type = Keyword),
+            InnerField(suffix = "sort_insensitive", type = Keyword, normalizer = "lowercase_normalizer")
         ]
     )
     @get:JsonProperty("author")
@@ -94,7 +98,8 @@ data class RichSkillDoc(
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
-            InnerField(suffix = "keyword", type = Keyword)
+            InnerField(suffix = "keyword", type = Keyword),
+            InnerField(suffix = "sort_insensitive", type = Keyword, normalizer = "lowercase_normalizer")
         ]
     )
     @get:JsonProperty("keywords")
@@ -109,7 +114,8 @@ data class RichSkillDoc(
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
-            InnerField(suffix = "keyword", type = Keyword)
+            InnerField(suffix = "keyword", type = Keyword),
+            InnerField(suffix = "sort_insensitive", type = Keyword, normalizer = "lowercase_normalizer")
         ]
     )
     @get:JsonIgnore
@@ -120,7 +126,8 @@ data class RichSkillDoc(
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
-            InnerField(suffix = "keyword", type = Keyword)
+            InnerField(suffix = "keyword", type = Keyword),
+            InnerField(suffix = "sort_insensitive", type = Keyword, normalizer = "lowercase_normalizer")
         ]
     )
     @get:JsonIgnore
@@ -131,7 +138,8 @@ data class RichSkillDoc(
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
-            InnerField(suffix = "keyword", type = Keyword)
+            InnerField(suffix = "keyword", type = Keyword),
+            InnerField(suffix = "sort_insensitive", type = Keyword, normalizer = "lowercase_normalizer")
         ]
     )
     @get:JsonIgnore
@@ -142,7 +150,8 @@ data class RichSkillDoc(
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
-            InnerField(suffix = "keyword", type = Keyword)
+            InnerField(suffix = "keyword", type = Keyword),
+            InnerField(suffix = "sort_insensitive", type = Keyword, normalizer = "lowercase_normalizer")
         ]
     )
     @get:JsonIgnore

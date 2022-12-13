@@ -149,13 +149,6 @@ export class RichSkillService extends AbstractService {
       }))
   }
 
-  exportLibraryWithResult(): Observable<any> {
-    return this.pollForTaskResult(
-      this.libraryExport(),
-      1000
-    )
-  }
-
   libraryExport(): Observable<ApiTaskResult> {
     return this.httpClient
       .get<ApiTaskResult>(this.buildUrl("api/export/library"), {
@@ -244,24 +237,4 @@ export class RichSkillService extends AbstractService {
       }))
   }
 
-  observableForTaskResult<T>(task: ApiTaskResult, pollIntervalMs: number = 1000): Observable<any> {
-    return new Observable((observer) => {
-      const tick = () => {
-        this.httpClient.get(this.buildUrl(task.id), {
-          headers: this.wrapHeaders(),
-          observe: "response",
-          responseType: "text"
-        }).subscribe((body) => {
-          observer.next(body)
-          observer.complete()
-        }, (error) => {
-          if (error.status === 404) {
-            observer.next(undefined)
-            setTimeout(() => tick(), pollIntervalMs)
-          }
-        })
-      }
-      tick()
-    })
-  }
 }

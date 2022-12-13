@@ -326,22 +326,17 @@ describe("RichSkillService", () => {
     req.flush(result$)
   }))
 
-  it("exportLibraryWithResult", fakeAsync(() => {
+  it("getResultExportedLibrary", fakeAsync(() => {
     {
       const taskResult = apiTaskResultForCSV
-      const path = "api/export/library"
+      const path = "api/results/text/" + apiTaskResultForCSV.uuid
       const path2 = taskResult.id.slice(1)
-      testService.exportLibraryWithResult().subscribe()
+      testService.getResultExportedLibrary(path2).subscribe()
       const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
       expect(req1.request.method).toEqual("GET")
-      req1.flush(taskResult)
+      req1.flush("csv")
 
       tick(ASYNC_WAIT_PERIOD)
-
-      /* Setup for request 2 */
-      const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path2)
-      expect(req2.request.method).toEqual("GET")
-      req2.flush("csv")
     }
   }))
 

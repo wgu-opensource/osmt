@@ -56,7 +56,7 @@ describe("LibraryExportComponent", () => {
 
   it("Should call export library with result", () => {
     const service = TestBed.inject(RichSkillService)
-    const spy = spyOn(service, "exportLibraryWithResult").and.returnValue(of(apiTaskResultForCSV))
+    const spy = spyOn(service, "libraryExport").and.returnValue(of(apiTaskResultForCSV))
     component.onDownloadLibrary()
     expect(spy).toHaveBeenCalled()
     // expect(FileSaver.saveAs).toHaveBeenCalled()

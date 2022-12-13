@@ -342,7 +342,7 @@ export class RichSkillServiceStub {
     return of(`x, y, z`)
   }
 
-  exportLibraryWithResult(): Observable<any> {
+  getResultExportedLibrary(): Observable<any> {
     return of("")
   }
 }

@@ -35,20 +35,15 @@ export class LibraryExportComponent extends AbstractSearchComponent implements O
 
   onDownloadLibrary(): void {
     this.toastService.loaderSubject.next(true)
-    this.richSkillService.exportLibraryWithResult().subscribe(
-      csv => {
-        if (csv) {
-          this.downloadAsCsvFile(csv.body)
-          this.toastService.loaderSubject.next(false)
-        }
-      }
-    )
-    /* this.richSkillService.libraryExport()
+    this.richSkillService.libraryExport()
       .subscribe((apiTaskResult: ApiTaskResult) => {
         this.richSkillService.getResultExportedLibrary(apiTaskResult.id.slice(1)).subscribe(
-          response => this.downloadAsCsvFile(response.body)
+          response => {
+            this.downloadAsCsvFile(response.body)
+            this.toastService.loaderSubject.next(false)
+          }
         )
-      }) */
+      })
   }
 
   private downloadAsCsvFile(csv: string): void {

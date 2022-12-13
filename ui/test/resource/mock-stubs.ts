@@ -341,6 +341,10 @@ export class RichSkillServiceStub {
   libraryExport(): Observable<string> {
     return of(`x, y, z`)
   }
+
+  exportLibraryWithResult(): Observable<any> {
+    return of("")
+  }
 }
 
 export let KeywordSearchServiceData = {

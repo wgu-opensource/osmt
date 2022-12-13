@@ -1,3 +1,4 @@
+/* tslint:disable:no-string-literal */
 import { Type } from "@angular/core"
 import { async, ComponentFixture, TestBed } from "@angular/core/testing"
 import { ActivatedRoute, Router } from "@angular/router"
@@ -7,6 +8,8 @@ import { AuthService } from "../auth/auth-service"
 import { RichSkillService } from "../richskill/service/rich-skill.service"
 import { AuthServiceStub, RichSkillServiceStub } from "../../../test/resource/mock-stubs"
 import { LibraryExportComponent } from "./libraryexport.component"
+import { of } from "rxjs"
+import { apiTaskResultForCSV } from "../../../test/resource/mock-data"
 
 
 let component: LibraryExportComponent
@@ -51,11 +54,17 @@ describe("LibraryExportComponent", () => {
     expect(LibraryExportComponent).toBeTruthy()
   })
 
-  describe("onDownloadLibrary", () => {
-    it("Should return blob type and file name", () => {
-      component.onDownloadLibrary()
+  it("Should call export library with result", () => {
+    const service = TestBed.inject(RichSkillService)
+    const spy = spyOn(service, "exportLibraryWithResult").and.returnValue(of(apiTaskResultForCSV))
+    component.onDownloadLibrary()
+    expect(spy).toHaveBeenCalled()
+    // expect(FileSaver.saveAs).toHaveBeenCalled()
+  })
 
-      expect(FileSaver.saveAs).toHaveBeenCalled()
-    })
+
+  it("download as csv file", () => {
+    component["downloadAsCsvFile"]("value1,value2,value3")
+    expect(FileSaver.saveAs).toHaveBeenCalled()
   })
 })

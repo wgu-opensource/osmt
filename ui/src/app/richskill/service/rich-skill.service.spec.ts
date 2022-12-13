@@ -6,6 +6,7 @@ import { HttpClientTestingModule, HttpTestingController } from "@angular/common/
 import { fakeAsync, TestBed, tick } from "@angular/core/testing"
 import { Router } from "@angular/router"
 import {
+  apiTaskResultForCSV,
   createMockAuditLog,
   createMockBatchResult,
   createMockPaginatedSkills,
@@ -327,18 +328,10 @@ describe("RichSkillService", () => {
 
   it("exportLibraryWithResult", fakeAsync(() => {
     {
-      const taskResult = {
-        uuid: "c2624480-4935-4362-bc71-86e052dcb852",
-        status: "Processing",
-        "content-type": "text/csv",
-        id: "/api/results/text/c2624480-4935-4362-bc71-86e052dcb852"
-      }
+      const taskResult = apiTaskResultForCSV
       const path = "api/export/library"
       const path2 = taskResult.id.slice(1)
-      testService.exportLibraryWithResult().subscribe(data => {
-          console.log({result: data})
-        }
-      )
+      testService.exportLibraryWithResult().subscribe()
       const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
       expect(req1.request.method).toEqual("GET")
       req1.flush(taskResult)

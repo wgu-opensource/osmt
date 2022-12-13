@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core"
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http"
-import {concat, Observable, of, throwError} from "rxjs"
+import {Observable, of, throwError} from "rxjs"
 import {ApiAuditLog, ApiSkill, ApiSortOrder, IAuditLog, ISkill} from "../ApiSkill"
-import {delay, map, retryWhen, scan, share, switchMap, takeWhile} from "rxjs/operators"
+import {delay, map, retryWhen, share, switchMap} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate"
 import {AuthService} from "../../auth/auth-service"
@@ -185,8 +185,6 @@ export class RichSkillService extends AbstractService {
             }
             return throwError(error)
           }),
-          // scan(acc => acc + 1, 0),
-          // takeWhile(acc => acc < 3),
           delay(pollIntervalMs),
       )))
   }

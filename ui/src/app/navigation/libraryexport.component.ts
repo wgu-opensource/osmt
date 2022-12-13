@@ -31,19 +31,19 @@ export class LibraryExportComponent extends AbstractSearchComponent implements O
   }
 
   onDownloadLibrary(): void {
-    /* this.richSkillService.exportLibraryWithResult().subscribe(
+    this.richSkillService.exportLibraryWithResult().subscribe(
       csv => {
         if (csv) {
           this.downloadAsCsvFile(csv.body)
         }
       }
-    ) */
-    this.richSkillService.libraryExport()
+    )
+    /* this.richSkillService.libraryExport()
       .subscribe((apiTaskResult: ApiTaskResult) => {
         this.richSkillService.getResultExportedLibrary(apiTaskResult.id.slice(1)).subscribe(
           response => this.downloadAsCsvFile(response.body)
         )
-      })
+      }) */
   }
 
   private downloadAsCsvFile(csv: string): void {

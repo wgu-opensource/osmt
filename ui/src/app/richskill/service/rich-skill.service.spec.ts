@@ -25,6 +25,7 @@ import { ApiSkillSummary } from "../ApiSkillSummary"
 import { ApiSkillUpdate } from "../ApiSkillUpdate"
 import { ApiSearch, PaginatedSkills } from "./rich-skill-search.service"
 import { RichSkillService } from "./rich-skill.service"
+import { ApiTaskResult } from "../../task/ApiTaskResult"
 
 
 // An example of how to test a service
@@ -314,14 +315,41 @@ describe("RichSkillService", () => {
 
     tick(ASYNC_WAIT_PERIOD)
     // Assert
-    result$.subscribe( (data: string) => {
+    result$.subscribe((data: ApiTaskResult) => {
       expect(RouterData.commands).toEqual([]) // No Errors
     })
 
     const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/export/library")
     expect(req.request.method).toEqual("GET")
-    expect(req.request.headers.get("Accept")).toEqual("text/csv")
+    expect(req.request.headers.get("Accept")).toEqual("application/json")
     req.flush(result$)
+  }))
+
+  it("exportLibraryWithResult", fakeAsync(() => {
+    {
+      const taskResult = {
+        uuid: "c2624480-4935-4362-bc71-86e052dcb852",
+        status: "Processing",
+        "content-type": "text/csv",
+        id: "/api/results/text/c2624480-4935-4362-bc71-86e052dcb852"
+      }
+      const path = "api/export/library"
+      const path2 = taskResult.id.slice(1)
+      testService.exportLibraryWithResult().subscribe(data => {
+          console.log({result: data})
+        }
+      )
+      const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+      expect(req1.request.method).toEqual("GET")
+      req1.flush(taskResult)
+
+      tick(ASYNC_WAIT_PERIOD)
+
+      /* Setup for request 2 */
+      const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path2)
+      expect(req2.request.method).toEqual("GET")
+      req2.flush("csv")
+    }
   }))
 
   it("publishSkillsWithResult should return", fakeAsync(() => {

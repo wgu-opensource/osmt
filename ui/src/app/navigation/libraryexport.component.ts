@@ -8,6 +8,7 @@ import * as FileSaver from "file-saver"
 import {SvgHelper, SvgIcon} from "../core/SvgHelper"
 import {AbstractSearchComponent} from "./abstract-search.component"
 import {ApiTaskResult} from "../task/ApiTaskResult"
+import {ToastService} from "../toast/toast.service"
 
 @Component({
   selector: "app-libraryexport",
@@ -23,7 +24,9 @@ export class LibraryExportComponent extends AbstractSearchComponent implements O
     protected route: ActivatedRoute,
     protected authService: AuthService,
     protected richSkillService: RichSkillService,
-    @Inject(LOCALE_ID) protected locale: string) {
+    @Inject(LOCALE_ID) protected locale: string,
+    private toastService: ToastService
+  ) {
     super(searchService, route, authService)
   }
 
@@ -31,10 +34,12 @@ export class LibraryExportComponent extends AbstractSearchComponent implements O
   }
 
   onDownloadLibrary(): void {
+    this.toastService.loaderSubject.next(true)
     this.richSkillService.exportLibraryWithResult().subscribe(
       csv => {
         if (csv) {
           this.downloadAsCsvFile(csv.body)
+          this.toastService.loaderSubject.next(false)
         }
       }
     )

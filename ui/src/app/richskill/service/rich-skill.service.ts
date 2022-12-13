@@ -165,8 +165,9 @@ export class RichSkillService extends AbstractService {
   /**
    * Check if result exported with libraryExport() is ready if not check again every 1000 milliseconds.
    * @param url Url to get RSD library exported as csv
+   * @param pollIntervalMs Milliseconds to retry request
    */
-  getResultExportedLibrary(url: string): Observable<any> {
+  getResultExportedLibrary(url: string, pollIntervalMs: number = 1000): Observable<any> {
     return this.httpClient
       .get(this.buildUrl(url), {
         headers: this.wrapHeaders(new HttpHeaders({
@@ -186,7 +187,7 @@ export class RichSkillService extends AbstractService {
           }),
           // scan(acc => acc + 1, 0),
           // takeWhile(acc => acc < 3),
-          delay(1000),
+          delay(pollIntervalMs),
       )))
   }
 

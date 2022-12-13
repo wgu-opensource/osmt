@@ -14,15 +14,31 @@ import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.keyword.KeywordDao
-import edu.wgu.osmt.security.*
-import edu.wgu.osmt.task.*
+import edu.wgu.osmt.security.OAuthHelper
+import edu.wgu.osmt.task.AppliesToType
+import edu.wgu.osmt.task.CreateSkillsTask
+import edu.wgu.osmt.task.CsvTask
+import edu.wgu.osmt.task.PublishTask
+import edu.wgu.osmt.task.Task
+import edu.wgu.osmt.task.TaskMessageService
+import edu.wgu.osmt.task.TaskResult
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.*
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -176,11 +192,31 @@ class RichSkillController @Autowired constructor(
     fun skillAuditLog(
         @PathVariable uuid: String
     ): HttpEntity<List<AuditLog>> {
+
         val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateDesc.apiValue).sort)
 
         val skill = richSkillRepository.findByUUID(uuid)
 
         val sizedIterable = auditLogRepository.findByTableAndId(RichSkillDescriptorTable.tableName, entityId = skill!!.id.value, offsetPageable = pageable)
         return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping(RoutePaths.EXPORT_LIBRARY, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun exportLibrary(
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
+        if (!appConfig.allowPublicSearching && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+        if (!oAuthHelper.hasRole(appConfig.roleAdmin)) {
+            throw GeneralApiException("OSMT user must have an Admin role.", HttpStatus.UNAUTHORIZED)
+        }
+
+        val task = CsvTask(collectionUuid = "FullLibrary")
+        taskMessageService.enqueueJob(TaskMessageService.skillsForFullLibraryCsv, task)
+
+        return Task.processingResponse(task)
     }
 }

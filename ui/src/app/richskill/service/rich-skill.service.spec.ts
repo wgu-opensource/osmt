@@ -6,6 +6,7 @@ import { HttpClientTestingModule, HttpTestingController } from "@angular/common/
 import { fakeAsync, TestBed, tick } from "@angular/core/testing"
 import { Router } from "@angular/router"
 import {
+  apiTaskResultForCSV,
   createMockAuditLog,
   createMockBatchResult,
   createMockPaginatedSkills,
@@ -25,6 +26,7 @@ import { ApiSkillSummary } from "../ApiSkillSummary"
 import { ApiSkillUpdate } from "../ApiSkillUpdate"
 import { ApiSearch, PaginatedSkills } from "./rich-skill-search.service"
 import { RichSkillService } from "./rich-skill.service"
+import { ApiTaskResult } from "../../task/ApiTaskResult"
 
 
 // An example of how to test a service
@@ -305,6 +307,38 @@ describe("RichSkillService", () => {
       headers: { "x-total-count": "" + testData.totalCount}
     })
   })
+
+  it("libraryExport should return", fakeAsync(() => {
+    RouterData.commands = []
+
+    // Act
+    const result$ = testService.libraryExport()
+
+    tick(ASYNC_WAIT_PERIOD)
+    // Assert
+    result$.subscribe((data: ApiTaskResult) => {
+      expect(RouterData.commands).toEqual([]) // No Errors
+    })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/export/library")
+    expect(req.request.method).toEqual("GET")
+    expect(req.request.headers.get("Accept")).toEqual("application/json")
+    req.flush(result$)
+  }))
+
+  it("getResultExportedLibrary", fakeAsync(() => {
+    {
+      const taskResult = apiTaskResultForCSV
+      const path = "api/results/text/" + apiTaskResultForCSV.uuid
+      const path2 = taskResult.id.slice(1)
+      testService.getResultExportedLibrary(path2).subscribe()
+      const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+      expect(req1.request.method).toEqual("GET")
+      req1.flush("csv")
+
+      tick(ASYNC_WAIT_PERIOD)
+    }
+  }))
 
   it("publishSkillsWithResult should return", fakeAsync(() => {
     // Arrange

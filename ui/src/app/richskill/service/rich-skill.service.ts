@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core"
-import {HttpClient, HttpHeaders} from "@angular/common/http"
-import {Observable} from "rxjs"
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http"
+import {Observable, of, throwError} from "rxjs"
 import {ApiAuditLog, ApiSkill, ApiSortOrder, IAuditLog, ISkill} from "../ApiSkill"
-import {map, share} from "rxjs/operators"
+import {delay, map, retryWhen, share, switchMap} from "rxjs/operators"
 import {AbstractService} from "../../abstract.service"
 import {ApiSkillUpdate} from "../ApiSkillUpdate"
 import {AuthService} from "../../auth/auth-service"
@@ -11,8 +11,8 @@ import {PublishStatus} from "../../PublishStatus"
 import {ApiBatchResult} from "../ApiBatchResult"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
 import {ApiSkillSummary, ISkillSummary} from "../ApiSkillSummary"
-import {Router} from "@angular/router";
-import {Location} from "@angular/common";
+import {Router} from "@angular/router"
+import {Location} from "@angular/common"
 
 
 @Injectable({
@@ -43,7 +43,7 @@ export class RichSkillService extends AbstractService {
         return new PaginatedSkills(
           body?.map(skill => skill) || [],
           Number(headers.get("X-Total-Count"))
-      )
+        )
       }))
   }
 
@@ -149,6 +149,46 @@ export class RichSkillService extends AbstractService {
       }))
   }
 
+  libraryExport(): Observable<ApiTaskResult> {
+    return this.httpClient
+      .get<ApiTaskResult>(this.buildUrl("api/export/library"), {
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "application/json"
+          }
+        )),
+        observe: "response"
+      })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
+  }
+
+  /**
+   * Check if result exported with libraryExport() is ready if not check again every 1000 milliseconds.
+   * @param url Url to get RSD library exported as csv
+   * @param pollIntervalMs Milliseconds to retry request
+   */
+  getResultExportedLibrary(url: string, pollIntervalMs: number = 1000): Observable<any> {
+    return this.httpClient
+      .get(this.buildUrl(url), {
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "text/csv"
+          }
+        )),
+        responseType: "text",
+        observe: "response"
+      })
+      .pipe(
+        retryWhen(errors => errors.pipe(
+          switchMap((error) => {
+            if (error.status === 404) {
+              return of(error.status)
+            }
+            return throwError(error)
+          }),
+          delay(pollIntervalMs),
+      )))
+  }
+
   publishSkillsWithResult(
     apiSearch: ApiSearch,
     newStatus: PublishStatus = PublishStatus.Published,
@@ -195,4 +235,5 @@ export class RichSkillService extends AbstractService {
         return body || []
       }))
   }
+
 }

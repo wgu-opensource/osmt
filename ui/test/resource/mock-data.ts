@@ -16,7 +16,7 @@ import {
 import { ApiCollectionSummary, ICollectionSummary, ISkillSummary } from "../../src/app/richskill/ApiSkillSummary"
 import { ApiReferenceListUpdate, IRichSkillUpdate, IStringListUpdate } from "../../src/app/richskill/ApiSkillUpdate"
 import { PaginatedCollections, PaginatedSkills } from "../../src/app/richskill/service/rich-skill-search.service"
-import { ITaskResult } from "../../src/app/task/ApiTaskResult"
+import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
 
 // Add mock data here.
 // For more examples, see https://github.com/WGU-edu/ema-eval-ui/blob/develop/src/app/admin/pages/edit-user/edit-user.component.spec.ts
@@ -277,3 +277,11 @@ export function createMockCollectionUpdate(creationDate: Date, updateDate: Date,
     skills: createMockStringListUpdate()
   }
 }
+
+export const apiTaskResultForCSV: ApiTaskResult = {
+  uuid: "c2624480-4935-4362-bc71-86e052dcb852",
+  status: "Processing",
+  contentType: "text/csv",
+  id: "/api/results/text/c2624480-4935-4362-bc71-86e052dcb852"
+}
+

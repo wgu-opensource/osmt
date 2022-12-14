@@ -336,6 +336,15 @@ export class RichSkillServiceStub {
   ): Observable<PaginatedSkills> {
     return of(createMockPaginatedSkills())
   }
+
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
+  libraryExport(): Observable<string> {
+    return of(`x, y, z`)
+  }
+
+  getResultExportedLibrary(): Observable<any> {
+    return of("")
+  }
 }
 
 export let KeywordSearchServiceData = {

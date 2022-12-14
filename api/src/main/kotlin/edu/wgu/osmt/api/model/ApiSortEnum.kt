@@ -37,10 +37,14 @@ interface SortOrderCompanion<T> where T: SortOrder{
  */
 enum class SkillSortEnum(override val apiValue: String) : SortOrder {
     CategoryAsc("name.asc") {
-        override val sort = Sort.by("category.keyword").ascending()
+        override val sort = Sort.by(
+                Sort.Order.asc("category.sort_insensitive"),
+                Sort.Order.asc("name.sort_insensitive"))
     },
     CategoryDesc("name.desc") {
-        override val sort = Sort.by("category.keyword").descending()
+        override val sort = Sort.by(
+                Sort.Order.desc("category.sort_insensitive"),
+                Sort.Order.asc("name.sort_insensitive"))
     },
     NameAsc("skill.asc") {
         override val sort = Sort.by(nameKeyword).ascending()

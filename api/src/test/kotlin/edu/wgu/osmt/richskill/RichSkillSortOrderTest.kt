@@ -10,8 +10,7 @@ import edu.wgu.osmt.csv.BatchImportRichSkill
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
-import junit.framework.TestCase.assertFalse
-import junit.framework.TestCase.assertTrue
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
+
 
 @Transactional
 internal class RichSkillSortOrderTest @Autowired constructor(
@@ -35,24 +35,25 @@ internal class RichSkillSortOrderTest @Autowired constructor(
     lateinit var batchImportRichSkill: BatchImportRichSkill
 
     private lateinit var mockData : MockData
-    val nullJwt : Jwt? = null
+
+    private val nullJwt : Jwt? = null
+
+    private lateinit var listOfSkills : List<RichSkillDoc>
+
+    private var size : Int = 0
 
     @BeforeAll
     fun setup() {
         mockData = MockData()
+        listOfSkills = mockData.getRichSkillDocs()
+        richSkillEsRepo.saveAll(listOfSkills)
+        size = 50
     }
 
     @Nested
     inner class SortedResults {
         @Test
-        fun `sorted by default`() {
-            //default sort is CategoryAsc
-
-            // Arrange
-            val size = 50
-            val listOfSkills = mockData.getRichSkillDocs()
-            richSkillEsRepo.saveAll(listOfSkills)
-
+        fun `sorted by default (cat desc)`() {
             // Act
             val result = richSkillController.allPaginated(
                     UriComponentsBuilder.newInstance(),
@@ -63,18 +64,14 @@ internal class RichSkillSortOrderTest @Autowired constructor(
                     nullJwt
             )
             val rsdList: List<RichSkillDoc>? = result.body
-            val richSkillCategoriesASC: List<String?> = listOf(rsdList?.get(0)?.category, rsdList?.get(5)?.category)
 
             // Assert
-//            assertTrue(Ordering.natural<String>().isOrdered(richSkillCategoriesASC))
+            assertThat(rsdList).isSortedAccordingTo(
+                Comparator.comparing { r: RichSkillDoc -> r.category!! }
+            )
         }
         @Test
         fun `sorted by category ASC and name ASC`() {
-            // Arrange
-            val size = 50
-            val listOfSkills = mockData.getRichSkillDocs()
-            richSkillEsRepo.saveAll(listOfSkills)
-
             // Act
             val result = richSkillController.allPaginated(
                     UriComponentsBuilder.newInstance(),
@@ -85,20 +82,15 @@ internal class RichSkillSortOrderTest @Autowired constructor(
                     nullJwt
             )
             val body: List<RichSkillDoc>? = result.body
-            val richSkillCategoriesASC: List<String?> = listOf(body?.get(0)?.category, body?.get(5)?.category)
-            val richSkillNameASC: List<String?> = listOf(body?.get(0)?.name, body?.get(5)?.name)
+            val byNameAndCategory = Comparator.comparing { r: RichSkillDoc -> r.category!! }
+                .thenComparing { r -> r.name!! }
 
             // Assert
-//            assertTrue(Ordering.natural<String>().isOrdered(richSkillCategoriesASC))
-//            assertTrue(Ordering.natural<String>().isOrdered(richSkillNameASC))
+            assertThat(body).isSortedAccordingTo(byNameAndCategory)
+
         }
         @Test
         fun `sorted by category DESC and name ASC`() {
-            // Arrange
-            val size = 50
-            val listOfSkills = mockData.getRichSkillDocs()
-            richSkillEsRepo.saveAll(listOfSkills)
-
             // Act
             val result = richSkillController.allPaginated(
                     UriComponentsBuilder.newInstance(),
@@ -109,23 +101,47 @@ internal class RichSkillSortOrderTest @Autowired constructor(
                     nullJwt
             )
             val body: List<RichSkillDoc>? = result.body
-            val richSkillCategoriesDESC: List<String?> = listOf(body?.get(0)?.category, body?.get(5)?.category)
-            val richSkillNameASC: List<String?> = listOf(body?.get(0)?.name, body?.get(5)?.name)
+            val byCategoryDescAndThenByName = Comparator.comparing { r: RichSkillDoc -> r.category!! }.reversed()
+                .thenComparing { r -> r.name!! }
 
-//            println(Ordering.natural<String>().isOrdered(richSkillCategoriesDESC))
-//
-//            // Assert
-//            assertFalse(Ordering.natural<String>().isOrdered(richSkillCategoriesDESC))
-//            assertTrue(Ordering.natural<String>().isOrdered(richSkillNameASC))
+            // Assert
+            assertThat(body).isSortedAccordingTo(byCategoryDescAndThenByName)
         }
         @Test
-        fun `sorted by name ASC`() {}
-        @Test
-        fun `sorted by name DESC`() {}
-    }
+        fun `sorted by name ASC`() {
+            // Act
+            val result = richSkillController.allPaginated(
+                UriComponentsBuilder.newInstance(),
+                size,
+                0,
+                arrayOf("draft", "published"),
+                "name.asc",
+                nullJwt
+            )
+            val rsdList: List<RichSkillDoc>? = result.body
 
-//    fun verifySortOrder(skills: List<RichSkillDoc>?): Boolean {
-//
-//        return true
-//    }
+            // Assert
+            assertThat(rsdList).isSortedAccordingTo(
+                Comparator.comparing { r: RichSkillDoc -> r.name!! }
+            )
+        }
+        @Test
+        fun `sorted by name DESC`() {
+            // Act
+            val result = richSkillController.allPaginated(
+                UriComponentsBuilder.newInstance(),
+                size,
+                0,
+                arrayOf("draft", "published"),
+                "name.asc",
+                nullJwt
+            )
+            val rsdList: List<RichSkillDoc>? = result.body
+
+            // Assert
+            assertThat(rsdList).isSortedAccordingTo(
+                Comparator.comparing { r: RichSkillDoc -> r.name!! }.reversed()
+            )
+        }
+    }
 }

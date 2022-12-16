@@ -1,5 +1,9 @@
 package edu.wgu.osmt.api.model
 
+import edu.wgu.osmt.config.CATEGORY_ASC
+import edu.wgu.osmt.config.CATEGORY_DESC
+import edu.wgu.osmt.config.NAME_ASC
+import edu.wgu.osmt.config.NAME_DESC
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
@@ -32,24 +36,26 @@ interface SortOrderCompanion<T> where T: SortOrder{
     fun forApiValue(apiValue: String): T
 }
 
+
+
 /**
  * Provides an enum for Rich skills that defines elasticsearch sorting
  */
 enum class SkillSortEnum(override val apiValue: String) : SortOrder {
-    CategoryAsc("name.asc") {
+    CategoryAsc(CATEGORY_ASC) {
         override val sort = Sort.by(
                 Sort.Order.asc("category.sort_insensitive"),
                 Sort.Order.asc("name.sort_insensitive"))
     },
-    CategoryDesc("name.desc") {
+    CategoryDesc(CATEGORY_DESC) {
         override val sort = Sort.by(
                 Sort.Order.desc("category.sort_insensitive"),
                 Sort.Order.asc("name.sort_insensitive"))
     },
-    NameAsc("skill.asc") {
+    NameAsc(NAME_ASC) {
         override val sort = Sort.by(nameKeyword).ascending()
     },
-    NameDesc("skill.desc") {
+    NameDesc(NAME_DESC) {
         override val sort = Sort.by(nameKeyword).descending()
     };
 
@@ -76,7 +82,7 @@ enum class CollectionSortEnum(override val apiValue: String) : SortOrder {
     SkillCountDesc("skill.desc") {
         override val sort = Sort.by("skillCount").descending()
     },
-    CollectionNameAsc("name.asc") {
+    CollectionNameAsc(NAME_ASC) {
         override val sort = Sort.by(nameKeyword).ascending()
     },
     CollectionNameDesc("name.desc") {

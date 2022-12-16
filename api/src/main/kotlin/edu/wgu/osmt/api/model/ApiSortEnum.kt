@@ -2,8 +2,10 @@ package edu.wgu.osmt.api.model
 
 import edu.wgu.osmt.config.CATEGORY_ASC
 import edu.wgu.osmt.config.CATEGORY_DESC
+import edu.wgu.osmt.config.CATEGORY_SORT_INSENSITIVE
 import edu.wgu.osmt.config.NAME_ASC
 import edu.wgu.osmt.config.NAME_DESC
+import edu.wgu.osmt.config.NAME_SORT_INSENSITIVE
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
@@ -44,19 +46,19 @@ interface SortOrderCompanion<T> where T: SortOrder{
 enum class SkillSortEnum(override val apiValue: String) : SortOrder {
     CategoryAsc(CATEGORY_ASC) {
         override val sort = Sort.by(
-                Sort.Order.asc("category.sort_insensitive"),
-                Sort.Order.asc("name.sort_insensitive"))
+                Sort.Order.asc(CATEGORY_SORT_INSENSITIVE),
+                Sort.Order.asc(NAME_SORT_INSENSITIVE))
     },
     CategoryDesc(CATEGORY_DESC) {
         override val sort = Sort.by(
-                Sort.Order.desc("category.sort_insensitive"),
-                Sort.Order.asc("name.sort_insensitive"))
+                Sort.Order.desc(CATEGORY_SORT_INSENSITIVE),
+                Sort.Order.asc(NAME_SORT_INSENSITIVE))
     },
     NameAsc(NAME_ASC) {
-        override val sort = Sort.by(nameKeyword).ascending()
+        override val sort = Sort.by(NAME_SORT_INSENSITIVE).ascending()
     },
     NameDesc(NAME_DESC) {
-        override val sort = Sort.by(nameKeyword).descending()
+        override val sort = Sort.by(NAME_SORT_INSENSITIVE).descending()
     };
 
     companion object : SortOrderCompanion<SkillSortEnum> {

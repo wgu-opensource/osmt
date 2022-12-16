@@ -9,7 +9,6 @@ import edu.wgu.osmt.config.CATEGORY_ASC
 import edu.wgu.osmt.config.CATEGORY_DESC
 import edu.wgu.osmt.config.NAME_ASC
 import edu.wgu.osmt.config.NAME_DESC
-import edu.wgu.osmt.csv.BatchImportRichSkill
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
@@ -35,9 +34,6 @@ internal class RichSkillSortOrderTest @Autowired constructor(
 
     @Autowired
     lateinit var richSkillController: RichSkillController
-
-    @Autowired
-    lateinit var batchImportRichSkill: BatchImportRichSkill
 
     private lateinit var mockData : MockData
 

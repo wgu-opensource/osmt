@@ -1,11 +1,14 @@
 package edu.wgu.osmt.richskill
 
-//import com.google.common.collect.Ordering
 import edu.wgu.osmt.BaseDockerizedTest
 import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.collection.CollectionEsRepo
+import edu.wgu.osmt.config.CATEGORY_ASC
+import edu.wgu.osmt.config.CATEGORY_DESC
+import edu.wgu.osmt.config.NAME_ASC
+import edu.wgu.osmt.config.NAME_DESC
 import edu.wgu.osmt.csv.BatchImportRichSkill
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
@@ -14,10 +17,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
+import java.lang.String.CASE_INSENSITIVE_ORDER
 
 
 @Transactional
@@ -38,22 +43,26 @@ internal class RichSkillSortOrderTest @Autowired constructor(
 
     private val nullJwt : Jwt? = null
 
-    private lateinit var listOfSkills : List<RichSkillDoc>
 
-    private var size : Int = 0
-
-    @BeforeAll
-    fun setup() {
-        mockData = MockData()
-        listOfSkills = mockData.getRichSkillDocs()
-        richSkillEsRepo.saveAll(listOfSkills)
-        size = 50
-    }
 
     @Nested
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     inner class SortedResults {
+
+        var size: Int = 0
+        private lateinit var listOfSkills: List<RichSkillDoc>
+
+        @BeforeAll
+        fun setup() {
+            // Arrange
+            mockData = MockData()
+            size = 50
+            listOfSkills = mockData.getRichSkillDocs()
+            richSkillEsRepo.saveAll(listOfSkills)
+        }
+
         @Test
-        fun `sorted by default (cat desc)`() {
+        fun `sorted by default(category ASC)`() {
             // Act
             val result = richSkillController.allPaginated(
                     UriComponentsBuilder.newInstance(),
@@ -67,7 +76,7 @@ internal class RichSkillSortOrderTest @Autowired constructor(
 
             // Assert
             assertThat(rsdList).isSortedAccordingTo(
-                Comparator.comparing { r: RichSkillDoc -> r.category!! }
+                Comparator.comparing(RichSkillDoc::category, CASE_INSENSITIVE_ORDER)
             )
         }
         @Test
@@ -78,12 +87,12 @@ internal class RichSkillSortOrderTest @Autowired constructor(
                     size,
                     0,
                     arrayOf("draft", "published"),
-                    "name.asc",
+                    CATEGORY_ASC,
                     nullJwt
             )
             val body: List<RichSkillDoc>? = result.body
-            val byNameAndCategory = Comparator.comparing { r: RichSkillDoc -> r.category!! }
-                .thenComparing { r -> r.name!! }
+            val byNameAndCategory = Comparator.comparing(RichSkillDoc::category, CASE_INSENSITIVE_ORDER)
+                .thenComparing (RichSkillDoc::name, CASE_INSENSITIVE_ORDER)
 
             // Assert
             assertThat(body).isSortedAccordingTo(byNameAndCategory)
@@ -97,12 +106,12 @@ internal class RichSkillSortOrderTest @Autowired constructor(
                     size,
                     0,
                     arrayOf("draft", "published"),
-                    "name.desc",
+                    CATEGORY_DESC,
                     nullJwt
             )
             val body: List<RichSkillDoc>? = result.body
-            val byCategoryDescAndThenByName = Comparator.comparing { r: RichSkillDoc -> r.category!! }.reversed()
-                .thenComparing { r -> r.name!! }
+            val byCategoryDescAndThenByName = Comparator.comparing(RichSkillDoc::category, CASE_INSENSITIVE_ORDER).reversed()
+                .thenComparing (RichSkillDoc::name, CASE_INSENSITIVE_ORDER)
 
             // Assert
             assertThat(body).isSortedAccordingTo(byCategoryDescAndThenByName)
@@ -115,14 +124,14 @@ internal class RichSkillSortOrderTest @Autowired constructor(
                 size,
                 0,
                 arrayOf("draft", "published"),
-                "name.asc",
+                NAME_ASC,
                 nullJwt
             )
             val rsdList: List<RichSkillDoc>? = result.body
 
             // Assert
             assertThat(rsdList).isSortedAccordingTo(
-                Comparator.comparing { r: RichSkillDoc -> r.name!! }
+                Comparator.comparing(RichSkillDoc::name, CASE_INSENSITIVE_ORDER)
             )
         }
         @Test
@@ -133,14 +142,14 @@ internal class RichSkillSortOrderTest @Autowired constructor(
                 size,
                 0,
                 arrayOf("draft", "published"),
-                "name.asc",
+                NAME_DESC,
                 nullJwt
             )
             val rsdList: List<RichSkillDoc>? = result.body
 
             // Assert
             assertThat(rsdList).isSortedAccordingTo(
-                Comparator.comparing { r: RichSkillDoc -> r.name!! }.reversed()
+                Comparator.comparing(RichSkillDoc::name, CASE_INSENSITIVE_ORDER).reversed()
             )
         }
     }

@@ -12,8 +12,8 @@ import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
 import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
 import {SkillsListComponent} from "../richskill/list/skills-list.component";
-import {ApiTaskResult} from "../task/ApiTaskResult";
 import {AuthService} from "../auth/auth-service";
+import {ApiBatchResult} from "../richskill/ApiBatchResult"
 
 @Component({
   selector: "app-collection-skill-search",
@@ -24,7 +24,7 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
   collection?: ApiCollection
 
   collectionLoaded?: Observable<ApiCollection>
-  collectionUpdated?: Observable<ApiTaskResult>
+  collectionUpdated?: Observable<ApiBatchResult>
 
   searchForm = new FormGroup({
     search: new FormControl("")
@@ -119,7 +119,7 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
     const selectedCount = this.multiplePagesSelected ? this.totalCount : this.selectedSkills?.length ?? 1
 
     this.toastService.showBlockingLoader()
-    this.collectionUpdated = this.collectionService.updateSkills(this.uuidParam!, new ApiSkillListUpdate({add: apiSearch}))
+    this.collectionUpdated = this.collectionService.updateSkillsWithResult(this.uuidParam!, new ApiSkillListUpdate({add: apiSearch}))
     this.collectionUpdated.subscribe(result => {
       if (result) {
         this.toastService.hideBlockingLoader()

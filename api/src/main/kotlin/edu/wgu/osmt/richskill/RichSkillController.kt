@@ -18,6 +18,7 @@ import edu.wgu.osmt.security.OAuthHelper
 import edu.wgu.osmt.task.AppliesToType
 import edu.wgu.osmt.task.CreateSkillsTask
 import edu.wgu.osmt.task.CsvTask
+import edu.wgu.osmt.task.ExportSkillsToCsvTask
 import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
@@ -216,6 +217,26 @@ class RichSkillController @Autowired constructor(
 
         val task = CsvTask(collectionUuid = "FullLibrary")
         taskMessageService.enqueueJob(TaskMessageService.skillsForFullLibraryCsv, task)
+
+        return Task.processingResponse(task)
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping(RoutePaths.SKILL_CSV_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun exportCustomList(
+        @RequestBody uuids: List<String>?,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
+        if (!appConfig.allowPublicSearching && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+        if (!oAuthHelper.hasRole(appConfig.roleAdmin)) {
+            throw GeneralApiException("OSMT user must have an Admin role.", HttpStatus.UNAUTHORIZED)
+        }
+
+        val task = ExportSkillsToCsvTask(collectionUuid = "CustomList", uuids)
+        taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsv, task)
 
         return Task.processingResponse(task)
     }

@@ -16,6 +16,7 @@ object RoutePaths {
     const val SKILL_DETAIL = "$SKILLS_PATH/{uuid}"
     const val SKILL_UPDATE = "$SKILL_DETAIL/update"
     const val SKILL_AUDIT_LOG = "${SKILL_DETAIL}/log"
+    const val SKILL_CSV_LIST = "$SKILLS_PATH/export"
 
 
     const val COLLECTIONS_PATH = "/api/collections"

@@ -162,6 +162,19 @@ export class RichSkillService extends AbstractService {
       .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }
 
+  exportSearch(uuids: string[]): Observable<ApiTaskResult> {
+    console.log(uuids)
+    return this.httpClient.post<ApiTaskResult>(this.buildUrl("api/skills/export"), uuids, {
+      headers: this.wrapHeaders(new HttpHeaders({
+          Accept: "application/json"
+        }
+      )),
+      observe: "response"
+    })
+    .pipe(share())
+    .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
+  }
+
   /**
    * Check if result exported with libraryExport() is ready if not check again every 1000 milliseconds.
    * @param url Url to get RSD library exported as csv

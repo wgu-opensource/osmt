@@ -2,22 +2,18 @@ import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service";
 import {ApiSkillSummary} from "../ApiSkillSummary";
 import {checkArchived, determineFilters, PublishStatus} from "../../PublishStatus";
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
-import {Component, ElementRef, Inject, LOCALE_ID, ViewChild} from "@angular/core"
+import {Component, ElementRef, ViewChild} from "@angular/core"
 import {Observable} from "rxjs";
 import {ApiBatchResult} from "../ApiBatchResult";
 import {RichSkillService} from "../service/rich-skill.service";
 import {ToastService} from "../../toast/toast.service";
-import {ApiSkill, ApiSortOrder} from "../ApiSkill"
+import {ApiSortOrder} from "../ApiSkill"
 import {Router} from "@angular/router";
 import {QuickLinksHelper} from "../../core/quick-links-helper";
 import {ExtrasSelectedSkillsState} from "../../collection/add-skills-collection.component";
 import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component";
 import {AuthService} from "../../auth/auth-service";
 import {ButtonAction} from "../../auth/auth-roles";
-import {ApiTaskResult} from "../../task/ApiTaskResult"
-import {apiTaskResultForCSV} from "../../../../test/resource/mock-data"
-import {formatDate} from "@angular/common"
-import * as FileSaver from "file-saver"
 
 
 @Component({
@@ -238,7 +234,7 @@ export class SkillsListComponent extends QuickLinksHelper {
       }),
       new TableActionDefinition({
         label: "Export search",
-        icon: "unarchive",
+        icon: "download",
         callback: (action: TableActionDefinition, kill?: ApiSkillSummary) => this.handleClickExportSearch(),
         visible: () => this.exportSearchVisible()
       })

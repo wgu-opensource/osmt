@@ -51,7 +51,6 @@ export class RichSkillsLibraryComponent extends SkillsListComponent implements O
   }
 
   protected handleClickExportSearch(): void {
-    console.log("click handle click export search")
     this.toastService.loaderSubject.next(true)
     this.richSkillService.exportSearch(this.selectedUuids() as string[])
       .subscribe((apiTask) => {

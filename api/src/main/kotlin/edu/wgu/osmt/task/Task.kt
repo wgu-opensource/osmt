@@ -26,7 +26,8 @@ import java.util.*
     JsonSubTypes.Type(value = PublishTask::class, name = "PublishTask"),
     JsonSubTypes.Type(value = ApiSkillListUpdate::class, name = "ApiSkillListUpdate"),
     JsonSubTypes.Type(value = UpdateCollectionSkillsTask::class, name = "UpdateCollectionSkillsTask"),
-    JsonSubTypes.Type(value = CreateSkillsTask::class, name = "CreateSkillsTask")
+    JsonSubTypes.Type(value = CreateSkillsTask::class, name = "CreateSkillsTask"),
+    JsonSubTypes.Type(value = ExportSkillsToCsvTask::class, name = "ExportSkillsToCsvTask")
 )
 
 interface Task {

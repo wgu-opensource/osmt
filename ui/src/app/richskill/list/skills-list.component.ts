@@ -140,8 +140,8 @@ export class SkillsListComponent extends QuickLinksHelper {
     }
   }
 
-  exportSearchVisible(): boolean {
-    return ((this.selectedSkills?.length ?? 0) > 0) && this.authService.isEnabledByRoles(ButtonAction.ExportSearch)
+  protected exportSearchVisible(): boolean {
+    return false
   }
 
   addToCollectionVisible(skill?: ApiSkillSummary): boolean {

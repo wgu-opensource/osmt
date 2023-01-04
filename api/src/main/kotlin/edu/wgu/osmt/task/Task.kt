@@ -68,6 +68,18 @@ data class CsvTask(
 
 }
 
+data class ExportSkillsToCsvTask(
+    val collectionUuid: String = "",
+    val uuids: List<String>? = null,
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: String? = null,
+    override val status: TaskStatus = TaskStatus.Processing
+) : Task {
+    override val contentType = MediaType.APPLICATION_JSON_VALUE
+    override val apiResultPath = RoutePaths.TASK_DETAIL_BATCH
+}
+
 data class CreateSkillsTask(
     val apiSkillUpdates: List<ApiSkillUpdate> = listOf(),
     val userString: String = "",

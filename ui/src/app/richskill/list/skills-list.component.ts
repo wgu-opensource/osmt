@@ -144,6 +144,10 @@ export class SkillsListComponent extends QuickLinksHelper {
     }
   }
 
+  exportSearchVisible(): boolean {
+    return ((this.selectedSkills?.length ?? 0) > 0) && this.authService.isEnabledByRoles(ButtonAction.ExportSearch)
+  }
+
   addToCollectionVisible(skill?: ApiSkillSummary): boolean {
     return ((this.selectedSkills?.length ?? 0) > 0) && this.authService.isEnabledByRoles(ButtonAction.CollectionSkillsUpdate)
   }
@@ -235,8 +239,8 @@ export class SkillsListComponent extends QuickLinksHelper {
       new TableActionDefinition({
         label: "Export search",
         icon: "unarchive",
-        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickExportSearch(),
-        visible: () => true
+        callback: (action: TableActionDefinition, kill?: ApiSkillSummary) => this.handleClickExportSearch(),
+        visible: () => this.exportSearchVisible()
       })
     ]
 

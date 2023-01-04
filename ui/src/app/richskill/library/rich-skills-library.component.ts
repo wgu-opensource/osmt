@@ -1,4 +1,4 @@
-import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
+import {Component, OnInit} from "@angular/core"
 import {RichSkillService} from "../service/rich-skill.service"
 import {SkillsListComponent} from "../list/skills-list.component"
 import {ToastService} from "../../toast/toast.service"
@@ -7,8 +7,6 @@ import {Router} from "@angular/router"
 import {determineFilters} from "../../PublishStatus"
 import {Title} from "@angular/platform-browser"
 import {AuthService} from "../../auth/auth-service"
-import {formatDate} from "@angular/common"
-import * as FileSaver from "file-saver"
 
 @Component({
   selector: "app-rich-skills-library",
@@ -23,8 +21,7 @@ export class RichSkillsLibraryComponent extends SkillsListComponent implements O
     protected richSkillService: RichSkillService,
     protected toastService: ToastService,
     protected titleService: Title,
-    protected authService: AuthService,
-    @Inject(LOCALE_ID) protected locale: string
+    protected authService: AuthService
   ) {
     super(router, richSkillService, toastService, authService)
   }
@@ -48,25 +45,6 @@ export class RichSkillsLibraryComponent extends SkillsListComponent implements O
 
   getSelectAllEnabled(): boolean {
     return false
-  }
-
-  protected handleClickExportSearch(): void {
-    this.toastService.loaderSubject.next(true)
-    this.richSkillService.exportSearch(this.selectedUuids() as string[])
-      .subscribe((apiTask) => {
-        this.richSkillService.getResultExportedLibrary(apiTask.id.slice(1)).subscribe(
-          response => {
-            this.downloadAsCsvFile(response.body)
-            this.toastService.loaderSubject.next(false)
-          }
-        )
-      })
-  }
-
-  private downloadAsCsvFile(csv: string): void {
-    const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"})
-    const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
-    FileSaver.saveAs(blob, `RSD Library - OSMT ${date}.csv`)
   }
 
 }

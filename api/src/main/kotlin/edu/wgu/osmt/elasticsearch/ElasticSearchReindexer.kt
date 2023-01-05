@@ -51,14 +51,21 @@ class ElasticSearchReindexer {
     @Value("\${edu.wgu.osmt.elasticsearch.Reindex.batch_size:1000}")
     lateinit var limit: Integer
 
-    fun reindexAll() {
-        reimportSkills()
-        reimportCollections()
-        reimportKeywords()
-        reimportJobCodes()
+    fun deleteAllIndices() {
+        richSkillEsRepo.deleteIndex()
+        collectionEsRepo.deleteIndex()
+        keywordEsRepo.deleteIndex()
+        jobCodeEsRepo.deleteIndex()
     }
 
-    private fun reimportSkills() {
+    fun reindexAll() {
+        reindexSkills()
+        reindexCollections()
+        reindexKeywords()
+        reindexJobCodes()
+    }
+
+    private fun reindexSkills() {
         var page = 0
         var exit = false
         val trace = ProcessLogger("skills", logger)
@@ -82,7 +89,7 @@ class ElasticSearchReindexer {
         }
     }
 
-    private fun reimportCollections() {
+    private fun reindexCollections() {
         var page = 0
         var exit = false
         var trace = ProcessLogger("collections", logger)
@@ -106,7 +113,7 @@ class ElasticSearchReindexer {
         }
     }
 
-    private fun reimportKeywords() {
+    private fun reindexKeywords() {
         var page = 0
         var exit = false
         var trace = ProcessLogger("keywords", logger)
@@ -130,7 +137,7 @@ class ElasticSearchReindexer {
         }
     }
 
-    private fun reimportJobCodes() {
+    private fun reindexJobCodes() {
         var page = 0
         var exit = false
         var trace = ProcessLogger("jobCodes", logger)

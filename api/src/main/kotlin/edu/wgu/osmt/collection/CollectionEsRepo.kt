@@ -2,6 +2,7 @@ package edu.wgu.osmt.collection
 
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.config.INDEX_COLLECTION_DOC
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.richskill.RichSkillDoc
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
 import org.springframework.data.elasticsearch.core.SearchHits
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
@@ -34,6 +36,10 @@ interface CustomCollectionQueries : FindsAllByPublishStatus<CollectionDoc> {
             Sort.by("name.keyword").descending()
         )
     ): SearchHits<CollectionDoc>
+
+    fun deleteIndex() {
+        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_COLLECTION_DOC)).delete();
+    }
 }
 
 class CustomCollectionQueriesImpl @Autowired constructor(

@@ -394,7 +394,7 @@ describe("SkillsListComponent", () => {
     component.showAddToCollection = true
     tableActions = component.tableActions()
     let skill4 = createMockSkillSummary("id4", PublishStatus.Archived)
-    let action4 = tableActions[4]
+    let action4 = tableActions[5]
     expect(action4.label).toEqual("Add to Collection")
     expect(action4 && action4.callback).toBeTruthy()
     expect(action4.callback?.(action4, skill4)).toBeFalsy()  // Always false
@@ -406,7 +406,7 @@ describe("SkillsListComponent", () => {
     component.showAddToCollection = false
     tableActions = component.tableActions()
     skill4 = createMockSkillSummary("id4", PublishStatus.Archived)
-    action4 = tableActions[4]
+    action4 = tableActions[5]
     expect(action4.label).toEqual("Remove from Collection")
     expect(action4 && action4.callback).toBeTruthy()
     expect(action4.callback?.(action4, skill4)).toBeFalsy()  // Always false

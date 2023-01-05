@@ -247,6 +247,11 @@ describe("SkillsListComponent", () => {
     expect(result2).toBeTruthy()
   })
 
+  it("export search should not be active (visible)", () => {
+    // tslint:disable-next-line:no-string-literal
+    expect(component["exportSearchVisible"]()).toBeFalse()
+  })
+
   it("addToCollectionVisible should be correct", () => {    // No skills
     /* Assumption: skill parameter does not matter. */
     component.selectedSkills = []

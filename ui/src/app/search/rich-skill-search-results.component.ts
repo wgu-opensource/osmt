@@ -13,7 +13,6 @@ import {Title} from "@angular/platform-browser";
 import {AuthService} from "../auth/auth-service";
 import {formatDate} from "@angular/common"
 import * as FileSaver from "file-saver"
-import {ButtonAction} from "../auth/auth-roles"
 
 
 @Component({
@@ -136,7 +135,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
   }
 
   protected exportSearchVisible(): boolean {
-    return ((this.selectedSkills?.length ?? 0) > 0) && this.authService.isEnabledByRoles(ButtonAction.ExportSearch)
+    return ((this.selectedSkills?.length ?? 0) > 0)
   }
 
 }

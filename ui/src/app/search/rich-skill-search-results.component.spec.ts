@@ -232,7 +232,7 @@ describe("RichSkillSearchResultsComponent", () => {
         occupations: [],
         publishDate: "2022-02-24T00:27:02"
       }]
-      const spy = spyOn(component["authService"], "isEnabledByRoles").and.returnValue(true)
+      // const spy = spyOn(component["authService"], "isEnabledByRoles").and.returnValue(true)
       expect(component["exportSearchVisible"]()).toBeTrue()
     })
 })

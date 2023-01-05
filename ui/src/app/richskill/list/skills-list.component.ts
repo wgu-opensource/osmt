@@ -233,7 +233,7 @@ export class SkillsListComponent extends QuickLinksHelper {
         visible: (skill?: ApiSkillSummary) => this.unarchiveVisible(skill)
       }),
       new TableActionDefinition({
-        label: "Export search",
+        label: "Export Selected",
         icon: "download",
         callback: (action: TableActionDefinition, kill?: ApiSkillSummary) => this.handleClickExportSearch(),
         visible: () => this.exportSearchVisible()

@@ -1,24 +1,29 @@
 /* tslint:disable:no-string-literal */
-import {HttpClientTestingModule} from "@angular/common/http/testing"
-import {Type} from "@angular/core"
-import {async, ComponentFixture, TestBed} from "@angular/core/testing"
-import {Title} from "@angular/platform-browser"
-import {ActivatedRoute, Router} from "@angular/router"
-import {ActivatedRouteStubSpec} from "test/util/activated-route-stub.spec"
-import {createMockPaginatedSkills, createMockSkillSummary, mockTaskResultForExportSearch} from "../../../test/resource/mock-data"
-import {AuthServiceStub, RichSkillServiceStub, SearchServiceData, SearchServiceStub} from "../../../test/resource/mock-stubs"
-import {AppConfig} from "../app.config"
-import {EnvironmentService} from "../core/environment.service"
-import {PublishStatus} from "../PublishStatus"
-import {ApiAdvancedSearch, ApiSearch} from "../richskill/service/rich-skill-search.service"
-import {RichSkillService} from "../richskill/service/rich-skill.service"
-import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
-import {ToastService} from "../toast/toast.service"
-import {RichSkillSearchResultsComponent} from "./rich-skill-search-results.component"
-import {SearchService} from "./search.service"
-import {AuthService} from "../auth/auth-service"
-import {of} from "rxjs"
+import { HttpClientTestingModule } from "@angular/common/http/testing"
+import { Type } from "@angular/core"
+import { async, ComponentFixture, TestBed } from "@angular/core/testing"
+import { Title } from "@angular/platform-browser"
+import { ActivatedRoute, Router } from "@angular/router"
+import { ActivatedRouteStubSpec } from "test/util/activated-route-stub.spec"
+import { createMockPaginatedSkills, createMockSkillSummary, mockTaskResultForExportSearch } from "../../../test/resource/mock-data"
+import {
+  AuthServiceStub,
+  RichSkillServiceStub,
+  SearchServiceData,
+  SearchServiceStub
+} from "../../../test/resource/mock-stubs"
+import { AppConfig } from "../app.config"
+import { EnvironmentService } from "../core/environment.service"
+import { PublishStatus } from "../PublishStatus"
+import { ApiAdvancedSearch, ApiSearch } from "../richskill/service/rich-skill-search.service"
+import { RichSkillService } from "../richskill/service/rich-skill.service"
+import { TableActionDefinition } from "../table/skills-library-table/has-action-definitions"
+import { ToastService } from "../toast/toast.service"
+import { RichSkillSearchResultsComponent } from "./rich-skill-search-results.component"
+import { SearchService } from "./search.service"
 import any = jasmine.any
+import {AuthService} from "../auth/auth-service";
+import { of } from "rxjs"
 
 
 export function createComponent(T: Type<RichSkillSearchResultsComponent>, f?: () => void): Promise<void> {

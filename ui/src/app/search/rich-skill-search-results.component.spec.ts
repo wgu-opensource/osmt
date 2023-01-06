@@ -221,23 +221,7 @@ describe("RichSkillSearchResultsComponent", () => {
 
   it("export search should be visible",
     () => {
-      component.selectedSkills = [{
-        id: "-http://localhost:8080/api/skills/c97e8705-8b71-4b45-8af5-80ebbbabfb60",
-        uuid: "c97e8705-8b71-4b45-8af5-80ebbbabfb60",
-        category: ".NET Framework",
-        skillName: "Application Domain Creation",
-        skillStatement: "Create application domains and assemblies using attributes, formatting and parsing base types, collections, events and exceptions, files and data streams, and generics.",
-        status: PublishStatus.Published,
-        keywords: [
-          ".NET Framework",
-          "ADO.NET",
-          "WGUSID: 1565",
-          "1567"
-        ],
-        occupations: [],
-        publishDate: "2022-02-24T00:27:02"
-      }]
-      // const spy = spyOn(component["authService"], "isEnabledByRoles").and.returnValue(true)
+      component.selectedSkills = [createMockSkillSummary()]
       expect(component["exportSearchVisible"]()).toBeTrue()
     })
 })

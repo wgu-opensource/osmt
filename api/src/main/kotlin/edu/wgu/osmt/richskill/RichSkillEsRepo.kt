@@ -51,7 +51,7 @@ interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
 
 
     fun deleteIndex() {
-        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_RICHSKILL_DOC)).delete();
+        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_RICHSKILL_DOC)).delete()
     }
 }
 

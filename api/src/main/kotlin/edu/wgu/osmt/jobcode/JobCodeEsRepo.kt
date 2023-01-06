@@ -20,7 +20,7 @@ interface CustomJobCodeRepository {
     fun typeAheadSearch(query: String): SearchHits<JobCode>
 
     fun deleteIndex() {
-        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_JOBCODE_DOC)).delete();
+        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_JOBCODE_DOC)).delete()
     }
 }
 

@@ -4,12 +4,13 @@ import edu.wgu.osmt.RoutePaths.ES_ADMIN_DELETE_INDICES
 import edu.wgu.osmt.RoutePaths.ES_ADMIN_REINDEX
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.*
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.server.ResponseStatusException
 import java.util.concurrent.ForkJoinPool
 

@@ -38,7 +38,7 @@ interface CustomCollectionQueries : FindsAllByPublishStatus<CollectionDoc> {
     ): SearchHits<CollectionDoc>
 
     fun deleteIndex() {
-        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_COLLECTION_DOC)).delete();
+        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_COLLECTION_DOC)).delete()
     }
 }
 

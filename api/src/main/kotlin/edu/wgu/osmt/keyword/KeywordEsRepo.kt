@@ -18,7 +18,7 @@ interface CustomKeywordRepository {
     fun typeAheadSearch(query: String, type: KeywordTypeEnum): SearchHits<Keyword>
 
     fun deleteIndex() {
-        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_KEYWORD_DOC)).delete();
+        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_KEYWORD_DOC)).delete()
     }
 }
 

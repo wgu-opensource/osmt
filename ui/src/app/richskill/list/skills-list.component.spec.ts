@@ -388,8 +388,8 @@ describe("SkillsListComponent", () => {
     expect(action3.callback?.(action3, skill3)).toBeFalsy()  // Always false
     expect(action3.visible?.(skill3)).toBeFalsy()  // != Archived
 
-    const action4 = tableActions[4]
-    expect(action4.label).toEqual("Export Selected")
+    const actionExportSelected = tableActions[4]
+    expect(actionExportSelected.label).toEqual("Export Selected")
 
     component.selectedSkills = [
       createMockSkillSummary("id1", PublishStatus.Draft),

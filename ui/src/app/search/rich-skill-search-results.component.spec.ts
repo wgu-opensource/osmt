@@ -1,4 +1,3 @@
-/* tslint:disable:no-string-literal */
 import { HttpClientTestingModule } from "@angular/common/http/testing"
 import { Type } from "@angular/core"
 import { async, ComponentFixture, TestBed } from "@angular/core/testing"

@@ -231,9 +231,6 @@ class RichSkillController @Autowired constructor(
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
-        if (!oAuthHelper.hasRole(appConfig.roleAdmin)) {
-            throw GeneralApiException("OSMT user must have an Admin role.", HttpStatus.UNAUTHORIZED)
-        }
 
         val task = ExportSkillsToCsvTask(collectionUuid = "CustomList", uuids)
         taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsv, task)

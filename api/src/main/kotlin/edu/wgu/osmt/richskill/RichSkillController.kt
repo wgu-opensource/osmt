@@ -222,7 +222,7 @@ class RichSkillController @Autowired constructor(
     }
 
     @Transactional(readOnly = true)
-    @PostMapping(RoutePaths.SKILL_CSV_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.EXPORT_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportCustomList(
         @RequestBody uuids: List<String>?,

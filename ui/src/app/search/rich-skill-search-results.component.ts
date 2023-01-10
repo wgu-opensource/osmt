@@ -1,4 +1,4 @@
-import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
+import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
 import {SearchService} from "./search.service";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";

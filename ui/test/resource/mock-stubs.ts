@@ -25,7 +25,8 @@ import {
   createMockPaginatedSkills,
   createMockSkill,
   createMockSkillSummary,
-  createMockTaskResult
+  createMockTaskResult,
+  mockTaskResultForExportSearch
 } from "./mock-data"
 
 
@@ -340,6 +341,10 @@ export class RichSkillServiceStub {
   // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
   libraryExport(): Observable<string> {
     return of(`x, y, z`)
+  }
+
+  exportSearch(): Observable<ApiTaskResult> {
+    return of(mockTaskResultForExportSearch)
   }
 
   getResultExportedLibrary(): Observable<any> {

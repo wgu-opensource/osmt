@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
 import {SearchService} from "./search.service";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
@@ -11,6 +11,8 @@ import {TableActionDefinition} from "../table/skills-library-table/has-action-de
 import {ExtrasSelectedSkillsState} from "../collection/add-skills-collection.component";
 import {Title} from "@angular/platform-browser";
 import {AuthService} from "../auth/auth-service";
+import {formatDate} from "@angular/common"
+import * as FileSaver from "file-saver"
 
 
 @Component({
@@ -33,7 +35,8 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
               protected searchService: SearchService,
               protected route: ActivatedRoute,
               protected titleService: Title,
-              protected authService: AuthService
+              protected authService: AuthService,
+              @Inject(LOCALE_ID) protected locale: string
 ) {
     super(router, richSkillService, toastService, authService)
     this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
@@ -111,4 +114,28 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
   protected onlyDraftsSelected(skill?: ApiSkillSummary): boolean {
     return !this.multiplePagesSelected || super.onlyDraftsSelected(skill)
   }
+
+  protected handleClickExportSearch(): void {
+    this.toastService.loaderSubject.next(true)
+    this.richSkillService.exportSearch(this.selectedUuids() as string[])
+      .subscribe((apiTask) => {
+        this.richSkillService.getResultExportedLibrary(apiTask.id.slice(1)).subscribe(
+          response => {
+            this.downloadAsCsvFile(response.body)
+            this.toastService.loaderSubject.next(false)
+          }
+        )
+      })
+  }
+
+  private downloadAsCsvFile(csv: string): void {
+    const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"})
+    const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
+    FileSaver.saveAs(blob, `RSD Skills - ${this.matchingQuery} - ${date}.csv`)
+  }
+
+  protected exportSearchVisible(): boolean {
+    return ((this.selectedSkills?.length ?? 0) > 0)
+  }
+
 }

@@ -26,7 +26,8 @@ import java.util.*
     JsonSubTypes.Type(value = PublishTask::class, name = "PublishTask"),
     JsonSubTypes.Type(value = ApiSkillListUpdate::class, name = "ApiSkillListUpdate"),
     JsonSubTypes.Type(value = UpdateCollectionSkillsTask::class, name = "UpdateCollectionSkillsTask"),
-    JsonSubTypes.Type(value = CreateSkillsTask::class, name = "CreateSkillsTask")
+    JsonSubTypes.Type(value = CreateSkillsTask::class, name = "CreateSkillsTask"),
+    JsonSubTypes.Type(value = ExportSkillsToCsvTask::class, name = "ExportSkillsToCsvTask")
 )
 
 interface Task {
@@ -66,6 +67,18 @@ data class CsvTask(
     override val contentType = "text/csv"
     override val apiResultPath = RoutePaths.TASK_DETAIL_TEXT
 
+}
+
+data class ExportSkillsToCsvTask(
+    val collectionUuid: String = "",
+    val uuids: List<String>? = null,
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: String? = null,
+    override val status: TaskStatus = TaskStatus.Processing
+) : Task {
+    override val contentType = MediaType.APPLICATION_JSON_VALUE
+    override val apiResultPath = RoutePaths.TASK_DETAIL_BATCH
 }
 
 data class CreateSkillsTask(

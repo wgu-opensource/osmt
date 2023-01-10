@@ -140,6 +140,10 @@ export class SkillsListComponent extends QuickLinksHelper {
     }
   }
 
+  protected exportSearchVisible(): boolean {
+    return false
+  }
+
   addToCollectionVisible(skill?: ApiSkillSummary): boolean {
     return ((this.selectedSkills?.length ?? 0) > 0) && this.authService.isEnabledByRoles(ButtonAction.CollectionSkillsUpdate)
   }
@@ -228,6 +232,12 @@ export class SkillsListComponent extends QuickLinksHelper {
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickUnarchive(action, skill),
         visible: (skill?: ApiSkillSummary) => this.unarchiveVisible(skill)
       }),
+      new TableActionDefinition({
+        label: "Export Selected",
+        icon: "download",
+        callback: (action: TableActionDefinition, kill?: ApiSkillSummary) => this.handleClickExportSearch(),
+        visible: () => this.exportSearchVisible()
+      })
     ]
 
     if (this.showAddToCollection) {
@@ -250,6 +260,9 @@ export class SkillsListComponent extends QuickLinksHelper {
 
     return actions
 
+  }
+
+  protected handleClickExportSearch(): void {
   }
 
   protected handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {

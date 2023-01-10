@@ -4,7 +4,7 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing"
 import { Title } from "@angular/platform-browser"
 import { ActivatedRoute, Router } from "@angular/router"
 import { ActivatedRouteStubSpec } from "test/util/activated-route-stub.spec"
-import { createMockPaginatedSkills, createMockSkillSummary } from "../../../test/resource/mock-data"
+import { createMockPaginatedSkills, createMockSkillSummary, mockTaskResultForExportSearch } from "../../../test/resource/mock-data"
 import {
   AuthServiceStub,
   RichSkillServiceStub,
@@ -22,6 +22,7 @@ import { RichSkillSearchResultsComponent } from "./rich-skill-search-results.com
 import { SearchService } from "./search.service"
 import any = jasmine.any
 import {AuthService} from "../auth/auth-service";
+import { of } from "rxjs"
 
 
 export function createComponent(T: Type<RichSkillSearchResultsComponent>, f?: () => void): Promise<void> {
@@ -206,6 +207,22 @@ describe("RichSkillSearchResultsComponent", () => {
     expect(result).toBeFalse()
     expect(router.navigate).toHaveBeenCalledWith([ "/collections/add-skills"], any(Object) )
   })
+
+  it("handleClickExportSearch should call subject loader and services methods", () => {
+    const spy = spyOn(component["toastService"].loaderSubject, "next")
+    const spyExportSearch = spyOn(component["richSkillService"], "exportSearch").and.returnValue(of(mockTaskResultForExportSearch))
+    const spyGetResult = spyOn(component["richSkillService"], "getResultExportedLibrary").and.returnValue(of("csv,csv"))
+    component["handleClickExportSearch"]()
+    expect(spy).toHaveBeenCalled()
+    expect(spyExportSearch).toHaveBeenCalled()
+    expect(spyGetResult).toHaveBeenCalled()
+  })
+
+  it("export search should be visible",
+    () => {
+      component.selectedSkills = [createMockSkillSummary()]
+      expect(component["exportSearchVisible"]()).toBeTrue()
+    })
 })
 
 describe("RichSkillSearchResultsComponent with latestSearch", () => {

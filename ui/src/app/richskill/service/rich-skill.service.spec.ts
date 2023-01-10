@@ -326,6 +326,20 @@ describe("RichSkillService", () => {
     req.flush(result$)
   }))
 
+
+  it("export search", fakeAsync(() => {
+    const result$ = testService.exportSearch([])
+    tick(ASYNC_WAIT_PERIOD)
+    // Assert
+    result$.subscribe((data: ApiTaskResult) => {
+      expect(RouterData.commands).toEqual([]) // No Errors
+    })
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/export/skills")
+    expect(req.request.method).toEqual("POST")
+    expect(req.request.headers.get("Accept")).toEqual("application/json")
+    req.flush(result$)
+  }))
+
   it("getResultExportedLibrary", fakeAsync(() => {
     {
       const taskResult = apiTaskResultForCSV

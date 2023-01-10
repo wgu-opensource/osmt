@@ -1,4 +1,4 @@
-import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
+import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
 import {SearchService} from "./search.service";
 import {RichSkillService} from "../richskill/service/rich-skill.service";
 import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
@@ -131,7 +131,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
   private downloadAsCsvFile(csv: string): void {
     const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"})
     const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
-    FileSaver.saveAs(blob, `RSD based on ${this.matchingQuery} ${this.firstRecordNo} - ${this.lastRecordNo} - OSMT ${date}.csv`)
+    FileSaver.saveAs(blob, `RSD Skills - ${this.matchingQuery} - ${date}.csv`)
   }
 
   protected exportSearchVisible(): boolean {

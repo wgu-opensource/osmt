@@ -163,7 +163,6 @@ export class RichSkillService extends AbstractService {
   }
 
   exportSearch(uuids: string[]): Observable<ApiTaskResult> {
-    console.log(uuids)
     return this.httpClient.post<ApiTaskResult>(this.buildUrl("api/skills/export"), uuids, {
       headers: this.wrapHeaders(new HttpHeaders({
           Accept: "application/json"

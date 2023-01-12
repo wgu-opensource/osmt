@@ -142,15 +142,15 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     return false
   }
 
-  generateCsv(): void {
+  generateCsv(collectionName: string): void {
     this.collectionService.requestCollectionSkillsCsv(this.uuidParam ?? "")
       .subscribe((taskStarted: ITaskResult) => {
         this.toastService.loaderSubject.next(true)
-        this.getCsv(taskStarted.uuid ?? "")
+        this.getCsv(taskStarted.uuid ?? "", collectionName)
       })
   }
 
-  getCsv(uuid: string): void {
+  getCsv(uuid: string, collectionName: string): void {
     this.collectionService.getCsvTaskResultsIfComplete(uuid)
       .pipe(
         retryWhen(errors => errors.pipe(
@@ -163,14 +163,14 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
           delay(1000),
         )))
       .subscribe(response => {
-        this.saveCsv(response.body)
+        this.saveCsv(response.body, collectionName)
       })
   }
 
-  saveCsv(body: string): void {
+  saveCsv(body: string, collectionName: string): void {
     const blob = new Blob([body], {type: "text/csv;charset=utf-8;"})
     const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
-    FileSaver.saveAs(blob, `RSD Skills - ${date}.csv`)
+    FileSaver.saveAs(blob, `RSD Skills - ${collectionName} - ${date}.csv`)
     this.toastService.loaderSubject.next(false)
   }
 
@@ -230,7 +230,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       actions.push(new TableActionDefinition({
         label: "Download CSV",
         icon: this.downloadIcon,
-        callback: () => this.generateCsv(),
+        callback: () => this.generateCsv(this.collection?.name ?? ""),
         visible: () => true
       }))
     }

@@ -143,7 +143,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   }
 
   generateCsv(): void {
-    this.collectionService.requestCollectionSkillsCsv(this.uuidParam ? this.uuidParam : "")
+    this.collectionService.requestCollectionSkillsCsv(this.uuidParam ?? "")
       .subscribe((taskStarted: ITaskResult) => {
         this.toastService.loaderSubject.next(true)
         this.getCsv(taskStarted.uuid ?? "")
@@ -226,7 +226,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       )
     }
 
-    if (this.collection?.status === PublishStatus.Draft) {
+    if (this.collection?.status === PublishStatus.Draft || this.collection?.status === PublishStatus.Published) {
       actions.push(new TableActionDefinition({
         label: "Download CSV",
         icon: this.downloadIcon,

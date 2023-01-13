@@ -276,7 +276,7 @@ describe("ManageCollectionComponent", () => {
 
       // Assert
       expect(actions).toBeTruthy()
-      expect(actions.length).toEqual(4)
+      expect(actions.length).toEqual(5)
 
       let action = actions[0]
       expect(action.label).toEqual("Add RSDs to This Collection")

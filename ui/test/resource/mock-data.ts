@@ -292,3 +292,5 @@ export const mockTaskResultForExportSearch: ApiTaskResult = {
   id: "/api/results/batch/77574cd6-933b-4ee0-a106-afadb7a3a292"
 }
 
+export const csvContent = {body: "value1,value2,value3"}
+

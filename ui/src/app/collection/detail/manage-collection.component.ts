@@ -231,7 +231,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         label: "Download CSV",
         icon: this.downloadIcon,
         callback: () => this.generateCsv(this.collection?.name ?? ""),
-        visible: () => true
+        visible: () => this.authService.isEnabledByRoles(ButtonAction.LibraryExport)
       }))
     }
     return actions

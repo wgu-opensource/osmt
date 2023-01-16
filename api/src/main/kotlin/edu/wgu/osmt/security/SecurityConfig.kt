@@ -10,6 +10,7 @@ import edu.wgu.osmt.RoutePaths.COLLECTION_PUBLISH
 import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS
 import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS_UPDATE
 import edu.wgu.osmt.RoutePaths.COLLECTION_UPDATE
+import edu.wgu.osmt.RoutePaths.ES_ADMIN
 import edu.wgu.osmt.RoutePaths.SEARCH_COLLECTIONS
 import edu.wgu.osmt.RoutePaths.SEARCH_JOBCODES_PATH
 import edu.wgu.osmt.RoutePaths.SEARCH_KEYWORDS_PATH
@@ -90,7 +91,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(GET, COLLECTION_DETAIL).permitAll()
 
             .mvcMatchers(POST, COLLECTION_SKILLS).permitAll()
-            .mvcMatchers(GET, COLLECTION_CSV).permitAll()
+            .mvcMatchers(GET, COLLECTION_CSV).hasRole(appConfig.roleAdmin)
             .mvcMatchers(GET, TASK_DETAIL_TEXT).permitAll()   // public csv results
 
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)

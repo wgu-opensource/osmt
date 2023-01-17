@@ -91,6 +91,13 @@ describe("RichSkillSearchResultsComponent", () => {
     expect(component).toBeTruthy()
   })
 
+  it("table actions should be correct", () => {
+    const tableActions = component.tableActions()
+    const actionExportSelected = tableActions[4]
+    expect(actionExportSelected.label).toEqual("Export Selected")
+    expect(tableActions.length).toEqual(6)
+  })
+
   it("should handle empty search query", () => {
     // Arrange
     const query = "some query"

@@ -388,32 +388,30 @@ describe("SkillsListComponent", () => {
     expect(action3.callback?.(action3, skill3)).toBeFalsy()  // Always false
     expect(action3.visible?.(skill3)).toBeFalsy()  // != Archived
 
-    const actionExportSelected = tableActions[4]
-    expect(actionExportSelected.label).toEqual("Export Selected")
 
     component.selectedSkills = [
       createMockSkillSummary("id1", PublishStatus.Draft),
     ]
     component.showAddToCollection = true
     tableActions = component.tableActions()
-    let skill5 = createMockSkillSummary("id4", PublishStatus.Archived)
-    let action5 = tableActions[5]
-    expect(action5.label).toEqual("Add to Collection")
-    expect(action5 && action5.callback).toBeTruthy()
-    expect(action5.callback?.(action5, skill5)).toBeFalsy()  // Always false
-    expect(action5.visible?.(skill5)).toBeTruthy()  // There are selected skills
+    let skill4 = createMockSkillSummary("id4", PublishStatus.Archived)
+    let action4 = tableActions[4]
+    expect(action4.label).toEqual("Add to Collection")
+    expect(action4 && action4.callback).toBeTruthy()
+    expect(action4.callback?.(action4, skill4)).toBeFalsy()  // Always false
+    expect(action4.visible?.(skill4)).toBeTruthy()  // There are selected skills
 
     component.selectedSkills = [
       createMockSkillSummary("id1", PublishStatus.Draft),
     ]
     component.showAddToCollection = false
     tableActions = component.tableActions()
-    skill5 = createMockSkillSummary("id4", PublishStatus.Archived)
-    action5 = tableActions[5]
-    expect(action5.label).toEqual("Remove from Collection")
-    expect(action5 && action5.callback).toBeTruthy()
-    expect(action5.callback?.(action5, skill5)).toBeFalsy()  // Always false
-    expect(action5.visible?.(skill5)).toBeTruthy()  // There are selected skills
+    skill4 = createMockSkillSummary("id4", PublishStatus.Archived)
+    action4 = tableActions[4]
+    expect(action4.label).toEqual("Remove from Collection")
+    expect(action4 && action4.callback).toBeTruthy()
+    expect(action4.callback?.(action4, skill4)).toBeFalsy()  // Always false
+    expect(action4.visible?.(skill4)).toBeTruthy()  // There are selected skills
   })
 
   it("getSelectedSkills should be correct", () => {

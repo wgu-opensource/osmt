@@ -226,12 +226,12 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       )
     }
 
-    if (this.collection?.status === PublishStatus.Draft || this.collection?.status === PublishStatus.Published) {
+    if ((this.collection?.status === PublishStatus.Draft || this.collection?.status === PublishStatus.Published) && this.authService.isEnabledByRoles(ButtonAction.LibraryExport)) {
       actions.push(new TableActionDefinition({
         label: "Download CSV",
         icon: this.downloadIcon,
         callback: () => this.generateCsv(this.collection?.name ?? ""),
-        visible: () => this.authService.isEnabledByRoles(ButtonAction.LibraryExport)
+        visible: () => true
       }))
     }
     return actions

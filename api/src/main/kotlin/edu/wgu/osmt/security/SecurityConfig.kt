@@ -90,7 +90,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(GET, COLLECTION_DETAIL).permitAll()
 
             .mvcMatchers(POST, COLLECTION_SKILLS).permitAll()
-            .mvcMatchers(GET, COLLECTION_CSV).hasRole(appConfig.roleAdmin)
+            .mvcMatchers(GET, COLLECTION_CSV).permitAll()
             .mvcMatchers(GET, TASK_DETAIL_TEXT).permitAll()   // public csv results
 
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)

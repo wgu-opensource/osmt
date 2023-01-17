@@ -47,27 +47,6 @@ class CsvTaskProcessor {
 
         val csv = collectionRepository.findByUUID(csvTask.collectionUuid)
             ?.skills
-            ?.with(RichSkillDescriptorDao::collections)
-            ?.map { RichSkillAndCollections.fromDao(it) }
-            ?.let { RichSkillCsvExport(appConfig).toCsv(it) }
-
-        taskMessageService.publishResult(
-            csvTask.copy(result = csv, status = TaskStatus.Ready)
-        )
-        logger.info("Task ${csvTask.uuid} completed")
-    }
-
-    @RqueueListener(
-        value = [TaskMessageService.skillsForDraftCollectionCsv],
-        deadLetterQueueListenerEnabled = "true",
-        deadLetterQueue = TaskMessageService.deadLetters,
-        concurrency = "1"
-    )
-    fun csvSkillsInDraftCollectionProcessor(csvTask: CsvTask) {
-        logger.info("Started processing draft collection to csv with task id: ${csvTask.uuid}")
-
-        val csv = collectionRepository.findByUUID(csvTask.collectionUuid)
-            ?.skills
             ?.filter { PublishStatus.Archived != it.publishStatus() }
             ?.with(RichSkillDescriptorDao::collections)
             ?.map { RichSkillAndCollections.fromDao(it) }

@@ -157,12 +157,7 @@ class CollectionController @Autowired constructor(
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
         val task = CsvTask(collectionUuid = uuid)
-        if((collectionRepository.findByUUID(uuid)!!.publishStatus() == PublishStatus.Draft)) {
-            taskMessageService.enqueueJob(TaskMessageService.skillsForDraftCollectionCsv, task)
-        }
-        else if((collectionRepository.findByUUID(uuid)!!.publishStatus() == PublishStatus.Published)) {
-            taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
-        }
+        taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
         return Task.processingResponse(task)
     }
 

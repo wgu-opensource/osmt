@@ -27,6 +27,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 
   selectAllChecked = false
   showSearchEmptyMessage = true
+  showExportSelected = true
   private multiplePagesSelected: boolean = false
 
   constructor(protected router: Router,

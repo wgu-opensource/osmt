@@ -42,6 +42,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   showLibraryEmptyMessage = false
 
   showAddToCollection = true
+  showExportSelected = false
 
   constructor(protected router: Router,
               protected richSkillService: RichSkillService,
@@ -231,14 +232,17 @@ export class SkillsListComponent extends QuickLinksHelper {
         icon: "unarchive",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickUnarchive(action, skill),
         visible: (skill?: ApiSkillSummary) => this.unarchiveVisible(skill)
-      }),
-      new TableActionDefinition({
+      })
+    ]
+
+    if (this.showExportSelected) {
+      actions.push(new TableActionDefinition({
         label: "Export Selected",
         icon: "download",
         callback: (action: TableActionDefinition, kill?: ApiSkillSummary) => this.handleClickExportSearch(),
         visible: () => this.exportSearchVisible()
-      })
-    ]
+      }))
+    }
 
     if (this.showAddToCollection) {
       actions.push(new TableActionDefinition({

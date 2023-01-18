@@ -13,9 +13,9 @@ import {determineFilters, PublishStatus} from "../../PublishStatus"
 import {ApiSkillSummary} from "../../richskill/ApiSkillSummary"
 import {Observable, of, Subject, throwError} from "rxjs"
 import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
-import {Title} from "@angular/platform-browser"
-import {AuthService} from "../../auth/auth-service"
-import {ButtonAction} from "../../auth/auth-roles"
+import {Title} from "@angular/platform-browser";
+import {AuthService} from "../../auth/auth-service";
+import {ButtonAction} from "../../auth/auth-roles";
 import {formatDate} from "@angular/common"
 import * as FileSaver from "file-saver"
 import {ITaskResult} from "../../task/ApiTaskResult"

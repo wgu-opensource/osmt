@@ -226,7 +226,10 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       )
     }
 
-    if ((this.collection?.status === PublishStatus.Draft || this.collection?.status === PublishStatus.Published) && this.authService.isEnabledByRoles(ButtonAction.LibraryExport)) {
+    const isPublished = this.collection?.status === PublishStatus.Published
+    const isDraftAndUserIsAdmin = this.collection?.status === PublishStatus.Draft
+      && this.authService.isEnabledByRoles(ButtonAction.ExportDraftCollection)
+    if (isPublished || isDraftAndUserIsAdmin) {
       actions.push(new TableActionDefinition({
         label: "Download CSV",
         icon: this.downloadIcon,

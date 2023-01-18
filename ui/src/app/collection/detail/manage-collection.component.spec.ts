@@ -10,7 +10,8 @@ import { of } from "rxjs"
 import {
   createMockCollection,
   createMockPaginatedSkills,
-  createMockSkillSummary
+  createMockSkillSummary,
+  csvContent
 } from "../../../../test/resource/mock-data"
 import {
   AuthServiceStub,
@@ -30,6 +31,7 @@ import { ApiCollection } from "../ApiCollection"
 import { CollectionService } from "../service/collection.service"
 import { ManageCollectionComponent } from "./manage-collection.component"
 import {AuthService} from "../../auth/auth-service";
+import * as FileSaver from "file-saver"
 
 
 @Component({
@@ -276,7 +278,7 @@ describe("ManageCollectionComponent", () => {
 
       // Assert
       expect(actions).toBeTruthy()
-      expect(actions.length).toEqual(4)
+      expect(actions.length).toEqual(5)
 
       let action = actions[0]
       expect(action.label).toEqual("Add RSDs to This Collection")
@@ -489,5 +491,32 @@ describe("ManageCollectionComponent", () => {
     // Assert
     expect(component.showingMultipleConfirm).toBeFalsy()
     expect(component.apiSearch).toBeFalsy()
+  })
+
+  it("generateCsv should call getCsv and loader", () => {
+    const spyCollectionService = spyOn(component["collectionService"], "requestCollectionSkillsCsv").and.callThrough()
+    const spyLoaderSubject = spyOn(component["toastService"].loaderSubject, "next")
+    component.generateCsv("My collection")
+    expect(spyCollectionService).toHaveBeenCalled()
+    expect(spyLoaderSubject).toHaveBeenCalledWith(true)
+  })
+
+
+  it("getCsv should call getCsvTaskResultsIfComplete", () => {
+    const collection = {
+      uuid: "fc0a65a6-facd-4f9d-b590-cfecbfe706ad",
+      name: "My Collection"
+    }
+    const spyCollectionService = spyOn(component["collectionService"], "getCsvTaskResultsIfComplete").and.returnValue(of(csvContent))
+    const spySaveCsv = spyOn(component, "saveCsv")
+    component.getCsv(collection.uuid, collection.name)
+    expect(spyCollectionService).toHaveBeenCalledWith(collection.uuid)
+    expect(spySaveCsv).toHaveBeenCalledWith(csvContent.body, collection.name)
+  })
+
+  it("saveCSV should call FileSaver", () => {
+    const spySaveAS = spyOn(FileSaver, "saveAs")
+    component.saveCsv(csvContent.body, "My Collection")
+    expect(spySaveAS).toHaveBeenCalled()
   })
 })

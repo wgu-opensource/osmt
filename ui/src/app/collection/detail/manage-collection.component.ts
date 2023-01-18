@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from "@angular/core"
+import {Component, Inject, LOCALE_ID, OnInit, ViewChild} from "@angular/core"
 import {ApiCollection, ApiCollectionUpdate} from "../ApiCollection"
 import {ApiSearch, ApiSkillListUpdate} from "../../richskill/service/rich-skill-search.service"
 import {ActivatedRoute, Router} from "@angular/router"
@@ -11,11 +11,15 @@ import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions"
 import {determineFilters, PublishStatus} from "../../PublishStatus"
 import {ApiSkillSummary} from "../../richskill/ApiSkillSummary"
-import {Observable, Subject} from "rxjs"
+import {Observable, of, Subject, throwError} from "rxjs"
 import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
 import {Title} from "@angular/platform-browser";
 import {AuthService} from "../../auth/auth-service";
 import {ButtonAction} from "../../auth/auth-roles";
+import {formatDate} from "@angular/common"
+import * as FileSaver from "file-saver"
+import {ITaskResult} from "../../task/ApiTaskResult"
+import {delay, retryWhen, switchMap} from "rxjs/operators"
 
 @Component({
   selector: "app-manage-collection",
@@ -30,6 +34,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
 
   editIcon = SvgHelper.path(SvgIcon.EDIT)
   publishIcon = SvgHelper.path(SvgIcon.PUBLISH)
+  downloadIcon = SvgHelper.path(SvgIcon.DOWNLOAD)
   archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)
   unarchiveIcon = SvgHelper.path(SvgIcon.UNARCHIVE)
   addIcon = SvgHelper.path(SvgIcon.ADD)
@@ -60,6 +65,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
               protected route: ActivatedRoute,
               protected titleService: Title,
               protected authService: AuthService,
+              @Inject(LOCALE_ID) protected locale: string
   ) {
     super(router, richSkillService, toastService, authService)
   }
@@ -136,6 +142,38 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     return false
   }
 
+  generateCsv(collectionName: string): void {
+    this.collectionService.requestCollectionSkillsCsv(this.uuidParam ?? "")
+      .subscribe((taskStarted: ITaskResult) => {
+        this.toastService.loaderSubject.next(true)
+        this.getCsv(taskStarted.uuid ?? "", collectionName)
+      })
+  }
+
+  getCsv(uuid: string, collectionName: string): void {
+    this.collectionService.getCsvTaskResultsIfComplete(uuid)
+      .pipe(
+        retryWhen(errors => errors.pipe(
+          switchMap((error) => {
+            if (error.status === 404) {
+              return of(error.status)
+            }
+            return throwError(error)
+          }),
+          delay(1000),
+        )))
+      .subscribe(response => {
+        this.saveCsv(response.body, collectionName)
+      })
+  }
+
+  saveCsv(body: string, collectionName: string): void {
+    const blob = new Blob([body], {type: "text/csv;charset=utf-8;"})
+    const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
+    FileSaver.saveAs(blob, `RSD Skills - ${collectionName} - ${date}.csv`)
+    this.toastService.loaderSubject.next(false)
+  }
+
   actionDefinitions(): TableActionDefinition[] {
     const actions = [
       new TableActionDefinition({
@@ -186,6 +224,15 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
           visible: () => this.authService.isEnabledByRoles(ButtonAction.CollectionUpdate)
         })
       )
+    }
+
+    if ((this.collection?.status === PublishStatus.Draft || this.collection?.status === PublishStatus.Published) && this.authService.isEnabledByRoles(ButtonAction.LibraryExport)) {
+      actions.push(new TableActionDefinition({
+        label: "Download CSV",
+        icon: this.downloadIcon,
+        callback: () => this.generateCsv(this.collection?.name ?? ""),
+        visible: () => true
+      }))
     }
     return actions
   }

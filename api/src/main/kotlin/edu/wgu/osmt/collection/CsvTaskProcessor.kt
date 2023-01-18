@@ -2,6 +2,7 @@ package edu.wgu.osmt.collection
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.richskill.RichSkillAndCollections
 import edu.wgu.osmt.richskill.RichSkillCsvExport
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
@@ -46,6 +47,7 @@ class CsvTaskProcessor {
 
         val csv = collectionRepository.findByUUID(csvTask.collectionUuid)
             ?.skills
+            ?.filter { PublishStatus.Archived != it.publishStatus() }
             ?.with(RichSkillDescriptorDao::collections)
             ?.map { RichSkillAndCollections.fromDao(it) }
             ?.let { RichSkillCsvExport(appConfig).toCsv(it) }

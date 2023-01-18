@@ -156,6 +156,9 @@ class CollectionController @Autowired constructor(
     fun getSkillsForCollectionCsv(
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
+        if (collectionRepository.findByUUID(uuid)!!.publishStatus() == PublishStatus.Draft && !oAuthHelper.hasRole(appConfig.roleAdmin)) {
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        }
         val task = CsvTask(collectionUuid = uuid)
         taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
         return Task.processingResponse(task)

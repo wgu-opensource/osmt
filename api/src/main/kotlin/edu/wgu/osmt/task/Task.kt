@@ -128,6 +128,17 @@ data class UpdateCollectionSkillsTask(
     override val apiResultPath = RoutePaths.TASK_DETAIL_BATCH
 }
 
+data class RemoveCollectionSkillsTask(
+    val collectionUuid: String = "",
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: ApiBatchResult? = null,
+    override val status: TaskStatus = TaskStatus.Processing
+) : Task {
+    override val contentType = MediaType.APPLICATION_JSON_VALUE
+    override val apiResultPath = RoutePaths.TASK_DETAIL_BATCH
+}
+
 enum class TaskStatus {
     Processing,
     Ready

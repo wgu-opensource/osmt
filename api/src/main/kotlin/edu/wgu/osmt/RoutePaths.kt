@@ -30,6 +30,7 @@ object RoutePaths {
     const val COLLECTION_SKILLS = "$COLLECTION_DETAIL/skills"
     const val COLLECTION_AUDIT_LOG = "$COLLECTION_DETAIL/log"
     const val COLLECTION_CSV = "$COLLECTION_DETAIL/csv"
+    const val COLLECTION_REMOVE = "$COLLECTION_DETAIL/remove"
 
 
     const val TASKS_PATH = "$API/results"

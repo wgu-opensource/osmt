@@ -7,6 +7,7 @@ import edu.wgu.osmt.RoutePaths.COLLECTION_CREATE
 import edu.wgu.osmt.RoutePaths.COLLECTION_CSV
 import edu.wgu.osmt.RoutePaths.COLLECTION_DETAIL
 import edu.wgu.osmt.RoutePaths.COLLECTION_PUBLISH
+import edu.wgu.osmt.RoutePaths.COLLECTION_REMOVE
 import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS
 import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS_UPDATE
 import edu.wgu.osmt.RoutePaths.COLLECTION_UPDATE
@@ -29,8 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import org.springframework.http.HttpMethod.GET
-import org.springframework.http.HttpMethod.POST
+import org.springframework.http.HttpMethod.*
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -92,6 +92,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(POST, COLLECTION_SKILLS).permitAll()
             .mvcMatchers(GET, COLLECTION_CSV).permitAll()
             .mvcMatchers(GET, TASK_DETAIL_TEXT).permitAll()   // public csv results
+            .mvcMatchers(DELETE, COLLECTION_REMOVE).hasRole(appConfig.roleAdmin)
 
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
             .and().oauth2Login().successHandler(redirectToFrontend)

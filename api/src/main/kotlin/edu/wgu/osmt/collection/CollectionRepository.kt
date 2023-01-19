@@ -11,10 +11,17 @@ import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.richskill.*
+import edu.wgu.osmt.richskill.RichSkillDescriptor
+import edu.wgu.osmt.richskill.RichSkillDescriptorDao
+import edu.wgu.osmt.richskill.RichSkillDescriptorTable
+import edu.wgu.osmt.richskill.RichSkillDoc
+import edu.wgu.osmt.richskill.RichSkillEsRepo
+import edu.wgu.osmt.richskill.RichSkillRepository
+import edu.wgu.osmt.richskill.diff
 import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.jetbrains.exposed.sql.SizedIterable
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -36,6 +43,7 @@ interface CollectionRepository {
     fun create(name: String, user: String): CollectionDao?
     fun create(updateObject: CollectionUpdateObject, user: String): CollectionDao?
     fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao?
+    fun remove(id: Long?): ApiBatchResult
 
     fun createFromApi(
         apiUpdates: List<ApiCollectionUpdate>,
@@ -80,6 +88,7 @@ class CollectionRepositoryImpl @Autowired constructor(
 
     override val table = CollectionTable
     override val dao = CollectionDao.Companion
+    val collectionSkillsTable = CollectionSkills
 
     override fun findAll() = dao.all()
 
@@ -195,6 +204,29 @@ class CollectionRepositoryImpl @Autowired constructor(
         }
 
         return daoObject
+    }
+
+    override fun remove(id: Long?): ApiBatchResult {
+        val daoObject = id?.let { dao.findById(it) }
+
+        collectionSkillsTable.deleteWhere { collectionSkillsTable.collectionId eq id }
+        daoObject?.let { collectionEsRepo.delete(it.toDoc()) }
+
+
+        if (table.deleteWhere { table.id eq id } == 1 ) {
+            return ApiBatchResult(
+                success = true,
+                modifiedCount = 1,
+                totalCount = 1
+            )
+        }
+
+        return ApiBatchResult(
+            success = false,
+            modifiedCount = 0,
+            totalCount = 0
+        )
+
     }
 
     override fun createFromApi(

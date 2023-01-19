@@ -19,6 +19,7 @@ import edu.wgu.osmt.security.OAuthHelper
 import edu.wgu.osmt.task.AppliesToType
 import edu.wgu.osmt.task.CsvTask
 import edu.wgu.osmt.task.PublishTask
+import edu.wgu.osmt.task.RemoveCollectionSkillsTask
 import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskResult
@@ -186,8 +187,8 @@ class CollectionController @Autowired constructor(
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
 
-        val task = CsvTask(collectionUuid = uuid)
-        taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
+        val task = RemoveCollectionSkillsTask(collectionUuid = uuid)
+        taskMessageService.enqueueJob(TaskMessageService.removeCollectionSkills, task)
         return Task.processingResponse(task)
     }
 

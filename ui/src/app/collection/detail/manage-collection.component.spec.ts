@@ -418,13 +418,14 @@ describe("ManageCollectionComponent", () => {
       createMockSkillSummary("id3")
     ]
     component.results = skills
-    component.showingMultipleConfirm = false
+    // component.showingMultipleConfirm = false
+    component.template = "default"
     component.selectAllChecked = false
 
     // Act
     component.removeFromCollection(skill)
     // Assert
-    expect(component.showingMultipleConfirm).toBeFalsy()
+    expect(component.template).toEqual("default")
     expect(component.submitSkillRemoval).toHaveBeenCalled()
 
     // Arrange
@@ -432,7 +433,7 @@ describe("ManageCollectionComponent", () => {
     // Act
     component.removeFromCollection()
     // Assert
-    expect(component.showingMultipleConfirm).toBeTruthy()
+    expect(component.template).toEqual("confirm-multiple")
     expect(component.submitSkillRemoval).not.toHaveBeenCalled()
 
     // Arrange
@@ -441,7 +442,7 @@ describe("ManageCollectionComponent", () => {
     // Act
     component.removeFromCollection(skill)
     // Assert
-    expect(component.showingMultipleConfirm).toBeTruthy()
+    expect(component.template).toEqual("confirm-multiple")
     expect(component.submitSkillRemoval).not.toHaveBeenCalled()
 
     // Arrange
@@ -470,7 +471,8 @@ describe("ManageCollectionComponent", () => {
   it("handleClickConfirmMulti should be correct", () => {
     // Arrange
     const spySubmitSkillRemoval = spyOn(component, "submitSkillRemoval").and.returnValue()  // Test just this method
-    component.showingMultipleConfirm = true
+    // component.showingMultipleConfirm = true
+    component.template = "confirm-multiple"
     component.apiSearch = new ApiSearch({})
 
     // Act
@@ -478,21 +480,22 @@ describe("ManageCollectionComponent", () => {
 
     // Assert
     expect(result).toBeFalsy()
-    expect(component.showingMultipleConfirm).toBeFalsy()
+    expect(component.template).toEqual("default")
     expect(component.apiSearch).toBeFalsy()
     expect(component.submitSkillRemoval).toHaveBeenCalled()
   })
 
   it("handleClickCancel should be correct", () => {
     // Arrange
-    component.showingMultipleConfirm = true
+    // component.showingMultipleConfirm = true
+    component.template = "confirm-multiple"
     component.apiSearch = new ApiSearch({})
 
     // Act
     component.handleClickCancel()
 
     // Assert
-    expect(component.showingMultipleConfirm).toBeFalsy()
+    expect(component.template).toEqual("default")
     expect(component.apiSearch).toBeFalsy()
   })
 

@@ -193,7 +193,7 @@ export class CollectionService extends AbstractService {
   }
 
   deleteCollection(uuid: string): Observable<ApiTaskResult> {
-    return this.httpClient.delete<ITaskResult>(`api/collections/${uuid}/updateSkills`)
+    return this.httpClient.delete<ITaskResult>(`api/collections/${uuid}/remove`)
       .pipe(share())
       .pipe(map((body) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }

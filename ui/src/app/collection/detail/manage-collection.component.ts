@@ -258,7 +258,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
 
   handleConfirmDeleteCollection(): void {
     this.toastService.loaderSubject.next(true)
-    this.collectionService.deleteCollectionWithResult("").subscribe(() => {
+    this.collectionService.deleteCollectionWithResult(this.collection?.uuid ?? "").subscribe(() => {
       this.toastService.loaderSubject.next()
       this.router.navigate(["/collections"])
     })

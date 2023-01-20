@@ -47,16 +47,15 @@ class UpdateCollectionSkillsTaskProcessor {
     }
 
     @RqueueListener(
-        value = [TaskMessageService.updateCollectionSkills],
+        value = [TaskMessageService.removeCollectionSkills],
         deadLetterQueueListenerEnabled = "true",
         deadLetterQueue = TaskMessageService.deadLetters,
         concurrency = "1"
     )
     fun removeCollectionSkills(task: RemoveCollectionSkillsTask) {
-        logger.info("Started processing to remove collection skills task id: ${task.uuid}")
+        logger.info("Started processing to remove collection task id: ${task.uuid}")
 
-        val id = collectionRepository.findByUUID(task.uuid)?.id
-        val batchResult = collectionRepository.remove(id?.value)
+        val batchResult = collectionRepository.remove(task.collectionUuid)
 
         taskMessageService.publishResult(
             task.copy(result=batchResult, status= TaskStatus.Ready)

@@ -43,7 +43,7 @@ interface CollectionRepository {
     fun create(name: String, user: String): CollectionDao?
     fun create(updateObject: CollectionUpdateObject, user: String): CollectionDao?
     fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao?
-    fun remove(id: Long?): ApiBatchResult
+    fun remove(uuid: String): ApiBatchResult
 
     fun createFromApi(
         apiUpdates: List<ApiCollectionUpdate>,
@@ -206,21 +206,22 @@ class CollectionRepositoryImpl @Autowired constructor(
         return daoObject
     }
 
-    override fun remove(id: Long?): ApiBatchResult {
-        val daoObject = id?.let { dao.findById(it) }
+    override fun remove(uuid: String): ApiBatchResult {
 
-        collectionSkillsTable.deleteWhere { collectionSkillsTable.collectionId eq id }
-        daoObject?.let { collectionEsRepo.delete(it.toDoc()) }
+        val collectionFound = findByUUID(uuid)
 
+        if (collectionFound != null) {
+            collectionSkillsTable.deleteWhere { collectionSkillsTable.collectionId eq collectionFound.id }
+            collectionFound?.let { collectionEsRepo.delete(it.toDoc()) }
 
-        if (table.deleteWhere { table.id eq id } == 1 ) {
-            return ApiBatchResult(
-                success = true,
-                modifiedCount = 1,
-                totalCount = 1
-            )
+            if (table.deleteWhere { table.id eq collectionFound.id } == 1 ) {
+                return ApiBatchResult(
+                    success = true,
+                    modifiedCount = 1,
+                    totalCount = 1
+                )
+            }
         }
-
         return ApiBatchResult(
             success = false,
             modifiedCount = 0,

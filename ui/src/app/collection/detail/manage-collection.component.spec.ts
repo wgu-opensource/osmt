@@ -8,6 +8,7 @@ import { Router } from "@angular/router"
 import { RouterTestingModule } from "@angular/router/testing"
 import { of } from "rxjs"
 import {
+  apiTaskResultForDeleteCollection,
   createMockCollection,
   createMockPaginatedSkills,
   createMockSkillSummary,
@@ -32,6 +33,8 @@ import { CollectionService } from "../service/collection.service"
 import { ManageCollectionComponent } from "./manage-collection.component"
 import {AuthService} from "../../auth/auth-service";
 import * as FileSaver from "file-saver"
+import * as Auth from "../../auth/auth-roles"
+import {CollectionsLibraryComponent} from "../../table/collections-library.component"
 
 
 @Component({
@@ -72,7 +75,8 @@ describe("ManageCollectionComponent", () => {
         RouterTestingModule.withRoutes([
           { path: "collections/uuid1/add-skills", component: ManageCollectionComponent },
           { path: "collections/UUID1/edit", component: ManageCollectionComponent },
-          { path: "collections/uuid1/publish", component: ManageCollectionComponent }
+          { path: "collections/uuid1/publish", component: ManageCollectionComponent },
+          { path: "collections", component: CollectionsLibraryComponent}
         ]),
         HttpClientTestingModule
       ],
@@ -278,7 +282,7 @@ describe("ManageCollectionComponent", () => {
 
       // Assert
       expect(actions).toBeTruthy()
-      expect(actions.length).toEqual(6)
+      expect(actions.length).toEqual(5)
 
       let action = actions[0]
       expect(action.label).toEqual("Add RSDs to This Collection")
@@ -306,10 +310,37 @@ describe("ManageCollectionComponent", () => {
       expect(action && action.callback).toBeTruthy()
       action.callback?.(action)
       expect(action.visible?.()).toBeTruthy()  // !== PublishStatus.Archived  && !== PublishStatus.Deleted
-
-      action = actions[5]
-      expect(action.label).toEqual("Delete Collection")
     })
+  })
+
+  it("delete collection should be visible", () => {
+    const spy = spyOnProperty(Auth, "ENABLE_ROLES").and.returnValue(true)
+    const actions = component.actionDefinitions()
+    const action = actions[5]
+    expect(action.label).toEqual("Delete Collection")
+    expect(actions.length).toEqual(6)
+  })
+
+  it("delete collection should not be visible", () => {
+    const actions = component.actionDefinitions()
+    const action = actions[5]
+    expect(action).toBeUndefined()
+    expect(actions.length).toEqual(5)
+  })
+
+  it("when delete collection action is called template should be confirm-delete-collection", () => {
+    component.deleteCollectionAction()
+    expect(component.template === "confirm-delete-collection")
+  })
+
+  it("handleConfirmDeleteCollection should call", () => {
+    const spyLoader = spyOn(component["toastService"].loaderSubject, "next")
+    const spyDeleteCollectionWithResult = spyOn(component["collectionService"], "deleteCollectionWithResult").and.callThrough()// .and.callFake(() => of(apiTaskResultForDeleteCollection))
+    // spyOn(component["router"], 'navigate').and.returnValue(["/collections"])
+    // expect(component["router"].navigate).toHaveBeenCalledWith('/collections')
+    component.handleConfirmDeleteCollection()
+    expect(spyLoader).toHaveBeenCalledWith(true)
+    expect(spyDeleteCollectionWithResult).toHaveBeenCalled()
   })
 
   it("publishAction should be correct", () => {

@@ -259,7 +259,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   handleConfirmDeleteCollection(): void {
     this.toastService.loaderSubject.next(true)
     this.collectionService.deleteCollectionWithResult(this.collection?.uuid ?? "").subscribe(() => {
-      this.toastService.loaderSubject.next()
+      this.toastService.loaderSubject.next(false)
       this.router.navigate(["/collections"])
     })
   }
@@ -300,6 +300,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   }
 
   submitCollectionStatusChange(newStatus: PublishStatus, verb: string): void {
+    console.log("submit collection status change")
     if (this.uuidParam === undefined) { return }
 
     const updateObject = new ApiCollectionUpdate({status: newStatus})

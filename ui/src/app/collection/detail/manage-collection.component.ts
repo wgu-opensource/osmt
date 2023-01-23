@@ -260,9 +260,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     this.toastService.loaderSubject.next(true)
     this.collectionService.deleteCollectionWithResult(this.collection?.uuid ?? "").subscribe(() => {
       this.toastService.loaderSubject.next(false)
-      this.router.navigate(["/collections"]).then(() => {
-        window.location.reload()
-      })
+      this.router.navigate(["/collections"])
     })
   }
 

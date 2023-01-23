@@ -98,10 +98,6 @@ describe("ManageCollectionComponent", () => {
     component.titleElement = new ElementRef(document.getElementById("titleHeading"))
   }))
 
-  beforeAll(() => {
-    window.onbeforeunload = () => "Oh no!"
-  })
-
   it("should be created", () => {
     expect(component).toBeTruthy()
   })

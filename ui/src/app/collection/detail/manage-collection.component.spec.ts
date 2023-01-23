@@ -335,9 +335,7 @@ describe("ManageCollectionComponent", () => {
 
   it("handleConfirmDeleteCollection should call", () => {
     const spyLoader = spyOn(component["toastService"].loaderSubject, "next")
-    const spyDeleteCollectionWithResult = spyOn(component["collectionService"], "deleteCollectionWithResult").and.callThrough()// .and.callFake(() => of(apiTaskResultForDeleteCollection))
-    // spyOn(component["router"], 'navigate').and.returnValue(["/collections"])
-    // expect(component["router"].navigate).toHaveBeenCalledWith('/collections')
+    const spyDeleteCollectionWithResult = spyOn(component["collectionService"], "deleteCollectionWithResult").and.callThrough()
     component.handleConfirmDeleteCollection()
     expect(spyLoader).toHaveBeenCalledWith(true)
     expect(spyDeleteCollectionWithResult).toHaveBeenCalled()
@@ -449,7 +447,6 @@ describe("ManageCollectionComponent", () => {
       createMockSkillSummary("id3")
     ]
     component.results = skills
-    // component.showingMultipleConfirm = false
     component.template = "default"
     component.selectAllChecked = false
 
@@ -502,7 +499,6 @@ describe("ManageCollectionComponent", () => {
   it("handleClickConfirmMulti should be correct", () => {
     // Arrange
     const spySubmitSkillRemoval = spyOn(component, "submitSkillRemoval").and.returnValue()  // Test just this method
-    // component.showingMultipleConfirm = true
     component.template = "confirm-multiple"
     component.apiSearch = new ApiSearch({})
 
@@ -518,7 +514,6 @@ describe("ManageCollectionComponent", () => {
 
   it("handleClickCancel should be correct", () => {
     // Arrange
-    // component.showingMultipleConfirm = true
     component.template = "confirm-multiple"
     component.apiSearch = new ApiSearch({})
 

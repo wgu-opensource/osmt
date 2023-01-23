@@ -33,7 +33,6 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
 
     val userString = "unittestuser"
 
-    @Disabled
 
     @Test
     fun `should not create a blank collection`() {
@@ -41,8 +40,6 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
         assertThat(collectionRepository.create(CollectionUpdateObject(name=""), userString)).isNull()
         assertThat(collectionRepository.create(CollectionUpdateObject(name=" "), userString)).isNull()
     }
-
-    @Disabled
 
     @Test
     fun `should create collections from ApiCollectionUpdate objects`() {
@@ -106,8 +103,6 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
         assertThatCollectionMatchesApiCollectionUpdate(CollectionAndRichSkills.fromDao(updatedDao!!), newUpdate)
     }
 
-    @Disabled
-
     @Test
     fun `should add all skills from all pages of a search result to a collection`() {
         val totalSkillCount = 10
@@ -144,7 +139,6 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
         }
     }
 
-    @Disabled
     @Test
     fun testFindAll() {
         // Act
@@ -154,7 +148,6 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
         assertThat(collectionDao).isNotNull
     }
 
-    @Disabled
     @Test
     fun testChangeStatusesForTask() {
         // Arrange
@@ -175,7 +168,6 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
     }
 
     @Disabled
-    @Test
     fun testChangeStatusesForTaskWithCollectionId() {
         // Arrange
         val skillCount = 3

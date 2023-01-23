@@ -214,13 +214,13 @@ class CollectionRepositoryImpl @Autowired constructor(
             collectionSkillsTable.deleteWhere { collectionSkillsTable.collectionId eq collectionFound.id }
             collectionFound?.let { collectionEsRepo.delete(it.toDoc()) }
 
-            if (table.deleteWhere { table.id eq collectionFound.id } == 1 ) {
-                return ApiBatchResult(
-                    success = true,
-                    modifiedCount = 1,
-                    totalCount = 1
-                )
-            }
+            table.deleteWhere { table.id eq collectionFound.id } == 1
+            return ApiBatchResult(
+                success = true,
+                modifiedCount = 1,
+                totalCount = 1
+            )
+
         }
         return ApiBatchResult(
             success = false,

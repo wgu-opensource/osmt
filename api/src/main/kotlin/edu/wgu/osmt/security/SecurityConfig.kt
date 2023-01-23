@@ -92,7 +92,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(POST, COLLECTION_SKILLS).permitAll()
             .mvcMatchers(GET, COLLECTION_CSV).permitAll()
             .mvcMatchers(GET, TASK_DETAIL_TEXT).permitAll()   // public csv results
-            .mvcMatchers(DELETE, COLLECTION_REMOVE).hasRole(appConfig.roleAdmin)
 
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
             .and().oauth2Login().successHandler(redirectToFrontend)
@@ -130,6 +129,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
             .mvcMatchers(POST, COLLECTION_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
             .mvcMatchers(POST, COLLECTION_SKILLS_UPDATE).hasAnyAuthority(ADMIN)
+            .mvcMatchers(DELETE, COLLECTION_REMOVE).hasAnyAuthority(ADMIN)
 
             .mvcMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
     }
@@ -147,6 +147,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(POST, COLLECTION_PUBLISH).authenticated()
             .mvcMatchers(POST, COLLECTION_UPDATE).authenticated()
             .mvcMatchers(POST, COLLECTION_SKILLS_UPDATE).authenticated()
+            .mvcMatchers(DELETE, COLLECTION_REMOVE).denyAll()
 
             // fall-through
             .mvcMatchers("/api/**").permitAll()

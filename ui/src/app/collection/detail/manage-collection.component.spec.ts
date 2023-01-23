@@ -98,6 +98,10 @@ describe("ManageCollectionComponent", () => {
     component.titleElement = new ElementRef(document.getElementById("titleHeading"))
   }))
 
+  beforeAll(() => {
+    window.onbeforeunload = () => "Oh no!"
+  })
+
   it("should be created", () => {
     expect(component).toBeTruthy()
   })
@@ -336,6 +340,7 @@ describe("ManageCollectionComponent", () => {
   it("handleConfirmDeleteCollection should call", () => {
     const spyLoader = spyOn(component["toastService"].loaderSubject, "next")
     const spyDeleteCollectionWithResult = spyOn(component["collectionService"], "deleteCollectionWithResult").and.callThrough()
+    // window.onbeforeunload = jasmine.createSpy()
     component.handleConfirmDeleteCollection()
     expect(spyLoader).toHaveBeenCalledWith(true)
     expect(spyDeleteCollectionWithResult).toHaveBeenCalled()

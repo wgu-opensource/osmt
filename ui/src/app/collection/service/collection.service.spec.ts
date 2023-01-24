@@ -414,7 +414,7 @@ describe("CollectionService", () => {
     const result$ = testService.deleteCollectionWithResult(apiTaskResultForDeleteCollection.uuid)
     tick(ASYNC_WAIT_PERIOD)
     // Assert
-    result$.subscribe((data: ApiTaskResult) => {
+    result$.subscribe((data: ApiBatchResult) => {
       expect(RouterData.commands).toEqual([]) // No Errors
     })
     const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + `/api/collections/${apiTaskResultForDeleteCollection.uuid}/remove`)

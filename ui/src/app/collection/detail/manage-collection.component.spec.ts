@@ -8,7 +8,6 @@ import { Router } from "@angular/router"
 import { RouterTestingModule } from "@angular/router/testing"
 import { of } from "rxjs"
 import {
-  apiTaskResultForDeleteCollection,
   createMockCollection,
   createMockPaginatedSkills,
   createMockSkillSummary,

@@ -188,8 +188,8 @@ export class CollectionService extends AbstractService {
     return this.pollForTaskResult<ApiBatchResult>(this.updateSkills(collectionUuid, skillListUpdate, filterByStatus), pollIntervalMs)
   }
 
-  deleteCollectionWithResult(uuid: string): Observable<ApiTaskResult> {
-    return this.pollForTaskResult<ApiTaskResult>(this.deleteCollection(uuid))
+  deleteCollectionWithResult(uuid: string): Observable<ApiBatchResult> {
+    return this.pollForTaskResult<ApiBatchResult>(this.deleteCollection(uuid))
   }
 
   deleteCollection(uuid: string): Observable<ApiTaskResult> {

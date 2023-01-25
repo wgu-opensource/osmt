@@ -24,6 +24,7 @@ import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.data.domain.PageRequest
@@ -214,14 +215,16 @@ class CollectionRepositoryImpl @Autowired constructor(
         val esCollectionFound = collectionFound?.let { collectionEsRepo.findByUuid(it.uuid, PageRequest.of(0, PaginationDefaults.size))}
 
         if (esCollectionFound != null && esCollectionFound.content.isNotEmpty()) {
-            if(table.deleteWhere { table.id eq collectionFound.id } == 1) {
+            transaction {
+                table.deleteWhere { table.id eq collectionFound.id }
                 collectionEsRepo.delete(collectionFound.toDoc())
-                return ApiBatchResult(
-                    success = true,
-                    modifiedCount = 1,
-                    totalCount = 1
-                )
+
             }
+            return ApiBatchResult(
+                success = true,
+                modifiedCount = 1,
+                totalCount = 1
+            )
         }
 
         return ApiBatchResult(

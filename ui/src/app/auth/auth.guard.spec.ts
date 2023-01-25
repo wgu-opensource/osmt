@@ -43,11 +43,11 @@ describe("AuthGuard", () => {
     expect(authGuard.canActivate(routeMock, stateMock)).toEqual(false)
   })
 
-  it("should return true even without appropriate roles because ENABLE_ROLES is false for OS OSMT UI", () => {
+  it("should return false because ENABLE_ROLES is set to true for OS OSMT UI", () => {
     // Arrange
     AuthServiceData.hasRoleFlag = false
     // Act and Assert
-    expect(authGuard.canActivate(routeMock, stateMock)).toEqual(true)
+    expect(authGuard.canActivate(routeMock, stateMock)).toEqual(false)
   })
 
   it("should return true with undefined route.data.roles", () => {

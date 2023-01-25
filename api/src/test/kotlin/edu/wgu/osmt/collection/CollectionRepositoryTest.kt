@@ -16,7 +16,7 @@ import edu.wgu.osmt.richskill.RsdUpdateObject
 import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Disabled
+import org.jetbrains.exposed.sql.selectAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
@@ -167,7 +167,6 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
 
     }
 
-    @Disabled
     fun testChangeStatusesForTaskWithCollectionId() {
         // Arrange
         val skillCount = 3
@@ -192,14 +191,19 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
     }
 
     @Test
-    fun `remove finds and succesfully removes an existing collection`() {
+    fun `remove finds and successfully removes an existing collection`() {
         // Arrange
         val collection = collectionRepository.create(UUID.randomUUID().toString(), userString)!!.toModel()
+        val updateObject = RsdUpdateObject(name = "test skill", statement = testUser)
+        val skillDao = richSkillRepository.create(updateObject, testUser)
+        collection.id?.let { CollectionSkills.create(it, skillDao!!.id.value) }
 
         // Act
         val batchResult = collectionRepository.remove(collection.uuid)
 
         // Assert
+        assertThat(CollectionTable.selectAll()).isEmpty()
+        assertThat(CollectionSkills.selectAll()).isEmpty()
         assertThat(batchResult?.modifiedCount).isEqualTo(1)
         assertThat(batchResult?.success).isEqualTo(true)
 

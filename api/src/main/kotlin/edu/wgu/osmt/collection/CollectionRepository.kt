@@ -1,5 +1,6 @@
 package edu.wgu.osmt.collection
 
+import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.FormValidationException
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
@@ -25,6 +26,7 @@ import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -209,19 +211,19 @@ class CollectionRepositoryImpl @Autowired constructor(
     override fun remove(uuid: String): ApiBatchResult {
 
         val collectionFound = findByUUID(uuid)
+        val esCollectionFound = collectionFound?.let { collectionEsRepo.findByUuid(it.uuid, PageRequest.of(0, PaginationDefaults.size))}
 
-        if (collectionFound != null) {
-            collectionSkillsTable.deleteWhere { collectionSkillsTable.collectionId eq collectionFound.id }
-            collectionFound?.let { collectionEsRepo.delete(it.toDoc()) }
-
-            table.deleteWhere { table.id eq collectionFound.id } == 1
-            return ApiBatchResult(
-                success = true,
-                modifiedCount = 1,
-                totalCount = 1
-            )
-
+        if (esCollectionFound != null && esCollectionFound.content.isNotEmpty()) {
+            if(table.deleteWhere { table.id eq collectionFound.id } == 1) {
+                collectionEsRepo.delete(collectionFound.toDoc())
+                return ApiBatchResult(
+                    success = true,
+                    modifiedCount = 1,
+                    totalCount = 1
+                )
+            }
         }
+
         return ApiBatchResult(
             success = false,
             modifiedCount = 0,

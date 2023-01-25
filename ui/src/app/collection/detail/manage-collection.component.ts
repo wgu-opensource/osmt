@@ -302,7 +302,6 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   }
 
   submitCollectionStatusChange(newStatus: PublishStatus, verb: string): void {
-    console.log("submit collection status change")
     if (this.uuidParam === undefined) { return }
 
     const updateObject = new ApiCollectionUpdate({status: newStatus})
@@ -342,7 +341,6 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     const count = (this.apiSearch?.uuids?.length ?? 0)
 
     if (count > 1 || this.selectAllChecked) {
-      // this.showingMultipleConfirm = true
       this.template = "confirm-multiple"
     } else {
       if (confirm(`Confirm that you want to remove the following RSD from this collection.\n${first?.skillName}`)) {
@@ -368,14 +366,12 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
 
   handleClickConfirmMulti(): boolean {
     this.submitSkillRemoval(this.apiSearch)
-    // this.showingMultipleConfirm = false
     this.template = "default"
     this.apiSearch = undefined
     return false
   }
 
   handleClickCancel(): boolean {
-    // this.showingMultipleConfirm = false
     this.template = "default"
     this.apiSearch = undefined
     return false

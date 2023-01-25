@@ -3,7 +3,11 @@ package edu.wgu.osmt.collection
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
-import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.api.model.ApiCollection
+import edu.wgu.osmt.api.model.ApiCollectionUpdate
+import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.ApiSkillListUpdate
+import edu.wgu.osmt.api.model.CollectionSortEnum
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
@@ -12,7 +16,14 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.task.*
+import edu.wgu.osmt.task.AppliesToType
+import edu.wgu.osmt.task.CsvTask
+import edu.wgu.osmt.task.PublishTask
+import edu.wgu.osmt.task.RemoveCollectionSkillsTask
+import edu.wgu.osmt.task.Task
+import edu.wgu.osmt.task.TaskMessageService
+import edu.wgu.osmt.task.TaskResult
+import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
@@ -22,7 +33,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -161,6 +179,16 @@ class CollectionController @Autowired constructor(
         }
         val task = CsvTask(collectionUuid = uuid)
         taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
+        return Task.processingResponse(task)
+    }
+
+    @DeleteMapping(RoutePaths.COLLECTION_REMOVE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun removeCollection(
+        @PathVariable uuid: String
+    ): HttpEntity<TaskResult> {
+
+        val task = RemoveCollectionSkillsTask(collectionUuid = uuid)
+        taskMessageService.enqueueJob(TaskMessageService.removeCollectionSkills, task)
         return Task.processingResponse(task)
     }
 

@@ -285,6 +285,13 @@ export const apiTaskResultForCSV: ApiTaskResult = {
   id: "/api/results/text/c2624480-4935-4362-bc71-86e052dcb852"
 }
 
+export const apiTaskResultForDeleteCollection: ApiTaskResult = {
+  uuid: "5ca6ea7f-e008-44fc-9108-eda19b01fa6a",
+  status: "Processing",
+  contentType: "application/json",
+  id: "/api/results/batch/5ca6ea7f-e008-44fc-9108-eda19b01fa6a"
+}
+
 export const mockTaskResultForExportSearch: ApiTaskResult = {
   uuid: "77574cd6-933b-4ee0-a106-afadb7a3a292",
   status: "Processing",

@@ -1,5 +1,6 @@
 package edu.wgu.osmt.collection
 
+import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.FormValidationException
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
@@ -11,13 +12,22 @@ import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.richskill.*
+import edu.wgu.osmt.richskill.RichSkillDescriptor
+import edu.wgu.osmt.richskill.RichSkillDescriptorDao
+import edu.wgu.osmt.richskill.RichSkillDescriptorTable
+import edu.wgu.osmt.richskill.RichSkillDoc
+import edu.wgu.osmt.richskill.RichSkillEsRepo
+import edu.wgu.osmt.richskill.RichSkillRepository
+import edu.wgu.osmt.richskill.diff
 import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.jetbrains.exposed.sql.SizedIterable
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -36,6 +46,7 @@ interface CollectionRepository {
     fun create(name: String, user: String): CollectionDao?
     fun create(updateObject: CollectionUpdateObject, user: String): CollectionDao?
     fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao?
+    fun remove(uuid: String): ApiBatchResult
 
     fun createFromApi(
         apiUpdates: List<ApiCollectionUpdate>,
@@ -80,6 +91,7 @@ class CollectionRepositoryImpl @Autowired constructor(
 
     override val table = CollectionTable
     override val dao = CollectionDao.Companion
+    val collectionSkillsTable = CollectionSkills
 
     override fun findAll() = dao.all()
 
@@ -195,6 +207,32 @@ class CollectionRepositoryImpl @Autowired constructor(
         }
 
         return daoObject
+    }
+
+    override fun remove(uuid: String): ApiBatchResult {
+
+        val collectionFound = findByUUID(uuid)
+        val esCollectionFound = collectionFound?.let { collectionEsRepo.findByUuid(it.uuid, PageRequest.of(0, PaginationDefaults.size))}
+
+        if (esCollectionFound != null && esCollectionFound.content.isNotEmpty()) {
+            transaction {
+                table.deleteWhere { table.id eq collectionFound.id }
+                collectionEsRepo.delete(collectionFound.toDoc())
+
+            }
+            return ApiBatchResult(
+                success = true,
+                modifiedCount = 1,
+                totalCount = 1
+            )
+        }
+
+        return ApiBatchResult(
+            success = false,
+            modifiedCount = 0,
+            totalCount = 0
+        )
+
     }
 
     override fun createFromApi(

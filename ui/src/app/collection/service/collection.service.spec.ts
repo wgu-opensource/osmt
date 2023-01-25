@@ -3,14 +3,16 @@
 import { Location } from "@angular/common"
 import { HttpClient, HttpResponse } from "@angular/common/http"
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
-import { async, fakeAsync, TestBed, tick } from "@angular/core/testing"
+import {async, fakeAsync, flush, TestBed, tick} from "@angular/core/testing"
 import { Router } from "@angular/router"
 import {
+  apiTaskResultForDeleteCollection,
   createMockBatchResult,
   createMockCollection,
   createMockPaginatedCollections,
   createMockPaginatedSkills,
-  createMockTaskResult
+  createMockTaskResult,
+  csvContent
 } from "../../../../test/resource/mock-data"
 import { AuthServiceData, AuthServiceStub, RouterData, RouterStub } from "../../../../test/resource/mock-stubs"
 import { AppConfig } from "../../app.config"
@@ -407,6 +409,18 @@ describe("CollectionService", () => {
     expect(req.request.method).toEqual("POST")
     req.flush(testData)
   })
+
+  it("delete collection with result should works", fakeAsync(() => {
+    const result$ = testService.deleteCollectionWithResult(apiTaskResultForDeleteCollection.uuid)
+    tick(ASYNC_WAIT_PERIOD)
+    // Assert
+    result$.subscribe((data: ApiBatchResult) => {
+      expect(RouterData.commands).toEqual([]) // No Errors
+    })
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + `/api/collections/${apiTaskResultForDeleteCollection.uuid}/remove`)
+    expect(req.request.method).toEqual("DELETE")
+    expect(req.request.headers.get("Accept")).toEqual("application/json")
+  }))
 
   it("updateSkillsWithResult should return", fakeAsync(() => {
     // Arrange

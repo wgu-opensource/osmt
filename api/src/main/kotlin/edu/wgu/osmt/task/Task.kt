@@ -27,7 +27,8 @@ import java.util.*
     JsonSubTypes.Type(value = ApiSkillListUpdate::class, name = "ApiSkillListUpdate"),
     JsonSubTypes.Type(value = UpdateCollectionSkillsTask::class, name = "UpdateCollectionSkillsTask"),
     JsonSubTypes.Type(value = CreateSkillsTask::class, name = "CreateSkillsTask"),
-    JsonSubTypes.Type(value = ExportSkillsToCsvTask::class, name = "ExportSkillsToCsvTask")
+    JsonSubTypes.Type(value = ExportSkillsToCsvTask::class, name = "ExportSkillsToCsvTask"),
+    JsonSubTypes.Type(value = RemoveCollectionSkillsTask::class, name = "RemoveCollectionSkillsTask")
 )
 
 interface Task {
@@ -119,6 +120,17 @@ data class UpdateCollectionSkillsTask(
     val skillListUpdate: ApiSkillListUpdate = ApiSkillListUpdate(),
     val publishStatuses: Set<PublishStatus> = setOf(PublishStatus.Draft),
     val userString: String = "",
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: ApiBatchResult? = null,
+    override val status: TaskStatus = TaskStatus.Processing
+) : Task {
+    override val contentType = MediaType.APPLICATION_JSON_VALUE
+    override val apiResultPath = RoutePaths.TASK_DETAIL_BATCH
+}
+
+data class RemoveCollectionSkillsTask(
+    val collectionUuid: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: ApiBatchResult? = null,

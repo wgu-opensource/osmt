@@ -18,6 +18,7 @@ import {
 import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
 import {ButtonAction, OSMT_ADMIN} from "../../src/app/auth/auth-roles"
 import {
+  apiTaskResultForDeleteCollection,
   createMockBatchResult,
   createMockCollection,
   createMockJobcode,
@@ -259,6 +260,14 @@ export class CollectionServiceStub {
     sort?: ApiSortOrder,
   ): Observable<PaginatedCollections> {
     return of(createMockPaginatedCollections())
+  }
+
+  deleteCollectionWithResult(uuid: string): Observable<ApiTaskResult> {
+    return of(apiTaskResultForDeleteCollection)
+  }
+
+  deleteCollection(uuid: string): Observable<ApiTaskResult> {
+    return of(apiTaskResultForDeleteCollection)
   }
 }
 

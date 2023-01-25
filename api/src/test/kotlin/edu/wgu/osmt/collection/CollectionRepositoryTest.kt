@@ -16,6 +16,7 @@ import edu.wgu.osmt.richskill.RsdUpdateObject
 import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.exposed.sql.selectAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
@@ -31,6 +32,7 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
     lateinit var richSkillRepository: RichSkillRepository
 
     val userString = "unittestuser"
+
 
     @Test
     fun `should not create a blank collection`() {
@@ -69,7 +71,7 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
         ), userString)!!
     }
 
-    private fun random_collection_update(): ApiCollectionUpdate {
+        private fun random_collection_update(): ApiCollectionUpdate {
         val name = UUID.randomUUID().toString()
         val author = UUID.randomUUID().toString()
         val status = PublishStatus.Published
@@ -165,7 +167,6 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
 
     }
 
-    @Test
     fun testChangeStatusesForTaskWithCollectionId() {
         // Arrange
         val skillCount = 3
@@ -187,6 +188,35 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
 
         // Assert
         assertThat(batchResult?.modifiedCount).isEqualTo(skillCount*3)
+    }
+
+    @Test
+    fun `remove finds and successfully removes an existing collection`() {
+        // Arrange
+        val collection = collectionRepository.create(UUID.randomUUID().toString(), userString)!!.toModel()
+        val updateObject = RsdUpdateObject(name = "test skill", statement = testUser)
+        val skillDao = richSkillRepository.create(updateObject, testUser)
+        collection.id?.let { CollectionSkills.create(it, skillDao!!.id.value) }
+
+        // Act
+        val batchResult = collectionRepository.remove(collection.uuid)
+
+        // Assert
+        assertThat(CollectionTable.selectAll()).isEmpty()
+        assertThat(CollectionSkills.selectAll()).isEmpty()
+        assertThat(batchResult?.modifiedCount).isEqualTo(1)
+        assertThat(batchResult?.success).isEqualTo(true)
+
+    }
+
+    @Test
+    fun `remove fails to remove a non-existing collection`() {
+        // Act
+        val batchResult = collectionRepository.remove(UUID.randomUUID().toString())
+
+        // Assert
+        assertThat(batchResult?.modifiedCount).isEqualTo(0)
+        assertThat(batchResult?.success).isEqualTo(false)
     }
 
 }

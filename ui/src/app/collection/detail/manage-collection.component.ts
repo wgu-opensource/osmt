@@ -15,7 +15,7 @@ import {Observable, of, Subject, throwError} from "rxjs"
 import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
 import {Title} from "@angular/platform-browser";
 import {AuthService} from "../../auth/auth-service";
-import {ButtonAction} from "../../auth/auth-roles";
+import {ButtonAction, ENABLE_ROLES} from "../../auth/auth-roles";
 import {formatDate} from "@angular/common"
 import * as FileSaver from "file-saver"
 import {ITaskResult} from "../../task/ApiTaskResult"
@@ -35,6 +35,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   editIcon = SvgHelper.path(SvgIcon.EDIT)
   publishIcon = SvgHelper.path(SvgIcon.PUBLISH)
   downloadIcon = SvgHelper.path(SvgIcon.DOWNLOAD)
+  deleteIcon = SvgHelper.path(SvgIcon.DELETE)
   archiveIcon = SvgHelper.path(SvgIcon.ARCHIVE)
   unarchiveIcon = SvgHelper.path(SvgIcon.UNARCHIVE)
   addIcon = SvgHelper.path(SvgIcon.ADD)
@@ -48,7 +49,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   uuidParam?: string
 
   showAddToCollection = false
-  showingMultipleConfirm = false
+  template: "default" | "confirm-multiple" | "confirm-delete-collection" = "default"
   collectionSaved?: Observable<ApiCollection>
   selectAllChecked = false
 
@@ -237,7 +238,32 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         visible: () => true
       }))
     }
+
+    if (ENABLE_ROLES && this.authService.isEnabledByRoles(ButtonAction.DeleteCollection)) {
+      actions.push(
+        new TableActionDefinition({
+          label: "Delete Collection",
+          icon: this.deleteIcon,
+          callback: () => this.deleteCollectionAction(),
+          visible: () => true
+        })
+      )
+    }
     return actions
+  }
+
+  deleteCollectionAction(): void {
+    this.template = "confirm-delete-collection"
+  }
+
+  handleConfirmDeleteCollection(): void {
+    this.toastService.loaderSubject.next(true)
+    this.collectionService.deleteCollectionWithResult(this.uuidParam ?? "").subscribe((result) => {
+      if (result) {
+        this.toastService.loaderSubject.next(false)
+        this.router.navigate(["/collections"])
+      }
+    })
   }
 
   editAction(): void {
@@ -315,7 +341,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     const count = (this.apiSearch?.uuids?.length ?? 0)
 
     if (count > 1 || this.selectAllChecked) {
-      this.showingMultipleConfirm = true
+      this.template = "confirm-multiple"
     } else {
       if (confirm(`Confirm that you want to remove the following RSD from this collection.\n${first?.skillName}`)) {
         this.submitSkillRemoval(this.apiSearch)
@@ -340,13 +366,13 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
 
   handleClickConfirmMulti(): boolean {
     this.submitSkillRemoval(this.apiSearch)
-    this.showingMultipleConfirm = false
+    this.template = "default"
     this.apiSearch = undefined
     return false
   }
 
   handleClickCancel(): boolean {
-    this.showingMultipleConfirm = false
+    this.template = "default"
     this.apiSearch = undefined
     return false
   }

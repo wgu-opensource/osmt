@@ -32,6 +32,8 @@ import { CollectionService } from "../service/collection.service"
 import { ManageCollectionComponent } from "./manage-collection.component"
 import {AuthService} from "../../auth/auth-service";
 import * as FileSaver from "file-saver"
+import * as Auth from "../../auth/auth-roles"
+import {CollectionsLibraryComponent} from "../../table/collections-library.component"
 
 
 @Component({
@@ -72,7 +74,8 @@ describe("ManageCollectionComponent", () => {
         RouterTestingModule.withRoutes([
           { path: "collections/uuid1/add-skills", component: ManageCollectionComponent },
           { path: "collections/UUID1/edit", component: ManageCollectionComponent },
-          { path: "collections/uuid1/publish", component: ManageCollectionComponent }
+          { path: "collections/uuid1/publish", component: ManageCollectionComponent },
+          { path: "collections", component: CollectionsLibraryComponent}
         ]),
         HttpClientTestingModule
       ],
@@ -309,6 +312,35 @@ describe("ManageCollectionComponent", () => {
     })
   })
 
+  it("delete collection should be visible", () => {
+    const spy = spyOnProperty(Auth, "ENABLE_ROLES").and.returnValue(true)
+    const actions = component.actionDefinitions()
+    const action = actions[5]
+    expect(action.label).toEqual("Delete Collection")
+    expect(actions.length).toEqual(6)
+  })
+
+  it("delete collection should not be visible", () => {
+    const actions = component.actionDefinitions()
+    const action = actions[5]
+    expect(action).toBeUndefined()
+    expect(actions.length).toEqual(5)
+  })
+
+  it("when delete collection action is called template should be confirm-delete-collection", () => {
+    component.deleteCollectionAction()
+    expect(component.template === "confirm-delete-collection")
+  })
+
+  it("handleConfirmDeleteCollection should call", () => {
+    const spyLoader = spyOn(component["toastService"].loaderSubject, "next")
+    const spyDeleteCollectionWithResult = spyOn(component["collectionService"], "deleteCollectionWithResult").and.callThrough()
+    // window.onbeforeunload = jasmine.createSpy()
+    component.handleConfirmDeleteCollection()
+    expect(spyLoader).toHaveBeenCalledWith(true)
+    expect(spyDeleteCollectionWithResult).toHaveBeenCalled()
+  })
+
   it("publishAction should be correct", () => {
     // Arrange for all
     const router = TestBed.inject(Router)
@@ -415,13 +447,13 @@ describe("ManageCollectionComponent", () => {
       createMockSkillSummary("id3")
     ]
     component.results = skills
-    component.showingMultipleConfirm = false
+    component.template = "default"
     component.selectAllChecked = false
 
     // Act
     component.removeFromCollection(skill)
     // Assert
-    expect(component.showingMultipleConfirm).toBeFalsy()
+    expect(component.template).toEqual("default")
     expect(component.submitSkillRemoval).toHaveBeenCalled()
 
     // Arrange
@@ -429,7 +461,7 @@ describe("ManageCollectionComponent", () => {
     // Act
     component.removeFromCollection()
     // Assert
-    expect(component.showingMultipleConfirm).toBeTruthy()
+    expect(component.template).toEqual("confirm-multiple")
     expect(component.submitSkillRemoval).not.toHaveBeenCalled()
 
     // Arrange
@@ -438,7 +470,7 @@ describe("ManageCollectionComponent", () => {
     // Act
     component.removeFromCollection(skill)
     // Assert
-    expect(component.showingMultipleConfirm).toBeTruthy()
+    expect(component.template).toEqual("confirm-multiple")
     expect(component.submitSkillRemoval).not.toHaveBeenCalled()
 
     // Arrange
@@ -467,7 +499,7 @@ describe("ManageCollectionComponent", () => {
   it("handleClickConfirmMulti should be correct", () => {
     // Arrange
     const spySubmitSkillRemoval = spyOn(component, "submitSkillRemoval").and.returnValue()  // Test just this method
-    component.showingMultipleConfirm = true
+    component.template = "confirm-multiple"
     component.apiSearch = new ApiSearch({})
 
     // Act
@@ -475,21 +507,21 @@ describe("ManageCollectionComponent", () => {
 
     // Assert
     expect(result).toBeFalsy()
-    expect(component.showingMultipleConfirm).toBeFalsy()
+    expect(component.template).toEqual("default")
     expect(component.apiSearch).toBeFalsy()
     expect(component.submitSkillRemoval).toHaveBeenCalled()
   })
 
   it("handleClickCancel should be correct", () => {
     // Arrange
-    component.showingMultipleConfirm = true
+    component.template = "confirm-multiple"
     component.apiSearch = new ApiSearch({})
 
     // Act
     component.handleClickCancel()
 
     // Assert
-    expect(component.showingMultipleConfirm).toBeFalsy()
+    expect(component.template).toEqual("default")
     expect(component.apiSearch).toBeFalsy()
   })
 

@@ -202,19 +202,17 @@ OSMT optionally supports role-based access, with these roles:
 Role-based access is disabled by default for the Angular UI and Spring REST API. Use these steps to enable roles.
 
 #### Configuration in OSMT Code
-Angular UI: In [`auth-roles.ts`](ui/src/app/auth/auth-roles.ts) file, configure these values:
+By default, OSMT is configured with roles enabled. If you want to disable roles in OSMT, apply these changes:
+
+In Angular UI: In [`auth-roles.ts`](ui/src/app/auth/auth-roles.ts) file, configure these values:
 ```
-export const ENABLE_ROLES = true
+export const ENABLE_ROLES = false
 ```
 
-Spring REST API: In [`application.properties`](api/src/main/resources/config/application.properties) file, configure these values:
+In Spring REST API: In [`application.properties`](api/src/main/resources/config/application.properties) file, configure these values:
 ```
 # Roles settings
-app.enableRoles=true
-osmt.security.role.admin=ROLE_Osmt_Admin
-osmt.security.role.curator=ROLE_Osmt_Curator
-osmt.security.role.view=ROLE_Osmt_View
-osmt.security.scope.read=SCOPE_osmt.read
+app.enableRoles=false
 ```
 * NOTE: if app.enableRoles=false, all authenticated endpoints will be accessible by any authenticated user.
 * You can use these role values, or you can provide your own based on your own authorization tooling. For Okta, you will need to use the uppercase `ROLE_` prefix on your role.

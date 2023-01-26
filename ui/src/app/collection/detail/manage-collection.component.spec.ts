@@ -281,7 +281,7 @@ describe("ManageCollectionComponent", () => {
 
       // Assert
       expect(actions).toBeTruthy()
-      expect(actions.length).toEqual(5)
+      expect(actions.length).toEqual(6)
 
       let action = actions[0]
       expect(action.label).toEqual("Add RSDs to This Collection")
@@ -321,6 +321,7 @@ describe("ManageCollectionComponent", () => {
   })
 
   it("delete collection should not be visible", () => {
+    const spy = spyOnProperty(Auth, "ENABLE_ROLES").and.returnValue(false)
     const actions = component.actionDefinitions()
     const action = actions[5]
     expect(action).toBeUndefined()

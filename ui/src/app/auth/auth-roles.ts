@@ -1,7 +1,7 @@
 export const OSMT_ADMIN = "ROLE_Osmt_Admin"
 export const OSMT_CURATOR = "ROLE_Osmt_Curator"
 
-export const ENABLE_ROLES = false
+export const ENABLE_ROLES = true
 
 export enum ButtonAction {
   SkillUpdate,

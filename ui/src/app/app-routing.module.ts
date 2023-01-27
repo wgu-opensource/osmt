@@ -21,6 +21,7 @@ import {PublishCollectionComponent} from "./collection/detail/publish-collection
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component"
 import {BatchImportComponent} from "./richskill/import/batch-import.component"
 import { ActionByRoles, ButtonAction } from "./auth/auth-roles"
+import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
 
 
 const routes: Routes = [
@@ -144,7 +145,11 @@ const routes: Routes = [
     component: AdvancedSearchComponent,
     canActivate: [AuthGuard],
   },
-
+  {
+    path: "my-workspace",
+    component: MyWorkspaceComponent,
+    canActivate: [AuthGuard]
+  },
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},
   {path: "collections/:uuid", component: CollectionPublicComponent},

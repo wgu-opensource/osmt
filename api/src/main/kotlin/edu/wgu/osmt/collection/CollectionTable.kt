@@ -1,6 +1,6 @@
 package edu.wgu.osmt.collection
 
-import edu.wgu.osmt.db.CollectionStatus
+import edu.wgu.osmt.db.CollectionStatusEnum
 import edu.wgu.osmt.db.PublishStatusUpdate
 import edu.wgu.osmt.db.TableWithUpdate
 import edu.wgu.osmt.keyword.KeywordTable
@@ -29,8 +29,10 @@ object CollectionTable: TableWithUpdate<CollectionUpdateObject>, PublishStatusUp
         onDelete = ReferenceOption.RESTRICT,
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
-    val owner = varchar("owner", 64)
-    val status = enumeration("status", CollectionStatus::class)
+    val workspaceOwner = varchar("workspace_owner", 64).index()
+    val status = customEnumeration(
+        "status",
+        fromDb = { value -> CollectionStatusEnum.valueOf(value as String) }, toDb = { it.name })
 }
 
 object CollectionSkills : Table("CollectionSkills") {

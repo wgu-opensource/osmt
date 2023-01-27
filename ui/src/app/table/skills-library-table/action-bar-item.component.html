@@ -17,7 +17,7 @@
   </button>
   <div class="dropup-content" [ngClass]="{'dropup-content-visible': !disabled}">
     <ng-container *ngFor="let menu of action?.menu; let last = last">
-      <button class="dropup-item" (click)="menu.callback()">
+      <button class="dropup-item" (click)="menu.callback(action)">
         {{menu.label}}
       </button>
       <hr *ngIf="!last">

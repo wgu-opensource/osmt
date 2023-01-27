@@ -1,9 +1,10 @@
 import {Component, Input} from "@angular/core";
+import {ApiSkillSummary} from "../../richskill/ApiSkillSummary"
 
 export interface ITableActionDefinitionSubMenu {
   label?: string,
   icon?: string,
-  callback?: () => void
+  callback?: (actionDefinition: TableActionDefinition, data?: any) => void
   visible?: () => boolean
 }
 

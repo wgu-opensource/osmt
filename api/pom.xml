@@ -390,7 +390,7 @@
                                 <exclude>**/edu/wgu/osmt/ImportCommandRunner</exclude>
                                 <exclude>**/edu/wgu/osmt/security/SecurityConfig**</exclude>
                                 <exclude>**/ui/**</exclude>
-                                <exclude>**/config/*</exclude>
+                                <exclude>**/config/*.properties</exclude>
                             </excludes>
                         </configuration>
                     </execution>

@@ -38,8 +38,12 @@ export class HeaderComponent extends Whitelabelled implements OnInit {
     return window.location.pathname.startsWith("/collections")
   }
 
+  get myWorkspaceActive(): boolean {
+    return window.location.pathname.startsWith("/my-workspace")
+  }
+
   get skillsActive(): boolean {
-    return !this.collectionsActive
+    return window.location.pathname.startsWith("/skills")
   }
 
   handleQuicklink(elementId: string): boolean {

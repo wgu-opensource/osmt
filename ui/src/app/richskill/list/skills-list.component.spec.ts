@@ -12,6 +12,8 @@ import { ApiSearch, PaginatedSkills } from "../service/rich-skill-search.service
 import { RichSkillService } from "../service/rich-skill.service"
 import { SkillsListComponent } from "./skills-list.component"
 import {AuthService} from "../../auth/auth-service";
+import {CollectionService} from "../../collection/service/collection.service"
+import {HttpClient, HttpClientModule, HttpHandler} from "@angular/common/http"
 
 
 @Component({
@@ -57,6 +59,7 @@ describe("SkillsListComponent", () => {
         ConcreteComponent
       ],
       imports: [
+        HttpClientModule,
         RouterTestingModule.withRoutes([
           { path: "collections/add-skills", component: SkillsListComponent }
         ])
@@ -64,7 +67,7 @@ describe("SkillsListComponent", () => {
       providers: [
         ToastService,
         { provide: RichSkillService, useClass: RichSkillServiceStub },
-        { provide: AuthService, useClass: AuthServiceStub },
+        { provide: AuthService, useClass: AuthServiceStub }
       ]
     })
 
@@ -396,8 +399,9 @@ describe("SkillsListComponent", () => {
     tableActions = component.tableActions()
     let skill4 = createMockSkillSummary("id4", PublishStatus.Archived)
     let action4 = tableActions[4]
-    expect(action4.label).toEqual("Add to Collection")
-    expect(action4 && action4.callback).toBeTruthy()
+    expect(action4.label).toEqual("Add to")
+    expect(action4).toBeTruthy()
+    expect(action4.callback).toBeUndefined()
     expect(action4.callback?.(action4, skill4)).toBeFalsy()  // Always false
     expect(action4.visible?.(skill4)).toBeTruthy()  // There are selected skills
 

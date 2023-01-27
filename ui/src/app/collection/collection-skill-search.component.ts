@@ -44,7 +44,7 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
               protected toastService: ToastService,
               protected authService: AuthService,
   ) {
-    super(router, richSkillService, toastService, authService)
+    super(router, richSkillService, collectionService, toastService, authService)
     this.titleService.setTitle(`Add RSDs to Collection | ${this.whitelabel.toolName}`)
 
     this.uuidParam = this.route.snapshot.paramMap.get("uuid") || undefined

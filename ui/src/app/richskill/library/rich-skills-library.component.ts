@@ -7,6 +7,7 @@ import {Router} from "@angular/router"
 import {determineFilters} from "../../PublishStatus"
 import {Title} from "@angular/platform-browser"
 import {AuthService} from "../../auth/auth-service"
+import {CollectionService} from "../../collection/service/collection.service"
 
 @Component({
   selector: "app-rich-skills-library",
@@ -19,11 +20,12 @@ export class RichSkillsLibraryComponent extends SkillsListComponent implements O
   constructor(
     protected router: Router,
     protected richSkillService: RichSkillService,
+    protected collectionService: CollectionService,
     protected toastService: ToastService,
     protected titleService: Title,
     protected authService: AuthService
   ) {
-    super(router, richSkillService, toastService, authService)
+    super(router, richSkillService, collectionService, toastService, authService)
   }
 
   ngOnInit(): void {

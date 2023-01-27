@@ -24,7 +24,7 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
     @Inject(LOCALE_ID) protected locale: string
   ) {
     super(router, richSkillService, toastService, collectionService, route, titleService, authService, locale)
-    this.uuidParam = "a11efb86-1650-4ecd-ad86-9c111f4b1fbb"
+    this.uuidParam = "4fafd06d-7fd1-498c-90e7-e70021a0bfc0"
   }
 
   ngOnInit(): void {

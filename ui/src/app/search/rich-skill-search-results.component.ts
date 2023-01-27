@@ -13,6 +13,7 @@ import {Title} from "@angular/platform-browser";
 import {AuthService} from "../auth/auth-service";
 import {formatDate} from "@angular/common"
 import * as FileSaver from "file-saver"
+import {CollectionService} from "../collection/service/collection.service"
 
 
 @Component({
@@ -32,6 +33,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 
   constructor(protected router: Router,
               protected richSkillService: RichSkillService,
+              protected collectionService: CollectionService,
               protected toastService: ToastService,
               protected searchService: SearchService,
               protected route: ActivatedRoute,
@@ -39,7 +41,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
               protected authService: AuthService,
               @Inject(LOCALE_ID) protected locale: string
 ) {
-    super(router, richSkillService, toastService, authService)
+    super(router, richSkillService, collectionService, toastService, authService)
     this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
   }
 

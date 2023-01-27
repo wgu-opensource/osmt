@@ -1,4 +1,4 @@
-import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service";
+import {ApiSearch, ApiSkillListUpdate, PaginatedSkills} from "../service/rich-skill-search.service"
 import {ApiSkillSummary} from "../ApiSkillSummary";
 import {checkArchived, determineFilters, PublishStatus} from "../../PublishStatus";
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
@@ -14,6 +14,7 @@ import {ExtrasSelectedSkillsState} from "../../collection/add-skills-collection.
 import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component";
 import {AuthService} from "../../auth/auth-service";
 import {ButtonAction} from "../../auth/auth-roles";
+import {CollectionService} from "../../collection/service/collection.service"
 
 
 @Component({
@@ -46,6 +47,7 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   constructor(protected router: Router,
               protected richSkillService: RichSkillService,
+              protected collectionService: CollectionService,
               protected toastService: ToastService,
               protected authService: AuthService,
   ) {
@@ -249,15 +251,15 @@ export class SkillsListComponent extends QuickLinksHelper {
         label: "Add to",
         icon: "add",
         primary: true,
-        // callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
         visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill),
         menu: [
           {
             label: "Add to Collection",
-            callback: ()  => this.handleClickAddCollection(new TableActionDefinition({}), undefined),
+            callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
           },
           {
-            label: "Add to Workspace"
+            label: "Add to Workspace",
+            callback: () => this.handleClickAddToWorkspace()
           }
         ]
       }))
@@ -281,6 +283,19 @@ export class SkillsListComponent extends QuickLinksHelper {
   protected handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
     this.focusAndScrollIntoView(this.titleElement.nativeElement)
     return false
+  }
+
+  protected handleClickAddToWorkspace(): void {
+    const skillListUpdate = new ApiSkillListUpdate({add: new ApiSearch({uuids: this.getSelectedSkills()?.map(i => i.uuid)})})
+    this.toastService.showBlockingLoader()
+    this.collectionService.updateSkillsWithResult("4fafd06d-7fd1-498c-90e7-e70021a0bfc0", skillListUpdate).subscribe(result => {
+      if (result) {
+        const message = `You added ${result.modifiedCount} RSDs to the collection.`
+        this.toastService.showToast("Success!", message)
+        this.toastService.hideBlockingLoader()
+        // this.return()
+      }
+    })
   }
 
   protected handleClickAddCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {

@@ -246,11 +246,20 @@ export class SkillsListComponent extends QuickLinksHelper {
 
     if (this.showAddToCollection) {
       actions.push(new TableActionDefinition({
-        label: "Add to Collection",
-        icon: "collection",
+        label: "Add to",
+        icon: "add",
         primary: true,
-        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
-        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
+        // callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill),
+        menu: [
+          {
+            label: "Add to Collection",
+            callback: ()  => this.handleClickAddCollection(new TableActionDefinition({}), undefined),
+          },
+          {
+            label: "Add to Workspace"
+          }
+        ]
       }))
     } else {
       actions.push(new TableActionDefinition({
@@ -275,6 +284,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
 
   protected handleClickAddCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
+    console.log("handleClickAddCollection")
     const selection = this.getSelectedSkills(skill)
     this.router.navigate(["/collections/add-skills"], {
       state: {

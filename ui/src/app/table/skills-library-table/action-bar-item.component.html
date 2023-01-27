@@ -1,16 +1,26 @@
-<button *ngIf="action !== undefined"
-        class="m-actionBarItemHorizontal"
-        [class.m-actionBarItemHorizontal-secondary]="!action.primary"
-        type="button"
-        [attr.disabled]="disabled ? '' : null"
-        (click)="handleClick($event)">
+<div class="dropup">
+  <button *ngIf="action !== undefined"
+          class="m-actionBarItemHorizontal dropbtn"
+          [class.m-actionBarItemHorizontal-secondary]="!action.primary"
+          type="button"
+          [attr.disabled]="disabled ? '' : null"
+          (click)="handleClick($event)">
   <span class="m-actionBarItemHorizontal-x-icon">
     <svg aria-hidden="true">
       <use [attr.xlink:href]="iconPath()"></use>
     </svg>
   </span>
-  <span class="m-actionBarItemHorizontal-x-label">{{action.label}}</span>
+    <span class="m-actionBarItemHorizontal-x-label">{{action.label}}</span>
 
-  <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
+    <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
 
-</button>
+  </button>
+  <div class="dropup-content" [ngClass]="{'dropup-content-visible': !disabled}">
+    <ng-container *ngFor="let menu of action?.menu; let last = last">
+      <button class="dropup-item" (click)="menu.callback()">
+        {{menu.label}}
+      </button>
+      <hr *ngIf="!last">
+    </ng-container>
+  </div>
+</div>

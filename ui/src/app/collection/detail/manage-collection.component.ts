@@ -86,7 +86,10 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   }
 
   reloadCollection(): void {
+    console.log("reload collection")
+    console.log(this.uuidParam)
     this.collectionService.getCollectionByUUID(this.uuidParam ?? "").subscribe(collection => {
+      console.log({collection})
       this.titleService.setTitle(`${collection.name} | Collection | ${this.whitelabel.toolName}`)
 
       this.collection = collection

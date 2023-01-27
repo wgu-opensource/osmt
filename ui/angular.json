@@ -11,7 +11,7 @@
         },
         "@schematics/angular:component": {
           "prefix": "app",
-          "styleext": "scss",
+          "style": "scss",
           "lintFix": true
         },
         "@schematics/angular:directive": {

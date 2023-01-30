@@ -1,8 +1,7 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing"
+import {ComponentFixture, TestBed} from "@angular/core/testing"
 
-import { MyWorkspaceComponent } from "./my-workspace.component"
+import {MyWorkspaceComponent} from "./my-workspace.component"
 import {RouterTestingModule} from "@angular/router/testing"
-import {HttpClientModule} from "@angular/common/http"
 import {AuthService} from "../auth/auth-service"
 import {RichSkillService} from "../richskill/service/rich-skill.service"
 import {AuthServiceStub, CollectionServiceStub, EnvironmentServiceStub, RichSkillServiceStub} from "../../../test/resource/mock-stubs"
@@ -23,15 +22,15 @@ describe("MyWorkspaceComponent", () => {
         RouterTestingModule,
         HttpClientTestingModule,
       ],
-      declarations: [ MyWorkspaceComponent ],
+      declarations: [MyWorkspaceComponent],
       providers: [
         AppConfig,
         Title,
         ToastService,
-        { provide: EnvironmentService, useClass: EnvironmentServiceStub },  // Example of using a service stub
-        { provide: RichSkillService, useClass: RichSkillServiceStub },
-        { provide: CollectionService, useClass: CollectionServiceStub },
-        { provide: AuthService, useClass: AuthServiceStub },
+        {provide: EnvironmentService, useClass: EnvironmentServiceStub},  // Example of using a service stub
+        {provide: RichSkillService, useClass: RichSkillServiceStub},
+        {provide: CollectionService, useClass: CollectionServiceStub},
+        {provide: AuthService, useClass: AuthServiceStub},
       ]
     }).compileComponents()
   })
@@ -45,4 +44,9 @@ describe("MyWorkspaceComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy()
   })
+
+  it("actions definitions should be correct", () => {
+    expect(component.actionDefinitions().length).toEqual(4)
+  })
+
 })

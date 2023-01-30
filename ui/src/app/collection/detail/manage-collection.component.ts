@@ -275,6 +275,10 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     window.open(url, "_blank")
   }
 
+  conertToCollectionAction(): void {
+
+  }
+
 
   publishAction(): void {
     if (this.uuidParam === undefined) { return }

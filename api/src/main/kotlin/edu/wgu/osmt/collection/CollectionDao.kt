@@ -17,6 +17,8 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
     var uuid: String by CollectionTable.uuid
     var name: String by CollectionTable.name
     var author by KeywordDao optionalReferencedOn CollectionTable.author
+    var workspaceOwner by CollectionTable.workspaceOwner
+    var status by CollectionTable.status
 
     var skills by RichSkillDescriptorDao via CollectionSkills
 
@@ -31,6 +33,8 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             uuid = uuid,
             name = name,
             author = author?.toModel(),
+            workspaceOwner = workspaceOwner,
+            status = status,
             archiveDate = archiveDate,
             publishDate = publishDate
         )
@@ -41,6 +45,8 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             id = id.value,
             uuid = uuid,
             name = name,
+            workspaceOwner = workspaceOwner,
+            status = status,
             publishStatus = publishStatus(),
             skillIds = if (embedded) null else skills.map { it.uuid },
             skillCount = if (embedded) null else skills.count().toInt(),

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.config.INDEX_COLLECTION_DOC
 import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.db.CollectionStatusEnum
 import org.elasticsearch.core.Nullable
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.*
@@ -68,5 +69,13 @@ data class CollectionDoc(
 
     @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     @get:JsonProperty("publishDate")
-    val publishDate: LocalDateTime? = null
+    val publishDate: LocalDateTime? = null,
+
+    @Field(type = Text)
+    @Nullable
+    val workspaceOwner: String?,
+
+    @Field(type = Text)
+    val status: Enum<CollectionStatusEnum>
+
 )

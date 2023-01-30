@@ -39,11 +39,11 @@ export class HeaderComponent extends Whitelabelled implements OnInit {
   }
 
   get myWorkspaceActive(): boolean {
-    return window.location.pathname.startsWith("/my-workspace")
+    return this.router.url.startsWith("/my-workspace")
   }
 
   get skillsActive(): boolean {
-    return window.location.pathname.startsWith("/skills")
+    return this.router.url.startsWith("/skills")
   }
 
   handleQuicklink(elementId: string): boolean {

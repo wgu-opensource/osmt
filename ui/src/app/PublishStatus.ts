@@ -5,7 +5,8 @@ export enum PublishStatus {
   Published = "Published",
   Archived = "Archived",
   Deleted = "Deleted",
-  Draft = "Draft"
+  Draft = "Draft",
+  Workspace = "Workspace"
 }
 
 

@@ -7,9 +7,9 @@ import {ActivatedRoute, Router} from "@angular/router"
 import {Title} from "@angular/platform-browser"
 import {AuthService} from "../auth/auth-service"
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
-import {ButtonAction} from "../auth/auth-roles"
 import {PublishStatus} from "../PublishStatus"
-import {size} from "lodash"
+import {ApiSearch} from "../richskill/service/rich-skill-search.service"
+import {ApiCollectionUpdate} from "../collection/ApiCollection"
 
 @Component({
   selector: "app-my-workspace",
@@ -28,7 +28,6 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
     @Inject(LOCALE_ID) protected locale: string
   ) {
     super(router, richSkillService, toastService, collectionService, route, titleService, authService, locale)
-    this.uuidParam = "00ff748a-7141-47f2-aaf5-f9b8a992505f"
   }
 
   ngOnInit(): void {
@@ -36,10 +35,24 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
     this.reloadCollection()
   }
 
+  reloadCollection(): void {
+    const uuid = localStorage.getItem("uuid")
+    if (uuid) {
+      this.collectionService.getCollectionByUUID(uuid).subscribe(collection => {
+        this.titleService.setTitle(`${collection.name} | Collection | ${this.whitelabel.toolName}`)
+        this.collection = collection
+        this.uuidParam = this.collection.uuid
+        localStorage.setItem("uuid", this.collection.uuid)
+        this.loadNextPage()
+      }, () => this.createWorkSpace())
+    } else {
+      this.createWorkSpace()
+    }
+  }
+
   actionDefinitions(): TableActionDefinition[] {
     this.collection ? this.collection.status = PublishStatus.Workspace : false
-    console.log(this.collection)
-    const actions = [
+    return [
       new TableActionDefinition({
         label: "Add RSDs to My Workspace",
         icon: this.addIcon,
@@ -55,17 +68,43 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
       new TableActionDefinition({
         label: "Convert to Collection",
         icon: this.publishIcon,
-        callback: () => this.conertToCollectionAction(),
+        callback: () => this.convertToCollectionAction(),
         visible: () => true
       }),
       new TableActionDefinition({
         label: "Reset Collection",
         icon: this.deleteIcon,
         callback: () => this.deleteCollectionAction(),
-        visible: () => true
+        visible: () => (this.collection?.skills?.length ?? 0) > 0
       })
     ]
-    return actions
+  }
+
+  private createWorkSpace(): void {
+    console.log("create workspace")
+    this.collectionService.createCollection({
+      name: "My Workspace",
+      // workspaceOwner: this.authService.getEmail() ?? "",
+      // status: PublishStatus.Workspace
+    }).subscribe(collection => {
+      console.log(collection)
+      this.collection = collection
+      this.uuidParam = this.collection.uuid
+      localStorage.setItem("uuid", collection.uuid)
+    })
+  }
+
+   handleConfirmDeleteCollection(): void {
+    this.submitSkillRemoval(new ApiSearch({uuids: this.collection?.skills.map(s => (s as any).uuid)}))
+    this.template = "default"
+  }
+
+  private convertToCollectionAction(): void {
+    const updateObject = new ApiCollectionUpdate({status: PublishStatus.Draft})
+    this.collectionService.updateCollection(this.uuidParam ?? "", updateObject).subscribe(() => {
+      this.router.navigate(["/collections/" + this.uuidParam + "/manage"])
+    })
+    // this.submitCollectionStatusChange(PublishStatus.Published, "published")
   }
 
 }

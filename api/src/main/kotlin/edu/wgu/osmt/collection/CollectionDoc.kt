@@ -72,9 +72,6 @@ data class CollectionDoc(
 
     @Field(type = Text)
     @Nullable
-    val workspaceOwner: String?,
-
-    @Field(type = Text)
-    val status: Enum<PublishStatus>
+    val workspaceOwner: String?
 
 )

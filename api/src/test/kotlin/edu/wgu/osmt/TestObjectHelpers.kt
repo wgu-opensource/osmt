@@ -44,8 +44,7 @@ object TestObjectHelpers {
         skillIds = skillIds,
         skillCount = skillIds.count(),
         author = author ?: authorString + "-collection",
-        workspaceOwner = "owner@email.com",
-        status = PublishStatus.Draft
+        workspaceOwner = "owner@email.com"
     )
 
     fun randomString(): String = UUID.randomUUID().toString().replace("-", "")

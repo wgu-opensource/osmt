@@ -1,6 +1,6 @@
 package edu.wgu.osmt.db
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonValue
 
 const val UNARCHIVED = "unarchived"
 const val DELETED = "deleted"
@@ -9,18 +9,12 @@ const val PUBLISHED = "published"
 const val ARCHIVED = "archived"
 const val DRAFT = "draft"
 
-enum class PublishStatus(val apiValue: String) {
-    @JsonProperty("unarchived")
+enum class PublishStatus(@JsonValue val apiValue: String) {
     Unarchived(UNARCHIVED),
-    @JsonProperty("deleted")
     Deleted(DELETED),
-    @JsonProperty("workspace")
     Workspace(WORKSPACE),
-    @JsonProperty("published")
     Published(PUBLISHED),
-    @JsonProperty("archived")
     Archived(ARCHIVED),
-    @JsonProperty("draft")
     Draft(DRAFT);
 
     companion object {

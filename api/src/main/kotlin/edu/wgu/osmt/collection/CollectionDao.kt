@@ -46,7 +46,6 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             uuid = uuid,
             name = name,
             workspaceOwner = workspaceOwner,
-            status = status,
             publishStatus = publishStatus(),
             skillIds = if (embedded) null else skills.map { it.uuid },
             skillCount = if (embedded) null else skills.count().toInt(),

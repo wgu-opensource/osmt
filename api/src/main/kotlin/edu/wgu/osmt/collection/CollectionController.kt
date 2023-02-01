@@ -97,7 +97,7 @@ class CollectionController @Autowired constructor(
     ): List<ApiCollection> {
         return collectionRepository.createFromApi(
             apiCollectionUpdates,
-            richSkillRepository, oAuthHelper.readableUsername(user)
+            richSkillRepository, oAuthHelper.readableUsername(user), oAuthHelper.readableEmail(user)
         ).map {
             ApiCollection.fromDao(it, appConfig)
         }

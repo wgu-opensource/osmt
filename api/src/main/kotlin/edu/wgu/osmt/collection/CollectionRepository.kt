@@ -10,6 +10,7 @@ import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptor
@@ -43,15 +44,16 @@ interface CollectionRepository {
     fun findById(id: Long): CollectionDao?
     fun findByUUID(uuid: String): CollectionDao?
     fun findByName(name: String): CollectionDao?
-    fun create(name: String, user: String): CollectionDao?
-    fun create(updateObject: CollectionUpdateObject, user: String): CollectionDao?
+    fun create(name: String, user: String, email: String): CollectionDao?
+    fun create(updateObject: CollectionUpdateObject, user: String, email: String): CollectionDao?
     fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao?
     fun remove(uuid: String): ApiBatchResult
 
     fun createFromApi(
         apiUpdates: List<ApiCollectionUpdate>,
         richSkillRepository: RichSkillRepository,
-        user: String
+        user: String,
+        email: String,
     ): List<CollectionDao>
 
     fun collectionUpdateObjectFromApi(
@@ -107,11 +109,11 @@ class CollectionRepositoryImpl @Autowired constructor(
         return query?.let { dao.wrapRow(it) }
     }
 
-    override fun create(name: String, user: String): CollectionDao? {
-        return create(CollectionUpdateObject(name = name), user)
+    override fun create(name: String, user: String, email: String): CollectionDao? {
+        return create(CollectionUpdateObject(name = name), user, email)
     }
 
-    override fun create(updateObject: CollectionUpdateObject, user: String): CollectionDao? {
+    override fun create(updateObject: CollectionUpdateObject, user: String, email: String): CollectionDao? {
         if (updateObject.name.isNullOrBlank()) {
             return null
         }
@@ -125,6 +127,9 @@ class CollectionRepositoryImpl @Autowired constructor(
         }
 
         updateObject.copy(id = newCollection.id.value).applyToDao(newCollection)
+        if(PublishStatus.Workspace == newCollection.status) {
+            newCollection.workspaceOwner = email
+        }
 
         newCollection.let {
             collectionEsRepo.save(it.toDoc())
@@ -238,7 +243,8 @@ class CollectionRepositoryImpl @Autowired constructor(
     override fun createFromApi(
         apiUpdates: List<ApiCollectionUpdate>,
         richSkillRepository: RichSkillRepository,
-        user: String
+        user: String,
+        email: String
     ): List<CollectionDao> {
         // pre validate all rows
         val allErrors = apiUpdates.mapIndexed { i, updateDto ->
@@ -251,7 +257,7 @@ class CollectionRepositoryImpl @Autowired constructor(
         // create records
         val newSkills = apiUpdates.map { update ->
             val updateObject = collectionUpdateObjectFromApi(update, richSkillRepository)
-            create(updateObject, user)
+            create(updateObject, user, email)
         }
         return newSkills.filterNotNull()
     }

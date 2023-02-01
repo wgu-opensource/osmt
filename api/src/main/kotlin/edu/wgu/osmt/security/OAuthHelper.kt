@@ -21,6 +21,10 @@ class OAuthHelper {
         return jwt?.claims?.get("name") as String? ?: default
     }
 
+    fun readableEmail(jwt: Jwt?, default: String = UNAUTHENTICATED_USERNAME): String {
+        return jwt?.claims?.get("email") as String? ?: default
+    }
+
     fun hasRole(role: String): Boolean {
         val roles = SecurityContextHolder.getContext().authentication.authorities.toString()
         return roles.contains(role);

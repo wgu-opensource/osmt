@@ -118,7 +118,7 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
     fun parseCollections(rowValue: String?): List<CollectionDao>? {
         return splitField(rowValue)?.filter { it.isNotBlank() }?.mapNotNull { collectionName ->
             val collection = collectionRepository.findByName(collectionName)
-            collection ?:  collectionRepository.create(CollectionUpdateObject(name = collectionName, author = NullableFieldUpdate(keywordRepository.getDefaultAuthor())), user)
+            collection ?: collection?.let { collectionRepository.create(CollectionUpdateObject(name = collectionName, author = NullableFieldUpdate(keywordRepository.getDefaultAuthor())), user, email = it.workspaceOwner) }
         }
     }
 

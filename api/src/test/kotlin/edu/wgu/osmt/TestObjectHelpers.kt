@@ -1,6 +1,11 @@
 package edu.wgu.osmt
 
-import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.api.model.ApiAlignment
+import edu.wgu.osmt.api.model.ApiAlignmentListUpdate
+import edu.wgu.osmt.api.model.ApiNamedReference
+import edu.wgu.osmt.api.model.ApiReferenceListUpdate
+import edu.wgu.osmt.api.model.ApiSkillUpdate
+import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
@@ -38,7 +43,9 @@ object TestObjectHelpers {
         publishStatus = publishStatus,
         skillIds = skillIds,
         skillCount = skillIds.count(),
-        author = author ?: authorString + "-collection"
+        author = author ?: authorString + "-collection",
+        workspaceOwner = "owner@email.com",
+        status = PublishStatus.Draft
     )
 
     fun randomString(): String = UUID.randomUUID().toString().replace("-", "")

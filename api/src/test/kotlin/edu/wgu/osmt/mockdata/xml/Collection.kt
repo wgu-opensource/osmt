@@ -10,4 +10,5 @@ class Collection {
     var author: String? = null
     var archiveDate: String? = null
     var publishDate: String? = null
+    var workspaceOwner: String? = null
 }

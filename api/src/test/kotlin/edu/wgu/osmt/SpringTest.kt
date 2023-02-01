@@ -35,6 +35,8 @@ abstract class SpringTest: BaseDockerizedTest {
 
     val testUser = "test-user"
 
+    val testEmail = "test@email.com"
+
     init {
         logger.info("Mysql port ${Containers.mysqlContainer.getMappedPort(3306)}")
         logger.info("Redis port ${Containers.redisContainer.getMappedPort(6379)}")

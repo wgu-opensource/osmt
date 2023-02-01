@@ -302,7 +302,9 @@ class MockData {
                 c.skillsCount,
                 lookupKeywordValue(c.author?.toLong()),
                 parseDateTime(c.archiveDate),
-                parseDateTime(c.publishDate)
+                parseDateTime(c.publishDate),
+                c.workspaceOwner!!,
+                PublishStatus.valueOf(c.status!!)
             )
         }
     }
@@ -379,7 +381,8 @@ class MockData {
             name = doc.name,
             author = lookupKeywordByValue(doc.author),
             archiveDate = doc.archiveDate,
-            publishDate = doc.publishDate
+            publishDate = doc.publishDate,
+            status = doc.status
         )
     }
 
@@ -393,7 +396,9 @@ class MockData {
             publishDate = c.publishDate,
             publishStatus = c.publishStatus(),
             skillCount = 0,
-            skillIds = null
+            skillIds = null,
+            status = c.status,
+            workspaceOwner = c.workspaceOwner
         )
     }
 

@@ -262,6 +262,17 @@ export class CollectionServiceStub {
     return of(createMockPaginatedCollections())
   }
 
+  createCollection(updateObject: ICollectionUpdate): Observable<ApiCollection> {
+    const date = new Date("2020-06-25T14:58:46.313Z")
+    return of(new ApiCollection(createMockCollection(
+      date,
+      date,
+      date,
+      date,
+      PublishStatus.Draft
+    )))
+  }
+
   deleteCollectionWithResult(uuid: string): Observable<ApiTaskResult> {
     return of(apiTaskResultForDeleteCollection)
   }

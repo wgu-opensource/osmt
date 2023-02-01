@@ -11,6 +11,8 @@ import {Title} from "@angular/platform-browser"
 import {ToastService} from "../toast/toast.service"
 import {EnvironmentService} from "../core/environment.service"
 import {CollectionService} from "../collection/service/collection.service"
+import {Router} from "@angular/router"
+import {ManageCollectionComponent} from "../collection/detail/manage-collection.component"
 
 describe("MyWorkspaceComponent", () => {
   let component: MyWorkspaceComponent
@@ -19,7 +21,12 @@ describe("MyWorkspaceComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterTestingModule.withRoutes([
+          {
+            path: "collections/uuid1/manage",
+            component: ManageCollectionComponent
+          }
+        ]),
         HttpClientTestingModule,
       ],
       declarations: [MyWorkspaceComponent],
@@ -33,6 +40,9 @@ describe("MyWorkspaceComponent", () => {
         {provide: AuthService, useClass: AuthServiceStub},
       ]
     }).compileComponents()
+
+    const appConfig = TestBed.inject(AppConfig)
+    AppConfig.settings = appConfig.defaultConfig()
   })
 
   beforeEach(() => {
@@ -47,6 +57,30 @@ describe("MyWorkspaceComponent", () => {
 
   it("actions definitions should be correct", () => {
     expect(component.actionDefinitions().length).toEqual(4)
+  })
+
+  it("create workspace should call create collection", () => {
+    const collectionService = TestBed.inject(CollectionService)
+    const spy = spyOn(collectionService, "createCollection").and.callThrough()
+    component["createWorkSpace"]()
+    expect(spy).toHaveBeenCalled()
+  })
+
+  it("handle confirm delete collection", () => {
+    const spy = spyOn(component, "submitSkillRemoval").and.callThrough()
+    component.handleConfirmDeleteCollection()
+    expect(spy).toHaveBeenCalled()
+    expect(component.template).toEqual("default")
+  })
+
+  it("convert to collection action", () => {
+    const collectionService = TestBed.inject(CollectionService)
+    const router = TestBed.inject(Router)
+    const spy = spyOn(collectionService, "updateCollection").and.callThrough()
+    const spyNavigate = spyOn(router, "navigate").and.callThrough()
+    component["convertToCollectionAction"]()
+    expect(spy).toHaveBeenCalled()
+    expect(spyNavigate).toHaveBeenCalled()
   })
 
 })

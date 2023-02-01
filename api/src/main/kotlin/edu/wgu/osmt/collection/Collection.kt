@@ -3,7 +3,6 @@ package edu.wgu.osmt.collection
 import edu.wgu.osmt.auditlog.Change
 import edu.wgu.osmt.auditlog.Comparison
 import edu.wgu.osmt.db.*
-import edu.wgu.osmt.db.CollectionStatusEnum
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordTypeEnum
@@ -22,7 +21,7 @@ data class Collection(
     val name: String,
     val author: Keyword? = null,
     val workspaceOwner: String? = null,
-    val status: Enum<CollectionStatusEnum>,
+    val status: Enum<PublishStatus>,
     override val archiveDate: LocalDateTime? = null,
     override val publishDate: LocalDateTime? = null
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {

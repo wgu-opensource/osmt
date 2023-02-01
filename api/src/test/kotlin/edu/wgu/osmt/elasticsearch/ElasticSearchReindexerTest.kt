@@ -43,7 +43,7 @@ internal class ElasticSearchReindexerTest @Autowired constructor(
         // Arrange
         // This creates 1 skill, 3 collections, 17 keywords and 3 jobCodes
         richSkillRepository.createFromApi(
-            (1..1).toList().map { TestObjectHelpers.apiSkillUpdateGenerator() }, "testReindexAll"
+            (1..1).toList().map { TestObjectHelpers.apiSkillUpdateGenerator() }, "testReindexAll", "testReindexAll"
         )
 
         // Act

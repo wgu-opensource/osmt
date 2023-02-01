@@ -63,6 +63,10 @@ class ApiCollection(private val collection: Collection, private val ss: List<Ric
     val skills: List<ApiSkillSummary>
         get() = ss.map { ApiSkillSummary.fromSkill(it, appConfig) }
 
+    @get:JsonProperty
+    val owner: String?
+        get() = collection.workspaceOwner?.let { it }
+
     companion object {
         fun fromDao(collectionDao: CollectionDao, appConfig: AppConfig): ApiCollection {
             return ApiCollection(collectionDao.toModel(), collectionDao.skills.map{ it.toModel() }, appConfig)

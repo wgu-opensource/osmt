@@ -1,5 +1,6 @@
 package edu.wgu.osmt.db
 
+import edu.wgu.osmt.collection.CollectionDao
 import org.jetbrains.exposed.dao.LongEntity
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -25,7 +26,13 @@ interface HasPublishStatus<T: MutablePublishStatusDetails> {
                     dao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
                 }
             }
-            else -> {} // draft is non-op
+            else -> {
+                if (dao is CollectionDao) {
+                    if(publishStatus != null)
+                    dao.status = publishStatus as PublishStatus
+                }
+
+            } // draft is non-op
         }
     }
 }

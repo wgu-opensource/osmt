@@ -29,10 +29,10 @@ object CollectionTable: TableWithUpdate<CollectionUpdateObject>, PublishStatusUp
         onDelete = ReferenceOption.RESTRICT,
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
-    val workspaceOwner = varchar("workspace_owner", 64).index()
+    val workspaceOwner = varchar("workspace_owner", 64).index().default("")
     val status = customEnumeration(
         "status",
-        fromDb = { value -> PublishStatus.valueOf(value as String) }, toDb = { it.name })
+        fromDb = { value -> PublishStatus.valueOf(value as String) }, toDb = { it.name }).default(PublishStatus.Draft)
 }
 
 object CollectionSkills : Table("CollectionSkills") {

@@ -214,6 +214,18 @@ class CollectionController @Autowired constructor(
             oAuthHelper.readableEmail(user))?.let {
             ApiCollection.fromDao(it, appConfig
             )
-        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        } ?: collectionRepository.createFromApi(
+            listOf(
+                ApiCollectionUpdate(
+                    "defaultWorkspace",
+                    PublishStatus.Workspace,
+                    oAuthHelper.readableUsername(user),
+                    null
+                )
+            ),
+            richSkillRepository,
+            oAuthHelper.readableUsername(user),
+            oAuthHelper.readableEmail(user)
+        ).firstOrNull()?.let { ApiCollection.fromDao(it, appConfig) }
     }
 }

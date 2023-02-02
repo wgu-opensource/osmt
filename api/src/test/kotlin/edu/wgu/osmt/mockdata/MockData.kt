@@ -297,7 +297,7 @@ class MockData {
                 c.id!!,
                 c.uuid!!,
                 c.name!!,
-                PublishStatus.valueOf(c.status!!),
+                c.status?.let { PublishStatus.forApiValue(it) }!!,
                 skillUUIDs as List<String>,
                 c.skillsCount,
                 lookupKeywordValue(c.author?.toLong()),

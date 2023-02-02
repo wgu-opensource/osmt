@@ -1,6 +1,7 @@
 package edu.wgu.osmt.db
 
 import edu.wgu.osmt.collection.CollectionDao
+import org.apache.commons.lang3.StringUtils
 import org.jetbrains.exposed.dao.LongEntity
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -33,6 +34,9 @@ interface HasPublishStatus<T: MutablePublishStatusDetails> {
                 }
 
             } // draft is non-op
+        }
+        if(dao.publishStatus() != PublishStatus.Workspace && dao is CollectionDao) {
+            dao.workspaceOwner = StringUtils.EMPTY
         }
     }
 }

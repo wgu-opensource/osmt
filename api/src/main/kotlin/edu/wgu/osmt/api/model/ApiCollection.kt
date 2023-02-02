@@ -65,7 +65,7 @@ class ApiCollection(private val collection: Collection, private val ss: List<Ric
 
     @get:JsonProperty
     val owner: String?
-        get() = collection.workspaceOwner?.let { it }
+        get() = collection.workspaceOwner
 
     companion object {
         fun fromDao(collectionDao: CollectionDao, appConfig: AppConfig): ApiCollection {

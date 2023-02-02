@@ -97,7 +97,9 @@ class CollectionController @Autowired constructor(
     ): List<ApiCollection> {
         return collectionRepository.createFromApi(
             apiCollectionUpdates,
-            richSkillRepository, oAuthHelper.readableUsername(user), oAuthHelper.readableEmail(user)
+            richSkillRepository,
+            oAuthHelper.readableUsername(user),
+            oAuthHelper.readableEmail(user)
         ).map {
             ApiCollection.fromDao(it, appConfig)
         }
@@ -186,7 +188,6 @@ class CollectionController @Autowired constructor(
     fun removeCollection(
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
-
         val task = RemoveCollectionSkillsTask(collectionUuid = uuid)
         taskMessageService.enqueueJob(TaskMessageService.removeCollectionSkills, task)
         return Task.processingResponse(task)
@@ -209,8 +210,10 @@ class CollectionController @Autowired constructor(
     fun workspaceByOwner(
         @AuthenticationPrincipal user: Jwt?
     ): ApiCollection? {
-        return collectionRepository.findByOwner(oAuthHelper.readableEmail(user))?.let {
-            ApiCollection.fromDao(it, appConfig)
+        return collectionRepository.findByOwner(
+            oAuthHelper.readableEmail(user))?.let {
+            ApiCollection.fromDao(it, appConfig
+            )
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 }

@@ -7,6 +7,7 @@ import edu.wgu.osmt.api.model.ApiCollection
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSkillListUpdate
+import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.api.model.CollectionSortEnum
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
@@ -220,7 +221,7 @@ class CollectionController @Autowired constructor(
                     "defaultWorkspace",
                     PublishStatus.Workspace,
                     oAuthHelper.readableUsername(user),
-                    null
+                    ApiStringListUpdate()
                 )
             ),
             richSkillRepository,

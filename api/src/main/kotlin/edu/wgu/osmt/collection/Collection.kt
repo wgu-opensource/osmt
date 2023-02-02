@@ -21,7 +21,7 @@ data class Collection(
     val name: String,
     val author: Keyword? = null,
     val workspaceOwner: String? = null,
-    val status: Enum<PublishStatus>,
+    val status: PublishStatus,
     override val archiveDate: LocalDateTime? = null,
     override val publishDate: LocalDateTime? = null
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {

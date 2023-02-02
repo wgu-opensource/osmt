@@ -32,7 +32,7 @@ object CollectionTable: TableWithUpdate<CollectionUpdateObject>, PublishStatusUp
     val workspaceOwner = varchar("workspace_owner", 64).index().default("")
     val status = customEnumeration(
         "status",
-        fromDb = { value -> PublishStatus.valueOf(value as String) }, toDb = { it.name }).default(PublishStatus.Draft)
+        fromDb = { value -> PublishStatus.forApiValue(value as String)!! }, toDb = { it.name }).default(PublishStatus.Draft)
 }
 
 object CollectionSkills : Table("CollectionSkills") {

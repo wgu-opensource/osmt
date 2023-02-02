@@ -203,4 +203,14 @@ class CollectionController @Autowired constructor(
         val sizedIterable = auditLogRepository.findByTableAndId(CollectionTable.tableName, entityId = collection!!.id.value, offsetPageable = pageable)
         return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
     }
+
+    @GetMapping(RoutePaths.WORKSPACE_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun workspaceByOwner(
+        @AuthenticationPrincipal user: Jwt?
+    ): ApiCollection? {
+        return collectionRepository.findByOwner(oAuthHelper.readableEmail(user))?.let {
+            ApiCollection.fromDao(it, appConfig)
+        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    }
 }

@@ -48,6 +48,7 @@ interface CollectionRepository {
     fun create(updateObject: CollectionUpdateObject, user: String, email: String): CollectionDao?
     fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao?
     fun remove(uuid: String): ApiBatchResult
+    fun findByOwner(owner: String) : CollectionDao?
 
     fun createFromApi(
         apiUpdates: List<ApiCollectionUpdate>,
@@ -238,6 +239,11 @@ class CollectionRepositoryImpl @Autowired constructor(
             totalCount = 0
         )
 
+    }
+
+    override fun findByOwner(owner: String): CollectionDao? {
+        val query = table.select { table.workspaceOwner eq owner }.firstOrNull()
+        return query?.let { dao.wrapRow(it) }
     }
 
     override fun createFromApi(

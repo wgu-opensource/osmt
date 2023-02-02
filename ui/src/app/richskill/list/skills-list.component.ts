@@ -300,7 +300,6 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
 
   protected handleClickAddCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
-    console.log("handleClickAddCollection")
     const selection = this.getSelectedSkills(skill)
     this.router.navigate(["/collections/add-skills"], {
       state: {

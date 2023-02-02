@@ -17,6 +17,7 @@ import {ManageCollectionComponent} from "../collection/detail/manage-collection.
 describe("MyWorkspaceComponent", () => {
   let component: MyWorkspaceComponent
   let fixture: ComponentFixture<MyWorkspaceComponent>
+  let collectionService: CollectionService
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -48,7 +49,14 @@ describe("MyWorkspaceComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MyWorkspaceComponent)
     component = fixture.componentInstance
+    collectionService  = TestBed.inject(CollectionService)
     fixture.detectChanges()
+  })
+
+  it("reload collection should call get workspace", () => {
+    const spy = spyOn(collectionService, "getWorkspace").and.callThrough()
+    component.reloadCollection()
+    expect(spy).toHaveBeenCalled()
   })
 
   it("should create", () => {
@@ -67,7 +75,6 @@ describe("MyWorkspaceComponent", () => {
   })
 
   it("convert to collection action", () => {
-    const collectionService = TestBed.inject(CollectionService)
     const router = TestBed.inject(Router)
     const spy = spyOn(collectionService, "updateCollection").and.callThrough()
     const spyNavigate = spyOn(router, "navigate").and.callThrough()

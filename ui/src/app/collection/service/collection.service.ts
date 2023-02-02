@@ -123,6 +123,15 @@ export class CollectionService extends AbstractService {
       ))
   }
 
+  getWorkspace(): Observable<ApiCollection> {
+    const errorMsg = `Could not find workspace`
+    return this.get<ICollection>({
+      path: "api/workspace"
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
+  }
+
   createCollection(updateObject: ICollectionUpdate): Observable<ApiCollection> {
     const errorMsg = `Error creating collection`
     return this.post<ApiCollection[]>({

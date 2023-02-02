@@ -66,7 +66,6 @@ export interface ICollectionUpdate {
   status?: PublishStatus,
   author?: string,
   skills?: IStringListUpdate
-  workspaceOwner?: string
 }
 
 export class ApiCollectionUpdate {
@@ -76,11 +75,10 @@ export class ApiCollectionUpdate {
   skills?: IStringListUpdate
   workSpaceOwner?: string
 
-  constructor({name, status, author, skills, workspaceOwner}: ICollectionUpdate) {
+  constructor({name, status, author, skills}: ICollectionUpdate) {
     this.name = name
     this.status = status
     this.author = author
     this.skills = skills
-    this.workSpaceOwner = workspaceOwner
   }
 }

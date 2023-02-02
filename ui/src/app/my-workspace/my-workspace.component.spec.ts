@@ -59,13 +59,6 @@ describe("MyWorkspaceComponent", () => {
     expect(component.actionDefinitions().length).toEqual(4)
   })
 
-  it("create workspace should call create collection", () => {
-    const collectionService = TestBed.inject(CollectionService)
-    const spy = spyOn(collectionService, "createCollection").and.callThrough()
-    component["createWorkSpace"]()
-    expect(spy).toHaveBeenCalled()
-  })
-
   it("handle confirm delete collection", () => {
     const spy = spyOn(component, "submitSkillRemoval").and.callThrough()
     component.handleConfirmDeleteCollection()

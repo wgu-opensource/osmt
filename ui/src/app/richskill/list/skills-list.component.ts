@@ -288,13 +288,14 @@ export class SkillsListComponent extends QuickLinksHelper {
   protected handleClickAddToWorkspace(): void {
     const skillListUpdate = new ApiSkillListUpdate({add: new ApiSearch({uuids: this.getSelectedSkills()?.map(i => i.uuid)})})
     this.toastService.showBlockingLoader()
-    this.collectionService.updateSkillsWithResult(localStorage.getItem("uuid") ?? "", skillListUpdate).subscribe(result => {
-      if (result) {
-        const message = `You added ${result.modifiedCount} RSDs to the collection.`
-        this.toastService.showToast("Success!", message)
-        this.toastService.hideBlockingLoader()
-        // this.return()
-      }
+    this.collectionService.getWorkspace().subscribe(workspace => {
+      this.collectionService.updateSkillsWithResult(workspace.uuid, skillListUpdate).subscribe(result => {
+        if (result) {
+          const message = `You added ${result.modifiedCount} RSDs to the workspace.`
+          this.toastService.showToast("Success!", message)
+          this.toastService.hideBlockingLoader()
+        }
+      })
     })
   }
 

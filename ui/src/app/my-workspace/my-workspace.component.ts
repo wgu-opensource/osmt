@@ -36,18 +36,12 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
   }
 
   reloadCollection(): void {
-    const uuid = localStorage.getItem("uuid")
-    if (uuid) {
-      this.collectionService.getCollectionByUUID(uuid).subscribe(collection => {
+      this.collectionService.getWorkspace().subscribe(collection => {
         this.titleService.setTitle(`${collection.name} | Collection | ${this.whitelabel.toolName}`)
         this.collection = collection
         this.uuidParam = this.collection.uuid
-        localStorage.setItem("uuid", this.collection.uuid)
         this.loadNextPage()
-      }, () => this.createWorkSpace())
-    } else {
-      this.createWorkSpace()
-    }
+      })
   }
 
   actionDefinitions(): TableActionDefinition[] {
@@ -80,31 +74,17 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
     ]
   }
 
-  private createWorkSpace(): void {
-    console.log("create workspace")
-    this.collectionService.createCollection({
-      name: "My Workspace",
-      // workspaceOwner: this.authService.getEmail() ?? "",
-      // status: PublishStatus.Workspace
-    }).subscribe(collection => {
-      console.log(collection)
-      this.collection = collection
-      this.uuidParam = this.collection.uuid
-      localStorage.setItem("uuid", collection.uuid)
-    })
-  }
-
    handleConfirmDeleteCollection(): void {
     this.submitSkillRemoval(new ApiSearch({uuids: this.collection?.skills.map(s => (s as any).uuid)}))
     this.template = "default"
   }
 
   private convertToCollectionAction(): void {
-    const updateObject = new ApiCollectionUpdate({status: PublishStatus.Draft})
+    // @ts-ignore
+    const updateObject = new ApiCollectionUpdate({status: PublishStatus.Draft.toLowerCase()})
     this.collectionService.updateCollection(this.uuidParam ?? "", updateObject).subscribe(() => {
       this.router.navigate(["/collections/" + this.uuidParam + "/manage"])
     })
-    // this.submitCollectionStatusChange(PublishStatus.Published, "published")
   }
 
 }

@@ -76,7 +76,7 @@ describe("MyWorkspaceComponent", () => {
 
   it("convert to collection action", () => {
     const router = TestBed.inject(Router)
-    const spy = spyOn(collectionService, "updateCollection").and.callThrough()
+    const spy = spyOn(collectionService, "createCollection").and.callThrough()
     const spyNavigate = spyOn(router, "navigate").and.callThrough()
     component["convertToCollectionAction"]()
     expect(spy).toHaveBeenCalled()

@@ -31,7 +31,6 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
   }
 
   ngOnInit(): void {
-    console.log("child on init")
     this.reloadCollection()
   }
 
@@ -79,10 +78,13 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
   }
 
   private convertToCollectionAction(): void {
-    // @ts-ignore
-    const updateObject = new ApiCollectionUpdate({status: PublishStatus.Draft.toLowerCase()})
-    this.collectionService.updateCollection(this.uuidParam ?? "", updateObject).subscribe(() => {
-      this.router.navigate(["/collections/" + this.uuidParam + "/manage"])
+    const updateObject = new ApiCollectionUpdate({
+      name: this.collection?.name,
+      author: this.collection?.author,
+      skills: {add: this.collection?.skills.map(s => (s as any).uuid)}
+    })
+    this.collectionService.createCollection(updateObject).subscribe(newCollection => {
+        this.router.navigate(["/collections/" + newCollection.uuid + "/manage"])
     })
   }
 

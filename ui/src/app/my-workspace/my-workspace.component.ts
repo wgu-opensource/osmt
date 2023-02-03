@@ -7,7 +7,6 @@ import {ActivatedRoute, Router} from "@angular/router"
 import {Title} from "@angular/platform-browser"
 import {AuthService} from "../auth/auth-service"
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
-import {PublishStatus} from "../PublishStatus"
 import {ApiSearch} from "../richskill/service/rich-skill-search.service"
 import {ApiCollectionUpdate} from "../collection/ApiCollection"
 

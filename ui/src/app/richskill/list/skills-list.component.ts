@@ -16,7 +16,7 @@ import {AuthService} from "../../auth/auth-service";
 import {ButtonAction} from "../../auth/auth-roles";
 import {CollectionService} from "../../collection/service/collection.service"
 import {ApiCollection} from "../../collection/ApiCollection"
-import {CollectionPipe} from "../../pipes/collection.pipe"
+import {CollectionPipe} from "../../pipes"
 
 
 @Component({

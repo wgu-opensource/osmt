@@ -20,7 +20,7 @@ import {formatDate} from "@angular/common"
 import * as FileSaver from "file-saver"
 import {ITaskResult} from "../../task/ApiTaskResult"
 import {delay, retryWhen, switchMap} from "rxjs/operators"
-import {CollectionPipe} from "../../pipes/collection.pipe"
+import {CollectionPipe} from "../../pipes"
 
 @Component({
   selector: "app-manage-collection",

@@ -1,19 +1,21 @@
-import {Component, OnInit} from "@angular/core";
-import {Observable} from "rxjs";
-import {ApiSearch, ApiSkillListUpdate, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {FormControl, FormGroup} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {Title} from "@angular/platform-browser";
-import {Location} from "@angular/common";
-import {CollectionService} from "./service/collection.service";
-import {ToastService} from "../toast/toast.service";
-import {ApiCollection} from "./ApiCollection";
-import {RichSkillService} from "../richskill/service/rich-skill.service";
-import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
-import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
-import {SkillsListComponent} from "../richskill/list/skills-list.component";
-import {ApiTaskResult} from "../task/ApiTaskResult";
-import {AuthService} from "../auth/auth-service";
+import {Component, OnInit} from "@angular/core"
+import {Observable} from "rxjs"
+import {ApiSearch, ApiSkillListUpdate, PaginatedSkills} from "../richskill/service/rich-skill-search.service"
+import {FormControl, FormGroup} from "@angular/forms"
+import {ActivatedRoute, Router} from "@angular/router"
+import {Title} from "@angular/platform-browser"
+import {Location} from "@angular/common"
+import {CollectionService} from "./service/collection.service"
+import {ToastService} from "../toast/toast.service"
+import {ApiCollection} from "./ApiCollection"
+import {RichSkillService} from "../richskill/service/rich-skill.service"
+import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
+import {ApiSkillSummary} from "../richskill/ApiSkillSummary"
+import {SkillsListComponent} from "../richskill/list/skills-list.component"
+import {ApiTaskResult} from "../task/ApiTaskResult"
+import {AuthService} from "../auth/auth-service"
+import {PublishStatus} from "../PublishStatus"
+import {CollectionPipe} from "../pipes/collection.pipe"
 
 @Component({
   selector: "app-collection-skill-search",
@@ -50,7 +52,10 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
     this.uuidParam = this.route.snapshot.paramMap.get("uuid") || undefined
     if (this.uuidParam != null) {
       this.collectionLoaded = this.collectionService.getCollectionByUUID(this.uuidParam)
-      this.collectionLoaded.subscribe(it => this.collection = it)
+      this.collectionLoaded.subscribe(it => {
+        this.collection = it
+        this.collection.status = PublishStatus.Workspace // TODO: remove
+      })
     }
 
   }
@@ -86,7 +91,7 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
   rowActions(): TableActionDefinition[] {
     return [
       new TableActionDefinition({
-        label: "Add to Collection",
+        label: `Add to ${this.collectionOrWorkspace(true)}`,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
       })
     ]
@@ -105,7 +110,7 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickBackToTop(action, skill),
       }),
       new TableActionDefinition({
-        label: "Add to Collection",
+        label: `Add to ${this.collectionOrWorkspace(true)}`,
         icon: "collection",
         primary: true,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
@@ -123,7 +128,7 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
     this.collectionUpdated.subscribe(result => {
       if (result) {
         this.toastService.hideBlockingLoader()
-        const message = `You added ${selectedCount} RSD${selectedCount ? "s" : ""} to the collection ${this.collection?.name}.`
+        const message = `You added ${selectedCount} RSD${selectedCount ? "s" : ""} to the ${this.collectionOrWorkspace(false)} ${this.collection?.name}.`
         this.toastService.showToast("Success!", message)
       }
     })

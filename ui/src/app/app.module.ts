@@ -98,6 +98,7 @@ import {NgIdleKeepaliveModule} from "@ng-idle/keepalive"
 import {LabelWithSelectComponent} from "./table/skills-library-table/label-with-select.component"
 import {LibraryExportComponent} from "./navigation/libraryexport.component"
 import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
+import {CollectionPipe} from "./pipes/collection.pipe"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -209,6 +210,7 @@ export function initializeApp(
     CheckerComponent,
     LabelWithSelectComponent,
     MyWorkspaceComponent,
+    CollectionPipe,
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

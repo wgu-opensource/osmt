@@ -7,9 +7,9 @@
     <div class="l-container l-container-mobile">
 
       <!--      {{render '@listheading'}}-->
-      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Add RSDs to Collection</h2>
+      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Add RSDs to {{collectionOrWorkspace(true)}}</h2>
 
-      <p class="t-type-bodyLarge t-type-text3 t-margin-medium t-margin-bottom">Collection: <a class="t-focus t-type-bodyLargeLink" routerLink="/collections/{{collection.uuid}}/manage">{{collection.name}}</a></p>
+      <p class="t-type-bodyLarge t-type-text3 t-margin-medium t-margin-bottom" *ngIf="collection?.status !== 'workspace'">Collection: <a class="t-focus t-type-bodyLargeLink" routerLink="/collections/{{collection.uuid}}/manage">{{collection.name}}</a></p>
 
       <!--      {{render '@listheadingsearch'}}-->
       <div class="t-margin-medium t-margin-bottom">
@@ -18,7 +18,7 @@
             <svg class="m-text-x-icon t-icon" (click)="clearSearch()">
               <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
             </svg>
-            <input type="text" placeholder="Search RSDs to add to collection" [formControl]="searchForm.controls.search">
+            <input type="text" placeholder="Search RSDs to add to {{collectionOrWorkspace(true)}}" [formControl]="searchForm.controls.search">
           </div>
 
           <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">

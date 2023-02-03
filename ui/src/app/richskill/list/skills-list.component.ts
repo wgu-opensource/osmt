@@ -15,6 +15,8 @@ import {TableActionBarComponent} from "../../table/skills-library-table/table-ac
 import {AuthService} from "../../auth/auth-service";
 import {ButtonAction} from "../../auth/auth-roles";
 import {CollectionService} from "../../collection/service/collection.service"
+import {ApiCollection} from "../../collection/ApiCollection"
+import {CollectionPipe} from "../../pipes/collection.pipe"
 
 
 @Component({
@@ -25,6 +27,7 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   from = 0
   size = 50
+  collection?: ApiCollection
 
   @ViewChild("titleHeading") titleElement!: ElementRef
   @ViewChild(TableActionBarComponent) tableActionBar!: TableActionBarComponent
@@ -265,7 +268,7 @@ export class SkillsListComponent extends QuickLinksHelper {
       }))
     } else {
       actions.push(new TableActionDefinition({
-        label: "Remove from Collection",
+        label: `Remove from ${this.collectionOrWorkspace(true)}`,
         icon: "dismiss",
         primary: true,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickRemoveCollection(action, skill),
@@ -402,5 +405,9 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   focusActionBar(): void {
     this.tableActionBar.focus()
+  }
+
+  collectionOrWorkspace(includesMy: boolean): string {
+    return new CollectionPipe().transform(this.collection?.status, includesMy)
   }
 }

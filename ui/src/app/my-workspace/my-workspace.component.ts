@@ -45,7 +45,7 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
   }
 
   actionDefinitions(): TableActionDefinition[] {
-    this.collection ? this.collection.status = PublishStatus.Workspace : false
+    this.collection ? this.collection.status = PublishStatus.Workspace : false // TODO: remove
     return [
       new TableActionDefinition({
         label: "Add RSDs to My Workspace",
@@ -66,7 +66,7 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
         visible: () => true
       }),
       new TableActionDefinition({
-        label: "Reset Collection",
+        label: "Reset My Workspace",
         icon: this.deleteIcon,
         callback: () => this.deleteCollectionAction(),
         visible: () => (this.collection?.skills?.length ?? 0) > 0

@@ -20,6 +20,7 @@ import {formatDate} from "@angular/common"
 import * as FileSaver from "file-saver"
 import {ITaskResult} from "../../task/ApiTaskResult"
 import {delay, retryWhen, switchMap} from "rxjs/operators"
+import {CollectionPipe} from "../../pipes/collection.pipe"
 
 @Component({
   selector: "app-manage-collection",
@@ -374,6 +375,14 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     this.template = "default"
     this.apiSearch = undefined
     return false
+  }
+
+  get resetOrDelete(): string {
+    return this.collection?.status === PublishStatus.Workspace ? "reset" : "delete"
+  }
+
+  collectionOrWorkspace(includesMy: boolean): string {
+    return new CollectionPipe().transform(this.collection?.status, includesMy)
   }
 
   protected handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {

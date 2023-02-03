@@ -30,7 +30,7 @@
           <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
             <div class="m-text">
               <svg aria-hidden="true" class="m-text-x-icon t-icon" (click)="clearSearch()"><use [attr.xlink:href]="searchIcon"></use></svg>
-              <input type="text" placeholder="Search RSDs in this collection" [formControl]="searchForm.controls.search">
+              <input type="text" placeholder="Search RSDs in this {{collectionOrWorkspace(false)}}" [formControl]="searchForm.controls.search">
             </div>
 
             <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
@@ -139,7 +139,7 @@
       <div class="t-margin-medium t-margin-bottom">
         <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
           <h2 class="t-type-heading1 t-margin-small t-margin-bottom">
-            Confirm that you want to {{collection.status === "Workspace" ? "reset" : "delete"}} {{this.collection?.name}}
+            Confirm that you want to {{resetOrDelete}} {{this.collection?.name}}
           </h2>
         </div>
       </div>
@@ -150,7 +150,7 @@
           <span class="m-button-x-text">Cancel</span>
         </button>
         <button class="m-button" (click)="handleConfirmDeleteCollection()">
-          <span class="m-button-x-text">Yes, {{collection.status === "Workspace" ? "reset" : "delete"}} collection</span>
+          <span class="m-button-x-text">Yes, {{resetOrDelete}} collection</span>
         </button>
       </div>
     </div>

@@ -2,10 +2,10 @@ import {ApiCollectionSummary, ApiSkillSummary} from "./richskill/ApiSkillSummary
 
 export enum PublishStatus {
   Unarchived = "Unarchived",
-  Published = "published",
+  Published = "Published",
   Archived = "Archived",
   Deleted = "Deleted",
-  Draft = "draft",
+  Draft = "Draft",
   Workspace = "workspace"
 }
 

@@ -6,6 +6,7 @@ import { RichSkillServiceStub } from "../../../../../test/resource/mock-stubs"
 import { RichSkillService } from "../../../richskill/service/rich-skill.service"
 import { ToastService } from "../../../toast/toast.service"
 import { PublicCollectionDetailCardComponent } from "./public-collection-detail-card.component"
+import {CollectionPipe} from "../../../pipes"
 
 
 export function createComponent(T: Type<PublicCollectionDetailCardComponent>): Promise<void> {
@@ -37,7 +38,8 @@ describe("PublicCollectionDetailCardComponent", () => {
 
     TestBed.configureTestingModule({
       declarations: [
-        PublicCollectionDetailCardComponent
+        PublicCollectionDetailCardComponent,
+        CollectionPipe
       ],
       imports: [
       ],

@@ -6,7 +6,6 @@ import {PublishStatus} from "../PublishStatus"
 })
 export class CollectionPipe implements PipeTransform {
   transform(value: PublishStatus | undefined, includesMy?: boolean): string {
-    console.log(value)
     const isWorkspace = value === PublishStatus.Workspace
     if (isWorkspace) {
       return includesMy ? "My Workspace" : "Workspace"

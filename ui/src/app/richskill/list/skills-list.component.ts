@@ -200,7 +200,7 @@ export class SkillsListComponent extends QuickLinksHelper {
       }))
     } else {
       actions.push(new TableActionDefinition({
-        label: "Remove from Collection",
+        label: `Remove from ${this.collectionOrWorkspace(true)}`,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickRemoveCollection(action, skill),
         visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
       }))

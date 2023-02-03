@@ -34,7 +34,7 @@
             </div>
 
             <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
-              {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">RSDs</ng-template><ng-template #singular>RSD</ng-template> found in this collection based on
+              {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">RSDs</ng-template><ng-template #singular>RSD</ng-template> found in this {{collectionOrWorkspace(false)}} based on
               <ng-template [ngIf]="matchingQuery">
                 <span class="t-type-bodyLargeBold t-type-text1">{{matchingQuery[0]}}</span> and
               </ng-template>

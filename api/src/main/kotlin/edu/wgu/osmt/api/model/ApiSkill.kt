@@ -110,7 +110,7 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
 
     companion object {
         fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkill{
-            return ApiSkill(rsdDao.toModel(), rsdDao.collections.map{ it.toModel() }.toSet(), appConfig)
+            return ApiSkill(rsdDao.toModel(), rsdDao.collections.map{ it.toModel() }.filter { it.status!=PublishStatus.Workspace }.toSet(), appConfig)
         }
     }
 }

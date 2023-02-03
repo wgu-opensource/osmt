@@ -15,7 +15,6 @@ import {SkillsListComponent} from "../richskill/list/skills-list.component"
 import {ApiTaskResult} from "../task/ApiTaskResult"
 import {AuthService} from "../auth/auth-service"
 import {PublishStatus} from "../PublishStatus"
-import {CollectionPipe} from "../pipes/collection.pipe"
 
 @Component({
   selector: "app-collection-skill-search",
@@ -52,10 +51,7 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
     this.uuidParam = this.route.snapshot.paramMap.get("uuid") || undefined
     if (this.uuidParam != null) {
       this.collectionLoaded = this.collectionService.getCollectionByUUID(this.uuidParam)
-      this.collectionLoaded.subscribe(it => {
-        this.collection = it
-        this.collection.status = PublishStatus.Workspace // TODO: remove
-      })
+      this.collectionLoaded.subscribe(it => this.collection = it)
     }
 
   }
@@ -128,7 +124,9 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
     this.collectionUpdated.subscribe(result => {
       if (result) {
         this.toastService.hideBlockingLoader()
-        const message = `You added ${selectedCount} RSD${selectedCount ? "s" : ""} to the ${this.collectionOrWorkspace(false)} ${this.collection?.name}.`
+        const isWorkspace = this.collection?.status === PublishStatus.Workspace
+        const baseMessage = `You added ${selectedCount} RSD${selectedCount ? "s" : ""} to the`
+        const message = ` ${baseMessage} ${this.collectionOrWorkspace(false)} ${ isWorkspace ? "" : this.collection?.name}.`
         this.toastService.showToast("Success!", message)
       }
     })

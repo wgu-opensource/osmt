@@ -45,7 +45,6 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
   }
 
   actionDefinitions(): TableActionDefinition[] {
-    this.collection ? this.collection.status = PublishStatus.Workspace : false // TODO: remove
     return [
       new TableActionDefinition({
         label: "Add RSDs to My Workspace",

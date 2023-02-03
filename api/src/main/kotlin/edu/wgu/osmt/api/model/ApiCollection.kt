@@ -40,8 +40,8 @@ class ApiCollection(private val collection: Collection, private val ss: List<Ric
         get() = collection.author?.let { it.value }
 
     @get:JsonProperty
-    val status: PublishStatus
-        get() = collection.publishStatus()
+    val status: PublishStatus?
+        get() = collection.status
 
     @get:JsonProperty
     val creationDate: ZonedDateTime
@@ -65,11 +65,13 @@ class ApiCollection(private val collection: Collection, private val ss: List<Ric
 
     @get:JsonProperty
     val owner: String?
-        get() = collection.workspaceOwner
+        get() = collection.author?.let { it.value }
 
     companion object {
         fun fromDao(collectionDao: CollectionDao, appConfig: AppConfig): ApiCollection {
-            return ApiCollection(collectionDao.toModel(), collectionDao.skills.map{ it.toModel() }, appConfig)
+            val apiCollection =
+                ApiCollection(collectionDao.toModel(), collectionDao.skills.map { it.toModel() }, appConfig)
+            return apiCollection
         }
     }
 }

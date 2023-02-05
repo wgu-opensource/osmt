@@ -15,6 +15,7 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
 
   abstract skillUuid: string
   abstract skillName: string
+  abstract skillPublicUrl: string
   abstract archived: string | undefined
   abstract published: string | undefined
 
@@ -125,6 +126,16 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
       const url = `skills/${this.skillUuid}`
       window.open(url, "_blank")
     }
+  }
+
+  handleCopyPublicURL(): void {
+    navigator.clipboard.writeText(this.skillPublicUrl)
+      .then(
+        () => this.toastService.showToast("Success!", "URL copied to clipboard")
+      )
+      .catch(
+        () => this.toastService.showToast("Error", "Could not copy to clipboard")
+      )
   }
 
   setEnableFlags(): void {

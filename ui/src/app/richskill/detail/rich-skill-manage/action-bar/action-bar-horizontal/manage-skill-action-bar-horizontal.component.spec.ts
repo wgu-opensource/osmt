@@ -18,6 +18,7 @@ import { ManageSkillActionBarHorizontalComponent } from "./manage-skill-action-b
     <app-manage-skill-action-bar-horizontal
       [skillUuid]="mySkillUuid"
       [skillName]="mySkillName"
+      [skillPublicUrl]="mySkillPublicUrl"
       [archived]="myArchived"
       [published]="myPublished">
     </app-manage-skill-action-bar-horizontal>`
@@ -25,6 +26,7 @@ import { ManageSkillActionBarHorizontalComponent } from "./manage-skill-action-b
 class TestHostComponent {
   mySkillUuid = "1234"
   mySkillName = "my skill name"
+  mySkillPublicUrl = "mockUrl"
   myArchived = false
   myPublished = false
 }

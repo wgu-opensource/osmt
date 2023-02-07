@@ -13,6 +13,8 @@ import {EnvironmentService} from "../core/environment.service"
 import {CollectionService} from "../collection/service/collection.service"
 import {Router} from "@angular/router"
 import {ManageCollectionComponent} from "../collection/detail/manage-collection.component"
+import {createMockCollection} from "../../../test/resource/mock-data"
+import {PublishStatus} from "../PublishStatus"
 
 describe("MyWorkspaceComponent", () => {
   let component: MyWorkspaceComponent
@@ -81,6 +83,18 @@ describe("MyWorkspaceComponent", () => {
     component["convertToCollectionAction"]()
     expect(spy).toHaveBeenCalled()
     expect(spyNavigate).toHaveBeenCalled()
+  })
+
+  it("confirm message text", () => {
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Workspace)
+    expect(component.confirmMessageText).toBe("reset My Workspace")
+  })
+
+  it("confirm button text", () => {
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Workspace)
+    expect(component.confirmButtonText).toBe("reset My Workspace")
   })
 
 })

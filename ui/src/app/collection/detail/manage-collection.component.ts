@@ -377,8 +377,12 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     return false
   }
 
-  get resetOrDelete(): string {
-    return this.collection?.status === PublishStatus.Workspace ? "reset" : "delete"
+  get confirmMessageText(): string {
+    return "delete " + (this.collection?.name ?? "")
+  }
+
+  get confirmButtonText(): string {
+    return "delete collection"
   }
 
   collectionOrWorkspace(includesMy: boolean): string {

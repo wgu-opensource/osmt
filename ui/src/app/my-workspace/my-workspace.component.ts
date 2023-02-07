@@ -60,15 +60,27 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
         label: "Convert to Collection",
         icon: this.publishIcon,
         callback: () => this.convertToCollectionAction(),
-        visible: () => true
+        visible: () => !this.workspaceEmpty()
       }),
       new TableActionDefinition({
         label: "Reset My Workspace",
         icon: this.deleteIcon,
         callback: () => this.deleteCollectionAction(),
-        visible: () => (this.collection?.skills?.length ?? 0) > 0
+        visible: () => !this.workspaceEmpty()
       })
     ]
+  }
+
+  private workspaceEmpty(): boolean {
+    return (this.collection?.skills?.length ?? 0) === 0
+  }
+
+  get confirmMessageText(): string {
+    return "reset My Workspace"
+  }
+
+  get confirmButtonText(): string {
+    return "reset My Workspace"
   }
 
    handleConfirmDeleteCollection(): void {

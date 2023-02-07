@@ -139,7 +139,7 @@
       <div class="t-margin-medium t-margin-bottom">
         <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
           <h2 class="t-type-heading1 t-margin-small t-margin-bottom">
-            Confirm that you want to {{resetOrDelete}} {{this.collection?.name}}
+            Confirm that you want to {{confirmMessageText}}
           </h2>
         </div>
       </div>
@@ -150,7 +150,7 @@
           <span class="m-button-x-text">Cancel</span>
         </button>
         <button class="m-button" (click)="handleConfirmDeleteCollection()">
-          <span class="m-button-x-text">Yes, {{resetOrDelete}} collection</span>
+          <span class="m-button-x-text">Yes, {{confirmButtonText}}</span>
         </button>
       </div>
     </div>

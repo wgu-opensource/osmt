@@ -552,4 +552,17 @@ describe("ManageCollectionComponent", () => {
     component.saveCsv(csvContent.body, "My Collection")
     expect(spySaveAS).toHaveBeenCalled()
   })
+
+  it("confirm message text", () => {
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Workspace)
+    component.collection.name = "Test Collection"
+    expect(component.confirmMessageText).toBe("delete Test Collection")
+  })
+
+  it("confirm button text", () => {
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Workspace)
+    expect(component.confirmButtonText).toBe("delete collection")
+  })
 })

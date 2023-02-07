@@ -4,6 +4,7 @@ import {Whitelabelled} from "../../whitelabel"
 import {AuthService} from "../auth/auth-service"
 import {ActivatedRoute, Router} from "@angular/router"
 import {AppConfig} from "../app.config"
+import {ButtonAction} from "../auth/auth-roles"
 
 @Component({
   selector: "app-header",
@@ -11,6 +12,7 @@ import {AppConfig} from "../app.config"
 })
 export class HeaderComponent extends Whitelabelled implements OnInit {
   menuExpanded: boolean = false
+  canHaveWorkspace = this.authService.isEnabledByRoles(ButtonAction.MyWorkspace)
 
   constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute, private location: Location) {
     super()

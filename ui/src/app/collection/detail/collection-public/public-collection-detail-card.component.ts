@@ -54,4 +54,8 @@ export class PublicCollectionDetailCardComponent implements OnInit {
   get displayStatus(): boolean {
     return this.collection?.status !== PublishStatus.Workspace
   }
+
+  get displayLabel(): boolean {
+    return this.collection?.status !== PublishStatus.Workspace
+  }
 }

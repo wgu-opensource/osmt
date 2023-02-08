@@ -1,6 +1,6 @@
 <div class="m-skillBackground m-skillBackground-detail m-skillBackground-collection l-skillBackground">
   <div class="t-margin-extraSmall t-margin-bottom">
-    <div class="m-sectionLabel">{{collection?.status | collection: true}}</div>
+    <div class="m-sectionLabel" *ngIf="displayLabel">Collection</div>
   </div>
 
   <h2 class="t-type-heading1 t-margin-extraSmall t-margin-bottom" tabindex="0">{{collectionName}}</h2>

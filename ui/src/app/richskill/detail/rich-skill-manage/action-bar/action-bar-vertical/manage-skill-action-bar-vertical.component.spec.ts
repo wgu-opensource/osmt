@@ -21,6 +21,7 @@ import any = jasmine.any
     <app-manage-skill-action-bar-vertical
       [skillUuid]="mySkillUuid"
       [skillName]="mySkillName"
+      [skillPublicUrl]="mySkillPublicUrl"
       [archived]="myArchived"
       [published]="myPublished">
     </app-manage-skill-action-bar-vertical>`
@@ -28,6 +29,7 @@ import any = jasmine.any
 class TestHostComponent {
   mySkillUuid = "1234"
   mySkillName = "my skill name"
+  mySkillPublicUrl = "mockUrl"
   myArchived = false
   myPublished = false
 }
@@ -56,6 +58,8 @@ let childComponent: ManageSkillActionBarVerticalComponent
 
 
 describe("ManageSkillActionBarVerticalComponent", () => {
+  let toastService: ToastService
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -79,6 +83,8 @@ describe("ManageSkillActionBarVerticalComponent", () => {
 
     const appConfig = TestBed.inject(AppConfig)
     AppConfig.settings = appConfig.defaultConfig()  // This avoids the race condition on reading the config's whitelabel.toolName
+
+    toastService = TestBed.inject(ToastService)
 
     createComponent(TestHostComponent)
   }))
@@ -155,6 +161,7 @@ describe("ManageSkillActionBarVerticalComponent", () => {
     childComponent.reloadSkill.pipe(first()).subscribe(
       () => { clicked = true; return }
     )
+
     spyOn(window, "confirm").and.returnValue(true)
 
     // Act
@@ -162,5 +169,20 @@ describe("ManageSkillActionBarVerticalComponent", () => {
 
     // Assert
     expect(clicked).toBeTruthy()
+  })
+
+  it("handleCopyPublicUrl should return", async (done) => {
+    // Arrange
+    let clipboardWriteTextSpy = spyOn(navigator.clipboard, "writeText").and.returnValue(Promise.resolve())
+    let showToastSpy = spyOn(toastService, "showToast").and.callFake(() => { done() })
+
+    // Act
+    childComponent.handleCopyPublicURL()
+
+    await clipboardWriteTextSpy
+
+    // Assert
+    expect(clipboardWriteTextSpy).toHaveBeenCalledWith("mockUrl")
+    expect(showToastSpy).toHaveBeenCalledWith("Success!", "URL copied to clipboard")
   })
 })

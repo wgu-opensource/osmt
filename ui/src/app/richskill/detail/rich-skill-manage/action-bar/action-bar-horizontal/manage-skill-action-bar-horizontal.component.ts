@@ -13,6 +13,7 @@ export class ManageSkillActionBarHorizontalComponent extends ManageRichSkillActi
 
   @Input() skillUuid = ""
   @Input() skillName = ""
+  @Input() skillPublicUrl = ""
   @Input() archived = undefined
   @Input() published = undefined
 

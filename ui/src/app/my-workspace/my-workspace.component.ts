@@ -16,6 +16,8 @@ import {ApiCollectionUpdate} from "../collection/ApiCollection"
 })
 export class MyWorkspaceComponent extends ManageCollectionComponent implements OnInit {
 
+  showLog = false
+
   constructor(
     protected router: Router,
     protected richSkillService: RichSkillService,

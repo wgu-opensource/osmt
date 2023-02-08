@@ -53,6 +53,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   template: "default" | "confirm-multiple" | "confirm-delete-collection" = "default"
   collectionSaved?: Observable<ApiCollection>
   selectAllChecked = false
+  showLog = true
 
   collapseAuditLog = new Subject<void>()
 

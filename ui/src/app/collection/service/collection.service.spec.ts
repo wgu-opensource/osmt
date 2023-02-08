@@ -81,7 +81,7 @@ describe("CollectionService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const path = "api/collections?sort=name.asc&status=Draft&size=3&from=0"
+    const path = "api/collections?sort=name.asc&status=draft&size=3&from=0"
     const testData: PaginatedCollections = createMockPaginatedCollections(3, 10)
     const statuses = new Set<PublishStatus>([ PublishStatus.Draft ])
 

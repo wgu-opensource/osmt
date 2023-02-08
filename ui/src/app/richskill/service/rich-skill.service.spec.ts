@@ -80,7 +80,7 @@ describe("RichSkillService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const path = "api/skills?sort=name.asc&status=Draft&size=3&from=0"
+    const path = "api/skills?sort=name.asc&status=draft&size=3&from=0"
     const testData: PaginatedSkills = createMockPaginatedSkills(3, 10)
     const statuses = new Set<PublishStatus>([ PublishStatus.Draft ])
 
@@ -301,7 +301,7 @@ describe("RichSkillService", () => {
       })
 
     const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path +
-      "?sort=skill.asc&status=Published&status=Draft&size=5&from=1")
+      "?sort=skill.asc&status=published&status=draft&size=5&from=1")
     expect(req.request.method).toEqual("POST")
     req.flush(testData.skills, {
       headers: { "x-total-count": "" + testData.totalCount}
@@ -381,7 +381,7 @@ describe("RichSkillService", () => {
     /* Service call will make 2 requests: the requested action + the async task result */
     /* Setup for request 1 */
     const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path1 +
-            "?newStatus=Published")
+            "?newStatus=published")
     expect(req1.request.method).toEqual("POST")
     req1.flush(taskResult)
 

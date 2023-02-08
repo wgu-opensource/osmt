@@ -27,16 +27,13 @@ interface HasPublishStatus<T: MutablePublishStatusDetails> {
                     dao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
                 }
             }
-            else -> {
-                if (dao is CollectionDao) {
-                    if(publishStatus != null)
-                    dao.status = publishStatus as PublishStatus
-                }
-
-            } // draft is non-op
+            else -> {} // draft is non-op
         }
-        if(dao.publishStatus() != PublishStatus.Workspace && dao is CollectionDao) {
-            dao.workspaceOwner = StringUtils.EMPTY
+        if(dao is CollectionDao && publishStatus != null) {
+            dao.status = publishStatus as PublishStatus
+            if (dao.status != PublishStatus.Workspace) {
+                dao.workspaceOwner = StringUtils.EMPTY
+            }
         }
     }
 }

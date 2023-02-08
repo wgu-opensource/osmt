@@ -282,7 +282,8 @@ class CollectionRepositoryImpl @Autowired constructor(
         val collectionUpdateObject = collectionUpdateObjectFromApi(collectionUpdate, richSkillRepository)
 
         val updateObjectWithId = collectionUpdateObject.copy(
-            id = existingCollectionId
+            id = existingCollectionId,
+            publishStatus = collectionUpdate.publishStatus
         )
 
         return update(updateObjectWithId, user)

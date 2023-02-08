@@ -54,7 +54,7 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
         label: "Download as CSV",
         icon: this.downloadIcon,
         callback: () => this.generateCsv(this.collection?.name ?? ""),
-        visible: () => true
+        visible: () => !this.workspaceEmpty()
       }),
       new TableActionDefinition({
         label: "Convert to Collection",

@@ -97,4 +97,10 @@ describe("MyWorkspaceComponent", () => {
     expect(component.confirmButtonText).toBe("reset My Workspace")
   })
 
+  it("workspace is not empty", () => {
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Workspace)
+    expect(component["workspaceEmpty"]()).toBeFalse()
+  })
+
 })

@@ -151,6 +151,17 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
     }
 
     @Test
+    fun `findByOwner() should find an existing collection`() {
+        // Act
+        collectionRepository.create(CollectionUpdateObject(12345,"testCollection",null,null,PublishStatus.Workspace), userString, userEmail)
+        val collectionDao = collectionRepository.findByOwner("unit@test.user")
+
+        // Assert
+        assertThat(collectionDao).isNotNull
+        assertThat(collectionDao!!.workspaceOwner).isEqualTo(userEmail)
+    }
+
+    @Test
     fun testChangeStatusesForTask() {
         // Arrange
         val collectionsCount = 2
@@ -169,6 +180,7 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
 
     }
 
+    @Test
     fun testChangeStatusesForTaskWithCollectionId() {
         // Arrange
         val skillCount = 3

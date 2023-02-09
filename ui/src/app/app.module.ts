@@ -99,6 +99,7 @@ import {LabelWithSelectComponent} from "./table/skills-library-table/label-with-
 import {LibraryExportComponent} from "./navigation/libraryexport.component"
 import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
 import {CollectionPipe} from "./pipes"
+import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collection/convert-to-collection.component"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -211,6 +212,7 @@ export function initializeApp(
     LabelWithSelectComponent,
     MyWorkspaceComponent,
     CollectionPipe,
+    ConvertToCollectionComponent,
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

@@ -8,7 +8,9 @@ import {Title} from "@angular/platform-browser"
 import {AuthService} from "../auth/auth-service"
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
 import {ApiSearch} from "../richskill/service/rich-skill-search.service"
-import {ApiCollectionUpdate} from "../collection/ApiCollection"
+import {ButtonAction} from "../auth/auth-roles"
+
+export const WORKSPACE_COLLECTIONS_UUIDS = "workspace-collections-uuids"
 
 @Component({
   selector: "app-my-workspace",
@@ -91,18 +93,17 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
   }
 
   private convertToCollectionAction(): void {
-    const updateObject = new ApiCollectionUpdate({
-      name: this.collection?.name,
-      author: this.collection?.author,
-      skills: {add: this.collection?.skills.map(s => (s as any).uuid)}
-    })
-    this.collectionService.createCollection(updateObject).subscribe(newCollection => {
-        this.router.navigate(["/collections/" + newCollection.uuid + "/manage"])
-    })
+    const uuids = this.collection?.skills.map(s => (s as any).uuid)
+    localStorage.setItem(WORKSPACE_COLLECTIONS_UUIDS, JSON.stringify(uuids))
+    this.router.navigate(["/my-workspace/convert-to-collection"])
   }
 
   addSkillsAction(): void {
     this.router.navigate([`/my-workspace/${this.collection?.uuid}/add-skills`])
+  }
+
+  addToCollectionVisible(): boolean {
+    return this.addToVisible() && this.authService.isEnabledByRoles(ButtonAction.MyWorkspace)
   }
 
 

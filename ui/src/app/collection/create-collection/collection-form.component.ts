@@ -33,12 +33,12 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
   }
 
   constructor(
-    private collectionService: CollectionService,
-    private loc: Location,
-    private router: Router,
-    private route: ActivatedRoute,
-    private toastService: ToastService,
-    private titleService: Title
+    protected collectionService: CollectionService,
+    protected loc: Location,
+    protected router: Router,
+    protected route: ActivatedRoute,
+    protected toastService: ToastService,
+    protected titleService: Title
   ) {
     super()
   }

@@ -287,7 +287,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
 
   protected addToWorkspaceVisible(): boolean {
-    return this.addToVisible() && this.authService.isEnabledByRoles(ButtonAction.MyWorkspace) && this.collection?.status === PublishStatus.Workspace
+    return this.addToVisible() && this.authService.isEnabledByRoles(ButtonAction.MyWorkspace)
   }
 
   protected handleClickExportSearch(): void {

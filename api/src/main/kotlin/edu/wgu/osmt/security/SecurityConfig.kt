@@ -129,7 +129,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN, CURATOR)
             .mvcMatchers(POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
             .mvcMatchers(POST, COLLECTION_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(POST, COLLECTION_SKILLS_UPDATE).hasAnyAuthority(ADMIN)
+            .mvcMatchers(POST, COLLECTION_SKILLS_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
             .mvcMatchers(DELETE, COLLECTION_REMOVE).hasAnyAuthority(ADMIN)
             .mvcMatchers(GET, WORKSPACE).hasAnyAuthority(ADMIN, CURATOR)
 

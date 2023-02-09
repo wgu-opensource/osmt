@@ -13,6 +13,7 @@ import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.config.DEFAULT_WORKSPACE_NAME
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.richskill.RichSkillRepository
@@ -217,7 +218,7 @@ class CollectionController @Autowired constructor(
         } ?: collectionRepository.createFromApi(
             listOf(
                 ApiCollectionUpdate(
-                    "defaultWorkspace",
+                    DEFAULT_WORKSPACE_NAME,
                     PublishStatus.Workspace,
                     oAuthHelper.readableUsername(user),
                     ApiStringListUpdate()

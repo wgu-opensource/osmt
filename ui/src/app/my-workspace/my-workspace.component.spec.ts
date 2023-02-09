@@ -13,7 +13,7 @@ import {EnvironmentService} from "../core/environment.service"
 import {CollectionService} from "../collection/service/collection.service"
 import {Router} from "@angular/router"
 import {ManageCollectionComponent} from "../collection/detail/manage-collection.component"
-import {createMockCollection} from "../../../test/resource/mock-data"
+import {createMockCollection, createMockSkillSummary} from "../../../test/resource/mock-data"
 import {PublishStatus} from "../PublishStatus"
 
 describe("MyWorkspaceComponent", () => {
@@ -26,7 +26,7 @@ describe("MyWorkspaceComponent", () => {
       imports: [
         RouterTestingModule.withRoutes([
           {
-            path: "collections/uuid1/manage",
+            path: "my-workspace/uuid1/add-skills",
             component: ManageCollectionComponent
           }
         ]),
@@ -78,10 +78,10 @@ describe("MyWorkspaceComponent", () => {
 
   it("convert to collection action", () => {
     const router = TestBed.inject(Router)
-    const spy = spyOn(collectionService, "createCollection").and.callThrough()
     const spyNavigate = spyOn(router, "navigate").and.callThrough()
+    const spyLocalStorage = spyOn(localStorage, "setItem").and.callThrough()
     component["convertToCollectionAction"]()
-    expect(spy).toHaveBeenCalled()
+    expect(spyLocalStorage).toHaveBeenCalled()
     expect(spyNavigate).toHaveBeenCalled()
   })
 
@@ -101,6 +101,22 @@ describe("MyWorkspaceComponent", () => {
     const date = new Date()
     component.collection = createMockCollection(date, date, date, date, PublishStatus.Workspace)
     expect(component["workspaceEmpty"]()).toBeFalse()
+  })
+
+  it("router should navigate correctly", () => {
+    const router = TestBed.inject(Router)
+    const spy = spyOn(router, "navigate").and.resolveTo(true)
+    component.addSkillsAction()
+    expect(spy).toHaveBeenCalledWith(["/my-workspace/uuid1/add-skills"])
+  })
+
+  it("add to collection should not be visible", () => {
+    expect(component.addToCollectionVisible()).toBeFalse()
+  })
+
+  it("add to collection should be visible", () => {
+    component.selectedSkills = [createMockSkillSummary()]
+    expect(component.addToCollectionVisible()).toBeTrue()
   })
 
 })

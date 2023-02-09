@@ -110,7 +110,7 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
         icon: "collection",
         primary: true,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
-        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill) || this.addToWorkspaceVisible()
       })
     ]
   }

@@ -38,6 +38,7 @@
 }
 
 .dropup-item {
+  width: 100%;
   color: black;
   padding-left: 10%;
   padding-top: 5%;
@@ -46,6 +47,13 @@
 
 .dropup-item:hover {
   text-decoration: underline;
+}
+
+.dropup-item:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  text-decoration: none;
+  cursor:not-allowed
 }
 
 hr {

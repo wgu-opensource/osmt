@@ -101,4 +101,9 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
     })
   }
 
+  addSkillsAction(): void {
+    this.router.navigate([`/my-workspace/${this.collection?.uuid}/add-skills`])
+  }
+
+
 }

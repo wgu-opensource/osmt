@@ -150,6 +150,14 @@ const routes: Routes = [
     component: MyWorkspaceComponent,
     canActivate: [AuthGuard]
   },
+  {
+    path: "my-workspace/:uuid/add-skills",
+    component: CollectionSkillSearchComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.MyWorkspace)
+    }
+  },
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},
   {path: "collections/:uuid", component: CollectionPublicComponent},

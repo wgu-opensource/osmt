@@ -1,19 +1,19 @@
 import {ApiSearch, ApiSkillListUpdate, PaginatedSkills} from "../service/rich-skill-search.service"
-import {ApiSkillSummary} from "../ApiSkillSummary";
-import {checkArchived, determineFilters, PublishStatus} from "../../PublishStatus";
-import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
-import {Component, ElementRef, ViewChild} from "@angular/core";
-import {Observable} from "rxjs";
-import {ApiBatchResult} from "../ApiBatchResult";
-import {RichSkillService} from "../service/rich-skill.service";
-import {ToastService} from "../../toast/toast.service";
-import {ApiSortOrder} from "../ApiSkill";
-import {Router} from "@angular/router";
-import {QuickLinksHelper} from "../../core/quick-links-helper";
-import {ExtrasSelectedSkillsState} from "../../collection/add-skills-collection.component";
-import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component";
-import {AuthService} from "../../auth/auth-service";
-import {ButtonAction} from "../../auth/auth-roles";
+import {ApiSkillSummary} from "../ApiSkillSummary"
+import {checkArchived, determineFilters, PublishStatus} from "../../PublishStatus"
+import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions"
+import {Component, ElementRef, ViewChild} from "@angular/core"
+import {Observable} from "rxjs"
+import {ApiBatchResult} from "../ApiBatchResult"
+import {RichSkillService} from "../service/rich-skill.service"
+import {ToastService} from "../../toast/toast.service"
+import {ApiSortOrder} from "../ApiSkill"
+import {Router} from "@angular/router"
+import {QuickLinksHelper} from "../../core/quick-links-helper"
+import {ExtrasSelectedSkillsState} from "../../collection/add-skills-collection.component"
+import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
+import {AuthService} from "../../auth/auth-service"
+import {ButtonAction} from "../../auth/auth-roles"
 import {CollectionService} from "../../collection/service/collection.service"
 import {ApiCollection} from "../../collection/ApiCollection"
 import {CollectionPipe} from "../../pipes"
@@ -150,8 +150,12 @@ export class SkillsListComponent extends QuickLinksHelper {
     return false
   }
 
+  addToVisible(): boolean {
+    return (this.selectedSkills?.length ?? 0) > 0
+  }
+
   addToCollectionVisible(skill?: ApiSkillSummary): boolean {
-    return ((this.selectedSkills?.length ?? 0) > 0) && this.authService.isEnabledByRoles(ButtonAction.CollectionSkillsUpdate)
+    return this.addToVisible() && this.authService.isEnabledByRoles(ButtonAction.CollectionSkillsUpdate)
   }
 
   handleFiltersChanged(newFilters: Set<PublishStatus>): void {
@@ -254,15 +258,17 @@ export class SkillsListComponent extends QuickLinksHelper {
         label: "Add to",
         icon: "add",
         primary: true,
-        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill),
+        visible: (skill?: ApiSkillSummary) => this.addToVisible(),
         menu: [
           {
             label: "Add to Collection",
             callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
+            visible: () => this.addToCollectionVisible()
           },
           {
             label: "Add to Workspace",
-            callback: () => this.handleClickAddToWorkspace()
+            callback: () => this.handleClickAddToWorkspace(),
+            visible: () => this.addToWorkspaceVisible()
           }
         ]
       }))
@@ -272,12 +278,16 @@ export class SkillsListComponent extends QuickLinksHelper {
         icon: "dismiss",
         primary: true,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickRemoveCollection(action, skill),
-        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill) || this.addToWorkspaceVisible()
       }))
     }
 
     return actions
 
+  }
+
+  protected addToWorkspaceVisible(): boolean {
+    return this.addToVisible() && this.authService.isEnabledByRoles(ButtonAction.MyWorkspace) && this.collection?.status === PublishStatus.Workspace
   }
 
   protected handleClickExportSearch(): void {

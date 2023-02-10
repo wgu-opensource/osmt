@@ -565,4 +565,10 @@ describe("ManageCollectionComponent", () => {
     component.collection = createMockCollection(date, date, date, date, PublishStatus.Workspace)
     expect(component.confirmButtonText).toBe("delete collection")
   })
+
+  it("show log should be true", () => {
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Draft)
+    expect(component.showLog).toBeTrue()
+  })
 })

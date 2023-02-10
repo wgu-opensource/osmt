@@ -7,7 +7,7 @@ import {RichSkillService} from "../richskill/service/rich-skill.service"
 import {AuthServiceStub, CollectionServiceStub, EnvironmentServiceStub, RichSkillServiceStub} from "../../../test/resource/mock-stubs"
 import {HttpClientTestingModule} from "@angular/common/http/testing"
 import {AppConfig} from "../app.config"
-import {Title} from "@angular/platform-browser"
+import {By, Title} from "@angular/platform-browser"
 import {ToastService} from "../toast/toast.service"
 import {EnvironmentService} from "../core/environment.service"
 import {CollectionService} from "../collection/service/collection.service"
@@ -15,6 +15,23 @@ import {Router} from "@angular/router"
 import {ManageCollectionComponent} from "../collection/detail/manage-collection.component"
 import {createMockCollection, createMockSkillSummary} from "../../../test/resource/mock-data"
 import {PublishStatus} from "../PublishStatus"
+import {PublicCollectionDetailCardComponent} from "../collection/detail/collection-public/public-collection-detail-card.component"
+import {VerticalActionBarComponent} from "../core/vertical-action-bar.component"
+import {FilterControlsComponent} from "../table/filter-controls/filter-controls.component"
+import {FilterChoiceComponent} from "../table/filter-controls/filter-choice.component"
+import {TableActionBarComponent} from "../table/skills-library-table/table-action-bar.component"
+import {ActionBarItemComponent} from "../table/skills-library-table/action-bar-item.component"
+import {CommonModule} from "@angular/common"
+import {ReactiveFormsModule} from "@angular/forms"
+import {LoadingObservablesDirective} from "../loading/loading-observables.directive"
+import {SkillTableComponent} from "../table/skills-library-table/skill-table.component"
+import {PaginationComponent} from "../table/skills-library-table/pagination.component"
+import {LabelWithSelectComponent} from "../table/skills-library-table/label-with-select.component"
+import {AuditLogComponent} from "../richskill/detail/audit-log.component"
+import {LabelWithFilterComponent} from "../table/skills-library-table/label-with-filter.component"
+import {SkillListRowComponent} from "../richskill/list/skill-list-row.component"
+import {StatusBarComponent} from "../core/status-bar.component"
+import {DotsMenuComponent} from "../table/skills-library-table/dots-menu.component"
 
 describe("MyWorkspaceComponent", () => {
   let component: MyWorkspaceComponent
@@ -31,8 +48,27 @@ describe("MyWorkspaceComponent", () => {
           }
         ]),
         HttpClientTestingModule,
+        CommonModule,
+        ReactiveFormsModule
       ],
-      declarations: [MyWorkspaceComponent],
+      declarations: [
+        MyWorkspaceComponent,
+        PublicCollectionDetailCardComponent,
+        VerticalActionBarComponent,
+        FilterControlsComponent,
+        FilterChoiceComponent,
+        TableActionBarComponent,
+        ActionBarItemComponent,
+        LoadingObservablesDirective,
+        SkillTableComponent,
+        PaginationComponent,
+        LabelWithSelectComponent,
+        LabelWithFilterComponent,
+        AuditLogComponent,
+        SkillListRowComponent,
+        StatusBarComponent,
+        DotsMenuComponent,
+      ],
       providers: [
         AppConfig,
         Title,
@@ -117,6 +153,14 @@ describe("MyWorkspaceComponent", () => {
   it("add to collection should be visible", () => {
     component.selectedSkills = [createMockSkillSummary()]
     expect(component.addToCollectionVisible()).toBeTrue()
+  })
+
+  it("show log should be false", () => {
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Workspace)
+    const auditLog = fixture.debugElement.query(By.css("app-audit-log"))
+    expect(component.showLog).toBeFalse()
+    expect(auditLog).toBeFalsy()
   })
 
 })

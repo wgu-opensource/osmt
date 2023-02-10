@@ -1,19 +1,19 @@
 // noinspection MagicNumberJS,LocalVariableNamingConventionJS
 
-import {Component, ElementRef, Type} from "@angular/core"
-import {async, ComponentFixture, TestBed} from "@angular/core/testing"
-import {RouterTestingModule} from "@angular/router/testing"
-import {createMockCollection, createMockPaginatedSkills, createMockSkillSummary} from "../../../../test/resource/mock-data"
+import { Component, ElementRef, Type } from "@angular/core"
+import { async, ComponentFixture, TestBed } from "@angular/core/testing"
+import { RouterTestingModule } from "@angular/router/testing"
+import { createMockPaginatedSkills, createMockSkillSummary } from "../../../../test/resource/mock-data"
 import {AuthServiceStub, CollectionServiceStub, RichSkillServiceStub} from "../../../../test/resource/mock-stubs"
-import {PublishStatus} from "../../PublishStatus"
-import {ToastService} from "../../toast/toast.service"
-import {ApiSortOrder} from "../ApiSkill"
-import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service"
-import {RichSkillService} from "../service/rich-skill.service"
-import {SkillsListComponent} from "./skills-list.component"
-import {AuthService} from "../../auth/auth-service"
-import {CollectionService} from "../../collection/service/collection.service"
+import { PublishStatus } from "../../PublishStatus"
+import { ToastService } from "../../toast/toast.service"
+import { ApiSortOrder } from "../ApiSkill"
+import { ApiSearch, PaginatedSkills } from "../service/rich-skill-search.service"
+import { RichSkillService } from "../service/rich-skill.service"
+import { SkillsListComponent } from "./skills-list.component"
+import {AuthService} from "../../auth/auth-service";
 import {HttpClientModule} from "@angular/common/http"
+import {CollectionService} from "../../collection/service/collection.service"
 
 
 @Component({

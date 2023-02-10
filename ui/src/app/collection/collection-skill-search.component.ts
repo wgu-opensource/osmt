@@ -1,19 +1,19 @@
-import {Component, OnInit} from "@angular/core"
-import {Observable} from "rxjs"
-import {ApiSearch, ApiSkillListUpdate, PaginatedSkills} from "../richskill/service/rich-skill-search.service"
-import {FormControl, FormGroup} from "@angular/forms"
-import {ActivatedRoute, Router} from "@angular/router"
-import {Title} from "@angular/platform-browser"
-import {Location} from "@angular/common"
-import {CollectionService} from "./service/collection.service"
-import {ToastService} from "../toast/toast.service"
-import {ApiCollection} from "./ApiCollection"
-import {RichSkillService} from "../richskill/service/rich-skill.service"
-import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
-import {ApiSkillSummary} from "../richskill/ApiSkillSummary"
-import {SkillsListComponent} from "../richskill/list/skills-list.component"
-import {ApiTaskResult} from "../task/ApiTaskResult"
-import {AuthService} from "../auth/auth-service"
+import {Component, OnInit} from "@angular/core";
+import {Observable} from "rxjs";
+import {ApiSearch, ApiSkillListUpdate, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
+import {FormControl, FormGroup} from "@angular/forms";
+import {ActivatedRoute, Router} from "@angular/router";
+import {Title} from "@angular/platform-browser";
+import {Location} from "@angular/common";
+import {CollectionService} from "./service/collection.service";
+import {ToastService} from "../toast/toast.service";
+import {ApiCollection} from "./ApiCollection";
+import {RichSkillService} from "../richskill/service/rich-skill.service";
+import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
+import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
+import {SkillsListComponent} from "../richskill/list/skills-list.component";
+import {ApiTaskResult} from "../task/ApiTaskResult";
+import {AuthService} from "../auth/auth-service";
 import {PublishStatus} from "../PublishStatus"
 
 @Component({

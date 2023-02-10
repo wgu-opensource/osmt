@@ -1,19 +1,19 @@
 import {ApiSearch, ApiSkillListUpdate, PaginatedSkills} from "../service/rich-skill-search.service"
-import {ApiSkillSummary} from "../ApiSkillSummary"
-import {checkArchived, determineFilters, PublishStatus} from "../../PublishStatus"
-import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions"
-import {Component, ElementRef, ViewChild} from "@angular/core"
-import {Observable} from "rxjs"
-import {ApiBatchResult} from "../ApiBatchResult"
-import {RichSkillService} from "../service/rich-skill.service"
-import {ToastService} from "../../toast/toast.service"
-import {ApiSortOrder} from "../ApiSkill"
-import {Router} from "@angular/router"
-import {QuickLinksHelper} from "../../core/quick-links-helper"
-import {ExtrasSelectedSkillsState} from "../../collection/add-skills-collection.component"
-import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
-import {AuthService} from "../../auth/auth-service"
-import {ButtonAction} from "../../auth/auth-roles"
+import {ApiSkillSummary} from "../ApiSkillSummary";
+import {checkArchived, determineFilters, PublishStatus} from "../../PublishStatus";
+import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
+import {Component, ElementRef, ViewChild} from "@angular/core";
+import {Observable} from "rxjs";
+import {ApiBatchResult} from "../ApiBatchResult";
+import {RichSkillService} from "../service/rich-skill.service";
+import {ToastService} from "../../toast/toast.service";
+import {ApiSortOrder} from "../ApiSkill";
+import {Router} from "@angular/router";
+import {QuickLinksHelper} from "../../core/quick-links-helper";
+import {ExtrasSelectedSkillsState} from "../../collection/add-skills-collection.component";
+import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component";
+import {AuthService} from "../../auth/auth-service";
+import {ButtonAction} from "../../auth/auth-roles";
 import {CollectionService} from "../../collection/service/collection.service"
 import {ApiCollection} from "../../collection/ApiCollection"
 import {CollectionPipe} from "../../pipes"

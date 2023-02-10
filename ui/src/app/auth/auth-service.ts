@@ -9,7 +9,6 @@ import { IAuthService } from "./iauth-service"
 export const STORAGE_KEY_TOKEN = "OSMT.AuthService.accessToken"
 export const STORAGE_KEY_RETURN = "OSMT.AuthService.return"
 export const STORAGE_KEY_ROLE = "OSMT.AuthService.role"
-export const STORAGE_KEY_EMAIL = "OSMT.AuthService.email"
 
 @Injectable()
 export class AuthService extends Whitelabelled implements IAuthService {
@@ -37,7 +36,6 @@ export class AuthService extends Whitelabelled implements IAuthService {
 
   storeToken(accessToken: string): void {
     localStorage.setItem(STORAGE_KEY_TOKEN, accessToken)
-    localStorage.setItem(STORAGE_KEY_EMAIL, JSON.parse(atob(accessToken.split(".")[1]))?.email)
     localStorage.setItem(STORAGE_KEY_ROLE, JSON.parse(atob(accessToken.split(".")[1]))?.roles)
   }
 
@@ -52,10 +50,6 @@ export class AuthService extends Whitelabelled implements IAuthService {
     const ret = localStorage.getItem(STORAGE_KEY_RETURN)
     localStorage.removeItem(STORAGE_KEY_RETURN)
     return ret
-  }
-
-  getEmail(): string | null {
-    return localStorage.getItem(STORAGE_KEY_EMAIL)
   }
 
   logout(): void {

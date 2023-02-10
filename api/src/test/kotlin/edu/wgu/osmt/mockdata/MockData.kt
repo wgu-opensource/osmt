@@ -41,7 +41,7 @@ class MockData {
         appConfig = createAppConfig()
 
         try {
-            val filename = "mock-data-v2.xml"
+            val filename = "mock-data.xml"
             val file = this::class.java.classLoader.getResource(filename)
             if (file == null) {
                 log.error("Unable to open {}", filename)

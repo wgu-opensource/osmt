@@ -102,9 +102,4 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
     this.router.navigate([`/my-workspace/${this.collection?.uuid}/add-skills`])
   }
 
-  addToCollectionVisible(): boolean {
-    return this.addToVisible() && this.authService.isEnabledByRoles(ButtonAction.MyWorkspace)
-  }
-
-
 }

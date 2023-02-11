@@ -356,7 +356,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     this.skillsSaved = this.collectionService.updateSkillsWithResult(this.uuidParam ?? "", update)
     this.skillsSaved.subscribe(result => {
       if (result) {
-        this.toastService.showToast("Success!", `You removed ${result.modifiedCount} RSD${(result.modifiedCount ?? 0) > 1 ? "s" : ""} from this collection.`)
+        this.toastService.showToast("Success!", `You removed ${result.modifiedCount} RSD${(result.modifiedCount ?? 0) > 1 ? "s" : ""} from this ${this.collectionOrWorkspace(false).toLowerCase()}`)
         this.toastService.hideBlockingLoader()
         this.reloadCollection()
         this.loadNextPage()

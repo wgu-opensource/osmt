@@ -155,6 +155,9 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
 
   addToCollectionVisible(skill?: ApiSkillSummary): boolean {
+    if (this.collection?.status === PublishStatus.Workspace) {
+      return this.addToVisible() && this.authService.isEnabledByRoles(ButtonAction.MyWorkspace)
+    }
     return this.addToVisible() && this.authService.isEnabledByRoles(ButtonAction.CollectionSkillsUpdate)
   }
 

@@ -9,13 +9,9 @@ import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-librar
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
 import {AppConfig} from "./app.config"
 import {RichSkillFormComponent} from "./richskill/form/rich-skill-form.component"
-import {ReactiveFormsModule} from "@angular/forms"
-import {FormField} from "./form/form-field.component"
-import {FormFieldText} from "./form/form-field-text.component"
-import {FormFieldTextArea} from "./form/form-field-textarea.component"
+import {FormsModule, ReactiveFormsModule} from "@angular/forms"
 import {LoadingObservablesDirective} from "./loading/loading-observables.directive"
 import {LoadingComponent} from "./loading/loading.component"
-import {FormFieldSubmit} from "./form/form-field-submit.component"
 import {HeaderComponent} from "./navigation/header.component"
 import {FooterComponent} from "./navigation/footer.component"
 import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component"
@@ -86,7 +82,6 @@ import {
   NamedReferenceComponent
 } from "./richskill/import/import-preview-table.component"
 import {FormFieldSearchSelectComponent} from "./form/form-field-search-select/single-select/form-field-search-select.component"
-import {FormFieldSearchMultiSelectComponent} from "./form/form-field-search-select/mulit-select/form-field-search-multi-select.component"
 import {FormFieldSearchSelectJobcodeComponent} from "./form/form-field-search-select/jobcode-select/form-field-search-select-jobcode.component"
 import {AuditLogComponent} from "./richskill/detail/audit-log.component"
 import {OccupationsCardSectionComponent} from "./richskill/detail/occupations-card-section/occupations-card-section.component"
@@ -100,6 +95,8 @@ import {LibraryExportComponent} from "./navigation/libraryexport.component"
 import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
 import {CollectionPipe} from "./pipes"
 import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collection/convert-to-collection.component"
+import {SharedModule} from "./shared/shared.module"
+import {FormModule} from "./form/form.module"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -129,10 +126,6 @@ export function initializeApp(
 
     // Rich skill form
     RichSkillFormComponent,
-    FormField,
-    FormFieldSubmit,
-    FormFieldText,
-    FormFieldTextArea,
 
     // Rich skills
     RichSkillsLibraryComponent,
@@ -204,7 +197,6 @@ export function initializeApp(
     NamedReferenceComponent,
     InlineErrorComponent,
     FormFieldSearchSelectComponent,
-    FormFieldSearchMultiSelectComponent,
     FormFieldSearchSelectJobcodeComponent,
     AuditLogComponent,
     OccupationsCardSectionComponent,
@@ -220,7 +212,10 @@ export function initializeApp(
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    CommonModule
+    FormsModule,
+    CommonModule,
+    SharedModule,
+    FormModule
   ],
   providers: [
     EnvironmentService,

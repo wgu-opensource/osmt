@@ -3,9 +3,10 @@
 ##################################################################################
 
 provider "aws" {
-  access_key = var.aws_access_key
-  secret_key = var.aws_secret_key
-  region     = var.aws_region
+  access_key = var.AWS_ACCESS_KEY
+  secret_key = var.AWS_SECRET_KEY
+  token = var.AWS_SESSION_TOKEN
+  region = var.AWS_REGION
 }
 
 ##################################################################################
@@ -21,58 +22,60 @@ data "aws_ssm_parameter" "ami" {
 ##################################################################################
 
 # NETWORKING #
-resource "aws_vpc" "vpc" {
-  cidr_block           = "10.0.0.0/16"
+resource "aws_vpc" "opensource-vpc" {
+  cidr_block           = "172.31.0.0/16"
   enable_dns_hostnames = true
-
 }
 
 resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.vpc.id
-
+  vpc_id = aws_vpc.opensource-vpc.id
 }
 
-resource "aws_subnet" "subnet1" {
-  cidr_block              = "10.0.0.0/24"
-  vpc_id                  = aws_vpc.vpc.id
+resource "aws_subnet" "us-east-1b" {
+  cidr_block              = "172.31.80.0/20"
+  vpc_id                  = aws_vpc.opensource-vpc.id
   map_public_ip_on_launch = true
 }
 
 # ROUTING #
 resource "aws_route_table" "rtb" {
-  vpc_id = aws_vpc.vpc.id
+  vpc_id = aws_vpc.opensource-vpc.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = "172.31.0.0/16"
     gateway_id = aws_internet_gateway.igw.id
   }
 }
 
 resource "aws_route_table_association" "rta-subnet1" {
-  subnet_id      = aws_subnet.subnet1.id
+  subnet_id      = aws_subnet.us-east-1b.id
   route_table_id = aws_route_table.rtb.id
 }
 
+resource "aws_db_instance" "osmt_db" {
+  allocated_storage    = 10
+  db_name              = "osmt_db"
+  engine               = "mysql"
+  engine_version       = "5.7"
+  instance_class       = "db.t3.micro"
+  username             = "osmt_user"
+  password             = "password"
+  parameter_group_name = "default.mysql5.7"
+  skip_final_snapshot  = true
+}
+
 # SECURITY GROUPS #
-# Nginx security group 
+# Nginx security group
 resource "aws_security_group" "nginx-sg" {
   name   = "nginx_sg"
-  vpc_id = aws_vpc.vpc.id
+  vpc_id = aws_vpc.opensource-vpc.id
 
   # HTTP access from anywhere
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # outbound internet access
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [aws_vpc.opensource-vpc.cidr_block]
   }
 }
 
@@ -80,16 +83,7 @@ resource "aws_security_group" "nginx-sg" {
 resource "aws_instance" "nginx1" {
   ami                    = nonsensitive(data.aws_ssm_parameter.ami.value)
   instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.subnet1.id
+  subnet_id              = aws_subnet.us-east-1b.id
   vpc_security_group_ids = [aws_security_group.nginx-sg.id]
-
-  user_data = <<EOF
-#! /bin/bash
-sudo amazon-linux-extras install -y nginx1
-sudo service nginx start
-sudo rm /usr/share/nginx/html/index.html
-echo '<html><head><title>Taco Team Server</title></head><body style=\"background-color:#1F778D\"><p style=\"text-align: center;\"><span style=\"color:#FFFFFF;\"><span style=\"font-size:28px;\">You did it! Have a &#127790;</span></span></p></body></html>' | sudo tee /usr/share/nginx/html/index.html
-EOF
-
 }
 

@@ -30,7 +30,7 @@ data class Collection(
     fun canonicalUrl(baseUrl: String): String = "$baseUrl/api/collections/${uuid}"
 
     fun isWorkspace() : Boolean {
-        return  (this.status == PublishStatus.Workspace && StringUtils.isNoneEmpty(this.workspaceOwner))
+        return  (this.status == PublishStatus.Workspace && StringUtils.isNotEmpty(this.workspaceOwner))
     }
 }
 

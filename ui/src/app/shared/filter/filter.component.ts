@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core"
 import { KeywordType } from "../../richskill/ApiSkill"
+import { FormBuilder, FormGroup } from "@angular/forms"
 
 @Component({
   selector: "app-filter",
@@ -8,12 +9,31 @@ import { KeywordType } from "../../richskill/ApiSkill"
 })
 export class FilterComponent implements OnInit {
 
+  showInputs = false
+  filterFg: FormGroup
+
   keywordType = KeywordType
 
-  constructor() {
+  constructor(private formBuilder: FormBuilder) {
+    this.filterFg = this.configureFilterFg()
   }
 
   ngOnInit(): void {
+  }
+
+  private configureFilterFg(): FormGroup {
+    return this.formBuilder.group({
+      categories: "",
+      keywords: "",
+      standards: "",
+      certifications: "",
+      occupations: "",
+      employers: ""
+    })
+  }
+
+  onApplyFilter(): void {
+    this.showInputs = !this.showInputs
   }
 
 }

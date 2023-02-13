@@ -22,7 +22,7 @@
           [required]="required"
           class="m-search-x-input"
           type="text"
-          placeholder="Search"
+          placeholder="Type {{name}} to filter"
           [attr.aria-label]="name"
           role="search"
           [attr.aria-describedby]="name + '-results'"
@@ -66,11 +66,12 @@
           <!-- Results -->
           <div class="m-selectMenu-x-content" *ngIf="results && results.length > 0; else emptyResults">
             <div class="t-visuallyHidden">Showing search results: </div>
-            <button class="m-buttonText" *ngFor="let result of results" type="button" (click)="selectResult(result)" [disabled]="isResultSelected(result)">
-              <span class="m-buttonText-x-icon" *ngIf="isResultSelected(result)">
+            <div class="result-container" *ngFor="let result of results;">
+              <span class="m-buttonText-x-text">
+                {{result}}
               </span>
-              <span class="m-buttonText-x-text">{{result}}<span *ngIf="isResultSelected(result)" class="t-visuallyHidden">, selected</span></span>
-            </button>
+              <input type="checkbox" [checked]="isResultSelected(result)" (click)="selectResult(result)">
+            </div>
           </div>
 
           <!-- Empty results -->
@@ -82,21 +83,6 @@
             </div>
           </ng-template>
         </div>
-      </div>
-      <div class="l-searchSelect-x-items">
-
-        <!-- Currently selected results -->
-        <div class="m-inputItem" *ngFor="let r of internalSelectedResults" (click)="unselectResult(r)">
-          <!-- Note: the ID should be unique between the span and button -->
-          <span class="m-inputItem-x-text" id="input-item-{{makeHtmlId(r)}}">{{r}}</span>
-          <button class="m-inputItem-x-icon" type="button" aria-labelledby="input-item-{{makeHtmlId(r)}}">
-            <span class="t-visuallyHidden">Remove</span>
-            <svg aria-hidden="true">
-              <use [attr.xlink:href]="iconDismiss"></use>
-            </svg>
-          </button>
-        </div>
-
       </div>
     </ng-template>
   </div>

@@ -28,3 +28,7 @@ build/
 ui/node
 
 osmt*.env
+
+# Terraform local files
+/deploy/terraform/.terraform/
+/deploy/terraform/.terraform.lock.hcl

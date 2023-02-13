@@ -52,6 +52,10 @@ resource "aws_route_table_association" "rta-subnet1" {
   route_table_id = aws_route_table.rtb.id
 }
 
+resource "aws_ecs_service" "osmt_container" {
+  name = "osmt_app"
+}
+
 resource "aws_db_instance" "osmt_db" {
   allocated_storage    = 10
   db_name              = "osmt_db"

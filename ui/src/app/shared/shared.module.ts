@@ -10,6 +10,9 @@ import {FormModule} from "../form/form.module"
   declarations: [
     FilterComponent
   ],
+  exports: [
+    FilterComponent
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,

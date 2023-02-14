@@ -3,7 +3,8 @@ import {PublishStatus} from "../../PublishStatus";
 
 @Component({
   selector: "app-filter-controls",
-  templateUrl: "./filter-controls.component.html"
+  templateUrl: "./filter-controls.component.html",
+  styleUrls: ["./filter-controls.component.scss"]
 })
 export class FilterControlsComponent implements OnInit {
   @Input() selectedFilters: Set<PublishStatus> = new Set()

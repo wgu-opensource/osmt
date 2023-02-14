@@ -23,7 +23,6 @@ import {BatchImportComponent} from "./richskill/import/batch-import.component"
 import { ActionByRoles, ButtonAction } from "./auth/auth-roles"
 import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
 import {ConvertToCollectionComponent} from "./my-workspace/convert-to-collection/convert-to-collection.component"
-import {FilterComponent} from "./shared/filter/filter.component"
 
 
 const routes: Routes = [
@@ -167,10 +166,6 @@ const routes: Routes = [
     data: {
       roles: ActionByRoles.get(ButtonAction.MyWorkspace)
     }
-  },
-  {
-    path: "test",
-    component: FilterComponent
   },
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},

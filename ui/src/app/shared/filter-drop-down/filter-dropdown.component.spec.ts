@@ -1,15 +1,15 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 
-import { FilterComponent } from "./filter.component"
+import { FilterDropdownComponent } from "./filter-dropdown.component"
 import {FormsModule, ReactiveFormsModule} from "@angular/forms"
 
 describe("FilterComponent", () => {
-  let component: FilterComponent
-  let fixture: ComponentFixture<FilterComponent>
+  let component: FilterDropdownComponent
+  let fixture: ComponentFixture<FilterDropdownComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FilterComponent ],
+      declarations: [ FilterDropdownComponent ],
       imports: [
         FormsModule,
         ReactiveFormsModule
@@ -19,7 +19,7 @@ describe("FilterComponent", () => {
   })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FilterComponent)
+    fixture = TestBed.createComponent(FilterDropdownComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })

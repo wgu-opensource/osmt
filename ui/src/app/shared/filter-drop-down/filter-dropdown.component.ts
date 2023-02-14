@@ -3,11 +3,11 @@ import { KeywordType } from "../../richskill/ApiSkill"
 import { FormBuilder, FormGroup } from "@angular/forms"
 
 @Component({
-  selector: "app-filter",
-  templateUrl: "./filter.component.html",
-  styleUrls: ["./filter.component.scss"]
+  selector: "app-filter-dropdown",
+  templateUrl: "./filter-dropdown.component.html",
+  styleUrls: ["./filter-dropdown.component.scss"]
 })
-export class FilterComponent implements OnInit {
+export class FilterDropdownComponent implements OnInit {
 
   showInputs = false
   filterFg: FormGroup

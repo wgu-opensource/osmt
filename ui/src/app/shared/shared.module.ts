@@ -1,17 +1,20 @@
 import { NgModule } from "@angular/core"
 import { CommonModule } from "@angular/common"
-import { FilterComponent } from "./filter/filter.component"
 import { FormsModule, ReactiveFormsModule } from "@angular/forms"
-import {FormModule} from "../form/form.module"
+import { FormModule } from "../form/form.module"
+import { FilterChipsComponent } from "./filter-chips/filter-chips.component"
+import { FilterDropdownComponent } from "./filter-drop-down/filter-dropdown.component"
 
 
 
 @NgModule({
   declarations: [
-    FilterComponent
+    FilterDropdownComponent,
+    FilterChipsComponent
   ],
   exports: [
-    FilterComponent
+    FilterDropdownComponent,
+    FilterChipsComponent
   ],
   imports: [
     CommonModule,

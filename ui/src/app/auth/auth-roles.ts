@@ -24,7 +24,7 @@ export const ActionByRoles = new Map<number, string[]>([
   [ButtonAction.CollectionUpdate,       [OSMT_ADMIN, OSMT_CURATOR]],
   [ButtonAction.CollectionCreate,       [OSMT_ADMIN, OSMT_CURATOR]],
   [ButtonAction.CollectionPublish,      [OSMT_ADMIN]],
-  [ButtonAction.CollectionSkillsUpdate, [OSMT_ADMIN]],
+  [ButtonAction.CollectionSkillsUpdate, [OSMT_ADMIN, OSMT_CURATOR]],
   [ButtonAction.LibraryExport,          [OSMT_ADMIN]],
   [ButtonAction.ExportDraftCollection,  [OSMT_ADMIN]],
   [ButtonAction.DeleteCollection,       [OSMT_ADMIN]],

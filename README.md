@@ -194,12 +194,12 @@ osmt_cli.sh -m
 * Keep in mind that removing Docker volumes will also remove this metadata. For more information, see the section for [Importing Data](api/README.md#importing-data) in the API README file.
 
 ### Role-based Access in OSMT
+* Role-based access is **enabled** by default for the Angular UI and Spring REST API.
+
 OSMT optionally supports role-based access, with these roles:
 - **Admin**: an OSMT user with an admin role can change RSDs and Collections in any way.
 - **Curator**: an OSMT user with a curator role can update but not create RSDs and collections. This role is for someone who would publish and unpublish RSDs and Collections
 - **Viewer**: an OSMT user with a viewer role is a logged-in user who can not make modifications to RSDs or Collections.
-
-Role-based access is disabled by default for the Angular UI and Spring REST API. Use these steps to enable roles.
 
 #### Configuration in OSMT Code
 By default, OSMT is configured with roles enabled. If you want to disable roles in OSMT, apply these changes:

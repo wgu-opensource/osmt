@@ -1,3 +1,8 @@
+.apply-filter-container {
+  display: flex;
+  justify-content: center;
+}
+
 .apply-filter-button {
   background: white;
   color: #002F50;
@@ -34,7 +39,7 @@
   display: none;
   position: absolute;
   // background-color: #f1f1f1;
-  min-width: 460px;
+  min-width: 400px;
   z-index: 1;
 }
 
@@ -53,4 +58,14 @@
 .dropdown:hover .dropdown-content.dropdown-content-visible {
   display: block;
   margin-bottom: 30px;
+}
+
+hr {
+  height: 1px;
+  background: black;
+  margin-bottom: 20px;
+}
+
+h3 {
+  text-align: center;
 }

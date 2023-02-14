@@ -1,3 +1,7 @@
+<div class="expand-panel" (click)="showInput = !showInput">
+  <strong><b>{{name | titlecase}}</b></strong>
+  <img [src]="'assets/images/' + (showInput ? 'up' : 'down') + '-arrow.svg'" width="15px" height="15px" style="color: white"/>
+</div>
 <app-formfield
   [control]="control"
   [label]="label"
@@ -6,6 +10,7 @@
   [helpMessage]="helpMessage"
   [required]="required"
   [name]="name"
+  [ngClass]="{'visible': showInput}"
   aria-live="assertive"
 >
   <div class="l-searchSelect">

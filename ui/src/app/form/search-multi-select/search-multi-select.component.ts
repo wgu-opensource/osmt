@@ -11,6 +11,8 @@ import {
 })
 export class SearchMultiSelectComponent extends FormFieldSearchMultiSelectComponent implements OnInit {
 
+  showInput = false
+
   constructor(protected searchService: KeywordSearchService) {
     super(searchService)
   }

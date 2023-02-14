@@ -10,9 +10,11 @@
       Filter Library
     </h3>
     <hr>
-    <button class="m-button m-button-x-text apply-filter-button" type="button" (click)="onApplyFilter()">
-      Apply filter
-    </button>
+    <div class="apply-filter-container">
+      <button class="m-button m-button-x-text apply-filter-button" type="button" (click)="onApplyFilter()">
+        Apply filter
+      </button>
+    </div>
     <app-search-multi-select
       name="category"
       [control]="filterFg.get('categories')"

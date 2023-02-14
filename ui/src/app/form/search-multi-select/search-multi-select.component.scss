@@ -1,3 +1,10 @@
+.expand-panel {
+  margin-top: 40px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
 input[type=checkbox] {
   margin-right: 20px;
   position: relative;
@@ -48,4 +55,12 @@ input[type=checkbox]:checked:after {
 
 .result-container:nth-child(odd) {
   background: #434647;
+}
+
+app-formfield {
+  display: none;
+}
+
+.visible {
+  display: block;
 }

@@ -151,14 +151,25 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
     }
 
     @Test
-    fun `findByOwner() should find an existing collection`() {
+    fun `findByOwner() should find an existing workspace`() {
+        // Arrange
+        collectionRepository.create(CollectionUpdateObject(12345,"My Workspace",null,null,PublishStatus.Workspace), userString, userEmail)
+
         // Act
-        collectionRepository.create(CollectionUpdateObject(12345,"testCollection",null,null,PublishStatus.Workspace), userString, userEmail)
         val collectionDao = collectionRepository.findByOwner("unit@test.user")
 
         // Assert
         assertThat(collectionDao).isNotNull
         assertThat(collectionDao!!.workspaceOwner).isEqualTo(userEmail)
+    }
+
+    @Test
+    fun `findByOwner() should return null if there is no Workspace for an owner`() {
+        // Act
+        val collectionDao = collectionRepository.findByOwner("unit@test.user")
+
+        // Assert
+        assertThat(collectionDao).isNull()
     }
 
     @Test

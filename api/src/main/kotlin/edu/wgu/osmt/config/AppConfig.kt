@@ -31,6 +31,12 @@ class AppConfig(
     @Value("\${app.loginSuccessRedirectUrl}")
     val loginSuccessRedirectUrl: String,
 
+    @Value("\${app.userName}")
+    val userName: String,
+
+    @Value("\${app.userIdentifier}")
+    val userIdentifier: String,
+
     @Value("\${app.allowPublicSearching}")
     val allowPublicSearching: Boolean = true,
 

@@ -243,6 +243,8 @@ class MockData {
             "https://osmt.wgu.edu/credentialengineerregistry",
             "http://localhost:4200",
             "http://localhost:4200/login/success",
+            "user",
+            "user@email.com",
             true,
             true,
             false,

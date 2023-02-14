@@ -1,1 +1,7 @@
-<p>filter-chips works!</p>
+<div class='chip-wrapper' *ngIf="chips?.length > 0">
+  <div class="header">{{name}}</div>
+  <div class="chip" *ngFor="let chip of chips" (click)="onRemoveChip(chip)">
+    {{chip}}
+    <span class="close-button">&times;</span>
+  </div>
+</div>

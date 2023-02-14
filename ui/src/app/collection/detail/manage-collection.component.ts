@@ -344,7 +344,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     if (count > 1 || this.selectAllChecked) {
       this.template = "confirm-multiple"
     } else {
-      if (confirm(`Confirm that you want to remove the following RSD from this collection.\n${first?.skillName}`)) {
+      if (confirm(`Confirm that you want to remove the following RSD from this ${this.collectionOrWorkspace(false)}.\n${first?.skillName}`)) {
         this.submitSkillRemoval(this.apiSearch)
       }
     }

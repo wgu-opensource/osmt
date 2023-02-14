@@ -106,7 +106,7 @@
       <div class="t-margin-medium t-margin-bottom">
         <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
 
-          <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Confirm that you want to remove {{selectedCount}} RSDs from this collection.</h2>
+          <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Confirm that you want to remove {{selectedCount}} RSDs from this {{this.collection.status | collection}}.</h2>
 
           <app-accordian closedLabel="View RSDs" openLabel="Hide RSDs">
             <div class="m-skillBackground l-inset t-margin-small t-margin-top">
@@ -128,7 +128,7 @@
           <span class="m-button-x-text">Cancel</span>
         </button>
         <button class="m-button" (click)="handleClickConfirmMulti()">
-          <span class="m-button-x-text">Yes, Remove RSD<span class="t-type-lowercase">s</span> from Collection</span>
+          <span class="m-button-x-text">Yes, Remove RSD<span class="t-type-lowercase">s</span> from {{this.collection.status | collection}}</span>
         </button>
       </div>
     </div>

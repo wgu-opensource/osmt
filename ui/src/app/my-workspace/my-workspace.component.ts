@@ -8,7 +8,6 @@ import {Title} from "@angular/platform-browser"
 import {AuthService} from "../auth/auth-service"
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
 import {ApiSearch} from "../richskill/service/rich-skill-search.service"
-import {ButtonAction} from "../auth/auth-roles"
 
 export const WORKSPACE_COLLECTIONS_UUIDS = "workspace-collections-uuids"
 

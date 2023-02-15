@@ -1,25 +1,38 @@
-import {Component, OnInit} from "@angular/core"
+import {Component, Input, OnInit} from "@angular/core"
 import {KeywordSearchService} from "../../richskill/service/keyword-search.service"
-import {
-  FormFieldSearchMultiSelectComponent
-} from "../form-field-search-select/mulit-select/form-field-search-multi-select.component"
+import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
+import {FormControl} from "@angular/forms"
+import {KeywordType} from "../../richskill/ApiSkill"
 
 @Component({
   selector: "app-search-multi-select",
   templateUrl: "./search-multi-select.component.html",
   styleUrls: ["./search-multi-select.component.scss"]
 })
-export class SearchMultiSelectComponent extends FormFieldSearchMultiSelectComponent implements OnInit {
+export class SearchMultiSelectComponent implements OnInit {
 
+  @Input()
+  name?: string
   showInput = false
+  iconSearch = SvgHelper.path(SvgIcon.SEARCH)
+  inputFc = new FormControl("")
+  results!: string[] | undefined
+  @Input()
+  keywordType?: KeywordType
+  @Input()
+  control?: FormControl
+  internalSelectedResults: string[] = []
+  currentlyLoading = false
+  iconDismiss = SvgHelper.path(SvgIcon.DISMISS)
 
   constructor(protected searchService: KeywordSearchService) {
-    super(searchService)
   }
 
   ngOnInit(): void {
-    super.ngOnInit()
-    this.performInitialSearchAndPopulation()
+    this.inputFc.valueChanges.subscribe(value => this.getKeywords(value))
+  }
+
+  handleKeyDownEnter(): void {
   }
 
   selectResult(result: string): void {
@@ -29,20 +42,11 @@ export class SearchMultiSelectComponent extends FormFieldSearchMultiSelectCompon
     } else {
       this.internalSelectedResults = this.internalSelectedResults.filter(r => r !== result)
     }
-    super.emitCurrentSelection()
+    this.control?.patchValue(this.internalSelectedResults)
   }
 
-  performSearch(text: string): void {
-    if (!text) {
-      return // no search to perform
-    }
-    this.currentlyLoading = true
-
-    if (this.queryInProgress) {
-      this.queryInProgress.unsubscribe() // unsub to existing query first
-    }
-
-    this.queryInProgress = this.keywordType ?  this.searchService.searchKeywords(this.keywordType, text)
+  private getKeywords(text: string): void {
+    this.keywordType ? this.searchService.searchKeywords(this.keywordType, text)
       .subscribe(searchResults => {
         this.results = searchResults.filter(r => !!r && !!r.name).map(r => r.name as string)
         this.currentlyLoading = false
@@ -51,6 +55,18 @@ export class SearchMultiSelectComponent extends FormFieldSearchMultiSelectCompon
         this.results = searchResults.filter(r => !!r && !!r.code && !!r.targetNodeName).map(i => i.targetNodeName ?? "")
         this.currentlyLoading = false
       })
+  }
+
+  isResultSelected(result: string): boolean {
+    return this.internalSelectedResults.some(i => i === result)
+  }
+
+  clearField(): void {
+    this.inputFc.patchValue("")
+  }
+
+  get showResults(): boolean {
+    return this.inputFc.value.length > 0
   }
 
 }

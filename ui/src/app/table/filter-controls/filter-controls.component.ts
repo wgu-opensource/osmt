@@ -9,6 +9,9 @@ import {PublishStatus} from "../../PublishStatus";
 export class FilterControlsComponent implements OnInit {
   @Input() selectedFilters: Set<PublishStatus> = new Set()
   @Output() filtersChanged: EventEmitter<Set<PublishStatus>> = new EventEmitter<Set<PublishStatus>>()
+  chipsValues = {
+   categories: []
+  }
 
   constructor() {
   }

@@ -18,15 +18,15 @@ class OAuthHelper {
     @Autowired
     lateinit var appConfig: AppConfig
 
-    fun readableUsername(user: OAuth2User?, default: String = UNAUTHENTICATED_USERNAME): String {
+    fun readableUserName(user: OAuth2User?, default: String = UNAUTHENTICATED_USERNAME): String {
         return user?.name ?: default
     }
 
-    fun readableUsername(jwt: Jwt?, default: String = UNAUTHENTICATED_USERNAME): String {
+    fun readableUserName(jwt: Jwt?, default: String = UNAUTHENTICATED_USERNAME): String {
         return jwt?.claims?.get(appConfig.userName) as String? ?: default
     }
 
-    fun readableEmail(jwt: Jwt?, default: String = UNAUTHENTICATED_USERNAME): String {
+    fun readableUserIdentifier(jwt: Jwt?, default: String = UNAUTHENTICATED_USERNAME): String {
         return jwt?.claims?.get(appConfig.userIdentifier) as String? ?: default
     }
 

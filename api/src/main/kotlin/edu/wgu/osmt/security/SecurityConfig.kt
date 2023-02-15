@@ -24,9 +24,9 @@ import edu.wgu.osmt.RoutePaths.SKILL_UPDATE
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_BATCH
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_SKILLS
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_TEXT
+import edu.wgu.osmt.RoutePaths.WORKSPACE_PATH
 import edu.wgu.osmt.api.model.ApiError
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.db.WORKSPACE
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -131,7 +131,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(POST, COLLECTION_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
             .mvcMatchers(POST, COLLECTION_SKILLS_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
             .mvcMatchers(DELETE, COLLECTION_REMOVE).hasAnyAuthority(ADMIN)
-            .mvcMatchers(GET, WORKSPACE).hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(GET, WORKSPACE_PATH).hasAnyAuthority(ADMIN, CURATOR)
 
             .mvcMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
     }

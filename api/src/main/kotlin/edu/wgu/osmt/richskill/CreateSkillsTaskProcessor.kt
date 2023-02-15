@@ -37,7 +37,7 @@ class CreateSkillsTaskProcessor {
     fun process(task: CreateSkillsTask) {
         logger.info("Started processing createSkillsTask uuid: ${task.uuid}")
 
-        val results = richSkillRepository.createFromApi(task.apiSkillUpdates, task.userString, task.userEmail).map {
+        val results = richSkillRepository.createFromApi(task.apiSkillUpdates, task.userString, task.userIdentifier).map {
             it.uuid
         }
 

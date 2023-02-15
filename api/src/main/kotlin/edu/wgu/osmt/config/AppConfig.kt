@@ -31,10 +31,10 @@ class AppConfig(
     @Value("\${app.loginSuccessRedirectUrl}")
     val loginSuccessRedirectUrl: String,
 
-    @Value("\${app.userName}")
+    @Value("\${app.userName:name}")
     val userName: String,
 
-    @Value("\${app.userIdentifier}")
+    @Value("\${app.userIdentifier:email}")
     val userIdentifier: String,
 
     @Value("\${app.allowPublicSearching}")

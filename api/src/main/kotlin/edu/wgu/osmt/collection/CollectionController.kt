@@ -100,8 +100,8 @@ class CollectionController @Autowired constructor(
         return collectionRepository.createFromApi(
             apiCollectionUpdates,
             richSkillRepository,
-            oAuthHelper.readableUsername(user),
-            oAuthHelper.readableEmail(user)
+            oAuthHelper.readableUserName(user),
+            oAuthHelper.readableUserIdentifier(user)
         ).map {
             ApiCollection.fromDao(it, appConfig)
         }
@@ -126,7 +126,7 @@ class CollectionController @Autowired constructor(
         val updated = collectionRepository.updateFromApi(
             existing.id.value,
             apiUpdate,
-            richSkillRepository, oAuthHelper.readableUsername(user)
+            richSkillRepository, oAuthHelper.readableUserName(user)
         )
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
@@ -145,7 +145,7 @@ class CollectionController @Autowired constructor(
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = oAuthHelper.readableUsername(user))
+        val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = oAuthHelper.readableUserName(user))
 
         taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
         return Task.processingResponse(task)
@@ -167,7 +167,7 @@ class CollectionController @Autowired constructor(
     ): HttpEntity<TaskResult> {
         val filterStatuses = filterByStatus.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val publishStatus = PublishStatus.forApiValue(newStatus) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
-        val task = PublishTask(AppliesToType.Collection, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = oAuthHelper.readableUsername(user))
+        val task = PublishTask(AppliesToType.Collection, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = oAuthHelper.readableUserName(user))
 
         taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
         return Task.processingResponse(task)
@@ -208,11 +208,11 @@ class CollectionController @Autowired constructor(
 
     @GetMapping(RoutePaths.WORKSPACE_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun workspaceByOwner(
+    fun getOrCreateWorkspace(
         @AuthenticationPrincipal user: Jwt?
     ): ApiCollection? {
         return collectionRepository.findByOwner(
-            oAuthHelper.readableEmail(user))?.let {
+            oAuthHelper.readableUserIdentifier(user))?.let {
             ApiCollection.fromDao(it, appConfig
             )
         } ?: collectionRepository.createFromApi(
@@ -220,13 +220,13 @@ class CollectionController @Autowired constructor(
                 ApiCollectionUpdate(
                     DEFAULT_WORKSPACE_NAME,
                     PublishStatus.Workspace,
-                    oAuthHelper.readableUsername(user),
+                    oAuthHelper.readableUserName(user),
                     ApiStringListUpdate()
                 )
             ),
             richSkillRepository,
-            oAuthHelper.readableUsername(user),
-            oAuthHelper.readableEmail(user)
+            oAuthHelper.readableUserName(user),
+            oAuthHelper.readableUserIdentifier(user)
         ).firstOrNull()?.let { ApiCollection.fromDao(it, appConfig) }
     }
 }

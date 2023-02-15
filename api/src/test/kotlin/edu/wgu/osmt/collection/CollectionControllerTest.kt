@@ -51,7 +51,7 @@ internal class CollectionControllerTest @Autowired constructor(
         val jwt = Jwt.withTokenValue("foo").header("foo", "foo").claim("email", userEmail).build()
 
         // act
-        val result = collectionController.workspaceByOwner(jwt)
+        val result = collectionController.getOrCreateWorkspace(jwt)
 
         // assert
         Assertions.assertThat(result).isNotNull
@@ -64,7 +64,7 @@ internal class CollectionControllerTest @Autowired constructor(
 
         // act
         Assertions.assertThat(collectionRepository.findAll().toList()).hasSize(0)
-        val result = collectionController.workspaceByOwner(jwt)
+        val result = collectionController.getOrCreateWorkspace(jwt)
 
         // assert
         Assertions.assertThat(collectionRepository.findAll().toList()).hasSize(1)

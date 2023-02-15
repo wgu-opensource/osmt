@@ -29,10 +29,7 @@ export class SearchMultiSelectComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.inputFc.valueChanges.subscribe(value => this.getKeywords(value))
-  }
-
-  handleKeyDownEnter(): void {
+    this.inputFc.valueChanges.subscribe(value => this.getKeywords(value ?? ""))
   }
 
   selectResult(result: string): void {

@@ -1,4 +1,4 @@
-<div class="chip-wrapper" *ngIf="chips?.length > 0">
+<div class="chip-wrapper">
   <div class="header">{{name | titlecase}}</div>
   <div class="chip" *ngFor="let chip of chips" (click)="onRemoveChip(chip)">
     {{chip}}

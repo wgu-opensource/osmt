@@ -46,6 +46,7 @@ export class SearchMultiSelectComponent implements OnInit {
   }
 
   private getKeywords(text: string): void {
+    this.currentlyLoading = true
     this.keywordType ? this.searchService.searchKeywords(this.keywordType, text)
       .subscribe(searchResults => {
         this.results = searchResults.filter(r => !!r && !!r.name).map(r => r.name as string)

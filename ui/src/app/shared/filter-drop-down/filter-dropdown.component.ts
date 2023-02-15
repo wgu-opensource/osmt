@@ -1,6 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core"
 import { KeywordType } from "../../richskill/ApiSkill"
 import { FormBuilder, FormGroup } from "@angular/forms"
+import {FilterDropdown} from "../../models/filter-dropdown.model"
 
 @Component({
   selector: "app-filter-dropdown",
@@ -10,17 +11,11 @@ import { FormBuilder, FormGroup } from "@angular/forms"
 export class FilterDropdownComponent implements OnInit {
 
   @Output()
-  applyFilter = new EventEmitter<any>()
+  applyFilter = new EventEmitter<FilterDropdown>()
   showInputs = false
   filterFg: FormGroup
 
   keywordType = KeywordType
-  categories: string[] = []
-  keywords: string[] = []
-  standards: string[] = []
-  certifications: string[] = []
-  occupations: string[] = []
-  employers: string[] = []
 
   constructor(private formBuilder: FormBuilder) {
     this.filterFg = this.configureFilterFg()
@@ -42,14 +37,7 @@ export class FilterDropdownComponent implements OnInit {
 
   onApplyFilter(): void {
     this.showInputs = !this.showInputs
-    this.applyFilter.emit({
-      categories: this.categories,
-      keywords: this.keywords,
-      standards: this.standards,
-      certifications: this.certifications,
-      occupations: this.occupations,
-      employers: this.employers
-    })
+    this.applyFilter.emit(this.filterFg.value)
   }
 
 }

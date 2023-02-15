@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {PublishStatus} from "../../PublishStatus";
+import {FilterDropdown} from "../../models/filter-dropdown.model"
 
 @Component({
   selector: "app-filter-controls",
@@ -9,8 +10,13 @@ import {PublishStatus} from "../../PublishStatus";
 export class FilterControlsComponent implements OnInit {
   @Input() selectedFilters: Set<PublishStatus> = new Set()
   @Output() filtersChanged: EventEmitter<Set<PublishStatus>> = new EventEmitter<Set<PublishStatus>>()
-  chipsValues = {
-   categories: []
+  chipsValues: FilterDropdown = {
+    categories: [],
+    certifications: [],
+    employers: [],
+    keywords: [],
+    occupations: [],
+    standards: []
   }
 
   constructor() {

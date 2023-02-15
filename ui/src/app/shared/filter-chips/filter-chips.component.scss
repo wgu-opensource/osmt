@@ -1,4 +1,6 @@
 .chip-wrapper {
+  display: flex;
+  flex-wrap: wrap;
   border: solid gray;
   border-radius: 40px;
   padding: 15px 10px 10px;
@@ -17,10 +19,11 @@
 
 //
 .chip {
-  display: inline-block;
+  width: fit-content;
   padding: 0 25px;
+  margin: 5px 1px;
   height: 50px;
-  font-size: 18px;
+  font-size: 12px;
   line-height: 50px;
   border-radius: 25px;
   background-color: #333333;

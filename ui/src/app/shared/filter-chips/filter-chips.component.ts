@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core"
+import {Component, Input, OnInit, Output} from "@angular/core"
 
 @Component({
   selector: "app-filter-chips",
@@ -19,7 +19,10 @@ export class FilterChipsComponent implements OnInit {
   }
 
   onRemoveChip(chipText: string): void {
-    this.chips = this.chips?.filter(i => i !== chipText)
+    const index = this.chips?.findIndex(i => i === chipText)
+    if (index) {
+      this.chips?.splice(index, 1)
+    }
   }
 
 }

@@ -3,15 +3,21 @@
 ##################################################################################
 
 provider "aws" {
-  access_key = var.AWS_ACCESS_KEY
-  secret_key = var.AWS_SECRET_KEY
-  token = var.AWS_SESSION_TOKEN
   region = var.AWS_REGION
+  profile = "opensource"
 }
 
 ##################################################################################
 # DATA
 ##################################################################################
+
+data "aws_vpc" "opensource_vpc" {
+  id = var.vpc_id
+}
+
+data "aws_subnet" "subnet_1" {
+  id = var.subnet_id
+}
 
 data "aws_ssm_parameter" "ami" {
   name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
@@ -21,41 +27,12 @@ data "aws_ssm_parameter" "ami" {
 # RESOURCES
 ##################################################################################
 
-# NETWORKING #
-resource "aws_vpc" "opensource-vpc" {
-  cidr_block           = "172.31.0.0/16"
-  enable_dns_hostnames = true
-}
+# Container service #
+#resource "aws_ecs_service" "osmt_container" {
+#  name = "osmt_app"
+#}
 
-resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.opensource-vpc.id
-}
-
-resource "aws_subnet" "us-east-1b" {
-  cidr_block              = "172.31.80.0/20"
-  vpc_id                  = aws_vpc.opensource-vpc.id
-  map_public_ip_on_launch = true
-}
-
-# ROUTING #
-resource "aws_route_table" "rtb" {
-  vpc_id = aws_vpc.opensource-vpc.id
-
-  route {
-    cidr_block = "172.31.0.0/16"
-    gateway_id = aws_internet_gateway.igw.id
-  }
-}
-
-resource "aws_route_table_association" "rta-subnet1" {
-  subnet_id      = aws_subnet.us-east-1b.id
-  route_table_id = aws_route_table.rtb.id
-}
-
-resource "aws_ecs_service" "osmt_container" {
-  name = "osmt_app"
-}
-
+# DATABASE RDS #
 resource "aws_db_instance" "osmt_db" {
   allocated_storage    = 10
   db_name              = "osmt_db"
@@ -63,23 +40,33 @@ resource "aws_db_instance" "osmt_db" {
   engine_version       = "5.7"
   instance_class       = "db.t3.micro"
   username             = "osmt_user"
-  password             = "password"
+  password             = var.db_password
   parameter_group_name = "default.mysql5.7"
   skip_final_snapshot  = true
 }
 
+resource "aws_elasticache_cluster" "redis_db" {
+  cluster_id           = "redis-task-queue"
+  engine               = "redis"
+  node_type            = "cache.r6gd.xlarge"
+  num_cache_nodes      = 1
+  parameter_group_name = "default.redis6.0.6"
+  engine_version       = "6.0"
+  port                 = 6379
+}
+# WGU VPN
 # SECURITY GROUPS #
 # Nginx security group
 resource "aws_security_group" "nginx-sg" {
   name   = "nginx_sg"
-  vpc_id = aws_vpc.opensource-vpc.id
+  vpc_id = data.aws_vpc.opensource_vpc.id
 
   # HTTP access from anywhere
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.opensource-vpc.cidr_block]
+    cidr_blocks = [data.aws_vpc.opensource_vpc.cidr_block]
   }
 }
 
@@ -87,7 +74,7 @@ resource "aws_security_group" "nginx-sg" {
 resource "aws_instance" "nginx1" {
   ami                    = nonsensitive(data.aws_ssm_parameter.ami.value)
   instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.us-east-1b.id
+  subnet_id              = data.aws_subnet.subnet_1.id
   vpc_security_group_ids = [aws_security_group.nginx-sg.id]
 }
 

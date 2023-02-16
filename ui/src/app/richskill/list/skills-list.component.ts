@@ -17,6 +17,7 @@ import {ButtonAction} from "../../auth/auth-roles";
 import {CollectionService} from "../../collection/service/collection.service"
 import {ApiCollection} from "../../collection/ApiCollection"
 import {CollectionPipe} from "../../pipes"
+import {query} from "@angular/animations"
 
 
 @Component({
@@ -302,7 +303,11 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
 
   protected handleClickAddToWorkspace(): void {
-    const skillListUpdate = new ApiSkillListUpdate({add: new ApiSearch({uuids: this.getSelectedSkills()?.map(i => i.uuid)})})
+    const skillListUpdate = this.getSelectAllEnabled() ? new ApiSkillListUpdate(
+      {add: new ApiSearch({query: this.matchingQuery?.join("")})}
+    ) : new ApiSkillListUpdate(
+      {add: new ApiSearch({uuids: this.getSelectedSkills()?.map(i => i.uuid)})}
+    )
     this.toastService.showBlockingLoader()
     this.collectionService.getWorkspace().subscribe(workspace => {
       this.collectionService.updateSkillsWithResult(workspace.uuid, skillListUpdate).subscribe(result => {

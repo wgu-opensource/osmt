@@ -32,7 +32,7 @@
 }
 
 .dropdown-content {
-  margin-top: -120px;
+  margin-top: -320px;
   margin-left: -200px;
   padding: 20px;
   background: #333333;
@@ -42,7 +42,7 @@
   z-index: 1;
 }
 
-.dropdown:hover .dropdown-content.dropdown-content-visible {
+.dropdown .dropdown-content.dropdown-content-visible {
   display: block;
   margin-bottom: 30px;
 }

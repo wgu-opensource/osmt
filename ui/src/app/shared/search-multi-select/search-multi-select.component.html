@@ -78,6 +78,18 @@
             </ng-template>
           </div>
         </div>
+
+        <div class="l-searchSelect-x-items">
+          <div class="m-inputItem" *ngFor="let result of internalSelectedResults" (click)="selectResult(result)">
+            <span class="m-inputItem-x-text">{{result}}</span>
+            <button class="m-inputItem-x-icon" type="button">
+              <svg aria-hidden="true">
+                <use [attr.xlink:href]="iconDismiss"></use>
+              </svg>
+            </button>
+          </div>
+
+        </div>
       </ng-template>
     </div>
   </div>

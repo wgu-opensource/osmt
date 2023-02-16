@@ -44,7 +44,7 @@ interface CollectionRepository {
     fun findById(id: Long): CollectionDao?
     fun findByUUID(uuid: String): CollectionDao?
     fun findByName(name: String): CollectionDao?
-    fun create(name: String, user: String, email: String): CollectionDao?
+    fun create(name: String, user: String, email: String, description: String? = null): CollectionDao?
     fun create(updateObject: CollectionUpdateObject, user: String, email: String): CollectionDao?
     fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao?
     fun remove(uuid: String): ApiBatchResult
@@ -110,8 +110,15 @@ class CollectionRepositoryImpl @Autowired constructor(
         return query?.let { dao.wrapRow(it) }
     }
 
-    override fun create(name: String, user: String, email: String): CollectionDao? {
-        return create(CollectionUpdateObject(name = name), user, email)
+    override fun create(name: String, user: String, email: String, description: String?): CollectionDao? {
+        return create(
+            CollectionUpdateObject(
+                name = name,
+                description = NullableFieldUpdate(description)
+            ),
+            user,
+            email
+        )
     }
 
     override fun create(updateObject: CollectionUpdateObject, user: String, email: String): CollectionDao? {
@@ -124,6 +131,7 @@ class CollectionRepositoryImpl @Autowired constructor(
             this.updateDate = this.creationDate
             this.uuid = UUID.randomUUID().toString()
             this.name = updateObject.name
+            this.description = updateObject.description?.t
             this.author = updateObject.author?.t
         }
 
@@ -413,6 +421,7 @@ class CollectionRepositoryImpl @Autowired constructor(
 
         return CollectionUpdateObject(
             name = collectionUpdate.name,
+            description = collectionUpdate.description?.let { NullableFieldUpdate(it) },
             publishStatus = collectionUpdate.publishStatus,
             author = authorKeyword?.let { NullableFieldUpdate(it) },
             skills = if (adding.size + removing.size > 0) ListFieldUpdate(adding, removing) else null

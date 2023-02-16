@@ -22,6 +22,7 @@ object CollectionTable: TableWithUpdate<CollectionUpdateObject>, PublishStatusUp
     override val archiveDate: Column<LocalDateTime?> = datetime("archiveDate").nullable()
     override val publishDate: Column<LocalDateTime?> = datetime("publishDate").nullable()
     val uuid = varchar("uuid", 36).uniqueIndex()
+    val description = text("description").nullable()
     val name = text("name")
     val author = reference(
         "author_id",

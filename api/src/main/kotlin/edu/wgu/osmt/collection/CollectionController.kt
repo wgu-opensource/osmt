@@ -218,10 +218,10 @@ class CollectionController @Autowired constructor(
         } ?: collectionRepository.createFromApi(
             listOf(
                 ApiCollectionUpdate(
-                    DEFAULT_WORKSPACE_NAME,
-                    PublishStatus.Workspace,
-                    oAuthHelper.readableUserName(user),
-                    ApiStringListUpdate()
+                    name = DEFAULT_WORKSPACE_NAME,
+                    publishStatus = PublishStatus.Workspace,
+                    author = oAuthHelper.readableUserName(user),
+                    skills = ApiStringListUpdate()
                 )
             ),
             richSkillRepository,

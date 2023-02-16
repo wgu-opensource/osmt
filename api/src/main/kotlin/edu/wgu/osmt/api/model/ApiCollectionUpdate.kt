@@ -8,6 +8,9 @@ data class ApiCollectionUpdate(
     @JsonProperty("name")
     val name: String? = null,
 
+    @JsonProperty("description")
+    val description: String? = null,
+
     @JsonFormat(with= [JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES])
     @JsonProperty("status")
     val publishStatus: PublishStatus? = null,

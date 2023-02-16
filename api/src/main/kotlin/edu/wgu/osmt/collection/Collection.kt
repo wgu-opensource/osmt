@@ -20,6 +20,7 @@ data class Collection(
     override val updateDate: LocalDateTime,
     val uuid: String,
     val name: String,
+    val description: String? = null,
     val author: Keyword? = null,
     val workspaceOwner: String? = null,
     val status: PublishStatus,
@@ -37,6 +38,7 @@ data class Collection(
 data class CollectionUpdateObject(
     override val id: Long? = null,
     val name: String? = null,
+    val description: NullableFieldUpdate<String>? = null,
     val author: NullableFieldUpdate<KeywordDao>? = null,
     val skills: ListFieldUpdate<RichSkillDescriptorDao>? = null,
     override val publishStatus: PublishStatus? = null
@@ -55,6 +57,14 @@ data class CollectionUpdateObject(
         dao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
         applyPublishStatus(dao)
         name?.let { dao.name = it }
+
+        description?.let {
+            if (it.t != null) {
+                dao.description = it.t
+            } else {
+                dao.description = null
+            }
+        }
 
         author?.let {
             if (it.t != null) {
@@ -86,6 +96,7 @@ fun Collection.diff(old: Collection?): List<Change> {
 
     val comparisons: List<Comparison<*>> = listOf(
         Comparison(Collection::name.name, CollectionComparison::compareName, old, new),
+        Comparison(Collection::description.name, CollectionComparison::compareDescription, old, new),
         Comparison(Collection::author.name, CollectionComparison::compareAuthor, old, new),
         Comparison(Collection::publishStatus.name, CollectionComparison::comparePublishStatus, old, new)
     )
@@ -96,6 +107,10 @@ fun Collection.diff(old: Collection?): List<Change> {
 object CollectionComparison {
     fun compareName(c: Collection): String {
         return c.name
+    }
+
+    fun compareDescription(c: Collection): String? {
+        return c.description
     }
 
     fun compareAuthor(c: Collection): String? {

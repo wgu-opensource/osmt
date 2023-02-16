@@ -33,6 +33,7 @@ object TestObjectHelpers {
     fun collectionDoc(
         id: Long = elasticIdCounter,
         name: String,
+        description: String? = null,
         publishStatus: PublishStatus = PublishStatus.Draft,
         skillIds: List<String> = listOf(),
         author: String? = null
@@ -40,6 +41,7 @@ object TestObjectHelpers {
         id = id,
         uuid = UUID.randomUUID().toString(),
         name = name,
+        description = description,
         publishStatus = publishStatus,
         skillIds = skillIds,
         skillCount = skillIds.count(),
@@ -61,7 +63,7 @@ object TestObjectHelpers {
     fun randomStrings() = (1..10).map { randomString() }
 
     fun randomCollectionDoc(): CollectionDoc {
-        return collectionDoc(name = randomString(), author = randomString())
+        return collectionDoc(name = randomString(), description = randomString(), author = randomString())
     }
 
     fun randomJobCode(): JobCode {
@@ -108,7 +110,7 @@ object TestObjectHelpers {
             category = category,
             author = author,
             publishStatus = publishStatus,
-            collections = listOf(collectionDoc(elasticIdCounter, UUID.randomUUID().toString()))
+            collections = listOf(collectionDoc(elasticIdCounter, UUID.randomUUID().toString(), randomString()))
         )
     }
 
@@ -162,6 +164,7 @@ object TestObjectHelpers {
         val skillName = name ?: UUID.randomUUID().toString()
         val skillStatement = statement ?: UUID.randomUUID().toString()
         val categoryName = UUID.randomUUID().toString()
+        val categoryDescription = UUID.randomUUID().toString()
         val author = UUID.randomUUID().toString()
 
         val keywords = ApiStringListUpdate(

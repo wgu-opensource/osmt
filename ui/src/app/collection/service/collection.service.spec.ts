@@ -285,6 +285,7 @@ describe("CollectionService", () => {
     expected.skills.forEach(s => stringListUpdate.add?.push(s))
     const input = new ApiCollectionUpdate({
       name: expected.name,
+      description: expected.description,
       status: expected.status,
       author: expected.author,
       skills: stringListUpdate
@@ -323,6 +324,7 @@ describe("CollectionService", () => {
     expected.skills.forEach(s => stringListUpdate.add?.push(s))
     const input = new ApiCollectionUpdate({
       name: expected.name,
+      description: expected.description,
       status: expected.status,
       author: expected.author,
       skills: stringListUpdate

@@ -47,6 +47,10 @@ export class PublicCollectionDetailCardComponent implements OnInit {
     return this.collection?.name ?? ""
   }
 
+  get collectionDescription(): string {
+    return this.collection?.description ?? ""
+  }
+
   get collectionAuthor(): string {
     return this.collection?.author ?? ""
   }

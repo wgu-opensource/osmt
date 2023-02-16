@@ -69,6 +69,7 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
   getFormDefinitions(): { [key: string]: AbstractControl } {
     const fields = {
       collectionName: new FormControl("", Validators.required),
+      description: new FormControl(""),
       author:  new FormControl(AppConfig.settings.defaultAuthorValue, Validators.required)
     }
     return fields
@@ -89,6 +90,7 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
     this.existingCollection = collection
     const fields = {
       collectionName: collection.name,
+      description: collection.description ?? "",
       author: collection.author
     }
     this.collectionForm.setValue(fields)
@@ -102,6 +104,7 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
     const formValues = this.collectionForm.value
     return {
       name: formValues.collectionName,
+      description: formValues.description,
       author: formValues.author
     }
   }
@@ -159,7 +162,7 @@ export class CollectionFormComponent extends Whitelabelled implements OnInit, Ha
 
   handleClickMissingFields(): boolean {
     this.collectionForm.markAllAsTouched()
-    for (const fieldName of ["collectionName", "author"]) {
+    for (const fieldName of ["collectionName", "description", "author"]) {
       const control = this.collectionForm.controls[fieldName]
       if (control && !control.valid) {
         return this.focusFormField(fieldName)

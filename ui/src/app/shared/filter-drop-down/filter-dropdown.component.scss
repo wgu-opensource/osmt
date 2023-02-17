@@ -1,0 +1,58 @@
+.apply-filter-container {
+  display: flex;
+  justify-content: center;
+}
+
+.apply-filter-button {
+  background: white;
+  color: #002F50;
+}
+
+.apply-filter-button:hover {
+  color: white;
+  background: #002F50;
+}
+
+.apply-filter-button:focus {
+  color: white;
+  background: #002F50;
+}
+
+/**drop down**/
+.drop-button {
+  display: flex;
+  color: white;
+  font-size: 16px;
+  border: none;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  margin-top: -320px;
+  margin-left: -200px;
+  padding: 20px;
+  background: #333333;
+  display: none;
+  position: absolute;
+  min-width: 400px;
+  z-index: 1;
+}
+
+.dropdown .dropdown-content.dropdown-content-visible {
+  display: block;
+  margin-bottom: 30px;
+}
+
+hr {
+  height: 1px;
+  background: black;
+  margin-bottom: 20px;
+}
+
+h3 {
+  text-align: center;
+}

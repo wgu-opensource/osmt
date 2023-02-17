@@ -100,6 +100,7 @@ import {LibraryExportComponent} from "./navigation/libraryexport.component"
 import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
 import {CollectionPipe} from "./pipes"
 import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collection/convert-to-collection.component"
+import {SharedModule} from "./shared/shared.module"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -220,7 +221,8 @@ export function initializeApp(
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    SharedModule
   ],
   providers: [
     EnvironmentService,

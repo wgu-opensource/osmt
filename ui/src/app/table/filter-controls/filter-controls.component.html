@@ -1,23 +1,60 @@
 <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
   <h3 class="t-visuallyHidden">Filters</h3>
 <!--  {{render '@l-filtercontrols'}}-->
-  <div class="l-filterControls">
-    <app-filter-choice
-      label="Draft"
-      [isChecked]="isDraftChecked"
-      (filterChanged)="onFilterChangeDraft($event)"
-    ></app-filter-choice>
-    <app-filter-choice
-      label="Published"
-      [isChecked]="isPublishedChecked"
-      (filterChanged)="onFilterChangePublished($event)"
-    ></app-filter-choice>
-    <app-filter-choice
-      label="Archived"
-      [isChecked]="isArchivedChecked"
-      (filterChanged)="onFilterChangeArchived($event)"
-    ></app-filter-choice>
+  <div class="filter-section">
+    <div class="l-filterControls">
+      <app-filter-choice
+        label="Draft"
+        [isChecked]="isDraftChecked"
+        (filterChanged)="onFilterChangeDraft($event)"
+      ></app-filter-choice>
+      <app-filter-choice
+        label="Published"
+        [isChecked]="isPublishedChecked"
+        (filterChanged)="onFilterChangePublished($event)"
+      ></app-filter-choice>
+      <app-filter-choice
+        label="Archived"
+        [isChecked]="isArchivedChecked"
+        (filterChanged)="onFilterChangeArchived($event)"
+      ></app-filter-choice>
+    </div>
+    <div>
+      <app-filter-dropdown (applyFilter)="chipsValues = $event">
+      </app-filter-dropdown>
+    </div>
   </div>
-
+</div>
+<div class="chips-container">
+  <app-filter-chips
+    name="category"
+    [chips]="chipsValues.categories"
+    *ngIf="chipsValues.categories.length > 0">
+  </app-filter-chips>
+  <app-filter-chips
+    name="keywords"
+    [chips]="chipsValues.keywords"
+    *ngIf="chipsValues.keywords.length > 0">
+  </app-filter-chips>
+  <app-filter-chips
+    name="standards"
+    [chips]="chipsValues.standards"
+    *ngIf="chipsValues.standards.length > 0">
+  </app-filter-chips>
+  <app-filter-chips
+    name="certifications"
+    [chips]="chipsValues.certifications"
+    *ngIf="chipsValues.certifications.length > 0">
+  </app-filter-chips>
+  <app-filter-chips
+    name="occupations"
+    [chips]="chipsValues.occupations"
+    *ngIf="chipsValues.occupations.length > 0">
+  </app-filter-chips>
+  <app-filter-chips
+    name="employers"
+    [chips]="chipsValues.employers"
+    *ngIf="chipsValues.employers.length > 0">
+  </app-filter-chips>
 </div>
 

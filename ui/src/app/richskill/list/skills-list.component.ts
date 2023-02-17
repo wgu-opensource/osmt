@@ -17,8 +17,6 @@ import {ButtonAction} from "../../auth/auth-roles";
 import {CollectionService} from "../../collection/service/collection.service"
 import {ApiCollection} from "../../collection/ApiCollection"
 import {CollectionPipe} from "../../pipes"
-import {query} from "@angular/animations"
-
 
 @Component({
   selector: "app-skills-list",

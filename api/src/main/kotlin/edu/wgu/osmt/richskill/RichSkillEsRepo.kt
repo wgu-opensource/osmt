@@ -1,6 +1,7 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.PaginationDefaults
+import edu.wgu.osmt.api.model.ApiAdvancedFilteredSearch
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSimilaritySearch
@@ -31,6 +32,7 @@ const val collectionsUuid = "collections.uuid"
 
 interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch)
+    fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiAdvancedFilteredSearch)
     fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder
     fun byApiSearch(
         apiSearch: ApiSearch,
@@ -173,6 +175,48 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         }
     }
 
+    override fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiAdvancedFilteredSearch) {
+        with(filteredQuery) {
+
+            statuses?.nullIfEmpty()?.let {
+                it.mapNotNull { value ->
+                    bq.must(
+                        simpleQueryStringQuery(value).field("${RichSkillDoc::publishStatus.name}.keyword")
+                            .defaultOperator(Operator.AND)
+                    )
+                }
+            }
+            skillStatement.nullIfEmpty()?.let {
+                bq.must(
+                    simpleQueryStringQuery(it).field("${RichSkillDoc::statement.name}.raw").defaultOperator(Operator.AND)
+                )
+            }
+            standards?.let { it ->
+                it.mapNotNull { it.name }.map { s ->
+                    bq.should(matchBoolPrefixQuery(RichSkillDoc::standards.name, s))
+                }
+            }
+            certifications?.let { it ->
+                it.mapNotNull { it.name }.map { s ->
+                    bq.should(matchBoolPrefixQuery(RichSkillDoc::certifications.name, s))
+                }
+            }
+            alignments?.let { it ->
+                it.mapNotNull { it.name }.map { s ->
+                    bq.should(matchBoolPrefixQuery(RichSkillDoc::alignments.name, s))
+                }
+            }
+
+            jobCodes?.let {
+                it.mapNotNull { value ->
+                    bq.must(
+                        occupationQueries(value)
+                    )
+                }
+            }
+        }
+    }
+
     override fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder {
         val isComplex = query.contains("\"")
 
@@ -299,6 +343,8 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                     )
                 )
             }
+        } else if (apiSearch.filtered != null) {
+            generateBoolQueriesFromApiSearchWithFilters(bq, apiSearch.filtered)
         } else {
             var apiSearchUuids = apiSearch.uuids?.filterNotNull()?.filter { x: String? -> x != "" }
 

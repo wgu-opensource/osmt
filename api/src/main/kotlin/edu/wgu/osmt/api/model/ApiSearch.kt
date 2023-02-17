@@ -11,6 +11,9 @@ data class ApiSearch(
     @JsonProperty("advanced")
     val advanced: ApiAdvancedSearch? = null,
 
+    @JsonProperty("filtered")
+    val filtered: ApiAdvancedFilteredSearch? = null,
+
     @JsonProperty("uuids")
     val uuids: List<String>? = null
 )
@@ -57,4 +60,29 @@ data class ApiSkillListUpdate(
 
     @JsonProperty("remove")
     val remove: ApiSearch? = null
+)
+
+@JsonInclude(JsonInclude.Include.ALWAYS)
+data class ApiAdvancedFilteredSearch(
+    @JsonProperty("statuses")
+    val statuses: List<String>? = null,
+
+    @JsonProperty("skillStatement")
+    val skillStatement: String? = null,
+
+    @JsonProperty("categories")
+    val categories: List<String>? = null,
+
+    @JsonProperty("standards")
+    val standards: List<ApiNamedReference>? = null,
+
+    @JsonProperty("certifications")
+    val certifications: List<ApiNamedReference>? = null,
+
+    @JsonProperty("alignments")
+    val alignments: List<ApiNamedReference>? = null,
+
+    @JsonProperty("jobcodes")
+    val jobCodes: List<String>? = null
+
 )

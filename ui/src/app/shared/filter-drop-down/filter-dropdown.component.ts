@@ -29,6 +29,7 @@ export class FilterDropdownComponent implements OnInit {
       categories: "",
       keywords: "",
       standards: "",
+      alignment: "",
       certifications: "",
       occupations: "",
       employers: ""

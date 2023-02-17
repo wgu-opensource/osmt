@@ -243,6 +243,8 @@ class MockData {
             "https://osmt.wgu.edu/credentialengineerregistry",
             "http://localhost:4200",
             "http://localhost:4200/login/success",
+            "user",
+            "user@email.com",
             true,
             true,
             false,
@@ -297,12 +299,13 @@ class MockData {
                 c.id!!,
                 c.uuid!!,
                 c.name!!,
-                PublishStatus.valueOf(c.status!!),
+                c.status?.let { PublishStatus.forApiValue(it) }!!,
                 skillUUIDs as List<String>,
                 c.skillsCount,
                 lookupKeywordValue(c.author?.toLong()),
                 parseDateTime(c.archiveDate),
-                parseDateTime(c.publishDate)
+                parseDateTime(c.publishDate),
+                c.workspaceOwner!!
             )
         }
     }
@@ -379,7 +382,8 @@ class MockData {
             name = doc.name,
             author = lookupKeywordByValue(doc.author),
             archiveDate = doc.archiveDate,
-            publishDate = doc.publishDate
+            publishDate = doc.publishDate,
+            status = doc.publishStatus
         )
     }
 
@@ -393,7 +397,8 @@ class MockData {
             publishDate = c.publishDate,
             publishStatus = c.publishStatus(),
             skillCount = 0,
-            skillIds = null
+            skillIds = null,
+            workspaceOwner = c.workspaceOwner
         )
     }
 

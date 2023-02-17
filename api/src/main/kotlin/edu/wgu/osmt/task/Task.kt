@@ -85,6 +85,7 @@ data class ExportSkillsToCsvTask(
 data class CreateSkillsTask(
     val apiSkillUpdates: List<ApiSkillUpdate> = listOf(),
     val userString: String = "",
+    val userIdentifier: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: List<String>? = null,

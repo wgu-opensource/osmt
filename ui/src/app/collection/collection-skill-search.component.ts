@@ -14,6 +14,7 @@ import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
 import {SkillsListComponent} from "../richskill/list/skills-list.component";
 import {ApiTaskResult} from "../task/ApiTaskResult";
 import {AuthService} from "../auth/auth-service";
+import {PublishStatus} from "../PublishStatus"
 
 @Component({
   selector: "app-collection-skill-search",
@@ -44,7 +45,7 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
               protected toastService: ToastService,
               protected authService: AuthService,
   ) {
-    super(router, richSkillService, toastService, authService)
+    super(router, richSkillService, collectionService, toastService, authService)
     this.titleService.setTitle(`Add RSDs to Collection | ${this.whitelabel.toolName}`)
 
     this.uuidParam = this.route.snapshot.paramMap.get("uuid") || undefined
@@ -86,7 +87,7 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
   rowActions(): TableActionDefinition[] {
     return [
       new TableActionDefinition({
-        label: "Add to Collection",
+        label: `Add to ${this.collectionOrWorkspace(true)}`,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
       })
     ]
@@ -105,7 +106,7 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickBackToTop(action, skill),
       }),
       new TableActionDefinition({
-        label: "Add to Collection",
+        label: `Add to ${this.collectionOrWorkspace(true)}`,
         icon: "collection",
         primary: true,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
@@ -123,7 +124,9 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
     this.collectionUpdated.subscribe(result => {
       if (result) {
         this.toastService.hideBlockingLoader()
-        const message = `You added ${selectedCount} RSD${selectedCount ? "s" : ""} to the collection ${this.collection?.name}.`
+        const isWorkspace = this.collection?.status === PublishStatus.Workspace
+        const baseMessage = `You added ${selectedCount} RSD${selectedCount ? "s" : ""} to the`
+        const message = ` ${baseMessage} ${this.collectionOrWorkspace(false)} ${ isWorkspace ? "" : this.collection?.name}.`
         this.toastService.showToast("Success!", message)
       }
     })

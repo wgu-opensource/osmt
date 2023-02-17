@@ -20,6 +20,7 @@ import {formatDate} from "@angular/common"
 import * as FileSaver from "file-saver"
 import {ITaskResult} from "../../task/ApiTaskResult"
 import {delay, retryWhen, switchMap} from "rxjs/operators"
+import {CollectionPipe} from "../../pipes"
 
 @Component({
   selector: "app-manage-collection",
@@ -52,6 +53,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   template: "default" | "confirm-multiple" | "confirm-delete-collection" = "default"
   collectionSaved?: Observable<ApiCollection>
   selectAllChecked = false
+  showLog = true
 
   collapseAuditLog = new Subject<void>()
 
@@ -68,7 +70,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
               protected authService: AuthService,
               @Inject(LOCALE_ID) protected locale: string
   ) {
-    super(router, richSkillService, toastService, authService)
+    super(router, richSkillService, collectionService, toastService, authService)
   }
 
   ngOnInit(): void {
@@ -275,7 +277,6 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     window.open(url, "_blank")
   }
 
-
   publishAction(): void {
     if (this.uuidParam === undefined) { return }
 
@@ -343,7 +344,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     if (count > 1 || this.selectAllChecked) {
       this.template = "confirm-multiple"
     } else {
-      if (confirm(`Confirm that you want to remove the following RSD from this collection.\n${first?.skillName}`)) {
+      if (confirm(`Confirm that you want to remove the following RSD from this ${this.collectionOrWorkspace(false)}.\n${first?.skillName}`)) {
         this.submitSkillRemoval(this.apiSearch)
       }
     }
@@ -355,7 +356,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     this.skillsSaved = this.collectionService.updateSkillsWithResult(this.uuidParam ?? "", update)
     this.skillsSaved.subscribe(result => {
       if (result) {
-        this.toastService.showToast("Success!", `You removed ${result.modifiedCount} RSD${(result.modifiedCount ?? 0) > 1 ? "s" : ""} from this collection.`)
+        this.toastService.showToast("Success!", `You removed ${result.modifiedCount} RSD${(result.modifiedCount ?? 0) > 1 ? "s" : ""} from this ${this.collectionOrWorkspace(false).toLowerCase()}`)
         this.toastService.hideBlockingLoader()
         this.reloadCollection()
         this.loadNextPage()
@@ -375,6 +376,18 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     this.template = "default"
     this.apiSearch = undefined
     return false
+  }
+
+  get confirmMessageText(): string {
+    return "delete " + (this.collection?.name ?? "")
+  }
+
+  get confirmButtonText(): string {
+    return "delete collection"
+  }
+
+  collectionOrWorkspace(includesMy: boolean): string {
+    return new CollectionPipe().transform(this.collection?.status, includesMy)
   }
 
   protected handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {

@@ -51,7 +51,7 @@ internal class SearchControllerTest @Autowired constructor(
                 UriComponentsBuilder.newInstance(),
                 50,
                 0,
-                arrayOf("draft", "published"),
+                arrayOf("draft", "published", "workspace"),
                 "",
                 ApiSearch(advanced = ApiAdvancedSearch(collectionName = collectionDoc?.name)),
                 nullJwt)

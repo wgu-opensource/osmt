@@ -262,12 +262,34 @@ export class CollectionServiceStub {
     return of(createMockPaginatedCollections())
   }
 
+  getWorkspace(): Observable<ApiCollection> {
+    const date = new Date()
+    return of(createMockCollection(
+      date,
+      date,
+      undefined,
+      undefined,
+      PublishStatus.Workspace
+    ))
+  }
+
   deleteCollectionWithResult(uuid: string): Observable<ApiTaskResult> {
     return of(apiTaskResultForDeleteCollection)
   }
 
   deleteCollection(uuid: string): Observable<ApiTaskResult> {
     return of(apiTaskResultForDeleteCollection)
+  }
+
+  createCollection(updateObject: ICollectionUpdate): Observable<ApiCollection> {
+    const date = new Date("2020-06-25T14:58:46.313Z")
+    return of(new ApiCollection(createMockCollection(
+      date,
+      date,
+      date,
+      date,
+      PublishStatus.Draft
+    )))
   }
 }
 

@@ -14,7 +14,11 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.richskill.*
+import edu.wgu.osmt.richskill.RichSkillDescriptor
+import edu.wgu.osmt.richskill.RichSkillDescriptorDao
+import edu.wgu.osmt.richskill.RichSkillDescriptorTable
+import edu.wgu.osmt.richskill.RichSkillRepository
+import edu.wgu.osmt.richskill.RsdUpdateObject
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.SizedIterable
 import org.junit.jupiter.api.Test
@@ -57,7 +61,7 @@ class AuditLogRepositoryTest @Autowired constructor(
 
     @Test
     fun `generates an audit log on collection creation`() {
-        val collectionDao = collectionRepository.create("test collection", testUser)
+        val collectionDao = collectionRepository.create("test collection", testUser, testEmail)
         val auditLog = collectionDao?.id?.value?.let {
             auditLogRepository.findByTableAndId(CollectionTable.tableName, it)
         }?.first()
@@ -87,7 +91,7 @@ class AuditLogRepositoryTest @Autowired constructor(
         val initialCollectionUpdate =
             CollectionUpdateObject(name = "test collection", skills = ListFieldUpdate(add = listOf(initialSkill!!)))
 
-        val collectionDao = collectionRepository.create(initialCollectionUpdate, testUser)
+        val collectionDao = collectionRepository.create(initialCollectionUpdate, testUser, testEmail)
         val newAuthorDao = keywordRepository.create(KeywordTypeEnum.Author, updatedAuthorName)
 
         val collectionUpdateObject = CollectionUpdateObject(
@@ -170,7 +174,7 @@ class AuditLogRepositoryTest @Autowired constructor(
         val keywordDaos = TestObjectHelpers.keywordsGenerator(10, KeywordTypeEnum.Keyword)
             .mapNotNull { keywordRepository.create(it.type, it.value) }
         val jobCodeDaos = listOf(jobCodeRepository.create("11-1170"))
-        val collectionDaos = listOf(collectionRepository.create("test collection", testUser)!!)
+        val collectionDaos = listOf(collectionRepository.create("test collection", testUser, testEmail)!!)
 
         val newName = "updated skill"
         val newStatement = "new statement"
@@ -327,7 +331,7 @@ class AuditLogRepositoryTest @Autowired constructor(
             CollectionUpdateObject(name = initialCollectionName, skills = ListFieldUpdate(add = listOf(initialSkill!!)))
 
         // Act
-        val collectionDao = collectionRepository.create(initialCollectionUpdate, testUser)
+        val collectionDao = collectionRepository.create(initialCollectionUpdate, testUser, testEmail)
 
         val collectionUpdate = CollectionUpdateObject(id = collectionDao?.id?.value, name = updatedCollectionName)
         collectionRepository.update(collectionUpdate, testUser)

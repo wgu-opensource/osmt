@@ -1,12 +1,18 @@
 package edu.wgu.osmt.collection
 
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.db.PublishStatusUpdate
 import edu.wgu.osmt.db.TableWithUpdate
 import edu.wgu.osmt.keyword.KeywordTable
 import edu.wgu.osmt.richskill.RichSkillDescriptorTable
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.ReferenceOption
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.`java-time`.datetime
 import java.time.LocalDateTime
 
@@ -23,8 +29,10 @@ object CollectionTable: TableWithUpdate<CollectionUpdateObject>, PublishStatusUp
         onDelete = ReferenceOption.RESTRICT,
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
-
-
+    val workspaceOwner = varchar("workspace_owner", 64).index().default("")
+    val status = customEnumeration(
+        "status",
+        fromDb = { value -> PublishStatus.forApiValue(value as String)!! }, toDb = { it.name }).default(PublishStatus.Draft)
 }
 
 object CollectionSkills : Table("CollectionSkills") {

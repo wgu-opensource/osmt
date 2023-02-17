@@ -4,7 +4,7 @@ import { Component, ElementRef, Type } from "@angular/core"
 import { async, ComponentFixture, TestBed } from "@angular/core/testing"
 import { RouterTestingModule } from "@angular/router/testing"
 import { createMockPaginatedSkills, createMockSkillSummary } from "../../../../test/resource/mock-data"
-import {AuthServiceStub, RichSkillServiceStub} from "../../../../test/resource/mock-stubs"
+import {AuthServiceStub, CollectionServiceStub, RichSkillServiceStub} from "../../../../test/resource/mock-stubs"
 import { PublishStatus } from "../../PublishStatus"
 import { ToastService } from "../../toast/toast.service"
 import { ApiSortOrder } from "../ApiSkill"
@@ -12,6 +12,8 @@ import { ApiSearch, PaginatedSkills } from "../service/rich-skill-search.service
 import { RichSkillService } from "../service/rich-skill.service"
 import { SkillsListComponent } from "./skills-list.component"
 import {AuthService} from "../../auth/auth-service";
+import {HttpClientModule} from "@angular/common/http"
+import {CollectionService} from "../../collection/service/collection.service"
 
 
 @Component({
@@ -57,6 +59,7 @@ describe("SkillsListComponent", () => {
         ConcreteComponent
       ],
       imports: [
+        HttpClientModule,
         RouterTestingModule.withRoutes([
           { path: "collections/add-skills", component: SkillsListComponent }
         ])
@@ -65,6 +68,7 @@ describe("SkillsListComponent", () => {
         ToastService,
         { provide: RichSkillService, useClass: RichSkillServiceStub },
         { provide: AuthService, useClass: AuthServiceStub },
+        { provide: CollectionService, useClass: CollectionServiceStub },
       ]
     })
 
@@ -93,6 +97,13 @@ describe("SkillsListComponent", () => {
     expect(component.totalCount).toEqual(paginatedSkills.totalCount)
     expect(component.curPageCount).toEqual(paginatedSkills.skills.length)
     expect(component.getSelectAllCount()).toEqual(component.curPageCount)
+  })
+
+  it("handle click add to workspace", () => {
+    const collectionService = TestBed.inject(CollectionService)
+    const spy = spyOn(collectionService, "getWorkspace").and.callThrough()
+    component["handleClickAddToWorkspace"]()
+    expect(spy).toHaveBeenCalled()
   })
 
   it("skillCountLabel should be correct", () => {
@@ -396,8 +407,9 @@ describe("SkillsListComponent", () => {
     tableActions = component.tableActions()
     let skill4 = createMockSkillSummary("id4", PublishStatus.Archived)
     let action4 = tableActions[4]
-    expect(action4.label).toEqual("Add to Collection")
-    expect(action4 && action4.callback).toBeTruthy()
+    expect(action4.label).toEqual("Add to")
+    expect(action4).toBeTruthy()
+    expect(action4.callback).toBeUndefined()
     expect(action4.callback?.(action4, skill4)).toBeFalsy()  // Always false
     expect(action4.visible?.(skill4)).toBeTruthy()  // There are selected skills
 
@@ -477,5 +489,12 @@ describe("SkillsListComponent", () => {
 
   it("getSelectAllEnabled should be true", () => {
     expect(component.getSelectAllEnabled()).toBeTruthy()
+  })
+
+  it("add to workspace should be visible", () => {
+    component.selectedSkills = [
+      createMockSkillSummary("id1", PublishStatus.Draft)
+    ]
+    expect(component["addToWorkspaceVisible"]()).toBeTrue()
   })
 })

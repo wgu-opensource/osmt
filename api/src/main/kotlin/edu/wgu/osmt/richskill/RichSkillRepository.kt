@@ -1,7 +1,11 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.api.FormValidationException
-import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.api.model.ApiAlignmentListUpdate
+import edu.wgu.osmt.api.model.ApiBatchResult
+import edu.wgu.osmt.api.model.ApiReferenceListUpdate
+import edu.wgu.osmt.api.model.ApiSkillUpdate
+import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
@@ -41,9 +45,9 @@ interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
     fun findManyByUUIDs(uuids: List<String>): List<RichSkillDescriptorDao>?
     fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao?
 
-    fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao>
-    fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String): RichSkillDescriptorDao?
-    fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject
+    fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String, userEmail: String): List<RichSkillDescriptorDao>
+    fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String, email: String): RichSkillDescriptorDao?
+    fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String, userEmail: String): RsdUpdateObject
 
     fun changeStatusesForTask(task: PublishTask): ApiBatchResult
 
@@ -163,7 +167,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         return newRsd
     }
 
-    override fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao> {
+    override fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String, userEmail: String): List<RichSkillDescriptorDao> {
         // pre validate all rows
         val allErrors = skillUpdates.mapIndexed { i, updateDto ->
             updateDto.validateForCreation(i)
@@ -174,7 +178,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         // create records
         val newSkills = skillUpdates.map { update ->
-            val rsdUpdateObject = rsdUpdateFromApi(update, user)
+            val rsdUpdateObject = rsdUpdateFromApi(update, user, userEmail)
             create(rsdUpdateObject, user)
         }
         return newSkills.filterNotNull()
@@ -183,21 +187,22 @@ class RichSkillRepositoryImpl @Autowired constructor(
     override fun updateFromApi(
         existingSkillId: Long,
         skillUpdate: ApiSkillUpdate,
-        user: String
+        user: String,
+        email: String
     ): RichSkillDescriptorDao? {
         val errors = skillUpdate.validate(0)
         if (errors?.isNotEmpty() == true) {
             throw FormValidationException("Invalid SkillUpdateDescriptor", errors)
         }
 
-        val rsdUpdateObject = rsdUpdateFromApi(skillUpdate, user)
+        val rsdUpdateObject = rsdUpdateFromApi(skillUpdate, user, email)
         val updateObjectWithId = rsdUpdateObject.copy(
             id = existingSkillId
         )
         return update(updateObjectWithId, user)
     }
 
-    override fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject {
+    override fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String, email: String): RsdUpdateObject {
         val authorKeyword = skillUpdate.author?.let {
             keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it)
         }
@@ -216,13 +221,13 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         skillUpdate.collections?.let { slu ->
             slu.add?.mapNotNull {
-                collectionRepository.findByName(it) ?: collectionRepository.create(it, user)
+                collectionRepository.findByName(it) ?: collectionRepository.create(it, user, email)
             }?.let {
                 addingCollections.addAll(it)
             }
 
             slu.remove?.mapNotNull {
-                collectionRepository.findByName(it) ?: collectionRepository.create(it, user)
+                collectionRepository.findByName(it) ?: collectionRepository.create(it, user, email)
             }?.let {
                 removingCollections.addAll(it)
             }

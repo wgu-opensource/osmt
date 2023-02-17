@@ -7,6 +7,7 @@ import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
+import org.apache.commons.lang3.StringUtils
 import org.valiktor.functions.isEqualTo
 import org.valiktor.functions.validate
 import org.valiktor.validate
@@ -20,11 +21,17 @@ data class Collection(
     val uuid: String,
     val name: String,
     val author: Keyword? = null,
+    val workspaceOwner: String? = null,
+    val status: PublishStatus,
     override val archiveDate: LocalDateTime? = null,
     override val publishDate: LocalDateTime? = null
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
 
     fun canonicalUrl(baseUrl: String): String = "$baseUrl/api/collections/${uuid}"
+
+    fun isWorkspace() : Boolean {
+        return  (this.status == PublishStatus.Workspace && StringUtils.isNotEmpty(this.workspaceOwner))
+    }
 }
 
 data class CollectionUpdateObject(

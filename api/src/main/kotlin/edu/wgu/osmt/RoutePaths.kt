@@ -32,6 +32,7 @@ object RoutePaths {
     const val COLLECTION_CSV = "$COLLECTION_DETAIL/csv"
     const val COLLECTION_REMOVE = "$COLLECTION_DETAIL/remove"
 
+    const val WORKSPACE_PATH = "$API/workspace"
 
     const val TASKS_PATH = "$API/results"
     const val TASK_DETAIL_TEXT = "$TASKS_PATH/text/{uuid}"

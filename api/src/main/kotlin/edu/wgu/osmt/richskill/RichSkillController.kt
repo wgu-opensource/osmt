@@ -82,7 +82,7 @@ class RichSkillController @Autowired constructor(
         @RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
-        val task = CreateSkillsTask(apiSkillUpdates)
+        val task = CreateSkillsTask(apiSkillUpdates, oAuthHelper.readableUserName(user), oAuthHelper.readableUserIdentifier(user))
         taskMessageService.enqueueJob(TaskMessageService.createSkills, task)
         return Task.processingResponse(task)
     }
@@ -150,7 +150,7 @@ class RichSkillController @Autowired constructor(
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
         val updatedSkill =
-            richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, oAuthHelper.readableUsername(user))
+            richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, oAuthHelper.readableUserName(user), oAuthHelper.readableUserIdentifier(user))
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
         return ApiSkill.fromDao(updatedSkill, appConfig)
@@ -181,7 +181,7 @@ class RichSkillController @Autowired constructor(
             search,
             filterByStatus=filterStatuses,
             publishStatus = publishStatus,
-            userString = oAuthHelper.readableUsername(user),
+            userString = oAuthHelper.readableUserName(user),
             collectionUuid = if (collectionUuid.isNullOrBlank()) null else collectionUuid
         )
 

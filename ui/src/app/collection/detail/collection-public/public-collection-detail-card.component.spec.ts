@@ -6,6 +6,9 @@ import { RichSkillServiceStub } from "../../../../../test/resource/mock-stubs"
 import { RichSkillService } from "../../../richskill/service/rich-skill.service"
 import { ToastService } from "../../../toast/toast.service"
 import { PublicCollectionDetailCardComponent } from "./public-collection-detail-card.component"
+import {CollectionPipe} from "../../../pipes"
+import {createMockCollection} from "../../../../../test/resource/mock-data"
+import {PublishStatus} from "../../../PublishStatus"
 
 
 export function createComponent(T: Type<PublicCollectionDetailCardComponent>): Promise<void> {
@@ -37,7 +40,8 @@ describe("PublicCollectionDetailCardComponent", () => {
 
     TestBed.configureTestingModule({
       declarations: [
-        PublicCollectionDetailCardComponent
+        PublicCollectionDetailCardComponent,
+        CollectionPipe
       ],
       imports: [
       ],
@@ -55,5 +59,19 @@ describe("PublicCollectionDetailCardComponent", () => {
 
   it("should be created", () => {
     expect(component).toBeTruthy()
+  })
+
+  it("display status and display label should be false", () => {
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Workspace)
+    expect(component.displayStatus).toBeFalse()
+    expect(component.displayLabel).toBeFalse()
+  })
+
+  it("display status and label should be true", () => {
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Draft)
+    expect(component.displayStatus).toBeTrue()
+    expect(component.displayLabel).toBeTrue()
   })
 })

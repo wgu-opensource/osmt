@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router"
 import {RichSkillService} from "../../../richskill/service/rich-skill.service"
 import {ToastService} from "../../../toast/toast.service"
 import {ApiCollection} from "../../ApiCollection"
+import {PublishStatus} from "../../../PublishStatus"
 
 @Component({
   selector: "app-collection-public-detail-card",
@@ -48,5 +49,13 @@ export class PublicCollectionDetailCardComponent implements OnInit {
 
   get collectionAuthor(): string {
     return this.collection?.author ?? ""
+  }
+
+  get displayStatus(): boolean {
+    return this.collection?.status !== PublishStatus.Workspace
+  }
+
+  get displayLabel(): boolean {
+    return this.collection?.status !== PublishStatus.Workspace
   }
 }

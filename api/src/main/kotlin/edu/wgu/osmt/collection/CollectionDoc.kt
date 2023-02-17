@@ -68,5 +68,10 @@ data class CollectionDoc(
 
     @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     @get:JsonProperty("publishDate")
-    val publishDate: LocalDateTime? = null
+    val publishDate: LocalDateTime? = null,
+
+    @Field(type = Text)
+    @Nullable
+    val workspaceOwner: String?
+
 )

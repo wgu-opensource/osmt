@@ -7,11 +7,13 @@ import edu.wgu.osmt.api.model.ApiCollection
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSkillListUpdate
+import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.api.model.CollectionSortEnum
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.config.DEFAULT_WORKSPACE_NAME
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.richskill.RichSkillRepository
@@ -97,7 +99,9 @@ class CollectionController @Autowired constructor(
     ): List<ApiCollection> {
         return collectionRepository.createFromApi(
             apiCollectionUpdates,
-            richSkillRepository, oAuthHelper.readableUsername(user)
+            richSkillRepository,
+            oAuthHelper.readableUserName(user),
+            oAuthHelper.readableUserIdentifier(user)
         ).map {
             ApiCollection.fromDao(it, appConfig)
         }
@@ -122,13 +126,12 @@ class CollectionController @Autowired constructor(
         val updated = collectionRepository.updateFromApi(
             existing.id.value,
             apiUpdate,
-            richSkillRepository, oAuthHelper.readableUsername(user)
+            richSkillRepository, oAuthHelper.readableUserName(user)
         )
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
         return ApiCollection.fromDao(updated, appConfig)
     }
-
 
     @PostMapping(RoutePaths.COLLECTION_SKILLS_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -142,7 +145,7 @@ class CollectionController @Autowired constructor(
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = oAuthHelper.readableUsername(user))
+        val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = oAuthHelper.readableUserName(user))
 
         taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
         return Task.processingResponse(task)
@@ -164,7 +167,7 @@ class CollectionController @Autowired constructor(
     ): HttpEntity<TaskResult> {
         val filterStatuses = filterByStatus.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val publishStatus = PublishStatus.forApiValue(newStatus) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
-        val task = PublishTask(AppliesToType.Collection, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = oAuthHelper.readableUsername(user))
+        val task = PublishTask(AppliesToType.Collection, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = oAuthHelper.readableUserName(user))
 
         taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
         return Task.processingResponse(task)
@@ -174,7 +177,7 @@ class CollectionController @Autowired constructor(
     fun getSkillsForCollectionCsv(
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
-        if (collectionRepository.findByUUID(uuid)!!.publishStatus() == PublishStatus.Draft && !oAuthHelper.hasRole(appConfig.roleAdmin)) {
+        if (collectionRepository.findByUUID(uuid)!!.status == PublishStatus.Draft && !oAuthHelper.hasRole(appConfig.roleAdmin)) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
         val task = CsvTask(collectionUuid = uuid)
@@ -186,7 +189,6 @@ class CollectionController @Autowired constructor(
     fun removeCollection(
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
-
         val task = RemoveCollectionSkillsTask(collectionUuid = uuid)
         taskMessageService.enqueueJob(TaskMessageService.removeCollectionSkills, task)
         return Task.processingResponse(task)
@@ -202,5 +204,29 @@ class CollectionController @Autowired constructor(
 
         val sizedIterable = auditLogRepository.findByTableAndId(CollectionTable.tableName, entityId = collection!!.id.value, offsetPageable = pageable)
         return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
+    }
+
+    @GetMapping(RoutePaths.WORKSPACE_PATH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun getOrCreateWorkspace(
+        @AuthenticationPrincipal user: Jwt?
+    ): ApiCollection? {
+        return collectionRepository.findByOwner(
+            oAuthHelper.readableUserIdentifier(user))?.let {
+            ApiCollection.fromDao(it, appConfig
+            )
+        } ?: collectionRepository.createFromApi(
+            listOf(
+                ApiCollectionUpdate(
+                    DEFAULT_WORKSPACE_NAME,
+                    PublishStatus.Workspace,
+                    oAuthHelper.readableUserName(user),
+                    ApiStringListUpdate()
+                )
+            ),
+            richSkillRepository,
+            oAuthHelper.readableUserName(user),
+            oAuthHelper.readableUserIdentifier(user)
+        ).firstOrNull()?.let { ApiCollection.fromDao(it, appConfig) }
     }
 }

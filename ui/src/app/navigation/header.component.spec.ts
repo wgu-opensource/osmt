@@ -11,6 +11,8 @@ import {HttpClientModule} from "@angular/common/http"
 import {Router} from "@angular/router"
 import {MyWorkspaceComponent} from "../my-workspace/my-workspace.component"
 import {RichSkillsLibraryComponent} from "../richskill/library/rich-skills-library.component"
+import {ButtonAction} from "../auth/auth-roles"
+import {By} from "@angular/platform-browser"
 
 describe("HeaderComponent", () => {
 
@@ -65,7 +67,23 @@ describe("HeaderComponent", () => {
     expect(component.myWorkspaceActive).toBeTruthy()
   }))
 
-  it("my workspace is active", fakeAsync(() => {
+  it("my workspace is not visible when user doesn't have role admin or curator", () => {
+    const authService = TestBed.inject(AuthService)
+    spyOn(authService, "isEnabledByRoles").and.returnValue( false)
+    component.canHaveWorkspace = component["authService"].isEnabledByRoles(ButtonAction.MyWorkspace)
+    fixture.detectChanges()
+    const myWorkspace = fixture.debugElement.query(By.css("#li-my-workspace"))
+    expect(myWorkspace).toBeFalsy()
+    expect(component.canHaveWorkspace).toBeFalse()
+  })
+
+  it("my workspace is visible when user has role admin or curator", () => {
+    const myWorkspace = fixture.debugElement.query(By.css("#li-my-workspace"))
+    expect(myWorkspace).toBeTruthy()
+    expect(component.canHaveWorkspace).toBeTrue()
+  })
+
+  it("skills is active", fakeAsync(() => {
     router.navigate(["/skills"])
     tick()
     expect(router).toBeTruthy()

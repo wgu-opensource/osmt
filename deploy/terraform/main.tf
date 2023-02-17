@@ -32,16 +32,17 @@ data "aws_ssm_parameter" "ami" {
 #  name = "osmt_app"
 #}
 
-# DATABASE RDS #
+# DATABASES #
 resource "aws_db_instance" "osmt_db" {
-  allocated_storage    = 10
+  allocated_storage    = 20
   db_name              = "osmt_db"
   engine               = "mysql"
   engine_version       = "8.0"
   instance_class       = "db.t3.micro"
   username             = "osmt_user"
   password             = var.db_password
-  parameter_group_name = "default.mysql5.7"
+  port                 = 3306
+  auto_minor_version_upgrade = true
   skip_final_snapshot  = true
 }
 
@@ -54,6 +55,8 @@ resource "aws_elasticache_cluster" "redis_db" {
   engine_version       = "6.0"
   port                 = 6379
 }
+
+# AWS ELASTICSEARCH #
 
 # SECURITY GROUPS #
 # Nginx security group

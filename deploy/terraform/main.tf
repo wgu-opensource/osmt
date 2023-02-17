@@ -37,7 +37,7 @@ resource "aws_db_instance" "osmt_db" {
   allocated_storage    = 10
   db_name              = "osmt_db"
   engine               = "mysql"
-  engine_version       = "5.7"
+  engine_version       = "8.0"
   instance_class       = "db.t3.micro"
   username             = "osmt_user"
   password             = var.db_password
@@ -54,7 +54,7 @@ resource "aws_elasticache_cluster" "redis_db" {
   engine_version       = "6.0"
   port                 = 6379
 }
-# WGU VPN
+
 # SECURITY GROUPS #
 # Nginx security group
 resource "aws_security_group" "nginx-sg" {

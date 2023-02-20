@@ -20,7 +20,7 @@
       ></app-filter-choice>
     </div>
     <div>
-      <app-filter-dropdown (applyFilter)="applyFilter($event)" [keywords]="keywords">
+      <app-filter-dropdown (applyFilter)="applyFilter($event)" [keywords]="keywords" [filterFg]="filterFg">
       </app-filter-dropdown>
     </div>
   </div>
@@ -28,33 +28,33 @@
 <div class="chips-container">
   <app-filter-chips
     name="category"
-    [keywords]="keywords.categories"
-    *ngIf="keywords.categories?.length > 0">
+    [control]="filterFg.get('categories')"
+    *ngIf="filterFg?.get('categories')?.value?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="keywords"
-    [keywords]="keywords.keywords"
-    *ngIf="keywords.keywords?.length > 0">
+    [control]="filterFg.get('keywords')"
+    *ngIf="filterFg?.get('keywords')?.value?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="standards"
-    [keywords]="keywords.standards"
-    *ngIf="keywords.standards?.length > 0">
+    [control]="filterFg.get('standards')"
+    *ngIf="filterFg?.get('standards')?.value?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="certifications"
-    [keywords]="keywords.certifications"
-    *ngIf="keywords.certifications?.length > 0">
+    [control]="filterFg.get('certifications')"
+    *ngIf="filterFg?.get('certifications')?.value?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="occupations"
-    [keywords]="keywords.occupations"
-    *ngIf="keywords.occupations?.length > 0">
+    [control]="filterFg.get('occupations')"
+    *ngIf="filterFg?.get('occupations')?.value?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="employers"
-    [keywords]="keywords.employers"
-    *ngIf="keywords.employers?.length > 0">
+    [control]="filterFg.get('employers')"
+    *ngIf="filterFg?.get('employers')?.value?.length > 0">
   </app-filter-chips>
 </div>
 

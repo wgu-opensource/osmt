@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
 import {PublishStatus} from "../../PublishStatus";
 import {FilterDropdown} from "../../models/filter-dropdown.model"
+import {FormBuilder, FormGroup} from "@angular/forms"
 
 @Component({
   selector: "app-filter-controls",
@@ -12,17 +13,14 @@ export class FilterControlsComponent implements OnInit {
   @Output() keywordsChanged: EventEmitter<FilterDropdown> = new EventEmitter<FilterDropdown>()
   @Output() filtersChanged: EventEmitter<Set<PublishStatus>> = new EventEmitter<Set<PublishStatus>>()
   @Input()
-  keywords: FilterDropdown = {
-    categories: [],
-    certifications: [],
-    employers: [],
-    alignments: [],
-    keywords: [],
-    occupations: [],
-    standards: []
-  }
+  keywords?: FilterDropdown
+  filterFg: FormGroup
 
-  constructor() {
+  constructor(
+    protected formBuilder: FormBuilder
+  ) {
+    this.filterFg = this.configureFilterFg()
+    // this.keywords = this.filterFg.value
   }
 
   ngOnInit(): void {
@@ -57,4 +55,17 @@ export class FilterControlsComponent implements OnInit {
     this.keywords = event
     this.keywordsChanged.emit(this.keywords)
   }
+
+  private configureFilterFg(): FormGroup {
+    return this.formBuilder.group({
+      categories: [],
+      keywords: [],
+      standards: [],
+      alignment: [],
+      certifications: [],
+      occupations: [],
+      employers: []
+    })
+  }
+
 }

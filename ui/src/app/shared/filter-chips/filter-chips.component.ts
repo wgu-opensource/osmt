@@ -1,27 +1,24 @@
-import {Component, Input, OnInit, Output} from "@angular/core"
+import {Component, Input} from "@angular/core"
+import {FormControl} from "@angular/forms"
 
 @Component({
   selector: "app-filter-chips",
   templateUrl: "./filter-chips.component.html",
   styleUrls: ["./filter-chips.component.scss"]
 })
-export class FilterChipsComponent implements OnInit {
+export class FilterChipsComponent {
 
   @Input()
   name?: string
   @Input()
-  keywords?: string[]
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
+  control?: FormControl
 
   onRemoveChip(chipText: string): void {
-    const index = this.keywords?.findIndex(i => i === chipText) ?? 0
+    const values = this.control?.value
+    const index = this.control?.value?.findIndex((i: string) => i === chipText) ?? 0
     if (index >= 0) {
-      this.keywords?.splice(index, 1)
+      values.splice(index, 1)
+      this.control?.patchValue(values)
     }
   }
 

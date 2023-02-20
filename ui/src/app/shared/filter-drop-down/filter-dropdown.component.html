@@ -18,36 +18,36 @@
     <app-search-multi-select
       name="category"
       [internalSelectedResults]="keywords?.categories ?? []"
-      [control]="filterFg.get('categories')"
+      [control]="filterFg?.get('categories')"
       [keywordType]="keywordType.Category">
     </app-search-multi-select>
     <app-search-multi-select
       name="keyword"
-      [control]="filterFg.get('keywords')"
+      [control]="filterFg?.get('keywords')"
       [keywordType]="keywordType.Keyword">
     </app-search-multi-select>
     <app-search-multi-select
       name="standards"
-      [control]="filterFg.get('standards')"
+      [control]="filterFg?.get('standards')"
       [keywordType]="keywordType.Standard">
     </app-search-multi-select>
     <app-search-multi-select
       name="alignment"
-      [control]="filterFg.get('alignment')"
+      [control]="filterFg?.get('alignment')"
       [keywordType]="keywordType.Alignment">
     </app-search-multi-select>
     <app-search-multi-select
       name="certification"
-      [control]="filterFg.get('certifications')"
+      [control]="filterFg?.get('certifications')"
       [keywordType]="keywordType.Certification">
     </app-search-multi-select>
     <app-search-multi-select
-      [control]="filterFg.get('occupations')"
+      [control]="filterFg?.get('occupations')"
       name="occupations">
     </app-search-multi-select>
     <app-search-multi-select
       name="employer"
-      [control]="filterFg.get('employers')"
+      [control]="filterFg?.get('employers')"
       [keywordType]="keywordType.Employer">
     </app-search-multi-select>
   </div>

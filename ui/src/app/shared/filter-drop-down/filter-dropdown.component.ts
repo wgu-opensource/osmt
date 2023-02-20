@@ -13,35 +13,20 @@ export class FilterDropdownComponent implements OnInit {
   @Output()
   applyFilter = new EventEmitter<FilterDropdown>()
   showInputs = false
-  filterFg: FormGroup
+  @Input()
+  filterFg?: FormGroup
 
   keywordType = KeywordType
   @Input()
   keywords?: FilterDropdown
 
-  constructor(private formBuilder: FormBuilder) {
-    this.filterFg = this.configureFilterFg()
-  }
-
   ngOnInit(): void {
-    this.filterFg.patchValue(this.keywords ?? {})
-  }
-
-  private configureFilterFg(): FormGroup {
-    return this.formBuilder.group({
-      categories: [],
-      keywords: [],
-      standards: [],
-      alignment: [],
-      certifications: [],
-      occupations: [],
-      employers: []
-    })
+    this.filterFg?.patchValue(this.keywords ?? {})
   }
 
   onApplyFilter(): void {
     this.showInputs = !this.showInputs
-    this.applyFilter.emit(this.filterFg.value)
+    this.applyFilter.emit(this.filterFg?.value)
   }
 
 }

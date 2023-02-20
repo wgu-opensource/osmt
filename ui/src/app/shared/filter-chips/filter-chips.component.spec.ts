@@ -24,8 +24,8 @@ describe("FilterChipsComponent", () => {
   })
 
   it("remove chip should remove and element from chips", () => {
-    component.chips = ["chip1", "chip2"]
+    component.keywords = ["chip1", "chip2"]
     component.onRemoveChip("chip1")
-    expect(component.chips.length).toBe(1)
+    expect(component.keywords.length).toBe(1)
   })
 })

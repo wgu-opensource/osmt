@@ -1,7 +1,7 @@
 <div class="chip-wrapper">
   <div class="header">{{name | titlecase}}</div>
-  <div class="chip" *ngFor="let chip of chips" (click)="onRemoveChip(chip)">
-    {{chip}}
+  <div class="chip" *ngFor="let keyword of keywords" (click)="onRemoveChip(keyword)">
+    {{keyword}}
     <span class="close-button">&times;</span>
   </div>
 </div>

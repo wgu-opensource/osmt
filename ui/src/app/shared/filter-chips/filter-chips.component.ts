@@ -10,7 +10,7 @@ export class FilterChipsComponent implements OnInit {
   @Input()
   name?: string
   @Input()
-  chips?: string[]
+  keywords?: string[]
 
   constructor() {
   }
@@ -19,9 +19,9 @@ export class FilterChipsComponent implements OnInit {
   }
 
   onRemoveChip(chipText: string): void {
-    const index = this.chips?.findIndex(i => i === chipText) ?? 0
+    const index = this.keywords?.findIndex(i => i === chipText) ?? 0
     if (index >= 0) {
-      this.chips?.splice(index, 1)
+      this.keywords?.splice(index, 1)
     }
   }
 

@@ -12,7 +12,7 @@ export class FilterControlsComponent implements OnInit {
   @Output() keywordsChanged: EventEmitter<FilterDropdown> = new EventEmitter<FilterDropdown>()
   @Output() filtersChanged: EventEmitter<Set<PublishStatus>> = new EventEmitter<Set<PublishStatus>>()
   @Input()
-  chipsValues: FilterDropdown = {
+  keywords: FilterDropdown = {
     categories: [],
     certifications: [],
     employers: [],
@@ -54,7 +54,7 @@ export class FilterControlsComponent implements OnInit {
   }
 
   applyFilter(event: FilterDropdown): void {
-    this.chipsValues = event
-    this.keywordsChanged.emit(this.chipsValues)
+    this.keywords = event
+    this.keywordsChanged.emit(this.keywords)
   }
 }

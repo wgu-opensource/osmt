@@ -17,14 +17,14 @@ export class FilterDropdownComponent implements OnInit {
 
   keywordType = KeywordType
   @Input()
-  chipsValues?: FilterDropdown
+  keywords?: FilterDropdown
 
   constructor(private formBuilder: FormBuilder) {
     this.filterFg = this.configureFilterFg()
   }
 
   ngOnInit(): void {
-    this.filterFg.patchValue(this.chipsValues ?? {})
+    this.filterFg.patchValue(this.keywords ?? {})
   }
 
   private configureFilterFg(): FormGroup {

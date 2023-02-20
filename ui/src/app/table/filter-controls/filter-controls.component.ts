@@ -61,7 +61,7 @@ export class FilterControlsComponent implements OnInit {
       categories: [],
       keywords: [],
       standards: [],
-      alignment: [],
+      alignments: [],
       certifications: [],
       occupations: [],
       employers: []

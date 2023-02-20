@@ -42,6 +42,11 @@
     *ngIf="filterFg?.get('standards')?.value?.length > 0">
   </app-filter-chips>
   <app-filter-chips
+    name="alignments"
+    [control]="filterFg.get('alignments')"
+    *ngIf="filterFg?.get('alignments')?.value?.length > 0">
+  </app-filter-chips>
+  <app-filter-chips
     name="certifications"
     [control]="filterFg.get('certifications')"
     *ngIf="filterFg?.get('certifications')?.value?.length > 0">

@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core"
+import {Component, EventEmitter, Input, Output} from "@angular/core"
 import {FormControl} from "@angular/forms"
 
 @Component({
@@ -12,6 +12,8 @@ export class FilterChipsComponent {
   name?: string
   @Input()
   control?: FormControl
+  @Output()
+  remove: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   onRemoveChip(chipText: string): void {
     const values = this.control?.value
@@ -19,6 +21,7 @@ export class FilterChipsComponent {
     if (index >= 0) {
       values.splice(index, 1)
       this.control?.patchValue(values)
+      this.remove.emit(true)
     }
   }
 

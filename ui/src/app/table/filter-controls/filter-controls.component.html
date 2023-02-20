@@ -29,36 +29,43 @@
   <app-filter-chips
     name="category"
     [control]="filterFg.get('categories')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
     *ngIf="filterFg?.get('categories')?.value?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="keywords"
     [control]="filterFg.get('keywords')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
     *ngIf="filterFg?.get('keywords')?.value?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="standards"
     [control]="filterFg.get('standards')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
     *ngIf="filterFg?.get('standards')?.value?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="alignments"
     [control]="filterFg.get('alignments')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
     *ngIf="filterFg?.get('alignments')?.value?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="certifications"
     [control]="filterFg.get('certifications')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
     *ngIf="filterFg?.get('certifications')?.value?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="occupations"
     [control]="filterFg.get('occupations')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
     *ngIf="filterFg?.get('occupations')?.value?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="employers"
     [control]="filterFg.get('employers')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
     *ngIf="filterFg?.get('employers')?.value?.length > 0">
   </app-filter-chips>
 </div>

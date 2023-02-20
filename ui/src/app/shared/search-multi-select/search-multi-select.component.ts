@@ -21,6 +21,7 @@ export class SearchMultiSelectComponent implements OnInit {
   keywordType?: KeywordType
   @Input()
   control?: FormControl
+  @Input()
   internalSelectedResults: string[] = []
   currentlyLoading = false
   iconDismiss = SvgHelper.path(SvgIcon.DISMISS)
@@ -30,6 +31,7 @@ export class SearchMultiSelectComponent implements OnInit {
 
   ngOnInit(): void {
     this.inputFc.valueChanges.subscribe(value => this.getKeywords(value ?? ""))
+    this.results = this.internalSelectedResults
   }
 
   selectResult(result: string): void {

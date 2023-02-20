@@ -9,7 +9,9 @@ import {FilterDropdown} from "../../models/filter-dropdown.model"
 })
 export class FilterControlsComponent implements OnInit {
   @Input() selectedFilters: Set<PublishStatus> = new Set()
+  @Output() keywordsChanged: EventEmitter<FilterDropdown> = new EventEmitter<FilterDropdown>()
   @Output() filtersChanged: EventEmitter<Set<PublishStatus>> = new EventEmitter<Set<PublishStatus>>()
+  @Input()
   chipsValues: FilterDropdown = {
     categories: [],
     certifications: [],
@@ -49,5 +51,10 @@ export class FilterControlsComponent implements OnInit {
   get isArchivedChecked(): boolean | undefined { return this.isStatusChecked(PublishStatus.Archived) }
   isStatusChecked(status: PublishStatus): boolean | undefined {
     return this.selectedFilters.has(status) ? true : undefined
+  }
+
+  applyFilter(event: FilterDropdown): void {
+    this.chipsValues = event
+    this.keywordsChanged.emit(this.chipsValues)
   }
 }

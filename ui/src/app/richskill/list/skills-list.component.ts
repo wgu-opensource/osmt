@@ -17,6 +17,7 @@ import {ButtonAction} from "../../auth/auth-roles";
 import {CollectionService} from "../../collection/service/collection.service"
 import {ApiCollection} from "../../collection/ApiCollection"
 import {CollectionPipe} from "../../pipes"
+import {FilterDropdown} from "../../models/filter-dropdown.model"
 
 @Component({
   selector: "app-skills-list",
@@ -36,6 +37,15 @@ export class SkillsListComponent extends QuickLinksHelper {
   results: PaginatedSkills | undefined
 
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published])
+  filterDropdown: FilterDropdown = {
+    categories: [],
+    certifications: [],
+    employers: [],
+    alignments: [],
+    keywords: [],
+    occupations: [],
+    standards: []
+  }
   selectedSkills?: ApiSkillSummary[]
   skillsSaved?: Observable<ApiBatchResult>
 

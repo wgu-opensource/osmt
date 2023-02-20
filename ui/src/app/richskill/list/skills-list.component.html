@@ -26,6 +26,8 @@
 
     <app-filter-controls
       [selectedFilters]="selectedFilters"
+      [chipsValues]="filterDropdown"
+      (keywordsChanged)="filterDropdown = $event"
       (filtersChanged)="handleFiltersChanged($event)"
     ></app-filter-controls>
 

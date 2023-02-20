@@ -17,6 +17,7 @@
     </div>
     <app-search-multi-select
       name="category"
+      [internalSelectedResults]="chipsValues?.categories ?? []"
       [control]="filterFg.get('categories')"
       [keywordType]="keywordType.Category">
     </app-search-multi-select>

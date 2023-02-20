@@ -20,7 +20,7 @@
       ></app-filter-choice>
     </div>
     <div>
-      <app-filter-dropdown (applyFilter)="chipsValues = $event">
+      <app-filter-dropdown (applyFilter)="applyFilter($event)" [chipsValues]="chipsValues">
       </app-filter-dropdown>
     </div>
   </div>
@@ -29,32 +29,32 @@
   <app-filter-chips
     name="category"
     [chips]="chipsValues.categories"
-    *ngIf="chipsValues.categories.length > 0">
+    *ngIf="chipsValues.categories?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="keywords"
     [chips]="chipsValues.keywords"
-    *ngIf="chipsValues.keywords.length > 0">
+    *ngIf="chipsValues.keywords?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="standards"
     [chips]="chipsValues.standards"
-    *ngIf="chipsValues.standards.length > 0">
+    *ngIf="chipsValues.standards?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="certifications"
     [chips]="chipsValues.certifications"
-    *ngIf="chipsValues.certifications.length > 0">
+    *ngIf="chipsValues.certifications?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="occupations"
     [chips]="chipsValues.occupations"
-    *ngIf="chipsValues.occupations.length > 0">
+    *ngIf="chipsValues.occupations?.length > 0">
   </app-filter-chips>
   <app-filter-chips
     name="employers"
     [chips]="chipsValues.employers"
-    *ngIf="chipsValues.employers.length > 0">
+    *ngIf="chipsValues.employers?.length > 0">
   </app-filter-chips>
 </div>
 

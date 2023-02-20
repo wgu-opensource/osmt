@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core"
 import {PublishStatus} from "../../PublishStatus";
 import {FilterDropdown} from "../../models/filter-dropdown.model"
 import {FormBuilder, FormGroup} from "@angular/forms"
@@ -8,7 +8,7 @@ import {FormBuilder, FormGroup} from "@angular/forms"
   templateUrl: "./filter-controls.component.html",
   styleUrls: ["./filter-controls.component.scss"]
 })
-export class FilterControlsComponent implements OnInit {
+export class FilterControlsComponent implements OnInit, OnChanges {
   @Input() selectedFilters: Set<PublishStatus> = new Set()
   @Output() keywordsChanged: EventEmitter<FilterDropdown> = new EventEmitter<FilterDropdown>()
   @Output() filtersChanged: EventEmitter<Set<PublishStatus>> = new EventEmitter<Set<PublishStatus>>()
@@ -20,10 +20,13 @@ export class FilterControlsComponent implements OnInit {
     protected formBuilder: FormBuilder
   ) {
     this.filterFg = this.configureFilterFg()
-    // this.keywords = this.filterFg.value
   }
 
   ngOnInit(): void {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.filterFg.patchValue(this.keywords ?? {})
   }
 
   onFilterChange(status: PublishStatus, isChecked: boolean): void {

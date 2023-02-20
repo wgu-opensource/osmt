@@ -8,21 +8,14 @@ import {FilterDropdown} from "../../models/filter-dropdown.model"
   templateUrl: "./filter-dropdown.component.html",
   styleUrls: ["./filter-dropdown.component.scss"]
 })
-export class FilterDropdownComponent implements OnInit {
+export class FilterDropdownComponent {
 
   @Output()
   applyFilter = new EventEmitter<FilterDropdown>()
   showInputs = false
   @Input()
   filterFg?: FormGroup
-
   keywordType = KeywordType
-  @Input()
-  keywords?: FilterDropdown
-
-  ngOnInit(): void {
-    this.filterFg?.patchValue(this.keywords ?? {})
-  }
 
   onApplyFilter(): void {
     this.showInputs = !this.showInputs

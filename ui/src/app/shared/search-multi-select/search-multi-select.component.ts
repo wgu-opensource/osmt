@@ -21,8 +21,6 @@ export class SearchMultiSelectComponent implements OnInit {
   keywordType?: KeywordType
   @Input()
   control?: FormControl
-  @Input()
-  internalSelectedResults: string[] = []
   currentlyLoading = false
   iconDismiss = SvgHelper.path(SvgIcon.DISMISS)
 
@@ -31,17 +29,15 @@ export class SearchMultiSelectComponent implements OnInit {
 
   ngOnInit(): void {
     this.inputFc.valueChanges.subscribe(value => this.getKeywords(value ?? ""))
-    this.results = this.internalSelectedResults
   }
 
   selectResult(result: string): void {
     const isResultSelected = this.isResultSelected(result)
     if (!isResultSelected) {
-      this.internalSelectedResults.push(result)
+      this.control?.value.push(result)
     } else {
-      this.internalSelectedResults = this.internalSelectedResults.filter(r => r !== result)
+      this.control?.patchValue(this.control?.value.filter((r: string) => r !== result))
     }
-    this.control?.patchValue(this.internalSelectedResults)
   }
 
   private getKeywords(text: string): void {
@@ -58,7 +54,7 @@ export class SearchMultiSelectComponent implements OnInit {
   }
 
   isResultSelected(result: string): boolean {
-    return this.internalSelectedResults.some(i => i === result)
+    return this.control?.value.some((i: string) => i === result)
   }
 
   clearField(): void {

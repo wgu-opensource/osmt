@@ -19,8 +19,8 @@ export class FilterChipsComponent implements OnInit {
   }
 
   onRemoveChip(chipText: string): void {
-    const index = this.chips?.findIndex(i => i === chipText)
-    if (index) {
+    const index = this.chips?.findIndex(i => i === chipText) ?? 0
+    if (index >= 0) {
       this.chips?.splice(index, 1)
     }
   }

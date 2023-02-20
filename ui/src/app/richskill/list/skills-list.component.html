@@ -26,8 +26,8 @@
 
     <app-filter-controls
       [selectedFilters]="selectedFilters"
-      [keywords]="filterDropdown"
-      (keywordsChanged)="filterDropdown = $event"
+      [keywords]="keywords"
+      (keywordsChanged)="keywordsChange($event)"
       (filtersChanged)="handleFiltersChanged($event)"
     ></app-filter-controls>
 

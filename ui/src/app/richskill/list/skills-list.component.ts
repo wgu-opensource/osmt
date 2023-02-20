@@ -18,6 +18,7 @@ import {CollectionService} from "../../collection/service/collection.service"
 import {ApiCollection} from "../../collection/ApiCollection"
 import {CollectionPipe} from "../../pipes"
 import {FilterDropdown} from "../../models/filter-dropdown.model"
+import {FormBuilder, FormGroup} from "@angular/forms"
 
 @Component({
   selector: "app-skills-list",
@@ -37,7 +38,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   results: PaginatedSkills | undefined
 
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published])
-  filterDropdown: FilterDropdown = {
+  keywords: FilterDropdown = {
     categories: [],
     certifications: [],
     employers: [],
@@ -436,4 +437,10 @@ export class SkillsListComponent extends QuickLinksHelper {
   collectionOrWorkspace(includesMy: boolean): string {
     return new CollectionPipe().transform(this.collection?.status, includesMy)
   }
+
+  keywordsChange(keywords: FilterDropdown): void {
+    this.keywords = keywords
+    this.loadNextPage()
+  }
+
 }

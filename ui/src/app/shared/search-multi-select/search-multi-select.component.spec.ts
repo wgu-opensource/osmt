@@ -29,8 +29,7 @@ describe("SearchMultiSelectComponent", () => {
         RouterTestingModule,
         ReactiveFormsModule
       ],
-    })
-      .compileComponents()
+    }).compileComponents()
 
     const appConfig = TestBed.inject(AppConfig)
     AppConfig.settings = appConfig.defaultConfig()
@@ -52,20 +51,20 @@ describe("SearchMultiSelectComponent", () => {
     expect(component.showResults).toBeTrue()
   })
 
-  it("clear filed should clean input control", () => {
+  it("clear field should clean input control", () => {
     component.inputFc.patchValue("value")
     component.clearField()
     expect(component.inputFc.value.length).toBe(0)
   })
 
   it("is result selected should be true", () => {
-    component.internalSelectedResults = ["value1", "value2"]
+    component.control?.patchValue(["value1", "value2"])
     const isSelected = component.isResultSelected("value1")
     expect(isSelected).toBeTrue()
   })
 
   it("is result selected should be false", () => {
-    component.internalSelectedResults = ["value1", "value2"]
+    component.control?.patchValue(["value1", "value2"])
     const isSelected = component.isResultSelected("value3")
     expect(isSelected).toBeFalse()
   })
@@ -86,14 +85,14 @@ describe("SearchMultiSelectComponent", () => {
   })
 
   it("select result should add value in internal result", () => {
-    component.internalSelectedResults = ["value1"]
+    component.control?.patchValue(["value1"])
     component.selectResult("value2")
-    expect(component.internalSelectedResults.length).toBe(2)
+    expect(component.control?.value?.length).toBe(2)
   })
 
   it("select result should remove value in internal result", () => {
-    component.internalSelectedResults = ["value1", "value2"]
+    component.control?.patchValue(["value1", "value2"])
     component.selectResult("value2")
-    expect(component.internalSelectedResults.length).toBe(1)
+    expect(component.control?.value?.length).toBe(1)
   })
 })

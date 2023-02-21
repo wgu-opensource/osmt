@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 
 import { FilterDropdownComponent } from "./filter-dropdown.component"
-import {FormsModule, ReactiveFormsModule} from "@angular/forms"
+import {FilterControlsComponent} from "../../table/filter-controls/filter-controls.component"
+import {ReactiveFormsModule} from "@angular/forms"
 
 describe("FilterComponent", () => {
   let component: FilterDropdownComponent
@@ -9,7 +10,10 @@ describe("FilterComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FilterDropdownComponent ],
+      declarations: [
+        FilterDropdownComponent,
+        FilterControlsComponent
+      ],
       imports: [
         ReactiveFormsModule
       ]
@@ -20,19 +24,12 @@ describe("FilterComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(FilterDropdownComponent)
     component = fixture.componentInstance
+    component.filterFg = TestBed.createComponent(FilterControlsComponent).componentInstance["configureFilterFg"]()
     fixture.detectChanges()
   })
 
   it("should create", () => {
     expect(component).toBeTruthy()
-  })
-
-  it("configure filter should works", () => {
-    component["configureFilterFg"]()
-    const value = component.filterFg.value
-    const properties = ["categories", "keywords", "standards", "certifications", "occupations", "employers"]
-    expect(value).toBeTruthy()
-    expect(properties.every(p => p in value)).toBeTrue()
   })
 
   it("showInput should change", () => {

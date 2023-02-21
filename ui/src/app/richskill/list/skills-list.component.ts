@@ -18,7 +18,6 @@ import {CollectionService} from "../../collection/service/collection.service"
 import {ApiCollection} from "../../collection/ApiCollection"
 import {CollectionPipe} from "../../pipes"
 import {FilterDropdown} from "../../models/filter-dropdown.model"
-import {FormBuilder, FormGroup} from "@angular/forms"
 
 @Component({
   selector: "app-skills-list",

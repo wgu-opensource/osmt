@@ -1,4 +1,4 @@
-import {ApiSearch, ApiSkillListUpdate, PaginatedSkills} from "../service/rich-skill-search.service"
+import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service";
 import {ApiSkillSummary} from "../ApiSkillSummary";
 import {checkArchived, determineFilters, PublishStatus} from "../../PublishStatus";
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";

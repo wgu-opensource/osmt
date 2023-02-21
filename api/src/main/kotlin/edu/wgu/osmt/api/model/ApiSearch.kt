@@ -65,16 +65,19 @@ data class ApiSkillListUpdate(
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class ApiAdvancedFilteredSearch(
     @JsonProperty("statuses")
-    val statuses: List<String>? = null,
+    val statuses: Array<String>? = null,
 
-    @JsonProperty("skillStatement")
+    @JsonProperty("statement")
     val skillStatement: String? = null,
 
     @JsonProperty("categories")
-    val categories: List<String>? = null,
+    val categories: Array<String>? = null,
+
+    @JsonProperty("keywords")
+    val keywords: Array<String>? = null,
 
     @JsonProperty("standards")
-    val standards: List<ApiNamedReference>? = null,
+    val standards: Array<String>? = null,
 
     @JsonProperty("certifications")
     val certifications: List<ApiNamedReference>? = null,
@@ -85,4 +88,22 @@ data class ApiAdvancedFilteredSearch(
     @JsonProperty("jobcodes")
     val jobCodes: List<String>? = null
 
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ApiAdvancedFilteredSearch
+
+        if (statuses != null) {
+            if (other.statuses == null) return false
+            if (!statuses.contentEquals(other.statuses)) return false
+        } else if (other.statuses != null) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return statuses?.contentHashCode() ?: 0
+    }
+}

@@ -1,5 +1,6 @@
 import {FilterControlsComponent} from "./filter-controls.component"
 import {ComponentFixture, TestBed} from "@angular/core/testing"
+import {FormBuilder} from "@angular/forms"
 
 describe("FilterControlsComponent", () => {
   let component: FilterControlsComponent
@@ -9,7 +10,9 @@ describe("FilterControlsComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [FilterControlsComponent],
       imports: [],
-      providers: []
+      providers: [
+        FormBuilder
+      ]
     }).compileComponents()
   })
 

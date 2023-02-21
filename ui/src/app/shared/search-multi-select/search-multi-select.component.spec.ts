@@ -2,7 +2,6 @@ import {ComponentFixture, TestBed} from "@angular/core/testing"
 
 import {SearchMultiSelectComponent} from "./search-multi-select.component"
 import {KeywordSearchService} from "../../richskill/service/keyword-search.service"
-import {HttpClientModule} from "@angular/common/http"
 import {AuthService} from "../../auth/auth-service"
 import {AuthServiceStub} from "../../../../test/resource/mock-stubs"
 import {RouterTestingModule} from "@angular/router/testing"
@@ -11,6 +10,7 @@ import {AppConfig} from "../../app.config"
 import {createMockApiNamedReference, createMockJobcode} from "../../../../test/resource/mock-data"
 import {of} from "rxjs"
 import {KeywordType} from "../../richskill/ApiSkill"
+import {HttpClientTestingModule} from "@angular/common/http/testing"
 
 describe("SearchMultiSelectComponent", () => {
   let component: SearchMultiSelectComponent
@@ -25,7 +25,7 @@ describe("SearchMultiSelectComponent", () => {
         {provide: AuthService, useClass: AuthServiceStub},
       ],
       imports: [
-        HttpClientModule,
+        HttpClientTestingModule,
         RouterTestingModule,
         ReactiveFormsModule
       ],

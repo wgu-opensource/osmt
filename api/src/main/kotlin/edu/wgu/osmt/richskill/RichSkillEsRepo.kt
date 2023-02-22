@@ -70,13 +70,13 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         )
     }
 
-    fun buildNestedQuery(path: String, field: String, queryParams: Array<String>) : BoolQueryBuilder {
+    fun buildNestedQuery(path: String?=null, queryParams: Array<String>) : BoolQueryBuilder {
         val disjunctionQuery = disMaxQuery()
         var queries = ArrayList<PrefixQueryBuilder>()
         queryParams.let {
             it.mapNotNull {param ->
                 queries.add (
-                    prefixQuery(path+field, param)
+                    prefixQuery(path + ".keyword", param)
                 )
             }
 
@@ -84,7 +84,9 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
         disjunctionQuery.innerQueries().addAll(queries)
 
-        return boolQuery().must(existsQuery(path+field)).must(disjunctionQuery)
+        val result = boolQuery().must(existsQuery(path + ".keyword")).must(disjunctionQuery)
+
+        return result
     }
 
 
@@ -207,7 +209,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             }
 
             categories?. let {
-                buildNestedQuery(RichSkillDoc::category.name, "${RichSkillDoc::category.name}.keyword", it)
+                bq.should(buildNestedQuery(RichSkillDoc::category.name, it))
             }
 //            keywords?. let {
 //                it.

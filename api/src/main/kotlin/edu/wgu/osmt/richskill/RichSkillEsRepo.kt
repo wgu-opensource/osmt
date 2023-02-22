@@ -70,6 +70,24 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         )
     }
 
+    fun buildNestedQuery(path: String, field: String, queryParams: Array<String>) : BoolQueryBuilder {
+        val disjunctionQuery = disMaxQuery()
+        var queries = ArrayList<PrefixQueryBuilder>()
+        queryParams.let {
+            it.mapNotNull {param ->
+                queries.add (
+                    prefixQuery(path+field, param)
+                )
+            }
+
+        }
+
+        disjunctionQuery.innerQueries().addAll(queries)
+
+        return boolQuery().must(existsQuery(path+field)).must(disjunctionQuery)
+    }
+
+
     // Query clauses for Rich Skill properties
     override fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch) {
         with(advancedQuery) {
@@ -177,21 +195,82 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
     override fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiAdvancedFilteredSearch) {
         with(filteredQuery) {
-            skillStatement.nullIfEmpty()?.let {
-                    bq.must(
-                        simpleQueryStringQuery(it).field("${RichSkillDoc::statement.name}.keyword")
-                            .defaultOperator(Operator.AND)
-                    )
 
-            }
-
-            categories?.map {
+            statuses?.let {
+                it.mapNotNull {status ->
                     bq.should(
-                        simpleQueryStringQuery(it).field("${RichSkillDoc::category.name}.keyword")
+                        simpleQueryStringQuery(status).field("${RichSkillDoc::publishStatus.name}.keyword")
                             .defaultOperator(Operator.AND)
                     )
 
+                }
             }
+
+            categories?. let {
+                buildNestedQuery(RichSkillDoc::category.name, "${RichSkillDoc::category.name}.keyword", it)
+            }
+//            keywords?. let {
+//                it.
+//                mapNotNull {
+//                    bq.should(
+//                        simpleQueryStringQuery(it).field("${RichSkillDoc::searchingKeywords.name}.keyword")
+//                            .defaultOperator(Operator.AND)
+//                    )
+//                }
+//            }
+//            standards?. let {
+//                it.
+//                mapNotNull {
+//                    bq.should(
+//                        simpleQueryStringQuery(it).field("${RichSkillDoc::standards.name}.keyword")
+//                            .defaultOperator(Operator.AND)
+//                    )
+//                }
+//            }
+//            certifications?. let {
+//                it.
+//                mapNotNull {
+//                    bq.should(
+//                        simpleQueryStringQuery(it).field("${RichSkillDoc::certifications.name}.keyword")
+//                            .defaultOperator(Operator.AND)
+//                    )
+//                }
+//            }
+//            alignments?. let {
+//                it.
+//                mapNotNull {
+//                    bq.should(
+//                        simpleQueryStringQuery(it).field("${RichSkillDoc::alignments.name}.keyword")
+//                            .defaultOperator(Operator.AND)
+//                    )
+//                }
+//            }
+//            authors?. let {
+//                it.
+//                mapNotNull {
+//                    bq.should(
+//                        simpleQueryStringQuery(it).field("${RichSkillDoc::author.name}.keyword")
+//                            .defaultOperator(Operator.AND)
+//                    )
+//                }
+//            }
+//            occupations?.let {
+//                it.mapNotNull { value ->
+//                    bq.must(
+//                        occupationQueries(value)
+//                    )
+//                }
+//            }
+//            jobCodes?.let {
+//                it.mapNotNull { value ->
+//                    bq.must(
+//                        occupationQueries(value)
+//                    )
+//                }
+//            }
+
+
+
         }
 
 

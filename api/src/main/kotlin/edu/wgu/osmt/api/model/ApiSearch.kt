@@ -80,13 +80,24 @@ data class ApiAdvancedFilteredSearch(
     val standards: Array<String>? = null,
 
     @JsonProperty("certifications")
-    val certifications: List<ApiNamedReference>? = null,
+    val certifications: Array<String>? = null,
 
     @JsonProperty("alignments")
-    val alignments: List<ApiNamedReference>? = null,
+    val alignments: Array<String>? = null,
 
     @JsonProperty("jobcodes")
-    val jobCodes: List<String>? = null
+    val jobCodes: Array<String>? = null,
+
+    @JsonProperty("employers")
+    val employers: Array<String>? = null,
+
+    @JsonProperty("authors")
+    val authors: Array<String>? = null,
+
+    @JsonProperty("occupations")
+    val occupations: Array<String>? = null,
+
+
 
 ) {
     override fun equals(other: Any?): Boolean {

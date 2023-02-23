@@ -85,7 +85,7 @@ export class AuthService extends Whitelabelled implements IAuthService {
     if (ENABLE_ROLES) {
       const allowedRoles = ActionByRoles.get(buttonAction) ?? [];
       const userRoles = this.getRole()?.split(",");
-      return this.hasRole(allowedRoles, userRoles);
+      return this.hasRole(allowedRoles, userRoles ?? []);
     }
     return true;
   }

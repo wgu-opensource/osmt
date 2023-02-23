@@ -44,8 +44,8 @@
         <connection>scm:git:ssh://git@github.com/wgu-opensource/osmt.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/wgu-opensource/osmt.git</developerConnection>
         <url>https://github.com/wgu-opensource/osmt.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <distributionManagement>
         <snapshotRepository>
@@ -161,3 +161,4 @@
     </profiles>
 
 </project>
+

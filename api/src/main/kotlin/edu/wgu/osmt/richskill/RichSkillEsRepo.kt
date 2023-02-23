@@ -15,6 +15,7 @@ import edu.wgu.osmt.nullIfEmpty
 import org.apache.lucene.search.join.ScoreMode
 import org.elasticsearch.index.query.*
 import org.elasticsearch.index.query.QueryBuilders.*
+import org.elasticsearch.script.Script
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.Page
@@ -70,23 +71,21 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         )
     }
 
-    fun buildNestedQuery(path: String?=null, queryParams: Array<String>) : BoolQueryBuilder {
+    fun buildNestedQueries(path: String?=null, queryParams: Array<String>) : BoolQueryBuilder {
         val disjunctionQuery = disMaxQuery()
-        var queries = ArrayList<PrefixQueryBuilder>()
+        val queries = ArrayList<PrefixQueryBuilder>()
+
         queryParams.let {
-            it.mapNotNull {param ->
-                queries.add (
+            it.map { param ->
+                queries.add(
                     prefixQuery(path + ".keyword", param)
                 )
             }
 
         }
-
         disjunctionQuery.innerQueries().addAll(queries)
 
-        val result = boolQuery().must(existsQuery(path + ".keyword")).must(disjunctionQuery)
-
-        return result
+        return boolQuery().must(existsQuery(path + ".keyword")).must(disjunctionQuery)
     }
 
 
@@ -196,86 +195,75 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     }
 
     override fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiAdvancedFilteredSearch) {
+
+
         with(filteredQuery) {
 
-            statuses?.let {
-                it.mapNotNull {status ->
-                    bq.should(
-                        simpleQueryStringQuery(status).field("${RichSkillDoc::publishStatus.name}.keyword")
-                            .defaultOperator(Operator.AND)
+            categories?. let {
+                bq.must(buildNestedQueries(RichSkillDoc::category.name, it))
+            }
+            keywords?. let {
+                it.mapNotNull {
+                    bq.must(
+                        TermsSetQueryBuilder(
+                            "${RichSkillDoc::searchingKeywords.name}.keyword", keywords.toList()
+                        )
+                            .setMinimumShouldMatchScript(Script(keywords.size.toString()))
                     )
 
                 }
             }
+            standards?. let {
+                it.mapNotNull {
+                    bq.must(
+                        TermsSetQueryBuilder(
+                            "${RichSkillDoc::standards.name}.keyword", standards.toList()
+                        )
+                            .setMinimumShouldMatchScript(Script(standards.size.toString()))
+                    )
 
-            categories?. let {
-                bq.should(buildNestedQuery(RichSkillDoc::category.name, it))
+                }
             }
-//            keywords?. let {
-//                it.
-//                mapNotNull {
-//                    bq.should(
-//                        simpleQueryStringQuery(it).field("${RichSkillDoc::searchingKeywords.name}.keyword")
-//                            .defaultOperator(Operator.AND)
-//                    )
-//                }
-//            }
-//            standards?. let {
-//                it.
-//                mapNotNull {
-//                    bq.should(
-//                        simpleQueryStringQuery(it).field("${RichSkillDoc::standards.name}.keyword")
-//                            .defaultOperator(Operator.AND)
-//                    )
-//                }
-//            }
-//            certifications?. let {
-//                it.
-//                mapNotNull {
-//                    bq.should(
-//                        simpleQueryStringQuery(it).field("${RichSkillDoc::certifications.name}.keyword")
-//                            .defaultOperator(Operator.AND)
-//                    )
-//                }
-//            }
-//            alignments?. let {
-//                it.
-//                mapNotNull {
-//                    bq.should(
-//                        simpleQueryStringQuery(it).field("${RichSkillDoc::alignments.name}.keyword")
-//                            .defaultOperator(Operator.AND)
-//                    )
-//                }
-//            }
-//            authors?. let {
-//                it.
-//                mapNotNull {
-//                    bq.should(
-//                        simpleQueryStringQuery(it).field("${RichSkillDoc::author.name}.keyword")
-//                            .defaultOperator(Operator.AND)
-//                    )
-//                }
-//            }
-//            occupations?.let {
-//                it.mapNotNull { value ->
-//                    bq.must(
-//                        occupationQueries(value)
-//                    )
-//                }
-//            }
-//            jobCodes?.let {
-//                it.mapNotNull { value ->
-//                    bq.must(
-//                        occupationQueries(value)
-//                    )
-//                }
-//            }
+            certifications?. let {
+                it.mapNotNull {
+                    bq.must(
+                        TermsSetQueryBuilder(
+                            "${RichSkillDoc::certifications.name}.keyword", certifications.toList()
+                        )
+                            .setMinimumShouldMatchScript(Script(certifications.size.toString()))
+                    )
 
+                }
+            }
+            alignments?. let {
+                it.mapNotNull {
+                    bq.must(
+                        TermsSetQueryBuilder(
+                            "${RichSkillDoc::alignments.name}.keyword", alignments.toList()
+                        )
+                            .setMinimumShouldMatchScript(Script(alignments.size.toString()))
+                    )
 
+                }
+            }
+            employers?. let {
+                    bq.must(buildNestedQueries(RichSkillDoc::employers.name, it))
+            }
+            authors?. let {
+                bq.must(buildNestedQueries(RichSkillDoc::author.name, it))
+            }
+            occupations?. let {
+                it.mapNotNull {
+                    bq.must(
+                        TermsSetQueryBuilder(
+                            "${RichSkillDoc::jobCodes.name}.keyword", occupations.toList()
+                        )
+                            .setMinimumShouldMatchScript(Script(occupations.size.toString()))
+                    )
 
+                }
+            }
         }
-
-
     }
 
     override fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder {

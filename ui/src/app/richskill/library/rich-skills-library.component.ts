@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core"
 import {RichSkillService} from "../service/rich-skill.service"
 import {SkillsListComponent} from "../list/skills-list.component"
 import {ToastService} from "../../toast/toast.service"
-import {PaginatedSkills} from "../service/rich-skill-search.service"
+import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service"
 import {Router} from "@angular/router"
 import {determineFilters} from "../../PublishStatus"
 import {Title} from "@angular/platform-browser"
@@ -38,8 +38,8 @@ export class RichSkillsLibraryComponent extends SkillsListComponent implements O
       this.setResults(new PaginatedSkills([], 0))
       return
     }
-
-    this.resultsLoaded = this.richSkillService.getSkills(this.size, this.from, determineFilters(this.selectedFilters), this.columnSort)
+    const apiSearch = new ApiSearch({filtered: {statuses: this.selectedFilters}})
+    this.resultsLoaded = this.richSkillService.getSkills(this.size, this.from, apiSearch, this.columnSort)
     this.resultsLoaded.subscribe((results) => {
       this.setResults(results)
     })

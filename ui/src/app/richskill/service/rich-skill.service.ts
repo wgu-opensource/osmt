@@ -29,11 +29,11 @@ export class RichSkillService extends AbstractService {
   getSkills(
     size: number = 50,
     from: number = 0,
-    filterByStatuses: Set<PublishStatus> | undefined,
+    apiSearch: ApiSearch,
     sort: ApiSortOrder | undefined,
   ): Observable<PaginatedSkills> {
 
-    const params = this.buildTableParams(size, from, filterByStatuses, sort)
+    const params = this.buildTableParams(size, from, apiSearch.filtered?.statuses, sort)
     return this.get<ApiSkillSummary[]>({
       path: `${this.serviceUrl}`,
       params,

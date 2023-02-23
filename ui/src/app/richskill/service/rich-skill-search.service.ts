@@ -1,21 +1,25 @@
 import {INamedReference} from "../ApiSkill"
 import {ApiCollectionSummary, ApiSkillSummary} from "../ApiSkillSummary"
+import {PublishStatus} from "../../PublishStatus"
 
 export interface ISearch {
   query?: string
   advanced?: ApiAdvancedSearch
+  filtered?: ApiAdvancedFilteredSearch
   uuids?: string[]
 }
 
 export class ApiSearch implements ISearch {
   query?: string
   advanced?: ApiAdvancedSearch
+  filtered?: ApiAdvancedFilteredSearch
   uuids?: string[]
 
-  constructor({query, advanced, uuids}: ISearch) {
+  constructor({query, advanced, uuids, filtered}: ISearch) {
     this.query = query
     this.advanced = advanced
     this.uuids = uuids
+    this.filtered = filtered
   }
 
   advancedMatchingQuery(): string[] {
@@ -34,7 +38,7 @@ export interface ApiAdvancedFilteredSearch {
   jobcodes?: string[]
   categories?: string[]
   employers?: string[]
-  statuses?: string[]
+  statuses?: Set<PublishStatus>
   skillStatement?: string
   keywords?: string[]
   alignments?: string[]

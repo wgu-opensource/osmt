@@ -26,6 +26,21 @@ export class ApiSearch implements ISearch {
   }
 }
 
+export interface ApiAdvancedFilteredSearch {
+  standards?: string[]
+  authors?: string[]
+  occupations?: string[]
+  certifications?: string[]
+  jobcodes?: string[]
+  categories?: string[]
+  employers?: string[]
+  statuses?: string[]
+  skillStatement?: string
+  keywords?: string[]
+  alignments?: string[]
+  statement?: string
+}
+
 export class ApiAdvancedSearch {
   skillName?: string
   collectionName?: string

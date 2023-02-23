@@ -67,7 +67,8 @@ export class FilterControlsComponent implements OnInit, OnChanges {
       alignments: [],
       certifications: [],
       occupations: [],
-      employers: []
+      employers: [],
+      authors: []
     })
   }
 

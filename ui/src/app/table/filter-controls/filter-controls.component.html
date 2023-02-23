@@ -68,5 +68,11 @@
     (remove)="keywordsChanged.emit(filterFg.value)"
     *ngIf="filterFg?.get('employers')?.value?.length > 0">
   </app-filter-chips>
+  <app-filter-chips
+    name="authors"
+    [control]="filterFg.get('authors')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
+    *ngIf="filterFg?.get('authors')?.value?.length > 0">
+  </app-filter-chips>
 </div>
 

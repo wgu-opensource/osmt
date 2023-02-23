@@ -6,4 +6,5 @@ export interface FilterDropdown {
   certifications: string[]
   occupations: string[]
   employers: string[]
+  authors: string[]
 }

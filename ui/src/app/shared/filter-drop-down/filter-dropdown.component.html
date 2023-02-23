@@ -45,9 +45,14 @@
       name="occupations">
     </app-search-multi-select>
     <app-search-multi-select
-      name="employer"
+      name="employers"
       [control]="filterFg?.get('employers')"
       [keywordType]="keywordType.Employer">
+    </app-search-multi-select>
+    <app-search-multi-select
+      name="authors"
+      [control]="filterFg?.get('authors')"
+      [keywordType]="keywordType.Author">
     </app-search-multi-select>
   </div>
 </div>

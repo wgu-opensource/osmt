@@ -44,7 +44,8 @@ export class SkillsListComponent extends QuickLinksHelper {
     alignments: [],
     keywords: [],
     occupations: [],
-    standards: []
+    standards: [],
+    authors: []
   }
   selectedSkills?: ApiSkillSummary[]
   skillsSaved?: Observable<ApiBatchResult>

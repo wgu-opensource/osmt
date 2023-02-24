@@ -38,7 +38,6 @@ export interface ApiAdvancedFilteredSearch {
   jobcodes?: string[]
   categories?: string[]
   employers?: string[]
-  statuses?: Set<PublishStatus>
   skillStatement?: string
   keywords?: string[]
   alignments?: string[]

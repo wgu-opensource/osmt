@@ -38,8 +38,10 @@ export class RichSkillsLibraryComponent extends SkillsListComponent implements O
       this.setResults(new PaginatedSkills([], 0))
       return
     }
-    const apiSearch = new ApiSearch({filtered: {statuses: this.selectedFilters}})
-    this.resultsLoaded = this.richSkillService.getSkills(this.size, this.from, apiSearch, this.columnSort)
+    const apiSearch = new ApiSearch({filtered: this.selectedKeywords})
+    this.resultsLoaded = this.richSkillService.getSkillsFiltered(
+      this.size, this.from, apiSearch, this.selectedFilters, this.columnSort
+    )
     this.resultsLoaded.subscribe((results) => {
       this.setResults(results)
     })

@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core"
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http"
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http"
 import {Observable, of, throwError} from "rxjs"
 import {ApiAuditLog, ApiSkill, ApiSortOrder, IAuditLog, ISkill} from "../ApiSkill"
 import {delay, map, retryWhen, share, switchMap} from "rxjs/operators"
@@ -29,14 +29,37 @@ export class RichSkillService extends AbstractService {
   getSkills(
     size: number = 50,
     from: number = 0,
-    apiSearch: ApiSearch,
+    filterByStatuses: Set<PublishStatus> | undefined,
     sort: ApiSortOrder | undefined,
   ): Observable<PaginatedSkills> {
 
-    const params = this.buildTableParams(size, from, apiSearch.filtered?.statuses, sort)
+    const params = this.buildTableParams(size, from, filterByStatuses, sort)
     return this.get<ApiSkillSummary[]>({
       path: `${this.serviceUrl}`,
       params,
+    })
+      .pipe(share())
+      .pipe(map(({body, headers}) => {
+        return new PaginatedSkills(
+          body?.map(skill => skill) || [],
+          Number(headers.get("X-Total-Count"))
+        )
+      }))
+  }
+
+  getSkillsFiltered(
+    size: number = 50,
+    from: number = 0,
+    apiSearch: ApiSearch,
+    filterByStatuses: Set<PublishStatus> | undefined,
+    sort: ApiSortOrder | undefined,
+  ): Observable<PaginatedSkills> {
+
+    const params = this.buildTableParams(size, from, filterByStatuses, sort)
+    return this.post<ApiSkillSummary[]>({
+      path: `${this.serviceUrl}/filter`,
+      params,
+      body: apiSearch
     })
       .pipe(share())
       .pipe(map(({body, headers}) => {

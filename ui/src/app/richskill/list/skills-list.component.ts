@@ -440,7 +440,19 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   keywordsChange(keywords: FilterDropdown): void {
     this.keywords = keywords
+    console.log(this.keywords)
     this.loadNextPage()
+  }
+
+  get selectedKeywords(): any {
+    const a: any = {}
+    const b: any = this.keywords
+    for (const key in this.keywords) {
+      if (b[key].length > 0) {
+        a[key] = b[key]
+      }
+    }
+    return a
   }
 
 }

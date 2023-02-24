@@ -292,7 +292,7 @@ describe("ManageCollectionComponent", () => {
       expect(router.navigate).toHaveBeenCalledWith(["/collections/uuid1/add-skills"])
 
       action = actions[1]
-      expect(action.label).toEqual("Edit Collection Name")
+      expect(action.label).toEqual("Edit Collection")
       expect(action.primary).toBeFalsy()
       expect(action && action.callback).toBeTruthy()
       spyNavigate.calls.reset()

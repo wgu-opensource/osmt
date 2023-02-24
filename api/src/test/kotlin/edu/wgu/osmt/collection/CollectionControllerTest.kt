@@ -47,7 +47,7 @@ internal class CollectionControllerTest @Autowired constructor(
     @Test
     fun `workspaceByOwner() should retrieve an existing workspace`() {
         // arrange
-        collectionRepository.create(CollectionUpdateObject(12345,"testCollection",null,null, PublishStatus.Workspace), userString, userEmail)
+        collectionRepository.create(CollectionUpdateObject(12345,"testCollection",null,null,null,PublishStatus.Workspace), userString, userEmail)
         val jwt = Jwt.withTokenValue("foo").header("foo", "foo").claim("email", userEmail).build()
 
         // act

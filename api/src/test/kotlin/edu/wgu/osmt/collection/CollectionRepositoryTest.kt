@@ -60,6 +60,7 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
         val collection = crs.collection
 
         assertThat(collection.name).isEqualTo(apiObj.name)
+        assertThat(collection.description).isEqualTo(apiObj.description)
         assertThat(collection.author?.value).isEqualTo(apiObj.author)
         assertThat(collection.publishStatus()).isEqualTo(apiObj.publishStatus)
 
@@ -73,8 +74,9 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
         ), userString)!!
     }
 
-        private fun random_collection_update(): ApiCollectionUpdate {
+    private fun random_collection_update(): ApiCollectionUpdate {
         val name = UUID.randomUUID().toString()
+        val description = UUID.randomUUID().toString()
         val author = UUID.randomUUID().toString()
         val status = PublishStatus.Published
         val skillCount = 3
@@ -84,6 +86,7 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
         )
         return ApiCollectionUpdate(
             name=name,
+            description=description,
             author=author,
             publishStatus=status,
             skills=skills
@@ -153,7 +156,7 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
     @Test
     fun `findByOwner() should find an existing workspace`() {
         // Arrange
-        collectionRepository.create(CollectionUpdateObject(12345,"My Workspace",null,null,PublishStatus.Workspace), userString, userEmail)
+        collectionRepository.create(CollectionUpdateObject(12345,"My Workspace",null,null,null,PublishStatus.Workspace), userString, userEmail)
 
         // Act
         val collectionDao = collectionRepository.findByOwner("unit@test.user")

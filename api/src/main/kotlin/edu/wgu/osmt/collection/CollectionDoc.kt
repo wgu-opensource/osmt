@@ -37,6 +37,17 @@ data class CollectionDoc(
     )
     val name: String,
 
+    @MultiField(
+        mainField = Field(type = Text, analyzer = "english_stemmer"),
+        otherFields = [
+            InnerField(suffix = "", type = Search_As_You_Type),
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
+            InnerField(suffix = "keyword", type = Keyword),
+            InnerField(suffix = "sort_insensitive", type = Keyword, normalizer = "lowercase_normalizer")
+        ]
+    )
+    val description: String?,
+
     @Field(type = Keyword)
     @get:JsonProperty("status")
     val publishStatus: PublishStatus,

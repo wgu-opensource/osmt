@@ -57,6 +57,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             "${CollectionDoc::name.name}.raw",
             "${CollectionDoc::name.name}._2gram",
             "${CollectionDoc::name.name}._3gram",
+            "${CollectionDoc::description.name}.raw",
             CollectionDoc::author.name
         )
 
@@ -64,6 +65,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             CollectionDoc::name.name,
             "${CollectionDoc::name.name}._2gram",
             "${CollectionDoc::name.name}._3gram",
+            CollectionDoc::description.name,
             CollectionDoc::author.name
         )
 

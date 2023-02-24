@@ -1,8 +1,8 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.PaginationDefaults
-import edu.wgu.osmt.api.model.ApiAdvancedFilteredSearch
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
+import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSimilaritySearch
 import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
@@ -33,7 +33,7 @@ const val collectionsUuid = "collections.uuid"
 
 interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch)
-    fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiAdvancedFilteredSearch)
+    fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiFilteredSearch)
     fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder
     fun byApiSearch(
         apiSearch: ApiSearch,
@@ -71,7 +71,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         )
     }
 
-    fun buildNestedQueries(path: String?=null, queryParams: Array<String>) : BoolQueryBuilder {
+    fun buildNestedQueries(path: String?=null, queryParams: List<String>) : BoolQueryBuilder {
         val disjunctionQuery = disMaxQuery()
         val queries = ArrayList<PrefixQueryBuilder>()
 
@@ -194,7 +194,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         }
     }
 
-    override fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiAdvancedFilteredSearch) {
+    override fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiFilteredSearch) {
 
 
         with(filteredQuery) {

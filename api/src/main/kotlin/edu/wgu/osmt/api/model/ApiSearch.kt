@@ -12,7 +12,7 @@ data class ApiSearch(
     val advanced: ApiAdvancedSearch? = null,
 
     @JsonProperty("filtered")
-    val filtered: ApiAdvancedFilteredSearch? = null,
+    val filtered: ApiFilteredSearch? = null,
 
     @JsonProperty("uuids")
     val uuids: List<String>? = null
@@ -63,58 +63,24 @@ data class ApiSkillListUpdate(
 )
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
-data class ApiAdvancedFilteredSearch(
-    @JsonProperty("statuses")
-    val statuses: Array<String>? = null,
+data class ApiFilteredSearch(
 
-    @JsonProperty("statement")
-    val skillStatement: String? = null,
+    val categories: List<String>? = null,
 
-    @JsonProperty("categories")
-    val categories: Array<String>? = null,
+    val keywords: List<String>? = null,
 
-    @JsonProperty("keywords")
-    val keywords: Array<String>? = null,
+    val standards: List<String>? = null,
 
-    @JsonProperty("standards")
-    val standards: Array<String>? = null,
+    val certifications: List<String>? = null,
 
-    @JsonProperty("certifications")
-    val certifications: Array<String>? = null,
-
-    @JsonProperty("alignments")
-    val alignments: Array<String>? = null,
+    val alignments: List<String>? = null,
 
     @JsonProperty("jobcodes")
-    val jobCodes: Array<String>? = null,
+    val jobCodes: List<String>? = null,
 
-    @JsonProperty("employers")
-    val employers: Array<String>? = null,
+    val employers: List<String>? = null,
 
-    @JsonProperty("authors")
-    val authors: Array<String>? = null,
+    val authors: List<String>? = null,
 
-    @JsonProperty("occupations")
-    val occupations: Array<String>? = null,
-
-
-
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ApiAdvancedFilteredSearch
-
-        if (statuses != null) {
-            if (other.statuses == null) return false
-            if (!statuses.contentEquals(other.statuses)) return false
-        } else if (other.statuses != null) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return statuses?.contentHashCode() ?: 0
-    }
-}
+    val occupations: List<String>? = null
+)

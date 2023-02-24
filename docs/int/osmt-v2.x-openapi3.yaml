@@ -139,6 +139,59 @@ paths:
                 items:
                   type: boolean
 
+  /api/skills/filter:
+    post:
+      tags:
+        - Skills
+      summary: ApiAdvancedFilteredSearch
+      description: Search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Search'
+      parameters:
+        - in: query
+          name: size
+          description: number of skills to return per page
+          schema:
+            type: number
+            default: 50
+        - in: query
+          name: from
+          description: zero-indexed offset from beginning of records
+          schema:
+            type: number
+            default: 0
+        - in: query
+          name: status
+          schema:
+            default:
+              - Unpublished
+              - Published
+            type: array
+            items:
+              $ref: '#/components/schemas/PublishStatus'
+        - in: query
+          name: sort
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SkillDoc'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
 
   /api/skills:
     get:
@@ -1334,6 +1387,8 @@ components:
           type: string
         advanced:
           $ref: '#/components/schemas/AdvancedSearch'
+        filtered:
+          $ref: '#/components/schemas/ApiAdvancedFilteredSearch'
         uuids:
           type: array
           items:
@@ -1393,6 +1448,46 @@ components:
         - name.desc
         - skill.asc
         - skill.desc
+
+    ApiAdvancedFilteredSearch:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            type: string
+        keywords:
+          type: array
+          items:
+            type: string
+        standars:
+          type: array
+          items:
+            type: string
+        certifications:
+          type: array
+          items:
+            type: string
+        alignments:
+          type: array
+          items:
+            type: string
+        jobcodes:
+          type: array
+          items:
+            type: string
+        employers:
+          type: array
+          items:
+            type: string
+        authors:
+          type: array
+          items:
+            type: string
+        occupations:
+          type: array
+          items:
+            type: string
 
     TaskResult:
       type: object

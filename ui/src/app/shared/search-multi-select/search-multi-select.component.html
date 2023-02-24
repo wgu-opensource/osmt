@@ -62,7 +62,7 @@
               <div class="t-visuallyHidden">Showing search results: </div>
               <div class="result-container" *ngFor="let result of results;">
               <span class="m-buttonText-x-text">
-                {{result}}
+                {{resultName(result)}}
               </span>
                 <input type="checkbox" [checked]="isResultSelected(result)" (click)="selectResult(result)">
               </div>
@@ -81,7 +81,7 @@
 
         <div class="l-searchSelect-x-items">
           <div class="m-inputItem" *ngFor="let result of control.value" (click)="selectResult(result)">
-            <span class="m-inputItem-x-text">{{result}}</span>
+            <span class="m-inputItem-x-text">{{resultName(result)}}</span>
             <button class="m-inputItem-x-icon" type="button">
               <svg aria-hidden="true">
                 <use [attr.xlink:href]="iconDismiss"></use>

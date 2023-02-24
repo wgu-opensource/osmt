@@ -2,21 +2,23 @@ import {Component, Input, OnInit} from "@angular/core"
 import {KeywordSearchService} from "../../richskill/service/keyword-search.service"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {FormControl} from "@angular/forms"
-import {KeywordType} from "../../richskill/ApiSkill"
+import {ApiNamedReference, KeywordType} from "../../richskill/ApiSkill"
+import {ApiJobCode} from "../../job-codes/Jobcode"
+import {FilterSearchComponent} from "@shared/filter-search/filter-search.component"
 
 @Component({
   selector: "app-search-multi-select",
   templateUrl: "./search-multi-select.component.html",
   styleUrls: ["./search-multi-select.component.scss"]
 })
-export class SearchMultiSelectComponent implements OnInit {
+export class SearchMultiSelectComponent extends FilterSearchComponent implements OnInit {
 
   @Input()
   name?: string
   showInput = false
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)
   inputFc = new FormControl("")
-  results!: string[] | undefined
+  results!: ApiNamedReference[] | ApiJobCode[] | undefined
   @Input()
   keywordType?: KeywordType
   @Input()
@@ -25,18 +27,19 @@ export class SearchMultiSelectComponent implements OnInit {
   iconDismiss = SvgHelper.path(SvgIcon.DISMISS)
 
   constructor(protected searchService: KeywordSearchService) {
+    super()
   }
 
   ngOnInit(): void {
     this.inputFc.valueChanges.subscribe(value => this.getKeywords(value ?? ""))
   }
 
-  selectResult(result: string): void {
+  selectResult(result: ApiJobCode | ApiNamedReference): void {
     const isResultSelected = this.isResultSelected(result)
     if (!isResultSelected) {
       this.control?.value.push(result)
     } else {
-      this.control?.patchValue(this.control?.value.filter((r: string) => r !== result))
+      this.control?.patchValue(this.control?.value.filter((r: ApiJobCode | ApiNamedReference) => this.areResultsEqual(r, result)))
     }
   }
 
@@ -44,17 +47,17 @@ export class SearchMultiSelectComponent implements OnInit {
     this.currentlyLoading = true
     this.keywordType ? this.searchService.searchKeywords(this.keywordType, text)
       .subscribe(searchResults => {
-        this.results = searchResults.filter(r => !!r && !!r.name).map(r => r.name as string)
+        this.results = searchResults.filter(r => !!r && !!r.name)
         this.currentlyLoading = false
       }) : this.searchService.searchJobcodes(text)
       .subscribe(searchResults => {
-        this.results = searchResults.filter(r => !!r && !!r.code && !!r.targetNodeName).map(i => i.targetNodeName ?? "")
+        this.results = searchResults.filter(r => !!r && !!r.code && !!r.targetNodeName)
         this.currentlyLoading = false
       })
   }
 
-  isResultSelected(result: string): boolean {
-    return this.control?.value.some((i: string) => i === result)
+  isResultSelected(result: ApiJobCode | ApiNamedReference): boolean {
+    return this.control?.value.some((i: ApiJobCode | ApiNamedReference) => this.areResultsEqual(i, result))
   }
 
   clearField(): void {

@@ -1,7 +1,7 @@
 <div class="chip-wrapper">
   <div class="header">{{name | titlecase}}</div>
   <div class="chip" *ngFor="let keyword of control?.value" (click)="onRemoveChip(keyword)">
-    {{keyword}}
+    {{resultName(keyword)}}
     <span class="close-button">&times;</span>
   </div>
 </div>

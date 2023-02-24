@@ -440,7 +440,6 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   keywordsChange(keywords: FilterDropdown): void {
     this.keywords = keywords
-    console.log(this.keywords)
     this.loadNextPage()
   }
 
@@ -449,7 +448,7 @@ export class SkillsListComponent extends QuickLinksHelper {
     const b: any = this.keywords
     for (const key in this.keywords) {
       if (b[key].length > 0) {
-        a[key] = b[key]
+        a[key] = b[key].map((i: any) => i.name ?? i.code)
       }
     }
     return a

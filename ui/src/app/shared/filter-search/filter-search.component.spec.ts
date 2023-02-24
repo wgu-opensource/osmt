@@ -1,25 +1,31 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing"
-
 import { FilterSearchComponent } from "./filter-search.component"
+import {ApiNamedReference} from "../../richskill/ApiSkill"
+import {ApiJobCode} from "../../job-codes/Jobcode"
 
 describe("FilterSearchComponent", () => {
-  let component: FilterSearchComponent
-  let fixture: ComponentFixture<FilterSearchComponent>
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ FilterSearchComponent ]
-    })
-    .compileComponents()
+  const apiNameReferenced1 = new ApiNamedReference({id: "1", name: "value1"})
+  const apiNameReferenced2 = new ApiNamedReference({id: "2", name: "value2"})
+  const filterSearch = new FilterSearchComponent()
+
+
+  it("are results equals should be true", () => {
+    const areEqual = filterSearch.areResultsEqual(apiNameReferenced1, apiNameReferenced1)
+    expect(areEqual).toBeTrue()
   })
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FilterSearchComponent)
-    component = fixture.componentInstance
-    fixture.detectChanges()
+  it("are results equals should be false", () => {
+    const areEqual = new FilterSearchComponent().areResultsEqual(apiNameReferenced1, apiNameReferenced2)
+    expect(areEqual).toBeFalse()
   })
 
-  it("should create", () => {
-    expect(component).toBeTruthy()
+  it("name should be correct for api named reference", () => {
+    const name = filterSearch.resultName(apiNameReferenced1)
+    expect(name).toEqual("value1")
+  })
+
+  it("name should be correct for api job code", () => {
+    const name = filterSearch.resultName(new ApiJobCode({code: "code1", targetNodeName: "value1"}))
+    expect(name).toEqual("value1 code1")
   })
 })

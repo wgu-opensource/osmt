@@ -252,15 +252,11 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             authors?. let {
                 bq.must(buildNestedQueries(RichSkillDoc::author.name, it))
             }
-            occupations?. let {
-                it.mapNotNull {
+            occupations?.let {
+                it.mapNotNull { value ->
                     bq.must(
-                        TermsSetQueryBuilder(
-                            "${RichSkillDoc::jobCodes.name}.keyword", occupations.toList()
-                        )
-                            .setMinimumShouldMatchScript(Script(occupations.size.toString()))
+                        occupationQueries(value)
                     )
-
                 }
             }
         }

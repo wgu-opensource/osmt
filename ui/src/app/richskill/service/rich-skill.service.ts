@@ -26,27 +26,6 @@ export class RichSkillService extends AbstractService {
 
   private serviceUrl = "api/skills"
 
-  getSkills(
-    size: number = 50,
-    from: number = 0,
-    filterByStatuses: Set<PublishStatus> | undefined,
-    sort: ApiSortOrder | undefined,
-  ): Observable<PaginatedSkills> {
-
-    const params = this.buildTableParams(size, from, filterByStatuses, sort)
-    return this.get<ApiSkillSummary[]>({
-      path: `${this.serviceUrl}`,
-      params,
-    })
-      .pipe(share())
-      .pipe(map(({body, headers}) => {
-        return new PaginatedSkills(
-          body?.map(skill => skill) || [],
-          Number(headers.get("X-Total-Count"))
-        )
-      }))
-  }
-
   getSkillsFiltered(
     size: number = 50,
     from: number = 0,

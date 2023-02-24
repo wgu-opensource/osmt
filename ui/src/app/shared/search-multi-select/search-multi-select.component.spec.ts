@@ -9,12 +9,15 @@ import {FormControl, ReactiveFormsModule} from "@angular/forms"
 import {AppConfig} from "../../app.config"
 import {createMockApiNamedReference, createMockJobcode} from "../../../../test/resource/mock-data"
 import {of} from "rxjs"
-import {KeywordType} from "../../richskill/ApiSkill"
+import {ApiNamedReference, KeywordType} from "../../richskill/ApiSkill"
 import {HttpClientTestingModule} from "@angular/common/http/testing"
 
 describe("SearchMultiSelectComponent", () => {
   let component: SearchMultiSelectComponent
   let fixture: ComponentFixture<SearchMultiSelectComponent>
+  const apiNameReferenced1 = new ApiNamedReference({id: "1", name: "value1"})
+  const apiNameReferenced2 = new ApiNamedReference({id: "2", name: "value2"})
+  const apiNameReferenced3 = new ApiNamedReference({id: "3", name: "value3"})
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -58,14 +61,14 @@ describe("SearchMultiSelectComponent", () => {
   })
 
   it("is result selected should be true", () => {
-    component.control?.patchValue(["value1", "value2"])
-    const isSelected = component.isResultSelected("value1")
+    component.control?.patchValue([apiNameReferenced1, apiNameReferenced2])
+    const isSelected = component.isResultSelected(apiNameReferenced1)
     expect(isSelected).toBeTrue()
   })
 
   it("is result selected should be false", () => {
-    component.control?.patchValue(["value1", "value2"])
-    const isSelected = component.isResultSelected("value3")
+    component.control?.patchValue([apiNameReferenced1, apiNameReferenced2])
+    const isSelected = component.isResultSelected(apiNameReferenced3)
     expect(isSelected).toBeFalse()
   })
 
@@ -85,14 +88,14 @@ describe("SearchMultiSelectComponent", () => {
   })
 
   it("select result should add value in internal result", () => {
-    component.control?.patchValue(["value1"])
-    component.selectResult("value2")
+    component.control?.patchValue([apiNameReferenced1])
+    component.selectResult(apiNameReferenced2)
     expect(component.control?.value?.length).toBe(2)
   })
 
   it("select result should remove value in internal result", () => {
-    component.control?.patchValue(["value1", "value2"])
-    component.selectResult("value2")
+    component.control?.patchValue([apiNameReferenced1, apiNameReferenced2])
+    component.selectResult(apiNameReferenced1)
     expect(component.control?.value?.length).toBe(1)
   })
 })

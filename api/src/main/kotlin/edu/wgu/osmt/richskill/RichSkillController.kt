@@ -7,12 +7,14 @@ import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSkill
 import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.api.model.SkillSortEnum
+import edu.wgu.osmt.api.model.SortOrder
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
+import edu.wgu.osmt.elasticsearch.PaginatedLinks
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.security.OAuthHelper
 import edu.wgu.osmt.task.AppliesToType
@@ -23,6 +25,7 @@ import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskResult
+import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -74,6 +77,51 @@ class RichSkillController @Autowired constructor(
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
+    }
+
+    @PostMapping(RoutePaths.SKILLS_FILTER, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun allPaginatedWithFilters(
+        uriComponentsBuilder: UriComponentsBuilder,
+        size: Int,
+        from: Int,
+        status: Array<String>,
+        @RequestBody apiSearch: ApiSearch,
+        sort: String?,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<List<RichSkillDoc>> {
+
+        val publishStatuses = status.mapNotNull {
+            val status = PublishStatus.forApiValue(it)
+            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+        }.toSet()
+        val sortEnum: SortOrder = sortOrderCompanion.forValueOrDefault(sort)
+        val pageable = OffsetPageable(from, size, sortEnum.sort)
+        val searchHits = richSkillEsRepo.byApiSearch(
+            apiSearch,
+            publishStatuses,
+            pageable,
+            StringUtils.EMPTY
+        )
+        val countAllFiltered: Long = searchHits.totalHits
+        val responseHeaders = HttpHeaders()
+        responseHeaders.add("X-Total-Count", countAllFiltered.toString())
+
+        uriComponentsBuilder
+            .path(allPaginatedPath)
+            .queryParam(RoutePaths.QueryParams.FROM, from)
+            .queryParam(RoutePaths.QueryParams.SIZE, size)
+            .queryParam(RoutePaths.QueryParams.SORT, sort)
+            .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
+
+        PaginatedLinks(
+            pageable,
+            searchHits.totalHits.toInt(),
+            uriComponentsBuilder
+        ).addToHeaders(responseHeaders)
+
+        return ResponseEntity.status(200).headers(responseHeaders)
+            .body(searchHits.map { it.content }.toList())
     }
 
     @PostMapping(RoutePaths.SKILLS_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])

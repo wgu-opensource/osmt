@@ -71,21 +71,21 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         )
     }
 
-    fun buildNestedQueries(path: String?=null, queryParams: List<String>) : BoolQueryBuilder {
+    private fun buildNestedQueries(path: String?=null, queryParams: List<String>) : BoolQueryBuilder {
         val disjunctionQuery = disMaxQuery()
         val queries = ArrayList<PrefixQueryBuilder>()
 
         queryParams.let {
             it.map { param ->
                 queries.add(
-                    prefixQuery(path + ".keyword", param)
+                    prefixQuery("$path.keyword", param)
                 )
             }
 
         }
         disjunctionQuery.innerQueries().addAll(queries)
 
-        return boolQuery().must(existsQuery(path + ".keyword")).must(disjunctionQuery)
+        return boolQuery().must(existsQuery("$path.keyword")).must(disjunctionQuery)
     }
 
 
@@ -195,59 +195,34 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     }
 
     override fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiFilteredSearch) {
-
-
         with(filteredQuery) {
-
             categories?. let {
                 bq.must(buildNestedQueries(RichSkillDoc::category.name, it))
             }
             keywords?. let {
                 it.mapNotNull {
-                    bq.must(
-                        TermsSetQueryBuilder(
-                            "${RichSkillDoc::searchingKeywords.name}.keyword", keywords.toList()
-                        )
-                            .setMinimumShouldMatchScript(Script(keywords.size.toString()))
-                    )
-
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::searchingKeywords.name, keywords))
                 }
             }
             standards?. let {
                 it.mapNotNull {
-                    bq.must(
-                        TermsSetQueryBuilder(
-                            "${RichSkillDoc::standards.name}.keyword", standards.toList()
-                        )
-                            .setMinimumShouldMatchScript(Script(standards.size.toString()))
-                    )
-
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::standards.name, standards))
                 }
             }
             certifications?. let {
                 it.mapNotNull {
-                    bq.must(
-                        TermsSetQueryBuilder(
-                            "${RichSkillDoc::certifications.name}.keyword", certifications.toList()
-                        )
-                            .setMinimumShouldMatchScript(Script(certifications.size.toString()))
-                    )
-
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::certifications.name, certifications))
                 }
             }
             alignments?. let {
                 it.mapNotNull {
-                    bq.must(
-                        TermsSetQueryBuilder(
-                            "${RichSkillDoc::alignments.name}.keyword", alignments.toList()
-                        )
-                            .setMinimumShouldMatchScript(Script(alignments.size.toString()))
-                    )
-
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::alignments.name, alignments))
                 }
             }
             employers?. let {
-                    bq.must(buildNestedQueries(RichSkillDoc::employers.name, it))
+                it.mapNotNull {
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::employers.name, employers))
+                }
             }
             authors?. let {
                 bq.must(buildNestedQueries(RichSkillDoc::author.name, it))
@@ -260,6 +235,10 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 }
             }
         }
+    }
+
+    private fun generateTermsSetQueryBuilder(fieldName: String, list: List<String>): TermsSetQueryBuilder {
+        return TermsSetQueryBuilder("$fieldName.keyword", list).setMinimumShouldMatchScript(Script(list.size.toString()))
     }
 
     override fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder {

@@ -6,6 +6,7 @@ import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers
 import edu.wgu.osmt.TestObjectHelpers.keywordsGenerator
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
+import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSimilaritySearch
@@ -602,6 +603,75 @@ class RichSkillEsRepoTest @Autowired constructor(
         assertThat(employersResult.searchHits.first().content.uuid).isEqualTo(skillByEmployers.uuid)
         assertThat(alignmentsResult.searchHits.first().content.uuid).isEqualTo(skillByAlignments.uuid)
 
+    }
+
+    @Test
+    fun `search with categories filter should apply to filtered search`() {
+        // Arrange
+        val skillWithCategory1 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category1")
+        val skillWithCategory2 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category2")
+        val skillWithCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category3")
+
+        richSkillEsRepo.saveAll(listOf(skillWithCategory1,skillWithCategory2,skillWithCategory3))
+
+        // Act
+        val filteredSearchResult = richSkillEsRepo.byApiSearch(
+            ApiSearch(
+                filtered = ApiFilteredSearch(
+                    categories = listOf("category1", "category3")
+                )
+            )
+        )
+
+        // Assert
+        assertThat(filteredSearchResult.searchHits.first().content.uuid).isEqualTo(skillWithCategory1.uuid)
+        assertThat(filteredSearchResult.searchHits[1].content.uuid).isEqualTo(skillWithCategory3.uuid)
+    }
+
+    @Test
+    fun `search with keywords filter should apply to filtered search with AND operaton between keywords`() {
+        // Arrange
+        val skillWithKeywords1and2 = TestObjectHelpers.randomRichSkillDoc().copy(searchingKeywords = listOf("keyword1", "keyword2"))
+        val skillWithKeywords2and3 = TestObjectHelpers.randomRichSkillDoc().copy(searchingKeywords = listOf("keyword2", "keyword3"))
+        val skillWithKeywords3and4 = TestObjectHelpers.randomRichSkillDoc().copy(searchingKeywords = listOf("keyword3", "keyword4"))
+
+        richSkillEsRepo.saveAll(listOf(skillWithKeywords1and2,skillWithKeywords2and3,skillWithKeywords3and4))
+
+        // Act
+        val filteredSearchResult1 = richSkillEsRepo.byApiSearch(
+            ApiSearch(
+                filtered = ApiFilteredSearch(
+                    keywords = listOf("keyword1", "keyword2")
+                )
+            )
+        )
+        val filteredSearchResult2 = richSkillEsRepo.byApiSearch(
+            ApiSearch(
+                filtered = ApiFilteredSearch(
+                    keywords = listOf("keyword2", "keyword3")
+                )
+            )
+        )
+        val filteredSearchResult3 = richSkillEsRepo.byApiSearch(
+            ApiSearch(
+                filtered = ApiFilteredSearch(
+                    keywords = listOf("keyword3", "keyword4")
+                )
+            )
+        )
+        val filteredSearchResult4 = richSkillEsRepo.byApiSearch(
+            ApiSearch(
+                filtered = ApiFilteredSearch(
+                    keywords = listOf("keyword1", "keyword3")
+                )
+            )
+        )
+
+        // Assert
+        assertThat(filteredSearchResult1.searchHits.first().content.uuid).isEqualTo(skillWithKeywords1and2.uuid)
+        assertThat(filteredSearchResult2.searchHits.first().content.uuid).isEqualTo(skillWithKeywords2and3.uuid)
+        assertThat(filteredSearchResult3.searchHits.first().content.uuid).isEqualTo(skillWithKeywords3and4.uuid)
+        assertThat(filteredSearchResult4).isEmpty()
     }
 
     @Test

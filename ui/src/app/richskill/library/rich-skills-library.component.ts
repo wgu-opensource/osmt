@@ -16,6 +16,7 @@ import {CollectionService} from "../../collection/service/collection.service"
 export class RichSkillsLibraryComponent extends SkillsListComponent implements OnInit {
 
   title = "RSD Library"
+  showAdvancedFilteredSearch = true
 
   constructor(
     protected router: Router,

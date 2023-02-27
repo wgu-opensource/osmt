@@ -19,13 +19,13 @@
         (filterChanged)="onFilterChangeArchived($event)"
       ></app-filter-choice>
     </div>
-    <div>
+    <div *ngIf="showAdvancedFilteredSearch">
       <app-filter-dropdown (applyFilter)="applyFilter($event)" [filterFg]="filterFg">
       </app-filter-dropdown>
     </div>
   </div>
 </div>
-<div class="chips-container">
+<div class="chips-container" *ngIf="showAdvancedFilteredSearch">
   <app-filter-chips
     name="category"
     [control]="filterFg.get('categories')"

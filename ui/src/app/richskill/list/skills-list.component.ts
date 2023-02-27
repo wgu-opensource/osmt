@@ -28,6 +28,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   from = 0
   size = 50
   collection?: ApiCollection
+  showAdvancedFilteredSearch = false
 
   @ViewChild("titleHeading") titleElement!: ElementRef
   @ViewChild(TableActionBarComponent) tableActionBar!: TableActionBarComponent

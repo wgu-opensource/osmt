@@ -15,6 +15,8 @@ export class FilterControlsComponent implements OnInit, OnChanges {
   @Input()
   keywords?: FilterDropdown
   filterFg: FormGroup
+  @Input()
+  showAdvancedFilteredSearch?: boolean
 
   constructor(
     protected formBuilder: FormBuilder

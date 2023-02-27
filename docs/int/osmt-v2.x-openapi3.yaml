@@ -143,8 +143,8 @@ paths:
     post:
       tags:
         - Skills
-      summary: ApiAdvancedFilteredSearch
-      description: Search
+      summary: Advanced filtered search for skills
+      description: Return list of skills that match the provided query
       requestBody:
         required: true
         content:
@@ -179,7 +179,12 @@ paths:
             $ref: '#/components/schemas/SortOrder'
       responses:
         '202':
-          description: Accepted
+          description: Ok
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
           content:
             application/json:
               schema:

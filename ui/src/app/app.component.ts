@@ -28,6 +28,7 @@ export class AppComponent extends Whitelabelled implements OnInit {
     this.toastService.loaderSubject.subscribe(visible =>  {
       this.blockingLoaderVisible = visible
     })
+    this.validateRoles()
   }
 
   ngOnInit(): void {
@@ -74,5 +75,11 @@ export class AppComponent extends Whitelabelled implements OnInit {
       document.documentElement.style.setProperty("--color-a11yOnBrand", defaultA11yOnBrand)
     }
 
+  }
+
+  validateRoles(): void {
+    if (this.authService.getRole() === null && this.authService.currentAuthToken()) {
+      this.router.navigate(["/logout"])
+    }
   }
 }

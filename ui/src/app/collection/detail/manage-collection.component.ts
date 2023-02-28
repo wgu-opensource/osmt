@@ -187,7 +187,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         visible: () => this.authService.isEnabledByRoles(ButtonAction.CollectionSkillsUpdate)
       }),
       new TableActionDefinition({
-        label: "Edit Collection Name",
+        label: "Edit Collection",
         icon: this.editIcon,
         callback: () => this.editAction(),
         visible: () => this.authService.isEnabledByRoles(ButtonAction.CollectionUpdate)

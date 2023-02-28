@@ -32,8 +32,8 @@ interface QuotedSearchHelpers {
     data class SearchSetupResults(val collections: List<CollectionDoc>, val skills: List<RichSkillDoc>)
 
     fun quotedSearchSetup(): SearchSetupResults {
-        var collection1 = TestObjectHelpers.collectionDoc(name = "Self-Management Collection")
-        val collection2 = TestObjectHelpers.collectionDoc(name = "Best Self Management Collection")
+        var collection1 = TestObjectHelpers.collectionDoc(name = "Self-Management Collection", description = "Collection of Self-Management Skills")
+        val collection2 = TestObjectHelpers.collectionDoc(name = "Best Self Management Collection", description = "Collection of the best Self Management Skills")
         val randomCollections = (1..10).map{ TestObjectHelpers.randomCollectionDoc() }
 
         val skill1 = TestObjectHelpers.richSkillDoc(name = "Self-Management", statement = "A statement for a skill").copy(collections = listOf(collection1))
@@ -179,7 +179,7 @@ class RichSkillEsRepoTest @Autowired constructor(
 
     @Test
     fun `Should limit rich skills search to a related collection if collection id present`() {
-        val associatedCollection = TestObjectHelpers.collectionDoc(name = "Test Collection")
+        val associatedCollection = TestObjectHelpers.collectionDoc(name = "Test Collection", description = "Collection of Test Skills")
 
 
         val skillsWCollectionIds = (1..100).map {
@@ -1142,8 +1142,8 @@ class RichSkillEsRepoTest @Autowired constructor(
     @Test
     fun testByApiSearchWithUuids() {
         // Arrange
-        var collection1 = TestObjectHelpers.collectionDoc(name = "Self-Management Collection")
-        val collection2 = TestObjectHelpers.collectionDoc(name = "Best Self Management Collection")
+        var collection1 = TestObjectHelpers.collectionDoc(name = "Self-Management Collection", description = "Collection of Self-Management Skills")
+        val collection2 = TestObjectHelpers.collectionDoc(name = "Best Self Management Collection", description = "Collection of the best Self Management Skills")
 
         val skill1 = TestObjectHelpers.richSkillDoc(
             name = "Self-Management",
@@ -1185,8 +1185,8 @@ class RichSkillEsRepoTest @Autowired constructor(
     @Test
     fun testByApiSearchWithUuidsAndNoCollection() {
         // Arrange
-        var collection1 = TestObjectHelpers.collectionDoc(name = "Self-Management Collection")
-        val collection2 = TestObjectHelpers.collectionDoc(name = "Best Self Management Collection")
+        var collection1 = TestObjectHelpers.collectionDoc(name = "Self-Management Collection", description = "Collection of Self-Management Skills")
+        val collection2 = TestObjectHelpers.collectionDoc(name = "Best Self Management Collection", description = "Collection of the best Self Management Skills")
 
         val skill1 = TestObjectHelpers.richSkillDoc(
             name = "Self-Management",

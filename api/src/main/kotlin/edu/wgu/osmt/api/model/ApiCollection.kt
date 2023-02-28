@@ -32,6 +32,10 @@ class ApiCollection(private val collection: Collection, private val ss: List<Ric
         get() = collection.name
 
     @get:JsonProperty
+    val description: String?
+        get() = collection.description
+
+    @get:JsonProperty
     val creator: String
         get() = appConfig.defaultCreatorUri
 

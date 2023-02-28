@@ -105,6 +105,7 @@ describe("CollectionFormComponent", () => {
     // Arrange
     const value = {
       collectionName: "collection1",
+      description: "description1",
       author: "author1"
     }
     component.collectionForm.setValue(value)
@@ -114,6 +115,7 @@ describe("CollectionFormComponent", () => {
 
     // Assert
     expect(result.name).toEqual(value.collectionName)
+    expect(result.description).toEqual(value.description)
     expect(result.author).toEqual(value.author)
   })
 
@@ -123,6 +125,7 @@ describe("CollectionFormComponent", () => {
     component.collectionUuid = uuid
     const value = {
       collectionName: "collection1",
+      description: "description1",
       author: "author1"
     }
     component.collectionForm.setValue(value)

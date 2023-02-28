@@ -29,10 +29,19 @@
             </div>
 
             <div class="t-margin-medium t-margin-bottom">
+              <app-formfield-textarea
+                [control]="collectionForm.controls.description"
+                name="description"
+                label="Description"
+                placeholder="The Health Skills collection gathers skills that..."
+                [required]="false"
+              ></app-formfield-textarea>
+            </div>
+
+            <div class="t-margin-medium t-margin-bottom">
               <app-formfield-text
                 *ngIf="isAuthorEditable()"
                 [control]="collectionForm.controls.author"
-
                 name="author"
                 label="Author"
                 errorMessage="Author required"

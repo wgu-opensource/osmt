@@ -8,6 +8,7 @@ export interface ICollection {
   creator: string
   id: string
   name: string
+  description?: string
   workspaceOwner?: string
   publishDate?: Date
   skills: string[]
@@ -23,6 +24,7 @@ export class ApiCollection {
   creator: string
   id: string
   name: string
+  description?: string
   publishDate?: Date
   workspaceOwner?: string
   skills: string[]
@@ -38,6 +40,7 @@ export class ApiCollection {
       creator,
       id,
       name,
+      description,
       workspaceOwner,
       publishDate,
       skills,
@@ -52,6 +55,7 @@ export class ApiCollection {
     this.creator = creator
     this.id = id
     this.name = name
+    this.description = description
     this.workspaceOwner = workspaceOwner
     this.publishDate = publishDate
     this.skills = skills
@@ -63,6 +67,7 @@ export class ApiCollection {
 
 export interface ICollectionUpdate {
   name?: string,
+  description?: string,
   status?: PublishStatus,
   author?: string,
   skills?: IStringListUpdate
@@ -70,13 +75,15 @@ export interface ICollectionUpdate {
 
 export class ApiCollectionUpdate {
   name?: string
+  description?: string
   status?: PublishStatus
   author?: string
   skills?: IStringListUpdate
   workSpaceOwner?: string
 
-  constructor({name, status, author, skills}: ICollectionUpdate) {
+  constructor({name, description, status, author, skills}: ICollectionUpdate) {
     this.name = name
+    this.description = description
     this.status = status
     this.author = author
     this.skills = skills

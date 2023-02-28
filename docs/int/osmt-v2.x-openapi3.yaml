@@ -199,52 +199,6 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
 
   /api/skills:
-    get:
-      summary: Get all skills
-      description: Returns paginated list of all skills in the library
-      parameters:
-        - in: query
-          name: size
-          description: number of skills to return per page
-          schema:
-            type: number
-            default: 50
-        - in: query
-          name: from
-          description: zero-indexed offset from beginning of records
-          schema:
-            type: number
-            default: 0
-        - in: query
-          name: status
-          schema:
-            default:
-              - Unpublished
-              - Published
-            type: array
-            items:
-              $ref: '#/components/schemas/PublishStatus'
-        - in: query
-          name: sort
-          schema:
-            $ref: '#/components/schemas/SortOrder'
-      responses:
-        '200':
-          description: OK
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SkillDoc'
-      tags:
-        - Skills
     post:
       tags:
         - Skills

@@ -94,7 +94,8 @@ import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
 import {CollectionPipe} from "./pipes"
 import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collection/convert-to-collection.component"
 import {SharedModule} from "@shared/shared.module"
-import {OsmtFormModule} from "./form/osmt-form.module"
+import { OsmtCoreModule } from "./core/osmt-core.module"
+import { OsmtFormModule } from "./form/osmt-form.module"
 import { SizePaginationComponent } from "./table/skills-library-table/size-pagination/size-pagination.component"
 
 export function initializeApp(
@@ -212,6 +213,7 @@ export function initializeApp(
     ReactiveFormsModule,
     CommonModule,
     SharedModule,
+    OsmtCoreModule,
     OsmtFormModule,
     FormsModule
   ],

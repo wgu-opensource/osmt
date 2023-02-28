@@ -235,10 +235,22 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       && this.authService.isEnabledByRoles(ButtonAction.ExportDraftCollection)
     if (isPublished || isDraftAndUserIsAdmin) {
       actions.push(new TableActionDefinition({
-        label: "Download CSV",
+        label: "Download",
         icon: this.downloadIcon,
-        callback: () => this.generateCsv(this.collection?.name ?? ""),
-        visible: () => true
+        menu: [
+          {
+            label: "Download CSV",
+            icon: this.downloadIcon,
+            callback: () => this.generateCsv(this.collection?.name ?? ""),
+            visible: () => true
+          },
+          {
+            label: "Download XLSX",
+            icon: this.downloadIcon,
+            visible: () => true
+          }
+        ],
+        visible: () => (this.collection?.skills.length ?? 0) > 0
       }))
     }
 

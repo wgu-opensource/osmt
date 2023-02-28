@@ -7,6 +7,8 @@ import {formatDate} from "@angular/common"
 import {ITaskResult} from "../../../../task/ApiTaskResult"
 import { Observable } from "rxjs"
 import * as FileSaver from "file-saver";
+import {TableActionDefinition} from "../../../../table/skills-library-table/has-action-definitions"
+
 
 @Component({
   selector: "app-collection-public-action-bar",
@@ -27,6 +29,23 @@ export class CollectionPublicActionBarComponent implements OnInit {
   taskUuidInProgress: string | undefined
   csvExport: string | undefined
   intervalHandle: number | undefined
+  action = new TableActionDefinition({
+    label: "Download",
+    icon: this.downloadIcon,
+    menu: [
+      {
+        label: "Download as CSV",
+        visible: () => true,
+        callback: () => this.onDownloadCsv(),
+      },
+      {
+        label: "Download as XLSX",
+        visible: () => true,
+        callback: () => this.onDownloadCsv(),
+      }
+    ],
+    visible: () => true
+  })
 
   constructor(
     protected router: Router,
@@ -88,4 +107,5 @@ export class CollectionPublicActionBarComponent implements OnInit {
       this.toastService.showToast("Success!", "JSON copied to clipboard")
     })
   }
+
 }

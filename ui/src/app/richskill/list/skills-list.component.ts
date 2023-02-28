@@ -267,8 +267,19 @@ export class SkillsListComponent extends QuickLinksHelper {
       actions.push(new TableActionDefinition({
         label: "Export Selected",
         icon: "download",
-        callback: (action: TableActionDefinition, kill?: ApiSkillSummary) => this.handleClickExportSearch(),
-        visible: () => this.exportSearchVisible()
+        visible: () => this.exportSearchVisible(),
+        menu: [
+          {
+            label: "Download as CSV",
+            callback: () => this.handleClickExportSearch(),
+            visible: () => true
+          },
+          {
+            label: "Download as XLSX",
+            callback: () => this.handleClickExportSearch(),
+            visible: () => true
+          }
+        ]
       }))
     }
 

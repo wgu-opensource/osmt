@@ -54,9 +54,20 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
         visible: () => true
       }),
       new TableActionDefinition({
-        label: "Download as CSV",
+        label: "Download",
         icon: this.downloadIcon,
-        callback: () => this.generateCsv(this.collection?.name ?? ""),
+        menu: [
+          {
+            label: "Download as CSV",
+            visible: () => true,
+            callback: () => this.generateCsv(this.collection?.name ?? ""),
+          },
+          {
+            label: "Download as XLSX",
+            visible: () => true,
+            callback: () => this.generateCsv(this.collection?.name ?? ""),
+          }
+        ],
         visible: () => !this.workspaceEmpty()
       }),
       new TableActionDefinition({

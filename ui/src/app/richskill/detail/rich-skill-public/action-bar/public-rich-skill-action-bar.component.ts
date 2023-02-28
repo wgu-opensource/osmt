@@ -6,6 +6,7 @@ import {Component, Inject, Input, LOCALE_ID, OnInit} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
 import * as FileSaver from "file-saver"
 import {Observable} from "rxjs"
+import {TableActionDefinition} from "../../../../table/skills-library-table/has-action-definitions"
 
 @Component({
   selector: "app-abstract-public-rich-skill-action-bar",
@@ -60,6 +61,26 @@ export class PublicRichSkillActionBarComponent implements OnInit {
       document.execCommand("copy")
       skillJson.setSelectionRange(0, 0)
       this.toastService.showToast("Success!", "JSON copied to clipboard")
+    })
+  }
+
+  get action(): TableActionDefinition {
+    return new TableActionDefinition({
+      label: "Download",
+      icon: this.downloadIcon,
+      menu: [
+        {
+          label: "Download as CSV",
+          visible: () => true,
+          callback: () => this.onDownloadCsv(),
+        },
+        {
+          label: "Download as XLSX",
+          visible: () => true,
+          callback: () => this.onDownloadCsv(),
+        }
+      ],
+      visible: () => true
     })
   }
 }

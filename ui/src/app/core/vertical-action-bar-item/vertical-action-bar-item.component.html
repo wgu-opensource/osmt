@@ -1,0 +1,20 @@
+<div class="dropup">
+  <button
+    type="button"
+    class="m-actionBarItem"
+    (click)="action?.fire(data)"
+    [disabled]="!action?.isVisible"
+  >
+    <span class="m-actionBarItem-x-icon">
+      <svg class="t-icon" aria-hidden="true">
+        <use [attr.xlink:href]="action?.icon"></use>
+      </svg>
+    </span>
+    <span class="m-actionBarItem-x-text">{{action?.label}}</span>
+  </button>
+  <app-drop-up-menu
+    class="dropup-content"
+    [ngClass]="{'dropup-content-visible': action?.isVisible}"
+    [action]="action">
+  </app-drop-up-menu>
+</div>

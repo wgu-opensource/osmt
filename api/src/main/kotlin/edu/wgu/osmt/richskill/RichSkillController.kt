@@ -2,6 +2,7 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
+import edu.wgu.osmt.RoutePaths.SKILLS_FILTER
 import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSkill
@@ -108,7 +109,7 @@ class RichSkillController @Autowired constructor(
         responseHeaders.add("X-Total-Count", countAllFiltered.toString())
 
         uriComponentsBuilder
-            .path(allPaginatedPath)
+            .path(SKILLS_FILTER)
             .queryParam(RoutePaths.QueryParams.FROM, from)
             .queryParam(RoutePaths.QueryParams.SIZE, size)
             .queryParam(RoutePaths.QueryParams.SORT, sort)

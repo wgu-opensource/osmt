@@ -1027,6 +1027,86 @@ class RichSkillEsRepoTest @Autowired constructor(
         assertThat(filteredSearchResult2.searchHits).hasSize(1)
         assertThat(filteredSearchResult2.searchHits.first().content.uuid).isEqualTo(skillWithAuthor3AndCategory3.uuid)
     }
+    @Test
+    fun `search with categories, keywords & standards filter should apply to filtered search with AND operator between fields, and OR operator between categories and AND operator between keywords and standards`() {
+        // Arrange
+        val skill1 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category1",
+            searchingKeywords = listOf("keyword1"),
+            standards = listOf("standard1")
+        )
+        val skill2 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category2",
+            searchingKeywords = listOf("keyword1", "keyword2"),
+            standards = listOf("standard1", "standard2")
+        )
+        val skill3 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category3",
+            searchingKeywords = listOf("keyword1", "keyword2", "keyword3"),
+            standards = listOf("standard1", "standard2", "standard3")
+        )
+        val skill4 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category4",
+            searchingKeywords = listOf("keyword1", "keyword2", "keyword3", "keyword4"),
+            standards = listOf("standard1", "standard2", "standard3", "standard4")
+        )
+
+
+        richSkillEsRepo.saveAll(listOf(skill1,skill2,skill3,skill4))
+
+        // Act
+        val filteredSearchResult1 = richSkillEsRepo.byApiSearch(
+            ApiSearch(
+                filtered = ApiFilteredSearch(
+                    categories = listOf("category1", "category2"),
+                    keywords = listOf("keyword1", "keyword2"),
+                    standards = listOf("standard1")
+                )
+            )
+        )
+        val filteredSearchResult2 = richSkillEsRepo.byApiSearch(
+            ApiSearch(
+                filtered = ApiFilteredSearch(
+                    categories = listOf("category1", "category2", "category3"),
+                    keywords = listOf("keyword1", "keyword2", "keyword3"),
+                    standards = listOf("standard1", "standard2")
+                )
+            )
+        )
+        val filteredSearchResult3 = richSkillEsRepo.byApiSearch(
+            ApiSearch(
+                filtered = ApiFilteredSearch(
+                    categories = listOf("category1", "category2", "category3"),
+                    keywords = listOf("keyword1", "keyword2", "keyword3"),
+                    standards = listOf("standard1", "standard2", "standard3")
+                )
+            )
+        )
+        val filteredSearchResult4 = richSkillEsRepo.byApiSearch(
+            ApiSearch(
+                filtered = ApiFilteredSearch(
+                    categories = listOf("category1", "category2", "category3"),
+                    keywords = listOf("keyword1", "keyword2", "keyword3"),
+                    standards = listOf("standard1", "standard2", "standard3", "standard4")
+                )
+            )
+        )
+        val filteredSearchResult5 = richSkillEsRepo.byApiSearch(
+            ApiSearch(
+                filtered = ApiFilteredSearch(
+                    categories = listOf("category1", "category2", "category3", "category4"),
+                    keywords = listOf("keyword1"),
+                    standards = listOf("standard1")
+                )
+            )
+        )
+
+        // Assert
+        assertThat(filteredSearchResult1.searchHits).hasSize(1)
+        assertThat(filteredSearchResult1.searchHits.first().content.uuid).isEqualTo(skill2.uuid)
+        assertThat(filteredSearchResult2.searchHits).hasSize(1)
+        assertThat(filteredSearchResult2.searchHits.first().content.uuid).isEqualTo(skill3.uuid)
+        assertThat(filteredSearchResult3.searchHits).hasSize(1)
+        assertThat(filteredSearchResult3.searchHits.first().content.uuid).isEqualTo(skill3.uuid)
+        assertThat(filteredSearchResult4.searchHits).isEmpty()
+        assertThat(filteredSearchResult5.searchHits).hasSize(4)
+    }
 
     @Test
     fun testFindSimilar() {

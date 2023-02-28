@@ -121,7 +121,7 @@ export interface ISkill {
   certifications: INamedReference[]
   occupations: IJobCode[]
   employers: INamedReference[]
-  author: string
+  authors: string[]
 }
 
 export class ApiSkill {
@@ -143,7 +143,7 @@ export class ApiSkill {
   certifications: INamedReference[]
   occupations: IJobCode[]
   employers: INamedReference[]
-  author: string
+  authors: string[]
 
   constructor(iRichSkill: ISkill) {
     this.id = iRichSkill.id
@@ -162,7 +162,7 @@ export class ApiSkill {
     }
     this.skillName = iRichSkill.skillName
     this.skillStatement = iRichSkill.skillStatement
-    this.author = iRichSkill.author
+    this.authors = iRichSkill.authors
     this.keywords = iRichSkill.keywords
     this.collections = iRichSkill.collections
     this.status = iRichSkill.status

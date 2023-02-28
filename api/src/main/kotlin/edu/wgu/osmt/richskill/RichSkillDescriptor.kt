@@ -13,6 +13,7 @@ import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.nullIfEmpty
 import org.valiktor.functions.isEqualTo
 import org.valiktor.functions.validate
+import org.valiktor.functions.validateForEach
 import org.valiktor.validate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -29,7 +30,7 @@ data class RichSkillDescriptor(
     val jobCodes: List<JobCode> = listOf(),
     val keywords: List<Keyword> = listOf(),
     val category: Keyword? = null,
-    val author: Keyword? = null,
+    val authors: List<Keyword> = listOf(),
     override val archiveDate: LocalDateTime? = null,
     override val publishDate: LocalDateTime? = null,
     val collections: List<Collection> = listOf()
@@ -77,7 +78,7 @@ fun RichSkillDescriptor.diff(old: RichSkillDescriptor?): List<Change> {
         Comparison(RichSkillDescriptor::name.name, RichSkillDescriptorComparisons::compareName, old, new),
         Comparison(RichSkillDescriptor::statement.name, RichSkillDescriptorComparisons::compareStatement, old, new),
         Comparison(RichSkillDescriptor::category.name, RichSkillDescriptorComparisons::compareCategory, old, new),
-        Comparison(RichSkillDescriptor::author.name, RichSkillDescriptorComparisons::compareAuthor, old, new),
+        Comparison(RichSkillDescriptor::authors.name, RichSkillDescriptorComparisons::compareAuthors, old, new),
         Comparison(
             RichSkillDescriptor::publishStatus.name,
             RichSkillDescriptorComparisons::comparePublishStatus,
@@ -110,7 +111,7 @@ data class RsdUpdateObject(
     override val id: Long? = null,
     val name: String? = null,
     val statement: String? = null,
-    val author: NullableFieldUpdate<KeywordDao>? = null,
+    val authors: ListFieldUpdate<KeywordDao>? = null,
     val category: NullableFieldUpdate<KeywordDao>? = null,
     val keywords: ListFieldUpdate<KeywordDao>? = null,
     val jobCodes: ListFieldUpdate<JobCodeDao>? = null,
@@ -125,8 +126,11 @@ data class RsdUpdateObject(
                     validate(KeywordDao::type).isEqualTo(KeywordTypeEnum.Category)
                 }
             }
-            validate(RsdUpdateObject::author).validate {
-                validate(NullableFieldUpdate<KeywordDao>::t).validate {
+            validate(RsdUpdateObject::authors).validate {
+                validate(ListFieldUpdate<KeywordDao>::add).validateForEach {
+                    validate(KeywordDao::type).isEqualTo(KeywordTypeEnum.Author)
+                }
+                validate(ListFieldUpdate<KeywordDao>::remove).validateForEach {
                     validate(KeywordDao::type).isEqualTo(KeywordTypeEnum.Author)
                 }
             }
@@ -146,16 +150,23 @@ data class RsdUpdateObject(
                 dao.category = null
             }
         }
-        author?.let {
-            if (it.t != null) {
-                dao.author = it.t
-            } else {
-                dao.author = null
-            }
-        }
+        applyAuthors()
         applyKeywords()
         applyJobCodes()
         applyCollections()
+    }
+
+    fun applyAuthors(): RsdUpdateObject {
+        authors?.let {
+            it.add?.forEach { author ->
+                RichSkillAuthors.create(richSkillId = id!!, authorId = author.id.value)
+            }
+
+            it.remove?.forEach {author ->
+                RichSkillAuthors.delete(richSkillId = id!!, authorId = author.id.value)
+            }
+        }
+        return copy(authors = null)
     }
 
     fun applyKeywords(): RsdUpdateObject {
@@ -219,8 +230,8 @@ object RichSkillDescriptorComparisons {
         return r.category?.value
     }
 
-    fun compareAuthor(r: RichSkillDescriptor): String? {
-        return r.author?.value
+    fun compareAuthors(receiver: RichSkillDescriptor): String? {
+        return keywordsCompare(receiver, RichSkillDescriptor::authors)
     }
 
     fun comparePublishStatus(r: RichSkillDescriptor): String {

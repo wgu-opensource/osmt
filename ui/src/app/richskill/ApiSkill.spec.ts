@@ -185,6 +185,6 @@ describe("ApiSkill", () => {
     expect(apiSkill.certifications).toEqual(iSkill.certifications)
     expect(apiSkill.occupations).toEqual(iSkill.occupations)
     expect(apiSkill.employers).toEqual(iSkill.employers)
-    expect(apiSkill.author).toEqual(iSkill.author)
+    expect(apiSkill.authors).toEqual(iSkill.authors)
   })
 })

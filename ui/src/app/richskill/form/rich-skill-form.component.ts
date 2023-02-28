@@ -46,6 +46,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
   isDuplicating = false
 
   // Type ahead storage to append to the field on submit
+  selectedAuthors: string[] = []
   selectedStandards: string[] = []
   selectedJobCodes: string[] = []
   selectedKeywords: string[] = []
@@ -116,7 +117,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       certifications: new FormControl(""),
       occupations: new FormControl(""),
       employers: new FormControl(""),
-      author: new FormControl(AppConfig.settings.defaultAuthorValue, Validators.required)
+      authors: new FormControl(AppConfig.settings.defaultAuthorValue)
     }
     return fields
   }
@@ -183,10 +184,8 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       update.skillStatement = inputStatement
     }
 
-    const author = formValue.author
-    if (!this.existingSkill || this.isDuplicating || this.existingSkill.author !== formValue.author) {
-      update.author = author
-    }
+    const authorsDiff = this.diffStringList(this.splitTextarea(formValue.authors), this.existingSkill?.authors)
+    if (this.isDuplicating || authorsDiff) { update.authors = authorsDiff }
 
     const inputCategory = this.nonEmptyOrNull(formValue.category)
     if (this.isDuplicating || this.existingSkill?.category !== inputCategory) {
@@ -323,7 +322,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       certifications: skill.certifications?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
       occupations: skill.occupations?.map(it => this.stringFromJobCode(it)).join("; ") ?? "",
       employers: skill.employers?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
-      author: skill.author
+      authors: skill.authors?.join("; ") ?? ""
     }
     this.skillForm.setValue(fields)
 
@@ -342,14 +341,14 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     return false
   }
 
-  showAuthor(): boolean {
+  showAuthors(): boolean {
     return AppConfig.settings.editableAuthor
   }
 
   handleClickMissingFields(): boolean {
     const fieldOrder = [
       "skillName",
-      "author",
+      "authors",
       "skillStatement",
       "category",
       "keywords",
@@ -393,11 +392,16 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
 
   populateTypeAheadFieldsWithResults(): void {
     const formValue = this.skillForm.value
+    formValue.authors = this.selectedAuthors.join("; ")
     formValue.standards = this.selectedStandards.join("; ")
     formValue.occupations = this.selectedJobCodes.join("; ")
     formValue.keywords = this.selectedKeywords.join("; ")
     formValue.certifications = this.selectedCertifications.join("; ")
     formValue.employers = this.selectedEmployers.join("; ")
+  }
+
+  handleAuthorsTypeAheadResults(authors: string[]): void {
+    this.selectedAuthors = authors
   }
 
   handleStandardsTypeAheadResults(standards: string[]): void {

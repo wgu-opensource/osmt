@@ -29,7 +29,7 @@ export enum ImportStep {
 
 export const importSkillHeaderOrder = [
   {field: "skillName", label: "RSD Name"},
-  {field: "author", label: "Author"},
+  {field: "authors", label: "Authors"},
   {field: "skillStatement", label: "Skill Statement"},
   {field: "category", label: "Category"},
   {field: "keywords", label: "Keywords"},
@@ -77,7 +77,13 @@ export class AuditedImportSkill {
 
   get nameMissing(): boolean { return !this.skill.skillName }
   get statementMissing(): boolean { return !this.skill.skillStatement }
-  get authorMissing(): boolean { return !this.skill.author }
+  get authorMissing(): boolean {
+    return !this.hasAuthors
+  }
+
+  get hasAuthors(): boolean {
+    return this.skill.authors?.add !== undefined && this.skill.authors?.add.length > 0
+  }
 
   get isError(): boolean {
     return this.nameMissing || this.statementMissing
@@ -371,7 +377,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
       const alignmentsHolder: ApiAlignment[] = []
       const jobcodes: string[] = []
-      let haveAuthor = false
+      let hasAuthor = false
       var alignMatches
 
       Object.keys(row).forEach(uploadedKey => {
@@ -380,9 +386,9 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         if (fieldName !== undefined && rawValue && typeof rawValue === "string") {
           const value: string = rawValue?.trim()
 
-          if (["author"].indexOf(fieldName) !== -1) {
-            newSkill[fieldName] = value
-            haveAuthor = true
+          if (["authors"].indexOf(fieldName) !== -1) {
+            newSkill[fieldName] = new ApiStringListUpdate(value.split(";").map(it => it.trim()))
+            hasAuthor = true
           }
           else if (["certifications", "employers"].indexOf(fieldName) !== -1) {
             newSkill[fieldName] = new ApiReferenceListUpdate(
@@ -428,8 +434,8 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         newSkill.alignments = new ApiAlignmentListUpdate(Array.from(alignmentsHolder))
       }
 
-      if (!haveAuthor) {
-        const fieldName = "author"
+      if (!hasAuthor) {
+        const fieldName = "authors"
         newSkill[fieldName] = new ApiNamedReference({name: AppConfig.settings.defaultAuthorValue})
       }
       return newSkill

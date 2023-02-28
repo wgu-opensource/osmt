@@ -98,16 +98,16 @@ describe("ConcreteComponent", () => {
     expect(component.uuidParam).toEqual("126")
   })
 
-  it("getAuthor should return", () => {
+  it("getAuthors should return", () => {
     // Arrange
     component.richSkill = null
     // Act/Assert
-    expect(component.getAuthor()).toEqual("")
+    expect(component.getAuthors()).toEqual("")
 
     // Arrange
     component.richSkill = skill
     // Act/Assert
-    expect(component.getAuthor()).toEqual(skill.author as string)
+    expect(component.getAuthors()).toEqual(skill.authors.join("; "))
   })
 
   it("getUuid should return", () => {
@@ -182,6 +182,19 @@ describe("ConcreteComponent", () => {
     component.richSkill = skill
     // Act/Assert
     expect(component.getArchivedDate()).toEqual(dateformat(skill.archiveDate, component._locale))
+  })
+
+  it("joinAuthors should return", () => {
+    // Arrange
+    component.richSkill = null
+    // Act/Assert
+    expect(component.joinAuthors()).toEqual("")
+
+    // Arrange
+    skill.archiveDate = date
+    component.richSkill = skill
+    // Act/Assert
+    expect(component.joinAuthors()).toEqual(skill.authors.join("; "))
   })
 
   it("joinKeywords should return", () => {

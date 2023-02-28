@@ -53,7 +53,7 @@ internal class ElasticSearchReindexerTest @Autowired constructor(
         // Each is called twice, one from the createFromApi, another one from the reindexAll.
         Mockito.verify(this.richSkillEsRepo, Mockito.times(2)).save(any())
         Mockito.verify(this.collectionEsRepo, Mockito.times(6)).save(any())
-        Mockito.verify(this.keywordEsRepo, Mockito.times(34)).save(any())
+        Mockito.verify(this.keywordEsRepo, Mockito.times(38)).save(any())
         Mockito.verify(this.jobCodeEsRepo, Mockito.times(6)).save(any())
 
     }

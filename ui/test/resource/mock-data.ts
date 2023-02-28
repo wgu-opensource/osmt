@@ -133,7 +133,7 @@ export function createMockSkillUpdate(): IRichSkillUpdate {
     standards: createMockApiReferenceListUpdate(),
     occupations: createMockStringListUpdate(),
     employers: createMockApiReferenceListUpdate(),
-    author: "author"
+    authors: createMockStringListUpdate()
   }
 }
 
@@ -241,7 +241,7 @@ export function createMockSkill(creationDate: Date, updateDate: Date, status: Pu
     certifications: [createMockNamedReference("4", "cert")],
     occupations: [createMockJobcode(5, "jobcode", "my jobcode")],
     employers: [createMockNamedReference("6", "employer")],
-    author: "name"
+    authors: ["author 1", "author 2"]
   }
 }
 

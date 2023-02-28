@@ -143,7 +143,6 @@ class RichSkillRepositoryImpl @Autowired constructor(
             this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
             this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.uuid = UUID.randomUUID().toString()
-            this.author = updateObject.author?.t
             this.category = updateObject.category?.t
         }
 
@@ -203,17 +202,14 @@ class RichSkillRepositoryImpl @Autowired constructor(
     }
 
     override fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String, email: String): RsdUpdateObject {
-        val authorKeyword = skillUpdate.author?.let {
-            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it)
-        }
-
         val categoryKeyword = skillUpdate.category?.let {
             keywordRepository.findOrCreate(KeywordTypeEnum.Category, value = it)
         }
 
-
         val addingCollections = mutableListOf<CollectionDao>()
         val removingCollections = mutableListOf<CollectionDao>()
+        val addingAuthors = mutableListOf<KeywordDao>()
+        val removingAuthors = mutableListOf<KeywordDao>()
         val addingKeywords = mutableListOf<KeywordDao>()
         val removingKeywords = mutableListOf<KeywordDao>()
         val jobsToAdd = mutableListOf<JobCodeDao>()
@@ -230,6 +226,20 @@ class RichSkillRepositoryImpl @Autowired constructor(
                 collectionRepository.findByName(it) ?: collectionRepository.create(it, user, email)
             }?.let {
                 removingCollections.addAll(it)
+            }
+        }
+
+        fun lookupAuthors(lud: ApiStringListUpdate, keywordType: KeywordTypeEnum) {
+            lud.add?.map {
+                keywordRepository.findOrCreate(keywordType, value = it)
+            }?.filterNotNull()?.let {
+                addingAuthors.addAll(it)
+            }
+
+            lud.remove?.map {
+                keywordRepository.findByValueOrUri(keywordType, value = it)
+            }?.let {
+                removingAuthors.addAll(it.filterNotNull())
             }
         }
 
@@ -285,11 +295,21 @@ class RichSkillRepositoryImpl @Autowired constructor(
             }?.let { jobsToRemove.addAll(it.filterNotNull()) }
         }
 
+        skillUpdate.authors?.let { lookupAuthors(it, KeywordTypeEnum.Author) }
         skillUpdate.keywords?.let { lookupKeywords(it, KeywordTypeEnum.Keyword) }
         skillUpdate.certifications?.let { lookupReferences(it, KeywordTypeEnum.Certification) }
         skillUpdate.standards?.let { lookupAlignments(it, KeywordTypeEnum.Standard) }
         skillUpdate.alignments?.let { lookupAlignments(it, KeywordTypeEnum.Alignment) }
         skillUpdate.employers?.let { lookupReferences(it, KeywordTypeEnum.Employer) }
+
+        val authorsUpdate = if (addingAuthors.size > 0 || removingAuthors.size > 0) {
+            ListFieldUpdate<KeywordDao>(
+                add = if (addingAuthors.size > 0) addingAuthors else listOf(),
+                remove = if (removingAuthors.size > 0) removingAuthors else listOf()
+            )
+        } else {
+            null
+        }
 
         val allKeywordsUpdate = if (addingKeywords.size > 0 || removingKeywords.size > 0) {
             ListFieldUpdate<KeywordDao>(
@@ -314,7 +334,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
             name = skillUpdate.skillName,
             statement = skillUpdate.skillStatement,
             publishStatus = skillUpdate.publishStatus,
-            author = authorKeyword?.let { NullableFieldUpdate(it) },
+            authors = authorsUpdate,
             category = if (skillUpdate.category != null || skillUpdate.category?.isBlank() == true) NullableFieldUpdate(
                 categoryKeyword
             ) else null,

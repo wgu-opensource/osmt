@@ -29,12 +29,37 @@ object RichSkillDescriptorTable : LongIdTable("RichSkillDescriptor"), TableWithU
         onDelete = ReferenceOption.RESTRICT,
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
-    val author = reference(
-        "author_id",
-        KeywordTable,
-        onDelete = ReferenceOption.RESTRICT,
+}
+
+object RichSkillAuthors : Table("RichSkillAuthors") {
+    val richSkillId = reference(
+        "richskill_id",
+        RichSkillDescriptorTable,
+        onDelete = ReferenceOption.CASCADE,
         onUpdate = ReferenceOption.CASCADE
-    ).nullable()
+    ).index()
+    val authorId = reference(
+        "author_id",
+
+        KeywordTable,
+        onDelete = ReferenceOption.CASCADE,
+        onUpdate = ReferenceOption.CASCADE
+    ).index()
+    override val primaryKey = PrimaryKey(richSkillId, authorId, name = "PK_RichSkillAuthors_rs_au")
+
+    fun create(richSkillId: Long, authorId: Long) {
+        insertIgnore {
+            it[this.richSkillId] = EntityID(richSkillId, RichSkillDescriptorTable)
+            it[this.authorId] = EntityID(authorId, KeywordTable)
+        }
+    }
+
+    fun delete(richSkillId: Long, authorId: Long) {
+        deleteWhere {
+            (RichSkillAuthors.richSkillId eq richSkillId) and
+                    (RichSkillAuthors.authorId eq authorId)
+        }
+    }
 }
 
 // many-to-many table for RichSkillDescriptor and JobCode relationship

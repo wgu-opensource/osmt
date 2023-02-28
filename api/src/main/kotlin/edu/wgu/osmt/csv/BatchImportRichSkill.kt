@@ -58,8 +58,8 @@ class RichSkillRow: CsvRow {
     @CsvBindByName(column = "O*NET Job Role")
     var jobRoles: String? = null
 
-    @CsvBindByName(column = "Author")
-    var author: String? = null
+    @CsvBindByName(column = "Authors")
+    var authors: String? = null
 
     @CsvBindByName(column = "Employer")
     var employer: String? = null
@@ -175,7 +175,7 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
                     keywords = allKeyWords?.let { ListFieldUpdate(add = it) },
                     collections = collections?.let {ListFieldUpdate(add = it)},
                     jobCodes = allJobcodes?.let { ListFieldUpdate(add = it) },
-                    author = NullableFieldUpdate(keywordRepository.getDefaultAuthor())
+                    authors = ListFieldUpdate(add = listOf(keywordRepository.getDefaultAuthor()))
                 ), user)
                 log.info("created skill '${row.skillName!!}'")
             }

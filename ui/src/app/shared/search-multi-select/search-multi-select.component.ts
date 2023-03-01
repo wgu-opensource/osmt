@@ -31,6 +31,7 @@ export class SearchMultiSelectComponent extends FilterSearchComponent implements
   }
 
   ngOnInit(): void {
+    this.getKeywords("")
     this.inputFc.valueChanges.subscribe(value => this.getKeywords(value ?? ""))
   }
 
@@ -62,10 +63,6 @@ export class SearchMultiSelectComponent extends FilterSearchComponent implements
 
   clearField(): void {
     this.inputFc.patchValue("")
-  }
-
-  get showResults(): boolean {
-    return this.inputFc.value.length > 0
   }
 
 }

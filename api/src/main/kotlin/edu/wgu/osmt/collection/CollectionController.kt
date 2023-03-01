@@ -26,6 +26,7 @@ import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskResult
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
+import edu.wgu.osmt.task.XlsxTask
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
@@ -182,6 +183,18 @@ class CollectionController @Autowired constructor(
         }
         val task = CsvTask(collectionUuid = uuid)
         taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
+        return Task.processingResponse(task)
+    }
+
+    @GetMapping(RoutePaths.COLLECTION_XLSX, produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
+    fun getSkillsForCollectionXlsx(
+        @PathVariable uuid: String
+    ): HttpEntity<TaskResult> {
+        if (collectionRepository.findByUUID(uuid)!!.status == PublishStatus.Draft && !oAuthHelper.hasRole(appConfig.roleAdmin)) {
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        }
+        val task = XlsxTask(collectionUuid = uuid)
+        taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionXlsx, task)
         return Task.processingResponse(task)
     }
 

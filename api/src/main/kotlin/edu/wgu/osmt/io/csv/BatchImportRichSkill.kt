@@ -1,4 +1,4 @@
-package edu.wgu.osmt.csv
+package edu.wgu.osmt.io.csv
 
 import com.opencsv.bean.CsvBindByName
 import edu.wgu.osmt.collection.CollectionDao

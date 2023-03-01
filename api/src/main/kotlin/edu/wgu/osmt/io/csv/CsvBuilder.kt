@@ -1,4 +1,4 @@
-package edu.wgu.osmt.csv
+package edu.wgu.osmt.io.csv
 
 /**
  * DSL style entry-point to build a CsvResource.  This approach should be used if a csv file is simple in structure

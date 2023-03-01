@@ -21,6 +21,7 @@ import java.util.*
 )
 @JsonSubTypes(
     JsonSubTypes.Type(value = CsvTask::class, name = "CsvTask"),
+    JsonSubTypes.Type(value = XlsxTask::class, name = "XlsxTask"),
     JsonSubTypes.Type(value = ApiSearch::class, name = "ApiSearch"),
     JsonSubTypes.Type(value = ApiBatchResult::class, name = "ApiBatchResult"),
     JsonSubTypes.Type(value = PublishTask::class, name = "PublishTask"),
@@ -67,7 +68,17 @@ data class CsvTask(
 ) : Task {
     override val contentType = "text/csv"
     override val apiResultPath = RoutePaths.TASK_DETAIL_TEXT
+}
 
+data class XlsxTask(
+    val collectionUuid: String = "",
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: ByteArray? = null,
+    override val status: TaskStatus = TaskStatus.Processing
+) : Task {
+    override val contentType = "application/vnd.ms-excel"
+    override val apiResultPath = RoutePaths.TASK_DETAIL_MEDIA
 }
 
 data class ExportSkillsToCsvTask(

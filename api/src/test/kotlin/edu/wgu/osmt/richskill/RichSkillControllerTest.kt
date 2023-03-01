@@ -9,8 +9,8 @@ import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.csv.BatchImportRichSkill
-import edu.wgu.osmt.csv.RichSkillRow
+import edu.wgu.osmt.io.csv.BatchImportRichSkill
+import edu.wgu.osmt.io.csv.RichSkillRow
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData

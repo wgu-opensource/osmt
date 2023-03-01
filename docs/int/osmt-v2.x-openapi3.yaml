@@ -739,6 +739,32 @@ paths:
               parameters:
                 uuid: '$response.body#/uuid'
 
+  /api/collections/{uuid}/xlsx:
+    get:
+      tags:
+        - Collections
+      summary: Retrieve the skills in a collection as a XLSX (MS Excel)
+      description: Retrieve the skills that belong to the collection in XLSX (MS Excel) format
+      parameters:
+        - name: uuid
+          in: path
+          description: uuid of a collection
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/vnd.ms-excel:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          links:
+            CollectionCsvResults:
+              operationRef: '/api/results/media/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
+
   /api/collections/{uuid}/updateSkills:
     post:
       tags:

@@ -1,10 +1,9 @@
-package edu.wgu.osmt.richskill
+package edu.wgu.osmt.io.csv
 
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.csv.CsvColumn
-import edu.wgu.osmt.csv.CsvResource
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeBreakout
+import edu.wgu.osmt.richskill.RichSkillAndCollections
 
 class RichSkillCsvExport(
     private val appConfig: AppConfig

@@ -31,12 +31,14 @@ object RoutePaths {
     const val COLLECTION_SKILLS = "$COLLECTION_DETAIL/skills"
     const val COLLECTION_AUDIT_LOG = "$COLLECTION_DETAIL/log"
     const val COLLECTION_CSV = "$COLLECTION_DETAIL/csv"
+    const val COLLECTION_XLSX = "$COLLECTION_DETAIL/xlsx"
     const val COLLECTION_REMOVE = "$COLLECTION_DETAIL/remove"
 
     const val WORKSPACE_PATH = "$API/workspace"
 
     const val TASKS_PATH = "$API/results"
     const val TASK_DETAIL_TEXT = "$TASKS_PATH/text/{uuid}"
+    const val TASK_DETAIL_MEDIA = "$TASKS_PATH/media/{uuid}"
     const val TASK_DETAIL_BATCH = "$TASKS_PATH/batch/{uuid}"
     const val TASK_DETAIL_SKILLS = "$TASKS_PATH/skills/{uuid}"
 

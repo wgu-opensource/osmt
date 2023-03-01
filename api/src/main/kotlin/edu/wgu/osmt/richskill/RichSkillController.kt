@@ -13,6 +13,7 @@ import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.io.csv.RichSkillCsvExport
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.elasticsearch.PaginatedLinks
@@ -269,6 +270,7 @@ class RichSkillController @Autowired constructor(
         return Task.processingResponse(task)
     }
 
+    // This really appears to be never used....
     @Transactional(readOnly = true)
     @PostMapping(RoutePaths.EXPORT_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody

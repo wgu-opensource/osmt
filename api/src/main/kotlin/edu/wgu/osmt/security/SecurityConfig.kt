@@ -11,6 +11,7 @@ import edu.wgu.osmt.RoutePaths.COLLECTION_REMOVE
 import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS
 import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS_UPDATE
 import edu.wgu.osmt.RoutePaths.COLLECTION_UPDATE
+import edu.wgu.osmt.RoutePaths.COLLECTION_XLSX
 import edu.wgu.osmt.RoutePaths.SEARCH_COLLECTIONS
 import edu.wgu.osmt.RoutePaths.SEARCH_JOBCODES_PATH
 import edu.wgu.osmt.RoutePaths.SEARCH_KEYWORDS_PATH
@@ -22,6 +23,7 @@ import edu.wgu.osmt.RoutePaths.SKILL_DETAIL
 import edu.wgu.osmt.RoutePaths.SKILL_PUBLISH
 import edu.wgu.osmt.RoutePaths.SKILL_UPDATE
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_BATCH
+import edu.wgu.osmt.RoutePaths.TASK_DETAIL_MEDIA
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_SKILLS
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_TEXT
 import edu.wgu.osmt.RoutePaths.WORKSPACE_PATH
@@ -93,6 +95,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(POST, COLLECTION_SKILLS).permitAll()
             .mvcMatchers(GET, COLLECTION_CSV).permitAll()
             .mvcMatchers(GET, TASK_DETAIL_TEXT).permitAll()   // public csv results
+            .mvcMatchers(GET, COLLECTION_XLSX).permitAll()
+            .mvcMatchers(GET, TASK_DETAIL_MEDIA).permitAll()   // public csv results
 
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
             .and().oauth2Login().successHandler(redirectToFrontend)

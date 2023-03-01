@@ -1,8 +1,8 @@
 package edu.wgu.osmt
 
-import edu.wgu.osmt.csv.BatchImportRichSkill
-import edu.wgu.osmt.csv.BlsImport
-import edu.wgu.osmt.csv.OnetImport
+import edu.wgu.osmt.io.csv.BatchImportRichSkill
+import edu.wgu.osmt.io.csv.BlsImport
+import edu.wgu.osmt.io.csv.OnetImport
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

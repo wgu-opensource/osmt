@@ -35,6 +35,12 @@ class TaskController @Autowired constructor(
         return taskResult(uuid)
     }
 
+    @GetMapping(RoutePaths.TASK_DETAIL_MEDIA)
+    @ResponseBody
+    fun mediaResult(@PathVariable uuid: String): HttpEntity<*> {
+        return taskResult(uuid)
+    }
+
     @GetMapping(RoutePaths.TASK_DETAIL_BATCH)
     @ResponseBody
     fun batchResult(@PathVariable uuid: String): HttpEntity<*> {

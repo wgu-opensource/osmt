@@ -1,7 +1,9 @@
-package edu.wgu.osmt.richskill
+package edu.wgu.osmt.io.csv
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.richskill.RichSkillAndCollections
+import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.task.ExportSkillsToCsvTask
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskStatus

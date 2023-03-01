@@ -28,13 +28,19 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
     CustomJobCodeRepository {
 
     override fun typeAheadSearch(query: String): SearchHits<JobCode> {
-        val limitedPageable = OffsetPageable(0, 10, null)
-        val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
+        val limitedPageable: OffsetPageable
+        val nsq: NativeSearchQueryBuilder
 
-        val nsq: NativeSearchQueryBuilder =
+        limitedPageable = if (query.isEmpty()) {
+            OffsetPageable(0, 10000, null)
+        } else {
+            OffsetPageable(0, 10, null)
+
+        }
+        val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
+        nsq =
             NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(disjunctionQuery)
                 .withSort(SortBuilders.scoreSort())
-
         return elasticSearchTemplate.search(nsq.build(), JobCode::class.java)
     }
 }

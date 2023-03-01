@@ -107,7 +107,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       this.from,
       determineFilters(this.selectedFilters),
       this.columnSort,
-      this.apiSearch
+      undefined
     )
     this.resultsLoaded.subscribe(results => this.setResults(results))
   }

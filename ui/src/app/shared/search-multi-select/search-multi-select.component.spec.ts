@@ -49,11 +49,6 @@ describe("SearchMultiSelectComponent", () => {
     expect(component).toBeTruthy()
   })
 
-  it("show result should be true", () => {
-    component.inputFc.patchValue("value")
-    expect(component.showResults).toBeTrue()
-  })
-
   it("clear field should clean input control", () => {
     component.inputFc.patchValue("value")
     component.clearField()

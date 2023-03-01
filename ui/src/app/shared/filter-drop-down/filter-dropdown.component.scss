@@ -32,7 +32,7 @@
 }
 
 .dropdown-content {
-  margin-top: -320px;
+  margin-top: -300px;
   margin-left: -200px;
   padding: 20px;
   background: #333333;
@@ -54,5 +54,12 @@ hr {
 }
 
 h3 {
+  font-size: 30px;
   text-align: center;
+  margin-bottom: 0;
+}
+
+.close-container {
+  display: flex;
+  justify-content: end;
 }

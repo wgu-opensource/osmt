@@ -1,7 +1,8 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {Component, EventEmitter, HostListener, Input, OnInit, Output} from "@angular/core"
 import { KeywordType } from "../../richskill/ApiSkill"
 import { FormBuilder, FormGroup } from "@angular/forms"
 import {FilterDropdown} from "../../models/filter-dropdown.model"
+import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 
 @Component({
   selector: "app-filter-dropdown",
@@ -16,6 +17,12 @@ export class FilterDropdownComponent {
   @Input()
   filterFg?: FormGroup
   keywordType = KeywordType
+  iconDismiss = SvgHelper.path(SvgIcon.DISMISS)
+
+  @HostListener("document:keydown.escape", ["$event"])
+  onKeydownHandler(event: KeyboardEvent): void {
+    this.showInputs = false
+  }
 
   onApplyFilter(): void {
     this.showInputs = !this.showInputs

@@ -48,6 +48,14 @@ input[type=checkbox]:checked:after {
   left: 6px;
 }
 
+input::placeholder {
+  font-size: 14px;
+}
+
+.result-text {
+  font-size: 14px;
+}
+
 .result-container {
   display: flex;
   justify-content: space-between;
@@ -68,4 +76,8 @@ input[type=checkbox]:checked:after {
 hr {
   background: white;
   border: solid 1px;
+}
+
+strong {
+  font-size: 14px;
 }

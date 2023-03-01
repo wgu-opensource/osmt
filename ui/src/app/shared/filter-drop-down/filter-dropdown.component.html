@@ -1,11 +1,20 @@
 <div class="dropdown">
   <button class="drop-button" (click)="showInputs = !showInputs">
     <svg class="l-iconTransition-x-icon t-icon">
-      <use xlink:href="/assets/images/svg-defs.svg#icon-menu"></use>
+      <use xlink:href="/assets/images/svg-defs.svg#icon-menu">
+      </use>
     </svg>
     Filter
   </button>
   <div class="dropdown-content" [ngClass]="{'dropdown-content-visible': showInputs}">
+    <div class="close-container">
+      <button (click)="showInputs = !showInputs">
+        <svg class="l-iconTransition-x-icon t-icon">
+          <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss">
+          </use>
+        </svg>
+      </button>
+    </div>
     <h3 class="t-type-heading1 t-margin-small t-margin-bottom">
       Filter Library
     </h3>

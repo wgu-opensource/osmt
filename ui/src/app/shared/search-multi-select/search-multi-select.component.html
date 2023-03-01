@@ -61,7 +61,7 @@
             <div class="m-selectMenu-x-content" *ngIf="results && results.length > 0; else emptyResults">
               <div class="t-visuallyHidden">Showing search results: </div>
               <div class="result-container" *ngFor="let result of results;">
-              <span class="m-buttonText-x-text">
+              <span class="m-buttonText-x-text result-text">
                 {{resultName(result)}}
               </span>
                 <input type="checkbox" [checked]="isResultSelected(result)" (click)="selectResult(result)">

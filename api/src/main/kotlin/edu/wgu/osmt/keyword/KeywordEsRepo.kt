@@ -37,7 +37,6 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
                 .should(
                     QueryBuilders.matchAllQuery()
                 )
-
         }
         else {
             limitedPageable  = OffsetPageable(0, 10, null)

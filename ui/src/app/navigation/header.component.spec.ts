@@ -91,13 +91,6 @@ describe("HeaderComponent", () => {
     )
   })
 
-
-  // it("my workspace is visible when user has role admin or curator", () => {
-  //   const myWorkspace = fixture.debugElement.query(By.css("#li-my-workspace"))
-  //   expect(myWorkspace).toBeTruthy()
-  //   expect(component.canHaveWorkspace).toBeTrue()
-  // })
-
   it("skills is active", fakeAsync(() => {
     router.navigate(["/skills"])
     tick()

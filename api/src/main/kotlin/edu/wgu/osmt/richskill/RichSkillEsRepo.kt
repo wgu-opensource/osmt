@@ -367,9 +367,9 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                     )
                 )
             }
-        } else if (apiSearch.filtered != null) {
-            generateBoolQueriesFromApiSearchWithFilters(bq, apiSearch.filtered)
-        } else {
+        }
+
+        else {
             var apiSearchUuids = apiSearch.uuids?.filterNotNull()?.filter { x: String? -> x != "" }
 
             if (!apiSearchUuids.isNullOrEmpty()) {
@@ -394,6 +394,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
             }
         }
+        apiSearch.filtered?.let { generateBoolQueriesFromApiSearchWithFilters(bq, it) }
         return nsq
     }
 

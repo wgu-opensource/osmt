@@ -39,7 +39,7 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
                 )
         }
         else {
-            limitedPageable  = OffsetPageable(0, 10, null)
+            limitedPageable  = OffsetPageable(0, 20, null)
             nsq = NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(bq).withSort(SortBuilders.scoreSort())
             bq
                 .must(QueryBuilders.termQuery(Keyword::type.name, type.name))

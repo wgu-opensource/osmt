@@ -34,7 +34,7 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
         limitedPageable = if (query.isEmpty()) {
             OffsetPageable(0, 10000, null)
         } else {
-            OffsetPageable(0, 10, null)
+            OffsetPageable(0, 20, null)
 
         }
         val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)

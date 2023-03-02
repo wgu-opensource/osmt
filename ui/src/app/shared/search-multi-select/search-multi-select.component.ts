@@ -40,7 +40,8 @@ export class SearchMultiSelectComponent extends FilterSearchComponent implements
     if (!isResultSelected) {
       this.control?.value.push(result)
     } else {
-      this.control?.patchValue(this.control?.value.filter((r: ApiJobCode | ApiNamedReference) => this.areResultsEqual(r, result)))
+      const newValues = this.control?.value.filter((r: ApiJobCode | ApiNamedReference) => !this.areResultsEqual(r, result))
+      this.control?.patchValue(newValues)
     }
   }
 

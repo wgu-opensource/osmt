@@ -201,6 +201,22 @@ OSMT optionally supports role-based access, with these roles:
 - **Curator**: an OSMT user with a curator role can update but not create RSDs and collections. This role is for someone who would publish and unpublish RSDs and Collections
 - **Viewer**: an OSMT user with a viewer role is a logged-in user who can not make modifications to RSDs or Collections.
 
+| Behavior                                | Curator Role | Admin Role |
+|-----------------------------------------|:------------:|:----------:|
+| Update Skills                           |              | X          |
+| Archive and Unarchive Skills            | X            | X          |
+| Create Skills                           | X            | X          |
+| Publish Skills                          |              | X          |
+| Update Collection                       |              | X          |
+| Archive and Unarchive Collection        | X            | X          |
+| Create Collection                       | X            | X          |
+| Publish Collection                      |              | X          |
+| Delete Collection                       |              | X          |
+| Add/Remove Skills to/from a Collection  |              | X          |
+| Library Export                          |              | X          |
+| Export Draft Collection                 |              | X          |
+| Workspace Access                        | X            | X          |
+
 #### Configuration in OSMT Code
 By default, OSMT is configured with roles enabled. If you want to disable roles in OSMT, apply these changes:
 

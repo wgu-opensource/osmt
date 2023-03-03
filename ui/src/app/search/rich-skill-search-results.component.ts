@@ -23,6 +23,7 @@ import {CollectionService} from "../collection/service/collection.service"
 export class RichSkillSearchResultsComponent extends SkillsListComponent implements OnInit {
 
   apiSearch: ApiSearch | undefined
+  showAdvancedFilteredSearch = true
 
   title = "Search Results"
 
@@ -81,7 +82,14 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
     }
 
     if (this.apiSearch !== undefined) {
-      this.resultsLoaded = this.richSkillService.searchSkills(this.apiSearch, this.size, this.from, determineFilters(this.selectedFilters), this.columnSort)
+      this.apiSearch.filtered = this.selectedKeywords
+      this.resultsLoaded = this.richSkillService.getSkillsFiltered(
+        this.size,
+        this.from,
+        this.apiSearch,
+        determineFilters(this.selectedFilters),
+        this.columnSort
+      )
       this.resultsLoaded.subscribe(results => this.setResults(results))
     }
   }

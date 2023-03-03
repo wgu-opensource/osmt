@@ -368,11 +368,12 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                             ScoreMode.Avg
                         )
                     )
-                    bq.must(
-                        BoolQueryBuilder().should(richSkillPropertiesMultiMatch(apiSearch.query))
-                            .should(occupationQueries(apiSearch.query))
-                    )
                 }
+                bq.must(
+                    BoolQueryBuilder().should(richSkillPropertiesMultiMatch(apiSearch.query))
+                        .should(occupationQueries(apiSearch.query))
+                )
+
             }
         } else if (apiSearch.advanced != null) {
             generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)

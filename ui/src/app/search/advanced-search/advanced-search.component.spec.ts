@@ -82,7 +82,7 @@ describe("AdvancedSearchComponent", () => {
 
   it("handleSearchSkills should return", () => {
     // Arrange
-    SearchServiceData.latestSearch = new ApiSearch({})  // Clear previous search
+    SearchServiceData.latestSearch = new ApiSearch({filtered: {}})  // Clear previous search
     const {
       name,
       author,
@@ -111,7 +111,7 @@ describe("AdvancedSearchComponent", () => {
       alignments: prepareNamedReferences(alignments),
       collectionName
     }
-    const expected = new ApiSearch({ advanced })
+    const expected = new ApiSearch({ advanced, filtered: {} })
 
     // Act
     component.handleSearchSkills()

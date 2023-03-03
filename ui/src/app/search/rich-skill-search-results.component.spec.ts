@@ -130,7 +130,7 @@ describe("RichSkillSearchResultsComponent", () => {
     const advanced = new ApiAdvancedSearch()
     advanced.skillName = "test skill"
     advanced.author = "test author"
-    const apiSearch = new ApiSearch({ advanced })
+    const apiSearch = new ApiSearch({ advanced, filtered: {} })
     component.matchingQuery = undefined
     const expected = [ "test skill", "test author" ];
 

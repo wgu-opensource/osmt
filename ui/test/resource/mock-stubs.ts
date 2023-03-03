@@ -381,6 +381,16 @@ export class RichSkillServiceStub {
   getResultExportedLibrary(): Observable<any> {
     return of("")
   }
+
+  getSkillsFiltered(
+    size: number = 50,
+    from: number = 0,
+    apiSearch: ApiSearch,
+    filterByStatuses: Set<PublishStatus> | undefined,
+    sort: ApiSortOrder | undefined,
+  ): Observable<PaginatedSkills> {
+    return of(createMockPaginatedSkills())
+  }
 }
 
 export let KeywordSearchServiceData = {

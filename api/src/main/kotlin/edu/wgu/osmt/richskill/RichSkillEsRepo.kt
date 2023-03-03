@@ -351,14 +351,28 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                     )
                 )
             } else {
-                bq.must(
-                    nestedQuery(
-                        RichSkillDoc::collections.name,
-                        boolQuery().must(matchQuery(collectionsUuid, collectionId)),
-                        ScoreMode.Avg
+                if(apiSearch.filtered != null) {
+                    bq.must(
+                        nestedQuery(
+                            RichSkillDoc::collections.name,
+                            boolQuery().must(matchQuery(collectionsUuid, collectionId).operator(Operator.AND)),
+                            ScoreMode.Avg
+                        )
                     )
-                )
-                bq.must(BoolQueryBuilder().should(richSkillPropertiesMultiMatch(apiSearch.query)).should(occupationQueries(apiSearch.query)))
+                }
+                else {
+                    bq.must(
+                        nestedQuery(
+                            RichSkillDoc::collections.name,
+                            boolQuery().must(matchQuery(collectionsUuid, collectionId).operator(Operator.OR)),
+                            ScoreMode.Avg
+                        )
+                    )
+                    bq.must(
+                        BoolQueryBuilder().should(richSkillPropertiesMultiMatch(apiSearch.query))
+                            .should(occupationQueries(apiSearch.query))
+                    )
+                }
             }
         } else if (apiSearch.advanced != null) {
             generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)

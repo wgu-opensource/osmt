@@ -33,7 +33,7 @@ const val collectionsUuid = "collections.uuid"
 
 interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch)
-    fun generateBoolQueriesFromApiSearchWithFilters(nsq: NativeSearchQueryBuilder, filteredQuery: ApiFilteredSearch)
+    fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiFilteredSearch, publishStatus: Set<PublishStatus>)
     fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder
     fun byApiSearch(
         apiSearch: ApiSearch,
@@ -194,44 +194,50 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         }
     }
 
-    override fun generateBoolQueriesFromApiSearchWithFilters(nsq: NativeSearchQueryBuilder, filteredQuery: ApiFilteredSearch) {
+    override fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiFilteredSearch, publishStatus: Set<PublishStatus>) {
+        bq.must(
+            termsQuery(
+                RichSkillDoc::publishStatus.name,
+                publishStatus.map { ps -> ps.toString() }
+            )
+        )
         with(filteredQuery) {
             categories?. let {
-                nsq.withFilter(BoolQueryBuilder().must(buildNestedQueries(RichSkillDoc::category.name, it)))
+                bq.must(buildNestedQueries(RichSkillDoc::category.name, it))
             }
             keywords?. let {
                 it.mapNotNull {
-                    nsq.withFilter(BoolQueryBuilder().must(generateTermsSetQueryBuilder(RichSkillDoc::searchingKeywords.name, keywords)))
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::searchingKeywords.name, keywords))
                 }
             }
             standards?. let {
                 it.mapNotNull {
-                    nsq.withFilter(BoolQueryBuilder().must(generateTermsSetQueryBuilder(RichSkillDoc::standards.name, standards)))
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::standards.name, standards))
                 }
             }
             certifications?. let {
                 it.mapNotNull {
-                    nsq.withFilter(BoolQueryBuilder().must(generateTermsSetQueryBuilder(RichSkillDoc::certifications.name, certifications)))
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::certifications.name, certifications))
                 }
             }
             alignments?. let {
                 it.mapNotNull {
-                    nsq.withFilter(BoolQueryBuilder().must(generateTermsSetQueryBuilder(RichSkillDoc::alignments.name, alignments)))
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::alignments.name, alignments))
                 }
             }
             employers?. let {
                 it.mapNotNull {
-                    nsq.withFilter(BoolQueryBuilder().must(generateTermsSetQueryBuilder(RichSkillDoc::employers.name, employers)))
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::employers.name, employers))
                 }
             }
             authors?. let {
-                nsq.withFilter(BoolQueryBuilder().must(buildNestedQueries(RichSkillDoc::author.name, it)))
+                bq.must(buildNestedQueries(RichSkillDoc::author.name, it))
             }
             occupations?.let {
                 it.mapNotNull { value ->
-                    nsq.withFilter(BoolQueryBuilder().must(
+                    bq.must(
                         occupationQueries(value)
-                    ))
+                    )
                 }
             }
         }
@@ -323,13 +329,18 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             )
         )
 
-        apiSearch.filtered?.let { generateBoolQueriesFromApiSearchWithFilters(nsq, it) }
+        apiSearch.filtered?.let { generateBoolQueriesFromApiSearchWithFilters(bq, it, publishStatus) }
 
         // treat the presence of query property to mean multi field search with that term
         if (!apiSearch.query.isNullOrBlank()) {
 
             if (collectionId.isNullOrBlank()) {
-                bq.should(richSkillPropertiesMultiMatch(apiSearch.query))
+                if(apiSearch.filtered != null){
+                    bq.must(richSkillPropertiesMultiMatch(apiSearch.query))
+                }
+                else {
+                    bq.should(richSkillPropertiesMultiMatch(apiSearch.query))
+                }
                 bq.should(occupationQueries(apiSearch.query))
                 bq.should(
                     nestedQuery(

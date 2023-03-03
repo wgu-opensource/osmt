@@ -127,7 +127,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   }
 
   public get searchQuery(): string {
-    return this.searchForm.get("search")?.value.trim() ?? ""
+    return this.searchForm.get("search")?.value?.trim() ?? ""
   }
   clearSearch(): boolean {
     this.searchForm.reset()

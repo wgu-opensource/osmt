@@ -115,7 +115,8 @@ describe("AdvancedSearchComponent", () => {
 
     // Act
     component.handleSearchSkills()
-
+    console.log(SearchServiceData.latestSearch)
+    console.log(expected)
     // Assert
     expect(SearchServiceData.latestSearch).toEqual(expected)
   })

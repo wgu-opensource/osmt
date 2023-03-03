@@ -109,8 +109,8 @@ export class SearchServiceStub {
   // tslint:disable-next-line:variable-name
   advancedSkillSearch(_advanced: ApiAdvancedSearch): void {
     const advanced = _advanced as ApiAdvancedSearch
-    SearchServiceData.latestSearch = new ApiSearch({ advanced })
-    this.setLatestSearch(new ApiSearch({advanced}))
+    SearchServiceData.latestSearch = new ApiSearch({ advanced, filtered: {} })
+    this.setLatestSearch(new ApiSearch({advanced, filtered: {}}))
   }
 
   simpleCollectionSearch(query: string): void {

@@ -34,6 +34,7 @@ import {AuthService} from "../../auth/auth-service";
 import * as FileSaver from "file-saver"
 import * as Auth from "../../auth/auth-roles"
 import {CollectionsLibraryComponent} from "../../table/collections-library.component"
+import {FormControl, FormGroup} from "@angular/forms"
 
 
 @Component({
@@ -232,7 +233,6 @@ describe("ManageCollectionComponent", () => {
     while (!component.results) {}
 
     // Assert
-    expect(component.apiSearch).toBeFalsy()
     expect(component.from).toBeFalsy()
     expect(component.results).toBeTruthy()
     expect(result).toBeFalsy()

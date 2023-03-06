@@ -14,7 +14,7 @@ export class FilterSearchComponent {
   }
 
   resultName(result: any): string {
-    return result.name ?? result.targetNodeName + " " + result.code
+    return result.name ?? result.code + " " + result.targetNodeName
   }
 
 }

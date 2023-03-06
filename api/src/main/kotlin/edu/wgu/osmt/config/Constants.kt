@@ -18,6 +18,7 @@ const val INDEX_JOBCODE_DOC = "jobcode_v1"
 const val INDEX_KEYWORD_DOC = "keyword"
 
 // ElasticSearch Sort Criteria
-const val NAME_SORT_INSENSITIVE = "name.sort_insensitive"
-const val CATEGORY_SORT_INSENSITIVE = "category.sort_insensitive"
+const val SORT_INSENSITIVE = ".sort_insensitive"
+const val NAME_SORT_INSENSITIVE = "name${SORT_INSENSITIVE}"
+const val CATEGORY_SORT_INSENSITIVE = "category${SORT_INSENSITIVE}"
 

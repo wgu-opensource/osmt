@@ -6,6 +6,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.Operator
 import org.elasticsearch.index.query.QueryBuilders.*
 import org.elasticsearch.search.sort.SortBuilders
+import org.elasticsearch.search.sort.SortOrder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
@@ -28,10 +29,9 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
     CustomJobCodeRepository {
 
     override fun typeAheadSearch(query: String): SearchHits<JobCode> {
-        val limitedPageable: OffsetPageable
         val nsq: NativeSearchQueryBuilder
 
-        limitedPageable = if (query.isEmpty()) {
+        val limitedPageable: OffsetPageable = if (query.isEmpty()) {
             OffsetPageable(0, 10000, null)
         } else {
             OffsetPageable(0, 20, null)
@@ -40,7 +40,7 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
         val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
         nsq =
             NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(disjunctionQuery)
-                .withSort(SortBuilders.scoreSort())
+                .withSort(SortBuilders.fieldSort("${JobCode::code.name}.keyword").order(SortOrder.ASC))
         return elasticSearchTemplate.search(nsq.build(), JobCode::class.java)
     }
 }

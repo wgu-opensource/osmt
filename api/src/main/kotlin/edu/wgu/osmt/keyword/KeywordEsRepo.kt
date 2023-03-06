@@ -1,9 +1,11 @@
 package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.config.INDEX_KEYWORD_DOC
+import edu.wgu.osmt.config.SORT_INSENSITIVE
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.sort.SortBuilders
+import org.elasticsearch.search.sort.SortOrder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
@@ -31,7 +33,8 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
 
         if(query.isEmpty()){ //retrieve all
             limitedPageable = OffsetPageable(0, 10000, null)
-            nsq = NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(bq).withSort(SortBuilders.scoreSort())
+            nsq = NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(bq)
+                .withSort(SortBuilders.fieldSort("${Keyword::value.name}$SORT_INSENSITIVE").order(SortOrder.ASC))
             bq
                 .must(QueryBuilders.termQuery(Keyword::type.name, type.name))
                 .should(
@@ -40,7 +43,8 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
         }
         else {
             limitedPageable  = OffsetPageable(0, 20, null)
-            nsq = NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(bq).withSort(SortBuilders.scoreSort())
+            nsq = NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(bq)
+                .withSort(SortBuilders.fieldSort("${Keyword::value.name}$SORT_INSENSITIVE").order(SortOrder.ASC))
             bq
                 .must(QueryBuilders.termQuery(Keyword::type.name, type.name))
                 .should(

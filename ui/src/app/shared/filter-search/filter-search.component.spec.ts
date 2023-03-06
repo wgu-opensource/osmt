@@ -26,6 +26,6 @@ describe("FilterSearchComponent", () => {
 
   it("name should be correct for api job code", () => {
     const name = filterSearch.resultName(new ApiJobCode({code: "code1", targetNodeName: "value1"}))
-    expect(name).toEqual("value1 code1")
+    expect(name).toEqual("code1 value1")
   })
 })

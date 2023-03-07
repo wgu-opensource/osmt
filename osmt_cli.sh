@@ -404,10 +404,11 @@ load_static_ci_dataset(){
 start_osmt_dev_spring_app_reindex() {
   echo
   local -i rc
+  start_osmt_dev_docker_stack
   _validate_osmt_dev_docker_stack
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "Starting OSMT Spring app requires the backend Development Docker stack. First, run $(basename "${0}") -d."
+    echo_err "There was an issue validating your backend Development Docker stack. Exiting..."
     return 1
   fi
 

@@ -31,7 +31,7 @@ export const importSkillHeaderOrder = [
   {field: "skillName", label: "RSD Name"},
   {field: "authors", label: "Authors"},
   {field: "skillStatement", label: "Skill Statement"},
-  {field: "category", label: "Category"},
+  {field: "categories", label: "Categories"},
   {field: "keywords", label: "Keywords"},
   {field: "standards", label: "Standards"},
   {field: "certifications", label: "Certifications"},
@@ -399,6 +399,12 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
             if (authors.length > 0) {
               newSkill[fieldName] = new ApiStringListUpdate(authors)
               hasAuthor = true
+            }
+          } else if (["categories"].indexOf(fieldName) !== -1) {
+            const categories = value.split(";").map(it => it.trim()).filter(it => it !== "")
+
+            if (categories.length > 0) {
+              newSkill[fieldName] = new ApiStringListUpdate(categories)
             }
           }
           else if (["certifications", "employers"].indexOf(fieldName) !== -1) {

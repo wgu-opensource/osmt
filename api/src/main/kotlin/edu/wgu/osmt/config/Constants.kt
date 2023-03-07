@@ -5,11 +5,8 @@ const val QUOTED_SEARCH_REGEX_PATTERN = "([\"\'])(?:(?=(\\\\?))\\2.)*?\\1"
 const val DEFAULT_WORKSPACE_NAME = "My Workspace"
 
 // API parameter constants
-const val CATEGORY_ASC = "name.asc"
-const val CATEGORY_DESC = "name.desc"
 const val NAME_ASC = "skill.asc"
 const val NAME_DESC = "skill.desc"
-
 
 // ElasticSearch Index Names
 const val INDEX_RICHSKILL_DOC = "richskill_v1"
@@ -20,5 +17,3 @@ const val INDEX_KEYWORD_DOC = "keyword"
 // ElasticSearch Sort Criteria
 const val SORT_INSENSITIVE = ".sort_insensitive"
 const val NAME_SORT_INSENSITIVE = "name${SORT_INSENSITIVE}"
-const val CATEGORY_SORT_INSENSITIVE = "category${SORT_INSENSITIVE}"
-

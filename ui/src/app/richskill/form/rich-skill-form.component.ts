@@ -122,7 +122,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     const fields = {
       skillName: new FormControl("", Validators.compose([Validators.required, notACopyValidator])),
       skillStatement: new FormControl("", Validators.required),
-      category: new FormControl(null),
+      categories: new FormControl(null),
       keywords: new FormControl(null),
       standards: new FormControl(null),
       collections: new FormControl(null),
@@ -194,9 +194,12 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       update.authors = authorsDiff
     }
 
-    const inputCategory = formValue.category
-    if (this.isDuplicating || this.existingSkill?.category !== inputCategory) {
-      update.category = inputCategory ?? ""
+    const categoriesDiff = this.diffStringList(
+      formValue.categories,
+      this.existingSkill?.categories
+    )
+    if (this.isDuplicating || categoriesDiff) {
+      update.categories = categoriesDiff
     }
 
     const collectionsDiff = this.diffUuidList(
@@ -316,7 +319,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     const fields = {
       skillName: (this.isDuplicating ? "Copy of " : "") + skill.skillName,
       skillStatement: skill.skillStatement,
-      category: (skill.category && skill.category.length > 0) ? skill.category : null,
+      categories: skill.categories?.map(it => it) ?? null,
       keywords: skill.keywords?.map(it => it) ?? null,
       standards: skill.standards?.map(it => it) ?? null,
       collections: skill.collections?.map(it => it.name) ?? [],
@@ -352,7 +355,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       "skillName",
       "authors",
       "skillStatement",
-      "category",
+      "categories",
       "keywords",
       "standards",
       "certifications",

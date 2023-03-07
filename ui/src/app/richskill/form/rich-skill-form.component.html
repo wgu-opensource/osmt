@@ -66,15 +66,15 @@
             </div>
 
             <div class="t-margin-medium t-margin-bottom">
-              <app-form-field-keyword-search-select
-                [control]="skillForm.controls.category"
-                label="Category"
-                name="category"
+              <app-form-field-keyword-search-multi-select
+                [control]="skillForm.controls.categories"
+                label="Categories"
+                name="categories"
                 [includePlaceholder]="!this.skillUuid"
-                helpMessage="An industry-recognized, general term that represents a broad group of related RSDs."
+                helpMessage="Industry-recognized, general terms that represents a broad group of related RSDs."
                 [keywordType]="keywordType.Category"
                 [createNonExisting]="true"
-              ></app-form-field-keyword-search-select>
+              ></app-form-field-keyword-search-multi-select>
             </div>
 
             <div class="t-margin-medium t-margin-bottom">

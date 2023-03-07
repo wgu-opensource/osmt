@@ -37,12 +37,12 @@
       </th>
 
       <td>
-        <div class="t-hidden-tabletMax">{{review.skill.category}}</div>
+        <div class="t-hidden-tabletMax">{{review.skill.categories?.add?.join("; ") ?? ""}}</div>
         <div class="t-hidden-tabletMin">
           <!--{{render '@m-inlineheading'}}-->
           <div class="m-inlineHeading">
-            <p class="m-inlineHeading-x-heading">Category:</p>
-            <p class="m-inlineHeading-x-text">{{review.skill.category}}</p>
+            <p class="m-inlineHeading-x-heading">Categories:</p>
+            <p class="m-inlineHeading-x-text">{{review.skill.categories?.add?.join("; ") ?? ""}}</p>
           </div>
         </div>
       </td>

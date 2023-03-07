@@ -23,12 +23,6 @@ object RichSkillDescriptorTable : LongIdTable("RichSkillDescriptor"), TableWithU
     val uuid = varchar("uuid", 36).uniqueIndex()
     val name = text("name")
     val statement = text("statement")
-    val category = reference(
-        "cat_id",
-        KeywordTable,
-        onDelete = ReferenceOption.RESTRICT,
-        onUpdate = ReferenceOption.CASCADE
-    ).nullable()
 }
 
 // many-to-many table for RichSkillDescriptor and JobCode relationship

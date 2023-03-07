@@ -43,7 +43,10 @@ internal class ApiSkillSummaryTest {
         Assertions.assertThat(api.archiveDate).isEqualTo(expected.archiveDate)
         Assertions.assertThat(api.skillName).isEqualTo(expected.name)
         Assertions.assertThat(api.skillStatement).isEqualTo(expected.statement)
-        Assertions.assertThat(api.category).isEqualTo(expected.category)
+
+        // Categories
+        assertTrue(expected.categories.containsAll(api.categories))
+        assertTrue(api.categories.containsAll(expected.categories))
 
         // Search Keywords
         assertTrue(expected.searchingKeywords.containsAll(api.keywords))
@@ -84,7 +87,10 @@ internal class ApiSkillSummaryTest {
         Assertions.assertThat(skill.archiveDate).isEqualTo(expected.archiveDate)
         Assertions.assertThat(skill.skillName).isEqualTo(expected.name)
         Assertions.assertThat(skill.skillStatement).isEqualTo(expected.statement)
-        Assertions.assertThat(skill.category).isEqualTo(expected.category?.value)
+
+        // Categories
+        assertTrue(expected.categories.map{it.value}.containsAll(skill.categories))
+        assertTrue(skill.categories.containsAll(expected.categories.map{it.value}))
 
         // Search Keywords
         assertTrue(expected.keywords.map{it.value}.containsAll(skill.keywords))

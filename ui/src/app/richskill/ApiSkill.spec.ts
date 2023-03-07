@@ -179,7 +179,7 @@ describe("ApiSkill", () => {
     expect(apiSkill.type).toEqual(iSkill.type)
     expect(apiSkill.skillName).toEqual(iSkill.skillName)
     expect(apiSkill.skillStatement).toEqual(iSkill.skillStatement)
-    expect(apiSkill.category).toEqual(iSkill.category)
+    expect(apiSkill.categories).toEqual(iSkill.categories)
     expect(apiSkill.collections).toEqual(iSkill.collections)
     expect(apiSkill.keywords).toEqual(iSkill.keywords)
     expect(apiSkill.alignments).toEqual(iSkill.alignments.map(v => new ApiAlignment(v)))

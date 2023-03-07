@@ -9,7 +9,7 @@ export interface ISkillSummary {
   publishDate?: string
   skillName: string
   skillStatement: string
-  category: string
+  categories: string[]
   keywords: string[]
   occupations: IJobCode[]
 }
@@ -22,14 +22,14 @@ export class ApiSkillSummary implements ISkillSummary {
   publishDate?: string
   skillName: string
   skillStatement: string
-  category: string
+  categories: string[]
   keywords: string[]
   occupations: IJobCode[]
 
   constructor({
     id,
     uuid,
-    category,
+    categories,
     occupations,
     skillName,
     status,
@@ -40,7 +40,7 @@ export class ApiSkillSummary implements ISkillSummary {
   }: ISkillSummary) {
     this.id = id
     this.uuid = uuid
-    this.category = category
+    this.categories = categories
     this.occupations = occupations
     this.skillName = skillName
     this.status = status

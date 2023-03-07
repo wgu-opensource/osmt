@@ -5,8 +5,6 @@ import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.collection.CollectionEsRepo
-import edu.wgu.osmt.config.CATEGORY_ASC
-import edu.wgu.osmt.config.CATEGORY_DESC
 import edu.wgu.osmt.config.NAME_ASC
 import edu.wgu.osmt.config.NAME_DESC
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
@@ -58,7 +56,7 @@ internal class RichSkillSortOrderTest @Autowired constructor(
         }
 
         @Test
-        fun `sorted by default(category ASC)`() {
+        fun `sorted by default(name ASC)`() {
             // Act
             val result = richSkillController.allPaginated(
                     UriComponentsBuilder.newInstance(),
@@ -72,45 +70,8 @@ internal class RichSkillSortOrderTest @Autowired constructor(
 
             // Assert
             assertThat(rsdList).isSortedAccordingTo(
-                Comparator.comparing(RichSkillDoc::category, CASE_INSENSITIVE_ORDER)
+                Comparator.comparing(RichSkillDoc::name, CASE_INSENSITIVE_ORDER)
             )
-        }
-        @Test
-        fun `sorted by category ASC and name ASC`() {
-            // Act
-            val result = richSkillController.allPaginated(
-                    UriComponentsBuilder.newInstance(),
-                    size,
-                    0,
-                    arrayOf("draft", "published"),
-                    CATEGORY_ASC,
-                    nullJwt
-            )
-            val body: List<RichSkillDoc>? = result.body
-            val byNameAndCategory = Comparator.comparing(RichSkillDoc::category, CASE_INSENSITIVE_ORDER)
-                .thenComparing (RichSkillDoc::name, CASE_INSENSITIVE_ORDER)
-
-            // Assert
-            assertThat(body).isSortedAccordingTo(byNameAndCategory)
-
-        }
-        @Test
-        fun `sorted by category DESC and name ASC`() {
-            // Act
-            val result = richSkillController.allPaginated(
-                    UriComponentsBuilder.newInstance(),
-                    size,
-                    0,
-                    arrayOf("draft", "published"),
-                    CATEGORY_DESC,
-                    nullJwt
-            )
-            val body: List<RichSkillDoc>? = result.body
-            val byCategoryDescAndThenByName = Comparator.comparing(RichSkillDoc::category, CASE_INSENSITIVE_ORDER).reversed()
-                .thenComparing (RichSkillDoc::name, CASE_INSENSITIVE_ORDER)
-
-            // Assert
-            assertThat(body).isSortedAccordingTo(byCategoryDescAndThenByName)
         }
         @Test
         fun `sorted by name ASC`() {

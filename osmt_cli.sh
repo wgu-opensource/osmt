@@ -308,10 +308,11 @@ start_osmt_quickstart() {
 import_osmt_dev_metadata() {
   echo
   local -i rc
+  start_osmt_dev_docker_stack
   _validate_osmt_dev_docker_stack
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "Importing metadata requires the backend Development Docker stack. First, run $(basename "${0}") -d."
+    echo_err "There was an issue validating your backend Development Docker stack. Exiting..."
     return 1
   fi
 
@@ -346,7 +347,7 @@ start_osmt_dev_spring_app() {
   _validate_osmt_dev_docker_stack
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "Starting OSMT Spring app requires the backend Development Docker stack. First, run $(basename "${0}") -d."
+    echo_err "There was an issue validating your backend Development Docker stack. Exiting..."
     return 1
   fi
 

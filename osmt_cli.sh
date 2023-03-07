@@ -380,7 +380,6 @@ load_static_ci_dataset(){
   local -i rc
 
   mysql \
-    --silent \
     --host="${DB_HOST}" \
     --port="${DB_PORT}" \
     --database="${DB_NAME}" \
@@ -391,6 +390,9 @@ load_static_ci_dataset(){
   echo
   if [[ $rc -ne 0 ]]; then
     echo_err "Error loading static CI dataset (found in ${sql_file})"
+    echo_err "Before loading the static CI dataset into your local MySQL instance, your database must have the current database schema."
+    echo_err "Locally, this is done by Flyway when the Spring application starts. You may need to start the Spring application first."
+    echo_err "Exiting..."
     return 1
   fi
   echo_info "Successfully loaded static CI data set to MySQL (found in ${sql_file})."
@@ -496,7 +498,10 @@ Usage:
   -e   Stop the detached backend Development Docker stack (MySQL, ElasticSearch, Redis).
   -s   Start the local Spring app, as built from source code. This also sources the api/osmt-dev-stack.env file
        for OAUTH2-related environment variables.
-  -l   Load the static CI dataset into the local MySQL instance.
+  -l   Load the static CI dataset into the local MySQL instance. This will delete all data from the MySQL database.
+       This action requires the database schema to be present. Locally, this is done by Flyway when the Spring
+       application starts. You may need to start the Spring application first, and you will need to reindex
+       ElasticSearch to make this DB refresh available to OSMT (see below).
   -r   Start the local Spring app to reindex ElasticSearch.
   -m   Import default BLS and O*NET metadata into local Development instance
   -c   Surgically clean up OSMT-related Docker images and data volumes. This step will delete data from local OSMT

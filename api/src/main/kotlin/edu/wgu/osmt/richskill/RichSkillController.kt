@@ -64,6 +64,21 @@ class RichSkillController @Autowired constructor(
     override val allPaginatedPath: String = RoutePaths.SKILLS_LIST
     override val sortOrderCompanion = SkillSortEnum.Companion
 
+    @GetMapping(RoutePaths.SKILLS_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    override fun allPaginated(
+        uriComponentsBuilder: UriComponentsBuilder,
+        size: Int,
+        from: Int,
+        status: Array<String>,
+        sort: String?,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<List<RichSkillDoc>> {
+        if (!appConfig.allowPublicLists && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+        return super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
+    }
     @PostMapping(SKILLS_FILTER, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun allPaginatedWithFilters(

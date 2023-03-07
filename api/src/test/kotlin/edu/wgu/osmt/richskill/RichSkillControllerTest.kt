@@ -5,6 +5,7 @@ import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.RoutePaths.EXPORT_LIBRARY
 import edu.wgu.osmt.SpringTest
+import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
@@ -92,6 +93,52 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Assert
         assertThat(result.body?.size).isEqualTo(size)
+    }
+
+    @Test
+    fun testAllPaginatedWithNoFilters(){
+        // Arrange
+        val size = 50
+        val listOfSkills = mockData.getRichSkillDocs()
+        richSkillEsRepo.saveAll(listOfSkills)
+
+        // Act
+        val result = richSkillController.allPaginatedWithFilters(
+            UriComponentsBuilder.newInstance(),
+            size,
+            0,
+            arrayOf("draft","published"),
+            ApiSearch(),
+            "",
+            nullJwt
+        )
+
+        // Assert
+        assertThat(result.body?.size).isEqualTo(size)
+    }
+
+    @Test
+    fun testAllPaginatedWithFilters(){
+        // Arrange
+        val size = 50
+        val listOfSkills = mockData.getRichSkillDocs()
+        richSkillEsRepo.saveAll(listOfSkills)
+        val filter: ApiFilteredSearch = ApiFilteredSearch(categories = listOf("Academic Accommodation Plans"))
+
+        // Act
+        val result = richSkillController.allPaginatedWithFilters(
+            UriComponentsBuilder.newInstance(),
+            size,
+            0,
+            arrayOf("draft","published"),
+            ApiSearch(filtered = filter),
+            "",
+            nullJwt
+        )
+
+        // Assert
+        assertThat(result.body?.size).isLessThan(size)
+        assertThat(result.body?.first()!!.category).isEqualTo("Academic Accommodation Plans")
     }
 
     @Test

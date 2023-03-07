@@ -38,7 +38,7 @@ internal class ApiSkillTest {
         Assertions.assertThat(rsd.archiveDate).isEqualTo(actual.archiveDate?.toLocalDateTime())
         Assertions.assertThat(rsd.name).isEqualTo(actual.skillName)
         Assertions.assertThat(rsd.statement).isEqualTo(actual.skillStatement)
-        Assertions.assertThat(rsd.category?.value).isEqualTo(actual.category)
+        Assertions.assertThat(rsd.categories[0].value).isEqualTo(actual.categories[0])
         Assertions.assertThat(mockData.appConfig.baseUrl + "/api/skills/" + rsd.uuid).isEqualTo(actual.id)
         Assertions.assertThat(rsd.uuid).isEqualTo(actual.uuid)
 

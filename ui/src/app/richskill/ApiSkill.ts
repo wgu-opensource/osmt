@@ -113,7 +113,7 @@ export interface ISkill {
   status: PublishStatus
   skillName: string
   skillStatement: string
-  category?: string
+  categories: string[]
   collections: IUuidReference[]
   keywords: string[]
   alignments: IAlignment[]
@@ -135,7 +135,7 @@ export class ApiSkill {
   status: PublishStatus
   skillName: string
   skillStatement: string
-  category?: string
+  categories: string[]
   collections: IUuidReference[]
   keywords: string[]
   alignments: IAlignment[]
@@ -166,7 +166,7 @@ export class ApiSkill {
     this.keywords = iRichSkill.keywords
     this.collections = iRichSkill.collections
     this.status = iRichSkill.status
-    this.category = iRichSkill.category
+    this.categories = iRichSkill.categories
     this.certifications = iRichSkill.certifications
     this.alignments = iRichSkill.alignments
     this.standards = iRichSkill.standards
@@ -185,10 +185,10 @@ export class ApiSkill {
 }
 
 export enum ApiSortOrder {
+  NameAsc = "name.asc",
+  NameDesc = "name.desc",
   SkillAsc = "skill.asc",
   SkillDesc = "skill.desc",
-  NameAsc = "name.asc",
-  NameDesc = "name.desc"
 }
 
 

@@ -144,7 +144,7 @@ class MockData {
             uri = "${appConfig.baseUrl}/api/skills/${rsd.uuid}",
             name = rsd.name,
             statement = rsd.statement,
-            category = rsd.category?.value,
+            categories = rsd.categories.mapNotNull { it.value },
             authors = rsd.authors.mapNotNull { it.value },
             publishStatus = rsd.publishStatus(),
             searchingKeywords = rsd.searchingKeywords.mapNotNull { r -> r.value },
@@ -167,7 +167,7 @@ class MockData {
         val richSkillRow = RichSkillRow()
         richSkillRow.collections = rsd?.collections?.map{ it.name }?.joinToString(separator = sep)
         richSkillRow.skillName = rsd?.name
-        richSkillRow.skillCategory = rsd?.category?.value
+        richSkillRow.skillCategories = rsd?.categories?.map { it.value }?.joinToString(separator = sep)
         richSkillRow.skillStatement = rsd?.statement
         richSkillRow.keywords = rsd?.keywords?.map{ it.value }?.joinToString(separator = sep)
         richSkillRow.standards = rsd?.standards?.map{ it.value }?.joinToString(separator = sep)
@@ -355,6 +355,13 @@ class MockData {
                         .map { id: String? -> this.keywords[id?.toLong()]}
                         .collect(Collectors.toList())
 
+                val categories: MutableList<Keyword> =
+                    if (rsd.categoryValues == null) ArrayList() else Arrays.stream(
+                        rsd.categoryValues!!.split(",").toTypedArray()
+                    )
+                        .map { id: String? -> this.keywords[id?.toLong()]}
+                        .collect(Collectors.toList())
+
                 val keywords: MutableList<Keyword> =
                     if (rsd.keywordValues == null) ArrayList() else Arrays.stream(
                         rsd.keywordValues!!.split(",").toTypedArray()
@@ -371,7 +378,7 @@ class MockData {
                     rsd.statement!!,
                     jobCodes,
                     keywords,
-                    lookupKeyword(rsd.categoryKeyword),
+                    categories,
                     authors,
                     parseDateTime(rsd.archiveDate),
                     parseDateTime(rsd.publishDate),

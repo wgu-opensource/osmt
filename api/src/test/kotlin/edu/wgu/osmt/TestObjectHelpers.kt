@@ -79,7 +79,7 @@ object TestObjectHelpers {
         return richSkillDoc(
             name = randomString(),
             statement = randomString(),
-            category = randomString(),
+            categories = listOf(randomString()),
             authors = listOf(randomString())
         ).copy(
             searchingKeywords = randomStrings(),
@@ -96,7 +96,7 @@ object TestObjectHelpers {
         id: Long = elasticIdCounter,
         name: String,
         statement: String,
-        category: String? = "default category",
+        categories: List<String> = listOf("default category"),
         authors: List<String> = listOf(authorString),
         publishStatus: PublishStatus = PublishStatus.Draft
     ): RichSkillDoc {
@@ -107,7 +107,7 @@ object TestObjectHelpers {
             uri = "/base/url/${uuid}",
             name = name,
             statement = statement,
-            category = category,
+            categories = categories,
             authors = authors,
             publishStatus = publishStatus,
             collections = listOf(collectionDoc(elasticIdCounter, UUID.randomUUID().toString(), randomString()))
@@ -163,10 +163,11 @@ object TestObjectHelpers {
     ): ApiSkillUpdate {
         val skillName = name ?: UUID.randomUUID().toString()
         val skillStatement = statement ?: UUID.randomUUID().toString()
-        val categoryName = UUID.randomUUID().toString()
-        val categoryDescription = UUID.randomUUID().toString()
 
         val authors = ApiStringListUpdate(
+            add = (1..keywordCount).toList().map { UUID.randomUUID().toString() }
+        )
+        val categories = ApiStringListUpdate(
             add = (1..keywordCount).toList().map { UUID.randomUUID().toString() }
         )
         val keywords = ApiStringListUpdate(
@@ -196,7 +197,7 @@ object TestObjectHelpers {
             skillName = skillName,
             skillStatement = skillStatement,
             publishStatus = publishStatus,
-            category = categoryName,
+            categories = categories,
             authors = authors,
             keywords = keywords,
             certifications = certifications,

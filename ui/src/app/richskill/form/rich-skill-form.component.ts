@@ -47,6 +47,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
 
   // Type ahead storage to append to the field on submit
   selectedAuthors: string[] = []
+  selectedCategories: string[] = []
   selectedStandards: string[] = []
   selectedJobCodes: string[] = []
   selectedKeywords: string[] = []
@@ -110,7 +111,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     const fields = {
       skillName: new FormControl("", Validators.compose([Validators.required, notACopyValidator])),
       skillStatement: new FormControl("", Validators.required),
-      category: new FormControl(""),
+      categories: new FormControl(""),
       keywords: new FormControl(""),
       standards: new FormControl(""),
       collections: new FormControl(""),
@@ -187,10 +188,8 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     const authorsDiff = this.diffStringList(this.splitTextarea(formValue.authors), this.existingSkill?.authors)
     if (this.isDuplicating || authorsDiff) { update.authors = authorsDiff }
 
-    const inputCategory = this.nonEmptyOrNull(formValue.category)
-    if (this.isDuplicating || this.existingSkill?.category !== inputCategory) {
-      update.category = inputCategory ?? ""
-    }
+    const categoriesDiff = this.diffStringList(this.splitTextarea(formValue.categories), this.existingSkill?.categories)
+    if (this.isDuplicating || categoriesDiff) { update.categories = categoriesDiff }
 
     const collectionsDiff = this.diffUuidList(formValue.collections, this.existingSkill?.collections)
     if (this.isDuplicating || collectionsDiff) { update.collections = collectionsDiff }
@@ -315,7 +314,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     const fields = {
       skillName: (this.isDuplicating ? "Copy of " : "") + skill.skillName,
       skillStatement: skill.skillStatement,
-      category: skill.category ?? "",
+      categories: skill.categories?.join("; ")?? "",
       keywords: skill.keywords?.join("; ") ?? "",
       standards: skill.standards?.map(it => this.stringFromAlignment(it)).join("; ") ?? "",
       collections: skill.collections?.map(it => it.name) ?? [],
@@ -350,7 +349,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       "skillName",
       "authors",
       "skillStatement",
-      "category",
+      "categories",
       "keywords",
       "standards",
       "certifications",
@@ -393,6 +392,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
   populateTypeAheadFieldsWithResults(): void {
     const formValue = this.skillForm.value
     formValue.authors = this.selectedAuthors.join("; ")
+    formValue.categories = this.selectedCategories.join("; ")
     formValue.standards = this.selectedStandards.join("; ")
     formValue.occupations = this.selectedJobCodes.join("; ")
     formValue.keywords = this.selectedKeywords.join("; ")
@@ -402,6 +402,10 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
 
   handleAuthorsTypeAheadResults(authors: string[]): void {
     this.selectedAuthors = authors
+  }
+
+  handleCategoriesTypeAheadResults(categories: string[]): void {
+    this.selectedCategories = categories
   }
 
   handleStandardsTypeAheadResults(standards: string[]): void {

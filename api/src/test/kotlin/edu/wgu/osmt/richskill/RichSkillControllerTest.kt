@@ -138,7 +138,7 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Assert
         assertThat(result.body?.size).isLessThan(size)
-        assertThat(result.body?.first()!!.category).isEqualTo("Academic Accommodation Plans")
+        assertThat(result.body?.first()!!.categories[0]).isEqualTo("Academic Accommodation Plans")
     }
 
     @Test

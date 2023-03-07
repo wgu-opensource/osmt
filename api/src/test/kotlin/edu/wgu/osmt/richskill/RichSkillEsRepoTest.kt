@@ -163,7 +163,7 @@ class RichSkillEsRepoTest @Autowired constructor(
         assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.statement))
         assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.searchingKeywords[richSkillDoc.searchingKeywords.indices.random()]))
 
-        assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.category!!))
+        assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.categories[richSkillDoc.categories.indices.random()]))
         assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.jobCodes[richSkillDoc.jobCodes.indices.random()].code))
         assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.standards[richSkillDoc.standards.indices.random()]))
         assertAgainstRichSkillDoc(queryRichSkillHits(richSkillDoc.certifications[richSkillDoc.certifications.indices.random()]))
@@ -375,11 +375,12 @@ class RichSkillEsRepoTest @Autowired constructor(
     @Test
     fun testByApiSearchWithAdvance() {
         // Arrange
+        val categoriesList = listOf("category")
         val authorsList = listOf("author")
         val keywordslist = listOf("One", "Two", "Three", "Four", "Five", "Six")
 
         val skillByName = TestObjectHelpers.randomRichSkillDoc().copy(name = "skillName")
-        val skillByCategory = TestObjectHelpers.randomRichSkillDoc().copy(category = "category")
+        val skillByCategory = TestObjectHelpers.randomRichSkillDoc().copy(categories = categoriesList)
         val skillByAuthor = TestObjectHelpers.randomRichSkillDoc().copy(authors = authorsList)
         val skillByStatement = TestObjectHelpers.randomRichSkillDoc().copy(statement = "skillStatement")
         val skillByKeywords = TestObjectHelpers.randomRichSkillDoc().copy(searchingKeywords = keywordslist)
@@ -493,11 +494,12 @@ class RichSkillEsRepoTest @Autowired constructor(
     @Test
     fun testByApiSearchWithSimpleQuoted() {
         // Arrange
+        val categoriesList = listOf("category")
         val authorsList = listOf("author")
         val keywordslist = listOf("One", "Two", "Three", "Four", "Five", "Six")
 
         val skillByName = TestObjectHelpers.randomRichSkillDoc().copy(name = "skillName")
-        val skillByCategory = TestObjectHelpers.randomRichSkillDoc().copy(category = "category")
+        val skillByCategory = TestObjectHelpers.randomRichSkillDoc().copy(categories = categoriesList)
         val skillByAuthor = TestObjectHelpers.randomRichSkillDoc().copy(authors = authorsList)
         val skillByStatement = TestObjectHelpers.randomRichSkillDoc().copy(statement = "skillStatement")
         val skillByKeywords = TestObjectHelpers.randomRichSkillDoc().copy(searchingKeywords = keywordslist)
@@ -609,9 +611,9 @@ class RichSkillEsRepoTest @Autowired constructor(
     @Test
     fun `search with categories filter should apply to filtered search`() {
         // Arrange
-        val skillWithCategory1 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category1")
-        val skillWithCategory2 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category2")
-        val skillWithCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category3")
+        val skillWithCategory1 = TestObjectHelpers.randomRichSkillDoc().copy(categories = listOf("category1"))
+        val skillWithCategory2 = TestObjectHelpers.randomRichSkillDoc().copy(categories = listOf("category2"))
+        val skillWithCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(categories = listOf("category3"))
 
         richSkillEsRepo.saveAll(listOf(skillWithCategory1,skillWithCategory2,skillWithCategory3))
 
@@ -952,11 +954,11 @@ class RichSkillEsRepoTest @Autowired constructor(
     @Test
     fun `search with authors & categories filter should apply to filtered search with AND operator between fields, and OR operator between values`() {
         // Arrange
-        val skillWithAuthor1AndCategory1 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author1"), category = "category1")
-        val skillWithAuthor2AndCategory2 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author2"), category = "category2")
-        val skillWithAuthor1AndCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author1"), category = "category3")
-        val skillWithAuthor2AndCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author2"), category = "category3")
-        val skillWithAuthor3AndCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author3"), category = "category3")
+        val skillWithAuthor1AndCategory1 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author1"), categories = listOf("category1"))
+        val skillWithAuthor2AndCategory2 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author2"), categories = listOf("category2"))
+        val skillWithAuthor1AndCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author1"), categories = listOf("category3"))
+        val skillWithAuthor2AndCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author2"), categories = listOf("category3"))
+        val skillWithAuthor3AndCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author3"), categories = listOf("category3"))
 
         richSkillEsRepo.saveAll(listOf(skillWithAuthor1AndCategory1,skillWithAuthor2AndCategory2,skillWithAuthor3AndCategory3,
             skillWithAuthor1AndCategory3,skillWithAuthor2AndCategory3))
@@ -990,16 +992,31 @@ class RichSkillEsRepoTest @Autowired constructor(
     @Test
     fun `search with authors & categories & keywords filter should apply to filtered search with AND operator between fields, and OR operator between categories and authors and AND between keywords`() {
         // Arrange
-        val skillWithAuthor1AndCategory1 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author1"), category = "category1",
-            searchingKeywords = listOf("keyword1"))
-        val skillWithAuthor2AndCategory2 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author2"), category = "category2",
-            searchingKeywords = listOf("keyword2"))
-        val skillWithAuthor1AndCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author1"), category = "category3",
-            searchingKeywords = listOf("keyword1", "keyword3"))
-        val skillWithAuthor2AndCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author2"), category = "category3",
-            searchingKeywords = listOf("keyword2", "keyword3"))
-        val skillWithAuthor3AndCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(authors = listOf("author3"), category = "category3",
-            searchingKeywords = listOf("keyword1", "keyword2", "keyword3"))
+        val skillWithAuthor1AndCategory1 = TestObjectHelpers.randomRichSkillDoc().copy(
+            authors = listOf("author1"),
+            categories = listOf("category1"),
+            searchingKeywords = listOf("keyword1")
+        )
+        val skillWithAuthor2AndCategory2 = TestObjectHelpers.randomRichSkillDoc().copy(
+            authors = listOf("author2"),
+            categories = listOf("category2"),
+            searchingKeywords = listOf("keyword2")
+        )
+        val skillWithAuthor1AndCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(
+            authors = listOf("author1"),
+            categories = listOf("category3"),
+            searchingKeywords = listOf("keyword1", "keyword3")
+        )
+        val skillWithAuthor2AndCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(
+            authors = listOf("author2"),
+            categories = listOf("category3"),
+            searchingKeywords = listOf("keyword2", "keyword3")
+        )
+        val skillWithAuthor3AndCategory3 = TestObjectHelpers.randomRichSkillDoc().copy(
+            authors = listOf("author3"),
+            categories = listOf("category3"),
+            searchingKeywords = listOf("keyword1", "keyword2", "keyword3")
+        )
 
         richSkillEsRepo.saveAll(listOf(skillWithAuthor1AndCategory1,skillWithAuthor2AndCategory2,skillWithAuthor3AndCategory3,
             skillWithAuthor1AndCategory3,skillWithAuthor2AndCategory3))
@@ -1032,19 +1049,19 @@ class RichSkillEsRepoTest @Autowired constructor(
     @Test
     fun `search with categories, keywords & standards filter should apply to filtered search with AND operator between fields, and OR operator between categories and AND operator between keywords and standards`() {
         // Arrange
-        val skill1 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category1",
+        val skill1 = TestObjectHelpers.randomRichSkillDoc().copy(categories = listOf("category1"),
             searchingKeywords = listOf("keyword1"),
             standards = listOf("standard1")
         )
-        val skill2 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category2",
+        val skill2 = TestObjectHelpers.randomRichSkillDoc().copy(categories = listOf("category2"),
             searchingKeywords = listOf("keyword1", "keyword2"),
             standards = listOf("standard1", "standard2")
         )
-        val skill3 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category3",
+        val skill3 = TestObjectHelpers.randomRichSkillDoc().copy(categories = listOf("category3"),
             searchingKeywords = listOf("keyword1", "keyword2", "keyword3"),
             standards = listOf("standard1", "standard2", "standard3")
         )
-        val skill4 = TestObjectHelpers.randomRichSkillDoc().copy(category = "category4",
+        val skill4 = TestObjectHelpers.randomRichSkillDoc().copy(categories = listOf("category4"),
             searchingKeywords = listOf("keyword1", "keyword2", "keyword3", "keyword4"),
             standards = listOf("standard1", "standard2", "standard3", "standard4")
         )

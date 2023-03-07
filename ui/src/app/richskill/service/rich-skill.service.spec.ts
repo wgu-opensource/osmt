@@ -80,13 +80,13 @@ describe("RichSkillService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const path = "api/skills/filter?sort=name.asc&status=draft&size=3&from=0"
+    const path = "api/skills/filter?sort=skill.asc&status=draft&size=3&from=0"
     const testData: PaginatedSkills = createMockPaginatedSkills(3, 10)
     const statuses = new Set<PublishStatus>([ PublishStatus.Draft ])
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.getSkillsFiltered(testData.skills.length, 0,  new ApiSearch({filtered: {}}), statuses, ApiSortOrder.NameAsc)
+    const result$ = testService.getSkillsFiltered(testData.skills.length, 0,  new ApiSearch({filtered: {}}), statuses, ApiSortOrder.SkillAsc)
 
     // Assert
     result$

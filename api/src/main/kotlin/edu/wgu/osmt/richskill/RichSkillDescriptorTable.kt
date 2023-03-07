@@ -23,12 +23,6 @@ object RichSkillDescriptorTable : LongIdTable("RichSkillDescriptor"), TableWithU
     val uuid = varchar("uuid", 36).uniqueIndex()
     val name = text("name")
     val statement = text("statement")
-    val category = reference(
-        "cat_id",
-        KeywordTable,
-        onDelete = ReferenceOption.RESTRICT,
-        onUpdate = ReferenceOption.CASCADE
-    ).nullable()
 }
 
 object RichSkillAuthors : Table("RichSkillAuthors") {
@@ -58,6 +52,37 @@ object RichSkillAuthors : Table("RichSkillAuthors") {
         deleteWhere {
             (RichSkillAuthors.richSkillId eq richSkillId) and
                     (RichSkillAuthors.authorId eq authorId)
+        }
+    }
+}
+
+object RichSkillCategories : Table("RichSkillCategories") {
+    val richSkillId = reference(
+        "richskill_id",
+        RichSkillDescriptorTable,
+        onDelete = ReferenceOption.CASCADE,
+        onUpdate = ReferenceOption.CASCADE
+    ).index()
+    val categoryId = reference(
+        "category_id",
+
+        KeywordTable,
+        onDelete = ReferenceOption.CASCADE,
+        onUpdate = ReferenceOption.CASCADE
+    ).index()
+    override val primaryKey = PrimaryKey(richSkillId, categoryId, name = "PK_RichSkillCategory_rs_cg")
+
+    fun create(richSkillId: Long, categoryId: Long) {
+        insertIgnore {
+            it[this.richSkillId] = EntityID(richSkillId, RichSkillDescriptorTable)
+            it[this.categoryId] = EntityID(categoryId, KeywordTable)
+        }
+    }
+
+    fun delete(richSkillId: Long, categoryId: Long) {
+        deleteWhere {
+            (RichSkillCategories.richSkillId eq richSkillId) and
+                    (RichSkillCategories.categoryId eq categoryId)
         }
     }
 }

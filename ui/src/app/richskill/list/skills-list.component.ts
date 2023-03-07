@@ -51,7 +51,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   selectedSkills?: ApiSkillSummary[]
   skillsSaved?: Observable<ApiBatchResult>
 
-  columnSort: ApiSortOrder = ApiSortOrder.NameAsc
+  columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
 
   showSearchEmptyMessage = false
   showLibraryEmptyMessage = false
@@ -413,8 +413,6 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   getMobileSortOptions(): {[s: string]: string} {
     return {
-      "name.asc": "Category (ascending)",
-      "name.desc": "Category (descending)",
       "skill.asc": "RSD Name (ascending)",
       "skill.desc": "RSD Name (descending)",
     }

@@ -32,6 +32,10 @@ export class SkillListRowComponent implements OnInit {
     }
   }
 
+  getFormattedCategories(): string {
+    return this.skill?.categories?.join("; ") ?? ""
+  }
+
   getFormattedKeywords(): string {
     return this.skill?.keywords?.join("; ") ?? ""
   }

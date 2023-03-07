@@ -267,7 +267,6 @@ describe("RichSkillFormComponent", () => {
   it("updateObject should return updates", () => {
     // Arrange
     const {  // These should not be modified
-      category,
       collections,
       skillName,
       skillStatement,
@@ -275,6 +274,7 @@ describe("RichSkillFormComponent", () => {
     } = setupForm(false) as any
     const {  // These will be overwritten by the component's selectedXYZ fields
       authors,
+      categories,
       certifications,
       employers,
       keywords,
@@ -292,7 +292,7 @@ describe("RichSkillFormComponent", () => {
     expect(update.skillName).toEqual(skillName)
     expect(update.skillStatement).toEqual(skillStatement)
     expect((update.authors as IStringListUpdate).add).toEqual(authors)
-    expect(update.category).toEqual(category)
+    expect((update.categories as IStringListUpdate).add).toEqual(categories)
     expect((update.keywords as IStringListUpdate).add).toEqual(keywords)
     expect((update.standards as IReferenceListUpdate).add).toEqual(standards)
     expect((update.collections as IStringListUpdate).add).toEqual(collections)
@@ -535,7 +535,7 @@ function setupForm(isBlank: boolean): object {
       skillName: "",
       skillStatement: "",
       authors: [],
-      category: "",
+      categories: [],
       keywords: [],
       collections: [],
       occupations: [],
@@ -547,7 +547,7 @@ function setupForm(isBlank: boolean): object {
       skillName: "my skill",
       skillStatement: "my statement",
       authors: ["author1", "author2"],
-      category: "my category",
+      categories: ["category1", "category2"],
       keywords: ["keyword1", "keyword2", "keyword3"],
       collections: ["collection1", "collection2"],
       occupations: ["occupation1", "occupation2", "occupation3"],
@@ -562,6 +562,7 @@ function setupForm(isBlank: boolean): object {
 function setupSelectedFields(isBlank: boolean): object {
   if (isBlank) {
     component.selectedAuthors = []
+    component.selectedCategories = []
     component.selectedKeywords = [""]
     component.selectedJobCodes = []
     component.selectedStandards = []
@@ -570,6 +571,7 @@ function setupSelectedFields(isBlank: boolean): object {
   }
   else {
     component.selectedAuthors = ["author1", "author2"]
+    component.selectedCategories = ["category1", "category2"]
     component.selectedKeywords = ["keyword1", "keyword2"]
     component.selectedJobCodes = ["occupation1", "occupation2"]
     component.selectedStandards = ["standard1", "standard2"]
@@ -580,6 +582,7 @@ function setupSelectedFields(isBlank: boolean): object {
   // Return the new values for easy deconstruction
   return {
     authors: component.selectedAuthors,
+    categories: component.selectedCategories,
     keywords: component.selectedKeywords,
     occupations: component.selectedJobCodes,
     standards: component.selectedStandards.map(x => new ApiAlignment({ id: undefined, skillName: x }) as INamedReference),

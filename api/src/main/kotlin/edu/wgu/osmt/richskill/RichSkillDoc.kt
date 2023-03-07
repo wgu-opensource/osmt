@@ -63,7 +63,6 @@ data class RichSkillDoc(
     @get:JsonProperty("skillStatement")
     val statement: String,
 
-    @Nullable
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
@@ -73,8 +72,8 @@ data class RichSkillDoc(
             InnerField(suffix = "sort_insensitive", type = Keyword, normalizer = "lowercase_normalizer")
         ]
     )
-    @get:JsonProperty
-    val category: String? = null,
+    @get:JsonProperty("categories")
+    val categories: List<String> = listOf(),
 
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
@@ -170,7 +169,7 @@ data class RichSkillDoc(
                 uri = "${appConfig.baseUrl}/api/skills/${dao.uuid}",
                 name = dao.name,
                 statement = dao.statement,
-                category = dao.category?.value,
+                categories = dao.categories.mapNotNull { it.value },
                 authors = dao.authors.mapNotNull { it.value },
                 publishStatus = dao.publishStatus(),
                 searchingKeywords = dao.keywords.filter { it.type == KeywordTypeEnum.Keyword }.mapNotNull { it.value },

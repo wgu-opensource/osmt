@@ -120,12 +120,8 @@ class RichSkillRepositoryTest @Autowired constructor(
         assertThat(skill.name).isEqualTo(apiObj.skillName)
         assertThat(skill.statement).isEqualTo(apiObj.skillStatement)
 
-        assertThat(skill.category).isNotNull
-        assertThat(skill.category?.value).isEqualTo(apiObj.category)
-        assertThat(skill.category?.uri).isNull()
-
         assertThatKeywordsMatchStringList(skill.authors, apiObj.authors!!)
-
+        assertThatKeywordsMatchStringList(skill.categories, apiObj.categories!!)
         assertThatKeywordsMatchStringList(skill.searchingKeywords, apiObj.keywords!!)
 
         assertThatKeywordsMatchReferenceList(skill.certifications, apiObj.certifications!!)
@@ -204,7 +200,7 @@ class RichSkillRepositoryTest @Autowired constructor(
             name = name,
             statement = statement,
             authors = null,
-            category = null
+            categories = null
         ), "test")
         assertThat(created).isNotNull
         assertThat(created!!.name).isEqualTo(name)
@@ -276,11 +272,11 @@ class RichSkillRepositoryTest @Autowired constructor(
         val createObject = RsdUpdateObject(
             name = name,
             statement = statement,
-            category = NullableFieldUpdate(category)
+            categories = ListFieldUpdate(add = listOf(category))
         )
         val created = richSkillRepository.create(createObject, userString)?.toModel()
         assertThat(created).isNotNull
-        assertThat(created?.category?.value).isEqualTo(categoryName)
+        assertThat(created?.categories?.get(0)?.value).isEqualTo(categoryName)
 
         // doesnt clear category if not specified in update object
         val newName = UUID.randomUUID().toString()
@@ -294,11 +290,11 @@ class RichSkillRepositoryTest @Autowired constructor(
             userEmail
         )?.toModel()
         assertThat(apiUpdated).isNotNull
-        assertThat(apiUpdated?.category?.value).isEqualTo(categoryName)
+        assertThat(apiUpdated?.categories?.get(0)?.value).isEqualTo(categoryName)
 
-        // pass category as empty string to nullify it
+        // Remove category
         val apiUpdateBlank = ApiSkillUpdate(
-            category=""
+            categories = ApiStringListUpdate(remove = listOf(categoryName))
         )
         apiUpdated = richSkillRepository.updateFromApi(
             created.id!!,
@@ -307,7 +303,7 @@ class RichSkillRepositoryTest @Autowired constructor(
             userEmail
         )?.toModel()
         assertThat(apiUpdated).isNotNull
-        assertThat(apiUpdated?.category).isNull()
+        assertThat(apiUpdated?.categories?.size).isEqualTo(0)
     }
 
     @Test

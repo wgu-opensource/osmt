@@ -1,8 +1,5 @@
 package edu.wgu.osmt.api.model
 
-import edu.wgu.osmt.config.CATEGORY_ASC
-import edu.wgu.osmt.config.CATEGORY_DESC
-import edu.wgu.osmt.config.CATEGORY_SORT_INSENSITIVE
 import edu.wgu.osmt.config.NAME_ASC
 import edu.wgu.osmt.config.NAME_DESC
 import edu.wgu.osmt.config.NAME_SORT_INSENSITIVE
@@ -44,16 +41,6 @@ interface SortOrderCompanion<T> where T: SortOrder{
  * Provides an enum for Rich skills that defines elasticsearch sorting
  */
 enum class SkillSortEnum(override val apiValue: String) : SortOrder {
-    CategoryAsc(CATEGORY_ASC) {
-        override val sort = Sort.by(
-                Sort.Order.asc(CATEGORY_SORT_INSENSITIVE),
-                Sort.Order.asc(NAME_SORT_INSENSITIVE))
-    },
-    CategoryDesc(CATEGORY_DESC) {
-        override val sort = Sort.by(
-                Sort.Order.desc(CATEGORY_SORT_INSENSITIVE),
-                Sort.Order.asc(NAME_SORT_INSENSITIVE))
-    },
     NameAsc(NAME_ASC) {
         override val sort = Sort.by(NAME_SORT_INSENSITIVE).ascending()
     },
@@ -64,7 +51,7 @@ enum class SkillSortEnum(override val apiValue: String) : SortOrder {
     companion object : SortOrderCompanion<SkillSortEnum> {
         override val logger: Logger = LoggerFactory.getLogger(SkillSortEnum::class.java)
 
-        override val defaultSort = CategoryAsc
+        override val defaultSort = NameAsc
 
         override fun forApiValue(apiValue: String): SkillSortEnum {
             return values().find { it.apiValue == apiValue } ?: NameAsc.also {

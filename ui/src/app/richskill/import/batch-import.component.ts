@@ -31,7 +31,7 @@ export const importSkillHeaderOrder = [
   {field: "skillName", label: "RSD Name"},
   {field: "authors", label: "Authors"},
   {field: "skillStatement", label: "Skill Statement"},
-  {field: "category", label: "Category"},
+  {field: "categories", label: "Categories"},
   {field: "keywords", label: "Keywords"},
   {field: "standards", label: "Standards"},
   {field: "certifications", label: "Certifications"},
@@ -389,13 +389,13 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
           if (["authors"].indexOf(fieldName) !== -1) {
             newSkill[fieldName] = new ApiStringListUpdate(value.split(";").map(it => it.trim()))
             hasAuthor = true
-          }
-          else if (["certifications", "employers"].indexOf(fieldName) !== -1) {
+          } else if (["categories"].indexOf(fieldName) !== -1) {
+            newSkill[fieldName] = new ApiStringListUpdate(value.split(";").map(it => it.trim()))
+          } else if (["certifications", "employers"].indexOf(fieldName) !== -1) {
             newSkill[fieldName] = new ApiReferenceListUpdate(
               value.split(";").map(it => ApiNamedReference.fromString(it)).filter(it => it !== undefined).map(it => it as ApiNamedReference)
             )
-          }
-          else if (["keywords"].indexOf(fieldName) !== -1) {
+          } else if (["keywords"].indexOf(fieldName) !== -1) {
             newSkill[fieldName] = new ApiStringListUpdate(value.split(";").map(it => it.trim()))
           } else if (fieldName === "occupations") {
             jobcodes.push(...value.split(";").map(it => it.trim()))

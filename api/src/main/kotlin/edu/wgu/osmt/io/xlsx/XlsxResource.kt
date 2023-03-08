@@ -1,9 +1,7 @@
 package edu.wgu.osmt.io.xlsx
 
-import com.opencsv.CSVWriter
 import edu.wgu.osmt.io.common.TabColumn
 import edu.wgu.osmt.io.common.TabularResource
-import edu.wgu.osmt.richskill.RichSkillAndCollections
 import org.apache.poi.ss.usermodel.BuiltinFormats
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Row

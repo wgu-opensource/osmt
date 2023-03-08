@@ -5,7 +5,8 @@ object RoutePaths {
     const val SEARCH_PATH = "$API/search"
     const val EXPORT = "$API/export"
     const val SEARCH_SKILLS = "$SEARCH_PATH/skills"
-    const val EXPORT_LIBRARY = "$EXPORT/library"
+    const val EXPORT_LIBRARY_CSV = "$EXPORT/library/csv"
+    const val EXPORT_LIBRARY_XLSX = "$EXPORT/library/xlsx"
     const val SEARCH_SIMILAR_SKILLS = "$SEARCH_SKILLS/similarity"
     const val SEARCH_SIMILARITIES = "$SEARCH_SKILLS/similarities"
     const val SEARCH_COLLECTIONS = "$SEARCH_PATH/collections"
@@ -16,9 +17,11 @@ object RoutePaths {
     const val SKILLS_FILTER = "$SKILLS_PATH/filter"
     const val SKILL_PUBLISH = "$SKILLS_PATH/publish"
     const val SKILL_DETAIL = "$SKILLS_PATH/{uuid}"
+    const val SKILL_DETAIL_XLSX = "$SKILLS_PATH/{uuid}/xlsx"
     const val SKILL_UPDATE = "$SKILL_DETAIL/update"
     const val SKILL_AUDIT_LOG = "$SKILL_DETAIL/log"
-    const val EXPORT_SKILLS = "$EXPORT/skills"
+    const val EXPORT_SKILLS_CSV = "$EXPORT/skills/csv"
+    const val EXPORT_SKILLS_XLSX = "$EXPORT/skills/xlsx"
 
 
     const val COLLECTIONS_PATH = "$API/collections"

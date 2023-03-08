@@ -92,10 +92,12 @@ import {LabelWithSelectComponent} from "./table/skills-library-table/label-with-
 import {LibraryExportComponent} from "./navigation/libraryexport.component"
 import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
 import {CollectionPipe} from "./pipes"
-import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collection/convert-to-collection.component"
-import {SharedModule} from "@shared/shared.module"
+import { SharedModule } from "@shared/shared.module"
 import { OsmtCoreModule } from "./core/osmt-core.module"
+import { ExportCollectionComponent } from "./export/export-collection.component"
+import { ExportRsdComponent } from "./export/export-rsd.component"
 import { OsmtFormModule } from "./form/osmt-form.module"
+import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collection/convert-to-collection.component"
 import { SizePaginationComponent } from "./table/skills-library-table/size-pagination/size-pagination.component"
 
 export function initializeApp(
@@ -150,6 +152,8 @@ export function initializeApp(
     CollectionsListComponent,
     CollectionSearchResultsComponent,
     PublishCollectionComponent,
+    ExportCollectionComponent,
+    ExportRsdComponent,
 
     DetailCardComponent,
     DetailCardSectionComponent,

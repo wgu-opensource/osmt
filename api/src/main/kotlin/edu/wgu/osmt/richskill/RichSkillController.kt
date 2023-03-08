@@ -13,20 +13,23 @@ import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.io.csv.RichSkillCsvExport
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.elasticsearch.PaginatedLinks
+import edu.wgu.osmt.io.csv.RichSkillCsvExport
+import edu.wgu.osmt.io.xlsx.RichSkillXlsxExport
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.security.OAuthHelper
 import edu.wgu.osmt.task.AppliesToType
 import edu.wgu.osmt.task.CreateSkillsTask
 import edu.wgu.osmt.task.CsvTask
 import edu.wgu.osmt.task.ExportSkillsToCsvTask
+import edu.wgu.osmt.task.ExportSkillsToXlsxTask
 import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskResult
+import edu.wgu.osmt.task.XlsxTask
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
@@ -252,9 +255,9 @@ class RichSkillController @Autowired constructor(
     }
 
     @Transactional(readOnly = true)
-    @GetMapping(RoutePaths.EXPORT_LIBRARY, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.EXPORT_LIBRARY_CSV, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun exportLibrary(
+    fun exportLibraryCsv(
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         if (!appConfig.allowPublicSearching && user === null) {
@@ -270,11 +273,29 @@ class RichSkillController @Autowired constructor(
         return Task.processingResponse(task)
     }
 
-    // This really appears to be never used....
     @Transactional(readOnly = true)
-    @PostMapping(RoutePaths.EXPORT_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.EXPORT_LIBRARY_XLSX, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun exportCustomList(
+    fun exportLibraryXlsx(
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
+        if (!appConfig.allowPublicSearching && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+        if (!oAuthHelper.hasRole(appConfig.roleAdmin)) {
+            throw GeneralApiException("OSMT user must have an Admin role.", HttpStatus.UNAUTHORIZED)
+        }
+
+        val task = XlsxTask(collectionUuid = "FullLibrary")
+        taskMessageService.enqueueJob(TaskMessageService.skillsForFullLibraryXlsx, task)
+
+        return Task.processingResponse(task)
+    }
+
+    @Transactional(readOnly = true)
+    @PostMapping(RoutePaths.EXPORT_SKILLS_CSV, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun exportCustomListCsv(
         @RequestBody uuids: List<String>?,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
@@ -284,6 +305,23 @@ class RichSkillController @Autowired constructor(
 
         val task = ExportSkillsToCsvTask(collectionUuid = "CustomList", uuids)
         taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsv, task)
+
+        return Task.processingResponse(task)
+    }
+
+    @Transactional(readOnly = true)
+    @PostMapping(RoutePaths.EXPORT_SKILLS_XLSX, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun exportCustomListXlsx(
+        @RequestBody uuids: List<String>?,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
+        if (!appConfig.allowPublicSearching && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+
+        val task = ExportSkillsToXlsxTask(collectionUuid = "CustomList", uuids)
+        taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportXlsx, task)
 
         return Task.processingResponse(task)
     }

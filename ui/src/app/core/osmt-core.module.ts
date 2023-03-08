@@ -1,25 +1,23 @@
-import { NgModule } from "@angular/core"
 import { CommonModule } from "@angular/common"
+import { NgModule } from "@angular/core"
 
-import { VerticalActionBarItemComponent } from "./vertical-action-bar-item/vertical-action-bar-item.component"
-import { HorizontalActionBarItemComponent } from "./horizontal-action-bar-item/horizontal-action-bar-item.component"
 import { DropUpMenuComponent } from "./drop-up-menu/drop-up-menu.component"
-
-
+import { HorizontalActionBarItemComponent } from "./horizontal-action-bar-item/horizontal-action-bar-item.component"
+import { VerticalActionBarItemComponent } from "./vertical-action-bar-item/vertical-action-bar-item.component"
 
 @NgModule({
   declarations: [
-    VerticalActionBarItemComponent,
+    DropUpMenuComponent,
     HorizontalActionBarItemComponent,
-    DropUpMenuComponent
+    VerticalActionBarItemComponent
   ],
   imports: [
     CommonModule
   ],
   exports: [
-    VerticalActionBarItemComponent,
+    DropUpMenuComponent,
     HorizontalActionBarItemComponent,
-    DropUpMenuComponent
+    VerticalActionBarItemComponent
   ]
 })
 export class OsmtCoreModule { }

@@ -100,12 +100,16 @@ describe("PublicRichSkillActionBarComponent", () => {
     /* Nothing to check */
   })
 
-  it("onDownloadCsv should return", () => {
+  it("getRsdCsv should return", () => {
     // Arrange
     childComponent.skillUuid = "myUUID"
+    childComponent.skillName = "myName"
 
     // Act
-    childComponent.onDownloadCsv()
+    childComponent.exporter.getRsdCsv(
+      childComponent.skillUuid,
+      childComponent.skillName
+    )
 
     // Assert
     expect(FileSaver.saveAs).toHaveBeenCalled()

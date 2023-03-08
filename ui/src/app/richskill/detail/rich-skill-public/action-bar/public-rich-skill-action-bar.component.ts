@@ -1,12 +1,13 @@
-import {Router} from "@angular/router"
-import {RichSkillService} from "../../../service/rich-skill.service"
-import {ToastService} from "../../../../toast/toast.service"
-import {formatDate} from "@angular/common"
-import {Component, Inject, Input, LOCALE_ID, OnInit} from "@angular/core"
-import {SvgHelper, SvgIcon} from "../../../../core/SvgHelper"
-import * as FileSaver from "file-saver"
-import {Observable} from "rxjs"
-import {TableActionDefinition} from "../../../../table/skills-library-table/has-action-definitions"
+import { Component, Inject, Input, LOCALE_ID, OnInit } from "@angular/core"
+import { Router } from "@angular/router"
+
+import { Observable } from "rxjs"
+
+import { RichSkillService } from "../../../service/rich-skill.service"
+import { SvgHelper, SvgIcon } from "../../../../core/SvgHelper"
+import { ExportRsdComponent } from "../../../../export/export-rsd.component"
+import { TableActionDefinition } from "../../../../table/skills-library-table/has-action-definitions"
+import { ToastService } from "../../../../toast/toast.service"
 
 @Component({
   selector: "app-abstract-public-rich-skill-action-bar",
@@ -20,6 +21,12 @@ export class PublicRichSkillActionBarComponent implements OnInit {
 
   skillJsonObservable = new Observable<string>()
   jsonClipboard = ""
+
+  exporter = new ExportRsdComponent(
+    this.richSkillService,
+    this.toastService,
+    this.locale
+  );
 
   duplicateIcon = SvgHelper.path(SvgIcon.DUPLICATE)
   downloadIcon = SvgHelper.path(SvgIcon.DOWNLOAD)
@@ -45,16 +52,6 @@ export class PublicRichSkillActionBarComponent implements OnInit {
     this.toastService.showToast("Success!", "URL copied to clipboard")
   }
 
-  onDownloadCsv(): void {
-    const skillExportName = this.skillName ? this.skillName : "OSMT Skill"
-    this.richSkillService.getSkillCsvByUuid(this.skillUuid)
-      .subscribe((csv: string) => {
-        const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"})
-        const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
-        FileSaver.saveAs(blob, `RSD Skill - ${skillExportName} ${date}.csv`)
-      })
-  }
-
   onCopyJSON(skillJson: HTMLTextAreaElement): void {
     this.skillJsonObservable.subscribe(() => {
       skillJson.select()
@@ -72,12 +69,18 @@ export class PublicRichSkillActionBarComponent implements OnInit {
         {
           label: "Download as CSV",
           visible: () => true,
-          callback: () => this.onDownloadCsv(),
+          callback: () => this.exporter.getRsdCsv(
+            this.skillUuid,
+            this.skillName
+          ),
         },
         {
-          label: "Download as XLSX",
+          label: "Download as Excel Workbook",
           visible: () => true,
-          callback: () => this.onDownloadCsv(),
+          callback: () => this.exporter.getRsdXlsx(
+            this.skillUuid,
+            this.skillName
+          ),
         }
       ],
       visible: () => true

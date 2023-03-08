@@ -1,26 +1,26 @@
-import {Component, Inject, LOCALE_ID, OnInit, ViewChild} from "@angular/core"
-import {ApiCollection, ApiCollectionUpdate} from "../ApiCollection"
-import {ApiSearch, ApiSkillListUpdate} from "../../richskill/service/rich-skill-search.service"
-import {ActivatedRoute, Router} from "@angular/router"
-import {CollectionService} from "../service/collection.service"
-import {ToastService} from "../../toast/toast.service"
-import {SkillsListComponent} from "../../richskill/list/skills-list.component"
-import {RichSkillService} from "../../richskill/service/rich-skill.service"
-import {FormControl, FormGroup} from "@angular/forms"
-import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
-import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions"
-import {determineFilters, PublishStatus} from "../../PublishStatus"
-import {ApiSkillSummary} from "../../richskill/ApiSkillSummary"
-import {Observable, of, Subject, throwError} from "rxjs"
-import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component"
-import {Title} from "@angular/platform-browser";
-import {AuthService} from "../../auth/auth-service";
-import {ButtonAction, ENABLE_ROLES} from "../../auth/auth-roles";
-import {formatDate} from "@angular/common"
-import * as FileSaver from "file-saver"
-import {ITaskResult} from "../../task/ApiTaskResult"
-import {delay, retryWhen, switchMap} from "rxjs/operators"
-import {CollectionPipe} from "../../pipes"
+import { Component, Inject, LOCALE_ID, OnInit, ViewChild } from "@angular/core"
+import { FormControl, FormGroup } from "@angular/forms"
+import { Title } from "@angular/platform-browser";
+import { ActivatedRoute, Router } from "@angular/router"
+
+import { Observable, Subject } from "rxjs"
+
+import { ApiCollection, ApiCollectionUpdate } from "../ApiCollection"
+import { CollectionService } from "../service/collection.service"
+import { ButtonAction, ENABLE_ROLES } from "../../auth/auth-roles";
+import { AuthService } from "../../auth/auth-service";
+import { SvgHelper, SvgIcon } from "../../core/SvgHelper"
+import { ExportCollectionComponent } from "../../export/export-collection.component"
+import { CollectionPipe } from "../../pipes"
+import { determineFilters, PublishStatus } from "../../PublishStatus"
+import { ApiSkillSummary } from "../../richskill/ApiSkillSummary"
+import { SkillsListComponent } from "../../richskill/list/skills-list.component"
+import { RichSkillService } from "../../richskill/service/rich-skill.service"
+import { ApiSearch, ApiSkillListUpdate } from "../../richskill/service/rich-skill-search.service"
+import { TableActionDefinition } from "../../table/skills-library-table/has-action-definitions"
+import { TableActionBarComponent } from "../../table/skills-library-table/table-action-bar.component"
+import { ToastService } from "../../toast/toast.service"
+
 
 @Component({
   selector: "app-manage-collection",
@@ -44,6 +44,11 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   showAdvancedFilteredSearch = true
 
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published, PublishStatus.Archived])
+  exporter = new ExportCollectionComponent(
+    this.collectionService,
+    this.toastService,
+    this.locale
+  )
 
   searchForm = new FormGroup({
     search: new FormControl("")
@@ -146,38 +151,6 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     return false
   }
 
-  generateCsv(collectionName: string): void {
-    this.collectionService.requestCollectionSkillsCsv(this.uuidParam ?? "")
-      .subscribe((taskStarted: ITaskResult) => {
-        this.toastService.loaderSubject.next(true)
-        this.getCsv(taskStarted.uuid ?? "", collectionName)
-      })
-  }
-
-  getCsv(uuid: string, collectionName: string): void {
-    this.collectionService.getCsvTaskResultsIfComplete(uuid)
-      .pipe(
-        retryWhen(errors => errors.pipe(
-          switchMap((error) => {
-            if (error.status === 404) {
-              return of(error.status)
-            }
-            return throwError(error)
-          }),
-          delay(1000),
-        )))
-      .subscribe(response => {
-        this.saveCsv(response.body, collectionName)
-      })
-  }
-
-  saveCsv(body: string, collectionName: string): void {
-    const blob = new Blob([body], {type: "text/csv;charset=utf-8;"})
-    const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
-    FileSaver.saveAs(blob, `RSD Skills - ${collectionName} - ${date}.csv`)
-    this.toastService.loaderSubject.next(false)
-  }
-
   actionDefinitions(): TableActionDefinition[] {
     const actions = [
       new TableActionDefinition({
@@ -239,14 +212,21 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         icon: this.downloadIcon,
         menu: [
           {
-            label: "Download CSV",
+            label: "Download as CSV",
             icon: this.downloadIcon,
-            callback: () => this.generateCsv(this.collection?.name ?? ""),
+            callback: () => this.exporter.getCollectionCsv(
+              this.uuidParam ?? "",
+              this.collection?.name ?? ""
+            ),
             visible: () => true
           },
           {
-            label: "Download XLSX",
+            label: "Download as Excel Workbook",
             icon: this.downloadIcon,
+            callback: () => this.exporter.getCollectionXlsx(
+              this.uuidParam ?? "",
+              this.collection?.name ?? ""
+            ),
             visible: () => true
           }
         ],

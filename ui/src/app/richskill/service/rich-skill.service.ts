@@ -1,18 +1,20 @@
-import {Injectable} from "@angular/core"
-import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http"
-import {Observable, of, throwError} from "rxjs"
-import {ApiAuditLog, ApiSkill, ApiSortOrder, IAuditLog, ISkill} from "../ApiSkill"
-import {delay, map, retryWhen, share, switchMap} from "rxjs/operators"
-import {AbstractService} from "../../abstract.service"
-import {ApiSkillUpdate} from "../ApiSkillUpdate"
-import {AuthService} from "../../auth/auth-service"
-import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service"
-import {PublishStatus} from "../../PublishStatus"
-import {ApiBatchResult} from "../ApiBatchResult"
-import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
-import {ApiSkillSummary, ISkillSummary} from "../ApiSkillSummary"
-import {Router} from "@angular/router"
-import {Location} from "@angular/common"
+import { Location } from "@angular/common"
+import { HttpClient, HttpHeaders } from "@angular/common/http"
+import { Injectable } from "@angular/core"
+import { Router } from "@angular/router"
+
+import { Observable, of, throwError } from "rxjs"
+import { delay, map, retryWhen, share, switchMap } from "rxjs/operators"
+
+import { ApiSearch, PaginatedSkills } from "./rich-skill-search.service"
+import { ApiBatchResult } from "../ApiBatchResult"
+import { ApiAuditLog, ApiSkill, ApiSortOrder, IAuditLog, ISkill } from "../ApiSkill"
+import { ApiSkillSummary, ISkillSummary } from "../ApiSkillSummary"
+import { ApiSkillUpdate } from "../ApiSkillUpdate"
+import { AbstractService } from "../../abstract.service"
+import { AuthService } from "../../auth/auth-service"
+import { PublishStatus } from "../../PublishStatus"
+import { ApiTaskResult, ITaskResult } from "../../task/ApiTaskResult"
 
 
 @Injectable({
@@ -77,6 +79,27 @@ export class RichSkillService extends AbstractService {
       })
       .pipe(share())
       .pipe(map((response) => this.safeUnwrapBody(response.body, errorMsg)))
+  }
+
+  // These two nearly identical getSkill functions can probably be joined.  the angular httpclient is weird though
+  // and overloads it's functions many times which makes any kind of abstraction seeking to broaden flexibility incompatible
+  getSkillXlsxByUuid(uuid: string): Observable<string> {
+    if (!uuid) {
+      throw new Error("No uuid provided for single skill xlsx export")
+    }
+    const errorMsg = `Could not find skill by uuid [${uuid}]`
+
+    return this.httpClient
+      .get(this.buildUrl(`${this.serviceUrl}/${uuid}`), {
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "application/vnd.ms-excel"
+          }
+        )),
+        responseType: "blob" as "json",
+        observe: "response"
+      })
+      .pipe(share())
+      .pipe(map((response) => this.safeUnwrapBody(response.body as string, errorMsg)))
   }
 
   getSkillJsonByUuid(uuid: string): Observable<string> {
@@ -151,9 +174,10 @@ export class RichSkillService extends AbstractService {
       }))
   }
 
-  libraryExport(): Observable<ApiTaskResult> {
+  libraryExportCsv(): Observable<ApiTaskResult> {
     return this.httpClient
-      .get<ApiTaskResult>(this.buildUrl("api/export/library"), {
+      .get<ApiTaskResult>(
+        this.buildUrl("api/export/library/csv"), {
         headers: this.wrapHeaders(new HttpHeaders({
             Accept: "application/json"
           }
@@ -164,8 +188,36 @@ export class RichSkillService extends AbstractService {
       .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }
 
-  exportSearch(uuids: string[]): Observable<ApiTaskResult> {
-    return this.httpClient.post<ApiTaskResult>(this.buildUrl("api/export/skills"), uuids, {
+  libraryExportXlsx(): Observable<ApiTaskResult> {
+    return this.httpClient
+      .get<ApiTaskResult>(
+        this.buildUrl("api/export/library/xlsx"), {
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "application/json"
+          }
+        )),
+        observe: "response"
+      })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
+  }
+
+  exportSearchCsv(uuids: string[]): Observable<ApiTaskResult> {
+    return this.httpClient.post<ApiTaskResult>(this.buildUrl("api/export/skills/csv"), uuids, {
+      headers: this.wrapHeaders(new HttpHeaders({
+          Accept: "application/json"
+        }
+      )),
+      observe: "response"
+    })
+    .pipe(share())
+    .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
+  }
+
+  exportSearchXlsx(uuids: string[]): Observable<ApiTaskResult> {
+    return this.httpClient.post<ApiTaskResult>(
+      this.buildUrl("api/export/skills/xlsx"),
+      uuids, {
       headers: this.wrapHeaders(new HttpHeaders({
           Accept: "application/json"
         }
@@ -181,7 +233,7 @@ export class RichSkillService extends AbstractService {
    * @param url Url to get RSD library exported as csv
    * @param pollIntervalMs Milliseconds to retry request
    */
-  getResultExportedLibrary(url: string, pollIntervalMs: number = 1000): Observable<any> {
+  getResultExportedCsvLibrary(url: string, pollIntervalMs: number = 1000): Observable<any> {
     return this.httpClient
       .get(this.buildUrl(url), {
         headers: this.wrapHeaders(new HttpHeaders({
@@ -189,6 +241,34 @@ export class RichSkillService extends AbstractService {
           }
         )),
         responseType: "text",
+        observe: "response"
+      })
+      .pipe(
+        retryWhen(errors => errors.pipe(
+          switchMap((error) => {
+            if (error.status === 404) {
+              return of(error.status)
+            }
+            return throwError(error)
+          }),
+          delay(pollIntervalMs),
+      )))
+  }
+
+  /**
+   * Check if result exported with libraryExport() is ready if not check again every 1000 milliseconds.
+   * @param url Url to get RSD library exported as xlsx
+   * @param pollIntervalMs Milliseconds to retry request
+   */
+  getResultExportedXlsxLibrary(url: string, pollIntervalMs: number = 1000): Observable<any> {
+    console.log(`endpoint: ${url}`)
+    return this.httpClient
+      .get(this.buildUrl(url), {
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "application/vnd.ms-excel;charset=utf-8;"
+          }
+        )),
+        responseType: "blob" as "json",
         observe: "response"
       })
       .pipe(

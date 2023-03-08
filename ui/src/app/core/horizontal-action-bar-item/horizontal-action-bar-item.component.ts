@@ -1,5 +1,6 @@
-import {Component, Input, OnInit} from "@angular/core"
-import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions"
+import { Component, Input } from "@angular/core"
+
+import { TableActionDefinition } from "../../table/skills-library-table/has-action-definitions"
 
 @Component({
   selector: "app-horizontal-action-bar-item",

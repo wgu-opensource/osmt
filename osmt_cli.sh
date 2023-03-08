@@ -7,6 +7,16 @@ declare debug=${DEBUG:-0}
 declare project_dir
 declare quickstart_env_file
 declare dev_env_file
+
+# These values are also in application.properties. Providing these env vars to this script will
+# override these local dev defaults. These are in no way suitable for any level of actual deployment
+declare -r OSMT_STACK_NAME="${OSMT_STACK_NAME:-osmt_dev}"
+declare -r DB_HOST="${DB_HOST:-0.0.0.0}"
+declare -r DB_PORT="${DB_PORT:-3306}"
+declare -r DB_NAME="${DB_NAME:-osmt_db}"
+declare -r DB_USER="${DB_USER:-osmt_db_user}"
+declare -r DB_PASSWORD="${DB_PASSWORD:-password}"
+
 # new line formatted to indent with echo_err / echo_info etc
 declare -r indent="       "
 declare -r nl="\n${indent}"
@@ -197,7 +207,7 @@ _validate_env_file() {
 }
 
 _validate_osmt_dev_docker_stack() {
-  local -i dev_container_count; dev_container_count="$(docker ps -q --filter name='osmt_dev*' | wc -l)"
+  local -i dev_container_count; dev_container_count="$(docker ps -q --filter name=${OSMT_STACK_NAME}* | wc -l)"
   if [[ "${dev_container_count}" -ne 3 ]]; then
     echo_err "Development Docker stack containers are not running."
     return 1
@@ -251,7 +261,7 @@ start_osmt_dev_docker_stack() {
   echo
   echo_info "Starting OSMT Development Docker stack. You can stop it with $(basename "${0}") -e"
   cd "${project_dir}/docker" || return 1
-  docker-compose --file dev-stack.yml --project-name osmt_dev up --detach
+  docker-compose --file dev-stack.yml --project-name "${OSMT_STACK_NAME}" up --detach
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Starting OSMT Development Docker stack failed. Exiting..."
@@ -264,7 +274,7 @@ stop_osmt_dev_docker_stack() {
   echo
   echo_info "Stopping OSMT Development Docker stack"
   cd "${project_dir}/docker" || return 1
-  docker-compose --file dev-stack.yml --project-name osmt_dev down
+  docker-compose --file dev-stack.yml --project-name "${OSMT_STACK_NAME}" down
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Stopping OSMT Development Docker stack failed. Exiting..."
@@ -298,10 +308,11 @@ start_osmt_quickstart() {
 import_osmt_dev_metadata() {
   echo
   local -i rc
+  start_osmt_dev_docker_stack
   _validate_osmt_dev_docker_stack
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "Importing metadata requires the backend Development Docker stack. First, run $(basename "${0}") -d."
+    echo_err "There was an issue validating your backend Development Docker stack. Exiting..."
     return 1
   fi
 
@@ -332,10 +343,11 @@ import_osmt_dev_metadata() {
 start_osmt_dev_spring_app() {
   echo
   local -i rc
+  start_osmt_dev_docker_stack
   _validate_osmt_dev_docker_stack
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "Starting OSMT Spring app requires the backend Development Docker stack. First, run $(basename "${0}") -d."
+    echo_err "There was an issue validating your backend Development Docker stack. Exiting..."
     return 1
   fi
 
@@ -355,13 +367,48 @@ start_osmt_dev_spring_app() {
   cd "${project_dir}" || return 1
 }
 
+load_static_ci_dataset(){
+  echo
+  echo_info "Loading static CI dataset into MySQL database ${DB_NAME} at ${DB_HOST}:${DB_PORT}"
+  echo
+  local -i db_container_count; db_container_count="$(docker ps -q --filter name=${OSMT_STACK_NAME}_db_1 | wc -l)"
+  if [[ "${db_container_count}" -ne 1 ]]; then
+    echo_err "Development Docker stack MySQL container is not running. Exiting..."
+    return 1
+  fi
+
+  local sql_file="${project_dir}/test/sql/fixed_ci_dataset.sql"
+  local -i rc
+
+  mysql \
+    --host="${DB_HOST}" \
+    --port="${DB_PORT}" \
+    --database="${DB_NAME}" \
+    --user="${DB_USER}" \
+    --password="${DB_PASSWORD}" < "${sql_file}"
+
+  rc=$?
+  echo
+  if [[ $rc -ne 0 ]]; then
+    echo_err "Error loading static CI dataset (found in ${sql_file})"
+    echo_err "Before loading the static CI dataset into your local MySQL instance, your database must have the current database schema."
+    echo_err "Locally, this is done by Flyway when the Spring application starts. You may need to start the Spring application first."
+    echo_err "Exiting..."
+    return 1
+  fi
+  echo_info "Successfully loaded static CI data set to MySQL (found in ${sql_file})."
+  echo_info "You must reindex ElasticSearch to use this data in OSMT. You can do this with $(basename "${0}") -r"
+
+}
+
 start_osmt_dev_spring_app_reindex() {
   echo
   local -i rc
+  start_osmt_dev_docker_stack
   _validate_osmt_dev_docker_stack
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "Starting OSMT Spring app requires the backend Development Docker stack. First, run $(basename "${0}") -d."
+    echo_err "There was an issue validating your backend Development Docker stack. Exiting..."
     return 1
   fi
 
@@ -441,7 +488,7 @@ A command line utility to simplify onboarding with OSMT development instances. T
 - provides convenience commands for starting / stopping / cleaning up development stacks
 
 Usage:
-  osmt_dev.sh [accepts a single option]
+  osmt_cli.sh [accepts a single option]
 
   -i   Initialize environment files for Quickstart and Development configurations.
   -v   Validate local environment and dependencies for development.
@@ -453,6 +500,10 @@ Usage:
   -e   Stop the detached backend Development Docker stack (MySQL, ElasticSearch, Redis).
   -s   Start the local Spring app, as built from source code. This also sources the api/osmt-dev-stack.env file
        for OAUTH2-related environment variables.
+  -l   Load the static CI dataset into the local MySQL instance. This will delete all data from the MySQL database.
+       This action requires the database schema to be present. Locally, this is done by Flyway when the Spring
+       application starts. You may need to start the Spring application first, and you will need to reindex
+       ElasticSearch to make this DB refresh available to OSMT (see below).
   -r   Start the local Spring app to reindex ElasticSearch.
   -m   Import default BLS and O*NET metadata into local Development instance
   -c   Surgically clean up OSMT-related Docker images and data volumes. This step will delete data from local OSMT
@@ -486,7 +537,7 @@ if [[ $# == 0 ]]; then
   exit 135
 fi
 
-while getopts "ivqdersmch" flag; do
+while getopts "ivqdelrsmch" flag; do
   case "${flag}" in
     i)
       init_osmt_env_files || exit 135
@@ -510,6 +561,10 @@ while getopts "ivqdersmch" flag; do
       ;;
     s)
       start_osmt_dev_spring_app || exit 135
+      exit 0
+      ;;
+    l)
+      load_static_ci_dataset || exit 135
       exit 0
       ;;
     r)

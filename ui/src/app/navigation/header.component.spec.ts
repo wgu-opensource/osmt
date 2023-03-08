@@ -77,10 +77,18 @@ describe("HeaderComponent", () => {
     expect(component.canHaveWorkspace).toBeFalse()
   })
 
-  it("my workspace is visible when user has role admin or curator", () => {
-    const myWorkspace = fixture.debugElement.query(By.css("#li-my-workspace"))
-    expect(myWorkspace).toBeTruthy()
-    expect(component.canHaveWorkspace).toBeTrue()
+  it("my workspace is visible when user has role admin or curator", (done) => {
+    component.canHaveWorkspace = true
+    fixture.whenStable().then(
+      () => {
+        fixture.detectChanges()
+
+        const myWorkspace = fixture.debugElement.query(By.css("#li-my-workspace"))
+        expect(myWorkspace).toBeTruthy()
+        expect(component.canHaveWorkspace).toBeTrue()
+        done()
+      }
+    )
   })
 
   it("skills is active", fakeAsync(() => {

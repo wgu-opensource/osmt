@@ -1,0 +1,67 @@
+<div class="dropdown">
+  <button class="drop-button" (click)="showInputs = !showInputs">
+    <svg class="l-iconTransition-x-icon t-icon">
+      <use xlink:href="/assets/images/svg-defs.svg#icon-menu">
+      </use>
+    </svg>
+    Filter
+  </button>
+  <div class="dropdown-content" [ngClass]="{'dropdown-content-visible': showInputs}">
+    <div class="close-container">
+      <button (click)="showInputs = !showInputs">
+        <svg class="l-iconTransition-x-icon t-icon">
+          <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss">
+          </use>
+        </svg>
+      </button>
+    </div>
+    <h3 class="t-type-heading1 t-margin-small t-margin-bottom">
+      Filter Library
+    </h3>
+    <hr>
+    <div class="apply-filter-container">
+      <button class="m-button m-button-x-text apply-filter-button" type="button" (click)="onApplyFilter()">
+        Apply filter
+      </button>
+    </div>
+    <app-search-multi-select
+      name="category"
+      [control]="filterFg?.get('categories')"
+      [keywordType]="keywordType.Category">
+    </app-search-multi-select>
+    <app-search-multi-select
+      name="keyword"
+      [control]="filterFg?.get('keywords')"
+      [keywordType]="keywordType.Keyword">
+    </app-search-multi-select>
+    <app-search-multi-select
+      name="standards"
+      [control]="filterFg?.get('standards')"
+      [keywordType]="keywordType.Standard">
+    </app-search-multi-select>
+    <app-search-multi-select
+      name="alignments"
+      [control]="filterFg?.get('alignments')"
+      [keywordType]="keywordType.Alignment">
+    </app-search-multi-select>
+    <app-search-multi-select
+      name="certification"
+      [control]="filterFg?.get('certifications')"
+      [keywordType]="keywordType.Certification">
+    </app-search-multi-select>
+    <app-search-multi-select
+      [control]="filterFg?.get('occupations')"
+      name="occupations">
+    </app-search-multi-select>
+    <app-search-multi-select
+      name="employers"
+      [control]="filterFg?.get('employers')"
+      [keywordType]="keywordType.Employer">
+    </app-search-multi-select>
+    <app-search-multi-select
+      name="authors"
+      [control]="filterFg?.get('authors')"
+      [keywordType]="keywordType.Author">
+    </app-search-multi-select>
+  </div>
+</div>

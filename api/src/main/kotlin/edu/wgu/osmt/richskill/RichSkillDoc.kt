@@ -115,7 +115,7 @@ data class RichSkillDoc(
             InnerField(suffix = "keyword", type = Keyword)
         ]
     )
-    @get:JsonIgnore
+    @get:JsonProperty("standards")
     val standards: List<String> = listOf(),
 
     @MultiField(

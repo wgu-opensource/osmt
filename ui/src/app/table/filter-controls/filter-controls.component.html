@@ -1,23 +1,78 @@
 <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
   <h3 class="t-visuallyHidden">Filters</h3>
 <!--  {{render '@l-filtercontrols'}}-->
-  <div class="l-filterControls">
-    <app-filter-choice
-      label="Draft"
-      [isChecked]="isDraftChecked"
-      (filterChanged)="onFilterChangeDraft($event)"
-    ></app-filter-choice>
-    <app-filter-choice
-      label="Published"
-      [isChecked]="isPublishedChecked"
-      (filterChanged)="onFilterChangePublished($event)"
-    ></app-filter-choice>
-    <app-filter-choice
-      label="Archived"
-      [isChecked]="isArchivedChecked"
-      (filterChanged)="onFilterChangeArchived($event)"
-    ></app-filter-choice>
+  <div class="filter-section">
+    <div class="l-filterControls">
+      <app-filter-choice
+        label="Draft"
+        [isChecked]="isDraftChecked"
+        (filterChanged)="onFilterChangeDraft($event)"
+      ></app-filter-choice>
+      <app-filter-choice
+        label="Published"
+        [isChecked]="isPublishedChecked"
+        (filterChanged)="onFilterChangePublished($event)"
+      ></app-filter-choice>
+      <app-filter-choice
+        label="Archived"
+        [isChecked]="isArchivedChecked"
+        (filterChanged)="onFilterChangeArchived($event)"
+      ></app-filter-choice>
+    </div>
+    <div *ngIf="showAdvancedFilteredSearch">
+      <app-filter-dropdown (applyFilter)="applyFilter($event)" [filterFg]="filterFg">
+      </app-filter-dropdown>
+    </div>
   </div>
-
+</div>
+<div class="chips-container" *ngIf="showAdvancedFilteredSearch">
+  <app-filter-chips
+    name="category"
+    [control]="filterFg.get('categories')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
+    *ngIf="filterFg?.get('categories')?.value?.length > 0">
+  </app-filter-chips>
+  <app-filter-chips
+    name="keywords"
+    [control]="filterFg.get('keywords')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
+    *ngIf="filterFg?.get('keywords')?.value?.length > 0">
+  </app-filter-chips>
+  <app-filter-chips
+    name="standards"
+    [control]="filterFg.get('standards')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
+    *ngIf="filterFg?.get('standards')?.value?.length > 0">
+  </app-filter-chips>
+  <app-filter-chips
+    name="alignments"
+    [control]="filterFg.get('alignments')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
+    *ngIf="filterFg?.get('alignments')?.value?.length > 0">
+  </app-filter-chips>
+  <app-filter-chips
+    name="certifications"
+    [control]="filterFg.get('certifications')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
+    *ngIf="filterFg?.get('certifications')?.value?.length > 0">
+  </app-filter-chips>
+  <app-filter-chips
+    name="occupations"
+    [control]="filterFg.get('occupations')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
+    *ngIf="filterFg?.get('occupations')?.value?.length > 0">
+  </app-filter-chips>
+  <app-filter-chips
+    name="employers"
+    [control]="filterFg.get('employers')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
+    *ngIf="filterFg?.get('employers')?.value?.length > 0">
+  </app-filter-chips>
+  <app-filter-chips
+    name="authors"
+    [control]="filterFg.get('authors')"
+    (remove)="keywordsChanged.emit(filterFg.value)"
+    *ngIf="filterFg?.get('authors')?.value?.length > 0">
+  </app-filter-chips>
 </div>
 

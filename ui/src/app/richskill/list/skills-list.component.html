@@ -26,6 +26,9 @@
 
     <app-filter-controls
       [selectedFilters]="selectedFilters"
+      [keywords]="keywords"
+      (keywordsChanged)="keywordsChange($event)"
+      [showAdvancedFilteredSearch]="showAdvancedFilteredSearch"
       (filtersChanged)="handleFiltersChanged($event)"
     ></app-filter-controls>
 

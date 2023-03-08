@@ -1,4 +1,4 @@
-import {ApiSearch, ApiSkillListUpdate, PaginatedSkills} from "../service/rich-skill-search.service"
+import {ApiSearch, ApiSkillListUpdate, PaginatedSkills} from "../service/rich-skill-search.service";
 import {ApiSkillSummary} from "../ApiSkillSummary";
 import {checkArchived, determineFilters, PublishStatus} from "../../PublishStatus";
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
@@ -17,6 +17,7 @@ import {ButtonAction} from "../../auth/auth-roles";
 import {CollectionService} from "../../collection/service/collection.service"
 import {ApiCollection} from "../../collection/ApiCollection"
 import {CollectionPipe} from "../../pipes"
+import {FilterDropdown} from "../../models/filter-dropdown.model"
 
 @Component({
   selector: "app-skills-list",
@@ -27,6 +28,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   from = 0
   size = 50
   collection?: ApiCollection
+  showAdvancedFilteredSearch = false
 
   @ViewChild("titleHeading") titleElement!: ElementRef
   @ViewChild(TableActionBarComponent) tableActionBar!: TableActionBarComponent
@@ -36,6 +38,16 @@ export class SkillsListComponent extends QuickLinksHelper {
   results: PaginatedSkills | undefined
 
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published])
+  keywords: FilterDropdown = {
+    categories: [],
+    certifications: [],
+    employers: [],
+    alignments: [],
+    keywords: [],
+    occupations: [],
+    standards: [],
+    authors: []
+  }
   selectedSkills?: ApiSkillSummary[]
   skillsSaved?: Observable<ApiBatchResult>
 
@@ -426,4 +438,21 @@ export class SkillsListComponent extends QuickLinksHelper {
   collectionOrWorkspace(includesMy: boolean): string {
     return new CollectionPipe().transform(this.collection?.status, includesMy)
   }
+
+  keywordsChange(keywords: FilterDropdown): void {
+    this.keywords = keywords
+    this.loadNextPage()
+  }
+
+  get selectedKeywords(): any {
+    const a: any = {}
+    const b: any = this.keywords
+    for (const key in this.keywords) {
+      if (b[key].length > 0) {
+        a[key] = b[key].map((i: any) => i.name ?? i.code)
+      }
+    }
+    return a
+  }
+
 }

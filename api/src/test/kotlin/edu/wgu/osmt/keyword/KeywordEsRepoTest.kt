@@ -46,6 +46,7 @@ class KeywordEsRepoTest @Autowired constructor(
         val result2 = keywordEsRepo.typeAheadSearch("yEl", KeywordTypeEnum.Keyword)
         val result3 = keywordEsRepo.typeAheadSearch("yell", KeywordTypeEnum.Keyword)
         val result4 = keywordEsRepo.typeAheadSearch("yellow", KeywordTypeEnum.Keyword)
+        val result5 = keywordEsRepo.typeAheadSearch("", KeywordTypeEnum.Keyword)
 
 
         assertThat(results.searchHits.count()).isEqualTo(2)
@@ -53,5 +54,6 @@ class KeywordEsRepoTest @Autowired constructor(
         assertThat(result3.searchHits.count()).isEqualTo(2)
         assertThat(result4.searchHits.count()).isEqualTo(1)
         assertThat(result4.searchHits.first().content.value).isEqualTo("Yellow")
+        assertThat(result5.searchHits).hasSize(56)
     }
 }

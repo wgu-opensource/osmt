@@ -52,7 +52,7 @@ export class FormFieldSearchMultiSelectComponent extends AbstractFormFieldSearch
     this.emitCurrentSelection()
   }
 
-  private emitCurrentSelection(): void {
+  protected emitCurrentSelection(): void {
     this.currentSelection.emit(this.internalSelectedResults)
   }
 

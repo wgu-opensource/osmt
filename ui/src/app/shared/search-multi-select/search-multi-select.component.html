@@ -1,0 +1,96 @@
+<div class="expand-panel" (click)="showInput = !showInput">
+  <strong><b>{{name | titlecase}}</b></strong>
+  <img [src]="'assets/images/' + (showInput ? 'up' : 'down') + '-arrow.svg'" width="15px" height="15px" style="color: white"/>
+</div>
+<div class="m-field"  [ngClass]="{'visible': showInput}">
+  <div class="m-field-x-input">
+    <div class="l-searchSelect">
+      <div class="l-searchSelect-x-search">
+        <div class="m-search">
+
+          <svg class="m-search-x-icon t-icon" aria-hidden="true">
+            <use [attr.xlink:href]="iconSearch"></use>
+          </svg>
+
+          <input
+            [formControl]="inputFc"
+            class="m-search-x-input"
+            type="text"
+            placeholder="Type {{name}} to filter"
+            [attr.aria-label]="name"
+            role="search"
+            [attr.aria-describedby]="name + '-results'"
+            [attr.aria-controls]="name + '-results'"
+          >
+          <div class="m-search-x-controls">
+            <div class="m-search-x-clear">
+              <button class="m-iconInteractive" type="button" (click)="clearField()" *ngIf="inputFc.value.length > 0">
+
+                <span class="t-visuallyHidden">Clear Search</span>
+
+                <div class="m-iconInteractive-x-icon">
+                  <svg class="t-icon" aria-hidden="true">
+                    <use [attr.xlink:href]="iconDismiss"></use>
+                  </svg>
+                </div>
+
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!-- Loading results state -->
+      <div class="l-searchSelect-x-menu" *ngIf="currentlyLoading; else loaded">
+        <div class="m-selectMenu m-selectMenu-fixed m-selectMenu-is-active">
+          <div class="m-selectMenu-x-content">
+            <p class="m-selectMenu-x-message">
+              <span class="m-selectMenu-x-messageText">Loading&hellip;</span>
+              <span class="m-loaderGraphic m-loaderGraphic-medium"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loaded results state -->
+      <ng-template #loaded>
+        <div id="{{name}}-results" class="l-searchSelect-x-menu" aria-live="assertive">
+          <div class="m-selectMenu m-selectMenu-fixed m-selectMenu-is-active">
+
+            <!-- Results -->
+            <div class="m-selectMenu-x-content" *ngIf="results && results.length > 0; else emptyResults">
+              <div class="t-visuallyHidden">Showing search results: </div>
+              <div class="result-container" *ngFor="let result of results;">
+              <span class="m-buttonText-x-text result-text">
+                {{resultName(result)}}
+              </span>
+                <input type="checkbox" [checked]="isResultSelected(result)" (click)="selectResult(result)">
+              </div>
+            </div>
+
+            <!-- Empty results -->
+            <ng-template #emptyResults>
+              <div class="m-selectMenu-x-content">
+                <p class="m-selectMenu-x-message">
+                  <span class="m-selectMenu-x-messageText">No Results</span>
+                </p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
+        <div class="l-searchSelect-x-items">
+          <div class="m-inputItem" *ngFor="let result of control.value" (click)="selectResult(result)">
+            <span class="m-inputItem-x-text">{{resultName(result)}}</span>
+            <button class="m-inputItem-x-icon" type="button">
+              <svg aria-hidden="true">
+                <use [attr.xlink:href]="iconDismiss"></use>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

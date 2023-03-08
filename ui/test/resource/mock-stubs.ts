@@ -109,8 +109,8 @@ export class SearchServiceStub {
   // tslint:disable-next-line:variable-name
   advancedSkillSearch(_advanced: ApiAdvancedSearch): void {
     const advanced = _advanced as ApiAdvancedSearch
-    SearchServiceData.latestSearch = new ApiSearch({ advanced })
-    this.setLatestSearch(new ApiSearch({advanced}))
+    SearchServiceData.latestSearch = new ApiSearch({ advanced, filtered: {} })
+    this.setLatestSearch(new ApiSearch({advanced, filtered: {}}))
   }
 
   simpleCollectionSearch(query: string): void {
@@ -380,6 +380,16 @@ export class RichSkillServiceStub {
 
   getResultExportedLibrary(): Observable<any> {
     return of("")
+  }
+
+  getSkillsFiltered(
+    size: number = 50,
+    from: number = 0,
+    apiSearch: ApiSearch,
+    filterByStatuses: Set<PublishStatus> | undefined,
+    sort: ApiSortOrder | undefined,
+  ): Observable<PaginatedSkills> {
+    return of(createMockPaginatedSkills())
   }
 }
 

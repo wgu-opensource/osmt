@@ -41,6 +41,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   unarchiveIcon = SvgHelper.path(SvgIcon.UNARCHIVE)
   addIcon = SvgHelper.path(SvgIcon.ADD)
   searchIcon = SvgHelper.path(SvgIcon.SEARCH)
+  showAdvancedFilteredSearch = true
 
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published, PublishStatus.Archived])
 
@@ -100,7 +101,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     if (this.collection === undefined) {
       return
     }
-
+    this.apiSearch = new ApiSearch({filtered: this.selectedKeywords, query: this.searchQuery})
     this.resultsLoaded = this.collectionService.getCollectionSkills(
       this.collection.uuid,
       this.size,
@@ -126,7 +127,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   }
 
   public get searchQuery(): string {
-    return this.searchForm.get("search")?.value.trim() ?? ""
+    return this.searchForm.get("search")?.value?.trim() ?? ""
   }
   clearSearch(): boolean {
     this.searchForm.reset()

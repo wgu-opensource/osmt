@@ -1,0 +1,19 @@
+.filter-section {
+  display: flex;
+  justify-content: space-between;
+}
+
+app-filter-chips {
+  display: block;
+  width: fit-content;
+  margin-right: 20px;
+  margin-top: 20px;
+}
+
+
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  // flex-direction: column;
+}

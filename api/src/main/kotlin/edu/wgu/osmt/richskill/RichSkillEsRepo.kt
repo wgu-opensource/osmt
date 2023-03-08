@@ -2,6 +2,7 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
+import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSimilaritySearch
 import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
@@ -14,6 +15,7 @@ import edu.wgu.osmt.nullIfEmpty
 import org.apache.lucene.search.join.ScoreMode
 import org.elasticsearch.index.query.*
 import org.elasticsearch.index.query.QueryBuilders.*
+import org.elasticsearch.script.Script
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.Page
@@ -31,6 +33,7 @@ const val collectionsUuid = "collections.uuid"
 
 interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch)
+    fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiFilteredSearch, publishStatus: Set<PublishStatus>)
     fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder
     fun byApiSearch(
         apiSearch: ApiSearch,
@@ -68,6 +71,24 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         )
     }
 
+    private fun buildNestedQueries(path: String?=null, queryParams: List<String>) : BoolQueryBuilder {
+        val disjunctionQuery = disMaxQuery()
+        val queries = ArrayList<PrefixQueryBuilder>()
+
+        queryParams.let {
+            it.map { param ->
+                queries.add(
+                    prefixQuery("$path.keyword", param)
+                )
+            }
+
+        }
+        disjunctionQuery.innerQueries().addAll(queries)
+
+        return boolQuery().must(existsQuery("$path.keyword")).must(disjunctionQuery)
+    }
+
+
     // Query clauses for Rich Skill properties
     override fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch) {
         with(advancedQuery) {
@@ -77,7 +98,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 if (it.contains("\"")) {
                     bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::name.name}.raw").defaultOperator(Operator.AND))
                 } else {
-                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::name.name, it))
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::name.name, it))
                 }
             }
             category.nullIfEmpty()?.let {
@@ -91,7 +112,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 if (it.contains("\"")) {
                     bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::author.name}.raw").defaultOperator(Operator.AND))
                 } else {
-                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::author.name, it))
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::author.name, it))
                 }
             }
             skillStatement.nullIfEmpty()?.let {
@@ -100,7 +121,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                         simpleQueryStringQuery(it).field("${RichSkillDoc::statement.name}.raw").defaultOperator(Operator.AND)
                     )
                 } else {
-                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::statement.name, it))
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::statement.name, it))
                 }
             }
             keywords?.map {
@@ -110,7 +131,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                             .defaultOperator(Operator.AND)
                     )
                 } else {
-                    bq.must(QueryBuilders.matchBoolPrefixQuery(RichSkillDoc::searchingKeywords.name, it))
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::searchingKeywords.name, it))
                 }
             }
 
@@ -171,6 +192,59 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 }
             }
         }
+    }
+
+    override fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiFilteredSearch, publishStatus: Set<PublishStatus>) {
+        bq.must(
+            termsQuery(
+                RichSkillDoc::publishStatus.name,
+                publishStatus.map { ps -> ps.toString() }
+            )
+        )
+        with(filteredQuery) {
+            categories?. let {
+                bq.must(buildNestedQueries(RichSkillDoc::category.name, it))
+            }
+            keywords?. let {
+                it.mapNotNull {
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::searchingKeywords.name, keywords))
+                }
+            }
+            standards?. let {
+                it.mapNotNull {
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::standards.name, standards))
+                }
+            }
+            certifications?. let {
+                it.mapNotNull {
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::certifications.name, certifications))
+                }
+            }
+            alignments?. let {
+                it.mapNotNull {
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::alignments.name, alignments))
+                }
+            }
+            employers?. let {
+                it.mapNotNull {
+                    bq.must(generateTermsSetQueryBuilder(RichSkillDoc::employers.name, employers))
+                }
+            }
+            authors?. let {
+                bq.must(buildNestedQueries(RichSkillDoc::author.name, it))
+            }
+            occupations?.let {
+                it.mapNotNull { value ->
+                    bq.must(
+                        occupationQueries(value)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun generateTermsSetQueryBuilder(fieldName: String, list: List<String>): TermsSetQueryBuilder {
+        return TermsSetQueryBuilder("$fieldName.keyword", list).setMinimumShouldMatchScript(Script(list.size.toString()))
     }
 
     override fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder {
@@ -246,18 +320,27 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         val bq = boolQuery()
 
         nsq.withQuery(bq)
-        nsq.withFilter(BoolQueryBuilder().must(
-            termsQuery(
-                RichSkillDoc::publishStatus.name,
-                publishStatus.map { ps -> ps.toString() }
+        nsq.withFilter(
+            BoolQueryBuilder().must(
+                termsQuery(
+                    RichSkillDoc::publishStatus.name,
+                    publishStatus.map { ps -> ps.toString() }
+                )
             )
-        ))
+        )
+
+        apiSearch.filtered?.let { generateBoolQueriesFromApiSearchWithFilters(bq, it, publishStatus) }
 
         // treat the presence of query property to mean multi field search with that term
         if (!apiSearch.query.isNullOrBlank()) {
 
             if (collectionId.isNullOrBlank()) {
-                bq.should(richSkillPropertiesMultiMatch(apiSearch.query))
+                if(apiSearch.filtered != null){
+                    bq.must(richSkillPropertiesMultiMatch(apiSearch.query))
+                }
+                else {
+                    bq.should(richSkillPropertiesMultiMatch(apiSearch.query))
+                }
                 bq.should(occupationQueries(apiSearch.query))
                 bq.should(
                     nestedQuery(
@@ -268,14 +351,29 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                     )
                 )
             } else {
-                bq.must(
-                    nestedQuery(
-                        RichSkillDoc::collections.name,
-                        boolQuery().must(matchQuery(collectionsUuid, collectionId)),
-                        ScoreMode.Avg
+                if(apiSearch.filtered != null) {
+                    bq.must(
+                        nestedQuery(
+                            RichSkillDoc::collections.name,
+                            boolQuery().must(matchQuery(collectionsUuid, collectionId).operator(Operator.AND)),
+                            ScoreMode.Avg
+                        )
                     )
+                }
+                else {
+                    bq.must(
+                        nestedQuery(
+                            RichSkillDoc::collections.name,
+                            boolQuery().must(matchQuery(collectionsUuid, collectionId).operator(Operator.OR)),
+                            ScoreMode.Avg
+                        )
+                    )
+                }
+                bq.must(
+                    BoolQueryBuilder().should(richSkillPropertiesMultiMatch(apiSearch.query))
+                        .should(occupationQueries(apiSearch.query))
                 )
-                bq.must(BoolQueryBuilder().should(richSkillPropertiesMultiMatch(apiSearch.query)).should(occupationQueries(apiSearch.query)))
+
             }
         } else if (apiSearch.advanced != null) {
             generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)
@@ -299,7 +397,9 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                     )
                 )
             }
-        } else {
+        }
+
+        else {
             var apiSearchUuids = apiSearch.uuids?.filterNotNull()?.filter { x: String? -> x != "" }
 
             if (!apiSearchUuids.isNullOrEmpty()) {
@@ -324,6 +424,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
             }
         }
+
         return nsq
     }
 

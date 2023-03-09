@@ -82,3 +82,19 @@ hr {
 strong {
   font-size: 14px;
 }
+
+.down-arrow {
+  background-color: var(--color-interactive2);
+  width: 15px;
+  height: 15px;
+  -webkit-mask: url("/assets/images/down-arrow.svg") no-repeat center;
+  mask: url("/assets/images/down-arrow.svg") no-repeat center;
+}
+
+.up-arrow {
+  background-color: var(--color-interactive2);
+  width: 15px;
+  height: 15px;
+  -webkit-mask: url("/assets/images/up-arrow.svg") no-repeat center;
+  mask: url("/assets/images/up-arrow.svg") no-repeat center;
+}

@@ -29,15 +29,15 @@
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-formfield-text
-            *ngIf="showAuthor()"
+          <app-form-field-search-select
             [control]="skillForm.controls.author"
-            name="author"
             label="Author"
-            [required]="false"
+            name="Author"
+            [keywordType]="keywordType.Author"
           >
-          </app-formfield-text>
+          </app-form-field-search-select>
         </div>
+
         <div class="t-margin-medium t-margin-bottom">
           <app-formfield-text
             [control]="skillForm.controls.skillStatement"
@@ -49,74 +49,71 @@
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-formfield-text
+          <app-form-field-search-select
             [control]="skillForm.controls.category"
-            name="category"
             label="Category"
-            [required]="false"
+            name="Category"
+            [keywordType]="keywordType.Category"
           >
-          </app-formfield-text>
+          </app-form-field-search-select>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-formfield-text
+          <app-form-field-search-select
             [control]="skillForm.controls.keywords"
-            name="keywords"
             label="Keywords"
-            [required]="false"
+            name="Keywords"
+            [keywordType]="keywordType.Category"
           >
-          </app-formfield-text>
+          </app-form-field-search-select>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-formfield-text
+          <app-form-field-search-select
             [control]="skillForm.controls.standards"
-            name="standards"
             label="Standards"
-            [required]="false"
+            name="Standards"
+            [keywordType]="keywordType.Category"
           >
-          </app-formfield-text>
+          </app-form-field-search-select>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-formfield-text
+          <app-form-field-search-select
             [control]="skillForm.controls.certifications"
-            name="certifications"
             label="Certifications"
-            [required]="false"
+            name="Certifications"
+            [keywordType]="keywordType.Category"
           >
-          </app-formfield-text>
+          </app-form-field-search-select>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-formfield-text
+          <app-form-field-search-select-jobcode
             [control]="skillForm.controls.occupations"
-            name="occupations"
             label="Occupations"
-            [required]="false"
-            [helpMessage]="getOccupationHelpMessage()"
-          >
-          </app-formfield-text>
+            name="Occupations"
+          ></app-form-field-search-select-jobcode>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-formfield-text
+          <app-form-field-search-select
             [control]="skillForm.controls.employers"
-            name="employers"
             label="Employers"
-            [required]="false"
+            name="Employers"
+            [keywordType]="keywordType.Employer"
           >
-          </app-formfield-text>
+          </app-form-field-search-select>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-formfield-text
+          <app-form-field-search-select
             [control]="skillForm.controls.alignments"
-            name="alignments"
-            label="Alignment"
-            [required]="false"
+            label="Alignments"
+            name="Alignments"
+            [keywordType]="keywordType.Alignment"
           >
-          </app-formfield-text>
+          </app-form-field-search-select>
         </div>
       </div>
     </div>

@@ -15,12 +15,13 @@
   position:absolute;
   margin-top:-25px;
   margin-left:10px;
-  color:white;
-  background: #1f1f1f;
+  color: var(--color-interactive2);
+  background: var(--color-background300);
   padding:2px 10px;
 }
 
 .chip {
+  color: white;
   width: fit-content;
   padding: 0 10px;
   margin: 5px 1px;
@@ -32,7 +33,7 @@
 
 .close-button {
   padding-left: 10px;
-  color: #888;
+  color: white;
   font-weight: bold;
   float: right;
   font-size: 20px;

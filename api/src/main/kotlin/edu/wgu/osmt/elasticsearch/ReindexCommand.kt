@@ -22,7 +22,6 @@ class ReindexCommand: CommandLineRunner {
     private lateinit var applicationContext: ApplicationContext
 
     override fun run(vararg args: String?) {
-        elasticSearchReindexer.deleteAllIndices()
         elasticSearchReindexer.reindexAll()
         (applicationContext as ConfigurableApplicationContext).close()
     }

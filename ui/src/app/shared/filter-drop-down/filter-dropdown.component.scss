@@ -21,7 +21,7 @@
 /**drop down**/
 .drop-button {
   display: flex;
-  color: white;
+  color: var(--color-interactive2);
   font-size: 16px;
   border: none;
 }
@@ -35,7 +35,7 @@
   margin-top: -300px;
   margin-left: -200px;
   padding: 20px;
-  background: #333333;
+  background-color: var(--color-background200);
   display: none;
   position: absolute;
   min-width: 400px;

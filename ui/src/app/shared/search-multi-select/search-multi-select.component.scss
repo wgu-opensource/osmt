@@ -19,7 +19,7 @@ input[type=checkbox]:before {
   height: 15px;
   top: 0;
   left: 0;
-  background-color:#e9e9e9;
+  background-color: var(--color-text3);
 }
 
 input[type=checkbox]:checked:before {
@@ -62,8 +62,8 @@ input::placeholder {
 }
 
 .result-container:nth-child(odd) {
-  color: white;
-  background: #434647;
+  color: var(--color-interactive2);
+  background-color: var(--color-background100);
 }
 
 .m-field {

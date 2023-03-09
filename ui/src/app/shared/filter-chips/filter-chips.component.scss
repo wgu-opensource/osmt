@@ -21,19 +21,19 @@
 }
 
 .chip {
-  color: white;
+  color: var(--color-interactive2);
   width: fit-content;
   padding: 0 10px;
   margin: 5px 1px;
   height: fit-content;
   font-size: 12px;
   border-radius: 25px;
-  background-color: #333333;
+  background-color: var(--color-background200);
 }
 
 .close-button {
   padding-left: 10px;
-  color: white;
+  color: var(--color-interactive2);
   font-weight: bold;
   float: right;
   font-size: 20px;

@@ -396,7 +396,8 @@ load_static_ci_dataset(){
   db_container_count+="$(docker ps -q --filter name=${OSMT_STACK_NAME}-db-1 | wc -l)"
   echo_debug $db_container_count
   if [[ "${db_container_count}" -ne 1 ]]; then
-    echo_err "Development Docker stack MySQL container is not running. Exiting..."
+    echo_err "Development Docker stack MySQL container is not running as expected."
+    echo_err "(${db_container_count} ${OSMT_STACK_NAME} DB containers running. Should be 1). Exiting..."
     return 1
   fi
 

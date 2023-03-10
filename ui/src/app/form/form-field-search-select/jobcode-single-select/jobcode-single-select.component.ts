@@ -1,11 +1,11 @@
 import { Component, OnInit } from "@angular/core"
 import {KeywordSearchService} from "../../../richskill/service/keyword-search.service"
 import {FormFieldSearchSelectComponent} from "../.."
+import {ApiJobCode} from "../../../job-codes/Jobcode"
 
 @Component({
   selector: "app-jobcode-single-select",
   templateUrl: "../../form-field-search-select/single-select/form-field-search-select.component.html",
-  styleUrls: ["./jobcode-single-select.component.scss"]
 })
 export class JobcodeSingleSelectComponent extends FormFieldSearchSelectComponent {
 
@@ -27,9 +27,14 @@ export class JobcodeSingleSelectComponent extends FormFieldSearchSelectComponent
 
     this.queryInProgress = this.searchService.searchJobcodes(text)
       .subscribe(searchResults => {
-        this.results = searchResults.filter(r => !!r && !!r.targetNodeName).map(r => r.targetNodeName as string)
+        this.results = searchResults.filter(r => !!r && !!r.targetNodeName).map(r => r.code + "|" + r.targetNodeName)
         this.currentlyLoading = false
       })
+  }
+
+  selectResult(result: string): void {
+    this.control.setValue(result.split("|")[1], {emitEvent: false})
+    this.results = undefined
   }
 
 }

@@ -75,7 +75,6 @@ _validate_git() {
     echo_err "$(basename "${0}") requires git to run commands for the correct directories."
     return 1
   fi
-
 }
 
 _validate_docker_version() {
@@ -155,6 +154,22 @@ _validate_java_version() {
     return 0
   else
     echo_err "Java version must be >= ${req_java_major}. Current version detected is ${det_java_version}."
+    return 1
+  fi
+}
+
+_validate_mysql_client() {
+  echo
+  echo_info "Checking for mysql client..."
+
+  # no specific version of mysql is required
+  which mysql &> /dev/null
+  if [[ $? -eq 0 ]]; then
+    echo_info "MySQL client detected at $(which mysql)"
+    mysql --version
+  else
+    echo_err "mysql not found on path. Use 'which mysql' to confirm."
+    echo_err "$(basename "${0}") requires the mysql client to run commands for loading the static CI dataset."
     return 1
   fi
 }
@@ -243,6 +258,7 @@ validate_osmt_environment() {
   _validate_git || is_environment_valid+=1
   _validate_docker_version || is_environment_valid+=1
   _validate_osmt_dev_dependencies || is_environment_valid+=1
+  _validate_mysql_client || is_environment_valid+=1
 
   echo
   echo_info "Checking environment files used in local OSMT instances..."
@@ -368,9 +384,12 @@ start_osmt_dev_spring_app() {
 }
 
 load_static_ci_dataset(){
+  local -i rc
   echo
   echo_info "Loading static CI dataset into MySQL database ${DB_NAME} at ${DB_HOST}:${DB_PORT}"
   echo
+  _validate_mysql_client || return 1
+
   local -i db_container_count; db_container_count="$(docker ps -q --filter name=${OSMT_STACK_NAME}_db_1 | wc -l)"
   if [[ "${db_container_count}" -ne 1 ]]; then
     echo_err "Development Docker stack MySQL container is not running. Exiting..."
@@ -378,7 +397,6 @@ load_static_ci_dataset(){
   fi
 
   local sql_file="${project_dir}/test/sql/fixed_ci_dataset.sql"
-  local -i rc
 
   mysql \
     --host="${DB_HOST}" \

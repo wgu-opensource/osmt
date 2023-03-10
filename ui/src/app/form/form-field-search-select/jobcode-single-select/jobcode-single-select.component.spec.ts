@@ -54,4 +54,9 @@ describe("JobcodeSingleSelectComponent", () => {
     component.performSearch("")
     expect(spy).not.toHaveBeenCalled()
   })
+
+  it("control value is ok", () => {
+    component.selectResult("12-23|Jobcode name")
+    expect(component.control.value).toBe("Jobcode name")
+  })
 })

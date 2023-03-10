@@ -198,7 +198,7 @@ osmt_cli.sh -m
 
 OSMT optionally supports role-based access, with these roles:
 - **Admin**: an OSMT user with an admin role can change RSDs and Collections in any way.
-- **Curator**: an OSMT user with a curator role can update but not create RSDs and collections. This role is for someone who would publish and unpublish RSDs and Collections
+- **Curator**: an OSMT user with a curator role can create RSDs and Collections. This role is for someone who would upload and create RSDs and Collections.
 - **Viewer**: an OSMT user with a viewer role is a logged-in user who can not make modifications to RSDs or Collections.
 
 | Behavior                                | Curator Role | Admin Role |

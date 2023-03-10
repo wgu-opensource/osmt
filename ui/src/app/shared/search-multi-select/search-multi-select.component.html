@@ -1,6 +1,6 @@
 <div class="expand-panel" (click)="showInput = !showInput">
   <strong><b>{{name | titlecase}}</b></strong>
-  <img [src]="'assets/images/' + (showInput ? 'up' : 'down') + '-arrow.svg'" width="15px" height="15px" style="color: white"/>
+  <div [ngClass]="{'up-arrow': showInput, 'down-arrow': !showInput}"></div>
 </div>
 <div class="m-field"  [ngClass]="{'visible': showInput}">
   <div class="m-field-x-input">

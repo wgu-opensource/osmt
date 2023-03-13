@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -eu
-# Add INSTANCE_ID as ENV variable 
+# Add INSTANCE_ID as ENV variable
 declare INSTANCE_ID="${INSTANCE_ID}"
 declare project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
 
@@ -28,14 +28,7 @@ function start_ec2_instance(){
   fi
 }
 
-function start_reindex(){
-  cd project_dir
-  sh ./osmt_cli -r
-}
-
-
 function main() {
   stop_ec2_instance
   start_ec2_instance
-  start_reindex
 }

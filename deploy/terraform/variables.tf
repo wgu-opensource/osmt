@@ -1,7 +1,7 @@
-variable "AWS_REGION" {
+variable "db_user" {
   type = string
-  description = "AWS region to use for resources"
-  default = "us-east-1"
+  description = "osmt_db user"
+  sensitive = true
 }
 
 variable "db_password" {
@@ -10,27 +10,18 @@ variable "db_password" {
   sensitive = true
 }
 
-variable "vpc_id" {
+variable "db_name" {
   type = string
-  description = "VPC ID"
-  default = "vpc-095fce400b46c1bd2"
+  description = "osmt_db name"
+  sensitive = true
 }
 
-variable "igw" {
+variable "default_sg" {
   type = string
-  description = "Internet Gateway"
-  default = "igw-0aa4bbf12b3719ce9"
+  description = "opensource default security group"
 }
 
 variable "subnet_id" {
   type = string
   description = "Subnet us-east-1b"
-  default = "subnet-0ea9c574d49cc2f7f"
 }
-
-variable "rtb" {
-  type = string
-  description = "Route Table"
-  default = "rtb-0973bc04be30370ee"
-}
-

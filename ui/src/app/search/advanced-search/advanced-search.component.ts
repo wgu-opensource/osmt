@@ -5,7 +5,7 @@ import {AppConfig} from "../../app.config"
 import {urlValidator} from "../../validators/url.validator"
 import {SearchService} from "../search.service"
 import {ApiAdvancedSearch} from "../../richskill/service/rich-skill-search.service"
-import {ApiNamedReference, INamedReference} from "../../richskill/ApiSkill";
+import {ApiNamedReference, INamedReference, KeywordType} from "../../richskill/ApiSkill"
 import {Title} from "@angular/platform-browser";
 import {Whitelabelled} from "../../../whitelabel";
 
@@ -15,6 +15,7 @@ import {Whitelabelled} from "../../../whitelabel";
 })
 export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
 
+  keywordType = KeywordType
   skillForm = new FormGroup(this.getFormDefinitions())
 
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)

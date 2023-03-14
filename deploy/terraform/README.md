@@ -98,4 +98,9 @@ You will need to pass the following variables via environment variables
 
 The `db_*` variables are all passed to the RDS resource for you managed mysql. The `aws_profile` is to pass
 the profile you'd like to authenticate with. The remaining are used for the EC2 instance as you will need to
-pass a public subnet and security group that allows internet traffic
+pass a public subnet and security group that allows internet traffic. When creating the environment variables
+you will need to prefix it with `TF_VAR_` This way terraform knows to use these variables. Example below.
+
+```shell
+$ export TF_VAR_db_user="user"
+```

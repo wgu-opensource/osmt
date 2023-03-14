@@ -33,12 +33,11 @@
 
 .dropdown-content {
   margin-top: -300px;
-  margin-left: -200px;
   padding: 20px;
   background-color: var(--color-background200);
   display: none;
-  position: absolute;
-  min-width: 400px;
+  position: relative;
+  width: 450px;
   z-index: 1;
 }
 

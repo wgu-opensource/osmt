@@ -17,7 +17,7 @@ terraform {
 }
 
 provider "aws" {
-  profile = "opensource"
+  profile = var.aws_profile
 }
 ##################################################################################
 # DATA
@@ -38,11 +38,6 @@ data "aws_ssm_parameter" "ami" {
 ##################################################################################
 # RESOURCES
 ##################################################################################
-
-# Container service #
-resource "aws_ecs_service" "osmt_container" {
-  name = ""
-}
 
 ############ DATABASES ##########
 resource "aws_db_instance" "osmt_db" {
@@ -70,6 +65,9 @@ resource "aws_elasticache_cluster" "redis_db" {
   parameter_group_name = "default.redis6.x"
   engine_version       = "6.x"
   port                 = 6379
+  tags = {
+    env: "dev"
+  }
 }
 
 ########## EC2 INSTANCES ##########
@@ -80,6 +78,9 @@ resource "aws_instance" "elasticsearch" {
   subnet_id               = data.aws_subnet.subnet_1.id
   vpc_security_group_ids  = [data.aws_security_group.default_sg.id]
   key_name = "deploy-key"
+  tags = {
+    env: "dev"
+  }
   ephemeral_block_device {
     device_name = "/dev/sdb"
     virtual_name = "ephemeral0"

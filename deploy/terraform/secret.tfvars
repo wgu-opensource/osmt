@@ -1,5 +1,0 @@
-db_user="osmt_user"
-db_password="password"
-db_name="osmt_db"
-default_sg="sg-0f69cf13330331f5a"
-subnet_id="subnet-0ea9c574d49cc2f7f"

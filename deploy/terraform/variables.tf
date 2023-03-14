@@ -25,3 +25,8 @@ variable "subnet_id" {
   type = string
   description = "Subnet us-east-1b"
 }
+
+variable "aws_profile" {
+  type = string
+  description = "AWS profile to authenticate to"
+}

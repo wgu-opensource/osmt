@@ -32,6 +32,5 @@ osmt*.env
 # Terraform local files
 /deploy/terraform/.terraform/
 /deploy/terraform/.terraform.lock.hcl
-/deploy/terraform/secret.tfvars
 /deploy/terraform/terraform.tfstate
 /deploy/terraform/terraform.tfstate.backup

@@ -1,7 +1,7 @@
 # Creating AWS resources for OSMT with Terraform #
 ***
 
-This guild will help you deploy the necessary resources in AWS to stand up an OSMT app on the cloud.
+This guild will help you deploy the necessary resources in AWS to stand up an OSMT app.
 
 ## Prerequisites ##
 

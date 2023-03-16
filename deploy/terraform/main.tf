@@ -40,8 +40,9 @@ data "aws_ssm_parameter" "ami" {
 ##################################################################################
 
 ########### Container service ##########
-resource "aws_ecs_cluster" "osmt_container_cluster" {
-  name = "osmt-dev-cluster"
+resource "aws_ecs_cluster_capacity_providers" "osmt_container_cluster" {
+  cluster_name = "osmt-dev-cluster"
+  capacity_providers = [ "FARGATE", "FARGATE_SPOT" ]
 }
 
 ############ DATABASES ##########

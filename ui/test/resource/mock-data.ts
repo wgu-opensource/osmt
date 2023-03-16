@@ -237,7 +237,7 @@ export function createMockSkill(creationDate: Date, updateDate: Date, status: Pu
     collections: [createMockUuidReference("1", "coll")],
     keywords: ["keyword 1", "keyword 2"],
     alignments: [createMockAlignment("2", "alignment", { id: "22", name: "myFramework" })],
-    standards: [createMockNamedReference("3", "standard")],
+    standards: [createMockAlignment("3", "standard")],
     certifications: [createMockNamedReference("4", "cert")],
     occupations: [createMockJobcode(5, "jobcode", "my jobcode")],
     employers: [createMockNamedReference("6", "employer")],

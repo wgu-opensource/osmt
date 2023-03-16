@@ -1,7 +1,7 @@
-import {Component, Injectable, OnInit} from "@angular/core"
-import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators} from "@angular/forms"
+import {Component,OnInit} from "@angular/core"
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms"
 import {Location} from "@angular/common"
-import {ActivatedRoute, ActivatedRouteSnapshot, CanDeactivate, Router, RouterStateSnapshot} from "@angular/router"
+import {ActivatedRoute, Router} from "@angular/router"
 import {RichSkillService} from "../service/rich-skill.service"
 import {Observable} from "rxjs"
 import {
@@ -11,18 +11,17 @@ import {
   KeywordType,
   IUuidReference,
   ApiAlignment,
-  IRef, IAlignment
+  IAlignment
 } from "../ApiSkill"
 import {
   ApiStringListUpdate,
-  IStringListUpdate,
   ApiSkillUpdate,
   ApiReferenceListUpdate,
   ApiAlignmentListUpdate
 } from "../ApiSkillUpdate"
 import {AppConfig} from "../../app.config"
 import {urlValidator} from "../../validators/url.validator"
-import { IJobCode } from "src/app/job-codes/Jobcode"
+import {IJobCode} from "src/app/job-codes/Jobcode"
 import {ToastService} from "../../toast/toast.service"
 import {Title} from "@angular/platform-browser"
 import {HasFormGroup} from "../../core/abstract-form.component"
@@ -45,13 +44,6 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
   skillSaved: Observable<ApiSkill> | null = null
   isDuplicating = false
 
-  // Type ahead storage to append to the field on submit
-  selectedStandards: string[] = []
-  selectedJobCodes: string[] = []
-  selectedKeywords: string[] = []
-  selectedCertifications: string[] = []
-  selectedEmployers: string[] = []
-
   // This allows this enum's constants to be used in the template
   keywordType = KeywordType
 
@@ -69,6 +61,32 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     private titleService: Title
   ) {
     super()
+  }
+
+  get formValid(): boolean {
+    const alignments_valid = !this.alignmentForms.map(group => group.valid).some(x => !x)
+    return alignments_valid && this.skillForm.valid
+  }
+
+  get formDirty(): boolean {
+    const alignments_dirty = this.alignmentForms.map(x => x.dirty).some(x => x)
+    return alignments_dirty || this.skillForm.dirty
+  }
+
+  get hasStatementWarning(): boolean {
+    return (this.similarSkills?.length ?? -1) > 0
+  }
+
+  get nameErrorMessage(): string {
+    return this.skillForm.get("skillName")?.hasError("notACopy") ? "Name is still a copy" : "Name required"
+  }
+
+  get authorErrorMessage(): string {
+    return "Author required"
+  }
+
+  get skillStatementErrorMessage(): string {
+    return "Skill Statement required"
   }
 
   formGroup(): FormGroup { return this.skillForm }
@@ -101,28 +119,24 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     return `${this.existingSkill != null ? "Edit" : "Create"} Rich Skill Descriptor`
   }
 
-  nameErrorMessage(): string {
-    return this.skillForm.get("skillName")?.hasError("notACopy") ? "Name is still a copy" : "Name is required"
-  }
-
   getFormDefinitions(): {[key: string]: AbstractControl} {
     const fields = {
       skillName: new FormControl("", Validators.compose([Validators.required, notACopyValidator])),
       skillStatement: new FormControl("", Validators.required),
-      category: new FormControl(""),
-      keywords: new FormControl(""),
-      standards: new FormControl(""),
-      collections: new FormControl(""),
-      certifications: new FormControl(""),
-      occupations: new FormControl(""),
-      employers: new FormControl(""),
+      category: new FormControl(null),
+      keywords: new FormControl(null),
+      standards: new FormControl(null),
+      collections: new FormControl(null),
+      certifications: new FormControl(null),
+      occupations: new FormControl(null),
+      employers: new FormControl(null),
       author: new FormControl(AppConfig.settings.defaultAuthorValue, Validators.required)
     }
     return fields
   }
 
   diffUuidList(words: string[], collections?: IUuidReference[]): ApiStringListUpdate | undefined {
-    const existing: Set<string> = new Set<string>(collections?.map(it => it.name))
+    const existing: Set<string> = new Set<string>(collections?.map(it => it.name) ?? [])
     const provided = new Set(words)
     const removing = [...existing].filter(x => !provided.has(x))
     const adding = [...provided].filter(x => !existing.has(x))
@@ -130,34 +144,27 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
   }
 
   diffStringList(words: string[], keywords?: string[]): ApiStringListUpdate | undefined {
-    const existing = new Set(keywords)
+    const existing = new Set(keywords ?? [])
     const provided = new Set(words)
     const removing: string[] = [...existing].filter(x => !provided.has(x))
     const adding: string[] = [...provided].filter(x => !existing.has(x))
     return (removing.length > 0 || adding.length > 0) ? new ApiStringListUpdate(adding, removing) : undefined
   }
 
-  diffReferenceList(words: string[], refs?: INamedReference[]): ApiReferenceListUpdate | undefined {
-    const existing: Set<string> = new Set(refs?.map(it => ApiNamedReference.formatRef(it)).filter(it => it) ?? [])
-    const provided: Set<string> = new Set(words.filter(it => it))
-    const removing = [...existing].filter(x => !provided.has(x)).map(it => ApiNamedReference.fromString(it))
-      .filter(it => it).map(it => it as ApiNamedReference) // filterNotNull
-    const adding = [...provided].filter(x => !existing.has(x)).map(it => ApiNamedReference.fromString(it))
-      .filter(it => it).map(it => it as ApiNamedReference) // filterNotNull
+  diffNamedReferenceList(provided: INamedReference[], existing?: INamedReference[]): ApiReferenceListUpdate | undefined {
+    const newValues = provided?.map(v => new ApiNamedReference(v)) ?? []
+    const prevValues = existing?.map(v => new ApiNamedReference(v)) ?? []
+    const removing: ApiNamedReference[] = [...prevValues].filter(x => newValues.findIndex(y => x.equals(y)) === -1)
+    const adding: ApiNamedReference[] = [...newValues].filter(x => prevValues.findIndex(y => x.equals(y)) === -1)
     return (removing.length > 0 || adding.length > 0) ? new ApiReferenceListUpdate(adding, removing) : undefined
   }
 
-  diffAlignmentList(provided: ApiAlignment[], refs?: IAlignment[]): ApiAlignmentListUpdate | undefined {
-    const existing: ApiAlignment[] = refs?.map(it => new ApiAlignment(it)) ?? []
-    const removing: ApiAlignment[] = [...existing].filter(x => provided.findIndex(y => x.equals(y)) === -1)
-    const adding: ApiAlignment[] = [...provided].filter(x => existing.findIndex(y => x.equals(y)) === -1)
+  diffAlignmentList(provided: IAlignment[], existing?: IAlignment[]): ApiAlignmentListUpdate | undefined {
+    const newValues = provided?.map(v => new ApiAlignment(v)) ?? []
+    const prevValues = existing?.map(v => new ApiAlignment(v)) ?? []
+    const removing: ApiAlignment[] = [...prevValues].filter(x => newValues.findIndex(y => x.equals(y)) === -1)
+    const adding: ApiAlignment[] = [...newValues].filter(x => prevValues.findIndex(y => x.equals(y)) === -1)
     return (removing.length > 0 || adding.length > 0) ? new ApiAlignmentListUpdate(adding, removing) : undefined
-  }
-
-
-
-  splitTextarea(textValue: string): Array<string> {
-    return textValue.split(";").map(it => it.trim())
   }
 
   nonEmptyOrNull(s?: string): string | undefined {
@@ -169,9 +176,6 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
   updateObject(): ApiSkillUpdate {
     const update = new ApiSkillUpdate({})
     const formValue = this.skillForm.value
-
-    // pre-populate type-ahead values into field
-    this.populateTypeAheadFieldsWithResults()
 
     const inputName = this.nonEmptyOrNull(formValue.skillName)
     if (inputName && (this.isDuplicating || this.existingSkill?.skillName !== inputName)) {
@@ -188,36 +192,55 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       update.author = author
     }
 
-    const inputCategory = this.nonEmptyOrNull(formValue.category)
+    const inputCategory = formValue.category
     if (this.isDuplicating || this.existingSkill?.category !== inputCategory) {
       update.category = inputCategory ?? ""
     }
 
-    const collectionsDiff = this.diffUuidList(formValue.collections, this.existingSkill?.collections)
-    if (this.isDuplicating || collectionsDiff) { update.collections = collectionsDiff }
+    const collectionsDiff = this.diffUuidList(
+      formValue.collections ?? [],
+      this.existingSkill?.collections
+    )
+    if (this.isDuplicating || collectionsDiff) {
+      update.collections = collectionsDiff
+    }
 
-    const keywordDiff = this.diffStringList(this.splitTextarea(formValue.keywords), this.existingSkill?.keywords)
-    if (this.isDuplicating || keywordDiff) { update.keywords = keywordDiff }
+    const keywordDiff = this.diffStringList(
+      formValue.keywords ?? [],
+      this.existingSkill?.keywords
+    )
+    if (this.isDuplicating || keywordDiff) {
+      update.keywords = keywordDiff
+    }
 
     const occupationsDiff = this.diffStringList(
-      this.splitTextarea(formValue.occupations),
-      this.existingSkill?.occupations?.map(it => this.stringFromJobCode(it))
+      formValue.occupations?.map((it: IJobCode) => this.stringFromJobCode(it)),
+      this.existingSkill?.occupations?.map((it: IJobCode) => this.stringFromJobCode(it))
     )
-    if (this.isDuplicating || occupationsDiff) { update.occupations = occupationsDiff }
+    if (this.isDuplicating || occupationsDiff) {
+      update.occupations = occupationsDiff
+    }
 
-    const standards = this.splitTextarea(formValue.standards).map(s => new ApiAlignment({skillName: s}))
-
-    const standardsDiff = this.diffAlignmentList(standards, this.existingSkill?.standards)
+    const standardsDiff = this.diffAlignmentList(
+      formValue.standards ?? [],
+      this.existingSkill?.standards
+    )
     if (this.isDuplicating || standardsDiff) {
       update.standards = standardsDiff
     }
 
-    const certificationsDiff = this.diffReferenceList(this.splitTextarea(formValue.certifications), this.existingSkill?.certifications)
+    const certificationsDiff = this.diffNamedReferenceList(
+      formValue.certifications ?? [],
+      this.existingSkill?.certifications
+    )
     if (this.isDuplicating || certificationsDiff) {
       update.certifications = certificationsDiff
     }
 
-    const employersDiff = this.diffReferenceList(this.splitTextarea(formValue.employers), this.existingSkill?.employers)
+    const employersDiff = this.diffNamedReferenceList(
+      formValue.employers ?? [],
+      this.existingSkill?.employers
+    )
     if (this.isDuplicating || employersDiff) {
       update.employers = employersDiff
     }
@@ -231,23 +254,17 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
         isPartOf: frameworkName ? new ApiNamedReference({name: frameworkName}) : undefined
       })
     }).filter(a => a.id || a.skillName)
-    const alignmentDiff = this.diffAlignmentList(alignments, this.existingSkill?.alignments)
+
+    const alignmentDiff = this.diffAlignmentList(
+      alignments ?? [],
+      this.existingSkill?.alignments
+    )
     if (this.isDuplicating || alignmentDiff) {
       update.alignments = alignmentDiff
     }
 
 
     return update
-  }
-
-  get formValid(): boolean {
-    const alignments_valid = !this.alignmentForms.map(group => group.valid).some(x => !x)
-    return alignments_valid && this.skillForm.valid
-  }
-
-  get formDirty(): boolean {
-    const alignments_dirty = this.alignmentForms.map(x => x.dirty).some(x => x)
-    return alignments_dirty || this.skillForm.dirty
   }
 
   onSubmit(): void {
@@ -281,25 +298,6 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     }
   }
 
-  stringFromAlignment(ref?: IAlignment): string {
-    return ref?.skillName ?? ref?.id ?? ""
-  }
-
-  namedReferenceForString(value: string): ApiNamedReference | undefined {
-    const str = value.trim()
-    if (str.length < 1) {
-      return undefined
-    } else if (str.indexOf("://") !== -1) {
-      return new ApiNamedReference({id: str})
-    } else {
-      return new ApiNamedReference({name: str})
-    }
-  }
-
-  stringFromNamedReference(ref?: INamedReference): string {
-    return ref?.name ?? ref?.id ?? ""
-  }
-
   stringFromJobCode(jobcode?: IJobCode): string {
     return jobcode?.code ?? ""
   }
@@ -316,15 +314,16 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     const fields = {
       skillName: (this.isDuplicating ? "Copy of " : "") + skill.skillName,
       skillStatement: skill.skillStatement,
-      category: skill.category ?? "",
-      keywords: skill.keywords?.join("; ") ?? "",
-      standards: skill.standards?.map(it => this.stringFromAlignment(it)).join("; ") ?? "",
+      category: (skill.category && skill.category.length > 0) ? skill.category : null,
+      keywords: skill.keywords?.map(it => it) ?? null,
+      standards: skill.standards?.map(it => it) ?? null,
       collections: skill.collections?.map(it => it.name) ?? [],
-      certifications: skill.certifications?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
-      occupations: skill.occupations?.map(it => this.stringFromJobCode(it)).join("; ") ?? "",
-      employers: skill.employers?.map(it => this.stringFromNamedReference(it)).join("; ") ?? "",
+      certifications: skill.certifications?.map(it => it) ?? null,
+      occupations: skill.occupations?.map(it => it) ?? null,
+      employers: skill.employers?.map(it => it) ?? null,
       author: skill.author
     }
+
     this.skillForm.setValue(fields)
 
     skill.alignments.forEach(a => this.addAlignment(a))
@@ -391,35 +390,6 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     return false
   }
 
-  populateTypeAheadFieldsWithResults(): void {
-    const formValue = this.skillForm.value
-    formValue.standards = this.selectedStandards.join("; ")
-    formValue.occupations = this.selectedJobCodes.join("; ")
-    formValue.keywords = this.selectedKeywords.join("; ")
-    formValue.certifications = this.selectedCertifications.join("; ")
-    formValue.employers = this.selectedEmployers.join("; ")
-  }
-
-  handleStandardsTypeAheadResults(standards: string[]): void {
-    this.selectedStandards = standards
-  }
-
-  handleJobCodesTypeAheadResults(jobCodes: string[]): void {
-    this.selectedJobCodes = jobCodes
-  }
-
-  handleKeywordTypeAheadResults(keywords: string[]): void {
-    this.selectedKeywords = keywords
-  }
-
-  handleCertificationTypeAheadResults(certifications: string[]): void {
-    this.selectedCertifications = certifications
-  }
-
-  handleEmployersTypeAheadResults(employers: string[]): void {
-    this.selectedEmployers = employers
-  }
-
   handleStatementBlur($event: FocusEvent): void {
     const statement = this.skillForm.controls.skillStatement.value
 
@@ -432,10 +402,6 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       this.similarSkills = this.isDuplicating ? results : results?.filter(s => this.existingSkill?.uuid !== s.uuid)
       this.searchingSimilarity = false
     })
-  }
-
-  get hasStatementWarning(): boolean {
-    return (this.similarSkills?.length ?? -1) > 0
   }
 
   addAlignment(existing?: IAlignment): boolean {
@@ -458,6 +424,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
 
     return false
   }
+
   removeAlignment(alignmentIndex: number): boolean {
     this.alignmentForms.splice(alignmentIndex, 1)
 

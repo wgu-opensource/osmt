@@ -54,8 +54,8 @@
               }
             ],
             "styles": [
-              "src/styles.css",
-              "node_modules/@concentricsky/wgu-design-system-patternlibrary/dist/css/screen.css"
+              "node_modules/@concentricsky/wgu-design-system-patternlibrary/dist/css/screen.css",
+              "src/styles.css"
             ],
             "scripts": []
           },

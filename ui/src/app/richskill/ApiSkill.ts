@@ -1,4 +1,4 @@
-import {IJobCode} from "../job-codes/Jobcode"
+import {ApiJobCode, IJobCode} from "../job-codes/Jobcode"
 import {PublishStatus} from "../PublishStatus"
 
 
@@ -163,16 +163,16 @@ export class ApiSkill {
     this.skillName = iRichSkill.skillName
     this.skillStatement = iRichSkill.skillStatement
     this.author = iRichSkill.author
-    this.keywords = iRichSkill.keywords
-    this.collections = iRichSkill.collections
+    this.keywords = iRichSkill.keywords?.map(it => it) ?? null
+    this.collections = iRichSkill.collections?.map(it => it) ?? null
     this.status = iRichSkill.status
     this.category = iRichSkill.category
-    this.certifications = iRichSkill.certifications
-    this.alignments = iRichSkill.alignments
-    this.standards = iRichSkill.standards
+    this.certifications = iRichSkill.certifications?.map(it => new ApiNamedReference(it)) ?? null
+    this.alignments = iRichSkill.alignments?.map(it => new ApiAlignment(it)) ?? null
+    this.standards = iRichSkill.standards?.map(it => new ApiAlignment(it)) ?? null
     this.type = iRichSkill.type
-    this.employers = iRichSkill.employers
-    this.occupations = iRichSkill.occupations
+    this.employers = iRichSkill.employers?.map(it => new ApiNamedReference(it)) ?? null
+    this.occupations = iRichSkill.occupations?.map(it => new ApiJobCode(it)) ?? null
   }
 
   get sortedAlignments(): IAlignment[] {

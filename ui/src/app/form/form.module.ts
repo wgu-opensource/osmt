@@ -1,11 +1,11 @@
 import {NgModule} from "@angular/core"
-import {JobcodeSingleSelectComponent} from "./form-field-search-select"
-import {FormFieldSearchSelectJobcodeComponent} from "../form"
 import {FormsModule, ReactiveFormsModule} from "@angular/forms"
-import {FormField} from "./form-field.component"
 import {CommonModule} from "@angular/common"
-import {FormFieldSearchMultiSelectComponent} from "./form-field-search-select"
-import {FormFieldSearchSelectComponent} from "./form-field-search-select"
+import {FormField} from "./form-field.component"
+import {FormFieldJobCodeSearchSelect} from "./form-field-search-select"
+import {FormFieldJobCodeSearchMultiSelect} from "./form-field-search-select"
+import {FormFieldKeywordSearchSelect} from "./form-field-search-select"
+import {FormFieldKeywordSearchMultiSelect} from "./form-field-search-select"
 import {FormFieldSubmit} from "./form-field-submit.component"
 import {FormFieldText} from "./form-field-text.component"
 import {FormFieldTextArea} from "./form-field-textarea.component"
@@ -16,10 +16,10 @@ import {FormFieldTextArea} from "./form-field-textarea.component"
     FormFieldSubmit,
     FormFieldText,
     FormFieldTextArea,
-    FormFieldSearchSelectJobcodeComponent,
-    FormFieldSearchMultiSelectComponent,
-    FormFieldSearchSelectComponent,
-    JobcodeSingleSelectComponent
+    FormFieldJobCodeSearchSelect,
+    FormFieldJobCodeSearchMultiSelect,
+    FormFieldKeywordSearchSelect,
+    FormFieldKeywordSearchMultiSelect
   ],
   imports: [
     CommonModule,
@@ -31,10 +31,10 @@ import {FormFieldTextArea} from "./form-field-textarea.component"
     FormFieldSubmit,
     FormFieldText,
     FormFieldTextArea,
-    FormFieldSearchSelectJobcodeComponent,
-    FormFieldSearchMultiSelectComponent,
-    FormFieldSearchSelectComponent,
-    JobcodeSingleSelectComponent
+    FormFieldJobCodeSearchSelect,
+    FormFieldJobCodeSearchMultiSelect,
+    FormFieldKeywordSearchSelect,
+    FormFieldKeywordSearchMultiSelect
   ]
 })
 export class FormModule {

@@ -39,6 +39,11 @@ data "aws_ssm_parameter" "ami" {
 # RESOURCES
 ##################################################################################
 
+########### Container service ##########
+resource "aws_ecs_cluster" "osmt_container_cluster" {
+  name = "osmt-dev-cluster"
+}
+
 ############ DATABASES ##########
 resource "aws_db_instance" "osmt_db" {
   allocated_storage    = 20
@@ -81,42 +86,49 @@ resource "aws_instance" "elasticsearch" {
   tags = {
     env: "dev"
   }
-  ephemeral_block_device {
-    device_name = "/dev/sdb"
-    virtual_name = "ephemeral0"
+  root_block_device {
+    delete_on_termination = true
+    volume_size = 10
+    volume_type = "gp2"
+  }
+  ebs_block_device {
+    device_name = "/dev/sdh"
+    delete_on_termination = true
+    volume_size = 10
+    volume_type = "gp2"
   }
   user_data = <<EOF
-#!/bin/bash
-sudo yum update -y
-sudo yum install jq -y
+    #!/bin/bash
+    yum update -y
+    yum install jq -y
 
-# Get the elasticsearch package and checksum
-wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.4-x86_64.rpm
-wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.4-x86_64.rpm.sha512
+    # Get the elasticsearch package and checksum
+    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.4-x86_64.rpm
+    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.4-x86_64.rpm.sha512
 
-# Test to see if the checksum matches. !! We need to be sure not to proceed if this fails.
-if sha512sum -c elasticsearch-7.17.4-x86_64.rpm.sha512 | grep -q 'OK'
-then
-  sudo rpm --install elasticsearch-7.17.4-x86_64.rpm
-  sudo echo y | /usr/share/elasticsearch/bin/elasticsearch-plugin install -s discovery-ec2
+    # Test to see if the checksum matches. !! We need to be sure not to proceed if this fails.
+    if shasum -a 512 -c elasticsearch-7.17.4-x86_64.rpm.sha512  | grep -q 'OK'
+    then
+      rpm --install elasticsearch-7.17.4-x86_64.rpm
+      echo y | /usr/share/elasticsearch/bin/elasticsearch-plugin install -s discovery-ec2
 
-  # Configure cloud-aws plugin
+      # Configure cloud-aws plugin
 
-  sudo echo 'discovery.seed_providers: ec2' | sudo tee -a /etc/elasticsearch/elasticsearch.yml
-  sudo echo 'discovery.ec2.tag.Application: osmt-dev' | sudo tee -a /etc/elasticsearch/elasticsearch.yml
-  sudo echo 'cloud.node.auto_attributes: true' | sudo tee -a /etc/elasticsearch/elasticsearch.yml
-  sudo echo 'network.host: 0.0.0.0' | sudo tee -a /etc/elasticsearch/elasticsearch.yml
+      echo 'discovery.seed_providers: ec2' | tee -a /etc/elasticsearch/elasticsearch.yml
+      echo 'discovery.ec2.tag.Application: osmt-dev' | tee -a /etc/elasticsearch/elasticsearch.yml
+      echo 'cloud.node.auto_attributes: true' | tee -a /etc/elasticsearch/elasticsearch.yml
+      echo 'network.host: 0.0.0.0' | tee -a /etc/elasticsearch/elasticsearch.yml
 
-  # Set elasticsearch to run as a service
-  sudo systemctl daemon-reload
-  sudo systemctl enable elasticsearch
+      # Set elasticsearch to run as a service
+      /bin/systemctl daemon-reload
+      /bin/systemctl enable elasticsearch.service
 
-  # Start the service
-  sudo systemctl start elasticsearch
+      # Start the service
+      systemctl start elasticsearch.service
 
-else
-  echo "Checksum failed on elasticsearch-"7.17.4"-x86_64.rpm"
-fi
+    else
+      echo "Checksum failed on elasticsearch-"7.17.4"-x86_64.rpm"
+    fi
 
-EOF
+    EOF
 }

@@ -80,7 +80,7 @@ object TestObjectHelpers {
             name = randomString(),
             statement = randomString(),
             category = randomString(),
-            author = randomString()
+            authors = listOf(randomString())
         ).copy(
             searchingKeywords = randomStrings(),
             standards = randomStrings(),
@@ -97,7 +97,7 @@ object TestObjectHelpers {
         name: String,
         statement: String,
         category: String? = "default category",
-        author: String = authorString,
+        authors: List<String> = listOf(authorString),
         publishStatus: PublishStatus = PublishStatus.Draft
     ): RichSkillDoc {
         val uuid = UUID.randomUUID().toString()
@@ -108,7 +108,7 @@ object TestObjectHelpers {
             name = name,
             statement = statement,
             category = category,
-            author = author,
+            authors = authors,
             publishStatus = publishStatus,
             collections = listOf(collectionDoc(elasticIdCounter, UUID.randomUUID().toString(), randomString()))
         )
@@ -165,8 +165,10 @@ object TestObjectHelpers {
         val skillStatement = statement ?: UUID.randomUUID().toString()
         val categoryName = UUID.randomUUID().toString()
         val categoryDescription = UUID.randomUUID().toString()
-        val author = UUID.randomUUID().toString()
 
+        val authors = ApiStringListUpdate(
+            add = (1..keywordCount).toList().map { UUID.randomUUID().toString() }
+        )
         val keywords = ApiStringListUpdate(
             add = (1..keywordCount).toList().map { UUID.randomUUID().toString() }
         )
@@ -195,7 +197,7 @@ object TestObjectHelpers {
             skillStatement = skillStatement,
             publishStatus = publishStatus,
             category = categoryName,
-            author = author,
+            authors = authors,
             keywords = keywords,
             certifications = certifications,
             standards = standards,

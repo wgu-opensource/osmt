@@ -57,7 +57,7 @@ export interface IRichSkillUpdate {
   certifications?: ApiReferenceListUpdate
   occupations?: ApiStringListUpdate
   employers?: ApiReferenceListUpdate
-  author?: string
+  authors?: IStringListUpdate
 }
 
 export class ApiSkillUpdate implements IRichSkillUpdate {
@@ -72,9 +72,9 @@ export class ApiSkillUpdate implements IRichSkillUpdate {
   certifications?: ApiReferenceListUpdate
   occupations?: ApiStringListUpdate
   employers?: ApiReferenceListUpdate
-  author?: string
+  authors?: ApiStringListUpdate
 
-  constructor({skillName, skillStatement, status, category, keywords, collections, alignments, certifications, standards, occupations, employers, author}: IRichSkillUpdate) {
+  constructor({skillName, skillStatement, status, category, keywords, collections, alignments, certifications, standards, occupations, employers, authors}: IRichSkillUpdate) {
     this.skillName = skillName
     this.skillStatement = skillStatement
     this.status = status
@@ -86,6 +86,6 @@ export class ApiSkillUpdate implements IRichSkillUpdate {
     this.standards = standards
     this.occupations = occupations
     this.employers = employers
-    this.author = author
+    this.authors = authors
   }
 }

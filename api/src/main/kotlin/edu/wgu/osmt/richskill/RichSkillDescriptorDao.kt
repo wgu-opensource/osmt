@@ -24,7 +24,6 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
     var uuid: String by RichSkillDescriptorTable.uuid
     var name: String by RichSkillDescriptorTable.name
     var statement: String by RichSkillDescriptorTable.statement
-    var author by KeywordDao optionalReferencedOn RichSkillDescriptorTable.author
 
     var jobCodes by JobCodeDao via RichSkillJobCodes
 
@@ -45,7 +44,6 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
             jobCodes = jobCodes.map { it.toModel() }.sortedBy { it.code },
             keywords = keywords.map { it.toModel() }.sortedBy { it.id!! },
             category = category?.toModel(),
-            author = author?.toModel(),
             archiveDate = archiveDate,
             publishDate = publishDate,
             collections = collections.map { it.toModel() }.toList().sortedBy { it.name }

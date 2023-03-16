@@ -30,7 +30,6 @@ internal class ApiSkillTest {
 
         // Assert
         Assertions.assertThat(mockData.appConfig.defaultCreatorUri).isEqualTo(actual.creator)
-        Assertions.assertThat(rsd.author?.value).isEqualTo(actual.author)
         Assertions.assertThat(rsd.publishStatus()).isEqualTo(actual.status)
         Assertions.assertThat(rsd.creationDate).isEqualTo(actual.creationDate.toLocalDateTime())
         Assertions.assertThat(rsd.updateDate).isEqualTo(actual.updateDate.toLocalDateTime())

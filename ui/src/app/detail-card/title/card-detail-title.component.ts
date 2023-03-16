@@ -9,7 +9,7 @@ export class CardDetailTitleComponent implements OnInit {
 
   @Input() cardType = ""
   @Input() title = ""
-  @Input() author = ""
+  @Input() authors = ""
   @Input() status: PublishStatus = PublishStatus.Draft
   @Input() publishDate = ""
   @Input() archiveDate = ""

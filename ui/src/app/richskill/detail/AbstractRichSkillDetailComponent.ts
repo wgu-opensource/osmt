@@ -44,8 +44,8 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
     })
   }
 
-  getAuthor(): string {
-    return this.richSkill?.author ?? ""
+  getAuthors(): string {
+    return this.joinAuthors()
   }
 
   getSkillUuid(): string {
@@ -73,6 +73,11 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
     return this.richSkill?.archiveDate
       ? dateformat(this.richSkill?.archiveDate, this.locale)
       : ""
+  }
+
+  joinAuthors(): string {
+    const authors = this.richSkill?.authors || []
+    return this.joinList("; ", authors)
   }
 
   joinKeywords(): string {

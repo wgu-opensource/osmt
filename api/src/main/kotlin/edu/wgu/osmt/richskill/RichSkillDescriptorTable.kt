@@ -29,12 +29,6 @@ object RichSkillDescriptorTable : LongIdTable("RichSkillDescriptor"), TableWithU
         onDelete = ReferenceOption.RESTRICT,
         onUpdate = ReferenceOption.CASCADE
     ).nullable()
-    val author = reference(
-        "author_id",
-        KeywordTable,
-        onDelete = ReferenceOption.RESTRICT,
-        onUpdate = ReferenceOption.CASCADE
-    ).nullable()
 }
 
 // many-to-many table for RichSkillDescriptor and JobCode relationship

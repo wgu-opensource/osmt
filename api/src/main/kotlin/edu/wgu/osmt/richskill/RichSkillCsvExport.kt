@@ -15,7 +15,7 @@ class RichSkillCsvExport(
         val columns = arrayOf(
             CsvColumn<RichSkillAndCollections>("Canonical URL") { it.rs.canonicalUrl(appConfig.baseUrl) },
             CsvColumn("RSD Name") { it.rs.name },
-            CsvColumn("Author") { it.rs.author?.value ?: "" },
+            CsvColumn("Authors") { it.rs.authors.map { author -> author.value ?: "" }.joinToString(listDelimiter) },
             CsvColumn("Skill Statement") { it.rs.statement },
             CsvColumn("Category") { it.rs.category?.value ?: "" },
             CsvColumn("Keywords") { it.rs.searchingKeywords.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) },

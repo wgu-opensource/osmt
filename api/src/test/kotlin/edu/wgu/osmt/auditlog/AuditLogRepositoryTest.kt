@@ -168,7 +168,7 @@ class AuditLogRepositoryTest @Autowired constructor(
         val initialStatement = "test statement"
         val skill =
             richSkillRepository.create(RsdUpdateObject(name = initialSkillName, statement = initialStatement), testUser)
-        val authorDao = keywordRepository.getDefaultAuthor()
+        val authorDaos = listOf(keywordRepository.getDefaultAuthor())
         val categoryDao = keywordRepository.create(KeywordTypeEnum.Category, "Test Category")
 
         val keywordDaos = TestObjectHelpers.keywordsGenerator(10, KeywordTypeEnum.Keyword)
@@ -182,9 +182,8 @@ class AuditLogRepositoryTest @Autowired constructor(
             id = skill!!.id.value,
             name = newName,
             statement = newStatement,
-            author = NullableFieldUpdate(authorDao),
             category = NullableFieldUpdate(categoryDao),
-            keywords = ListFieldUpdate(add = keywordDaos),
+            keywords = ListFieldUpdate(add = (keywordDaos + authorDaos)),
             jobCodes = ListFieldUpdate(add = jobCodeDaos),
             collections = ListFieldUpdate(add = collectionDaos),
             publishStatus = PublishStatus.Published
@@ -193,9 +192,8 @@ class AuditLogRepositoryTest @Autowired constructor(
 
         val secondUpdate = RsdUpdateObject(
             id = skill.id.value,
-            author = NullableFieldUpdate(null),
             category = NullableFieldUpdate(null),
-            keywords = ListFieldUpdate(remove = keywordDaos),
+            keywords = ListFieldUpdate(remove = (keywordDaos + authorDaos)),
             jobCodes = ListFieldUpdate(remove = jobCodeDaos),
             collections = ListFieldUpdate(remove = collectionDaos)
         )
@@ -228,11 +226,11 @@ class AuditLogRepositoryTest @Autowired constructor(
             )
         )
 
-        assertThat(firstUpdateLog.changedFields.findByFieldName(RichSkillDescriptor::author.name)).isEqualTo(
+        assertThat(firstUpdateLog.changedFields.findByFieldName(RichSkillDescriptor::authors.name)).isEqualTo(
             Change(
-                RichSkillDescriptor::author.name,
+                RichSkillDescriptor::authors.name,
                 null,
-                authorDao.value
+                authorDaos.map { it.value }.joinToString(DELIMITER)
             )
         )
 
@@ -268,10 +266,10 @@ class AuditLogRepositoryTest @Autowired constructor(
             )
         )
 
-        assertThat(secondUpdateLog.changedFields.findByFieldName(RichSkillDescriptor::author.name)).isEqualTo(
+        assertThat(secondUpdateLog.changedFields.findByFieldName(RichSkillDescriptor::authors.name)).isEqualTo(
             Change(
-                RichSkillDescriptor::author.name,
-                updatedResult?.author?.value,
+                RichSkillDescriptor::authors.name,
+                updatedResult?.authors?.map { it.value }?.joinToString(DELIMITER),
                 null
             )
         )

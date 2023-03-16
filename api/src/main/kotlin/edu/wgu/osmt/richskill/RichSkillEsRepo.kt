@@ -110,9 +110,9 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             }
             author.nullIfEmpty()?.let {
                 if (it.contains("\"")) {
-                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::author.name}.raw").defaultOperator(Operator.AND))
+                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::authors.name}.raw").defaultOperator(Operator.AND))
                 } else {
-                    bq.must(matchBoolPrefixQuery(RichSkillDoc::author.name, it))
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::authors.name, it))
                 }
             }
             skillStatement.nullIfEmpty()?.let {
@@ -231,7 +231,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 }
             }
             authors?. let {
-                bq.must(buildNestedQueries(RichSkillDoc::author.name, it))
+                bq.must(buildNestedQueries(RichSkillDoc::authors.name, it))
             }
             occupations?.let {
                 it.mapNotNull { value ->
@@ -264,7 +264,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 .defaultOperator(Operator.AND),
             simpleQueryStringQuery(query).field("${RichSkillDoc::employers.name}.raw").defaultOperator(Operator.AND),
             simpleQueryStringQuery(query).field("${RichSkillDoc::alignments.name}.raw").defaultOperator(Operator.AND),
-            simpleQueryStringQuery(query).field("${RichSkillDoc::author.name}.raw").defaultOperator(Operator.AND)
+            simpleQueryStringQuery(query).field("${RichSkillDoc::authors.name}.raw").defaultOperator(Operator.AND)
         )
 
         val queries = listOf(
@@ -276,7 +276,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             matchPhrasePrefixQuery(RichSkillDoc::certifications.name, query),
             matchPhrasePrefixQuery(RichSkillDoc::employers.name, query),
             matchPhrasePrefixQuery(RichSkillDoc::alignments.name, query),
-            matchPhrasePrefixQuery(RichSkillDoc::author.name, query)
+            matchPhrasePrefixQuery(RichSkillDoc::authors.name, query)
         )
 
         if (isComplex) {

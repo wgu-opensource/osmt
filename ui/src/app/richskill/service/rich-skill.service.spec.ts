@@ -136,7 +136,7 @@ describe("RichSkillService", () => {
     const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
     const path = "api/skills/" + uuid
     const testData =
-      "\"Canonical URL\",\"RSD Name\",\"Author\",\"Skill Statement\",\"Category\",\"Keywords\",\"Standards\",\"Certifications\",\"Occupation Major Groups\",\"Occupation Minor Groups\",\"Broad Occupations\",\"Detailed Occupations\",\"O*Net Job Codes\",\"Employers\",\"Alignment Name\",\"Alignment URL\"\n" +
+      "\"Canonical URL\",\"RSD Name\",\"Authors\",\"Skill Statement\",\"Category\",\"Keywords\",\"Standards\",\"Certifications\",\"Occupation Major Groups\",\"Occupation Minor Groups\",\"Broad Occupations\",\"Detailed Occupations\",\"O*Net Job Codes\",\"Employers\",\"Alignment Name\",\"Alignment URL\"\n" +
       "\"https://localhost:8080/api/skills/f6aacc9e-bfc6-4cc9-924d-c7ef83afef07\",\"Situational Parameters\",\"Western Governors University\",\"Identify appropriate modes of written communication based on situational parameters.\",\"Written Communication\",\"SEL: Interpersonal Communication; Written Communication; Writing; Academic Writing\",\"\",\"\",\"29-0000\",\"29-1000\",\"29-1140\",\"29-1141\",\"29-1141.00; 29-1141.01; 29-1141.02; 29-1141.03; 29-1141.04\",\"Health Open Skills\",\"Written Communication\",\"skills.emsidata.com/skills/KS4425C63RPH46FJ9BX7\""
 
     // Act

@@ -19,8 +19,8 @@ data class ApiSkillUpdate(
     @JsonProperty("collections")
     val collections: ApiStringListUpdate? = null,
 
-    @JsonProperty("author")
-    val author: String? = null,
+    @JsonProperty("authors")
+    val authors: ApiStringListUpdate? = null,
 
     @JsonProperty("keywords")
     val keywords: ApiStringListUpdate? = null,

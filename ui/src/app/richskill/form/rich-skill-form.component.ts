@@ -29,7 +29,6 @@ import {notACopyValidator} from "../../validators/not-a-copy.validator"
 import {ApiSkillSummary} from "../ApiSkillSummary"
 import {Whitelabelled} from "../../../whitelabel"
 
-
 @Component({
   selector: "app-rich-skill-form",
   templateUrl: "./rich-skill-form.component.html"
@@ -130,7 +129,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       certifications: new FormControl(null),
       occupations: new FormControl(null),
       employers: new FormControl(null),
-      author: new FormControl(AppConfig.settings.defaultAuthorValue, Validators.required)
+      authors: new FormControl((AppConfig.settings.defaultAuthorValue) ? [AppConfig.settings.defaultAuthorValue] : null, Validators.required)
     }
     return fields
   }
@@ -187,9 +186,12 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       update.skillStatement = inputStatement
     }
 
-    const author = formValue.author
-    if (!this.existingSkill || this.isDuplicating || this.existingSkill.author !== formValue.author) {
-      update.author = author
+    const authorsDiff = this.diffStringList(
+      formValue.authors,
+      this.existingSkill?.authors
+    )
+    if (this.isDuplicating || authorsDiff) {
+      update.authors = authorsDiff
     }
 
     const inputCategory = formValue.category
@@ -321,7 +323,7 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
       certifications: skill.certifications?.map(it => it) ?? null,
       occupations: skill.occupations?.map(it => it) ?? null,
       employers: skill.employers?.map(it => it) ?? null,
-      author: skill.author
+      authors: skill.authors?.map(it => it) ?? null
     }
 
     this.skillForm.setValue(fields)
@@ -341,14 +343,14 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
     return false
   }
 
-  showAuthor(): boolean {
+  showAuthors(): boolean {
     return AppConfig.settings.editableAuthor
   }
 
   handleClickMissingFields(): boolean {
     const fieldOrder = [
       "skillName",
-      "author",
+      "authors",
       "skillStatement",
       "category",
       "keywords",

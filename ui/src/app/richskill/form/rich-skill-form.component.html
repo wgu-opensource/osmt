@@ -33,15 +33,16 @@
               </app-formfield-text>
             </div>
 
-            <div class="t-margin-medium t-margin-bottom">
-              <app-formfield-text
-                *ngIf="showAuthor()"
-                [control]="skillForm.controls.author"
-                name="author"
-                label="Author"
-                required="true"
+            <div *ngIf="showAuthors()" class="t-margin-medium t-margin-bottom">
+              <app-form-field-keyword-search-multi-select
+                [control]="skillForm.controls.authors"
+                label="Authors"
+                name="authors"
+                [includePlaceholder]="!this.skillUuid"
                 [errorMessage]="authorErrorMessage"
-              ></app-formfield-text>
+                [keywordType]="keywordType.Author"
+                [createNonExisting]="true"
+              ></app-form-field-keyword-search-multi-select>
             </div>
 
             <div class="t-margin-medium t-margin-bottom">

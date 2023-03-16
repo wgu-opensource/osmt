@@ -145,7 +145,7 @@ class MockData {
             name = rsd.name,
             statement = rsd.statement,
             category = rsd.category?.value,
-            author = rsd.author?.value,
+            authors = rsd.authors.mapNotNull { it.value },
             publishStatus = rsd.publishStatus(),
             searchingKeywords = rsd.searchingKeywords.mapNotNull { r -> r.value },
             jobCodes = rsd.jobCodes,
@@ -177,7 +177,7 @@ class MockData {
         richSkillRow.blsBroads = rsd?.jobCodes?.map { it.broadCode }?.toMutableList()?.filterNotNull()?.distinct()?.joinToString (separator = sep)
         richSkillRow.blsDetaileds = rsd?.jobCodes?.map { it.detailedCode }?.toMutableList()?.filterNotNull()?.distinct()?.joinToString (separator = sep)
         richSkillRow.jobRoles = rsd?.jobCodes?.map { it.jobRoleCode }?.toMutableList()?.filterNotNull()?.distinct()?.joinToString (separator = sep)
-        richSkillRow.author = rsd?.author?.value
+        richSkillRow.authors = rsd?.authors?.map{ it.value }?.joinToString(separator = sep)
         richSkillRow.employer = rsd?.employers?.map { it.value }?.joinToString (separator = sep)
         richSkillRow.alignmentTitle = rsd?.alignments?.map { it.value }?.joinToString (separator = sep)
         richSkillRow.alignmentUri = rsd?.alignments?.map { it.uri }?.joinToString (separator = sep)
@@ -348,6 +348,13 @@ class MockData {
                         .map { id: String? -> this.jobCodes[id?.toLong()]}
                         .collect(Collectors.toList())
 
+                val authors: MutableList<Keyword> =
+                    if (rsd.authorValues == null) ArrayList() else Arrays.stream(
+                        rsd.authorValues!!.split(",").toTypedArray()
+                    )
+                        .map { id: String? -> this.keywords[id?.toLong()]}
+                        .collect(Collectors.toList())
+
                 val keywords: MutableList<Keyword> =
                     if (rsd.keywordValues == null) ArrayList() else Arrays.stream(
                         rsd.keywordValues!!.split(",").toTypedArray()
@@ -365,7 +372,6 @@ class MockData {
                     jobCodes,
                     keywords,
                     lookupKeyword(rsd.categoryKeyword),
-                    lookupKeyword(rsd.authorKeyword),
                     parseDateTime(rsd.archiveDate),
                     parseDateTime(rsd.publishDate),
                     collections

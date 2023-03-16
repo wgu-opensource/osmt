@@ -11,7 +11,7 @@ export class DetailCardComponent implements OnInit {
   @Input() sections: IDetailCardSectionData[] = []
   @Input() title = ""
   @Input() titleLabel = ""
-  @Input() author = ""
+  @Input() authors = ""
   @Input() publishDate = ""
   @Input() archiveDate = ""
   @Input() status = PublishStatus.Draft

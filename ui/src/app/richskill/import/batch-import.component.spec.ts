@@ -326,7 +326,7 @@ function makeResults(): ParseResult {
         data: [
             {
                 "RSD Name": "",
-                Author: "Data and Data Store Access",
+                Authors: "Data and Data Store Access",
                 "Skill Statement": ".NET Framework",
                 Category: "Access data and data stores using the .NET Framework.",
                 Keywords: ".NET Framework; ADO.NET; Language Integrated Query (LINQ); WCF Data Services; XML",
@@ -366,7 +366,7 @@ function makeResults(): ParseResult {
             // cursor: 604,
             fields: [
                 "RSD Name",
-                "Author",
+                "Authors",
                 "Skill Statement",
                 "Category",
                 "Keywords",

@@ -7,7 +7,7 @@ Canonical URL:          notEmpty
 RSD Name:               notEmpty
 Skill Statement:        notEmpty
 Category:               @optional
-Author:                 @optional
+Authors:                notEmpty    // multiple items can be separated by ";"
 Collections:            @optional   // multiple items can be separated by ";"
 Keywords:               @optional   // multiple items can be separated by ";"
 Occupation Major Groups:      @optional   // multiple items can be separated by ";"

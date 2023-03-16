@@ -26,8 +26,8 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
         get() = appConfig.defaultCreatorUri
 
     @get:JsonProperty
-    val author: String?
-        get() = rsd.author?.let { it.value }
+    val authors: List<String>
+        get() = rsd.authors.mapNotNull { it.value }
 
     @get:JsonProperty
     val status: PublishStatus

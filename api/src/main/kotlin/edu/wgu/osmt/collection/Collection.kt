@@ -55,7 +55,7 @@ data class CollectionUpdateObject(
 
     override fun applyToDao(dao: CollectionDao): Unit{
         dao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
-        applyPublishStatus(dao)
+        applyStatusChange(dao)
         name?.let { dao.name = it }
 
         description?.let {
@@ -74,6 +74,36 @@ data class CollectionUpdateObject(
             }
         }
         applySkills()
+    }
+
+    private fun applyStatusChange(dao: CollectionDao) {
+        when (publishStatus) {
+            PublishStatus.Archived ->  {
+                dao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
+                dao.status = PublishStatus.Archived
+            }
+            PublishStatus.Published -> {
+                dao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
+                dao.status = PublishStatus.Published
+                dao.archiveDate = null
+            }
+            PublishStatus.Unarchived -> {
+                if (dao.publishDate != null) {
+                    dao.status = PublishStatus.Published
+
+                } else {
+                    dao.status = PublishStatus.Draft
+                }
+                dao.archiveDate = null
+            }
+            PublishStatus.Draft -> {
+                dao.status = PublishStatus.Draft
+                dao.archiveDate = null
+                dao.publishDate = null
+
+            }
+            else -> {}
+        }
     }
 
     fun applySkills(): CollectionUpdateObject{

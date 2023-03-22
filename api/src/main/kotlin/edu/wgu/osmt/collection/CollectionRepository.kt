@@ -136,7 +136,7 @@ class CollectionRepositoryImpl @Autowired constructor(
         }
 
         updateObject.copy(id = newCollection.id.value).applyToDao(newCollection)
-        if(PublishStatus.Workspace == newCollection.status) {
+        if(PublishStatus.Workspace == updateObject.publishStatus) {
             newCollection.workspaceOwner = email
         }
 

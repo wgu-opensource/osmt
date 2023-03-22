@@ -209,7 +209,18 @@ export class CollectionServiceStub {
     })
   }
 
+  getXlsxTaskResultsIfComplete(uuid: string): Observable<any> {
+    return of({
+      body: createMockTaskResult(uuid),
+      status: 200
+    })
+  }
+
   requestCollectionSkillsCsv(uuid: string): Observable<ITaskResult> {
+    return of(createMockTaskResult())
+  }
+
+  requestCollectionSkillsXlsx(uuid: string): Observable<ITaskResult> {
     return of(createMockTaskResult())
   }
 

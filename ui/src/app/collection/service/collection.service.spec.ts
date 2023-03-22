@@ -172,6 +172,42 @@ describe("CollectionService", () => {
     httpTestingController.expectNone(AppConfig.settings.baseApiUrl + "/" + path)
   })
 
+  it("requestCollectionSkillsXlsx", () => {
+    const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
+    const path = "api/collections/" + uuid + "/xlsx"
+    const result = testService.requestCollectionSkillsXlsx(uuid)
+    const testData = createMockTaskResult()
+    const expected = new ApiTaskResult(testData)
+
+    result.subscribe(data => {
+      expect(data).toEqual(expected)
+    })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    expect(req.request.method).toEqual("GET")
+    req.flush(testData)
+  })
+
+  it("getXlsxTaskResultsIfComplete should return", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
+    const path = "api/results/media/" + uuid
+    const blob = new Blob([""], { type: "application/vnd.ms-excel" })
+
+    // Act
+    const result = testService.getXlsxTaskResultsIfComplete(uuid)
+    result.subscribe(data => {
+      console.log(data.body)
+      expect(data.body).toEqual(blob)
+    })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    expect(req.request.method).toEqual("GET")
+    req.flush(blob)
+  })
+
   it("getCollectionSkillsCsv should return", () => {
     // Arrange
     RouterData.commands = []

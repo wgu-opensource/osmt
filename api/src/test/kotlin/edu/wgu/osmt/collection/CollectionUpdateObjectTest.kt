@@ -15,9 +15,6 @@ internal class CollectionUpdateObjectTest @Autowired constructor(
 ): SpringTest(){
 
 
-
-
-
     @BeforeAll
     fun setup() {
 

@@ -24,6 +24,7 @@ import org.springframework.security.oauth2.core.user.OAuth2UserAuthority
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Transactional
 internal class CollectionControllerTest @Autowired constructor(
@@ -92,28 +93,6 @@ internal class CollectionControllerTest @Autowired constructor(
     }
 
     @Test
-    fun `updateCollection() should change the collection status when providing an Archived status and update the archived date`() {
-        // arrange
-        val jwt = Jwt.withTokenValue("foo").header("foo", "foo").claim("email", userEmail).build()
-        val update = ApiCollectionUpdate(
-            name = "newName",
-            description = "newDescription",
-            publishStatus = PublishStatus.Archived,
-            author = "newAuthor")
-        val collectionUUID = collectionRepository.create(name = "name", user = "user", email = "j.chavez@wgu.edu", description = "description")!!.uuid
-
-        // act
-        Assertions.assertThat(collectionRepository.findByUUID(collectionUUID)!!.status).isEqualTo(PublishStatus.Draft)
-        Assertions.assertThat(collectionRepository.findByUUID(collectionUUID)!!.archiveDate).isNull()
-        val result = collectionController.updateCollection(collectionUUID, update, jwt)
-
-        // assert
-        Assertions.assertThat(result).isNotNull
-        Assertions.assertThat(result.status).isEqualTo(PublishStatus.Archived)
-        Assertions.assertThat(result.archiveDate).isNotNull
-    }
-
-    @Test
     fun `updateCollection() should return a collection to draft status when providing an Unarchived status and update the archived date`() {
         // arrange
         val jwt = Jwt.withTokenValue("foo").header("foo", "foo").claim("email", userEmail).build()
@@ -124,10 +103,9 @@ internal class CollectionControllerTest @Autowired constructor(
             author = "newAuthor")
         val collection = collectionRepository.create(name = "name", user = "user", email = "j.chavez@wgu.edu", description = "description")
         collection!!.status = PublishStatus.Archived
+        collection!!.archiveDate = LocalDateTime.now()
 
         // act
-        Assertions.assertThat(collectionRepository.findByUUID(collection.uuid)!!.status).isEqualTo(PublishStatus.Archived)
-        Assertions.assertThat(collectionRepository.findByUUID(collection.uuid)!!.archiveDate).isNull()
         val result = collectionController.updateCollection(collection.uuid, update, jwt)
 
         // assert

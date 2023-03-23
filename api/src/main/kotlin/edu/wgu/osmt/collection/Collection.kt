@@ -102,6 +102,9 @@ data class CollectionUpdateObject(
                 dao.publishDate = null
 
             }
+            PublishStatus.Workspace -> {
+                dao.status = PublishStatus.Workspace
+            }
             else -> {}
         }
     }

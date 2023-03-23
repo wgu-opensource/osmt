@@ -76,7 +76,7 @@ data class CollectionUpdateObject(
         applySkills()
     }
 
-    private fun applyStatusChange(dao: CollectionDao) {
+    fun applyStatusChange(dao: CollectionDao) {
         when (publishStatus) {
             PublishStatus.Archived ->  {
                 dao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)

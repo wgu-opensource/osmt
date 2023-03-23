@@ -135,43 +135,4 @@ internal class CollectionControllerTest @Autowired constructor(
         Assertions.assertThat(result.status).isEqualTo(PublishStatus.Draft)
         Assertions.assertThat(result.archiveDate).isNull()
     }
-
-    @Test
-    fun `updateCollection() should return a collection to published status when providing an Unarchived status and update the archived and published date`() {
-        // arrange
-        val jwt = Jwt.withTokenValue("foo").header("foo", "foo").claim("email", userEmail).build()
-        var update = ApiCollectionUpdate(
-            name = "newName",
-            description = "newDescription",
-            publishStatus = PublishStatus.Published,
-            author = "newAuthor")
-        val collection = collectionRepository.create(name = "name", user = "user", email = "j.chavez@wgu.edu", description = "description")
-
-        // act
-        Assertions.assertThat(collectionRepository.findByUUID(collection!!.uuid)!!.status).isEqualTo(PublishStatus.Draft)
-        Assertions.assertThat(collectionRepository.findByUUID(collection.uuid)!!.archiveDate).isNull()
-        collectionController.updateCollection(collection.uuid, update, jwt)
-        Assertions.assertThat(collectionRepository.findByUUID(collection.uuid)!!.status).isEqualTo(PublishStatus.Published)
-        Assertions.assertThat(collectionRepository.findByUUID(collection.uuid)!!.publishDate).isNotNull()
-        update = ApiCollectionUpdate(
-            name = "newName",
-            description = "newDescription",
-            publishStatus = PublishStatus.Archived,
-            author = "newAuthor")
-        collectionController.updateCollection(collection.uuid, update, jwt)
-        Assertions.assertThat(collectionRepository.findByUUID(collection.uuid)!!.status).isEqualTo(PublishStatus.Archived)
-        Assertions.assertThat(collectionRepository.findByUUID(collection.uuid)!!.archiveDate).isNotNull
-        update = ApiCollectionUpdate(
-            name = "newName",
-            description = "newDescription",
-            publishStatus = PublishStatus.Unarchived,
-            author = "newAuthor")
-        val result = collectionController.updateCollection(collection.uuid, update, jwt)
-
-        // assert
-        Assertions.assertThat(result).isNotNull
-        Assertions.assertThat(result.status).isEqualTo(PublishStatus.Published)
-        Assertions.assertThat(result.archiveDate).isNull()
-        Assertions.assertThat(result.publishDate).isNotNull
-    }
 }

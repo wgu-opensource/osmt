@@ -35,7 +35,6 @@ internal class CollectionUpdateObjectTest @Autowired constructor(
         val dao: CollectionDao =
             collectionRepository.create(name = "name", user = "user", email = "user@email.edu", description = "description")!!
 
-
         //Act
         collectionUpdateObject.applyStatusChange(dao)
 
@@ -54,7 +53,6 @@ internal class CollectionUpdateObjectTest @Autowired constructor(
         dao.publishDate = null
         Assertions.assertThat(dao.status).isEqualTo(PublishStatus.Archived)
 
-
         //Act
         collectionUpdateObject.applyStatusChange(dao)
 
@@ -71,7 +69,6 @@ internal class CollectionUpdateObjectTest @Autowired constructor(
         dao.status = PublishStatus.Archived
         dao.publishDate = LocalDateTime.now()
         Assertions.assertThat(dao.status).isEqualTo(PublishStatus.Archived)
-
 
         //Act
         collectionUpdateObject.applyStatusChange(dao)
@@ -91,7 +88,6 @@ internal class CollectionUpdateObjectTest @Autowired constructor(
         dao.publishDate = LocalDateTime.now()
         dao.archiveDate = LocalDateTime.now()
 
-
         //Act
         collectionUpdateObject.applyStatusChange(dao)
 
@@ -99,6 +95,7 @@ internal class CollectionUpdateObjectTest @Autowired constructor(
         Assertions.assertThat(dao.status).isEqualTo(PublishStatus.Draft)
         Assertions.assertThat(dao.publishDate).isNull()
         Assertions.assertThat(dao.archiveDate).isNull()
+        Assertions.assertThat(dao.workspaceOwner).isEqualTo("")
     }
 
     @Test
@@ -109,7 +106,6 @@ internal class CollectionUpdateObjectTest @Autowired constructor(
             collectionRepository.create(name = "name", user = "user", email = "user@email.edu", description = "description")!!
         dao.publishDate = LocalDateTime.now()
         dao.archiveDate = LocalDateTime.now()
-
 
         //Act
         collectionUpdateObject.applyStatusChange(dao)

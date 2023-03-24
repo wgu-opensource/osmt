@@ -100,6 +100,7 @@ data class CollectionUpdateObject(
                 dao.status = PublishStatus.Draft
                 dao.archiveDate = null
                 dao.publishDate = null
+                dao.workspaceOwner= StringUtils.EMPTY
 
             }
             PublishStatus.Workspace -> {

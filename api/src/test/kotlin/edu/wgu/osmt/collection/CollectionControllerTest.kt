@@ -101,9 +101,9 @@ internal class CollectionControllerTest @Autowired constructor(
             description = "newDescription",
             publishStatus = PublishStatus.Unarchived,
             author = "newAuthor")
-        val collection = collectionRepository.create(name = "name", user = "user", email = "j.chavez@wgu.edu", description = "description")
+        val collection = collectionRepository.create(name = "name", user = "user", email = "user@xmail.com", description = "description")
         collection!!.status = PublishStatus.Archived
-        collection!!.archiveDate = LocalDateTime.now()
+        collection.archiveDate = LocalDateTime.now()
 
         // act
         val result = collectionController.updateCollection(collection.uuid, update, jwt)

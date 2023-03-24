@@ -3,7 +3,6 @@ package edu.wgu.osmt.collection
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.db.PublishStatus
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
@@ -14,14 +13,8 @@ internal class CollectionUpdateObjectTest @Autowired constructor(
     val collectionRepository: CollectionRepository
 ): SpringTest(){
 
-
-    @BeforeAll
-    fun setup() {
-
-    }
-
     @Test
-    fun `applyStatusChange() should apply Published status`() {
+    fun `applyStatusChange() should apply Archived status`() {
         //Arrange
         val collectionUpdateObject = CollectionUpdateObject(publishStatus = PublishStatus.Archived)
         val dao: CollectionDao =
@@ -36,7 +29,7 @@ internal class CollectionUpdateObjectTest @Autowired constructor(
     }
 
     @Test
-    fun `applyStatusChange() should apply Archived status`() {
+    fun `applyStatusChange() should apply Published status`() {
         //Arrange
         val collectionUpdateObject = CollectionUpdateObject(publishStatus = PublishStatus.Published)
         val dao: CollectionDao =
@@ -104,6 +97,25 @@ internal class CollectionUpdateObjectTest @Autowired constructor(
 
         //Assert
         Assertions.assertThat(dao.status).isEqualTo(PublishStatus.Draft)
+        Assertions.assertThat(dao.publishDate).isNull()
+        Assertions.assertThat(dao.archiveDate).isNull()
+    }
+
+    @Test
+    fun `applyStatusChange() should Apply workspace status`() {
+        //Arrange
+        val collectionUpdateObject = CollectionUpdateObject(publishStatus = PublishStatus.Workspace)
+        val dao: CollectionDao =
+            collectionRepository.create(name = "name", user = "user", email = "user@email.edu", description = "description")!!
+        dao.publishDate = LocalDateTime.now()
+        dao.archiveDate = LocalDateTime.now()
+
+
+        //Act
+        collectionUpdateObject.applyStatusChange(dao)
+
+        //Assert
+        Assertions.assertThat(dao.status).isEqualTo(PublishStatus.Workspace)
         Assertions.assertThat(dao.publishDate).isNull()
         Assertions.assertThat(dao.archiveDate).isNull()
     }

@@ -47,6 +47,8 @@ export class SkillsListComponent extends QuickLinksHelper {
   showAddToCollection = true
   showExportSelected = false
 
+  selectAllChecked = false
+
   constructor(protected router: Router,
               protected richSkillService: RichSkillService,
               protected collectionService: CollectionService,
@@ -60,8 +62,9 @@ export class SkillsListComponent extends QuickLinksHelper {
   matchingQuery?: string[]
   title?: string
   loadNextPage(): void {}
-  handleSelectAll(selectAllChecked: boolean): void {}
-
+  handleSelectAll(selectAllChecked: boolean): void {
+    this.selectAllChecked = selectAllChecked
+  }
 
   // base component methods
 
@@ -301,7 +304,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
 
   protected handleClickAddToWorkspace(): void {
-    const skillListUpdate = this.getSelectAllEnabled() ? new ApiSkillListUpdate(
+    const skillListUpdate = this.selectAllChecked ? new ApiSkillListUpdate(
       {add: new ApiSearch({query: this.matchingQuery?.join("")})}
     ) : new ApiSkillListUpdate(
       {add: new ApiSearch({uuids: this.getSelectedSkills()?.map(i => i.uuid)})}

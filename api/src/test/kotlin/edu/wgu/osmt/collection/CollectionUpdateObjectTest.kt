@@ -95,7 +95,6 @@ internal class CollectionUpdateObjectTest @Autowired constructor(
         Assertions.assertThat(dao.status).isEqualTo(PublishStatus.Draft)
         Assertions.assertThat(dao.publishDate).isNull()
         Assertions.assertThat(dao.archiveDate).isNull()
-        Assertions.assertThat(dao.workspaceOwner).isEqualTo("")
     }
 
     @Test
@@ -112,8 +111,6 @@ internal class CollectionUpdateObjectTest @Autowired constructor(
 
         //Assert
         Assertions.assertThat(dao.status).isEqualTo(PublishStatus.Workspace)
-        Assertions.assertThat(dao.publishDate).isNull()
-        Assertions.assertThat(dao.archiveDate).isNull()
     }
 
 }

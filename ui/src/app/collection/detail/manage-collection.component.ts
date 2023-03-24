@@ -328,7 +328,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
         ? new ApiSearch({query: this.searchQuery})
         : new ApiSearch({uuids: this.collection?.skills.map((i: any) => i.uuid)})
     } else {
-      return super.getApiSearch(skill) // only call this for remove all in the current page
+      return super.getApiSearch(skill)
     }
   }
 

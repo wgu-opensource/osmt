@@ -1,17 +1,20 @@
 import {Component, Input, OnDestroy, OnInit} from "@angular/core"
-import {KeywordType} from "../../richskill/ApiSkill"
+import {FormControl} from "@angular/forms"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
-import {Subscription} from "rxjs"
+import {Observable, Subscription} from "rxjs"
+import {AbstractFormField} from "../abstract-form-field.component"
 import {KeywordSearchService} from "../../richskill/service/keyword-search.service"
-import {FormField} from "../form-field.component"
 
 @Component({
   selector: "app-abstract-form-field-search-select",
-  template: ``
+  template: ""
 })
-export abstract class AbstractFormFieldSearchSelectComponent extends FormField implements OnInit, OnDestroy {
+export abstract class AbstractFormFieldSearchSelect<TSearch, TValue>
+  extends AbstractFormField<TValue|null> implements OnInit, OnDestroy {
 
-  @Input() keywordType!: KeywordType
+  @Input() createNonExisting = false
+
+  searchControl: FormControl = new FormControl("")
 
   iconSearch = SvgHelper.path(SvgIcon.SEARCH)
   iconDismiss = SvgHelper.path(SvgIcon.DISMISS)
@@ -19,35 +22,84 @@ export abstract class AbstractFormFieldSearchSelectComponent extends FormField i
 
   queryInProgress!: Subscription
   currentlyLoading = false
-  results!: string[] | undefined
+  results!: TSearch[] | undefined
 
-  protected constructor(
-    protected searchService: KeywordSearchService
-  ) {
+  protected searchService: KeywordSearchService
+
+  constructor(searchService: KeywordSearchService) {
     super()
+    this.searchService = searchService
   }
 
-  ngOnInit(): void {
-    this.control.valueChanges.subscribe(next => { this.performSearch(next) })
+  ngOnInit() {
+    this.searchControl.valueChanges.subscribe((v: string) => this.onSearchValueChange(v) )
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.queryInProgress?.unsubscribe()
   }
 
-  abstract selectResult(result: string): void
-  abstract isResultSelected(result: string): boolean
+  abstract areSearchResultsEqual(result1: TSearch, result2: TSearch): boolean
+  abstract isResultSelected(result: TSearch): void
+  abstract isSearchResultType(result: any): result is TSearch
+  abstract labelFor(result: TSearch): string|null
+  abstract selectResult(result: TSearch): void
+  protected abstract callSearchService(text: string): Observable<TSearch[]>
+  protected abstract handleClearSearchClicked(): void
+  protected abstract handleSearchResultClicked(result: TSearch): void
+  protected abstract searchResultFromString(value: string): TSearch|undefined
 
-  get currentCategory(): string {
-    return this.control.value
+  get emptyValue(): TValue|null { return null }
+
+  get isSearchDirty(): boolean {
+    return this.searchControl.dirty
   }
 
-  makeHtmlId(r: string): string {
-    return r.replace(new RegExp("\\W"), "")
+  get isSearchEmpty(): boolean {
+    return this.searchControlValue.length <= 0
   }
 
-  performSearch(text: string): void {
-    if (!text || !this.keywordType) {
+  get searchControlValue(): string {
+    return this.searchControl.value?.trim() ?? ""
+  }
+
+  set searchControlValue(value: string) {
+    this.setSearchControlValue(value, true)
+    this.searchControl.markAsDirty()
+    this.searchControl.markAsTouched()
+  }
+
+  get searchControlResultValue(): TSearch | undefined {
+    const searchResult = this.searchResultFromString(this.searchControlValue)
+
+    if (searchResult) {
+      const existingResult =this.results?.find((r: TSearch) => this.areSearchResultsEqual(r, searchResult))
+      return existingResult ?? (this.createNonExisting) ? searchResult : undefined
+    }
+
+    return undefined
+  }
+
+  get showResults(): boolean {
+    return this.isSearchDirty && !this.isSearchEmpty && this.results !== undefined
+  }
+
+  clearSearch(): void {
+    this.clearSearchResults()
+    this.setSearchControlValue("", false)
+    this.searchControl.markAsPristine()
+  }
+
+  clearSearchResults(): void {
+    this.results = undefined
+  }
+
+  makeHtmlId(result: TSearch): string {
+    return this.labelFor(result)?.replace(new RegExp("\\W"), "") ?? ""
+  }
+
+  protected performSearch(text: string): void {
+    if (!text) {
       return // no search to perform
     }
     this.currentlyLoading = true
@@ -56,22 +108,48 @@ export abstract class AbstractFormFieldSearchSelectComponent extends FormField i
       this.queryInProgress.unsubscribe() // unsub to existing query first
     }
 
-    this.queryInProgress = this.searchService.searchKeywords(this.keywordType, text)
-      .subscribe(searchResults => {
-        this.results = searchResults.filter(r => !!r && !!r.name).map(r => r.name as string)
-        this.currentlyLoading = false
-      })
+    this.queryInProgress = this.callSearchService(text).subscribe(searchResults => {
+      this.results = searchResults
+      this.currentlyLoading = false
+    })
   }
 
-  onEnterKeyDown(event: Event): boolean {
+  protected selectSearchValue() {
+    let searchResult = this.searchControlResultValue
+    searchResult = searchResult ?? (this.createNonExisting)
+      ? this.searchResultFromString(this.searchControlValue) : undefined
+
+    if (searchResult) {
+      this.selectResult(searchResult)
+      this.clearSearchResults()
+    } else if (this.createNonExisting) {
+      this.clearValue()
+      this.clearSearchResults()
+    }
+  }
+
+  protected setSearchControlValue(value: string|null, emitEvent: boolean = true) {
+    this.searchControl.setValue(value ?? "", { emitEvent: emitEvent })
+  }
+
+  onClearSearchClicked(): void {
+    this.handleClearSearchClicked()
+  }
+
+  onEnterKeyDown(event: any): boolean {
+    this.selectSearchValue()
     return false
   }
-  onEnterKeyup(event: Event): void {
-    this.results = undefined
+
+  onSearchResultClicked(result: TSearch): void {
+    this.handleSearchResultClicked(result)
   }
 
-  get showResults(): boolean {
-    const isEmpty = this.valueFromControl?.trim()?.length <= 0
-    return !isEmpty && this.results !== undefined
+  protected onSearchValueChange(newValue: string): void {
+    this.handleSearchValueChange(newValue)
+  }
+
+  protected handleSearchValueChange(newValue: string): void {
+    this.performSearch(newValue)
   }
 }

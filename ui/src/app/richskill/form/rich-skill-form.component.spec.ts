@@ -18,9 +18,7 @@ import {
 import { EnvironmentServiceStub, RichSkillServiceStub } from "../../../../test/resource/mock-stubs"
 import { ActivatedRouteStubSpec } from "../../../../test/util/activated-route-stub.spec"
 import { AppConfig } from "../../app.config"
-import { initializeApp } from "../../app.module"
 import { EnvironmentService } from "../../core/environment.service"
-import { IJobCode } from "../../job-codes/Jobcode"
 import { PublishStatus } from "../../PublishStatus"
 import { ToastService } from "../../toast/toast.service"
 import {ApiAlignment, ApiNamedReference, ApiSkill, INamedReference} from "../ApiSkill"
@@ -34,6 +32,7 @@ import {
 } from "../ApiSkillUpdate"
 import { RichSkillService } from "../service/rich-skill.service"
 import { RichSkillFormComponent } from "./rich-skill-form.component"
+import {ApiJobCode} from "../../job-codes/Jobcode";
 
 
 export function createComponent(T: Type<RichSkillFormComponent>): Promise<void> {
@@ -118,7 +117,7 @@ describe("RichSkillFormComponent", () => {
     // Arrange
     component.skillForm.get("skillName")?.setValue("Copy of unique name")
     // Act
-    const result1 = component.nameErrorMessage()
+    const result1 = component.nameErrorMessage
     // Assert
     expect(result1).toEqual("Name is still a copy")
 
@@ -126,9 +125,19 @@ describe("RichSkillFormComponent", () => {
     // Arrange
     component.skillForm.get("skillName")?.setValue("")
     // Act
-    const result2 = component.nameErrorMessage()
+    const result2 = component.nameErrorMessage
     // Assert
-    expect(result2).toEqual("Name is required")
+    expect(result2).toEqual("Name required")
+  })
+
+  it("authorErrorMessage should return error ", () => {
+    // Assert
+    expect(component.authorErrorMessage).toEqual("Author required")
+  })
+
+  it("skillStatementErrorMessage should return error ", () => {
+    // Assert
+    expect(component.skillStatementErrorMessage).toEqual("Skill Statement required")
   })
 
   it("diffUuidList should be correct", () => {
@@ -210,51 +219,63 @@ describe("RichSkillFormComponent", () => {
   })
 
   it("diffReferenceList should be correct", () => {
+
     // Arrange
     const references = [
       createMockNamedReference("id1", "zebra"),
       createMockNamedReference("id2", "hippo"),
       createMockNamedReference("id3", "fox"),
-      createMockNamedReference("id4", "aardvark")
+      createMockNamedReference("id4", "aardvark"),
+      createMockNamedReference("id5", "giraffe")
+    ]
+
+    const existing = [
+      references[0],
+      references[1],
+      references[2],
+      references[3]
     ]
 
     // Act - adding 1, removing 2
-    const updates1 = component.diffReferenceList([ "aardvark", "giraffe", "zebra" ], references)
+    const updates1 = component.diffNamedReferenceList(
+      [references[3], references[4], references[0]],
+      existing
+    )
     // Assert
     expect(updates1).toEqual(new ApiReferenceListUpdate(
-      [ new ApiNamedReference({ name: "giraffe" }) ],
-      [ new ApiNamedReference({ name: "hippo" }), new ApiNamedReference({ name: "fox" }) ]
+      [ new ApiNamedReference(references[4]) ],
+      [ new ApiNamedReference(references[1]), new ApiNamedReference(references[2]) ]
     ))
 
     // Act - adding 0, removing 2
-    const updates2 = component.diffReferenceList([ "aardvark", "zebra" ], references)
+    const updates2 = component.diffNamedReferenceList(
+      [ references[3], references[0] ],
+      existing
+    )
     // Assert
     expect(updates2).toEqual(new ApiReferenceListUpdate(
       [ ],
-      [ new ApiNamedReference({ name: "hippo" }), new ApiNamedReference({ name: "fox" }) ]
+      [ new ApiNamedReference(references[1]), new ApiNamedReference(references[2]) ]
     ))
 
     // Act - adding 1, removing 0
-    const updates3 = component.diffReferenceList([ "aardvark", "giraffe", "hippo", "zebra", "fox" ], references)
+    const updates3 = component.diffNamedReferenceList(
+      [references[3], references[1], references[4], references[0], references[2]],
+      existing
+    )
     // Assert
     expect(updates3).toEqual(new ApiReferenceListUpdate(
-      [ new ApiNamedReference({ name: "giraffe" }) ],
-      [ ]
+      [ new ApiNamedReference(references[4]) ],
+      []
     ))
 
     // Act
-    const updates4 = component.diffReferenceList([ "fox", "aardvark", "hippo", "zebra" ], references)
+    const updates4 = component.diffNamedReferenceList(
+      [ references[2], references[3], references[1], references[0] ],
+      existing
+    )
     // Assert
     expect(updates4).toEqual(undefined)
-  })
-
-  it("splitTextArea should split into words", () => {
-    // Arrange
-    const words = "apple; banana;chocolate"   // 'banana' has a space that will be trimmed out
-    // Act
-    const result = component.splitTextarea(words)
-    // Assert
-    expect(result).toEqual([ "apple", "banana", "chocolate" ])
   })
 
   it("nonEmptyOrNull should trim and return null for empty strings", () => {
@@ -265,14 +286,19 @@ describe("RichSkillFormComponent", () => {
   })
 
   it("updateObject should return updates", () => {
+
     // Arrange
     const {  // These should not be modified
+      author,
       category,
       collections,
       skillName,
       skillStatement,
       // tslint:disable-next-line:no-any
     } = setupForm(false) as any
+    component.isDuplicating = false
+    component.existingSkill = null  // For this test, assume the best
+
     const {  // These will be overwritten by the component's selectedXYZ fields
       certifications,
       employers,
@@ -280,9 +306,26 @@ describe("RichSkillFormComponent", () => {
       occupations,
       standards
       // tslint:disable-next-line:no-any
-    } = setupSelectedFields(false) as any
-    component.isDuplicating = false
-    component.existingSkill = null  // For this test, assume the best
+    } = {
+      certifications: [ApiNamedReference.fromString("cert1"), ApiNamedReference.fromString("cert2")].filter(v => !!v),
+      employers: [ApiNamedReference.fromString("empl1"), ApiNamedReference.fromString("empl2")].filter(v => !!v),
+      keywords: ["kywd1", "kywd2"].filter(v => !!v),
+      occupations: [new ApiJobCode({ code: "occp1" }), new ApiJobCode({ code: "occp2" })],
+      standards: [ApiAlignment.fromString("stnd1"), ApiAlignment.fromString("stnd2")].filter(v => !!v)
+    }
+
+    component.skillForm.setValue({
+      skillName: skillName,
+      skillStatement: skillStatement,
+      author: author,
+      category: category,
+      collections: collections,
+      certifications: certifications,
+      employers: employers,
+      keywords: keywords,
+      occupations: occupations,
+      standards: standards
+    })
 
     // Act
     const update = component.updateObject()
@@ -291,12 +334,12 @@ describe("RichSkillFormComponent", () => {
     expect(update.skillName).toEqual(skillName)
     expect(update.skillStatement).toEqual(skillStatement)
     expect(update.category).toEqual(category)
-    expect((update.keywords as IStringListUpdate).add).toEqual(keywords)
-    expect((update.standards as IReferenceListUpdate).add).toEqual(standards)
+    expect((update.keywords as IStringListUpdate).add).toEqual(keywords as string[])
+    expect((update.standards as IReferenceListUpdate).add).toEqual(standards as INamedReference[])
     expect((update.collections as IStringListUpdate).add).toEqual(collections)
-    expect((update.certifications as IReferenceListUpdate).add).toEqual(certifications)
-    expect((update.occupations as IStringListUpdate).add).toEqual(occupations)
-    expect((update.employers as IReferenceListUpdate).add).toEqual(employers)
+    expect((update.certifications as IReferenceListUpdate).add).toEqual(certifications as INamedReference[])
+    expect((update.occupations as IStringListUpdate).add).toEqual(occupations.map(o => component.stringFromJobCode(o)))
+    expect((update.employers as IReferenceListUpdate).add).toEqual(employers as INamedReference[])
 
   })
 
@@ -311,7 +354,6 @@ describe("RichSkillFormComponent", () => {
     component.existingSkill = skill
     component.skillUuid = iSkill.uuid
     setupForm(false)
-    setupSelectedFields(false)
     const richSkillService = TestBed.inject(RichSkillService)
     spyOn(richSkillService, "createSkill").and.callThrough()
     spyOn(richSkillService, "updateSkill").and.callFake(
@@ -327,18 +369,6 @@ describe("RichSkillFormComponent", () => {
     expect(richSkillService.createSkill).not.toHaveBeenCalled()
     expect(richSkillService.updateSkill).toHaveBeenCalled()
     expect(router.navigate).toHaveBeenCalledWith(["/skills/my skill uuid/manage"])
-  })
-
-  it("namedReferenceString should return NamedReference or undefined", () => {
-    expect(component.namedReferenceForString("")).toEqual(undefined)
-    expect(component.namedReferenceForString("a://b")).toEqual(new ApiNamedReference({ id: "a://b" }))
-    expect(component.namedReferenceForString("abc")).toEqual(new ApiNamedReference({ name: "abc" }))
-  })
-
-  it("stringFromJobCode should return string", () => {
-    expect(component.stringFromJobCode(undefined)).toEqual("")
-    expect(component.stringFromJobCode({ code: "abcd" })).toEqual("abcd")
-    expect(component.stringFromJobCode({ frameworkName: "id1" } as IJobCode)).toEqual("")
   })
 
   it("setSkill should be correct", () => {
@@ -376,82 +406,6 @@ describe("RichSkillFormComponent", () => {
 
   it("showAuthor should return", () => {
     expect(component.showAuthor()).toBeTruthy()
-  })
-
-  it("populateTypeAheadFieldsWithResults should fill form with defaults", () => {
-    // Arrange
-    const form = component.skillForm.value
-    setupSelectedFields(false)
-
-    // Act
-    component.populateTypeAheadFieldsWithResults()
-
-    // Assert
-    expect(form.standards).toEqual("standard1; standard2")
-    expect(form.occupations).toEqual("occupation1; occupation2")
-    expect(form.keywords).toEqual("keyword1; keyword2")
-    expect(form.certifications).toEqual("certification1; certification2")
-    expect(form.employers).toEqual("employer1; employer2")
-  })
-
-  it("handleStandardsTypeAheadResults should be correct", () => {
-    // Arrange
-    component.selectedStandards = []
-    const strings = [ "string1", "string2" ]
-
-    // Act
-    component.handleStandardsTypeAheadResults(strings)
-
-    // Assert
-    expect(component.selectedStandards).toEqual(strings)
-  })
-
-  it("handleJobCodesTypeAheadResults should be correct", () => {
-    // Arrange
-    component.selectedJobCodes = []
-    const strings = [ "string1", "string2" ]
-
-    // Act
-    component.handleJobCodesTypeAheadResults(strings)
-
-    // Assert
-    expect(component.selectedJobCodes).toEqual(strings)
-  })
-
-  it("handleKeywordTypeAheadResults should be correct", () => {
-    // Arrange
-    component.selectedKeywords = []
-    const strings = [ "string1", "string2" ]
-
-    // Act
-    component.handleKeywordTypeAheadResults(strings)
-
-    // Assert
-    expect(component.selectedKeywords).toEqual(strings)
-  })
-
-  it("handleCertificationTypeAheadResults should be correct", () => {
-    // Arrange
-    component.selectedCertifications = []
-    const strings = [ "string1", "string2" ]
-
-    // Act
-    component.handleCertificationTypeAheadResults(strings)
-
-    // Assert
-    expect(component.selectedCertifications).toEqual(strings)
-  })
-
-  it("handleEmployersTypeAheadResults should be correct", () => {
-    // Arrange
-    component.selectedEmployers = []
-    const strings = [ "string1", "string2" ]
-
-    // Act
-    component.handleEmployersTypeAheadResults(strings)
-
-    // Assert
-    expect(component.selectedEmployers).toEqual(strings)
   })
 
   it("handleStatementBlur should be correct", () => {
@@ -525,9 +479,29 @@ describe("RichSkillFormComponent (with parameter)", () => {
   })
 })
 
-
 function setupForm(isBlank: boolean): object {
   const form = component.skillForm
+
+  const occupations = [ "occp1", "occp2", "occp3" ]
+
+  const standards = [
+    ApiNamedReference.fromString("stnd1"),
+    ApiNamedReference.fromString("stnd2"),
+    ApiNamedReference.fromString("stnd3")
+  ]
+
+  const certifications = [
+    ApiNamedReference.fromString("cert1"),
+    ApiNamedReference.fromString("cert2"),
+    ApiNamedReference.fromString("cert3")
+  ]
+
+  const employers = [
+    ApiNamedReference.fromString("empl1"),
+    ApiNamedReference.fromString("empl2"),
+    ApiNamedReference.fromString("empl3")
+  ]
+
   const fields = isBlank
     ? {
       skillName: "",
@@ -545,40 +519,14 @@ function setupForm(isBlank: boolean): object {
       skillName: "my skill",
       skillStatement: "my statement",
       author: "my author",
-      category: "my category",
-      keywords: ["keyword1", "keyword2", "keyword3"],
+      category: ApiNamedReference.fromString("my category"),
+      keywords: ["kywd1", "kywd2", "kywd3"],
       collections: ["collection1", "collection2"],
-      occupations: ["occupation1", "occupation2", "occupation3"],
-      standards: ["standard1", "standard2", "standard3"],
-      certifications: ["certification1", "certification2", "certification3"],
-      employers: ["employer1", "employer2", "employer3"]
+      occupations: occupations,
+      standards: standards,
+      certifications: certifications,
+      employers: employers
     }
   form.setValue(fields)
   return fields
-}
-
-function setupSelectedFields(isBlank: boolean): object {
-  if (isBlank) {
-    component.selectedKeywords = [""]
-    component.selectedJobCodes = []
-    component.selectedStandards = []
-    component.selectedCertifications = []
-    component.selectedEmployers = []
-  }
-  else {
-    component.selectedKeywords = ["keyword1", "keyword2"]
-    component.selectedJobCodes = ["occupation1", "occupation2"]
-    component.selectedStandards = ["standard1", "standard2"]
-    component.selectedCertifications = ["certification1", "certification2"]
-    component.selectedEmployers = ["employer1", "employer2"]
-  }
-
-  // Return the new values for easy deconstruction
-  return {
-    keywords: component.selectedKeywords,
-    occupations: component.selectedJobCodes,
-    standards: component.selectedStandards.map(x => new ApiAlignment({ id: undefined, skillName: x }) as INamedReference),
-    certifications: component.selectedCertifications.map(x => new ApiNamedReference({ id: undefined, name: x })),
-    employers: component.selectedEmployers.map(x => new ApiNamedReference({ id: undefined, name: x }))
-  }
 }

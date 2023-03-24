@@ -14,7 +14,6 @@
             </div>
             <div class="m-iconTitle-x-label">Advanced Search</div>
           </h3>
-          {{getSemicolonHelpMessage()}}
 
         </div>
 
@@ -29,13 +28,13 @@
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-form-field-search-select
+          <app-form-field-keyword-search-select
             [control]="skillForm.controls.author"
             label="Author"
             name="Author"
             [keywordType]="keywordType.Author"
           >
-          </app-form-field-search-select>
+          </app-form-field-keyword-search-select>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
@@ -49,71 +48,71 @@
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-form-field-search-select
+          <app-form-field-keyword-search-select
             [control]="skillForm.controls.category"
             label="Category"
             name="Category"
             [keywordType]="keywordType.Category"
           >
-          </app-form-field-search-select>
+          </app-form-field-keyword-search-select>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-form-field-search-select
+          <app-form-field-keyword-search-multi-select
             [control]="skillForm.controls.keywords"
             label="Keywords"
             name="Keywords"
             [keywordType]="keywordType.Keyword"
           >
-          </app-form-field-search-select>
+          </app-form-field-keyword-search-multi-select>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-form-field-search-select
+          <app-form-field-keyword-search-multi-select
             [control]="skillForm.controls.standards"
             label="Standards"
             name="Standards"
             [keywordType]="keywordType.Standard"
           >
-          </app-form-field-search-select>
+          </app-form-field-keyword-search-multi-select>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-form-field-search-select
+          <app-form-field-keyword-search-multi-select
             [control]="skillForm.controls.certifications"
             label="Certifications"
             name="Certifications"
             [keywordType]="keywordType.Certification"
           >
-          </app-form-field-search-select>
+          </app-form-field-keyword-search-multi-select>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-jobcode-single-select
+          <app-form-field-jobcode-search-multi-select
             [control]="skillForm.controls.occupations"
             label="Occupations"
             name="Occupations"
-          ></app-jobcode-single-select>
+          ></app-form-field-jobcode-search-multi-select>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-form-field-search-select
+          <app-form-field-keyword-search-multi-select
             [control]="skillForm.controls.employers"
             label="Employers"
             name="Employers"
             [keywordType]="keywordType.Employer"
           >
-          </app-form-field-search-select>
+          </app-form-field-keyword-search-multi-select>
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-form-field-search-select
+          <app-form-field-keyword-search-multi-select
             [control]="skillForm.controls.alignments"
             label="Alignments"
             name="Alignments"
             [keywordType]="keywordType.Alignment"
           >
-          </app-form-field-search-select>
+          </app-form-field-keyword-search-multi-select>
         </div>
       </div>
     </div>

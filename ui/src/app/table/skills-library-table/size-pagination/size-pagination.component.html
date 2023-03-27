@@ -1,0 +1,8 @@
+<label>
+  Items per page
+</label>
+<select name="size-pagination" #size (change)="onValueChange(+size.value)" [ngModel]="currentSize">
+  <option [value]="value" *ngFor="let value of values">
+    {{value}}
+  </option>
+</select>

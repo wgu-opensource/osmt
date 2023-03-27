@@ -25,8 +25,9 @@ import {FilterDropdown} from "../../models/filter-dropdown.model"
 })
 export class SkillsListComponent extends QuickLinksHelper {
 
+  pageSizeOptions = [1, 2, 3]
   from = 0
-  size = 50
+  size = this.pageSizeOptions?.length > 0 ? this.pageSizeOptions[0] : 50
   collection?: ApiCollection
   showAdvancedFilteredSearch = false
 
@@ -440,6 +441,12 @@ export class SkillsListComponent extends QuickLinksHelper {
   keywordsChange(keywords: FilterDropdown): void {
     this.keywords = keywords
     this.loadNextPage()
+  }
+
+  sizeChange(size: number): void {
+    this.size = size
+    this.from = 0
+    this.handlePageClicked(1)
   }
 
   get selectedKeywords(): any {

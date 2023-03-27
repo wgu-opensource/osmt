@@ -65,6 +65,9 @@
       </app-blocking-loader>
     </div>
 
+    <app-size-pagination [values]="pageSizeOptions" (changeValue)="sizeChange($event)" [currentSize]="size">
+    </app-size-pagination>
+
     <app-pagination
       [currentPage]="currentPageNo"
       [totalPages]="totalPageCount"

@@ -25,7 +25,7 @@ import {FilterDropdown} from "../../models/filter-dropdown.model"
 })
 export class SkillsListComponent extends QuickLinksHelper {
 
-  pageSizeOptions = [1, 2, 3]
+  pageSizeOptions = [50, 100, 150]
   from = 0
   size = this.pageSizeOptions?.length > 0 ? this.pageSizeOptions[0] : 50
   collection?: ApiCollection

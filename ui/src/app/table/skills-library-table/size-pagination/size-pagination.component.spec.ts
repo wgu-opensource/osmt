@@ -22,4 +22,14 @@ describe("SizePaginationComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy()
   })
+
+  it("Should call onValueChange with a param of type number", () => {
+    const param = 100
+    const onValueChangeSpy = spyOn(component, "onValueChange").withArgs(param).and.callThrough()
+
+    component.onValueChange(100);
+
+    expect(onValueChangeSpy).toHaveBeenCalled()
+    expect(typeof param).toEqual('number')
+  })
 })

@@ -124,7 +124,7 @@ class RichSkillRepositoryTest @Autowired constructor(
         assertThat(skill.category?.value).isEqualTo(apiObj.category)
         assertThat(skill.category?.uri).isNull()
 
-        assertThat(skill.author?.value).isEqualTo(apiObj.author)
+        assertThatKeywordsMatchStringList(skill.authors, apiObj.authors!!)
 
         assertThatKeywordsMatchStringList(skill.searchingKeywords, apiObj.keywords!!)
 
@@ -203,7 +203,6 @@ class RichSkillRepositoryTest @Autowired constructor(
         val created = richSkillRepository.create(RsdUpdateObject(
             name = name,
             statement = statement,
-            author = null,
             category = null
         ), "test")
         assertThat(created).isNotNull

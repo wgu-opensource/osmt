@@ -306,7 +306,7 @@ paths:
               schema:
                 type: string
                 example: >-
-                  id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
+                  id,type,authors,skillName,skillStatement,alignments,keywords,category,occupations
                   https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac,RichSkillDescriptor,"https://osmt.example.com/organization","Document Saving","The learner copies and saves documents to their local machine.","https://skillsource.example.com/base-skills/simple-compuhacking","documents, file operations, computer basics","Productivity Software","13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
 
   /api/skills/{uuid}/update:
@@ -587,7 +587,7 @@ paths:
               schema:
                 type: string
                 example: >-
-                  id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
+                  id,type,authors,skillName,skillStatement,alignments,keywords,category,occupations
                   https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac,RichSkillDescriptor,"https://osmt.example.com/organization","Document Saving","The learner copies and saves documents to their local machine.","https://skillsource.example.com/base-skills/simple-compuhacking","documents, file operations, computer basics","Productivity Software","13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
 
   /api/collections/{uuid}/update:
@@ -849,7 +849,7 @@ paths:
               schema:
                 type: string
                 example: >-
-                  id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
+                  id,type,authors,skillName,skillStatement,alignments,keywords,category,occupations
                   https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac, RichSkillDescriptor, "https://osmt.example.com/organization", "Document Saving", "The learner copies and saves documents to their local machine.", "https://skillsource.example.com/base-skills/simple-compuhacking", "documents, file operations, computer basics", "Productivity Software", "13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
 
   /api/results/batch/{uuid}:
@@ -1053,8 +1053,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NamedReference'
-        author:
-          type: string
+        authors:
+          type: array
+          items:
+            type: string
         creationDate:
           type: string
           format: date-time
@@ -1070,7 +1072,9 @@ components:
       example:
         id: https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac
         type: RichSkillDescriptor
-        author: https://example.osmt.wgu.edu/organization
+        authors:
+          - "John Smith"
+          - "Mary Todd"
         category: Business Ethics
         skillName: "Business Ethics: Responsibility Acceptance"
         skillStatement: The learner accepts responsibility and repercussions related to ethical behavior.
@@ -1159,8 +1163,10 @@ components:
           type: string
         category:
           type: string
-        author:
-          type: string
+        authors:
+          type: array
+          items:
+            type: string
         keywords:
           type: array
           items:
@@ -1200,8 +1206,8 @@ components:
           $ref: '#/components/schemas/StringListUpdate'
         employers:
           $ref: '#/components/schemas/ReferenceListUpdate'
-        author:
-          type: string
+        authors:
+          $ref: '#/components/schemas/StringListUpdate'
       example:
         skillName: "New Skill Name"
         keywords:

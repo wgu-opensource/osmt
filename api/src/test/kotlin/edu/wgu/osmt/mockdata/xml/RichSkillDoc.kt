@@ -6,7 +6,7 @@ class RichSkillDoc {
     var name: String? = null
     var statement: String? = null
     var categoryKeyword: Long? = null
-    var authorKeyword: Long? = null
+    var authorValues: String? = null
     var status: String? = null
     var keywordValues: String? = null
     var jobCodes: String? = null

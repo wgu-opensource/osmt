@@ -289,7 +289,6 @@ describe("RichSkillFormComponent", () => {
 
     // Arrange
     const {  // These should not be modified
-      author,
       category,
       collections,
       skillName,
@@ -300,6 +299,7 @@ describe("RichSkillFormComponent", () => {
     component.existingSkill = null  // For this test, assume the best
 
     const {  // These will be overwritten by the component's selectedXYZ fields
+      authors,
       certifications,
       employers,
       keywords,
@@ -307,9 +307,10 @@ describe("RichSkillFormComponent", () => {
       standards
       // tslint:disable-next-line:no-any
     } = {
+      authors: ["author1", "author2"].filter(v => !!v),
       certifications: [ApiNamedReference.fromString("cert1"), ApiNamedReference.fromString("cert2")].filter(v => !!v),
       employers: [ApiNamedReference.fromString("empl1"), ApiNamedReference.fromString("empl2")].filter(v => !!v),
-      keywords: ["kywd1", "kywd2"].filter(v => !!v),
+      keywords: ["keyword1", "keyword2"].filter(v => !!v),
       occupations: [new ApiJobCode({ code: "occp1" }), new ApiJobCode({ code: "occp2" })],
       standards: [ApiAlignment.fromString("stnd1"), ApiAlignment.fromString("stnd2")].filter(v => !!v)
     }
@@ -317,7 +318,7 @@ describe("RichSkillFormComponent", () => {
     component.skillForm.setValue({
       skillName: skillName,
       skillStatement: skillStatement,
-      author: author,
+      authors: authors,
       category: category,
       collections: collections,
       certifications: certifications,
@@ -333,6 +334,7 @@ describe("RichSkillFormComponent", () => {
     // Assert
     expect(update.skillName).toEqual(skillName)
     expect(update.skillStatement).toEqual(skillStatement)
+    expect((update.authors as IStringListUpdate).add).toEqual(authors)
     expect(update.category).toEqual(category)
     expect((update.keywords as IStringListUpdate).add).toEqual(keywords as string[])
     expect((update.standards as IReferenceListUpdate).add).toEqual(standards as INamedReference[])
@@ -404,8 +406,8 @@ describe("RichSkillFormComponent", () => {
     expect(location.back).toHaveBeenCalled()
   })
 
-  it("showAuthor should return", () => {
-    expect(component.showAuthor()).toBeTruthy()
+  it("showAuthors should return", () => {
+    expect(component.showAuthors()).toBeTruthy()
   })
 
   it("handleStatementBlur should be correct", () => {
@@ -506,7 +508,7 @@ function setupForm(isBlank: boolean): object {
     ? {
       skillName: "",
       skillStatement: "",
-      author: "",
+      authors: [],
       category: "",
       keywords: [],
       collections: [],
@@ -518,9 +520,9 @@ function setupForm(isBlank: boolean): object {
     : {
       skillName: "my skill",
       skillStatement: "my statement",
-      author: "my author",
+      authors: ["author1", "author2"],
       category: ApiNamedReference.fromString("my category"),
-      keywords: ["kywd1", "kywd2", "kywd3"],
+      keywords: ["keyword1", "keyword2", "keyword3"],
       collections: ["collection1", "collection2"],
       occupations: occupations,
       standards: standards,

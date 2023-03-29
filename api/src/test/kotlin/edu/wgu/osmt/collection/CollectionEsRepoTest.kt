@@ -75,7 +75,7 @@ class CollectionEsRepoTest @Autowired constructor(
         // assertions by rich skill properties
         val results1 = queryCollectionHits(elasticRichSkillDoc.name)
         assertAgainstCollectionDoc(results1)
-        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.author!!))
+        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.authors[elasticRichSkillDoc.authors.indices.random()]))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.statement))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.searchingKeywords[elasticRichSkillDoc.searchingKeywords.indices.random()]))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.category!!))

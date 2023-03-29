@@ -58,8 +58,8 @@ class RichSkillRow: CsvRow {
     @CsvBindByName(column = "O*NET Job Role")
     var jobRoles: String? = null
 
-    @CsvBindByName(column = "Author")
-    var author: String? = null
+    @CsvBindByName(column = "Authors")
+    var authors: String? = null
 
     @CsvBindByName(column = "Employer")
     var employer: String? = null
@@ -135,6 +135,7 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
 
         for (row in rows) transaction {
             var category: KeywordDao? = null
+            var authors: List<KeywordDao>? = null
             var keywords: List<KeywordDao>? = null
             var standards: List<KeywordDao>? = null
             var certifications: List<KeywordDao>? = null
@@ -159,12 +160,18 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
             blsDetailed = parseJobCodes(row.blsDetaileds, JobCodeBreakout::detailedCode)
             occupations = parseJobCodes(row.jobRoles, JobCodeBreakout::jobRoleCode)
             collections = parseCollections(row.collections)
+            authors = parseKeywords(KeywordTypeEnum.Author, row.authors)
+
+            // If no Authors set to default Author
+            if (authors.isNullOrEmpty()) {
+                authors = listOf(keywordRepository.getDefaultAuthor())
+            }
 
             if (row.alignmentTitle != null || row.alignmentUri != null) {
                 alignments = listOf( keywordRepository.findOrCreate(KeywordTypeEnum.Alignment, value = row.alignmentTitle, uri = row.alignmentUri) ).filterNotNull()
             }
 
-            val allKeyWords = concatenate(keywords, standards, certifications, employers, alignments)
+            val allKeyWords = concatenate(keywords, authors, standards, certifications, employers, alignments)
             val allJobcodes = concatenate(blsMajor,blsMinor,blsBroad,blsDetailed,occupations)
 
             if (row.skillName != null && row.skillStatement != null) {
@@ -175,7 +182,6 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
                     keywords = allKeyWords?.let { ListFieldUpdate(add = it) },
                     collections = collections?.let {ListFieldUpdate(add = it)},
                     jobCodes = allJobcodes?.let { ListFieldUpdate(add = it) },
-                    author = NullableFieldUpdate(keywordRepository.getDefaultAuthor())
                 ), user)
                 log.info("created skill '${row.skillName!!}'")
             }

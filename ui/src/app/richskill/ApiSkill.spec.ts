@@ -8,6 +8,7 @@ import {
 } from "../../../test/resource/mock-data"
 import { deepEqualSkipOuterType, mismatched } from "../../../test/util/deep-equals"
 import { PublishStatus } from "../PublishStatus"
+import { ApiJobCode } from "../job-codes/Jobcode"
 import {
   ApiAlignment,
   ApiAuditLog,
@@ -20,7 +21,6 @@ import {
   ISkill,
   IUuidReference
 } from "./ApiSkill"
-import { ApiJobCode } from "../job-codes/Jobcode"
 
 // An example of a class-level test
 
@@ -187,6 +187,6 @@ describe("ApiSkill", () => {
     expect(apiSkill.certifications).toEqual(iSkill.certifications.map(v => new ApiNamedReference(v)))
     expect(apiSkill.occupations).toEqual(iSkill.occupations.map(v => new ApiJobCode(v)))
     expect(apiSkill.employers).toEqual(iSkill.employers.map(v => new ApiNamedReference(v)))
-    expect(apiSkill.author).toEqual(iSkill.author)
+    expect(apiSkill.authors).toEqual(iSkill.authors)
   })
 })

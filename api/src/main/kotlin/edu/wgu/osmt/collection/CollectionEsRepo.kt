@@ -40,6 +40,11 @@ interface CustomCollectionQueries : FindsAllByPublishStatus<CollectionDoc> {
     fun deleteIndex() {
         elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_COLLECTION_DOC)).delete()
     }
+
+    fun createIndexWithMapping() {
+        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_COLLECTION_DOC)).create()
+        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_COLLECTION_DOC)).createMapping(CollectionDoc::class.java)
+    }
 }
 
 class CustomCollectionQueriesImpl @Autowired constructor(

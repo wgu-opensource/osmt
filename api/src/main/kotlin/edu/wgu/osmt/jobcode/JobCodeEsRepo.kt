@@ -23,6 +23,11 @@ interface CustomJobCodeRepository {
     fun deleteIndex() {
         elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_JOBCODE_DOC)).delete()
     }
+
+    fun createIndexWithMapping() {
+        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_JOBCODE_DOC)).create()
+        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_JOBCODE_DOC)).createMapping(JobCode::class.java)
+    }
 }
 
 class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :

@@ -51,6 +51,19 @@ class ElasticSearchReindexer {
     @Value("\${edu.wgu.osmt.elasticsearch.Reindex.batch_size:1000}")
     lateinit var limit: Integer
 
+    fun reCreateAllIndices() {
+        deleteAllIndices()
+        createAllIndicesAndMappings()
+        reindexAll()
+    }
+
+    fun createAllIndicesAndMappings() {
+        richSkillEsRepo.createIndexWithMapping()
+        collectionEsRepo.createIndexWithMapping()
+        keywordEsRepo.createIndexWithMapping()
+        jobCodeEsRepo.createIndexWithMapping()
+    }
+
     fun deleteAllIndices() {
         richSkillEsRepo.deleteIndex()
         collectionEsRepo.deleteIndex()

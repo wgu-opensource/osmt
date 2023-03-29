@@ -22,6 +22,11 @@ interface CustomKeywordRepository {
     fun deleteIndex() {
         elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_KEYWORD_DOC)).delete()
     }
+
+    fun createIndexWithMapping() {
+        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_KEYWORD_DOC)).create()
+        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_KEYWORD_DOC)).createMapping(Keyword::class.java)
+    }
 }
 
 class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :

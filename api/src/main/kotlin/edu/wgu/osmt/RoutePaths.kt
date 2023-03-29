@@ -46,6 +46,7 @@ object RoutePaths {
     const val ES_ADMIN = "$API/es-admin"
     const val ES_ADMIN_DELETE_INDICES = "$ES_ADMIN/delete-indices"
     const val ES_ADMIN_REINDEX = "$ES_ADMIN/reindex"
+    const val ES_ADMIN_RECREATE = "$ES_ADMIN/recreate"
 
     object QueryParams {
         const val FROM = "from"

@@ -56,6 +56,11 @@ interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun deleteIndex() {
         elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_RICHSKILL_DOC)).delete()
     }
+
+    fun createIndexWithMapping() {
+        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_RICHSKILL_DOC)).create()
+        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_RICHSKILL_DOC)).createMapping(RichSkillDoc::class.java)
+    }
 }
 
 class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :

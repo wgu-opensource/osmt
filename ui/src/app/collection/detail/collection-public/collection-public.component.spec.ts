@@ -164,4 +164,17 @@ describe("CollectionPublicComponent", () => {
     expect(component.from).toEqual((13 - 1) * 50)
     expect(component.results).toEqual(expected)
   })
+
+  describe( "sizeChange", () => {
+    it("Should set size of page, from and call handlePageClicked", () => {
+      const size = 100
+      spyOn(component, "handlePageClicked").withArgs(1).and.callThrough()
+
+      component.sizeChange(size)
+
+      expect(component.from).toEqual(0)
+      expect(component.size).toEqual(size)
+      expect(component.handlePageClicked).toHaveBeenCalledTimes(1)
+    })
+  })
 })

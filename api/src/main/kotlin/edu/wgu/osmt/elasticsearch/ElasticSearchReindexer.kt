@@ -15,6 +15,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.stereotype.Component
 
 @Component
@@ -48,27 +50,19 @@ class ElasticSearchReindexer {
     @Autowired
     lateinit var jobCodeRepository: JobCodeRepository
 
+    @Autowired
+    lateinit var elasticsearchRestTemplate: ElasticsearchRestTemplate
+
     @Value("\${edu.wgu.osmt.elasticsearch.Reindex.batch_size:1000}")
     lateinit var limit: Integer
 
-    fun reCreateAllIndices() {
-        deleteAllIndices()
-        createAllIndicesAndMappings()
-        reindexAll()
-    }
-
-    fun createAllIndicesAndMappings() {
-        richSkillEsRepo.createIndexWithMapping()
-        collectionEsRepo.createIndexWithMapping()
-        keywordEsRepo.createIndexWithMapping()
-        jobCodeEsRepo.createIndexWithMapping()
-    }
+//    fun reCreateAllIndices() {
+//        deleteAllIndices()
+//        reindexAll()
+//    }
 
     fun deleteAllIndices() {
-        richSkillEsRepo.deleteIndex()
-        collectionEsRepo.deleteIndex()
-        keywordEsRepo.deleteIndex()
-        jobCodeEsRepo.deleteIndex()
+        elasticsearchRestTemplate.indexOps(IndexCoordinates.of("*")).delete()
     }
 
     fun reindexAll() {

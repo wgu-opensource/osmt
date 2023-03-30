@@ -1,6 +1,5 @@
 package edu.wgu.osmt.jobcode
 
-import edu.wgu.osmt.config.INDEX_JOBCODE_DOC
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.Operator
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
 import org.springframework.data.elasticsearch.core.SearchHits
-import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
@@ -19,15 +17,6 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 interface CustomJobCodeRepository {
     val elasticSearchTemplate: ElasticsearchRestTemplate
     fun typeAheadSearch(query: String): SearchHits<JobCode>
-
-    fun deleteIndex() {
-        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_JOBCODE_DOC)).delete()
-    }
-
-    fun createIndexWithMapping() {
-        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_JOBCODE_DOC)).create()
-        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_JOBCODE_DOC)).createMapping(JobCode::class.java)
-    }
 }
 
 class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :

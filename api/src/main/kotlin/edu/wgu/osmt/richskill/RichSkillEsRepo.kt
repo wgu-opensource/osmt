@@ -5,7 +5,6 @@ import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSimilaritySearch
-import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
 import edu.wgu.osmt.config.QUOTED_SEARCH_REGEX_PATTERN
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
@@ -24,7 +23,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
 import org.springframework.data.elasticsearch.core.SearchHits
-import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
@@ -51,16 +49,6 @@ interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun findSimilar(apiSimilaritySearch: ApiSimilaritySearch): SearchHits<RichSkillDoc>
 
     fun occupationQueries(query: String): NestedQueryBuilder
-
-
-    fun deleteIndex() {
-        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_RICHSKILL_DOC)).delete()
-    }
-
-    fun createIndexWithMapping() {
-        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_RICHSKILL_DOC)).create()
-        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_RICHSKILL_DOC)).createMapping(RichSkillDoc::class.java)
-    }
 }
 
 class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :

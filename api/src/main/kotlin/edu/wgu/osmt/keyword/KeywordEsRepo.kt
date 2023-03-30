@@ -1,6 +1,5 @@
 package edu.wgu.osmt.keyword
 
-import edu.wgu.osmt.config.INDEX_KEYWORD_DOC
 import edu.wgu.osmt.config.SORT_INSENSITIVE
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import org.elasticsearch.index.query.QueryBuilders
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
 import org.springframework.data.elasticsearch.core.SearchHits
-import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
@@ -18,15 +16,6 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 interface CustomKeywordRepository {
     val elasticSearchTemplate: ElasticsearchRestTemplate
     fun typeAheadSearch(query: String, type: KeywordTypeEnum): SearchHits<Keyword>
-
-    fun deleteIndex() {
-        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_KEYWORD_DOC)).delete()
-    }
-
-    fun createIndexWithMapping() {
-        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_KEYWORD_DOC)).create()
-        elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_KEYWORD_DOC)).createMapping(Keyword::class.java)
-    }
 }
 
 class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :

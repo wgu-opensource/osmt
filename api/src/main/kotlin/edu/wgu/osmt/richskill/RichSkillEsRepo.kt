@@ -103,9 +103,9 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             }
             category.nullIfEmpty()?.let {
                 if (it.matches(Regex(QUOTED_SEARCH_REGEX_PATTERN))) {
-                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::category.name}.keyword").defaultOperator(Operator.AND))
+                    bq.must(simpleQueryStringQuery(it).field("${RichSkillDoc::categories.name}.raw").defaultOperator(Operator.AND))
                 } else {
-                    bq.must(matchBoolPrefixQuery(RichSkillDoc::category.name, it))
+                    bq.must(matchBoolPrefixQuery(RichSkillDoc::categories.name, it))
                 }
             }
             author.nullIfEmpty()?.let {
@@ -203,7 +203,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         )
         with(filteredQuery) {
             categories?. let {
-                bq.must(buildNestedQueries(RichSkillDoc::category.name, it))
+                bq.must(buildNestedQueries(RichSkillDoc::categories.name, it))
             }
             keywords?. let {
                 it.mapNotNull {
@@ -256,7 +256,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             simpleQueryStringQuery(query).field("${RichSkillDoc::name.name}.raw").boost(2.0f)
                 .defaultOperator(Operator.AND),
             simpleQueryStringQuery(query).field("${RichSkillDoc::statement.name}.raw").defaultOperator(Operator.AND),
-            simpleQueryStringQuery(query).field("${RichSkillDoc::category.name}.raw").defaultOperator(Operator.AND),
+            simpleQueryStringQuery(query).field("${RichSkillDoc::categories.name}.raw").defaultOperator(Operator.AND),
             simpleQueryStringQuery(query).field("${RichSkillDoc::searchingKeywords.name}.raw")
                 .defaultOperator(Operator.AND),
             simpleQueryStringQuery(query).field("${RichSkillDoc::standards.name}.raw").defaultOperator(Operator.AND),
@@ -270,7 +270,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         val queries = listOf(
             matchPhrasePrefixQuery(RichSkillDoc::name.name, query).boost(2.0f),
             matchPhrasePrefixQuery(RichSkillDoc::statement.name, query),
-            matchPhrasePrefixQuery(RichSkillDoc::category.name, query),
+            matchPhrasePrefixQuery(RichSkillDoc::categories.name, query),
             matchPhrasePrefixQuery(RichSkillDoc::searchingKeywords.name, query),
             matchPhrasePrefixQuery(RichSkillDoc::standards.name, query),
             matchPhrasePrefixQuery(RichSkillDoc::certifications.name, query),

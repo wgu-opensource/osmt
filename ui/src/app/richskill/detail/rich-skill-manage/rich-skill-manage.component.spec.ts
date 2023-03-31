@@ -73,8 +73,8 @@ describe("RichSkillManageComponent", () => {
           bodyString: skill.skillStatement,
           showIfEmpty: true
         }, {
-          label: "Category",
-          bodyString: skill.category,
+          label: "Categories",
+          bodyString: skill.categories.join("; "),
           showIfEmpty: true
         }, {
           label: "Keywords",

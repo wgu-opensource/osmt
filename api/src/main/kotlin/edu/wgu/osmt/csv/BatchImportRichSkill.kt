@@ -28,8 +28,8 @@ class RichSkillRow: CsvRow {
     @CsvBindByName(column = "Skill Name")
     var skillName: String? = null
 
-    @CsvBindByName(column = "Skill Category")
-    var skillCategory: String? = null
+    @CsvBindByName(column = "Skill Categories")
+    var skillCategories: String? = null
 
     @CsvBindByName(column = "Contextualized Skill Statement")
     var skillStatement: String? = null
@@ -134,8 +134,8 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
         log.info("Processing ${rows.size} rows...")
 
         for (row in rows) transaction {
-            var category: KeywordDao? = null
             var authors: List<KeywordDao>? = null
+            var categories: List<KeywordDao>? = null
             var keywords: List<KeywordDao>? = null
             var standards: List<KeywordDao>? = null
             var certifications: List<KeywordDao>? = null
@@ -148,8 +148,7 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
             var occupations: List<JobCodeDao>? = null
             var collections: List<CollectionDao>? = null
 
-            category = row.skillCategory?.let { keywordRepository.findOrCreate(KeywordTypeEnum.Category, value = it) }
-
+            categories = parseKeywords(KeywordTypeEnum.Category, row.skillCategories)
             keywords = parseKeywords(KeywordTypeEnum.Keyword, row.keywords)
             standards = parseKeywords(KeywordTypeEnum.Standard, row.standards)
             certifications = parseKeywords(KeywordTypeEnum.Certification, row.certifications)
@@ -171,16 +170,15 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
                 alignments = listOf( keywordRepository.findOrCreate(KeywordTypeEnum.Alignment, value = row.alignmentTitle, uri = row.alignmentUri) ).filterNotNull()
             }
 
-            val allKeyWords = concatenate(keywords, authors, standards, certifications, employers, alignments)
+            val allKeyWords = concatenate(keywords, authors, categories, standards, certifications, employers, alignments)
             val allJobcodes = concatenate(blsMajor,blsMinor,blsBroad,blsDetailed,occupations)
 
             if (row.skillName != null && row.skillStatement != null) {
                 richSkillRepository.create(RsdUpdateObject(
                     name = row.skillName!!,
                     statement = row.skillStatement!!,
-                    category = NullableFieldUpdate(category),
                     keywords = allKeyWords?.let { ListFieldUpdate(add = it) },
-                    collections = collections?.let {ListFieldUpdate(add = it)},
+                    collections = collections?.let { ListFieldUpdate(add = it) },
                     jobCodes = allJobcodes?.let { ListFieldUpdate(add = it) },
                 ), user)
                 log.info("created skill '${row.skillName!!}'")

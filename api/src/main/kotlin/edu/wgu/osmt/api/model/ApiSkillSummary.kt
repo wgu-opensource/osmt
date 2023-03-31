@@ -16,7 +16,7 @@ class ApiSkillSummary(
     @JsonProperty val archiveDate: LocalDateTime? = null,
     @JsonProperty val skillName: String,
     @JsonProperty val skillStatement: String,
-    @JsonProperty val category: String? = null,
+    @JsonProperty val categories: List<String> = listOf(),
     @JsonProperty val keywords: List<String> = listOf(),
     @JsonProperty val occupations: List<ApiJobCode> = listOf()
 ) {
@@ -31,7 +31,7 @@ class ApiSkillSummary(
                 archiveDate = rsd.archiveDate,
                 skillName = rsd.name,
                 skillStatement = rsd.statement,
-                category = rsd.category?.value,
+                categories = rsd.categories.mapNotNull { it.value },
                 keywords = rsd.keywords.mapNotNull { it.value },
                 occupations = rsd.jobCodes.map { ApiJobCode.fromJobCode(it) }
             )
@@ -51,7 +51,7 @@ class ApiSkillSummary(
                     archiveDate,
                     name,
                     statement,
-                    category,
+                    categories,
                     searchingKeywords,
                     jobCodes.map { ApiJobCode.fromJobCode(it) })
             }

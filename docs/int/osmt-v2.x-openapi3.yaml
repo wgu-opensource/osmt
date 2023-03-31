@@ -306,7 +306,7 @@ paths:
               schema:
                 type: string
                 example: >-
-                  id,type,authors,skillName,skillStatement,alignments,keywords,category,occupations
+                  id,type,authors,skillName,skillStatement,alignments,keywords,categories,occupations
                   https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac,RichSkillDescriptor,"https://osmt.example.com/organization","Document Saving","The learner copies and saves documents to their local machine.","https://skillsource.example.com/base-skills/simple-compuhacking","documents, file operations, computer basics","Productivity Software","13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
 
   /api/skills/{uuid}/update:
@@ -587,7 +587,7 @@ paths:
               schema:
                 type: string
                 example: >-
-                  id,type,authors,skillName,skillStatement,alignments,keywords,category,occupations
+                  id,type,authors,skillName,skillStatement,alignments,keywords,categories,occupations
                   https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac,RichSkillDescriptor,"https://osmt.example.com/organization","Document Saving","The learner copies and saves documents to their local machine.","https://skillsource.example.com/base-skills/simple-compuhacking","documents, file operations, computer basics","Productivity Software","13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
 
   /api/collections/{uuid}/update:
@@ -849,7 +849,7 @@ paths:
               schema:
                 type: string
                 example: >-
-                  id,type,authors,skillName,skillStatement,alignments,keywords,category,occupations
+                  id,type,authors,skillName,skillStatement,alignments,keywords,categories,occupations
                   https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac, RichSkillDescriptor, "https://osmt.example.com/organization", "Document Saving", "The learner copies and saves documents to their local machine.", "https://skillsource.example.com/base-skills/simple-compuhacking", "documents, file operations, computer basics", "Productivity Software", "13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
 
   /api/results/batch/{uuid}:
@@ -1023,8 +1023,10 @@ components:
           type: string
         skillStatement:
           type: string
-        category:
-          type: string
+        categories:
+          type: array
+          items:
+            type: string
         collections:
           type: array
           items:
@@ -1075,7 +1077,9 @@ components:
         authors:
           - "John Smith"
           - "Mary Todd"
-        category: Business Ethics
+        categories:
+          - "Business Ethics"
+          - "Engineering Ethics"
         skillName: "Business Ethics: Responsibility Acceptance"
         skillStatement: The learner accepts responsibility and repercussions related to ethical behavior.
         alignments:
@@ -1130,8 +1134,10 @@ components:
           type: string
         skillStatement:
           type: string
-        category:
-          type: string
+        categories:
+          type: array
+          items:
+            type: string
         keywords:
           type: array
           items:
@@ -1161,8 +1167,10 @@ components:
           type: string
         skillStatement:
           type: string
-        category:
-          type: string
+        categories:
+          type: array
+          items:
+            type: string
         authors:
           type: array
           items:
@@ -1190,8 +1198,8 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/PublishStatus'
-        category:
-          type: string
+        categories:
+          type: '#/components/schemas/StringListUpdate'
         collections:
           $ref: '#/components/schemas/StringListUpdate'
         keywords:

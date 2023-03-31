@@ -125,7 +125,7 @@ export function createMockSkillUpdate(): IRichSkillUpdate {
     skillName: "my skill name",
     skillStatement: "my skill statement",
     status: PublishStatus.Draft,
-    category: "my skill category",
+    categories: createMockStringListUpdate(),
     keywords: createMockStringListUpdate(),
     collections: createMockStringListUpdate(),
     alignments: createMockApiReferenceListUpdate(),
@@ -150,7 +150,7 @@ export function createMockSkillSummary(
     publishDate: publishDate ? publishDate : undefined,  // i.e., if "" is passed in, then treat as undefined here.
     skillName: "my skill summary name",
     skillStatement: "my skill summary statement",
-    category: "my skill category",
+    categories: ["category 1", "category 2"],
     keywords: [ "keyword 1", "keyword 2" ],
     occupations: [ createMockJobcode(), createMockJobcode() ]
   }
@@ -233,7 +233,7 @@ export function createMockSkill(creationDate: Date, updateDate: Date, status: Pu
     skillName: "my skill name",
     skillStatement: "my skill statement",
     status,
-    category: "my skill category",
+    categories: ["category 1", "category 2"],
     collections: [createMockUuidReference("1", "coll")],
     keywords: ["keyword 1", "keyword 2"],
     alignments: [createMockAlignment("2", "alignment", { id: "22", name: "myFramework" })],

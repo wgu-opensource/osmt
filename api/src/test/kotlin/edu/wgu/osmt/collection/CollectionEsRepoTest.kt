@@ -78,7 +78,7 @@ class CollectionEsRepoTest @Autowired constructor(
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.authors[elasticRichSkillDoc.authors.indices.random()]))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.statement))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.searchingKeywords[elasticRichSkillDoc.searchingKeywords.indices.random()]))
-        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.category!!))
+        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.categories[elasticRichSkillDoc.categories.indices.random()]))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.jobCodes[elasticRichSkillDoc.jobCodes.indices.random()].code))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.standards[elasticRichSkillDoc.standards.indices.random()]))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.certifications[elasticRichSkillDoc.certifications.indices.random()]))

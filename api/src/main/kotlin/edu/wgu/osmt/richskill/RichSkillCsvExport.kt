@@ -17,7 +17,7 @@ class RichSkillCsvExport(
             CsvColumn("RSD Name") { it.rs.name },
             CsvColumn("Authors") { it.rs.authors.map { author -> author.value ?: "" }.joinToString(listDelimiter) },
             CsvColumn("Skill Statement") { it.rs.statement },
-            CsvColumn("Category") { it.rs.category?.value ?: "" },
+            CsvColumn("Categories") { it.rs.categories.map{ category -> category.value ?: "" }.joinToString(listDelimiter) },
             CsvColumn("Keywords") { it.rs.searchingKeywords.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) },
             CsvColumn("Standards") { it.rs.standards.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) },
             CsvColumn("Certifications") { it.rs.certifications.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) },

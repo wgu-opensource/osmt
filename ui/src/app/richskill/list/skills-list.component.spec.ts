@@ -133,8 +133,6 @@ describe("SkillsListComponent", () => {
   it("getMobileSortOptions should be correct", () => {
     const result = component.getMobileSortOptions()
     expect(result).toEqual({
-      "name.asc": "Category (ascending)",
-      "name.desc": "Category (descending)",
       "skill.asc": "RSD Name (ascending)",
       "skill.desc": "RSD Name (descending)",
     })
@@ -311,7 +309,7 @@ describe("SkillsListComponent", () => {
     // Arrange
     spyOn(component, "loadNextPage").and.callThrough()
     const sort = ApiSortOrder.SkillDesc
-    component.columnSort = ApiSortOrder.NameAsc
+    component.columnSort = ApiSortOrder.SkillAsc
     component.from = 47
 
     // Act

@@ -289,7 +289,6 @@ describe("RichSkillFormComponent", () => {
 
     // Arrange
     const {  // These should not be modified
-      category,
       collections,
       skillName,
       skillStatement,
@@ -300,6 +299,7 @@ describe("RichSkillFormComponent", () => {
 
     const {  // These will be overwritten by the component's selectedXYZ fields
       authors,
+      categories,
       certifications,
       employers,
       keywords,
@@ -308,6 +308,7 @@ describe("RichSkillFormComponent", () => {
       // tslint:disable-next-line:no-any
     } = {
       authors: ["author1", "author2"].filter(v => !!v),
+      categories: ["category1", "category2"].filter(v => !!v),
       certifications: [ApiNamedReference.fromString("cert1"), ApiNamedReference.fromString("cert2")].filter(v => !!v),
       employers: [ApiNamedReference.fromString("empl1"), ApiNamedReference.fromString("empl2")].filter(v => !!v),
       keywords: ["keyword1", "keyword2"].filter(v => !!v),
@@ -319,7 +320,7 @@ describe("RichSkillFormComponent", () => {
       skillName: skillName,
       skillStatement: skillStatement,
       authors: authors,
-      category: category,
+      categories: categories,
       collections: collections,
       certifications: certifications,
       employers: employers,
@@ -335,7 +336,7 @@ describe("RichSkillFormComponent", () => {
     expect(update.skillName).toEqual(skillName)
     expect(update.skillStatement).toEqual(skillStatement)
     expect((update.authors as IStringListUpdate).add).toEqual(authors)
-    expect(update.category).toEqual(category)
+    expect((update.categories as IStringListUpdate).add).toEqual(categories)
     expect((update.keywords as IStringListUpdate).add).toEqual(keywords as string[])
     expect((update.standards as IReferenceListUpdate).add).toEqual(standards as INamedReference[])
     expect((update.collections as IStringListUpdate).add).toEqual(collections)
@@ -509,7 +510,7 @@ function setupForm(isBlank: boolean): object {
       skillName: "",
       skillStatement: "",
       authors: [],
-      category: "",
+      categories: [],
       keywords: [],
       collections: [],
       occupations: [],
@@ -521,7 +522,7 @@ function setupForm(isBlank: boolean): object {
       skillName: "my skill",
       skillStatement: "my statement",
       authors: ["author1", "author2"],
-      category: ApiNamedReference.fromString("my category"),
+      categories: ["category1", "category2"],
       keywords: ["keyword1", "keyword2", "keyword3"],
       collections: ["collection1", "collection2"],
       occupations: occupations,

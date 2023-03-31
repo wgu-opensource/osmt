@@ -3,11 +3,9 @@
   <thead>
   <tr class="m-tableHeader">
     <th class="t-hidden-tabletMax" scope="col">
-      <app-label-with-filter
-        label="Category"
-        [sortAscending]="getNameSort()"
-        (sortChanged)="sortColumn('name', $event)"
-      ></app-label-with-filter>
+      <div class="m-tableLabel">
+        <span class="m-tableLabel-x-text">Categories</span>
+      </div>
     </th>
 
     <th class="t-hidden-tabletMax" scope="col">
@@ -25,11 +23,11 @@
 
     <th class="m-tableRow-x-header" scope="row" id="row{{i}}-header" *ngIf="!!skill">
 
-      <div class="t-hidden-tabletMax">{{skill.category}}</div>
+      <div class="t-hidden-tabletMax">{{getFormattedCategories(skill)}}</div>
       <div class="t-hidden-tabletMin">
         <div class="m-inlineHeading">
-          <h5 class="m-inlineHeading-x-heading">Category:</h5>
-          <p class="m-inlineHeading-x-text">{{skill.category}}</p>
+          <h5 class="m-inlineHeading-x-heading">Categories:</h5>
+          <p class="m-inlineHeading-x-text">{{getFormattedCategories(skill)}}</p>
         </div>
       </div>
 

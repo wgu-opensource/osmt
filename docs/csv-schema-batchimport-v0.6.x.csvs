@@ -5,7 +5,7 @@ version 1.1
 
 Collection:                     @optional   // multiple items can be separated by ";"
 Skill Name:                     notEmpty
-Skill Category:                 @optional
+Skill Categories:               @optional
 Authors:                        notEmpty    // multiple items can be separated by ";"
 Contextualized Skill Statement: notEmpty
 Keywords:                       @optional   // multiple items can be separated by ";"

@@ -66,7 +66,7 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
       skillStatement: "",
       uuid: this.skillUuid,
       status: PublishStatus.Draft,
-      category: "",
+      categories: [],
       keywords: [],
       occupations: []
     })

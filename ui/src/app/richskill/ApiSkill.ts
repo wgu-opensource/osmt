@@ -113,7 +113,7 @@ export interface ISkill {
   status: PublishStatus
   skillName: string
   skillStatement: string
-  category?: string
+  categories: string[]
   collections: IUuidReference[]
   keywords: string[]
   alignments: IAlignment[]
@@ -135,7 +135,7 @@ export class ApiSkill {
   status: PublishStatus
   skillName: string
   skillStatement: string
-  category?: string
+  categories: string[]
   collections: IUuidReference[]
   keywords: string[]
   alignments: IAlignment[]
@@ -166,7 +166,7 @@ export class ApiSkill {
     this.keywords = iRichSkill.keywords?.map(it => it) ?? null
     this.collections = iRichSkill.collections?.map(it => it) ?? null
     this.status = iRichSkill.status
-    this.category = iRichSkill.category
+    this.categories = iRichSkill.categories?.map(it => it) ?? null
     this.certifications = iRichSkill.certifications?.map(it => new ApiNamedReference(it)) ?? null
     this.alignments = iRichSkill.alignments?.map(it => new ApiAlignment(it)) ?? null
     this.standards = iRichSkill.standards?.map(it => new ApiAlignment(it)) ?? null

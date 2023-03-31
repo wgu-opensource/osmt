@@ -123,7 +123,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         val size = 50
         val listOfSkills = mockData.getRichSkillDocs()
         richSkillEsRepo.saveAll(listOfSkills)
-        val filter: ApiFilteredSearch = ApiFilteredSearch(categories = listOf("Academic Accommodation Plans"))
+        val filter: ApiFilteredSearch = ApiFilteredSearch(keywords = listOf(".NET Framework"))
 
         // Act
         val result = richSkillController.allPaginatedWithFilters(
@@ -138,7 +138,7 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Assert
         assertThat(result.body?.size).isLessThan(size)
-        assertThat(result.body?.first()!!.category).isEqualTo("Academic Accommodation Plans")
+        assertThat(result.body?.first()!!.searchingKeywords[0]).isEqualTo(".NET Framework")
     }
 
     @Test

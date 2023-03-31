@@ -143,7 +143,6 @@ class RichSkillRepositoryImpl @Autowired constructor(
             this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
             this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.uuid = UUID.randomUUID().toString()
-            this.category = updateObject.category?.t
         }
 
         updateObject.copy(id = newRsd.id.value).applyToDao(newRsd)
@@ -202,14 +201,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
     }
 
     override fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String, email: String): RsdUpdateObject {
-        val categoryKeyword = skillUpdate.category?.let {
-            keywordRepository.findOrCreate(KeywordTypeEnum.Category, value = it)
-        }
-
         val addingCollections = mutableListOf<CollectionDao>()
         val removingCollections = mutableListOf<CollectionDao>()
-        val addingAuthors = mutableListOf<KeywordDao>()
-        val removingAuthors = mutableListOf<KeywordDao>()
         val addingKeywords = mutableListOf<KeywordDao>()
         val removingKeywords = mutableListOf<KeywordDao>()
         val jobsToAdd = mutableListOf<JobCodeDao>()
@@ -282,6 +275,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         }
 
         skillUpdate.authors?.let { lookupKeywords(it, KeywordTypeEnum.Author) }
+        skillUpdate.categories?.let { lookupKeywords(it, KeywordTypeEnum.Category) }
         skillUpdate.keywords?.let { lookupKeywords(it, KeywordTypeEnum.Keyword) }
         skillUpdate.certifications?.let { lookupReferences(it, KeywordTypeEnum.Certification) }
         skillUpdate.standards?.let { lookupAlignments(it, KeywordTypeEnum.Standard) }
@@ -311,9 +305,6 @@ class RichSkillRepositoryImpl @Autowired constructor(
             name = skillUpdate.skillName,
             statement = skillUpdate.skillStatement,
             publishStatus = skillUpdate.publishStatus,
-            category = if (skillUpdate.category != null || skillUpdate.category?.isBlank() == true) NullableFieldUpdate(
-                categoryKeyword
-            ) else null,
             keywords = allKeywordsUpdate,
             jobCodes = jobCodesUpdate,
             collections = if (addingCollections.size + removingCollections.size > 0) ListFieldUpdate(

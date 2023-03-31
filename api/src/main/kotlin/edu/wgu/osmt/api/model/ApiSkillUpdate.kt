@@ -13,14 +13,14 @@ data class ApiSkillUpdate(
     @JsonProperty("status")
     val publishStatus: PublishStatus? = null,
 
-    @JsonProperty("category")
-    val category: String? = null,
-
     @JsonProperty("collections")
     val collections: ApiStringListUpdate? = null,
 
     @JsonProperty("authors")
     val authors: ApiStringListUpdate? = null,
+
+    @JsonProperty("categories")
+    val categories: ApiStringListUpdate? = null,
 
     @JsonProperty("keywords")
     val keywords: ApiStringListUpdate? = null,

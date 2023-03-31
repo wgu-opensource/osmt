@@ -62,8 +62,8 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
         get() = rsd.searchingKeywords.mapNotNull { it.value }
 
     @get:JsonProperty
-    val category: String?
-        get() = rsd.category?.value
+    val categories: List<String>
+        get() = rsd.categories.mapNotNull { it.value }
 
     @get:JsonProperty
     val id: String

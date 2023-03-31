@@ -8,13 +8,12 @@ import {FormControl} from "@angular/forms"
 })
 export class SizePaginationComponent implements OnInit {
 
-  @Input()
-  values: number[] = []
+  values: number[] = [50, 100, 150]
   @Output()
   changeValue: EventEmitter<number> = new EventEmitter()
   control: FormControl = new FormControl(undefined)
   @Input()
-  currentSize?: number
+  currentSize = 50
 
   constructor() {
   }

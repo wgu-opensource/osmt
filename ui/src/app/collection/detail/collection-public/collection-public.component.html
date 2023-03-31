@@ -49,7 +49,6 @@
 
       <app-size-pagination
         *ngIf="totalCount > 0"
-        [values]="pageSizeOptions"
         [currentSize]="size"
         (changeValue)="sizeChange($event)">
       </app-size-pagination>

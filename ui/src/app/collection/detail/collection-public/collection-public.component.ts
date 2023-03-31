@@ -17,7 +17,6 @@ import {Whitelabelled} from "../../../../whitelabel";
 })
 export class CollectionPublicComponent extends Whitelabelled implements OnInit {
 
-  pageSizeOptions = [50, 100, 150]
   title = "Collection"
   uuidParam: string | null
   collection: ApiCollection | undefined
@@ -27,7 +26,7 @@ export class CollectionPublicComponent extends Whitelabelled implements OnInit {
   results: PaginatedSkills | undefined
 
   from = 0
-  size = this.pageSizeOptions?.length > 0 ? this.pageSizeOptions[0] : 50
+  size = 50
   columnSort: ApiSortOrder = ApiSortOrder.NameAsc
 
   showLibraryEmptyMessage = false

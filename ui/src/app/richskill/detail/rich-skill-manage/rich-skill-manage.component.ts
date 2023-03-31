@@ -33,7 +33,7 @@ export class RichSkillManageComponent extends AbstractRichSkillDetailComponent {
         showIfEmpty: true
       }, {
         label: "Categories",
-        bodyString: this.richSkill?.categories?.join("; ") ?? "",
+        bodyString: this.richSkill?.sortedCategories?.join("; ") ?? "",
         showIfEmpty: true
       }, {
         label: "Keywords",

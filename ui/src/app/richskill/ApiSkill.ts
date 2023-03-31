@@ -182,6 +182,10 @@ export class ApiSkill {
       return fwk || name
     })
   }
+
+  get sortedCategories(): string[] {
+    return this.categories?.sort((a,b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+  }
 }
 
 export enum ApiSortOrder {

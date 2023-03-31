@@ -33,7 +33,7 @@ export class SkillListRowComponent implements OnInit {
   }
 
   getFormattedCategories(): string {
-    return this.skill?.categories?.join("; ") ?? ""
+    return this.skill?.categories?.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).join("; ") ?? ""
   }
 
   getFormattedKeywords(): string {

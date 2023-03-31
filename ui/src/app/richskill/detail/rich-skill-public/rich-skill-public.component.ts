@@ -33,7 +33,7 @@ export class RichSkillPublicComponent extends AbstractRichSkillDetailComponent {
         showIfEmpty: false
       }, {
         label: "Categories",
-        bodyString: this.richSkill?.categories?.join("; ") ?? "",
+        bodyString: this.richSkill?.sortedCategories?.join("; ") ?? "",
         showIfEmpty: false
       }, {
         label: "Keywords",

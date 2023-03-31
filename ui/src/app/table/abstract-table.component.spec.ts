@@ -224,4 +224,19 @@ describe("AbstractTableComponent", () => {
     expect(component.selectAllSelected.emit).toHaveBeenCalledWith(evt.target.checked)
     expect(component.rowSelected.emit).toHaveBeenCalledWith(expected)
   })
+
+  it("shift is pressed has the correct value", () => {
+    expect(component.isShiftPressed).toBeFalse()
+    component.onKeydownHandler()
+    expect(component.isShiftPressed).toBeTrue()
+    component.onKeyupHandler()
+    expect(component.isShiftPressed).toBeFalse()
+  })
+
+  it("on row toggle should call shift selection", () => {
+    const apiSkillSummary = createMockSkillSummary()
+    const spyShiftSelection = spyOn(component, "shiftSelection")
+    component.onRowToggle(apiSkillSummary)
+    expect(spyShiftSelection).toHaveBeenCalledWith(apiSkillSummary)
+  })
 })

@@ -2,11 +2,15 @@ import {ComponentFixture, TestBed} from "@angular/core/testing"
 import {SkillTableComponent} from "./skill-table.component"
 import {createMockSkillSummary} from "../../../../test/resource/mock-data"
 import {PublishStatus} from "../../PublishStatus"
+import {ApiSkillSummary, ISkillSummary} from "../../richskill/ApiSkillSummary"
+import {IJobCode} from "../../job-codes/Jobcode"
 
 describe("SkillTableComponent", () => {
 
   let component: SkillTableComponent
   let fixture: ComponentFixture<SkillTableComponent>
+  const keywords = ["keyword 1", "keyword 2"]
+  const occupations: IJobCode[] = [{code: "Code 1"}]
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -30,18 +34,19 @@ describe("SkillTableComponent", () => {
 
   it("shift selection should work from start to end", () => {
     component.isShiftPressed = true
+    createMockSkillSummary()
     const spyEmit = spyOn(component.rowSelected, "emit")
-    const firstSelected = {id: "1", uuid: "1abd-3", status: PublishStatus.Published, skillName: "Name 1", skillStatement: "", category: "", keywords: [], occupations: []}
-    const secondSelected = {id: "5", uuid: "5abd-3", status: PublishStatus.Published, skillName: "Name 1", skillStatement: "", category: "", keywords: [], occupations: []}
-    const items = [
+    const firstSelected = createMockSkillSummary("1", PublishStatus.Published)
+    const secondSelected = createMockSkillSummary("5", PublishStatus.Published)
+    const items: ApiSkillSummary[] = [
       firstSelected,
-      {id: "2", uuid: "2abd-3", status: PublishStatus.Published, skillName: "Name 1", skillStatement: "", category: "", keywords: [], occupations: []},
-      {id: "3", uuid: "3abd-3", status: PublishStatus.Published, skillName: "Name 1", skillStatement: "", category: "", keywords: [], occupations: []},
-      {id: "4", uuid: "4abd-3", status: PublishStatus.Published, skillName: "Name 1", skillStatement: "", category: "", keywords: [], occupations: []},
+      createMockSkillSummary("1", PublishStatus.Published),
+      createMockSkillSummary("3", PublishStatus.Published),
+      createMockSkillSummary("3", PublishStatus.Published),
       secondSelected
     ]
     component.items = items
-    component.selectedItems = new Set([firstSelected])
+    component.selectedItems = new Set<ApiSkillSummary>([firstSelected])
     component.onRowToggle(secondSelected)
     expect(component.selectedItems.size).toBe(5)
     expect(spyEmit).toHaveBeenCalledWith(items)
@@ -50,17 +55,17 @@ describe("SkillTableComponent", () => {
   it("shift selection should work from end to start", () => {
     component.isShiftPressed = true
     const spyEmit = spyOn(component.rowSelected, "emit")
-    const firstSelected = {id: "1", uuid: "1abd-3", status: PublishStatus.Published, skillName: "Name 1", skillStatement: "", category: "", keywords: [], occupations: []}
-    const secondSelected = {id: "5", uuid: "5abd-3", status: PublishStatus.Published, skillName: "Name 1", skillStatement: "", category: "", keywords: [], occupations: []}
+    const firstSelected = createMockSkillSummary("1", PublishStatus.Published)
+    const secondSelected = createMockSkillSummary("5", PublishStatus.Published)
     const items = [
-      {id: "2", uuid: "2abd-3", status: PublishStatus.Published, skillName: "Name 1", skillStatement: "", category: "", keywords: [], occupations: []},
+      createMockSkillSummary("2", PublishStatus.Published),
       secondSelected,
-      {id: "3", uuid: "3abd-3", status: PublishStatus.Published, skillName: "Name 1", skillStatement: "", category: "", keywords: [], occupations: []},
-      {id: "4", uuid: "4abd-3", status: PublishStatus.Published, skillName: "Name 1", skillStatement: "", category: "", keywords: [], occupations: []},
+      createMockSkillSummary("3", PublishStatus.Published),
+      createMockSkillSummary("4", PublishStatus.Published),
       firstSelected
     ]
     component.items = items
-    component.selectedItems = new Set([firstSelected])
+    component.selectedItems = new Set<ApiSkillSummary>([firstSelected])
     component.onRowToggle(secondSelected)
     expect(component.selectedItems.size).toBe(4)
     expect(spyEmit).toHaveBeenCalledWith(Array.from(component.selectedItems))

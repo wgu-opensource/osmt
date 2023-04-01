@@ -41,8 +41,11 @@ data "aws_ssm_parameter" "ami" {
 
 ########### Container service ##########
 resource "aws_ecs_cluster_capacity_providers" "osmt_container_cluster" {
-  cluster_name = "osmt-dev-cluster"
+  cluster_name = var.osmt_dev_cluster
   capacity_providers = [ "FARGATE", "FARGATE_SPOT" ]
+  tags = {
+    env: var.environment_tag
+  }
 }
 
 ############ DATABASES ##########
@@ -55,11 +58,11 @@ resource "aws_db_instance" "osmt_db" {
   username             = var.db_user
   password             = var.db_password
   port                 = 3306
-  identifier           = "osmt-dev-rds"
+  identifier           = var.rds_identifier
   auto_minor_version_upgrade = true
   skip_final_snapshot  = true
   tags = {
-    env: "dev"
+    env: var.environment_tag
   }
 }
 
@@ -72,7 +75,7 @@ resource "aws_elasticache_cluster" "redis_db" {
   engine_version       = "6.x"
   port                 = 6379
   tags = {
-    env: "dev"
+    env: var.environment_tag
   }
 }
 
@@ -85,7 +88,8 @@ resource "aws_instance" "elasticsearch" {
   vpc_security_group_ids  = [data.aws_security_group.default_sg.id]
   key_name = "deploy-key"
   tags = {
-    env: "dev"
+    env: var.environment_tag
+    cluster: var.osmt_dev_cluster
   }
   root_block_device {
     delete_on_termination = true

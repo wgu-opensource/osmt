@@ -12,9 +12,9 @@ Before you begin, you must complete the following prerequisites:
 
 ## Setting up AWS in Terraform ##
 
-To use Terraform to manage and deploy resources and infrastructure to AWS, you will need to use the AWS
-provider. You must configure the provider with the proper credentials before you can use it. This provider
-is maintained internally by the HashiCorp AWS Provider team.
+To use Terraform to manage and deploy resources and infrastructure to AWS, you will need to use the AWS provider. 
+You must configure the provider with the proper credentials before you can use it.
+This provider is maintained internally by the HashiCorp AWS Provider team.
 
 ```hcl
 terraform {

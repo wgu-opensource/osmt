@@ -29,6 +29,7 @@ describe("SizePaginationComponent", () => {
 
     component.onValueChange(100);
 
+    expect(component.values).toContain(param)
     expect(onValueChangeSpy).toHaveBeenCalled()
     expect(typeof param).toEqual('number')
   })

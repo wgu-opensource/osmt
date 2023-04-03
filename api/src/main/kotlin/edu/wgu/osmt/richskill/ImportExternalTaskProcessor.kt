@@ -98,17 +98,17 @@ class ImportExternalTaskProcessor {
 
             if (collectionDao != null) {
                 val skillUrls = apiCollection.skills?.map { it.id }
-                totalCount = skillUrls.size
-                skillUrls.forEach { skillUrl ->
+                totalCount = skillUrls?.size ?: 0
+                skillUrls?.forEach { skillUrl ->
                     importExternalService.fetchSkillFromUrl(skillUrl)?.let { apiSkill ->
                         val skillDao = richSkillRepository.importFromApi(apiSkill=apiSkill,
-                                originalUrl=apiSkill.id,
-                                originalLibraryName=task.libraryName,
-                                collectionDao=collectionDao,
-                                user=task.userString)
+                            originalUrl=apiSkill.id,
+                            originalLibraryName=task.libraryName,
+                            collectionDao=collectionDao,
+                            user=task.userString)
                         if (skillDao != null) {
                             modifiedCount += 1
-//                            CollectionSkills.create(collectionId = collectionDao.id.value, skillId = skillDao.id.value)
+            //                            CollectionSkills.create(collectionId = collectionDao.id.value, skillId = skillDao.id.value)
                         }
                     }
                 }

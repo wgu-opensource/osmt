@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {Component, Input} from "@angular/core"
 import {FormControl} from "@angular/forms"
 
 @Component({
@@ -6,24 +6,14 @@ import {FormControl} from "@angular/forms"
   templateUrl: "./size-pagination.component.html",
   styleUrls: ["./size-pagination.component.scss"]
 })
-export class SizePaginationComponent implements OnInit {
+export class SizePaginationComponent {
 
-  values: number[] = [50, 100, 150]
-  @Output()
-  changeValue: EventEmitter<number> = new EventEmitter()
-  control: FormControl = new FormControl(undefined)
+  readonly values: number[] = [50, 100, 150]
   @Input()
-  currentSize = 50
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
+  control?: FormControl
 
   onValueChange(value: number): void {
-    this.control.patchValue(value)
-    this.changeValue.emit(value)
+    this.control?.patchValue(value)
   }
 
 }

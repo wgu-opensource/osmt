@@ -2,7 +2,7 @@
   <label>
     Items per page
   </label>
-  <select name="size-pagination" #size (change)="onValueChange(+size.value)" [ngModel]="currentSize" class="m-text">
+  <select name="size-pagination" #size (change)="onValueChange(+size.value)" [value]="this.control?.value" class="m-text">
     <option [value]="value" *ngFor="let value of values">
       {{value}}
     </option>

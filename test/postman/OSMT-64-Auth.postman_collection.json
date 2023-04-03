@@ -1,0 +1,222 @@
+{
+	"info": {
+		"_postman_id": "ba41f2eb-d7d7-4ca7-bf20-e216e09c9e18",
+		"name": "OSMT-64-Auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3748969"
+	},
+	"item": [
+		{
+			"name": "Okta Session Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Receive Okta session token\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.sessionToken).exist;",
+							"});",
+							"",
+							"pm.environment.set(\"oktaSessionToken\", pm.response.json().sessionToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true,
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{oktaUsername}}\",\n    \"password\": \"{{oktaPassword}}\",\n    \"options\": {\n        \"multiOptionalFactorEnroll\": false,\n        \"warnBeforePasswordExpired\": true\n    }\n}"
+				},
+				"url": {
+					"raw": "{{oktaUrl}}/api/v1/authn",
+					"host": [
+						"{{oktaUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"authn"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OSMT App State",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Location is present\", function () {",
+							"    pm.response.to.have.header(\"Location\");",
+							"});",
+							"",
+							"let location = pm.response.headers.get('Location');",
+							"pm.environment.set(\"osmtAppState\", location);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/oauth2/authorization/okta",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"oauth2",
+						"authorization",
+						"okta"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Okta Auth Grant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"x-okta-request-id is present\", function () {",
+							"    pm.response.to.have.header(\"x-okta-request-id\");",
+							"});",
+							"pm.test(\"content-security-policy is present\", function () {",
+							"    pm.response.to.have.header(\"content-security-policy\");",
+							"});",
+							"pm.test(\"Location is present\", function () {",
+							"    pm.response.to.have.header(\"Location\");",
+							"});",
+							"pm.test(\"Required cookie is present\", function () {",
+							"    pm.response.to.have.header(\"set-cookie\");",
+							"});",
+							"console.log(pm.response.headers.get(\"set-cookie\"));",
+							"",
+							"pm.environment.set(\"oktaRequestId\", pm.response.headers.get('x-okta-request-id'));",
+							"pm.environment.set(\"oktaSecurityPolicy\", pm.response.headers.get('content-security-policy'));",
+							"pm.environment.set(\"oktaReturnRedirect\", pm.response.headers.get('Location'));",
+							"pm.environment.set(\"oktaCookie\", pm.response.headers.get(\"set-cookie\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{osmtAppState}}&prompt=none&sessionToken={{oktaSessionToken}}",
+					"host": [
+						"{{osmtAppState}}&prompt=none&sessionToken={{oktaSessionToken}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OSMT App Register Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Location is present\", function () {",
+							"    pm.response.to.have.header(\"Location\");",
+							"});",
+							"",
+							"let location = pm.response.headers.get('Location');",
+							"let parts = location.split('?');",
+							"let osmtLink = parts[0];",
+							"console.log(`osmtLink: ${osmtLink}`);",
+							"let linkParts = osmtLink.split('/');",
+							"console.log(`linkParts: ${linkParts}`);",
+							"let status = linkParts.slice(-1);",
+							"console.log(`status: ${status}`);",
+							"let query = parts[1].split('&');",
+							"let parameters = {};",
+							"query.forEach((entry) => {",
+							"    let p = entry.split('=');",
+							"    parameters[p[0]] = p[1];",
+							"});",
+							"",
+							"pm.test(\"Authentication successful\", function () {",
+							"    pm.expect(...status).to.equal(\"success\");",
+							"});",
+							"",
+							"let bearerToken = parameters.token;",
+							"",
+							"console.log(`Bearer token ${bearerToken}`);",
+							"",
+							"pm.environment.set(\"bearerToken\", bearerToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-okta-request-id",
+						"value": "{{oktaRequestId}}",
+						"type": "text"
+					},
+					{
+						"key": "content-security-policy",
+						"value": "{{oktaSecurityPolicy}}",
+						"type": "text"
+					},
+					{
+						"key": "set-cookie",
+						"value": "{{oktaCookie}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{oktaReturnRedirect}}",
+					"host": [
+						"{{oktaReturnRedirect}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

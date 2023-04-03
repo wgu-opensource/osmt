@@ -11,6 +11,8 @@ export class SizePaginationComponent {
   readonly values: number[] = [50, 100, 150]
   @Input()
   control?: FormControl
+  @Input()
+  currentSize = 50
 
   onValueChange(value: number): void {
     this.control?.patchValue(value)

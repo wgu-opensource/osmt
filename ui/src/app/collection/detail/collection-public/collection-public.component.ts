@@ -10,6 +10,7 @@ import {PublishStatus} from "../../../PublishStatus"
 import {ApiCollection} from "../../ApiCollection"
 import {Title} from "@angular/platform-browser";
 import {Whitelabelled} from "../../../../whitelabel";
+import {FormControl} from "@angular/forms"
 
 @Component({
   selector: "app-collection-public",
@@ -30,6 +31,7 @@ export class CollectionPublicComponent extends Whitelabelled implements OnInit {
   columnSort: ApiSortOrder = ApiSortOrder.NameAsc
 
   showLibraryEmptyMessage = false
+  sizeControl: FormControl = new FormControl(this.size)
 
   constructor(protected router: Router,
               protected skillService: RichSkillService,
@@ -39,6 +41,7 @@ export class CollectionPublicComponent extends Whitelabelled implements OnInit {
               protected titleService: Title
   ) {
     super()
+    this.sizeControl.valueChanges.subscribe(value => this.sizeChange(value))
     this.uuidParam = this.route.snapshot.paramMap.get("uuid")
   }
 

@@ -50,7 +50,7 @@
       <app-size-pagination
         *ngIf="totalCount > 0"
         [currentSize]="size"
-        (changeValue)="sizeChange($event)">
+        [control]="sizeControl">
       </app-size-pagination>
 
       <app-pagination

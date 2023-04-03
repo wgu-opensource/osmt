@@ -54,17 +54,11 @@ describe("LibraryExportComponent", () => {
     expect(LibraryExportComponent).toBeTruthy()
   })
 
-  // it("Should call export library with result", () => {
-  //   const service = TestBed.inject(RichSkillService)
-  //   const spy = spyOn(service, "libraryExportCsv").and.returnValue(of(apiTaskResultForCSV))
-  //   component.exporter.exportLibraryCsv()
-  //   expect(spy).toHaveBeenCalled()
-  //   // expect(FileSaver.saveAs).toHaveBeenCalled()
-  // })
-
-
-  // it("download as csv file", () => {
-  //   component["downloadAsCsvFile"]("value1,value2,value3")
-  //   expect(FileSaver.saveAs).toHaveBeenCalled()
-  // })
+  it("Should call export library with result", () => {
+    const service = TestBed.inject(RichSkillService)
+    const spy = spyOn(service, "libraryExportCsv").and.returnValue(of(apiTaskResultForCSV))
+    component.exporter.exportLibraryCsv()
+    expect(spy).toHaveBeenCalled()
+    expect(FileSaver.saveAs).toHaveBeenCalled()
+  })
 })

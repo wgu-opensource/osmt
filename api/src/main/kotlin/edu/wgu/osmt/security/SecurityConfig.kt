@@ -96,7 +96,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(GET, COLLECTION_CSV).permitAll()
             .mvcMatchers(GET, TASK_DETAIL_TEXT).permitAll()   // public csv results
             .mvcMatchers(GET, COLLECTION_XLSX).permitAll()
-            .mvcMatchers(GET, TASK_DETAIL_MEDIA).permitAll()   // public csv results
+            .mvcMatchers(GET, TASK_DETAIL_MEDIA).permitAll()   // public excel results
 
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
             .and().oauth2Login().successHandler(redirectToFrontend)

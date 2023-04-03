@@ -90,17 +90,17 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
     return this.joinGenericKeywords("; ", employers)
   }
 
-  private joinList(delimeter: string, list: string[]): string {
+  private joinList(delimiter: string, list: string[]): string {
     return list
       .filter(item => item)
-      .join(delimeter)
+      .join(delimiter)
   }
 
-  private joinGenericKeywords(delimeter: string, keywords: INamedReference[]): string {
+  private joinGenericKeywords(delimiter: string, keywords: INamedReference[]): string {
     const filteredList: string[] = keywords
       .map(keyword => (keyword.name ? keyword.name : keyword.id) as string)
 
-    return this.joinList(delimeter, filteredList)
+    return this.joinList(delimiter, filteredList)
   }
 
   protected formatAssociatedCollections(isAuthorized: boolean): string {

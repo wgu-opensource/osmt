@@ -336,6 +336,11 @@ export class RichSkillServiceStub {
     return of(`x, y, z`)
   }
 
+  getSkillXlsxByUuid(uuid: string): Observable<string> {
+    const date = new Date("2020-06-25T14:58:46.313Z")
+    return of(`x, y, z`)
+  }
+
   // noinspection JSUnusedLocalSymbols
   createSkill(updateObject: ApiSkillUpdate, pollIntervalMs: number = 1000): Observable<ApiSkill> {
     const date = new Date("2020-06-25T14:58:46.313Z")
@@ -381,15 +386,28 @@ export class RichSkillServiceStub {
   }
 
   // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
-  libraryExport(): Observable<string> {
+  libraryExportCsv(): Observable<string> {
     return of(`x, y, z`)
   }
 
-  exportSearch(): Observable<ApiTaskResult> {
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
+  libraryExportXlsx(): Observable<string> {
+    return of(`x, y, z`)
+  }
+
+  exportSearchCsv(): Observable<ApiTaskResult> {
     return of(mockTaskResultForExportSearch)
   }
 
-  getResultExportedLibrary(): Observable<any> {
+  exportSearchXlsx(): Observable<ApiTaskResult> {
+    return of(mockTaskResultForExportSearch)
+  }
+
+  getResultExportedCsvLibrary(): Observable<any> {
+    return of("")
+  }
+
+  getResultExportedXlsxLibrary(): Observable<any> {
     return of("")
   }
 

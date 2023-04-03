@@ -81,38 +81,6 @@ describe("CollectionPublicActionBarComponent", () => {
     expect(childComponent).toBeTruthy();
   });
 
-  // it("pollCsv should return", (done) => {
-  //   // Arrange
-  //   (childComponent as any).exporter.taskUuidInProgress = "123";
-  //   (childComponent as any).exporter.intervalHandle = 1;
-
-  //   // Act
-  //   (childComponent as any).exporter.pollCsv();
-
-  //   // Assert
-  //   /* Delay the handling to give time for the async method to complete. */
-  //   setTimeout(() => {
-  //     expect((childComponent as any).taskUuidInProgress).toBeFalsy()
-  //     expect(FileSaver.saveAs).toHaveBeenCalled()
-  //     done()
-  //   }, 2000);
-  // });
-  // it("pollCsv should fail", (done) => {
-  //   // Arrange
-  //   (childComponent as any).taskUuidInProgress = undefined;
-  //   (childComponent as any).intervalHandle = 1;
-
-  //   // Act
-  //   (childComponent as any).exporter.pollCsv();
-
-  //   // Assert
-  //   /* Delay the handling to give time for the async method to complete. */
-  //   setTimeout(() => {
-  //     expect(FileSaver.saveAs).not.toHaveBeenCalled()
-  //     done()
-  //   }, 2000);
-  // });
-
   it("onCopyURL should return", () => {
     // Arrange
     const element: HTMLTextAreaElement = document.createElement("TextArea") as HTMLTextAreaElement;
@@ -134,23 +102,4 @@ describe("CollectionPublicActionBarComponent", () => {
     // Assert
     /* Nothing to check */
   })
-
-  // it("onDownloadCsv should return", (done) => {
-  //   // Arrange
-  //   const task = createMockTaskResult();
-  //   (childComponent as any).exporter.collectionUuid = "myUUID";
-  //   (childComponent as any).exporter.taskUuidInProgress = undefined;
-
-  //   // Act
-  //   (childComponent as any).exporter.onDownloadCsv();
-  //   const result = (childComponent as any).taskUuidInProgress;
-
-  //   // Assert
-  //   /* Delay the handling to give time for the async method to complete. */
-  //   setTimeout(() => {
-  //     expect(result === task.uuid).toBeTrue()  // Due to conditional types, cannot use .toEqual()
-  //     expect(FileSaver.saveAs).toHaveBeenCalled()
-  //     done()
-  //   }, 2000);
-  // });
 });

@@ -1,8 +1,9 @@
-import {ExportCollectionComponent} from "./export-collection.component"
-import {ComponentFixture, TestBed} from "@angular/core/testing"
-import {CollectionService} from "../collection/service/collection.service"
-import {CollectionServiceStub} from "../../../test/resource/mock-stubs"
-import {HttpClientTestingModule} from "@angular/common/http/testing"
+import { HttpClientTestingModule } from "@angular/common/http/testing"
+import { ComponentFixture, TestBed } from "@angular/core/testing"
+
+import { ExportCollectionComponent } from "./export-collection.component"
+import { CollectionService } from "../collection/service/collection.service"
+import { CollectionServiceStub } from "../../../test/resource/mock-stubs"
 
 describe("ExportCollectionComponent", () => {
   let component: ExportCollectionComponent
@@ -10,12 +11,12 @@ describe("ExportCollectionComponent", () => {
   let collectionService: CollectionService
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       declarations: [
         ExportCollectionComponent
       ],
       providers: [
-        {provide: CollectionService, useClass: CollectionServiceStub},
+        { provide: CollectionService, useClass: CollectionServiceStub },
       ],
       imports: [
         HttpClientTestingModule
@@ -34,9 +35,9 @@ describe("ExportCollectionComponent", () => {
     expect(component).toBeTruthy()
   })
 
-  it("getCollectionCsv should works", () => {
-    const uuid = "345324-5234dfa-34"
-    const entityName = "Collection name.csv"
+  it("getCollectionCsv should work", () => {
+    const uuid = "d18ef6a0-e8f6-49b1-92bb-eadfaef6b1a9"
+    const entityName = "Collection name"
     const spyLoader = spyOn(component["toastService"], "showBlockingLoader")
     const spyService = spyOn(collectionService, "requestCollectionSkillsCsv").and.callThrough()
     component.getCollectionCsv(uuid, entityName)
@@ -44,9 +45,9 @@ describe("ExportCollectionComponent", () => {
     expect(spyService).toHaveBeenCalled()
   })
 
-  it("getCollectionXlsx should works", () => {
-    const uuid = "345324-5234dfa-34"
-    const entityName = "Collection name.csv"
+  it("getCollectionXlsx should work", () => {
+    const uuid = "d18ef6a0-e8f6-49b1-92bb-eadfaef6b1a9"
+    const entityName = "Collection name"
     const spyLoader = spyOn(component["toastService"], "showBlockingLoader")
     const spyService = spyOn(collectionService, "requestCollectionSkillsXlsx").and.callThrough()
     component.getCollectionXlsx(uuid, entityName)
@@ -54,28 +55,28 @@ describe("ExportCollectionComponent", () => {
     expect(spyService).toHaveBeenCalled()
   })
 
-  it("pollCsv should return ", () => {
+  it("pollCsv should return", () => {
     component.taskUuidInProgress = undefined
     const spy = spyOn(collectionService, "getCsvTaskResultsIfComplete").and.callThrough()
     component.pollCsv()
     expect(spy).not.toHaveBeenCalled()
   })
 
-  it("pollCsv should call getCsvTaskResultIfComplete ", () => {
+  it("pollCsv should call getCsvTaskResultIfComplete", () => {
     component.taskUuidInProgress = "345-dfh-23421a-as3423"
     const spy = spyOn(collectionService, "getCsvTaskResultsIfComplete").and.callThrough()
     component.pollCsv()
     expect(spy).toHaveBeenCalled()
   })
 
-  it("pollXlsx should return ", () => {
+  it("pollXlsx should return", () => {
     component.taskUuidInProgress = undefined
     const spy = spyOn(collectionService, "getXlsxTaskResultsIfComplete").and.callThrough()
     component.pollXlsx()
     expect(spy).not.toHaveBeenCalled()
   })
 
-  it("pollXlsx should call getCsvTaskResultIfComplete ", () => {
+  it("pollXlsx should call getCsvTaskResultIfComplete", () => {
     component.taskUuidInProgress = "345-dfh-23421a-as3423"
     const spy = spyOn(collectionService, "getXlsxTaskResultsIfComplete").and.callThrough()
     component.pollXlsx()

@@ -4,28 +4,28 @@ package edu.wgu.osmt.jobcode
 // formats: x-xxxx.xx and xx.xxxx.xx which means that a little extra processing needs to be done.
 object JobCodeBreakout {
 
-    private val codePartDelimeter = "[-.]".toRegex() // used to split code on either hyphen (-) or period (.)
+    private val codePartDelimiter = "[-.]".toRegex() // used to split code on either hyphen (-) or period (.)
 
-    private fun majorPart(code: String): String? = code.split(codePartDelimeter)
+    private fun majorPart(code: String): String? = code.split(codePartDelimiter)
         .takeIf { it.isNotEmpty() }
         ?.let { it[0] }
         ?.takeIf { it.toIntOrNull() != null }
 
-    private fun minorPart(code: String): String? = code.split(codePartDelimeter)
+    private fun minorPart(code: String): String? = code.split(codePartDelimiter)
         .takeIf { it.size > 1 }
         ?.let { it[1] }
         ?.takeIf { it.length >= 2 }
         ?.substring(0, 2)
         ?.takeIf { it.toIntOrNull() != null }
 
-    private fun minorLeadingPart(code: String): String? = code.split(codePartDelimeter)
+    private fun minorLeadingPart(code: String): String? = code.split(codePartDelimiter)
         .takeIf { it.size > 1 }
         ?.let { it[1] }
         ?.takeIf { it.length >= 2 }
         ?.substring(0, 1)
         ?.takeIf { it.toIntOrNull() != null }
 
-    private fun broadPart(code: String): String? = code.split(codePartDelimeter)
+    private fun broadPart(code: String): String? = code.split(codePartDelimiter)
         .takeIf { it.size > 1 }
         ?.let { it[1] }
         ?.takeIf { it.length >= 3 }
@@ -33,14 +33,14 @@ object JobCodeBreakout {
         ?.takeIf { it.toIntOrNull() != null }
 
 
-    private fun detailedPart(code: String): String? = code.split(codePartDelimeter)
+    private fun detailedPart(code: String): String? = code.split(codePartDelimiter)
         .takeIf { it.size > 1 }
         ?.let { it[1] }
         ?.takeIf { it.length >= 4 }
         ?.substring(3, 4)
         ?.takeIf { it.toIntOrNull() != null }
 
-    private fun jobRolePart(code: String): String? = code.split(codePartDelimeter)
+    private fun jobRolePart(code: String): String? = code.split(codePartDelimiter)
         .takeIf { it.size > 2 }
         ?.let { it[2] }
         ?.takeIf { it.toIntOrNull() != null }

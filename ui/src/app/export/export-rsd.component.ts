@@ -39,16 +39,7 @@ export class ExportRsdComponent {
   }
 
   getRsdXlsx(uuid: string, entityName: string): void {
-    // this.uuid = uuid;
-    // const skillExportName = entityName ? entityName : "OSMT Skill"
-    // this.toastService.showBlockingLoader()
-    // this.richSkillService.getSkillXlsxByUuid(this.uuid)
-    //   .subscribe((xlsxExport: string) => {
-    //     const blob = new Blob([xlsxExport], {type: "application/vnd.ms-excel;charset=utf-8;"})
-    //     const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
-    //     FileSaver.saveAs(blob, `RSD Skills Excel - ${skillExportName} - ${date}.xlsx`)
-    //     this.toastService.hideBlockingLoader()
-    //   })
+    // Implementation differs from getRsdCsv, the below endpoint schedules a task
     this.matchingQuery = [uuid]
     this.richSkillService.exportSearchXlsx(this.matchingQuery)
       .subscribe((apiTask) => {

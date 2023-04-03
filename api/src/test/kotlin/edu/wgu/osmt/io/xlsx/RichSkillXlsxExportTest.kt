@@ -73,9 +73,4 @@ internal class RichSkillXlsxExportTest @Autowired constructor(
         //Assert
         Assertions.assertThat(result).hasSize(17)
     }
-
-    @Test
-    fun`toXls() should convert columns to xls object without Alignments`() {
-        
-    }
 }

@@ -14,18 +14,18 @@ class RichSkillXlsxExport(
         val columns = arrayOf(
             XlsxColumn<RichSkillAndCollections>("Canonical URL") { it.rs.canonicalUrl(appConfig.baseUrl) },
             XlsxColumn("RSD Name") { it.rs.name },
-            XlsxColumn("Author") { it.rs.author?.value ?: "" },
+            XlsxColumn("Authors") { it.rs.authors.joinToString(listDelimiter) { author -> author.value ?: "" } },
             XlsxColumn("Skill Statement") { it.rs.statement },
-            XlsxColumn("Category") { it.rs.category?.value ?: "" },
-            XlsxColumn("Keywords") { it.rs.searchingKeywords.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) },
-            XlsxColumn("Standards") { it.rs.standards.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) },
-            XlsxColumn("Certifications") { it.rs.certifications.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) },
+            XlsxColumn("Categories") { it.rs.categories.joinToString(listDelimiter) { category -> category.value ?: "" } },
+            XlsxColumn("Keywords") { it.rs.searchingKeywords.joinToString(listDelimiter) { keyword -> keyword.value ?: "" } },
+            XlsxColumn("Standards") { it.rs.standards.joinToString(listDelimiter) { keyword -> keyword.value ?: "" } },
+            XlsxColumn("Certifications") { it.rs.certifications.joinToString(listDelimiter) { keyword -> keyword.value ?: "" } },
             XlsxColumn("Occupation Major Groups") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::majorCode) },
             XlsxColumn("Occupation Minor Groups") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::minorCode) },
             XlsxColumn("Broad Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::broadCode) },
             XlsxColumn("Detailed Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::detailedCode) },
             XlsxColumn("O*Net Job Codes") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::jobRoleCode) },
-            XlsxColumn("Employers") { it.rs.employers.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) }
+            XlsxColumn("Employers") { it.rs.employers.joinToString(listDelimiter) { keyword -> keyword.value ?: "" } }
         )
         val alignmentCount = data.map { s -> s.rs.alignments.size }.maxOrNull() ?: 0
         val alignmentColumns = (0 until alignmentCount).flatMap { i ->

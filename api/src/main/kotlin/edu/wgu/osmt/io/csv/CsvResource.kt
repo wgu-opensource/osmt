@@ -42,7 +42,7 @@ abstract class CsvResource<T>(val debugName: String) : TabularResource<CsvColumn
         val config = configureCsv()
 
         return CSVWriter(writer,
-                config.delimeter,
+                config.delimiter,
                 config.quoteChar,
                 config.escapeChar,
                 config.lineEnd
@@ -87,14 +87,14 @@ data class CsvColumn<T>(
  * Configure the global attributes of a csv export
  */
 data class CsvConfig(
-    val delimeter: Char = Defaults.delimeter,
+    val delimiter: Char = Defaults.delimiter,
     val quoteChar: Char = Defaults.quoteChar,
     val escapeChar: Char = Defaults.escapeChar,
     val lineEnd: String = Defaults.lineEnd,
     val includeHeader: Boolean = Defaults.includeHeader
 ) {
     companion object Defaults { // Allows the default values to be shared with its builder
-        val delimeter: Char = CSVWriter.DEFAULT_SEPARATOR
+        val delimiter: Char = CSVWriter.DEFAULT_SEPARATOR
         val quoteChar: Char = CSVWriter.DEFAULT_QUOTE_CHARACTER
         val escapeChar: Char = CSVWriter.DEFAULT_ESCAPE_CHARACTER
         val lineEnd: String = CSVWriter.DEFAULT_LINE_END

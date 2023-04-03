@@ -33,7 +33,6 @@ class XlsxTaskProcessor : TabularTask<XlsxTask>() {
         val xlsx = collectionRepository.findByUUID(task.collectionUuid)
             ?.skills
             ?.filter { PublishStatus.Archived != it.publishStatus() }
-            ?.with(RichSkillDescriptorDao::collections)
             ?.map { RichSkillAndCollections.fromDao(it) }
             ?.let { RichSkillXlsxExport(appConfig).toXlsx(it) }
 
@@ -53,7 +52,6 @@ class XlsxTaskProcessor : TabularTask<XlsxTask>() {
         logger.info("Started processing task for Full Library .xlsx export")
 
         val xlsx = richSkillRepository.findAll()
-            ?.with(RichSkillDescriptorDao::collections)
             ?.map { RichSkillAndCollections.fromDao(it) }
             ?.let { RichSkillXlsxExport(appConfig).toXlsx(it) }
 

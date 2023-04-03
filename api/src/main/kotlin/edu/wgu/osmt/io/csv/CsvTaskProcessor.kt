@@ -33,7 +33,6 @@ class CsvTaskProcessor : TabularTask<CsvTask>() {
         val csv = collectionRepository.findByUUID(task.collectionUuid)
             ?.skills
             ?.filter { PublishStatus.Archived != it.publishStatus() }
-            ?.with(RichSkillDescriptorDao::collections)
             ?.map { RichSkillAndCollections.fromDao(it) }
             ?.let { RichSkillCsvExport(appConfig).toCsv(it) }
 
@@ -53,7 +52,6 @@ class CsvTaskProcessor : TabularTask<CsvTask>() {
         logger.info("Started processing task for Full Library .csv export")
 
         val csv = richSkillRepository.findAll()
-            ?.with(RichSkillDescriptorDao::collections)
             ?.map { RichSkillAndCollections.fromDao(it) }
             ?.let { RichSkillCsvExport(appConfig).toCsv(it) }
 

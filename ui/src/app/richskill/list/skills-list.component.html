@@ -29,7 +29,7 @@
       [keywords]="keywords"
       [currentSize]="size"
       (changeValue)="sizeChange($event)"
-      showSizePagination="true"
+      [showSizePagination]="totalCount > 50"
       (keywordsChanged)="keywordsChange($event)"
       [showAdvancedFilteredSearch]="showAdvancedFilteredSearch"
       (filtersChanged)="handleFiltersChanged($event)"

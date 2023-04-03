@@ -27,6 +27,13 @@
   </div>
 
   <div class="l-container">
+
+    <app-size-pagination
+      *ngIf="totalCount > 0"
+      [currentSize]="size"
+      [control]="sizeControl">
+    </app-size-pagination>
+
     <ng-template [appLoadingObservables]="[resultsLoaded]">
       <div class="t-margin-medium t-margin-bottom">
         <p class="t-visuallyHidden">Select one or more RSDs in the table, or select all in the table heading, then use the action menu to publish, archive, unarchive, or add the selected RSDs to a collection. </p>
@@ -46,12 +53,6 @@
       <app-empty-message *ngIf="emptyResults">
         <p class="m-emptyMessage-x-message">0 RSDs associated with this collection</p>
       </app-empty-message>
-
-      <app-size-pagination
-        *ngIf="totalCount > 0"
-        [currentSize]="size"
-        [control]="sizeControl">
-      </app-size-pagination>
 
       <app-pagination
         [currentPage]="currentPageNo"

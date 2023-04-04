@@ -1,8 +1,6 @@
 import {Component, Input} from "@angular/core"
 import {FormControl} from "@angular/forms"
 
-export const minimumThreshold = 50
-
 @Component({
   selector: "app-size-pagination",
   templateUrl: "./size-pagination.component.html",

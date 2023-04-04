@@ -1,7 +1,8 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core"
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from "@angular/core"
 import {PublishStatus} from "../../PublishStatus";
 import {FilterDropdown} from "../../models/filter-dropdown.model"
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms"
+import {SizePaginationComponent} from "../skills-library-table/size-pagination/size-pagination.component"
 
 @Component({
   selector: "app-filter-controls",
@@ -9,6 +10,8 @@ import {FormBuilder, FormControl, FormGroup} from "@angular/forms"
   styleUrls: ["./filter-controls.component.scss"]
 })
 export class FilterControlsComponent implements OnInit, OnChanges {
+
+  @ViewChild(SizePaginationComponent) sizePagination!: SizePaginationComponent
   @Input() selectedFilters: Set<PublishStatus> = new Set()
   @Output() keywordsChanged: EventEmitter<FilterDropdown> = new EventEmitter<FilterDropdown>()
   @Output() filtersChanged: EventEmitter<Set<PublishStatus>> = new EventEmitter<Set<PublishStatus>>()

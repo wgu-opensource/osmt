@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core"
+import {Component, OnInit, ViewChild} from "@angular/core"
 import {ApiSearch, PaginatedSkills} from "../../../richskill/service/rich-skill-search.service"
 import {RichSkillService} from "../../../richskill/service/rich-skill.service"
 import {ActivatedRoute, Router} from "@angular/router"
@@ -11,6 +11,7 @@ import {ApiCollection} from "../../ApiCollection"
 import {Title} from "@angular/platform-browser";
 import {Whitelabelled} from "../../../../whitelabel";
 import {FormControl} from "@angular/forms"
+import {SizePaginationComponent} from "../../../table/skills-library-table/size-pagination/size-pagination.component"
 
 @Component({
   selector: "app-collection-public",
@@ -18,6 +19,7 @@ import {FormControl} from "@angular/forms"
 })
 export class CollectionPublicComponent extends Whitelabelled implements OnInit {
 
+  @ViewChild(SizePaginationComponent) sizePagination!: SizePaginationComponent
   title = "Collection"
   uuidParam: string | null
   collection: ApiCollection | undefined
@@ -128,7 +130,7 @@ export class CollectionPublicComponent extends Whitelabelled implements OnInit {
   }
 
   get isSizePaginationVisible(): () => boolean {
-    return () => this.totalCount > 50
+    return () => this.totalCount > this.sizePagination?.values[0]
   }
 
 }

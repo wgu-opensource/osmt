@@ -18,7 +18,7 @@ import {CollectionService} from "../../collection/service/collection.service"
 import {ApiCollection} from "../../collection/ApiCollection"
 import {CollectionPipe} from "../../pipes"
 import {FilterDropdown} from "../../models/filter-dropdown.model"
-import {minimumThreshold} from "../../table/skills-library-table/size-pagination/size-pagination.component"
+import {FilterControlsComponent} from "../../table/filter-controls/filter-controls.component"
 
 @Component({
   selector: "app-skills-list",
@@ -33,6 +33,7 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   @ViewChild("titleHeading") titleElement!: ElementRef
   @ViewChild(TableActionBarComponent) tableActionBar!: TableActionBarComponent
+  @ViewChild(FilterControlsComponent) filterControlsComponent!: FilterControlsComponent
 
 
   resultsLoaded: Observable<PaginatedSkills> | undefined
@@ -461,7 +462,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
 
   get isSizePaginationVisible(): () => boolean {
-    return () => this.totalCount > minimumThreshold
+    return () => this.totalCount > this.filterControlsComponent?.sizePagination?.values[0]
   }
 
 }

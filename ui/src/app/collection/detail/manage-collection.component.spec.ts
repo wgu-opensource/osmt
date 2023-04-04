@@ -483,6 +483,22 @@ describe("ManageCollectionComponent", () => {
     expect(component.getApiSearch).not.toHaveBeenCalled()
   })
 
+  it("remove skills should have api search with query", () => {
+    component.selectAllChecked = true
+    const searchQuery = "art"
+    component.searchForm?.get("search")?.patchValue(searchQuery)
+    component.removeFromCollection()
+    expect(component.apiSearch?.query).toEqual(searchQuery)
+  })
+
+  it("remove skills should have api search with query", () => {
+    component.selectAllChecked = true
+    component.removeFromCollection()
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Workspace)
+    expect(component.apiSearch?.uuids?.length).toBeGreaterThan(0)
+  })
+
   it("submitSkillRemoval should be correct", () => {
     // Arrange
     const spyReloadCollection = spyOn(component, "reloadCollection").and.returnValue()

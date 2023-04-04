@@ -26,8 +26,6 @@ class ConcreteComponent extends SkillsListComponent {
 
   loadNextPage(): void {}
 
-  handleSelectAll(selectAllChecked: boolean): void {}
-
   public setResults(results: PaginatedSkills): void {
     super.setResults(results)
   }
@@ -104,6 +102,18 @@ describe("SkillsListComponent", () => {
     const spy = spyOn(collectionService, "getWorkspace").and.callThrough()
     component["handleClickAddToWorkspace"]()
     expect(spy).toHaveBeenCalled()
+  })
+
+  it( "handleSelectAll should toggle select all checkbox to true",() =>  {
+    component.handleSelectAll(true)
+    const selectAll = component.selectAllChecked
+    expect(selectAll).toBeTrue()
+  })
+
+  it( "handleSelectAll should toggle select all checkbox to false", () =>  {
+    component["handleSelectAll"](false)
+    const selectAll = component.selectAllChecked
+    expect(selectAll).toBeFalse()
   })
 
   it("skillCountLabel should be correct", () => {

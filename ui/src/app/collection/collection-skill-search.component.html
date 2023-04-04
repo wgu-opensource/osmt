@@ -33,6 +33,8 @@
 
       <app-filter-controls
         [selectedFilters]="selectedFilters"
+        [isSizePaginationVisible]="isSizePaginationVisible"
+        (changeValue)="sizeChange($event)"
         (filtersChanged)="handleFiltersChanged($event)"
       ></app-filter-controls>
 

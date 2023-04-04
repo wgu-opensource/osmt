@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core"
+import {Component, OnInit, ViewChild} from "@angular/core"
 import {ApiSearch, PaginatedSkills} from "../../../richskill/service/rich-skill-search.service"
 import {RichSkillService} from "../../../richskill/service/rich-skill.service"
 import {ActivatedRoute, Router} from "@angular/router"
@@ -10,6 +10,8 @@ import {PublishStatus} from "../../../PublishStatus"
 import {ApiCollection} from "../../ApiCollection"
 import {Title} from "@angular/platform-browser";
 import {Whitelabelled} from "../../../../whitelabel";
+import {FormControl} from "@angular/forms"
+import {SizePaginationComponent} from "../../../table/skills-library-table/size-pagination/size-pagination.component"
 
 @Component({
   selector: "app-collection-public",
@@ -17,6 +19,7 @@ import {Whitelabelled} from "../../../../whitelabel";
 })
 export class CollectionPublicComponent extends Whitelabelled implements OnInit {
 
+  @ViewChild(SizePaginationComponent) sizePagination!: SizePaginationComponent
   title = "Collection"
   uuidParam: string | null
   collection: ApiCollection | undefined
@@ -30,6 +33,7 @@ export class CollectionPublicComponent extends Whitelabelled implements OnInit {
   columnSort: ApiSortOrder = ApiSortOrder.NameAsc
 
   showLibraryEmptyMessage = false
+  sizeControl: FormControl = new FormControl(this.size)
 
   constructor(protected router: Router,
               protected skillService: RichSkillService,
@@ -39,6 +43,7 @@ export class CollectionPublicComponent extends Whitelabelled implements OnInit {
               protected titleService: Title
   ) {
     super()
+    this.sizeControl.valueChanges.subscribe(value => this.sizeChange(value))
     this.uuidParam = this.route.snapshot.paramMap.get("uuid")
   }
 
@@ -117,4 +122,15 @@ export class CollectionPublicComponent extends Whitelabelled implements OnInit {
     this.from = (newPageNo - 1) * this.size
     this.loadNextPage()
   }
+
+  sizeChange(size: number): void {
+    this.size = size
+    this.from = 0
+    this.handlePageClicked(1)
+  }
+
+  get isSizePaginationVisible(): () => boolean {
+    return () => this.totalCount > this.sizePagination?.values[0]
+  }
+
 }

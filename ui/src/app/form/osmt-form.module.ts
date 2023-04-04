@@ -37,5 +37,5 @@ import {FormFieldTextArea} from "./form-field-textarea.component"
     FormFieldKeywordSearchMultiSelect
   ]
 })
-export class FormModule {
+export class OsmtFormModule {
 }

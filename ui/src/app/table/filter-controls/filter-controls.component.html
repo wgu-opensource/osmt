@@ -19,6 +19,8 @@
         (filterChanged)="onFilterChangeArchived($event)"
       ></app-filter-choice>
     </div>
+    <app-size-pagination [isVisible]="isSizePaginationVisible" [control]="sizeControl" [currentSize]="currentSize">
+    </app-size-pagination>
     <div *ngIf="showAdvancedFilteredSearch">
       <app-filter-dropdown (applyFilter)="applyFilter($event)" [filterFg]="filterFg">
       </app-filter-dropdown>

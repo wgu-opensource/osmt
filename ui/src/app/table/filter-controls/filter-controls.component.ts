@@ -1,7 +1,8 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core"
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from "@angular/core"
 import {PublishStatus} from "../../PublishStatus";
 import {FilterDropdown} from "../../models/filter-dropdown.model"
-import {FormBuilder, FormGroup} from "@angular/forms"
+import {FormBuilder, FormControl, FormGroup} from "@angular/forms"
+import {SizePaginationComponent} from "../skills-library-table/size-pagination/size-pagination.component"
 
 @Component({
   selector: "app-filter-controls",
@@ -9,6 +10,8 @@ import {FormBuilder, FormGroup} from "@angular/forms"
   styleUrls: ["./filter-controls.component.scss"]
 })
 export class FilterControlsComponent implements OnInit, OnChanges {
+
+  @ViewChild(SizePaginationComponent) sizePagination!: SizePaginationComponent
   @Input() selectedFilters: Set<PublishStatus> = new Set()
   @Output() keywordsChanged: EventEmitter<FilterDropdown> = new EventEmitter<FilterDropdown>()
   @Output() filtersChanged: EventEmitter<Set<PublishStatus>> = new EventEmitter<Set<PublishStatus>>()
@@ -17,11 +20,20 @@ export class FilterControlsComponent implements OnInit, OnChanges {
   filterFg: FormGroup
   @Input()
   showAdvancedFilteredSearch?: boolean
+  @Output()
+  changeValue: EventEmitter<number> = new EventEmitter()
+  sizeControl?: FormControl
+  @Input()
+  currentSize = 50
+  @Input()
+  isSizePaginationVisible: () => boolean = () => false
 
   constructor(
     protected formBuilder: FormBuilder
   ) {
     this.filterFg = this.configureFilterFg()
+    this.sizeControl = new FormControl(this.currentSize)
+    this.sizeControl.valueChanges.subscribe(value => this.changeValue.emit(value))
   }
 
   ngOnInit(): void {

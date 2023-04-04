@@ -18,6 +18,7 @@ import {CollectionService} from "../../collection/service/collection.service"
 import {ApiCollection} from "../../collection/ApiCollection"
 import {CollectionPipe} from "../../pipes"
 import {FilterDropdown} from "../../models/filter-dropdown.model"
+import {FilterControlsComponent} from "../../table/filter-controls/filter-controls.component"
 
 @Component({
   selector: "app-skills-list",
@@ -32,6 +33,7 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   @ViewChild("titleHeading") titleElement!: ElementRef
   @ViewChild(TableActionBarComponent) tableActionBar!: TableActionBarComponent
+  @ViewChild(FilterControlsComponent) filterControlsComponent!: FilterControlsComponent
 
 
   resultsLoaded: Observable<PaginatedSkills> | undefined
@@ -445,6 +447,12 @@ export class SkillsListComponent extends QuickLinksHelper {
     this.loadNextPage()
   }
 
+  sizeChange(size: number): void {
+    this.size = size
+    this.from = 0
+    this.handlePageClicked(1)
+  }
+
   get selectedKeywords(): any {
     const a: any = {}
     const b: any = this.keywords
@@ -454,6 +462,10 @@ export class SkillsListComponent extends QuickLinksHelper {
       }
     }
     return a
+  }
+
+  get isSizePaginationVisible(): () => boolean {
+    return () => this.totalCount > this.filterControlsComponent?.sizePagination?.values[0]
   }
 
 }

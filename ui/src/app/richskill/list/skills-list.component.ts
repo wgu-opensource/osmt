@@ -18,6 +18,7 @@ import {CollectionService} from "../../collection/service/collection.service"
 import {ApiCollection} from "../../collection/ApiCollection"
 import {CollectionPipe} from "../../pipes"
 import {FilterDropdown} from "../../models/filter-dropdown.model"
+import {minimumThreshold} from "../../table/skills-library-table/size-pagination/size-pagination.component"
 
 @Component({
   selector: "app-skills-list",
@@ -460,7 +461,7 @@ export class SkillsListComponent extends QuickLinksHelper {
   }
 
   get isSizePaginationVisible(): () => boolean {
-    return () => this.totalCount > 50
+    return () => this.totalCount > minimumThreshold
   }
 
 }

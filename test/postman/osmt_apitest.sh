@@ -43,7 +43,6 @@ function setup_environment() {
 
 _get_osmt_project_dir() {
   local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
-
   echo "${project_dir}"
 }
 
@@ -54,7 +53,7 @@ function source_osmt_apitest_env_file() {
   # shellcheck source=/dev/null
   source "${apitest_env_file}"
   set +o allexport
-  echo $OKTA_URL
+
 }
 
 function run_postman_tests() {
@@ -63,10 +62,7 @@ function run_postman_tests() {
 
 	#Running postman collections
 	echo "Getting access token from OKTA ..."
-		newman run OSMT-64-Auth.postman_collection.json -e OSMT-64.postman_environment.json --ignore-redirects 
-
-#	echo "Running OSMT API Tests ..."
-#		newman run OSMT-64.postman_collection.json -e OSMT-64.postman_environment.json --ignore-redirects
+		newman run Auth.postman_collection.json --env-var oktaUsername=$OKTA_USERNAME --env-var oktaPassword=$OKTA_PASSWORD --env-var oktaUrl=$OKTA_URL --env-var baseUrl=$LOCAL_URL --ignore-redirects
 
 }
 

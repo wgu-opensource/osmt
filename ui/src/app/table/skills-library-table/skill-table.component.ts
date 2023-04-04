@@ -20,7 +20,6 @@ export class SkillTableComponent extends AbstractTableComponent<ApiSkillSummary>
       const selectedWithShift = end > start ? this.items.slice(start, end + 1) : this.items.slice(end, start + 1).reverse()
       this.selectedItems.clear()
       selectedWithShift.forEach(i => this.selectedItems.add(i))
-      this.rowSelected.emit(Array.from(this.selectedItems))
     }
   }
 

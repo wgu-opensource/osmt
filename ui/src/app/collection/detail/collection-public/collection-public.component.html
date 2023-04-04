@@ -29,7 +29,7 @@
   <div class="l-container">
 
     <app-size-pagination
-      *ngIf="totalCount > 0"
+      [isVisible]="isSizePaginationVisible"
       [currentSize]="size"
       [control]="sizeControl">
     </app-size-pagination>

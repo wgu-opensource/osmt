@@ -459,4 +459,8 @@ export class SkillsListComponent extends QuickLinksHelper {
     return a
   }
 
+  get isSizePaginationVisible(): () => boolean {
+    return () => this.totalCount > 50
+  }
+
 }

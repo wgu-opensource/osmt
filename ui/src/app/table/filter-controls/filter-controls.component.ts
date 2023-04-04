@@ -17,13 +17,13 @@ export class FilterControlsComponent implements OnInit, OnChanges {
   filterFg: FormGroup
   @Input()
   showAdvancedFilteredSearch?: boolean
-  @Input()
-  showSizePagination?: boolean
   @Output()
   changeValue: EventEmitter<number> = new EventEmitter()
   sizeControl?: FormControl
   @Input()
   currentSize = 50
+  @Input()
+  isSizePaginationVisible: () => boolean = () => false
 
   constructor(
     protected formBuilder: FormBuilder

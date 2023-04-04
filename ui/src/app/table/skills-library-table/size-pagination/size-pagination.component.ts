@@ -13,6 +13,8 @@ export class SizePaginationComponent {
   control?: FormControl
   @Input()
   currentSize = 50
+  @Input()
+  isVisible: () => boolean = () => false
 
   onValueChange(value: number): void {
     this.control?.patchValue(value)

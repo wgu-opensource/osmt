@@ -127,4 +127,8 @@ export class CollectionPublicComponent extends Whitelabelled implements OnInit {
     this.handlePageClicked(1)
   }
 
+  get isSizePaginationVisible(): () => boolean {
+    return () => this.totalCount > 50
+  }
+
 }

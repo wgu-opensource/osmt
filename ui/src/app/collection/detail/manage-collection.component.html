@@ -48,7 +48,7 @@
 
         <app-filter-controls
           (changeValue)="sizeChange($event)"
-          [showSizePagination]="totalCount > 50"
+          [isSizePaginationVisible]="isSizePaginationVisible"
           [currentSize]="size"
           *ngIf="totalCount >= 0"
           [keywords]="keywords"

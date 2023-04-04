@@ -11,10 +11,11 @@ import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
 import edu.wgu.osmt.richskill.RichSkillEsRepo
+import io.mockk.every
+import io.mockk.mockk
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
@@ -39,7 +40,7 @@ internal class CollectionControllerTest @Autowired constructor(
     @Autowired
     lateinit var collectionController: CollectionController
 
-    var authentication: Authentication = Mockito.mock(Authentication::class.java)
+    var authentication: Authentication = mockk()
 
     private lateinit var mockData : MockData
 
@@ -50,9 +51,9 @@ internal class CollectionControllerTest @Autowired constructor(
 
     @BeforeAll
     fun setup() {
-        mockData = MockData()
         ReflectionTestUtils.setField(appConfig, "roleAdmin", "ROLE_Osmt_Admin")
-        val securityContext: SecurityContext = Mockito.mock(SecurityContext::class.java)
+        val securityContext: SecurityContext = mockk()
+
         SecurityContextHolder.setContext(securityContext)
 
         val attributes: MutableMap<String, Any> = HashMap()
@@ -61,8 +62,9 @@ internal class CollectionControllerTest @Autowired constructor(
         val authority: GrantedAuthority = OAuth2UserAuthority("ROLE_Osmt_Admin", attributes)
         val authorities: MutableSet<GrantedAuthority> = HashSet()
         authorities.add(authority)
-        Mockito.`when`(securityContext.authentication).thenReturn(authentication)
-        Mockito.`when`(SecurityContextHolder.getContext().authentication.authorities).thenReturn(authorities)
+
+        every { securityContext.authentication }.returns(authentication)
+        every { authentication.authorities }.returns(authorities)
     }
 
     @Test

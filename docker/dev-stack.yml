@@ -28,6 +28,10 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
+    deploy:
+      resources:
+        limits:
+          memory: 4GB  # Use at most 50 MB of RAM
     networks:
       - osmt
   redis:

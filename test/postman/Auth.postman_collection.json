@@ -49,9 +49,12 @@
 					"raw": "{\n    \"username\": \"{{oktaUsername}}\",\n    \"password\": \"{{oktaPassword}}\",\n    \"options\": {\n        \"multiOptionalFactorEnroll\": false,\n        \"warnBeforePasswordExpired\": true\n    }\n}"
 				},
 				"url": {
-					"raw": "{{oktaUrl}}/api/v1/authn",
+					"raw": "https://dev-86780967.okta.com/api/v1/authn",
+					"protocol": "https",
 					"host": [
-						"{{oktaUrl}}"
+						"dev-86780967",
+						"okta",
+						"com"
 					],
 					"path": [
 						"api",

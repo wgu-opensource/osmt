@@ -100,6 +100,29 @@ export class CollectionService extends AbstractService {
       .pipe(share())
   }
 
+  requestCollectionSkillsXlsx(uuid: string): Observable<ITaskResult> {
+    if (!uuid) {
+      throw new Error("Invalid collection uuid.")
+    }
+    const errorMsg = `Could not find skills using this collection [${uuid}]`
+
+    return this.get<ITaskResult>({
+      path: `${this.baseServiceUrl}/${uuid}/xlsx`
+    })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, errorMsg))))
+  }
+
+  // this call is a bit different since it's returning a xlsx (Excel) for immediate download, so use httpClient's get() method
+  // tslint:disable-next-line:no-any
+  getXlsxTaskResultsIfComplete(uuid: string): Observable<any> {
+    return this.httpClient
+      .get(this.buildUrl(`/api/results/media/${uuid}`), {
+        responseType: "blob" as "json",
+        observe: "response",
+      })
+      .pipe(share())
+  }
 
   getCollectionSkills(
     collectionUuid: string,

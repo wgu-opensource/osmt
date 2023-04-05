@@ -1,4 +1,4 @@
-package edu.wgu.osmt.csv
+package edu.wgu.osmt.io.csv
 
 import com.opencsv.bean.CsvToBeanBuilder
 import edu.wgu.osmt.jobcode.JobCodeBreakout

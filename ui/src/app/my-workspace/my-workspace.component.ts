@@ -1,13 +1,14 @@
-import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
-import {ManageCollectionComponent} from "../collection/detail/manage-collection.component"
-import {RichSkillService} from "../richskill/service/rich-skill.service"
-import {ToastService} from "../toast/toast.service"
-import {CollectionService} from "../collection/service/collection.service"
-import {ActivatedRoute, Router} from "@angular/router"
-import {Title} from "@angular/platform-browser"
-import {AuthService} from "../auth/auth-service"
-import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
-import {ApiSearch} from "../richskill/service/rich-skill-search.service"
+import { Component, Inject, LOCALE_ID, OnInit } from "@angular/core"
+import { Title } from "@angular/platform-browser"
+import { ActivatedRoute, Router } from "@angular/router"
+
+import { AuthService } from "../auth/auth-service"
+import { ManageCollectionComponent } from "../collection/detail/manage-collection.component"
+import { CollectionService } from "../collection/service/collection.service"
+import { RichSkillService } from "../richskill/service/rich-skill.service"
+import { ApiSearch } from "../richskill/service/rich-skill-search.service"
+import { TableActionDefinition } from "../table/skills-library-table/has-action-definitions"
+import { ToastService } from "../toast/toast.service"
 
 export const WORKSPACE_COLLECTIONS_UUIDS = "workspace-collections-uuids"
 
@@ -54,9 +55,26 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
         visible: () => true
       }),
       new TableActionDefinition({
-        label: "Download as CSV",
+        label: "Download",
         icon: this.downloadIcon,
-        callback: () => this.generateCsv(this.collection?.name ?? ""),
+        menu: [
+          {
+            label: "Download as CSV",
+            visible: () => true,
+            callback: () => this.exporter.getCollectionCsv(
+              this.uuidParam ?? "",
+              this.collection?.name ?? ""
+            )
+          },
+          {
+            label: "Download as Excel Workbook",
+            visible: () => true,
+            callback: () => this.exporter.getCollectionXlsx(
+              this.uuidParam ?? "",
+              this.collection?.name ?? ""
+            ),
+          }
+        ],
         visible: () => !this.workspaceEmpty()
       }),
       new TableActionDefinition({

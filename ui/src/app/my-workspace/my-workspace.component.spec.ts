@@ -163,4 +163,26 @@ describe("MyWorkspaceComponent", () => {
     expect(auditLog).toBeFalsy()
   })
 
+  it("Download should have submenu", () => {
+    const actionDownload = component.actionDefinitions()[1]
+    expect(actionDownload?.menu?.length).toEqual(2)
+  })
+
+  it("Menu action download should call callback correctly", () => {
+    const actionDownload = component.actionDefinitions()[1]
+    const downloadXlsx = actionDownload.menu?.pop()
+    const downloadCsv = actionDownload.menu?.pop()
+    const spyDownloadCsv = spyOn(component.exporter, "getCollectionCsv")
+    const spyDownloadXlsx = spyOn(component.exporter, "getCollectionXlsx")
+    expect(actionDownload).toBeTruthy()
+    if (downloadCsv?.callback && actionDownload) {
+      downloadCsv.callback(actionDownload)
+      expect(spyDownloadCsv).toHaveBeenCalled()
+    }
+    if (downloadXlsx?.callback && actionDownload) {
+      downloadXlsx.callback(actionDownload)
+      expect(spyDownloadXlsx).toHaveBeenCalled()
+    }
+  })
+
 })

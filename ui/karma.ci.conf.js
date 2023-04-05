@@ -13,7 +13,12 @@ module.exports = function(config) {
         require('karma-sonarqube-unit-reporter'),
         require('@angular-devkit/build-angular/plugins/karma')
       ],
-      files: ['src/app/**/*.spec.ts'],
+      files: [
+        {
+          pattern: 'src/app/**/*.spec.ts',
+          type: 'js'
+        }
+      ],
       reporters: ['progress', 'sonarqubeUnit', 'coverage'],
       port: 9876,  // karma web server port
       colors: true,

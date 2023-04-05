@@ -3,9 +3,9 @@ package edu.wgu.osmt.mockdata
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.csv.BlsJobCode
-import edu.wgu.osmt.csv.OnetJobCode
-import edu.wgu.osmt.csv.RichSkillRow
+import edu.wgu.osmt.io.csv.BlsJobCode
+import edu.wgu.osmt.io.csv.OnetJobCode
+import edu.wgu.osmt.io.csv.RichSkillRow
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword

@@ -6,6 +6,8 @@ object RoutePaths {
     const val EXPORT = "$API/export"
     const val SEARCH_SKILLS = "$SEARCH_PATH/skills"
     const val EXPORT_LIBRARY = "$EXPORT/library"
+    const val EXPORT_LIBRARY_CSV = "$EXPORT_LIBRARY/csv"
+    const val EXPORT_LIBRARY_XLSX = "$EXPORT_LIBRARY/xlsx"
     const val SEARCH_SIMILAR_SKILLS = "$SEARCH_SKILLS/similarity"
     const val SEARCH_SIMILARITIES = "$SEARCH_SKILLS/similarities"
     const val SEARCH_COLLECTIONS = "$SEARCH_PATH/collections"
@@ -16,9 +18,12 @@ object RoutePaths {
     const val SKILLS_FILTER = "$SKILLS_PATH/filter"
     const val SKILL_PUBLISH = "$SKILLS_PATH/publish"
     const val SKILL_DETAIL = "$SKILLS_PATH/{uuid}"
+    const val SKILL_DETAIL_XLSX = "$SKILLS_PATH/{uuid}/xlsx"
     const val SKILL_UPDATE = "$SKILL_DETAIL/update"
     const val SKILL_AUDIT_LOG = "$SKILL_DETAIL/log"
     const val EXPORT_SKILLS = "$EXPORT/skills"
+    const val EXPORT_SKILLS_CSV = "$EXPORT_SKILLS/csv"
+    const val EXPORT_SKILLS_XLSX = "$EXPORT_SKILLS/xlsx"
 
 
     const val COLLECTIONS_PATH = "$API/collections"
@@ -31,12 +36,14 @@ object RoutePaths {
     const val COLLECTION_SKILLS = "$COLLECTION_DETAIL/skills"
     const val COLLECTION_AUDIT_LOG = "$COLLECTION_DETAIL/log"
     const val COLLECTION_CSV = "$COLLECTION_DETAIL/csv"
+    const val COLLECTION_XLSX = "$COLLECTION_DETAIL/xlsx"
     const val COLLECTION_REMOVE = "$COLLECTION_DETAIL/remove"
 
     const val WORKSPACE_PATH = "$API/workspace"
 
     const val TASKS_PATH = "$API/results"
     const val TASK_DETAIL_TEXT = "$TASKS_PATH/text/{uuid}"
+    const val TASK_DETAIL_MEDIA = "$TASKS_PATH/media/{uuid}"
     const val TASK_DETAIL_BATCH = "$TASKS_PATH/batch/{uuid}"
     const val TASK_DETAIL_SKILLS = "$TASKS_PATH/skills/{uuid}"
 

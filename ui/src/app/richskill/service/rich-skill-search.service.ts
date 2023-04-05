@@ -1,6 +1,5 @@
-import {INamedReference} from "../ApiSkill"
-import {ApiCollectionSummary, ApiSkillSummary} from "../ApiSkillSummary"
-import {PublishStatus} from "../../PublishStatus"
+import { INamedReference } from "../ApiSkill"
+import { ApiCollectionSummary, ApiSkillSummary } from "../ApiSkillSummary"
 
 export interface ISearch {
   query?: string

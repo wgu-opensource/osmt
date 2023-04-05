@@ -1,4 +1,4 @@
-package edu.wgu.osmt.csv
+package edu.wgu.osmt.io.csv
 
 /**
  * DSL style entry-point to build a CsvResource.  This approach should be used if a csv file is simple in structure
@@ -48,13 +48,13 @@ class CsvColumnBuilder<T> {
 }
 
 class CsvConfigBuilder<T> {
-    var delimeter: Char = CsvConfig.delimeter
+    var delimiter: Char = CsvConfig.delimiter
     var quoteChar: Char = CsvConfig.quoteChar
     var escapeChar: Char = CsvConfig.escapeChar
     var lineEnd: String = CsvConfig.lineEnd
     var includeHeader: Boolean = CsvConfig.includeHeader
 
     fun build(): CsvConfig {
-        return CsvConfig(delimeter, quoteChar, escapeChar, lineEnd, includeHeader)
+        return CsvConfig(delimiter, quoteChar, escapeChar, lineEnd, includeHeader)
     }
 }

@@ -1,15 +1,17 @@
-package edu.wgu.osmt.csv
+package edu.wgu.osmt.io.csv
 
 import com.opencsv.CSVWriter
+import edu.wgu.osmt.io.common.TabularResource
+import edu.wgu.osmt.io.common.TabColumn
 import java.io.StringWriter
 import java.io.Writer
 
-abstract class CsvResource<T>(val debugName: String) {
+abstract class CsvResource<T>(val debugName: String) : TabularResource<CsvColumn<T>, T> {
 
     /**
      * Defines the columns of this csv in their desired order.
      */
-    abstract fun columnTranslations(data: List<T>): Array<CsvColumn<T>>
+    abstract override fun columnTranslations(data: List<T>): Array<CsvColumn<T>>
 
     /**
      * Override if opencsv defaults are not desired
@@ -40,7 +42,7 @@ abstract class CsvResource<T>(val debugName: String) {
         val config = configureCsv()
 
         return CSVWriter(writer,
-                config.delimeter,
+                config.delimiter,
                 config.quoteChar,
                 config.escapeChar,
                 config.lineEnd
@@ -79,20 +81,20 @@ abstract class CsvResource<T>(val debugName: String) {
 data class CsvColumn<T>(
         val name: String = "",
         val translate: (T) -> String
-)
+): TabColumn<T>
 
 /**
  * Configure the global attributes of a csv export
  */
 data class CsvConfig(
-        val delimeter: Char = CsvConfig.delimeter,
-        val quoteChar: Char = CsvConfig.quoteChar,
-        val escapeChar: Char = CsvConfig.escapeChar,
-        val lineEnd: String = CsvConfig.lineEnd,
-        val includeHeader: Boolean = CsvConfig.includeHeader
+    val delimiter: Char = Defaults.delimiter,
+    val quoteChar: Char = Defaults.quoteChar,
+    val escapeChar: Char = Defaults.escapeChar,
+    val lineEnd: String = Defaults.lineEnd,
+    val includeHeader: Boolean = Defaults.includeHeader
 ) {
-    companion object Defaults { // Allows the default values to be shared with it's builder
-        val delimeter: Char = CSVWriter.DEFAULT_SEPARATOR
+    companion object Defaults { // Allows the default values to be shared with its builder
+        val delimiter: Char = CSVWriter.DEFAULT_SEPARATOR
         val quoteChar: Char = CSVWriter.DEFAULT_QUOTE_CHARACTER
         val escapeChar: Char = CSVWriter.DEFAULT_ESCAPE_CHARACTER
         val lineEnd: String = CSVWriter.DEFAULT_LINE_END

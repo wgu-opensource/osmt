@@ -1,4 +1,4 @@
-package edu.wgu.osmt.csv
+package edu.wgu.osmt.io.csv
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -165,9 +165,9 @@ internal class CsvResourceTest {
     }
 
     fun <T> getCsvTestResource(
-            debugName: String = "unit-test",
-            columnDefinitions: Array<CsvColumn<T>>,
-            configuration: CsvConfig? = null
+        debugName: String = "unit-test",
+        columnDefinitions: Array<CsvColumn<T>>,
+        configuration: CsvConfig? = null
     ): CsvResource<T> {
         return object : CsvResource<T>(debugName) {
             override fun columnTranslations(d: List<T>): Array<CsvColumn<T>> = columnDefinitions

@@ -1,4 +1,4 @@
-package edu.wgu.osmt.csv
+package edu.wgu.osmt.io.csv
 
 import com.opencsv.bean.CsvBindByName
 import edu.wgu.osmt.config.AppConfig
@@ -10,7 +10,6 @@ import edu.wgu.osmt.richskill.RichSkillRepository
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 /**

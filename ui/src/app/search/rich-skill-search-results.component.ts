@@ -1,19 +1,19 @@
-import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
-import {SearchService} from "./search.service";
-import {RichSkillService} from "../richskill/service/rich-skill.service";
-import {ApiSearch, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {ActivatedRoute, NavigationStart, Router} from "@angular/router";
-import {ToastService} from "../toast/toast.service";
-import {SkillsListComponent} from "../richskill/list/skills-list.component";
-import {ApiSkillSummary} from "../richskill/ApiSkillSummary";
-import {determineFilters} from "../PublishStatus";
-import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions";
-import {ExtrasSelectedSkillsState} from "../collection/add-skills-collection.component";
-import {Title} from "@angular/platform-browser";
-import {AuthService} from "../auth/auth-service";
-import {formatDate} from "@angular/common"
-import * as FileSaver from "file-saver"
-import {CollectionService} from "../collection/service/collection.service"
+import { Component, Inject, LOCALE_ID, OnInit } from "@angular/core";
+import { Title } from "@angular/platform-browser";
+import { ActivatedRoute, Router } from "@angular/router";
+
+import { AuthService } from "../auth/auth-service";
+import { ExtrasSelectedSkillsState } from "../collection/add-skills-collection.component";
+import { CollectionService } from "../collection/service/collection.service"
+import { ExportRsdComponent } from "../export/export-rsd.component";
+import { determineFilters } from "../PublishStatus";
+import { ApiSkillSummary } from "../richskill/ApiSkillSummary";
+import { SkillsListComponent } from "../richskill/list/skills-list.component";
+import { RichSkillService } from "../richskill/service/rich-skill.service";
+import { ApiSearch, PaginatedSkills } from "../richskill/service/rich-skill-search.service";
+import { SearchService } from "./search.service";
+import { TableActionDefinition } from "../table/skills-library-table/has-action-definitions";
+import { ToastService } from "../toast/toast.service";
 
 
 @Component({
@@ -30,17 +30,23 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
   selectAllChecked = false
   showSearchEmptyMessage = true
   showExportSelected = true
+  exporter = new ExportRsdComponent(
+    this.richSkillService,
+    this.toastService,
+    this.locale
+  )
   private multiplePagesSelected: boolean = false
 
-  constructor(protected router: Router,
-              protected richSkillService: RichSkillService,
-              protected collectionService: CollectionService,
-              protected toastService: ToastService,
-              protected searchService: SearchService,
-              protected route: ActivatedRoute,
-              protected titleService: Title,
-              protected authService: AuthService,
-              @Inject(LOCALE_ID) protected locale: string
+  constructor(
+    protected router: Router,
+    protected richSkillService: RichSkillService,
+    protected collectionService: CollectionService,
+    protected toastService: ToastService,
+    protected searchService: SearchService,
+    protected route: ActivatedRoute,
+    protected titleService: Title,
+    protected authService: AuthService,
+    @Inject(LOCALE_ID) protected locale: string
 ) {
     super(router, richSkillService, collectionService, toastService, authService)
     this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
@@ -126,23 +132,18 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
     return !this.multiplePagesSelected || super.onlyDraftsSelected(skill)
   }
 
-  protected handleClickExportSearch(): void {
-    this.toastService.loaderSubject.next(true)
-    this.richSkillService.exportSearch(this.selectedUuids() as string[])
-      .subscribe((apiTask) => {
-        this.richSkillService.getResultExportedLibrary(apiTask.id.slice(1)).subscribe(
-          response => {
-            this.downloadAsCsvFile(response.body)
-            this.toastService.loaderSubject.next(false)
-          }
-        )
-      })
+  protected getRsdCsv(): void {
+    this.exporter.exportSearchCsv(
+      this.selectedUuids() as string[],
+      this.matchingQuery ?? [""]
+    )
   }
 
-  private downloadAsCsvFile(csv: string): void {
-    const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"})
-    const date = formatDate(new Date(), "yyyy-MM-dd", this.locale)
-    FileSaver.saveAs(blob, `RSD Skills - ${this.matchingQuery} - ${date}.csv`)
+  protected getRsdXlsx(): void {
+    this.exporter.exportSearchXlsx(
+      this.selectedUuids() as string[],
+      this.matchingQuery ?? [""]
+    )
   }
 
   protected exportSearchVisible(): boolean {

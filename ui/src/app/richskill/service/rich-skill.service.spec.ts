@@ -312,7 +312,7 @@ describe("RichSkillService", () => {
     RouterData.commands = []
 
     // Act
-    const result$ = testService.libraryExport()
+    const result$ = testService.libraryExportCsv()
 
     tick(ASYNC_WAIT_PERIOD)
     // Assert
@@ -320,7 +320,7 @@ describe("RichSkillService", () => {
       expect(RouterData.commands).toEqual([]) // No Errors
     })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/export/library")
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/export/library/csv")
     expect(req.request.method).toEqual("GET")
     expect(req.request.headers.get("Accept")).toEqual("application/json")
     req.flush(result$)
@@ -328,13 +328,13 @@ describe("RichSkillService", () => {
 
 
   it("export search", fakeAsync(() => {
-    const result$ = testService.exportSearch([])
+    const result$ = testService.exportSearchCsv([])
     tick(ASYNC_WAIT_PERIOD)
     // Assert
     result$.subscribe((data: ApiTaskResult) => {
       expect(RouterData.commands).toEqual([]) // No Errors
     })
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/export/skills")
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/export/skills/csv")
     expect(req.request.method).toEqual("POST")
     expect(req.request.headers.get("Accept")).toEqual("application/json")
     req.flush(result$)
@@ -345,7 +345,7 @@ describe("RichSkillService", () => {
       const taskResult = apiTaskResultForCSV
       const path = "api/results/text/" + apiTaskResultForCSV.uuid
       const path2 = taskResult.id.slice(1)
-      testService.getResultExportedLibrary(path2).subscribe()
+      testService.getResultExportedCsvLibrary(path2).subscribe()
       const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
       expect(req1.request.method).toEqual("GET")
       req1.flush("csv")

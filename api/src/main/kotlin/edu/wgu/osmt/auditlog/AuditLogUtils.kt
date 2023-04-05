@@ -4,7 +4,7 @@ import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.collection.CollectionTable
 import edu.wgu.osmt.collection.diff
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.csv.BatchImportRichSkill
+import edu.wgu.osmt.io.csv.BatchImportRichSkill
 import edu.wgu.osmt.richskill.RichSkillDescriptorTable
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.diff

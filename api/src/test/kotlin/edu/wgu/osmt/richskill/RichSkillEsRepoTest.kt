@@ -12,7 +12,7 @@ import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSimilaritySearch
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionEsRepo
-import edu.wgu.osmt.csv.BatchImportRichSkill
+import edu.wgu.osmt.io.csv.BatchImportRichSkill
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo

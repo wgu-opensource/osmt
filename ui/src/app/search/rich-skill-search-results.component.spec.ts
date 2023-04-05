@@ -215,12 +215,10 @@ describe("RichSkillSearchResultsComponent", () => {
     expect(router.navigate).toHaveBeenCalledWith([ "/collections/add-skills"], any(Object) )
   })
 
-  it("handleClickExportSearch should call subject loader and services methods", () => {
-    const spy = spyOn(component["toastService"].loaderSubject, "next")
-    const spyExportSearch = spyOn(component["richSkillService"], "exportSearch").and.returnValue(of(mockTaskResultForExportSearch))
-    const spyGetResult = spyOn(component["richSkillService"], "getResultExportedLibrary").and.returnValue(of("csv,csv"))
-    component["handleClickExportSearch"]()
-    expect(spy).toHaveBeenCalled()
+  it("handleClickExportSearchCsv should call subject loader and services methods", () => {
+    const spyExportSearch = spyOn(component["richSkillService"], "exportSearchCsv").and.returnValue(of(mockTaskResultForExportSearch))
+    const spyGetResult = spyOn(component["richSkillService"], "getResultExportedCsvLibrary").and.returnValue(of("csv,csv"))
+    component["getRsdCsv"]()
     expect(spyExportSearch).toHaveBeenCalled()
     expect(spyGetResult).toHaveBeenCalled()
   })
@@ -229,7 +227,21 @@ describe("RichSkillSearchResultsComponent", () => {
     () => {
       component.selectedSkills = [createMockSkillSummary()]
       expect(component["exportSearchVisible"]()).toBeTrue()
-    })
+  })
+
+  it("handleClickExportSearchXlsx should call subject loader and services methods", () => {
+    const spyExportSearch = spyOn(component["richSkillService"], "exportSearchXlsx").and.returnValue(of(mockTaskResultForExportSearch))
+    const spyGetResult = spyOn(component["richSkillService"], "getResultExportedXlsxLibrary").and.returnValue(of("csv,csv"))
+    component["getRsdXlsx"]()
+    expect(spyExportSearch).toHaveBeenCalled()
+    expect(spyGetResult).toHaveBeenCalled()
+  })
+
+  it("export search should be visible",
+    () => {
+      component.selectedSkills = [createMockSkillSummary()]
+      expect(component["exportSearchVisible"]()).toBeTrue()
+  })
 })
 
 describe("RichSkillSearchResultsComponent with latestSearch", () => {

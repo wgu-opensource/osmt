@@ -1,10 +1,9 @@
-package edu.wgu.osmt.richskill
+package edu.wgu.osmt.io.csv
 
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.csv.CsvColumn
-import edu.wgu.osmt.csv.CsvResource
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeBreakout
+import edu.wgu.osmt.richskill.RichSkillAndCollections
 
 class RichSkillCsvExport(
     private val appConfig: AppConfig
@@ -15,18 +14,18 @@ class RichSkillCsvExport(
         val columns = arrayOf(
             CsvColumn<RichSkillAndCollections>("Canonical URL") { it.rs.canonicalUrl(appConfig.baseUrl) },
             CsvColumn("RSD Name") { it.rs.name },
-            CsvColumn("Authors") { it.rs.authors.map { author -> author.value ?: "" }.joinToString(listDelimiter) },
+            CsvColumn("Authors") { it.rs.authors.joinToString(listDelimiter) { author -> author.value ?: "" } },
             CsvColumn("Skill Statement") { it.rs.statement },
-            CsvColumn("Categories") { it.rs.categories.map{ category -> category.value ?: "" }.joinToString(listDelimiter) },
-            CsvColumn("Keywords") { it.rs.searchingKeywords.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) },
-            CsvColumn("Standards") { it.rs.standards.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) },
-            CsvColumn("Certifications") { it.rs.certifications.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) },
+            CsvColumn("Categories") { it.rs.categories.joinToString(listDelimiter) { category -> category.value ?: "" } },
+            CsvColumn("Keywords") { it.rs.searchingKeywords.joinToString(listDelimiter) { keyword -> keyword.value ?: "" } },
+            CsvColumn("Standards") { it.rs.standards.joinToString(listDelimiter) { keyword -> keyword.value ?: "" } },
+            CsvColumn("Certifications") { it.rs.certifications.joinToString(listDelimiter) { keyword -> keyword.value ?: "" } },
             CsvColumn("Occupation Major Groups") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::majorCode) },
             CsvColumn("Occupation Minor Groups") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::minorCode) },
             CsvColumn("Broad Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::broadCode) },
             CsvColumn("Detailed Occupations") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::detailedCode) },
             CsvColumn("O*Net Job Codes") { prepareJobCodePart(it.rs.jobCodes, JobCodeBreakout::jobRoleCode) },
-            CsvColumn("Employers") { it.rs.employers.map { keyword -> keyword.value ?: "" }.joinToString(listDelimiter) }
+            CsvColumn("Employers") { it.rs.employers.joinToString(listDelimiter) { keyword -> keyword.value ?: "" } }
         )
         val alignmentCount = data.map { s -> s.rs.alignments.size }.maxOrNull() ?: 0
         val alignmentColumns = (0 until alignmentCount).flatMap { i ->

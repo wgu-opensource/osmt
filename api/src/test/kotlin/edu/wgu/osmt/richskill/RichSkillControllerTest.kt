@@ -3,14 +3,14 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.BaseDockerizedTest
 import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.HasElasticsearchReset
-import edu.wgu.osmt.RoutePaths.EXPORT_LIBRARY
+import edu.wgu.osmt.RoutePaths.EXPORT_LIBRARY_CSV
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.csv.BatchImportRichSkill
-import edu.wgu.osmt.csv.RichSkillRow
+import edu.wgu.osmt.io.csv.BatchImportRichSkill
+import edu.wgu.osmt.io.csv.RichSkillRow
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
@@ -252,7 +252,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         val headers : MutableMap<String, Any> = HashMap()
         headers["key"] = "value"
         val notNullJwt : Jwt? = Jwt("tokenValue", Instant.MIN, Instant.MAX,headers,headers)
-        val csvTaskResult = TaskResult(UUID.randomUUID().toString(),MediaType.APPLICATION_JSON_VALUE,TaskStatus.Processing, EXPORT_LIBRARY)
+        val csvTaskResult = TaskResult(UUID.randomUUID().toString(),MediaType.APPLICATION_JSON_VALUE,TaskStatus.Processing, EXPORT_LIBRARY_CSV)
 
 
         val service = mockk<TaskMessageService>()
@@ -261,7 +261,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         mockkStatic(TaskResult::class)
         every { Task.processingResponse(any()) } returns HttpEntity(csvTaskResult)
 
-        val result = richSkillController.exportLibrary(user = notNullJwt)
+        val result = richSkillController.exportLibraryCsv(user = notNullJwt)
         assertThat(result.body?.uuid).isNotBlank()
     }
 

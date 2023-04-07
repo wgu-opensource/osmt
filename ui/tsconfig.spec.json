@@ -3,9 +3,12 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
+    "target": "ES2022",
     "types": [
       "jasmine"
-    ]
+    ],
+    "useDefineForClassFields": false,
+    "useUnknownInCatchVariables": false
   },
   "files": [
     "src/test.ts",

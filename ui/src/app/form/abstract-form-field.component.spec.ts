@@ -86,7 +86,7 @@ describe("AbstractFormFieldComponent", () => {
   })
 
   it("get isError should return correct value", () => {
-    component.control = new FormControl(testResult1, Validators.required)
+    component.control = new FormControl(testResult1.value, Validators.required)
     component.controlValue = component.emptyValue
     expect(component.isError).toEqual(true)
     component.controlValue = testResult1

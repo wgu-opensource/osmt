@@ -11,23 +11,12 @@
         },
         "@schematics/angular:component": {
           "prefix": "app",
-          "style": "scss",
-          "lintFix": true
+          "style": "scss"
         },
         "@schematics/angular:directive": {
-          "prefix": "app",
-          "lintFix": true
-        },
-        "@schematics/angular:pipe": {
-          "lintFix": true
-        },
-        "@schematics/angular:class": {
-          "lintFix": true
+          "prefix": "app"
         },
         "@schematics/angular:module": {
-          "lintFix": true
-        },
-        "@schematics/angular:service": {
           "lintFix": true
         }
       },
@@ -70,7 +59,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -78,8 +66,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -148,7 +136,8 @@
             ],
             "exclude": [
               "**/node_modules/**"
-            ]
+            ],
+            "fix": true
           }
         },
         "e2e": {
@@ -165,6 +154,5 @@
         }
       }
     }
-  },
-  "defaultProject": "ui"
+  }
 }

@@ -5,6 +5,10 @@
   To learn more about this file see: https://angular.io/config/solution-tsconfig.
 */
 {
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": false
+  },
   "files": [],
   "references": [
     {
@@ -13,5 +17,5 @@
     {
       "path": "./tsconfig.spec.json"
     }
-]
+  ]
 }

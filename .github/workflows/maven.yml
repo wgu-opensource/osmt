@@ -21,5 +21,12 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+    - name: Setup Maven Action
+      uses: s4u/setup-maven-action@v1.7.0
+      with:
+        checkout-fetch-depth: 0
+        java-version: '11'
+        java-distribution: 'adopt'
+        maven-version: '3.8.7'
     - name: Build with Maven
       run: mvn -B package

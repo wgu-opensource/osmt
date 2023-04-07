@@ -35,7 +35,6 @@ object Containers {
         withExposedPorts(9200, 9300)
         withEnv("discovery.type","single-node")
         withEnv("net","host")
-        withEnv("xpack.security.enabled","false")
         start()
         println("Elasticsearch port: ${getMappedPort(9200)}")
     }

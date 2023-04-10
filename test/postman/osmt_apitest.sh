@@ -62,7 +62,7 @@ function run_postman_tests() {
 
 	#Running postman collections
 	echo "Getting access token from OKTA ..."
-		newman run Auth.postman_collection.json --env-var oktaUsername=$OKTA_USERNAME --env-var oktaPassword=$OKTA_PASSWORD --env-var oktaUrl=$OKTA_URL --env-var baseUrl=$LOCAL_URL --ignore-redirects
+		newman run "${project_dir}/test/postman/Auth.postman_collection.json" --env-var oktaUsername=$OKTA_USERNAME --env-var oktaPassword=$OKTA_PASSWORD --env-var oktaUrl=$OKTA_URL --env-var baseUrl=$LOCAL_URL --ignore-redirects
 
 }
 

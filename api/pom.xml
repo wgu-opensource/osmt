@@ -31,7 +31,7 @@
     <description>WGU Open Skills Management Toolset</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>1.8</java.version>
         <kotlin.version>1.7.21</kotlin.version>
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.coroutines.version>1.5.1</kotlin.coroutines.version>
@@ -344,6 +344,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>

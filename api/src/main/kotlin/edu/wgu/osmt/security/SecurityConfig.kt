@@ -36,14 +36,13 @@ import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpMethod.*
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.DefaultRedirectStrategy
-import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter
 import org.springframework.stereotype.Component
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -60,7 +59,7 @@ import javax.servlet.http.HttpServletResponse
 @Configuration
 @EnableWebSecurity
 @Profile("oauth2-okta | OTHER-OAUTH-PROFILE")
-class SecurityConfig {
+class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
     lateinit var appConfig: AppConfig
@@ -71,13 +70,9 @@ class SecurityConfig {
     @Autowired
     lateinit var returnUnauthorized: ReturnUnauthorized
 
-
-    @Bean
-    @Throws(Exception::class)
-    fun filterChain(http: HttpSecurity): SecurityFilterChain? {
+    @Override
+    override fun configure(http: HttpSecurity) {
         http
-            .addFilterBefore(FireBaseTokenFilter(), SecurityContextHolderAwareRequestFilter::class.java)
-
             .cors().and()
             .csrf().disable()
             .httpBasic().disable()
@@ -113,8 +108,6 @@ class SecurityConfig {
         } else {
             configureForNoRoles(http)
         }
-
-        return http.build()
     }
 
     fun configureForRoles(http: HttpSecurity) {

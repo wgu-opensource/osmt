@@ -36,12 +36,12 @@ import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpMethod.*
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.DefaultRedirectStrategy
+import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter
 import org.springframework.stereotype.Component
@@ -51,6 +51,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+
 /**
  * Security configurations
  * - to enable another OAuth provider, include the profile name in place of `OTHER-OAUTH-PROFILE`
@@ -59,7 +60,7 @@ import javax.servlet.http.HttpServletResponse
 @Configuration
 @EnableWebSecurity
 @Profile("oauth2-okta | OTHER-OAUTH-PROFILE")
-class SecurityConfig : WebSecurityConfigurerAdapter() {
+class SecurityConfig {
 
     @Autowired
     lateinit var appConfig: AppConfig
@@ -70,8 +71,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     lateinit var returnUnauthorized: ReturnUnauthorized
 
-    @Override
-    override fun configure(http: HttpSecurity) {
+
+    @Bean
+    @Throws(Exception::class)
+    fun filterChain(http: HttpSecurity): SecurityFilterChain? {
         http
             .addFilterBefore(FireBaseTokenFilter(), SecurityContextHolderAwareRequestFilter::class.java)
 
@@ -110,6 +113,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         } else {
             configureForNoRoles(http)
         }
+
+        return http.build()
     }
 
     fun configureForRoles(http: HttpSecurity) {

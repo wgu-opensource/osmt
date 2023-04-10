@@ -18,6 +18,7 @@ object RoutePaths {
     const val SKILLS_FILTER = "$SKILLS_PATH/filter"
     const val SKILL_PUBLISH = "$SKILLS_PATH/publish"
     const val SKILL_DETAIL = "$SKILLS_PATH/{uuid}"
+    const val SKILL_HTML_DETAIL = "$SKILLS_PATH/html/{uuid}"
     const val SKILL_DETAIL_XLSX = "$SKILLS_PATH/{uuid}/xlsx"
     const val SKILL_UPDATE = "$SKILL_DETAIL/update"
     const val SKILL_AUDIT_LOG = "$SKILL_DETAIL/log"

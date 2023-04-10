@@ -17,7 +17,6 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.elasticsearch.PaginatedLinks
 import edu.wgu.osmt.io.csv.RichSkillCsvExport
-import edu.wgu.osmt.io.xlsx.RichSkillXlsxExport
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.security.OAuthHelper
 import edu.wgu.osmt.task.AppliesToType
@@ -154,7 +153,7 @@ class RichSkillController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @RequestMapping(RoutePaths.SKILL_DETAIL, produces = [MediaType.TEXT_HTML_VALUE])
+    @RequestMapping(RoutePaths.SKILL_HTML_DETAIL, produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(
         @PathVariable uuid: String,
         @AuthenticationPrincipal user: Jwt?

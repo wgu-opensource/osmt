@@ -43,6 +43,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.DefaultRedirectStrategy
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter
 import org.springframework.stereotype.Component
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -72,6 +73,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Override
     override fun configure(http: HttpSecurity) {
         http
+            .addFilterBefore(FireBaseTokenFilter(), SecurityContextHolderAwareRequestFilter::class.java)
             .cors().and()
             .csrf().disable()
             .httpBasic().disable()

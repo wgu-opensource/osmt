@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {Component, EventEmitter, HostListener, Input, OnInit, Output} from "@angular/core"
 import {ApiSortOrder} from "../richskill/ApiSkill"
 import {TableActionDefinition} from "./skills-library-table/has-action-definitions"
 import {SvgHelper, SvgIcon} from "../core/SvgHelper"
@@ -31,6 +31,7 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
   selectedItems: Set<SummaryT> = new Set()
 
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
+  isShiftPressed = false
 
   constructor() { }
 
@@ -98,9 +99,12 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
       this.selectedItems.delete(item)
     } else {
       this.selectedItems.add(item)
+      this.shiftSelection(item)
     }
     this.rowSelected.emit(Array.from(this.selectedItems))
   }
+
+  shiftSelection(item: SummaryT): void {}
 
   handleSelectAll(event: Event): void {
     const checkbox = event.target as HTMLInputElement
@@ -113,4 +117,15 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
     }
     this.rowSelected.emit(Array.from(this.selectedItems))
   }
+
+  @HostListener("document:keydown.shift", ["$event"])
+  onKeydownHandler(): void {
+    this.isShiftPressed = true
+  }
+
+  @HostListener("document:keyup.shift", ["$event"])
+  onKeyupHandler(): void {
+    this.isShiftPressed = false
+  }
+
 }

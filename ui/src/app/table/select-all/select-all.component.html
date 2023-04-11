@@ -1,0 +1,27 @@
+<div class="m-tableLabel">
+  <label class="m-tableLabel-x-text" for="checkbox" *ngIf="!selectAllEnabled; else selectTemplate">
+    Select
+  </label>
+  <ng-template #selectTemplate>
+    <div class="m-tableLabel-x-control">
+      <select name="size-pagination" #selectAll class="m-text">
+        <option [value]="selectAllOptions.SELECT_ALL">
+          Select all ({{totalCount}})
+        </option>
+        <option [value]="selectAllOptions.SELECT_ALL_ON_PAGE">
+          Select all page ({{totalPageCount}})
+        </option>
+      </select>
+    </div>
+    <div class="m-tableLabel-x-control">
+      <div class="m-checkbox">
+        <input type="checkbox" id="checkbox" name="checkbox" (change)="onClickCheckbox($event)">
+        <div class="m-checkbox-x-icon">
+          <svg class="t-icon" aria-hidden="true">
+            <use [attr.xlink:href]="checkIcon"></use>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

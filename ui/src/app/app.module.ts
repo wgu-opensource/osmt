@@ -99,6 +99,7 @@ import { ExportRsdComponent } from "./export/export-rsd.component"
 import { OsmtFormModule } from "./form/osmt-form.module"
 import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collection/convert-to-collection.component"
 import { SizePaginationComponent } from "./table/skills-library-table/size-pagination/size-pagination.component"
+import {OsmtTableModule} from "./table/osmt-table.module"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -219,7 +220,8 @@ export function initializeApp(
     SharedModule,
     OsmtCoreModule,
     OsmtFormModule,
-    FormsModule
+    FormsModule,
+    OsmtTableModule
   ],
   providers: [
     EnvironmentService,

@@ -106,9 +106,9 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
 
   shiftSelection(item: SummaryT): void {}
 
-  handleSelectAll(event: Event): void {
-    const checkbox = event.target as HTMLInputElement
-    const selected: boolean = checkbox.checked
+  handleSelectAll(event: any): void {
+    console.log(event)
+    const selected: boolean = event.selected
     this.selectAllSelected.emit(selected)
     if (selected) {
       this.items.forEach(it => this.selectedItems.add(it))

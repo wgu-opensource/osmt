@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 
-import { SelectAllComponent } from "./select-all.component"
+import {SelectAll, SelectAllComponent} from "./select-all.component"
 
 describe("SelectAllComponent", () => {
   let component: SelectAllComponent
@@ -22,4 +22,20 @@ describe("SelectAllComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy()
   })
+
+  it("on click checkbox should emit", () => {
+    const spyEmit = spyOn(component.valueChange, "emit")
+    const event = {target: {checked: true}}
+    component.onClickCheckbox(event as any)
+    expect(spyEmit).toHaveBeenCalled()
+  })
+
+  it("on click checkbox should emit value 0", () => {
+    const spyEmit = spyOn(component.valueChange, "emit")
+    const event = {target: {checked: true}}
+    component.select = {nativeElement: {value: SelectAll.SELECT_ALL}}
+    component.onClickCheckbox(event)
+    expect(spyEmit).toHaveBeenCalledWith({value: 0, selected: true})
+  })
+
 })

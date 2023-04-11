@@ -43,10 +43,15 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.DefaultRedirectStrategy
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter
 import org.springframework.stereotype.Component
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.filter.OncePerRequestFilter
+import java.io.IOException
+import javax.servlet.FilterChain
+import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -70,8 +75,33 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     lateinit var returnUnauthorized: ReturnUnauthorized
 
+    class SpringRelativeFilter : OncePerRequestFilter() {
+        @Throws(ServletException::class, IOException::class)
+        override fun doFilterInternal(
+            request: HttpServletRequest,
+            response: HttpServletResponse,
+            filterChain: FilterChain
+        ) {
+            filterChain.doFilter(request, response)
+        }
+    }
+
+    class CustomRelativeFilter : OncePerRequestFilter() {
+        @Throws(ServletException::class, IOException::class)
+        override fun doFilterInternal(
+            request: HttpServletRequest,
+            response: HttpServletResponse,
+            filterChain: FilterChain
+        ) {
+            filterChain.doFilter(request, response)
+        }
+    }
+
     @Override
     override fun configure(http: HttpSecurity) {
+        http.addFilterAfter(SpringRelativeFilter(), SecurityContextHolderAwareRequestFilter::class.java)
+            .addFilterAfter(CustomRelativeFilter(), SpringRelativeFilter::class.java)
+
         http
             .cors().and()
             .csrf().disable()

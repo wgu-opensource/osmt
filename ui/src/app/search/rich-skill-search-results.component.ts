@@ -101,7 +101,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
   }
 
   getApiSearch(skill?: ApiSkillSummary): ApiSearch | undefined {
-    return (this.multiplePagesSelected) ? this.apiSearch : super.getApiSearch(skill)
+    return this.selectAllChecked ? this.apiSearch : super.getApiSearch(skill)
   }
 
   handleSelectAll(selectAllChecked: boolean): void {

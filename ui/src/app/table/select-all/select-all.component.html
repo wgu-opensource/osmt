@@ -4,7 +4,7 @@
   </label>
   <ng-template #selectTemplate>
     <div class="m-tableLabel-x-control">
-      <select name="size-pagination" #selectAll class="m-text">
+      <select name="size-pagination" #selectAll class="m-text" (change)="onClickCheckbox(checkbox.checked)">
         <option [value]="selectAllOptions.SELECT_ALL">
           Select all ({{totalCount}})
         </option>
@@ -15,7 +15,7 @@
     </div>
     <div class="m-tableLabel-x-control">
       <div class="m-checkbox">
-        <input type="checkbox" id="checkbox" name="checkbox" (change)="onClickCheckbox($event)">
+        <input type="checkbox" id="checkbox" name="checkbox" #checkbox (change)="onClickCheckbox(checkbox.checked)">
         <div class="m-checkbox-x-icon">
           <svg class="t-icon" aria-hidden="true">
             <use [attr.xlink:href]="checkIcon"></use>

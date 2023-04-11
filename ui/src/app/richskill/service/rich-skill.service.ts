@@ -202,8 +202,13 @@ export class RichSkillService extends AbstractService {
       .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }
 
-  exportSearchCsv(uuids: string[]): Observable<ApiTaskResult> {
-    return this.httpClient.post<ApiTaskResult>(this.buildUrl("api/export/skills/csv"), uuids, {
+  exportSearchCsv(
+    apiSearch: ApiSearch,
+    filterByStatuses?: Set<PublishStatus>,
+  ): Observable<ApiTaskResult> {
+    const params = this.buildTableParams(undefined, undefined, filterByStatuses, undefined)
+    return this.httpClient.post<ApiTaskResult>(this.buildUrl("api/export/skills/csv"), apiSearch, {
+      params,
       headers: this.wrapHeaders(new HttpHeaders({
           Accept: "application/json"
         }

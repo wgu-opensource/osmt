@@ -25,9 +25,7 @@ export class SelectAllComponent {
   totalPageCount = 0
   @Output() valueChange: EventEmitter<any> = new EventEmitter<any>()
 
-  onClickCheckbox(event: Event): void {
-    const checkbox = event.target as HTMLInputElement
-    const selected: boolean = checkbox.checked
+  onClickCheckbox(selected: boolean): void {
     this.valueChange.emit({value: +this.select?.nativeElement.value, selected})
   }
 }

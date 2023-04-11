@@ -32,6 +32,7 @@ import edu.wgu.osmt.task.TaskResult
 import edu.wgu.osmt.task.XlsxTask
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -296,13 +297,29 @@ class RichSkillController @Autowired constructor(
     @PostMapping(RoutePaths.EXPORT_SKILLS_CSV, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportCustomListCsv(
-        @RequestBody uuids: List<String>?,
+        @RequestBody apiSearch: ApiSearch,
+        status: Array<String>,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
-
+        val publishStatuses = status.mapNotNull {
+            val status = PublishStatus.forApiValue(it)
+            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+        }.toSet()
+        var uuids: List<String> = emptyList()
+        if (apiSearch.uuids != null) {
+            uuids = apiSearch.uuids
+        } else {
+            val searchHits = richSkillEsRepo.byApiSearch(
+                apiSearch,
+                publishStatuses,
+                Pageable.unpaged(),
+                StringUtils.EMPTY
+            )
+            uuids = searchHits.map { it.id }.toList() as List<String>
+        }
         val task = ExportSkillsToCsvTask(collectionUuid = "CustomList", uuids)
         taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsv, task)
 

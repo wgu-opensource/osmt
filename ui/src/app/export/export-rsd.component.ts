@@ -6,6 +6,8 @@ import { ApiTaskResult } from "../task/ApiTaskResult";
 import { ToastService } from "../toast/toast.service";
 
 import * as FileSaver from "file-saver";
+import {ApiSearch} from "../richskill/service/rich-skill-search.service"
+import {PublishStatus} from "../PublishStatus"
 
 @Component({
   selector: "app-export-rsd",
@@ -52,9 +54,9 @@ export class ExportRsdComponent {
       })
   }
 
-  exportSearchCsv(uuids: string[], matchingQuery: string[]): void {
+  exportSearchCsv(apiSearch: ApiSearch, matchingQuery: string[], filterByStatuses?: Set<PublishStatus>): void {
     this.matchingQuery = matchingQuery;
-    this.richSkillService.exportSearchCsv(uuids)
+    this.richSkillService.exportSearchCsv(apiSearch, filterByStatuses)
       .subscribe((apiTask) => {
         this.richSkillService.getResultExportedCsvLibrary(apiTask.id.slice(1)).subscribe(
           response => {

@@ -134,8 +134,9 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 
   protected getRsdCsv(): void {
     this.exporter.exportSearchCsv(
-      this.selectedUuids() as string[],
-      this.matchingQuery ?? [""]
+      this.getApiSearch() ?? new ApiSearch({}),
+      this.matchingQuery ?? [""],
+      this.selectedFilters
     )
   }
 

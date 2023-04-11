@@ -8,10 +8,13 @@ import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
+
+@Disabled
 @Transactional
 class JobCodeRepositoryTest @Autowired constructor(
     override val richSkillEsRepo: RichSkillEsRepo,

@@ -72,7 +72,6 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Override
     override fun configure(http: HttpSecurity) {
         http
-            .addFilterBefore(FireBaseTokenFilter(), SecurityContextHolderAwareRequestFilter::class.java)
             .cors().and()
             .csrf().disable()
             .httpBasic().disable()

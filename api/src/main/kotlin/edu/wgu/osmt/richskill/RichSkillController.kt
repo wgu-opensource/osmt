@@ -304,23 +304,10 @@ class RichSkillController @Autowired constructor(
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
-        val publishStatuses = status.mapNotNull {
-            val status = PublishStatus.forApiValue(it)
-            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
-        }.toSet()
-        var uuids: List<String> = emptyList()
-        if (apiSearch.uuids != null) {
-            uuids = apiSearch.uuids
-        } else {
-            val searchHits = richSkillEsRepo.byApiSearch(
-                apiSearch,
-                publishStatuses,
-                Pageable.unpaged(),
-                StringUtils.EMPTY
-            )
-            uuids = searchHits.map { it.id }.toList() as List<String>
-        }
-        val task = ExportSkillsToCsvTask(collectionUuid = "CustomList", uuids)
+
+        val task = ExportSkillsToCsvTask(
+            collectionUuid = "CustomList", richSkillEsRepo.getUuidsFromApiSearch(apiSearch, status, Pageable.unpaged(), user, StringUtils.EMPTY)
+        )
         taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsv, task)
 
         return Task.processingResponse(task)
@@ -330,14 +317,15 @@ class RichSkillController @Autowired constructor(
     @PostMapping(RoutePaths.EXPORT_SKILLS_XLSX, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportCustomListXlsx(
-        @RequestBody uuids: List<String>?,
+        @RequestBody apiSearch: ApiSearch,
+        status: Array<String>,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
 
-        val task = ExportSkillsToXlsxTask(collectionUuid = "CustomList", uuids)
+        val task = ExportSkillsToXlsxTask(collectionUuid = "CustomList", richSkillEsRepo.getUuidsFromApiSearch(apiSearch, status, Pageable.unpaged(), user, StringUtils.EMPTY))
         taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportXlsx, task)
 
         return Task.processingResponse(task)

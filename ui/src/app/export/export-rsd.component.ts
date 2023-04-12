@@ -43,7 +43,7 @@ export class ExportRsdComponent {
   getRsdXlsx(uuid: string, entityName: string): void {
     // Implementation differs from getRsdCsv, the below endpoint schedules a task
     this.matchingQuery = [uuid]
-    this.richSkillService.exportSearchXlsx(this.matchingQuery)
+    this.richSkillService.exportSearchXlsx(new ApiSearch({uuids: [uuid]}), new Set<PublishStatus>())
       .subscribe((apiTask) => {
         this.richSkillService.getResultExportedXlsxLibrary(
           apiTask.id.slice(1)).subscribe(
@@ -66,9 +66,9 @@ export class ExportRsdComponent {
       })
   }
 
-  exportSearchXlsx(uuids: string[], matchingQuery: string[]): void {
+  exportSearchXlsx(apiSearch: ApiSearch, matchingQuery: string[], filterByStatuses?: Set<PublishStatus>): void {
     this.matchingQuery = matchingQuery;
-    this.richSkillService.exportSearchXlsx(uuids)
+    this.richSkillService.exportSearchXlsx(apiSearch, filterByStatuses)
       .subscribe((apiTask) => {
         this.richSkillService.getResultExportedXlsxLibrary(
             apiTask.id.slice(1)

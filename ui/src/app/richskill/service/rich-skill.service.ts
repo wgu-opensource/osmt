@@ -219,18 +219,22 @@ export class RichSkillService extends AbstractService {
     .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }
 
-  exportSearchXlsx(uuids: string[]): Observable<ApiTaskResult> {
+  exportSearchXlsx(
+    apiSearch: ApiSearch,
+    filterByStatuses?: Set<PublishStatus>,
+  ): Observable<ApiTaskResult> {
+    const params = this.buildTableParams(undefined, undefined, filterByStatuses, undefined)
     return this.httpClient.post<ApiTaskResult>(
-      this.buildUrl("api/export/skills/xlsx"),
-      uuids, {
-      headers: this.wrapHeaders(new HttpHeaders({
-          Accept: "application/json"
-        }
-      )),
-      observe: "response"
-    })
-    .pipe(share())
-    .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
+      this.buildUrl("api/export/skills/xlsx"), apiSearch, {
+        params,
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "application/json"
+          }
+        )),
+        observe: "response"
+      })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }
 
   /**

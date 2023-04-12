@@ -12,6 +12,7 @@ import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.jobcode.JobCodeQueries
 import edu.wgu.osmt.nullIfEmpty
+import org.apache.commons.lang3.StringUtils
 import org.apache.lucene.search.join.ScoreMode
 import org.elasticsearch.index.query.*
 import org.elasticsearch.index.query.QueryBuilders.*
@@ -28,10 +29,18 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
+import org.springframework.security.oauth2.jwt.Jwt
 
 const val collectionsUuid = "collections.uuid"
 
 interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
+    fun getUuidsFromApiSearch(
+        apiSearch: ApiSearch,
+        statuses: Array<String>,
+        pageable: Pageable = Pageable.unpaged(),
+        user: Jwt?,
+        collectionId: String? = null
+    ): List<String>
     fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch)
     fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiFilteredSearch, publishStatus: Set<PublishStatus>)
     fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder
@@ -61,6 +70,32 @@ interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
 class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :
     CustomRichSkillQueries {
     override val javaClass = RichSkillDoc::class.java
+
+    override fun getUuidsFromApiSearch(
+        apiSearch: ApiSearch,
+        statuses: Array<String>,
+        pageable: Pageable,
+        user: Jwt?,
+        collectionId: String?
+    ): List<String> {
+        val publishStatuses = statuses.mapNotNull {
+            val status = PublishStatus.forApiValue(it)
+            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+        }.toSet()
+        var uuids: List<String> = emptyList()
+        if (apiSearch.uuids != null) {
+            uuids = apiSearch.uuids
+        } else {
+            val searchHits = byApiSearch(
+                apiSearch,
+                publishStatuses,
+                Pageable.unpaged(),
+                StringUtils.EMPTY
+            )
+            uuids = searchHits.map { it.id }.toList() as List<String>
+        }
+        return uuids
+    }
 
     override fun occupationQueries(query: String): NestedQueryBuilder {
         val jobCodePath = RichSkillDoc::jobCodes.name

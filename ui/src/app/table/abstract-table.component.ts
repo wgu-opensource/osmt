@@ -4,6 +4,7 @@ import {TableActionDefinition} from "./skills-library-table/has-action-definitio
 import {SvgHelper, SvgIcon} from "../core/SvgHelper"
 import {Observable} from "rxjs"
 import {SelectAll} from "./select-all/select-all.component"
+import {SelectAllEvent} from "../models"
 
 /**
  * Implement row components to hold datasets and figure out how to dynamically pass and use them
@@ -107,7 +108,7 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
 
   shiftSelection(item: SummaryT): void {}
 
-  handleSelectAll(event: any): void {
+  handleSelectAll(event: SelectAllEvent): void {
     console.log(event)
     const isCheckboxSelected: boolean = event.selected
     const isAllResultsSelected: boolean = event.selected && event.value === SelectAll.SELECT_ALL

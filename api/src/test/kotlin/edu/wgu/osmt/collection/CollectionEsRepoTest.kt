@@ -6,6 +6,7 @@ import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.TestObjectHelpers
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.richskill.QuotedSearchHelpers
@@ -14,6 +15,8 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
@@ -23,6 +26,8 @@ class CollectionEsRepoTest @Autowired constructor(
     override val keywordEsRepo: KeywordEsRepo,
     override val jobCodeEsRepo: JobCodeEsRepo
 ): SpringTest(), HasDatabaseReset, HasElasticsearchReset, QuotedSearchHelpers {
+
+    val nullJwt : Jwt? = null
 
     fun queryCollectionHits(query: String): List<CollectionDoc> {
         return collectionEsRepo.byApiSearch(ApiSearch(query)).searchHits.map { it.content }
@@ -130,5 +135,20 @@ class CollectionEsRepoTest @Autowired constructor(
 
         assertThat(result.first().uuid).isEqualTo(richskill1.uuid)
         assertThat(result.size).isEqualTo(1)
+    }
+
+    @Test
+    fun `Should return an array of uuids without using query`() {
+        val uuids: List<String> = listOf("24234-abcff-342")
+        val uuidsFromApiSearch = richSkillEsRepo.getUuidsFromApiSearch(ApiSearch(uuids = uuids), arrayOf(), Pageable.unpaged(), nullJwt)
+        assertThat(uuidsFromApiSearch.size).isGreaterThan(0)
+    }
+
+    @Test
+    fun `Should return an array of uuids using query`() {
+        val richSkill = TestObjectHelpers.randomRichSkillDoc().copy(name = "RSD to export by query", collections = listOf(), jobCodes = listOf(), publishStatus = PublishStatus.Published)
+        richSkillEsRepo.save(richSkill)
+        val uuids = richSkillEsRepo.getUuidsFromApiSearch(ApiSearch(query = "export"), arrayOf("draft","published"), Pageable.unpaged(), nullJwt)
+        assertThat(uuids.size).isGreaterThan(0)
     }
 }

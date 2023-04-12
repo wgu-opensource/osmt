@@ -34,7 +34,7 @@ describe("SelectAllComponent", () => {
     const spyEmit = spyOn(component.valueChange, "emit")
     const event = {target: {checked: true}}
     component.select = {nativeElement: {value: SelectAll.SELECT_ALL}}
-    component.onClickCheckbox(event)
+    component.onClickCheckbox(true)
     expect(spyEmit).toHaveBeenCalledWith({value: 0, selected: true})
   })
 

@@ -55,6 +55,11 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
   getSkillName(): string {
     return this.richSkill?.skillName ?? ""
   }
+
+  getSkillStatus(): PublishStatus | undefined {
+    return this.richSkill?.status
+  }
+
   getPublishStatus(): PublishStatus {
     return this.richSkill?.status ?? PublishStatus.Draft
   }

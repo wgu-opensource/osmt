@@ -40,10 +40,11 @@ export class ExportRsdComponent {
       })
   }
 
-  getRsdXlsx(uuid: string, entityName: string): void {
+  getRsdXlsx(uuid: string, entityName: string, status?: PublishStatus): void {
     // Implementation differs from getRsdCsv, the below endpoint schedules a task
     this.matchingQuery = [uuid]
-    this.richSkillService.exportSearchXlsx(new ApiSearch({uuids: [uuid]}), new Set<PublishStatus>())
+    const statuses = status ? new Set<PublishStatus>([status]) : new Set<PublishStatus>()
+    this.richSkillService.exportSearchXlsx(new ApiSearch({uuids: [uuid]}), statuses)
       .subscribe((apiTask) => {
         this.richSkillService.getResultExportedXlsxLibrary(
           apiTask.id.slice(1)).subscribe(

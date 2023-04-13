@@ -143,7 +143,8 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
   protected getRsdXlsx(): void {
     this.exporter.exportSearchXlsx(
       this.getApiSearch() ?? new ApiSearch({}),
-      this.matchingQuery ?? [""]
+      this.matchingQuery ?? [""],
+      this.selectedFilters
     )
   }
 

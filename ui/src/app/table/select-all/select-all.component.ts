@@ -1,5 +1,6 @@
 import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@angular/core"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
+import {SelectAllEvent} from "../../models"
 
 export enum SelectAll {
   SELECT_ALL,
@@ -23,7 +24,7 @@ export class SelectAllComponent {
   totalCount = 0
   @Input()
   totalPageCount = 0
-  @Output() valueChange: EventEmitter<any> = new EventEmitter<any>()
+  @Output() valueChange: EventEmitter<SelectAllEvent> = new EventEmitter<SelectAllEvent>()
 
   onClickCheckbox(selected: boolean): void {
     this.valueChange.emit({value: +this.select?.nativeElement.value, selected})

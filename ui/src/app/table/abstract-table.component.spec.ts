@@ -190,6 +190,16 @@ describe("AbstractTableComponent", () => {
     expect(component.rowSelected.emit).toHaveBeenCalledWith([])
   })
 
+  it("handleSelect should emit false", () => {
+    const evt: SelectAllEvent = {
+      selected: true,
+      value: SelectAll.SELECT_ALL_ON_PAGE
+    }
+    const spyEmit = spyOn(component.selectAllSelected, "emit")
+    component.handleSelectAll(evt)
+    expect(spyEmit).toHaveBeenCalledWith(false)
+  })
+
   it("handleSelectAll should add items", () => {
     // Arrange
     const evt: SelectAllEvent = {

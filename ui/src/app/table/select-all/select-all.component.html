@@ -8,7 +8,7 @@
         <option [value]="selectAllOptions.SELECT_ALL">
           Select all ({{totalCount}})
         </option>
-        <option [value]="selectAllOptions.SELECT_ALL_ON_PAGE">
+        <option [value]="selectAllOptions.SELECT_ALL_ON_PAGE" *ngIf="showSelectAllOnPage">
           Select all page ({{totalPageCount}})
         </option>
       </select>

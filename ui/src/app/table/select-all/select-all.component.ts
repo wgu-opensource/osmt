@@ -28,4 +28,9 @@ export class SelectAllComponent {
   onClickCheckbox(selected: boolean): void {
     this.valueChange.emit({value: +this.select?.nativeElement.value, selected})
   }
+
+  get showSelectAllOnPage(): boolean {
+    return this.totalCount > this.totalPageCount
+  }
+
 }

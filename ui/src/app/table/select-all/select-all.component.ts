@@ -4,7 +4,7 @@ import {SelectAllEvent} from "../../models"
 
 export enum SelectAll {
   SELECT_ALL,
-  SELECT_ALL_ON_PAGE
+  SELECT_PAGE
 }
 
 @Component({
@@ -30,7 +30,7 @@ export class SelectAllComponent {
     this.valueChange.emit({value: +this.select?.nativeElement.value, selected})
   }
 
-  get showSelectAllOnPage(): boolean {
+  get showSelectPage(): boolean {
     return this.totalCount > this.totalPageCount
   }
 

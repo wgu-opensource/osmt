@@ -4,12 +4,12 @@
   </label>
   <ng-template #selectTemplate>
     <div class="m-tableLabel-x-control">
-      <select name="size-pagination" #selectAll class="m-text" (change)="onClickCheckbox(checkbox.checked)">
+      <select name="size-pagination" #selectAll class="m-text select" (change)="onClickCheckbox(checkbox.checked)">
         <option [value]="selectAllOptions.SELECT_ALL">
           Select all ({{totalCount}})
         </option>
-        <option [value]="selectAllOptions.SELECT_ALL_ON_PAGE" *ngIf="showSelectAllOnPage">
-          Select all page ({{totalPageCount}})
+        <option [value]="selectAllOptions.SELECT_PAGE" *ngIf="showSelectPage">
+          Select page ({{totalPageCount}})
         </option>
       </select>
     </div>

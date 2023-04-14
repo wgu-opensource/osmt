@@ -193,7 +193,7 @@ describe("AbstractTableComponent", () => {
   it("handleSelect should emit false", () => {
     const evt: SelectAllEvent = {
       selected: true,
-      value: SelectAll.SELECT_ALL_ON_PAGE
+      value: SelectAll.SELECT_PAGE
     }
     const spyEmit = spyOn(component.selectAllSelected, "emit")
     component.handleSelectAll(evt)

@@ -997,6 +997,7 @@ paths:
     post:
       tags:
         - Export selected skills
+      summary: Create a task result to generate a CSV of selected skills
       parameters:
         - in: query
           name: status
@@ -1025,6 +1026,7 @@ paths:
     post:
       tags:
         - Export selected skills
+      summary: Create a task result to generate a XLSX of selected skills
       parameters:
         - in: query
           name: status

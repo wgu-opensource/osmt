@@ -1,5 +1,7 @@
 package edu.wgu.osmt.richskill
 
+import edu.wgu.osmt.api.model.ApiAlignment
+import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.auditlog.*
 import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.collection.CollectionDao
@@ -8,12 +10,10 @@ import edu.wgu.osmt.db.*
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.Keyword
+import edu.wgu.osmt.keyword.KeywordCount
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.nullIfEmpty
-import org.valiktor.functions.isEqualTo
-import org.valiktor.functions.validate
-import org.valiktor.validate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
@@ -67,6 +67,53 @@ data class RichSkillDescriptor(
                 statement = statement,
                 creationDate = now,
                 updateDate = now
+            )
+        }
+
+        fun getKeywordsFromSkills(skills: Iterable<RichSkillDescriptor>): Map<KeywordTypeEnum, List<KeywordCount>> {
+            val alignments = skills.flatMap { it.alignments }
+                .map { ApiAlignment.fromKeyword(it) }
+                .sortedBy{ it.id }
+
+            val authors = skills.flatMap { it.authors }
+                .mapNotNull { it.value }
+                .sortedBy{ it }
+
+            val categories = skills.flatMap { it.categories }
+                .mapNotNull { it.value }
+                .sortedBy { it }
+
+            val certifications = skills.flatMap { it.certifications }
+                .map { ApiNamedReference.fromKeyword(it) }
+                .sortedBy { it.name }
+
+            val employers = skills.flatMap { it.employers }
+                .map { ApiNamedReference.fromKeyword(it) }
+                .sortedBy { it.name }
+
+            val keywords = skills.flatMap { it.searchingKeywords }
+                .mapNotNull { it.value }
+                .sortedBy { it }
+
+            val standards = skills.flatMap { it.standards }
+                .map { ApiAlignment.fromKeyword(it) }
+                .sortedBy { it.id }
+
+            return mapOf(
+                KeywordTypeEnum.Alignment to
+                    alignments.distinct().map { k ->  KeywordCount(k, alignments.count { it == k }) },
+                KeywordTypeEnum.Author to
+                    authors.distinct().map { k ->  KeywordCount(k, authors.count { it == k }) },
+                KeywordTypeEnum.Category to
+                    categories.distinct().map { k ->  KeywordCount(k, categories.count { it == k }) },
+                KeywordTypeEnum.Certification to
+                    certifications.distinct().map { k ->  KeywordCount(k, certifications.count { it == k }) },
+                KeywordTypeEnum.Employer to
+                    employers.distinct().map { k ->  KeywordCount(k, employers.count { it == k }) },
+                KeywordTypeEnum.Keyword to
+                    keywords.distinct().map { k ->  KeywordCount(k, keywords.count { it == k }) },
+                KeywordTypeEnum.Standard to
+                    standards.distinct().map { k ->  KeywordCount(k, standards.count { it == k }) },
             )
         }
     }

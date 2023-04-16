@@ -132,6 +132,14 @@ describe("CollectionPublicComponent", () => {
     expect(component.results).toEqual(expected)
   })
 
+  it("updateSkillCategories should be correct", () => {
+    const collection = component.collection
+    component.skillCategories = []
+    component.updateSkillCategories()
+    expect(component.skillCategories[0]).toBeTruthy()
+  })
+
+
   it("handleHeaderColumnSort should be correct", () => {
     // Arrange
     const expected = createMockPaginatedSkills()

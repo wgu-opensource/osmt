@@ -22,7 +22,7 @@ internal class ApiCollectionTest {
         val col = mockData.getCollection(1)
 
         // Act
-        val api = col?.let { ApiCollection(it, ArrayList(), mockData.appConfig) }
+        val api = col?.let { ApiCollection(it, ArrayList(), mapOf(), mockData.appConfig) }
 
         // Assert
         Assertions.assertThat(col?.creationDate).isEqualTo(api?.creationDate?.toLocalDateTime())

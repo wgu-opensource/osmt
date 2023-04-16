@@ -16,6 +16,8 @@ import {HeaderComponent} from "./navigation/header.component"
 import {FooterComponent} from "./navigation/footer.component"
 import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component"
 import {ToastComponent} from "./toast/toast.component"
+import {PillComponent} from "./core/pill/pill.component";
+import {PillGroupComponent} from "./core/pill/group/pill-group.component";
 import {AuthService} from "./auth/auth-service"
 import {AuthGuard} from "./auth/auth.guard"
 import {CommoncontrolsComponent} from "./navigation/commoncontrols.component"
@@ -126,6 +128,8 @@ export function initializeApp(
     LogoutComponent,
     LoginComponent,
     LoginSuccessComponent,
+    PillComponent,
+    PillGroupComponent,
 
     // Rich skill form
     RichSkillFormComponent,

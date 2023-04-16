@@ -39,6 +39,7 @@
 }
 /* [END] Needed for search control refactor until design system is updated */
 
+/* [START] Select style for size-pagination and select-all */
 .select {
   width: fit-content;
   margin-left: 20px;
@@ -53,3 +54,40 @@
   -webkit-appearance: menulist;
   transition: outline var(--t-transition),outline-offset var(--t-transition),border-radius var(--t-transition),border-color var(--t-transition),background-color var(--t-transition),box-shadow var(--t-transition);
 }
+/* [END] Select style for size-pagination and select-all */
+
+/* [START] Pill & Pill Group needed until design system is updated */
+.m-pill-group {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+}
+
+.m-pill {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 16px;
+  background-color: var(--color-background100);
+}
+
+.m-pill:disabled {
+  cursor: default;
+}
+
+.m-pill.selected {
+  color: var(--color-text4);
+  background-color: var(--color-interactive1);
+}
+
+.m-pill .m-pill-secondary {
+  margin: 0 0 0 8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: var(--color-text4);
+  background-color: var(--color-background500);
+}
+/* [END] Pill & Pill Group needed until design system is updated */

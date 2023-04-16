@@ -4,9 +4,9 @@ import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 
 import { ApiBatchResult } from "../ApiBatchResult";
-import { ApiSortOrder } from "../ApiSkill";
+import { ApiSortOrder, KeywordType } from "../ApiSkill";
 import { ApiSkillSummary } from "../ApiSkillSummary";
-import { RichSkillService} from "../service/rich-skill.service";
+import { RichSkillService } from "../service/rich-skill.service";
 import { ApiSearch, ApiSkillListUpdate, PaginatedSkills } from "../service/rich-skill-search.service";
 import { ButtonAction } from "../../auth/auth-roles";
 import { AuthService } from "../../auth/auth-service";
@@ -56,6 +56,8 @@ export class SkillsListComponent extends QuickLinksHelper {
   skillsSaved?: Observable<ApiBatchResult>
 
   columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
+
+  showCategories = true
 
   showSearchEmptyMessage = false
   showLibraryEmptyMessage = false

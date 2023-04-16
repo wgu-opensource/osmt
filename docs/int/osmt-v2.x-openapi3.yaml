@@ -1347,6 +1347,37 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SkillSummary'
+        skillKeywords:
+          type: object
+          properties:
+            Alignment:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Author:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Category:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Certification:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Employer:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Keyword:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Standard:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
 
     CollectionDoc:
       type: object
@@ -1654,6 +1685,17 @@ components:
         - alignment
         - employer
         - author
+
+    KeywordCount:
+      type: object
+      properties:
+        keyword:
+          oneOf:
+            - string
+            - $ref: '#/components/schemas/Alignment'
+            - $ref: '#/components/schemas/NamedReference'
+        count:
+          type: number
 
     Change:
       type: object

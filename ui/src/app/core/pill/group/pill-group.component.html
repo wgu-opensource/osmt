@@ -1,0 +1,11 @@
+<ul class="m-pill-group">
+  <li *ngFor="let c of pillControls;">
+    <ng-container *ngIf="hasPillClickedObservers; then withClickedObserver; else withoutClickedObserver"></ng-container>
+    <ng-template #withClickedObserver>
+    <app-pill [control]="c" (clicked)="onPillClicked($event)"></app-pill>
+    </ng-template>
+    <ng-template #withoutClickedObserver>
+    <app-pill [control]="c"></app-pill>
+    </ng-template>
+  </li>
+</ul>

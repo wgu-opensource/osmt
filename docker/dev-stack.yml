@@ -14,7 +14,7 @@ services:
       - "MYSQL_ROOT_PASSWORD=password"
       - "MYSQL_USER=user"
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT:-3306}:3306"
     networks:
       - osmt
   elasticsearch:
@@ -26,8 +26,8 @@ services:
       - "net=host"
       - "xpack.security.enabled=false"
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - "${ELASTICSEARCH_HTTP_PORT:-9200}:9200"
+      - "${ELASTICSEARCH_TRANSPORT_PORT:-9300}:9300"
     networks:
       - osmt
   redis:
@@ -35,7 +35,7 @@ services:
     networks:
       - osmt
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
 networks:
   osmt:
     driver: bridge

@@ -12,25 +12,21 @@ function setup_environment() {
 	clear
 
 	#Setting up NodeJS
-	echo "Checking if NodeJS is installed ..."
-	  if which node > /dev/null
-		node -v
-    then
-        echo "node is installed ..."
+	  which node > /dev/null
+	  if [ $? -ne 0 ]; then
+      exit 1
     fi
 
     #checking npm version
-    if which npm > /dev/null
-    		npm -v
-        then
-            echo "npm is installed ..."
+    which npm > /dev/null
+    if [ $? -ne 0 ]; then
+          exit 1
     fi
 
     #Setting up Newman
-    echo "Checking if Newman is installed ..."
-	  if newman -v
-    then
-        echo "Newman is installed ..."
+    newman -v
+	  if [ $? -ne 0 ]; then
+              exit 1
     fi
 }
 

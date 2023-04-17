@@ -13,7 +13,6 @@
     "e2e": "./node_modules/@angular/cli/bin/ng e2e",
     "ci-test": "./node_modules/@angular/cli/bin/ng test --no-watch --no-progress --karma-config=karma.ci.conf.js",
     "clean": "rm -rf ../api/src/main/resources/ui/*; rm -rf coverage; rm -rf reports; rm -rf test-results; rm -rf node_modules",
-    "test-newman": "../test/postman/osmt_apitest.sh"
   },
   "private": true,
   "dependencies": {
@@ -62,7 +61,6 @@
     "protractor": "~7.0.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.3.5",
-    "newman": "^5.3.2"
+    "typescript": "~4.3.5"
   }
 }

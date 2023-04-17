@@ -304,9 +304,12 @@ class RichSkillController @Autowired constructor(
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
-
+        val publishStatuses = status.mapNotNull {
+            val status = PublishStatus.forApiValue(it)
+            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+        }.toSet()
         val task = ExportSkillsToCsvTask(
-            collectionUuid = "CustomList", richSkillEsRepo.getUuidsFromApiSearch(apiSearch, status, Pageable.unpaged(), user, StringUtils.EMPTY)
+            collectionUuid = "CustomList", richSkillEsRepo.getUuidsFromApiSearch(apiSearch, publishStatuses, Pageable.unpaged(), user, StringUtils.EMPTY)
         )
         taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsv, task)
 
@@ -324,8 +327,11 @@ class RichSkillController @Autowired constructor(
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
-
-        val task = ExportSkillsToXlsxTask(collectionUuid = "CustomList", richSkillEsRepo.getUuidsFromApiSearch(apiSearch, status, Pageable.unpaged(), user, StringUtils.EMPTY))
+        val publishStatuses = status.mapNotNull {
+            val status = PublishStatus.forApiValue(it)
+            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+        }.toSet()
+        val task = ExportSkillsToXlsxTask(collectionUuid = "CustomList", richSkillEsRepo.getUuidsFromApiSearch(apiSearch, publishStatuses, Pageable.unpaged(), user, StringUtils.EMPTY))
         taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportXlsx, task)
 
         return Task.processingResponse(task)

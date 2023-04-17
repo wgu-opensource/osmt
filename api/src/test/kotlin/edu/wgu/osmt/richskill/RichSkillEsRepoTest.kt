@@ -14,6 +14,7 @@ import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.io.csv.BatchImportRichSkill
 import edu.wgu.osmt.db.ListFieldUpdate
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordRepository
@@ -22,6 +23,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
@@ -61,6 +63,7 @@ class RichSkillEsRepoTest @Autowired constructor(
 ) : SpringTest(), HasDatabaseReset, HasElasticsearchReset, QuotedSearchHelpers {
 
     val authorString = "unit-test-author"
+    val nullJwt : Jwt? = null
 
     @Test
     fun `Should insert a rich skill into elastic search`() {
@@ -1243,5 +1246,20 @@ class RichSkillEsRepoTest @Autowired constructor(
         assertThat(skillResult.contains(randomSkills[0]))
         assertThat(skillResult.contains(skill2))
 
+    }
+
+    @Test
+    fun `Should return an array of uuids without using query`() {
+        val uuids: List<String> = listOf("24234-abcff-342")
+        val uuidsFromApiSearch = richSkillEsRepo.getUuidsFromApiSearch(ApiSearch(uuids = uuids), arrayOf(PublishStatus.Published).toSet(), Pageable.unpaged(), nullJwt)
+        assertThat(uuidsFromApiSearch.size).isGreaterThan(0)
+    }
+
+    @Test
+    fun `Should return an array of uuids using query`() {
+        val richSkill = TestObjectHelpers.randomRichSkillDoc().copy(name = "RSD to export by query", collections = listOf(), jobCodes = listOf(), publishStatus = PublishStatus.Published)
+        richSkillEsRepo.save(richSkill)
+        val uuids = richSkillEsRepo.getUuidsFromApiSearch(ApiSearch(query = "export"), arrayOf(PublishStatus.Draft,PublishStatus.Published).toSet(), Pageable.unpaged(), nullJwt)
+        assertThat(uuids.size).isGreaterThan(0)
     }
 }

@@ -36,7 +36,7 @@ const val collectionsUuid = "collections.uuid"
 interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun getUuidsFromApiSearch(
         apiSearch: ApiSearch,
-        statuses: Array<String>,
+        publishStatus: Set<PublishStatus>,
         pageable: Pageable = Pageable.unpaged(),
         user: Jwt?,
         collectionId: String? = null
@@ -73,26 +73,24 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
     override fun getUuidsFromApiSearch(
         apiSearch: ApiSearch,
-        statuses: Array<String>,
+        publishStatus: Set<PublishStatus>,
         pageable: Pageable,
         user: Jwt?,
         collectionId: String?
     ): List<String> {
-        val publishStatuses = statuses.mapNotNull {
-            val status = PublishStatus.forApiValue(it)
-            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
-        }.toSet()
-        var uuids: List<String> = emptyList()
-        if (apiSearch.uuids != null) {
-            uuids = apiSearch.uuids
-        } else {
+
+        val uuids = if (apiSearch.uuids != null)
+        {
+            apiSearch.uuids
+        }
+        else {
             val searchHits = byApiSearch(
                 apiSearch,
-                publishStatuses,
+                publishStatus,
                 Pageable.unpaged(),
                 StringUtils.EMPTY
             )
-            uuids = searchHits.map { it.id }.toList() as List<String>
+            searchHits.mapNotNull { it.id }
         }
         return uuids
     }

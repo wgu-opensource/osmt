@@ -17,6 +17,7 @@ import org.junit.jupiter.api.TestInstance
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Component
 import org.springframework.test.context.ActiveProfiles
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional
 @ContextConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestPropertySource(locations=["classpath:config/application-test.properties"])
+@AutoConfigureMockMvc(addFilters = false)
 abstract class SpringTest: BaseDockerizedTest {
     val logger: Logger = LoggerFactory.getLogger(SpringTest::class.java)
 

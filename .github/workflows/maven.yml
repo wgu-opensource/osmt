@@ -22,6 +22,4 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
     - name: Build with Maven
-    - run: mvn clean package
-    - run: mvn -up package
-    - run: mvn -B -X package
+      run: mvn clean -B -X -up package

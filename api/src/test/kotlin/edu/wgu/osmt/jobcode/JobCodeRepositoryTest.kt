@@ -10,11 +10,9 @@ import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
-@AutoConfigureMockMvc(addFilters = false)
 class JobCodeRepositoryTest @Autowired constructor(
     override val richSkillEsRepo: RichSkillEsRepo,
     override val collectionEsRepo: CollectionEsRepo,

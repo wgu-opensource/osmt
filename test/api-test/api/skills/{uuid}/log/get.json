@@ -1,0 +1,102 @@
+[
+  {
+      "creationDate": "2023-03-30T13:02:07.41171",
+      "operationType": "PublishStatusChange",
+      "user": "OSMT Developer",
+      "changedFields": [
+          {
+              "fieldName": "publishStatus",
+              "old": "Draft",
+              "new": "Published"
+          }
+      ]
+  },
+  {
+      "creationDate": "2023-03-30T13:00:19.802317",
+      "operationType": "Update",
+      "user": "OSMT Developer",
+      "changedFields": [
+          {
+              "fieldName": "categories",
+              "old": "Financial Management; Information Security Management; Backup And Restore",
+              "new": "Information Security Management"
+          }
+      ]
+  },
+  {
+      "creationDate": "2023-03-29T20:57:11.665091",
+      "operationType": "Update",
+      "user": "OSMT Developer",
+      "changedFields": [
+          {
+              "fieldName": "categories",
+              "old": "Information Security Management",
+              "new": "Financial Management; Information Security Management; Backup And Restore"
+          }
+      ]
+  },
+  {
+      "creationDate": "2023-02-28T15:51:59.249588",
+      "operationType": "Update",
+      "user": "OSMT Developer",
+      "changedFields": [
+          {
+              "fieldName": "collections",
+              "old": null,
+              "new": "Software Development"
+          }
+      ]
+  },
+  {
+      "creationDate": "2023-02-27T21:02:47.20721",
+      "operationType": "Insert",
+      "user": "",
+      "changedFields": [
+          {
+              "fieldName": "name",
+              "old": null,
+              "new": "Access and Security Levels Standardization"
+          },
+          {
+              "fieldName": "statement",
+              "old": null,
+              "new": "Standardize levels of access and security to maintain information security."
+          },
+          {
+              "fieldName": "category",
+              "old": null,
+              "new": "Information Security Management"
+          },
+          {
+              "fieldName": "author",
+              "old": null,
+              "new": "Western Governors University"
+          },
+          {
+              "fieldName": "publishStatus",
+              "old": null,
+              "new": "Draft"
+          },
+          {
+              "fieldName": "standards",
+              "old": null,
+              "new": "NICE_SP_RSK; NICE_SP_DEV; NICE_SP_ARC; NICE_SP_TRD; NICE_SP_SRP; NICE_SP_TST; NICE_SP_SYS; NICE_OV_MGT; NICE_AN_LNG; NICE_CO_OPS; NICE_OV_PMA; NICE_OM_ANA; NICE_PR_CIR; NICE_OM_NET; NICE_OM_ADM"
+          },
+          {
+              "fieldName": "alignments",
+              "old": null,
+              "new": "Information Security Management"
+          },
+          {
+              "fieldName": "searchingKeywords",
+              "old": null,
+              "new": "Risk; Information Security Management; Compromise Assessment; Computer Emergency Response Teams (CERT); Computer Security Incident Response (CSIRT); Defense Information Systems Agency (DISA); Dynamic Application Security Testing (DAST); Information Asset Classification; Personnel Security; Security Architecture; Security by Design; Security Event Triage; Security Implementation; Security Integration; Security Models and Design; Security Operations Center (SOC); Security Operations Management; Symantec Packages; Systems; Applications & Products (SAP) Enterprise Threat Detection (ETD); Applications & Products (SAP) in Data Processing Business Suite 4 (S/4) Fiori Security; Applications & Products (SAP) in Data Processing Business Suite 4 (S/4) User Interface 5 (UI5) Security; Applications & Products (SAP) in Data Processing Business Suite 4 High-Performance Analytic Appliance (S/4HANA) Security; Applications & Products (SAP) in Data Processing Business Suite 4 High-Performance Analytic Appliance (S/4HANA); Fiori; and User Interface 5 (UI5) Security; Applications & Products (SAP) Security & Governance; and Compliance (GRC); ThreadFix; ThreatConnect; TippingPoint; TrapX DeceptionGrid; Varonis; Virtual Domains (VDOMs); Vormetric; Vormetric Application Encryption; Vormetric Tokenization"
+          },
+          {
+              "fieldName": "jobCodes",
+              "old": null,
+              "new": "15-0000; 15-1200; 15-1240; 15-1244; 15-1250; 15-1259"
+          }
+      ]
+  }
+]

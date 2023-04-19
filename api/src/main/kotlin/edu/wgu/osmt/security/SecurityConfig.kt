@@ -69,6 +69,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     lateinit var returnUnauthorized: ReturnUnauthorized
 
+    @Throws(Exception::class)
     @Override
     override fun configure(http: HttpSecurity) {
         http

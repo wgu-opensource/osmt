@@ -14,6 +14,7 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
@@ -131,4 +132,5 @@ class CollectionEsRepoTest @Autowired constructor(
         assertThat(result.first().uuid).isEqualTo(richskill1.uuid)
         assertThat(result.size).isEqualTo(1)
     }
+
 }

@@ -31,25 +31,16 @@
     </td>
 
     <td class="m-tableHeader-x-actions" aria-hidden="true">
-      <!--{{render '@m-tablelabel&#45;&#45;with-choice'}}-->
-      <div class="m-tableLabel">
-        <label class="m-tableLabel-x-text" for="checkbox">Select <ng-template [ngIf]="selectAllEnabled">All ({{getSelectAllCount()}})</ng-template></label>
-        <div class="m-tableLabel-x-control" *ngIf="selectAllEnabled">
-          <div class="m-checkbox">
-            <input type="checkbox" id="checkbox" name="checkbox" (change)="handleSelectAll($event)">
-            <div class="m-checkbox-x-icon">
-              <svg class="t-icon" aria-hidden="true">
-                <use [attr.xlink:href]="checkIcon"></use>
-              </svg>
-            </div>
-          </div>
-          <nav class="m-quickLinks" aria-labelledby="save-quicklinks">
-            <h3 class="t-visuallyHidden" id="save-quicklinks">Quick Links</h3>
-            <a class="t-visuallyHidden" (click)="focusActionBar.emit()">Ations menu.</a>
-          </nav>
-        </div>
-      </div>
-
+      <app-select-all
+        [selectAllEnabled]="selectAllEnabled"
+        (valueChange)="handleSelectAll($event)"
+        [totalCount]="getSelectAllCount()"
+        [totalPageCount]="items.length">
+      </app-select-all>
+      <!--nav class="m-quickLinks" aria-labelledby="save-quicklinks">
+        <h3 class="t-visuallyHidden" id="save-quicklinks">Quick Links</h3>
+        <a class="t-visuallyHidden" (click)="focusActionBar.emit()">Ations menu.</a>
+      </nav-->
     </td>
   </tr>
   </thead>

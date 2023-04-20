@@ -32,6 +32,7 @@ import edu.wgu.osmt.task.TaskResult
 import edu.wgu.osmt.task.XlsxTask
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -296,14 +297,20 @@ class RichSkillController @Autowired constructor(
     @PostMapping(RoutePaths.EXPORT_SKILLS_CSV, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportCustomListCsv(
-        @RequestBody uuids: List<String>?,
+        @RequestBody apiSearch: ApiSearch,
+        status: Array<String>,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
-
-        val task = ExportSkillsToCsvTask(collectionUuid = "CustomList", uuids)
+        val publishStatuses = status.mapNotNull {
+            val status = PublishStatus.forApiValue(it)
+            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+        }.toSet()
+        val task = ExportSkillsToCsvTask(
+            collectionUuid = "CustomList", richSkillEsRepo.getUuidsFromApiSearch(apiSearch, publishStatuses, Pageable.unpaged(), user, StringUtils.EMPTY)
+        )
         taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsv, task)
 
         return Task.processingResponse(task)
@@ -313,14 +320,18 @@ class RichSkillController @Autowired constructor(
     @PostMapping(RoutePaths.EXPORT_SKILLS_XLSX, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportCustomListXlsx(
-        @RequestBody uuids: List<String>?,
+        @RequestBody apiSearch: ApiSearch,
+        status: Array<String>,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
-
-        val task = ExportSkillsToXlsxTask(collectionUuid = "CustomList", uuids)
+        val publishStatuses = status.mapNotNull {
+            val status = PublishStatus.forApiValue(it)
+            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+        }.toSet()
+        val task = ExportSkillsToXlsxTask(collectionUuid = "CustomList", richSkillEsRepo.getUuidsFromApiSearch(apiSearch, publishStatuses, Pageable.unpaged(), user, StringUtils.EMPTY))
         taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportXlsx, task)
 
         return Task.processingResponse(task)

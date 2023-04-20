@@ -8,6 +8,7 @@ import { SvgHelper, SvgIcon } from "../../../../core/SvgHelper"
 import { ExportRsdComponent } from "../../../../export/export-rsd.component"
 import { TableActionDefinition } from "../../../../table/skills-library-table/has-action-definitions"
 import { ToastService } from "../../../../toast/toast.service"
+import {PublishStatus} from "../../../../PublishStatus"
 
 @Component({
   selector: "app-abstract-public-rich-skill-action-bar",
@@ -18,6 +19,7 @@ export class PublicRichSkillActionBarComponent implements OnInit {
   @Input() skillUuid = ""
   @Input() skillName = ""
   @Input() skillUrl = ""
+  @Input() skillStatus?: PublishStatus
 
   skillJsonObservable = new Observable<string>()
   jsonClipboard = ""
@@ -79,7 +81,8 @@ export class PublicRichSkillActionBarComponent implements OnInit {
           visible: () => true,
           callback: () => this.exporter.getRsdXlsx(
             this.skillUuid,
-            this.skillName
+            this.skillName,
+            this.skillStatus
           ),
         }
       ],

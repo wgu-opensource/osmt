@@ -176,7 +176,7 @@ describe("RichSkillSearchResultsComponent", () => {
     const apiSearch = new ApiSearch({ query })
     component.apiSearch = apiSearch
     component.results = createMockPaginatedSkills(component.size, component.size * 2)  // Prep for handleSelectAll call: >1 page
-    component.handleSelectAll(false)  // Set component.multiplePagesSelected
+    component.handleSelectAll(true)  // Set component.multiplePagesSelected
 
     // Act
     const result = component.getApiSearch(skill)

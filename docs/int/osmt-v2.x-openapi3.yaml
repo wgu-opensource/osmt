@@ -993,6 +993,64 @@ paths:
                 items:
                   $ref: '#/components/schemas/NamedReference'
 
+  /api/export/skills/csv:
+    post:
+      tags:
+        - Export selected skills
+      summary: Create a task result to generate a CSV of selected skills
+      parameters:
+        - in: query
+          name: status
+          schema:
+            default:
+              - Draft
+              - Published
+            type: array
+            items:
+              $ref: '#/components/schemas/PublishStatus'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Search'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+
+  /api/export/skills/xlsx:
+    post:
+      tags:
+        - Export selected skills
+      summary: Create a task result to generate a XLSX of selected skills
+      parameters:
+        - in: query
+          name: status
+          schema:
+            default:
+              - Draft
+              - Published
+            type: array
+            items:
+              $ref: '#/components/schemas/PublishStatus'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Search'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+
 components:
   securitySchemes:
     bearerAuth:

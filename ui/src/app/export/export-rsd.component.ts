@@ -6,6 +6,8 @@ import { ApiTaskResult } from "../task/ApiTaskResult";
 import { ToastService } from "../toast/toast.service";
 
 import * as FileSaver from "file-saver";
+import {ApiSearch} from "../richskill/service/rich-skill-search.service"
+import {PublishStatus} from "../PublishStatus"
 
 @Component({
   selector: "app-export-rsd",
@@ -38,10 +40,11 @@ export class ExportRsdComponent {
       })
   }
 
-  getRsdXlsx(uuid: string, entityName: string): void {
+  getRsdXlsx(uuid: string, entityName: string, status?: PublishStatus): void {
     // Implementation differs from getRsdCsv, the below endpoint schedules a task
     this.matchingQuery = [uuid]
-    this.richSkillService.exportSearchXlsx(this.matchingQuery)
+    const statuses = status ? new Set<PublishStatus>([status]) : new Set<PublishStatus>()
+    this.richSkillService.exportSearchXlsx(new ApiSearch({uuids: [uuid]}), statuses)
       .subscribe((apiTask) => {
         this.richSkillService.getResultExportedXlsxLibrary(
           apiTask.id.slice(1)).subscribe(
@@ -52,9 +55,9 @@ export class ExportRsdComponent {
       })
   }
 
-  exportSearchCsv(uuids: string[], matchingQuery: string[]): void {
+  exportSearchCsv(apiSearch: ApiSearch, matchingQuery: string[], filterByStatuses?: Set<PublishStatus>): void {
     this.matchingQuery = matchingQuery;
-    this.richSkillService.exportSearchCsv(uuids)
+    this.richSkillService.exportSearchCsv(apiSearch, filterByStatuses)
       .subscribe((apiTask) => {
         this.richSkillService.getResultExportedCsvLibrary(apiTask.id.slice(1)).subscribe(
           response => {
@@ -64,9 +67,9 @@ export class ExportRsdComponent {
       })
   }
 
-  exportSearchXlsx(uuids: string[], matchingQuery: string[]): void {
+  exportSearchXlsx(apiSearch: ApiSearch, matchingQuery: string[], filterByStatuses?: Set<PublishStatus>): void {
     this.matchingQuery = matchingQuery;
-    this.richSkillService.exportSearchXlsx(uuids)
+    this.richSkillService.exportSearchXlsx(apiSearch, filterByStatuses)
       .subscribe((apiTask) => {
         this.richSkillService.getResultExportedXlsxLibrary(
             apiTask.id.slice(1)

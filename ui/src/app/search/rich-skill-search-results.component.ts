@@ -101,7 +101,7 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
   }
 
   getApiSearch(skill?: ApiSkillSummary): ApiSearch | undefined {
-    return (this.multiplePagesSelected) ? this.apiSearch : super.getApiSearch(skill)
+    return this.selectAllChecked ? this.apiSearch : super.getApiSearch(skill)
   }
 
   handleSelectAll(selectAllChecked: boolean): void {
@@ -134,15 +134,17 @@ export class RichSkillSearchResultsComponent extends SkillsListComponent impleme
 
   protected getRsdCsv(): void {
     this.exporter.exportSearchCsv(
-      this.selectedUuids() as string[],
-      this.matchingQuery ?? [""]
+      this.getApiSearch() ?? new ApiSearch({}),
+      this.matchingQuery ?? [""],
+      this.selectedFilters
     )
   }
 
   protected getRsdXlsx(): void {
     this.exporter.exportSearchXlsx(
-      this.selectedUuids() as string[],
-      this.matchingQuery ?? [""]
+      this.getApiSearch() ?? new ApiSearch({}),
+      this.matchingQuery ?? [""],
+      this.selectedFilters
     )
   }
 

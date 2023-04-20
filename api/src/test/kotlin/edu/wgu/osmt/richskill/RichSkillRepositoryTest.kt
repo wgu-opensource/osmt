@@ -18,7 +18,6 @@ import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.collection.CollectionRepository
 import edu.wgu.osmt.collection.CollectionUpdateObject
 import edu.wgu.osmt.db.ListFieldUpdate
-import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeEsRepo

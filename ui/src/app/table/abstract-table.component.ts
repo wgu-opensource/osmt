@@ -3,6 +3,8 @@ import {ApiSortOrder} from "../richskill/ApiSkill"
 import {TableActionDefinition} from "./skills-library-table/has-action-definitions"
 import {SvgHelper, SvgIcon} from "../core/SvgHelper"
 import {Observable} from "rxjs"
+import {SelectAll} from "./select-all/select-all.component"
+import {SelectAllEvent} from "../models"
 
 /**
  * Implement row components to hold datasets and figure out how to dynamically pass and use them
@@ -106,11 +108,11 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
 
   shiftSelection(item: SummaryT): void {}
 
-  handleSelectAll(event: Event): void {
-    const checkbox = event.target as HTMLInputElement
-    const selected: boolean = checkbox.checked
-    this.selectAllSelected.emit(selected)
-    if (selected) {
+  handleSelectAll(event: SelectAllEvent): void {
+    const isCheckboxSelected: boolean = event.selected
+    const isAllResultsSelected: boolean = event.selected && event.value === SelectAll.SELECT_ALL
+    this.selectAllSelected.emit(isAllResultsSelected)
+    if (isCheckboxSelected) {
       this.items.forEach(it => this.selectedItems.add(it))
     } else {
       this.selectedItems.clear()

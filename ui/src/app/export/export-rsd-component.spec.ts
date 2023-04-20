@@ -4,11 +4,14 @@ import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { ExportRsdComponent } from "./export-rsd.component"
 import { RichSkillService } from "../richskill/service/rich-skill.service"
 import { RichSkillServiceStub } from "../../../test/resource/mock-stubs"
+import {PublishStatus} from "../PublishStatus"
+import {ApiSearch} from "../richskill/service/rich-skill-search.service"
 
 describe("ExportRsdComponent", () => {
   let component: ExportRsdComponent
   let fixture: ComponentFixture<ExportRsdComponent>
   let richSkillService: RichSkillService
+  const statuses = new Set<PublishStatus>([PublishStatus.Published, PublishStatus.Draft])
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
@@ -60,7 +63,7 @@ describe("ExportRsdComponent", () => {
     const entityName = ["RSD name"]
     const spyLoader = spyOn(component["toastService"], "showBlockingLoader")
     const spyService = spyOn(richSkillService, "exportSearchCsv").and.callThrough()
-    component.exportSearchCsv(uuids, entityName)
+    component.exportSearchCsv(new ApiSearch({uuids}), entityName, statuses)
     expect(spyLoader)
     expect(spyService).toHaveBeenCalled()
   })
@@ -70,7 +73,7 @@ describe("ExportRsdComponent", () => {
     const entityName = ["RSD name"]
     const spyLoader = spyOn(component["toastService"], "showBlockingLoader")
     const spyService = spyOn(richSkillService, "exportSearchXlsx").and.callThrough()
-    component.exportSearchXlsx(uuids, entityName)
+    component.exportSearchXlsx(new ApiSearch({uuids}), entityName, statuses)
     expect(spyLoader)
     expect(spyService).toHaveBeenCalled()
   })

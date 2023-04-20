@@ -1,9 +1,11 @@
-import { Injectable, Type } from "@angular/core"
-import { async, ComponentFixture, TestBed } from "@angular/core/testing"
-import { createMockSkillSummary } from "../../../test/resource/mock-data"
-import { ApiSortOrder } from "../richskill/ApiSkill"
-import { ApiSkillSummary, ISkillSummary } from "../richskill/ApiSkillSummary"
-import { AbstractTableComponent } from "./abstract-table.component"
+import {Injectable, Type} from "@angular/core"
+import {async, ComponentFixture, TestBed} from "@angular/core/testing"
+import {createMockSkillSummary} from "../../../test/resource/mock-data"
+import {ApiSortOrder} from "../richskill/ApiSkill"
+import {ApiSkillSummary, ISkillSummary} from "../richskill/ApiSkillSummary"
+import {AbstractTableComponent} from "./abstract-table.component"
+import {SelectAllEvent} from "../models"
+import {SelectAll} from "./select-all/select-all.component"
 
 
 @Injectable({
@@ -188,9 +190,22 @@ describe("AbstractTableComponent", () => {
     expect(component.rowSelected.emit).toHaveBeenCalledWith([])
   })
 
+  it("handleSelect should emit false", () => {
+    const evt: SelectAllEvent = {
+      selected: true,
+      value: SelectAll.SELECT_PAGE
+    }
+    const spyEmit = spyOn(component.selectAllSelected, "emit")
+    component.handleSelectAll(evt)
+    expect(spyEmit).toHaveBeenCalledWith(false)
+  })
+
   it("handleSelectAll should add items", () => {
     // Arrange
-    const evt = { target: { checked: true }}
+    const evt: SelectAllEvent = {
+      selected: true,
+      value: SelectAll.SELECT_ALL
+    }
     const item = createMockSkillSummary()
     component.selectedItems.clear()
     component.items = [item]
@@ -199,16 +214,20 @@ describe("AbstractTableComponent", () => {
     spyOn(component.rowSelected, "emit")
 
     // Act
-    component.handleSelectAll(evt as unknown as Event)
+    component.handleSelectAll(evt)
 
     // Assert
     expect(component.selectedItems).toEqual(new Set(expected))
-    expect(component.selectAllSelected.emit).toHaveBeenCalledWith(evt.target.checked)
+    expect(component.selectAllSelected.emit).toHaveBeenCalledWith(true)
     expect(component.rowSelected.emit).toHaveBeenCalledWith(expected)
   })
+
   it("handleSelectAll should remove items", () => {
     // Arrange
-    const evt = { target: { checked: false }}
+    const evt: SelectAllEvent = {
+      selected: false,
+      value: SelectAll.SELECT_ALL
+    }
     const item = createMockSkillSummary()
     component.selectedItems.clear()
     component.selectedItems.add(item)
@@ -217,11 +236,11 @@ describe("AbstractTableComponent", () => {
     spyOn(component.rowSelected, "emit")
 
     // Act
-    component.handleSelectAll(evt as unknown as Event)
+    component.handleSelectAll(evt)
 
     // Assert
     expect(component.selectedItems).toEqual(new Set(expected))
-    expect(component.selectAllSelected.emit).toHaveBeenCalledWith(evt.target.checked)
+    expect(component.selectAllSelected.emit).toHaveBeenCalledWith(false)
     expect(component.rowSelected.emit).toHaveBeenCalledWith(expected)
   })
 

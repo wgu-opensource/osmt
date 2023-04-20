@@ -27,6 +27,7 @@ import { ApiSkillUpdate } from "../ApiSkillUpdate"
 import { ApiSearch, PaginatedSkills } from "./rich-skill-search.service"
 import { RichSkillService } from "./rich-skill.service"
 import { ApiTaskResult } from "../../task/ApiTaskResult"
+import {query} from "@angular/animations"
 
 
 // An example of how to test a service
@@ -328,13 +329,13 @@ describe("RichSkillService", () => {
 
 
   it("export search", fakeAsync(() => {
-    const result$ = testService.exportSearchCsv([])
+    const result$ = testService.exportSearchCsv(new ApiSearch({query: "net"}))
     tick(ASYNC_WAIT_PERIOD)
     // Assert
     result$.subscribe((data: ApiTaskResult) => {
       expect(RouterData.commands).toEqual([]) // No Errors
     })
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/export/skills/csv")
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/export/skills/csv?sort=undefined")
     expect(req.request.method).toEqual("POST")
     expect(req.request.headers.get("Accept")).toEqual("application/json")
     req.flush(result$)

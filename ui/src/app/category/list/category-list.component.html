@@ -1,0 +1,35 @@
+<div class="l-stickyBar">
+  <div class="l-container t-padding-large t-padding-top">
+    <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+      <h2 #titleHeading class="t-type-heading1 t-margin-small t-margin-bottom">{{title}}</h2>
+      <p class="t-type-bodyLarge t-type-text3">
+        {{categoryCountLabel}} found.
+        <ng-template *ngIf="hasResults">
+          Viewing {{firstRecordNo}}-{{lastRecordNo}}.
+        </ng-template>
+      </p>
+    </div>
+    <div class="t-margin-medium t-margin-bottom">
+      <app-blocking-loader [observables]="[resultsLoaded]">
+        <app-category-table *ngIf="!emptyResults"
+          [items]="results.categories"
+          [sortOrder]="columnSort"
+          (columnSorted)="handleHeaderColumnSort($event)"
+        ></app-category-table>
+        <app-empty-message *ngIf="emptyResults">
+          <p class="m-emptyMessage-x-message">No categories found.</p>
+        </app-empty-message>
+      </app-blocking-loader>
+    </div>
+    <app-pagination
+      [currentPage]="currPageNo"
+      [totalPages]="totalPageCount"
+      (pageClicked)="handlePageClicked($event)"
+    ></app-pagination>
+  </div>
+  <div class="l-stickyBar-x-bar t-padding-medium t-padding-top">
+    <div class="l-container l-container-tablet">
+      <app-table-action-bar [actions]="tableActions"></app-table-action-bar>
+    </div>
+  </div>
+</div>

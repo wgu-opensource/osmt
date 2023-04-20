@@ -25,6 +25,10 @@ object RoutePaths {
     const val EXPORT_SKILLS_CSV = "$EXPORT_SKILLS/csv"
     const val EXPORT_SKILLS_XLSX = "$EXPORT_SKILLS/xlsx"
 
+    const val CATEGORY_PATH = "$API/categories"
+    const val CATEGORY_LIST = CATEGORY_PATH
+    const val CATEGORY_DETAIL = "$CATEGORY_PATH/{identifier}"
+    const val CATEGORY_SKILLS = "$CATEGORY_DETAIL/skills"
 
     const val COLLECTIONS_PATH = "$API/collections"
     const val COLLECTIONS_LIST = COLLECTIONS_PATH

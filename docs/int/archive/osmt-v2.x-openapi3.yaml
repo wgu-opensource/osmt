@@ -416,6 +416,196 @@ paths:
               parameters:
                 uuid: '$response.body#/uuid'
 
+  /api/categories:
+    get:
+      tags:
+        - Categories
+      summary: Get all categories
+      description: Retrieve all the categories
+      parameters:
+        - in: query
+          name: size
+          description: number of records to return
+          schema:
+            type: number
+            default: 50
+        - in: query
+          name: from
+          description: zero-indexed offset from beginning of records
+          schema:
+            type: number
+            default: 0
+        - in: query
+          name: sort
+          schema:
+            $ref: '#/components/schemas/KeywordSortOrder'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Keyword'
+
+  /api/categories/{identifier}:
+    get:
+      tags:
+        - Categories
+      summary: Get category by identifier
+      description: Retrieve category with identifier
+      parameters:
+        - in: path
+          name: identifier
+          description: identifying key for category
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Keyword'
+
+  /api/categories{identifier}/skills:
+    get:
+      tags:
+        - Categories
+      summary: Get skills with category
+      description: Retrieve skills with category
+      parameters:
+        - in: path
+          name: identifier
+          description: identifying key for category
+          schema:
+            type: string
+        - in: query
+          name: size
+          description: number of records to return
+          schema:
+            type: number
+            default: 50
+        - in: query
+          name: from
+          description: zero-indexed offset from beginning of records
+          schema:
+            type: number
+            default: 0
+        - in: query
+          name: status
+          schema:
+            default:
+              - Unpublished
+              - Published
+            type: array
+            items:
+              $ref: '#/components/schemas/PublishStatus'
+        - in: query
+          name: sort
+          description: order records should be sorted
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Keyword'
+    post:
+      tags:
+        - Categories
+      summary: Search skills with category
+      description: Search skills with category
+      parameters:
+        - in: path
+          name: identifier
+          description: identifying key for category
+          schema:
+            type: string
+        - in: query
+          name: size
+          description: number of records to return
+          schema:
+            type: number
+            default: 50
+        - in: query
+          name: from
+          description: zero-indexed offset from beginning of records
+          schema:
+            type: number
+            default: 0
+        - in: query
+          name: status
+          schema:
+            default:
+              - Unpublished
+              - Published
+            type: array
+            items:
+              $ref: '#/components/schemas/PublishStatus'
+        - in: query
+          name: sort
+          description: order records should be sorted
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Search'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Keyword'
 
   /api/search/collections:
     post:
@@ -1310,6 +1500,37 @@ components:
         occupations:
           add:
             - 11-9013
+
+    Keyword:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/KeywordType'
+        id:
+          type: number
+        value:
+          type: string
+        skillCount:
+          type: number
+
+    KeywordSortOrder:
+      type: string
+      enum:
+        - keyword.asc
+        - keyword.desc
+        - skillCount.asc
+        - skillCount.desc
+
+    KeywordType:
+      type: string
+      enum:
+        - category
+        - keyword
+        - standard
+        - certification
+        - alignment
+        - employer
+        - author
 
     Collection:
       type: object

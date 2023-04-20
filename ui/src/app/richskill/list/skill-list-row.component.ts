@@ -16,6 +16,7 @@ export class SkillListRowComponent implements OnInit {
   @Input() id = ""
   @Input() nextId = ""
   @Input() rowActions: TableActionDefinition[] = []
+  @Input() showActions: boolean = true
 
   @Output() rowSelected = new EventEmitter<ApiSkillSummary>()
   @Output() focusActionBar = new EventEmitter<void>()

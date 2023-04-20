@@ -18,6 +18,7 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
   @Input() items: SummaryT[] = []
   @Input() currentSort?: ApiSortOrder = undefined
   @Input() rowActions: TableActionDefinition[] = []
+  @Input() showRowActions: boolean = true
   @Input() selectAllCount?: number
   @Input() selectAllEnabled = true
   @Input() clearSelected = new Observable<void>()

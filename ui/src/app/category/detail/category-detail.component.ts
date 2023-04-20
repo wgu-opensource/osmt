@@ -106,6 +106,13 @@ export class CategoryDetailComponent extends QuickLinksHelper implements OnInit 
     this.loadCategory()
   }
 
+  getMobileSkillSortOptions(): {[s: string]: string} {
+    return {
+      "skill.asc": "RSD Name (ascending)",
+      "skill.desc": "RSD Name (descending)",
+    }
+  }
+
   navigateToPage(newPageNo: number) {
     this.skillTableControl.from = (newPageNo - 1) * this.skillTableControl.size
     this.loadSkills()

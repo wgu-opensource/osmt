@@ -37,6 +37,8 @@ import {SkillTableComponent} from "./table/skills-library-table/skill-table.comp
 import {SkillListRowComponent} from "./richskill/list/skill-list-row.component"
 import {TableLabelComponent} from "./table/skills-library-table/table-label.component"
 import {LabelWithFilterComponent} from "./table/skills-library-table/label-with-filter.component"
+import {SelectLabelComponent} from "./table/label/select/select-label.component"
+import {SortLabelComponent} from "./table/label/sort/sort-label.component"
 import {AccordianComponent} from "./core/accordian.component"
 import {FilterControlsComponent} from "./table/filter-controls/filter-controls.component"
 import {FilterChoiceComponent} from "./table/filter-controls/filter-choice.component"
@@ -53,6 +55,10 @@ import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search
 import {DotsMenuComponent} from "./table/skills-library-table/dots-menu.component"
 import {CategoryDetailComponent} from "./category/detail/category-detail.component"
 import {CategoryDetailCardComponent} from "./category/detail/card/category-detail-card.component"
+import {CategoryLibraryComponent} from "./category/library/category-library.component"
+import {CategoryListComponent} from "./category/list/category-list.component"
+import {CategoryTableComponent} from "./category/table/category-table.component"
+import {CategoryTableRowComponent} from "./category/table/row/category-table-row.component"
 import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component"
 import {CollectionTableComponent} from "./collection/collection-table.component"
 import {CollectionListRowComponent} from "./collection/collection-list-row.component"
@@ -174,6 +180,8 @@ export function initializeApp(
     TableActionBarComponent,
     ActionBarItemComponent,
     LabelWithFilterComponent,
+    SelectLabelComponent,
+    SortLabelComponent,
     FilterControlsComponent,
     FilterChoiceComponent,
     PaginationComponent,
@@ -187,6 +195,10 @@ export function initializeApp(
     AbstractAdvancedSearchActionBarComponent,
     CategoryDetailComponent,
     CategoryDetailCardComponent,
+    CategoryLibraryComponent,
+    CategoryListComponent,
+    CategoryTableComponent,
+    CategoryTableRowComponent,
     CollectionFormComponent,
     AbstractCreateCollectionActionbarComponent,
     CreateCollectionActionBarHorizontalComponent,

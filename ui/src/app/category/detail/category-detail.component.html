@@ -46,6 +46,7 @@
           [items]="skillTableControl.skills"
           [showRowActions]="false"
           [currentSort]="skillTableControl.sort"
+          [mobileSortOptions]="getMobileSkillSortOptions()"
           (columnSorted)="handleHeaderColumnSort($event)"
         ></app-skill-table>
       </div>

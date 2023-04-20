@@ -1,0 +1,10 @@
+<button class="m-tableLabel" data-table-filter (click)="handleClick()">
+  <span class="m-tableLabel-x-text"><ng-content></ng-content></span>
+  <span class="m-tableLabel-x-control">
+    <div class="l-iconTransition" [class.l-iconTransition-is-flipped]="flipIcon">
+      <svg class="l-iconTransition-x-icon t-icon">
+        <use [attr.xlink:href]="chevronIcon"></use>
+      </svg>
+    </div>
+  </span>
+</button>

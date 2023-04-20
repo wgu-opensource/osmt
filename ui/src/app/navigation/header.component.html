@@ -26,6 +26,9 @@
         <li>
           <a class="m-navItem" [class.m-navItem-is-active]="collectionsActive" routerLink="/collections">Collections</a>
         </li>
+        <li>
+          <a class="m-navItem" [class.m-navItem-is-active]="categoriesActive" routerLink="/categories">Categories</a>
+        </li>
         <li *ngIf="canHaveWorkspace" id="li-my-workspace">
           <a class="m-navItem" [class.m-navItem-is-active]="myWorkspaceActive" routerLink="/my-workspace">
             My Workspace

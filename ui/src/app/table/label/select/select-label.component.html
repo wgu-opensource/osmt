@@ -1,0 +1,15 @@
+<div class="m-tableLabel">
+  <span class="m-tableLabel-x-text"><ng-content></ng-content></span>
+  <div class="m-tableLabel-x-control">
+    <div class="m-selectSmall">
+      <select class="m-selectSmall-x-select" [(ngModel)]="selected" (change)="handleOptionSelected()">
+        <option *ngFor="let o of options" class="t-type-text1" [ngValue]="o" [attr.selected]="isOptionSelected(o)">{{o.label}}</option>
+      </select>
+      <div class="m-selectSmall-x-icon">
+        <svg aria-hidden="true">
+          <use [attr.xlink:href]="chevronIcon"></use>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>

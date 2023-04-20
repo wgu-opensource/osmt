@@ -36,6 +36,10 @@ export class HeaderComponent extends Whitelabelled implements OnInit {
     return false
   }
 
+  get categoriesActive(): boolean {
+    return window.location.pathname.startsWith("/categories")
+  }
+
   get collectionsActive(): boolean {
     return window.location.pathname.startsWith("/collections")
   }

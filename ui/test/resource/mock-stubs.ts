@@ -29,6 +29,8 @@ import {
   createMockTaskResult,
   mockTaskResultForExportSearch
 } from "./mock-data"
+import {ApiCategory, CategoryService, IKeyword, KeywordSortOrder, PaginatedCategories} from "../../src/app/category";
+import {IRelatedSkillsService} from "../../src/app/abstract.service";
 
 
 // Add service stubs here.
@@ -128,6 +130,76 @@ export class SearchServiceStub {
   public clearSearch(): void {
     SearchServiceData.latestSearch = undefined
     SearchServiceData.searchQuerySource.next(SearchServiceData.latestSearch)
+  }
+}
+
+export class RelatedSkillServiceStub implements IRelatedSkillsService<number> {
+  getRelatedSkills(
+    entityId: number,
+    size: number,
+    from: number,
+    statusFilters: Set<PublishStatus>,
+    sort?: ApiSortOrder
+  ): Observable<PaginatedSkills> {
+    return of(createMockPaginatedSkills())
+  }
+
+  searchRelatedSkills(
+    entityId: number,
+    size: number,
+    from: number,
+    statusFilters: Set<PublishStatus>,
+    sort?: ApiSortOrder,
+    search?: ApiSearch
+  ): Observable<PaginatedSkills>  {
+    return of(createMockPaginatedSkills())
+  }
+}
+
+const testCategoryKeyword= {
+  type: KeywordType.Category,
+  id: 1,
+  value: "category-1",
+  skillCount: 20
+}
+export let CategoryServiceData = {
+  category: new ApiCategory(testCategoryKeyword),
+  categoryKeyword: testCategoryKeyword,
+  paginatedCategories: new PaginatedCategories([testCategoryKeyword], 1),
+  paginatedSkills: createMockPaginatedSkills()
+}
+export class CategoryServiceStub {
+  getAllPaginated(
+    size: number = 50,
+    from: number = 0,
+    sort: KeywordSortOrder | undefined,
+  ): Observable<PaginatedCategories> {
+    return of(CategoryServiceData.paginatedCategories)
+  }
+
+  getById(identifier: string): Observable<ApiCategory> {
+    return of(CategoryServiceData.category)
+  }
+
+  getRelatedSkills(
+    entityId: number,
+    size: number,
+    from: number,
+    statusFilters: Set<PublishStatus>,
+    sort?: ApiSortOrder,
+  ): Observable<PaginatedSkills> {
+    return of(CategoryServiceData.paginatedSkills)
+  }
+
+  searchRelatedSkills(
+    entityId: number,
+    size: number,
+    from: number,
+    statusFilters: Set<PublishStatus>,
+    sort?: ApiSortOrder,
+    apiSearch?: ApiSearch
+  ): Observable<PaginatedSkills> {
+    return of(CategoryServiceData.paginatedSkills)
   }
 }
 

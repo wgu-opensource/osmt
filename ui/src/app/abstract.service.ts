@@ -38,6 +38,9 @@ export interface IRelatedSkillsService<TEntityId> {
   ): Observable<PaginatedSkills>
 }
 
+/**
+ * @deprecated
+ */
 export abstract class AbstractService {
 
   constructor(protected httpClient: HttpClient,
@@ -162,8 +165,7 @@ export abstract class AbstractService {
     size: number | undefined,
     from: number | undefined,
     filterByStatuses?: Set<PublishStatus>,
-    sort?: any
-  ): any {
+    sort?: ApiSortOrder): any {
 
     const params: any = {
       sort

@@ -125,6 +125,10 @@ describe("CategoryDetailComponent", () => {
     expect(component.skillsViewingLabel).toEqual("")
   })
 
+  it("get mobile sort options should return only one set of options", () => {
+    expect(Object.keys(component.getMobileSortOptions()).length).toEqual(2);
+  })
+
   it("get tableActions should return correct result", () => {
     expect(component.tableActions.length).toEqual(1)
   })

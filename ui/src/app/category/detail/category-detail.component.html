@@ -45,6 +45,7 @@
           *ngIf="showSkillsTable"
           [items]="skillTableControl.skills"
           [showRowActions]="false"
+          [mobileSortOptions]="getMobileSortOptions()"
           [currentSort]="skillTableControl.sort"
           (columnSorted)="handleHeaderColumnSort($event)"
         ></app-skill-table>

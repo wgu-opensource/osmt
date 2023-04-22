@@ -151,6 +151,13 @@ export class CategoryDetailComponent extends QuickLinksHelper implements OnInit 
     }
   }
 
+  getMobileSortOptions(): {[s: string]: string} {
+    return {
+      "skill.asc": "RSD name (ascending)",
+      "skill.desc": "RSD name (descending)",
+    }
+  }
+
   handleClickBackToTop(action: TableActionDefinition): boolean {
     this.focusAndScrollIntoView(this.titleElement.nativeElement)
     return false

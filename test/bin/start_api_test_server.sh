@@ -99,6 +99,4 @@ main() {
   fi
 }
 
-trap error_handler ERR
-
 main

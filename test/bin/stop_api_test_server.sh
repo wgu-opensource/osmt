@@ -53,7 +53,7 @@ shutdown_osmt_app(){
     echo "INFO: Application ${OSMT_APP_CLASS} found PID ${app_pid}."
   fi
 
-  kill -SIGINT "${app_pid}"
+  kill -9 "${app_pid}"
 
   check_pid_status_retry
 }

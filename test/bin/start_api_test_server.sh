@@ -33,16 +33,6 @@ _get_osmt_project_dir() {
   echo "${project_dir}"
 }
 
-get_spring_app_pid() {
-  local app_pid; app_pid="$(jps -lm | grep "${OSMT_APP_CLASS}" | awk '{print $1}')"
-  if [[ -z "${app_pid}" ]]; then
-    echo_err "No JVM process found for class ${OSMT_APP_CLASS}."
-    return 1
-  fi
-
-  echo "${app_pid}"
-}
-
 curl_with_retry() {
   local -i rc=-1
   local -i retry_limit=12

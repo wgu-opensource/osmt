@@ -53,7 +53,7 @@ shutdown_osmt_app(){
     echo "INFO: Application ${OSMT_APP_CLASS} found PID ${app_pid}."
   fi
 
-  kill -9 "${app_pid}"
+  kill -SIGTERM "${app_pid}"
 
   check_pid_status_retry
 }
@@ -64,5 +64,6 @@ project_dir="$(_get_osmt_project_dir)" || exit 135
 shutdown_osmt_app
 
 # clean up API test Docker resources
+"${project_dir}/osmt_cli.sh" -e || exit 135
 
 

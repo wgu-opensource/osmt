@@ -9,12 +9,23 @@ export class PillGroupComponent<TValue extends AbstractPillControl>{
 
   @Input() pillControls: TValue[] = []
   @Output() pillClicked: EventEmitter<TValue> = new EventEmitter()
+  collapsed = true;
 
   get hasPillClickedObservers(): boolean {
     return this.pillClicked.observers.length > 0
   }
 
-  onPillClicked(pill: TValue) {
+  toggleCollapse(event: Event): void {
+    this.collapsed = !this.collapsed
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  
+  expand(): void {
+    this.collapsed = false
+  }
+
+  onPillClicked(pill: TValue): void {
     this.pillClicked.emit(pill)
   }
 }

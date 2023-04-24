@@ -1,6 +1,6 @@
 <ng-container *ngIf="hasClickedObservers; then buttonPill; else divPill"></ng-container>
 <ng-template #buttonPill>
-<button class="m-pill" [class.selected]="isSelected"  type="button" (click)="onClick()">
+<button class="m-pill" [class.selected]="isSelected" [tabIndex]="tabSelectEnabled ? 0 : -1"  type="button" (click)="onClick()">
   <div class="m-pill-primary">{{primaryLabel}}</div>
   <div *ngIf="hasSecondaryLabel" class="m-pill-secondary">{{secondaryLabel}}</div>
 </button>

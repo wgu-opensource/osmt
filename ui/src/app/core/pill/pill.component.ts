@@ -7,6 +7,7 @@ import {AbstractPillControl} from "./pill-control";
 })
 export class PillComponent<TValue extends AbstractPillControl>{
 
+  @Input() tabSelectEnabled: boolean = true
   @Input() control?: TValue = undefined
   @Output() clicked: EventEmitter<TValue> = new EventEmitter()
 
@@ -30,7 +31,7 @@ export class PillComponent<TValue extends AbstractPillControl>{
     return (this.control) ? this.control.secondaryLabel : undefined
   }
 
-  onClick() {
+  onClick(): void {
     this.clicked.emit(this.control)
   }
 }

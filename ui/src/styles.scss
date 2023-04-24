@@ -63,6 +63,41 @@
   gap: 10px;
 }
 
+.m-pill-group-collapsible {
+  max-height: 100000px;
+  position: relative;
+  overflow-y: hidden;
+  transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+  padding-bottom: 60px;
+  transition: padding-bottom 0.5s cubic-bezier(0, 1, 0, 1);
+}
+.m-pill-group-collapsible.collapsed {
+  max-height: 100px;
+  padding-bottom: 0;
+  cursor: pointer;
+}
+.m-pill-group-collapsible .read-more-wrapper {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+.m-pill-group-collapsible .read-more-wrapper > div {
+  width: 100px;
+  margin: 1em auto;
+}
+.m-pill-group-collapsible .read-more-wrapper button {
+  width: 100%;
+  text-align: center;
+  background-color: var(--color-interactive7);
+  color: var(--color-text2);
+  border: 1px solid var(--color-text3);
+  border-radius: 12px;
+}
+.m-pill-group-collapsible.collapsed .read-more-wrapper {
+  bottom: 0;
+  background: linear-gradient(rgba(255, 255, 255, 0) 0%, var(--color-background300) 100%);
+}
+
 .m-pill {
   display: flex;
   flex-flow: row nowrap;

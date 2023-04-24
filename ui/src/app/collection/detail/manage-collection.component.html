@@ -46,8 +46,8 @@
           </form>
         </div>
 
-        <div class="t-margin-medium">
-          <div class="t-margin-small"><b>Categories</b></div>
+        <div class="t-margin-medium" *ngIf="skillCategories.length">
+          <div class="t-margin-small"><b>Categories represented:</b></div>
           <app-pill-group [pillControls]="skillCategories" (pillClicked)="handleCategoryClicked($event)"></app-pill-group>
         </div>
 

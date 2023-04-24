@@ -78,9 +78,37 @@ By default, OSMT is wired up for Okta as an OAuth2 provider. While you can chang
 
 ### Housekeeping with `osmt_cli.sh`
 You can surgically clean up OSMT-related Docker images and data volumes. This step **will** delete data from local OSMT Quickstart and Development configurations. It does not remove the mysql/redis/elasticsearch Docker images, as those may be available locally for other purposes.
+    
 ```
 ./osmt_cli.sh -c
 ```
+
+### Using the CI Static Dataset
+OSMT source code has a [static/fixed dataset](test/sql/fixed_ci_dataset.sql) included in the repo, to be used for automated testing in a CI (continuous integration) environment. This dataset is meant to be in sync with the application as of any given commit (i.e., make a DB change, update the SQL script).
+
+Thi dataset is meant as an on-ramp for the local developer, and as a fixed quanitiy for automated testing. It includes about 1200 RSDs and several collections, both in different publish states. As we expand our automated testing around OSMT, we should adapt this dataset to cover test cases as needed.
+
+You can follow these steps to apply this dataset:
+1. Build your OSMT application
+    ```
+    mvn clean install
+    ```
+2. Destroy your local OSMT-related Docker volumes.
+    ```
+    ./osmt_cli.sh -c
+    ```
+3. Start the Spring Boot application with `./osmt_cli.sh -s` (this command also starts the Docker stack). Spring Boot will build the database schema via Flyway. Leave this shell open with the Spring Boot app running.
+    ```
+    ./osmt_cli.sh -s
+   ```
+4. From another shell, load the CI static dataset. This command empties all MySQL tables, and requires the mysql client.
+    ```
+    ./osmt_cli.sh -l
+    ```
+5. From this same shell, reindex OSMT's ElasticSearch. When this is complete, you can close this 2nd shell.
+    ```
+    ./osmt_cli.sh -r
+    ```
 
 ## Building OSMT
 

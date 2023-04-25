@@ -70,6 +70,11 @@ data class KeywordUpdateObj(
     }
 }
 
+data class KeywordCount(
+    val keyword: Any,
+    val count: Int
+)
+
 object KeywordTable : LongIdTable("Keyword"), TableWithUpdate<KeywordUpdateObj> {
     override val creationDate = datetime("creationDate")
     override val updateDate = datetime("updateDate")

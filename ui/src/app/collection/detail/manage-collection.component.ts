@@ -20,6 +20,9 @@ import { ApiSearch, ApiSkillListUpdate } from "../../richskill/service/rich-skil
 import { TableActionDefinition } from "../../table/skills-library-table/has-action-definitions"
 import { TableActionBarComponent } from "../../table/skills-library-table/table-action-bar.component"
 import { ToastService } from "../../toast/toast.service"
+import { ApiNamedReference, KeywordType } from "../../richskill/ApiSkill";
+import { FilterDropdown } from "../../models/filter-dropdown.model";
+import { KeywordCountPillControl } from "../../core/pill/pill-control";
 
 
 @Component({
@@ -31,6 +34,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   @ViewChild(TableActionBarComponent) tableActionBar!: TableActionBarComponent
 
   collection?: ApiCollection
+  skillCategories: KeywordCountPillControl[] = []
   apiSearch?: ApiSearch
 
   editIcon = SvgHelper.path(SvgIcon.EDIT)
@@ -98,8 +102,14 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       this.titleService.setTitle(`${collection.name} | Collection | ${this.whitelabel.toolName}`)
 
       this.collection = collection
+      this.updateSkillCategories()
       this.loadNextPage()
     })
+  }
+
+  updateSkillCategories() {
+    const categories = this.collection?.skillKeywords?.get(KeywordType.Category)?.map(c => new KeywordCountPillControl(c))
+    this.skillCategories = (categories) ? categories : []
   }
 
   loadNextPage(): void {
@@ -134,6 +144,7 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
   public get searchQuery(): string {
     return this.searchForm.get("search")?.value?.trim() ?? ""
   }
+
   clearSearch(): boolean {
     this.searchForm.reset()
     this.apiSearch = undefined
@@ -141,6 +152,11 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
     this.loadNextPage()
     return false
   }
+
+  clearSelectedCategories() {
+    this.skillCategories.forEach(c => c.deselect())
+  }
+
   handleDefaultSubmit(): boolean {
     if (this.searchQuery.length > 0) {
       this.apiSearch = new ApiSearch({query: this.searchQuery})
@@ -356,6 +372,31 @@ export class ManageCollectionComponent extends SkillsListComponent implements On
       }
     })
 
+  }
+
+  handleCategoryClicked(control: KeywordCountPillControl) {
+    const previouslySelected = control.isSelected
+    const categoryFilters: any[] = []
+
+    this.clearSelectedCategories()
+
+    if (!previouslySelected) {
+      control.select()
+      categoryFilters.push(ApiNamedReference.fromString(control.keyword as string))
+    }
+
+    const filters: FilterDropdown = {
+      alignments: (this.keywords.alignments) ? this.keywords.alignments.map(v => v) : [],
+      authors: (this.keywords.alignments) ? this.keywords.alignments.map(v => v) : [],
+      categories: categoryFilters,
+      certifications: (this.keywords.certifications) ? this.keywords.certifications.map(v => v) : [],
+      employers: (this.keywords.employers) ? this.keywords.employers.map(v => v) : [],
+      keywords: (this.keywords.keywords) ? this.keywords.keywords.map(v => v) : [],
+      occupations: (this.keywords.occupations) ? this.keywords.occupations.map(v => v) : [],
+      standards: (this.keywords.standards) ? this.keywords.standards.map(v => v) : []
+    }
+
+    this.keywordsChange(filters)
   }
 
   handleClickConfirmMulti(): boolean {

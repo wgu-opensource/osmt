@@ -35,6 +35,8 @@ import * as Auth from "../../auth/auth-roles"
 import {CollectionsLibraryComponent} from "../../table/collections-library.component"
 import {FormControl, FormGroup} from "@angular/forms"
 import {ITableActionDefinitionSubMenu} from "../../table/skills-library-table/has-action-definitions"
+import { KeywordCount } from "../../richskill/ApiSkill";
+import { KeywordCountPillControl } from "../../core/pill/pill-control";
 
 
 @Component({
@@ -133,6 +135,13 @@ describe("ManageCollectionComponent", () => {
 
     // Assert
     expect(component.collection).toEqual(collection)
+  })
+
+  it("updateSkillCategories should be correct", () => {
+    const collection = component.collection
+    component.skillCategories = []
+    component.updateSkillCategories()
+    expect(component.skillCategories[0]).toBeTruthy()
   })
 
   it("loadNextPage should be correct", () => {
@@ -511,6 +520,13 @@ describe("ManageCollectionComponent", () => {
     // Assert
     expect(component.reloadCollection).toHaveBeenCalled()
     expect(component.loadNextPage).toHaveBeenCalled()
+  })
+
+  it("handleCategoryClicked should be correct", () => {
+    const testKwCount = new KeywordCount({ keyword: "test1", count: 8 })
+    expect(component.keywords.categories.length).toEqual(0)
+    component.handleCategoryClicked(new KeywordCountPillControl(testKwCount))
+    expect(component.keywords.categories.length).toEqual(1)
   })
 
   it("handleClickConfirmMulti should be correct", () => {

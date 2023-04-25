@@ -79,6 +79,21 @@ export class ApiAlignment implements IAlignment {
   }
 }
 
+export interface IKeywordCount {
+  keyword: IAlignment|INamedReference|string
+  count: number
+}
+
+export class KeywordCount implements IKeywordCount {
+  keyword: IAlignment|INamedReference|string
+  count: number
+
+  constructor(reference: KeywordCount) {
+    this.keyword = reference.keyword
+    this.count = reference.count
+  }
+}
+
 export enum KeywordType {
   Category = "category",
   Keyword = "keyword",

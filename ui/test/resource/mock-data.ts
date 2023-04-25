@@ -11,7 +11,9 @@ import {
   IAuditLog,
   INamedReference,
   ISkill,
-  IUuidReference
+  IUuidReference,
+  KeywordCount,
+  KeywordType
 } from "../../src/app/richskill/ApiSkill"
 import { ApiCollectionSummary, ICollectionSummary, ISkillSummary } from "../../src/app/richskill/ApiSkillSummary"
 import { ApiReferenceListUpdate, IRichSkillUpdate, IStringListUpdate } from "../../src/app/richskill/ApiSkillUpdate"
@@ -253,6 +255,16 @@ export function createMockCollection(
   status: PublishStatus,
   skills: string[] = ["skill 1", "skill 2"]
 ): ICollection {
+  const skillKeywords: Map<KeywordType, KeywordCount[]> = new Map()
+
+  skillKeywords.set(KeywordType.Alignment, [new KeywordCount({ keyword: createMockAlignment(), count: 5 })])
+  skillKeywords.set(KeywordType.Author, [new KeywordCount({ keyword: "author1", count: 2 })])
+  skillKeywords.set(KeywordType.Category, [new KeywordCount({ keyword: "category1", count: 33 })])
+  skillKeywords.set(KeywordType.Certification, [new KeywordCount({ keyword: createMockApiNamedReference(), count: 1 })])
+  skillKeywords.set(KeywordType.Employer, [new KeywordCount({ keyword: createMockNamedReference(), count: 4 })])
+  skillKeywords.set(KeywordType.Keyword, [new KeywordCount({ keyword: "keyword1", count: 111 })])
+  skillKeywords.set(KeywordType.Standard, [new KeywordCount({ keyword: createMockAlignment(), count: 2 })])
+
   return {
     creationDate,
     updateDate,
@@ -264,6 +276,7 @@ export function createMockCollection(
     name: "my collection name",
     author: "name",
     skills,
+    skillKeywords,
     creator: "creator"
   }
 }

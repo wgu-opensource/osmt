@@ -3,7 +3,18 @@ import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {AuthService} from "../../auth/auth-service"
 import {AbstractService} from "../../abstract.service"
 import {PublishStatus} from "../../PublishStatus"
-import {ApiAuditLog, ApiSortOrder, IAuditLog} from "../../richskill/ApiSkill"
+import {
+  ApiAlignment,
+  ApiAuditLog,
+  ApiNamedReference,
+  ApiSortOrder,
+  IAlignment,
+  IAuditLog,
+  IKeywordCount,
+  INamedReference,
+  KeywordCount,
+  KeywordType
+} from "../../richskill/ApiSkill"
 import {
   ApiSearch,
   ApiSkillListUpdate,
@@ -56,7 +67,7 @@ export class CollectionService extends AbstractService {
       path: `${this.baseServiceUrl}/${uuid}`
     })
       .pipe(share())
-      .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
+      .pipe(map(({body}) => this.collectionFromApiResponse(body, errorMsg)))
   }
 
   getCollectionJson(uuid: string): Observable<string> {
@@ -152,7 +163,7 @@ export class CollectionService extends AbstractService {
       path: "api/workspace"
     })
       .pipe(share())
-      .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
+      .pipe(map(({body}) => this.collectionFromApiResponse(body, errorMsg)))
   }
 
   createCollection(updateObject: ICollectionUpdate): Observable<ApiCollection> {
@@ -172,7 +183,7 @@ export class CollectionService extends AbstractService {
       body: updateObject
     })
       .pipe(share())
-      .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
+      .pipe(map(({body}) => this.collectionFromApiResponse(body, errorMsg)))
   }
 
   searchCollections(
@@ -268,5 +279,88 @@ export class CollectionService extends AbstractService {
       .pipe(map(({body, headers}) => {
         return body?.map(it => new ApiAuditLog(it)) || []
       }))
+  }
+
+  private collectionFromApiResponse(body: any, failureMessage: string): ApiCollection {
+    const skillKeywordsMap = new Map<KeywordType, KeywordCount[]>()
+
+    Object.keys(body.skillKeywords).forEach(k => {
+      const kws = (body.skillKeywords[k]) ? body.skillKeywords[k] as IKeywordCount[] : []
+
+      switch (k.toLowerCase()) {
+        case KeywordType.Alignment:
+          skillKeywordsMap.set(
+            KeywordType.Alignment,
+            kws.map((v: IKeywordCount) => new KeywordCount({
+              keyword: new ApiAlignment(v.keyword as IAlignment),
+              count: v.count
+            }))
+          )
+          break
+
+        case KeywordType.Author:
+          skillKeywordsMap.set(
+            KeywordType.Author,
+            kws.map((v: IKeywordCount) => new KeywordCount({
+              keyword: v.keyword,
+              count: v.count
+            }))
+          )
+          break
+
+        case KeywordType.Category:
+          skillKeywordsMap.set(
+            KeywordType.Category,
+            kws.map((v: IKeywordCount) => new KeywordCount({
+              keyword: v.keyword,
+              count: v.count
+            }))
+          )
+          break
+
+        case KeywordType.Certification:
+          skillKeywordsMap.set(
+            KeywordType.Certification,
+            kws.map((v: IKeywordCount) => new KeywordCount({
+              keyword: new ApiNamedReference(v.keyword as INamedReference),
+              count: v.count
+            }))
+          )
+          break
+
+        case KeywordType.Employer:
+          skillKeywordsMap.set(
+            KeywordType.Employer,
+            kws.map((v: KeywordCount) => new KeywordCount({
+              keyword: new ApiNamedReference(v.keyword as INamedReference),
+              count: v.count
+            }))
+          )
+          break
+
+        case KeywordType.Keyword:
+          skillKeywordsMap.set(
+            KeywordType.Keyword,
+            kws.map((v: KeywordCount) => new KeywordCount({
+              keyword: v.keyword,
+              count: v.count
+            }))
+          )
+          break
+
+        case KeywordType.Standard:
+          skillKeywordsMap.set(
+            KeywordType.Standard,
+            kws.map((v: KeywordCount) => new KeywordCount({
+              keyword: new ApiAlignment(v.keyword as IAlignment),
+              count: v.count
+            }))
+          )
+          break
+      }
+    })
+
+    body.skillKeywords = skillKeywordsMap
+    return new ApiCollection(this.safeUnwrapBody(body, failureMessage))
   }
 }

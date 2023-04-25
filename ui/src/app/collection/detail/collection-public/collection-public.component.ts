@@ -5,13 +5,14 @@ import {ActivatedRoute, Router} from "@angular/router"
 import {ToastService} from "../../../toast/toast.service"
 import {CollectionService} from "../../service/collection.service"
 import {Observable} from "rxjs"
-import {ApiSortOrder} from "../../../richskill/ApiSkill"
+import {ApiSortOrder, KeywordType} from "../../../richskill/ApiSkill"
 import {PublishStatus} from "../../../PublishStatus"
 import {ApiCollection} from "../../ApiCollection"
 import {Title} from "@angular/platform-browser";
 import {Whitelabelled} from "../../../../whitelabel";
 import {FormControl} from "@angular/forms"
 import {SizePaginationComponent} from "../../../table/skills-library-table/size-pagination/size-pagination.component"
+import {KeywordCountPillControl} from "../../../core/pill/pill-control";
 
 @Component({
   selector: "app-collection-public",
@@ -23,6 +24,7 @@ export class CollectionPublicComponent extends Whitelabelled implements OnInit {
   title = "Collection"
   uuidParam: string | null
   collection: ApiCollection | undefined
+  skillCategories: KeywordCountPillControl[] = []
   apiSearch: ApiSearch = new ApiSearch({})
 
   resultsLoaded: Observable<PaginatedSkills> | undefined
@@ -51,6 +53,7 @@ export class CollectionPublicComponent extends Whitelabelled implements OnInit {
     this.collectionService.getCollectionByUUID(this.uuidParam ?? "").subscribe(collection => {
       this.titleService.setTitle(`${collection.name} | Collection | ${this.whitelabel.toolName}`)
       this.collection = collection
+      this.updateSkillCategories()
       this.loadNextPage()
     })
   }
@@ -102,6 +105,11 @@ export class CollectionPublicComponent extends Whitelabelled implements OnInit {
 
   loadNextPage(): void {
     this.loadSkillsInCollection()
+  }
+
+  updateSkillCategories() {
+    const categories = this.collection?.skillKeywords?.get(KeywordType.Category)?.map(c => new KeywordCountPillControl(c))
+    this.skillCategories = (categories) ? categories : []
   }
 
   protected setResults(results: PaginatedSkills): void {

@@ -1,0 +1,21 @@
+<div [ngClass]="{'m-pill-group-collapsible': true, collapsed: collapsed}" aria-controls="pill-group-controls" [attr.aria-expanded]="!collapsed && pillControls.length > 20" (click)="expand()">
+  <div class="read-more-wrapper" *ngIf="pillControls.length > 20">
+    <div>
+      <button (click)="toggleCollapse($event)">
+        <span *ngIf="collapsed">Show all {{ pillControls.length }}</span>
+        <span *ngIf="!collapsed">Show fewer</span>
+      </button>
+    </div>
+  </div>
+  <ul id="pill-group-controls" class="m-pill-group">
+    <li *ngFor="let c of pillControls;">
+      <ng-container *ngIf="hasPillClickedObservers; then withClickedObserver; else withoutClickedObserver"></ng-container>
+      <ng-template #withClickedObserver>
+      <app-pill [control]="c" [tabSelectEnabled]="!collapsed" (clicked)="onPillClicked($event)"></app-pill>
+      </ng-template>
+      <ng-template #withoutClickedObserver>
+      <app-pill [control]="c"></app-pill>
+      </ng-template>
+    </li>
+  </ul>
+</div>

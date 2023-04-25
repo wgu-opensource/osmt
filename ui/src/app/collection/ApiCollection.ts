@@ -1,5 +1,6 @@
 import {PublishStatus} from "../PublishStatus"
 import {IStringListUpdate} from "../richskill/ApiSkillUpdate"
+import {KeywordCount, KeywordType} from "../richskill/ApiSkill";
 
 export interface ICollection {
   archiveDate?: Date
@@ -12,6 +13,7 @@ export interface ICollection {
   workspaceOwner?: string
   publishDate?: Date
   skills: string[]
+  skillKeywords?: Map<KeywordType, KeywordCount[]>
   status: PublishStatus
   updateDate?: Date
   uuid: string
@@ -28,6 +30,7 @@ export class ApiCollection {
   publishDate?: Date
   workspaceOwner?: string
   skills: string[]
+  skillKeywords?: Map<KeywordType, KeywordCount[]>
   status: PublishStatus
   updateDate?: Date
   uuid: string
@@ -44,6 +47,7 @@ export class ApiCollection {
       workspaceOwner,
       publishDate,
       skills,
+      skillKeywords,
       status,
       updateDate,
       uuid
@@ -59,6 +63,7 @@ export class ApiCollection {
     this.workspaceOwner = workspaceOwner
     this.publishDate = publishDate
     this.skills = skills
+    this.skillKeywords = skillKeywords
     this.status = status
     this.updateDate = updateDate
     this.uuid = uuid

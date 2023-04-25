@@ -1295,9 +1295,9 @@ components:
         skillName: Network Connection Design
         skillStatement: Design network connections between a core network and an internet service provider.
         keywords:
-          -	design
-          -	Access Network
-          -	'WGUSID: 10407'
+          - design
+          - Access Network
+          - 'WGUSID: 10407'
         categories:
           - Access Network
         id: '-http://localhost:8080/api/skills/cad699ef-64b9-40ee-81db-b5de69a90558'

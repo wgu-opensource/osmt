@@ -86,7 +86,7 @@ You can surgically clean up OSMT-related Docker images and data volumes. This st
 ### Using the CI Static Dataset
 OSMT source code has a [static/fixed dataset](test/sql/fixed_ci_dataset.sql) included in the repo, to be used for automated testing in a CI (continuous integration) environment. This dataset is meant to be in sync with the application as of any given commit (i.e., make a DB change, update the SQL script).
 
-Thi dataset is meant as an on-ramp for the local developer, and as a fixed quanitiy for automated testing. It includes about 1200 RSDs and several collections, both in different publish states. As we expand our automated testing around OSMT, we should adapt this dataset to cover test cases as needed.
+This dataset is meant as an on-ramp for the local developer, and as a fixed quantity for automated testing. It includes about 1200 RSDs and several collections, both in different publish states. As we expand our automated testing around OSMT, we should adapt this dataset to cover test cases as needed.
 
 You can follow these steps to apply this dataset:
 1. Build your OSMT application

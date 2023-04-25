@@ -78,8 +78,8 @@ paths:
     parameters:
       - $ref: '#/components/parameters/UuidPath'
     get:
-      summary: Request a collection export
-      description: Request all the information about a collection to be exported
+      summary: Request a collection export as a CSV
+      description: Request all the information about a collection to be exported as a CSV
       tags:
         - Collections
       responses:
@@ -90,8 +90,25 @@ paths:
               schema:
                 type: string
                 example: >-
-                  id,type,author,skillName,skillStatement,alignments,keywords,category,occupations
+                  id,type,authors,skillName,skillStatement,alignments,keywords,categories,occupations
                   https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac,RichSkillDescriptor,"https://osmt.example.com/organization","Document Saving","The learner copies and saves documents to their local machine.","https://skillsource.example.com/base-skills/simple-compuhacking","documents, file operations, computer basics","Productivity Software","13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
+
+  /api/collections/{uuid}/xlsx:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    get:
+      summary: Request a collection export as an Excel Workbook
+      description: Request all the information about a collection to be exported as an Excel Workbook
+      tags:
+        - Collections
+      responses:
+        '200':
+          description: OK
+          content:
+            application/vnd.ms-excel:
+              schema:
+                type: string
+                format: binary
 
   /api/collections/{uuid}/log:
     parameters:
@@ -262,10 +279,10 @@ paths:
               parameters:
                 uuid: '$response.body#/uuid'
 
-  /api/export/library:
+  /api/export/library/csv:
     get:
-      summary: Export OSMT RSD library
-      description: Export all RSDs contained in OSMT
+      summary: Export OSMT RSD library as a CSV
+      description: Export all RSDs contained in OSMT as a CSV
       tags:
         - Export
       responses:
@@ -281,21 +298,39 @@ paths:
               parameters:
                 uuid: '$response.body#/uuid'
 
-  /api/export/skills:
-    post:
-      summary: Export RSDs
-      description: Export one or more RSDs
+  /api/export/library/xlsx:
+    get:
+      summary: Export OSMT RSD library as an Excel Workbook
+      description: Export all RSDs contained in OSMT as an Excel Workbook
       tags:
         - Export
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          links:
+            PublishLibraryTextResults:
+              operationRef: '/api/results/media/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
+
+  /api/export/skills/csv:
+    post:
+      summary: Export RSDs as a CSV
+      description: Export one or more RSDs as a CSV
+      tags:
+        - Export
+      parameters:
+        - $ref: '#/components/parameters/PublishStatusQueryRequired'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: array
-              items:
-                type: string
-                format: uuid
+              $ref: '#/components/schemas/Search'
       responses:
         '202':
           description: Accepted
@@ -306,6 +341,33 @@ paths:
           links:
             PublishLibraryTextResults:
               operationRef: '/api/results/text/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
+
+  /api/export/skills/xlsx:
+    post:
+      summary: Export RSDs as an Excel Workbook
+      description: Export one or more RSDs as an Excel Workbook
+      tags:
+        - Export
+      parameters:
+        - $ref: '#/components/parameters/PublishStatusQueryRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Search'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          links:
+            PublishLibraryTextResults:
+              operationRef: '/api/results/media/{uuid}'
               parameters:
                 uuid: '$response.body#/uuid'
 
@@ -324,6 +386,25 @@ paths:
             application/json:
               schema:
                 type: string
+        '404':
+          description: NOT READY
+
+  /api/results/media/{uuid}:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    get:
+      summary: Retrieve the results of an Excel Workbook task
+      description: Return the results of a previously requested Excel Workbook task
+      tags:
+        - Export
+      responses:
+        '200':
+          description: OK
+          content:
+            application/vnd.ms-excel:
+              schema:
+                type: string
+                format: binary
         '404':
           description: NOT READY
 
@@ -724,12 +805,16 @@ components:
           type: string
         collectionName:
           type: string
-        category:
-          type: string
+        categories:
+          type: array
+          items:
+            type: string
         skillStatement:
           type: string
-        author:
-          type: string
+        authors:
+          type: array
+          items:
+            type: string
         keywords:
           type: array
           items:
@@ -818,10 +903,20 @@ components:
       type: object
       required:
         - id
+        - context
+        - type
         - uuid
         - name
+        - creator
+        - creationDate
+        - updateDate
+        - skills
+        - skillKeywords
       properties:
         id:
+          type: string
+          format: uri
+        '@context':
           type: string
           format: uri
         uuid:
@@ -854,6 +949,37 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SkillSummary'
+        skillKeywords:
+          type: object
+          properties:
+            Alignment:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Author:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Category:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Certification:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Employer:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Keyword:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Standard:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
 
     CollectionDoc:
       type: object
@@ -990,16 +1116,28 @@ components:
         - minor
         - major
 
+    KeywordCount:
+      type: object
+      properties:
+        keyword:
+          oneOf:
+            - type: string
+            - $ref: '#/components/schemas/Alignment'
+            - $ref: '#/components/schemas/NamedReference'
+        count:
+          type: number
+
+
     KeywordType:
       type: string
       enum:
-        - category
+        - categories
         - keyword
         - standard
         - certification
         - alignment
         - employer
-        - author
+        - authors
 
     NamedReference:
       type: object
@@ -1083,8 +1221,10 @@ components:
         creator:
           type: string
           format: uri
-        author:
-          type: string
+        authors:
+          type: array
+          items:
+            type: string
         status:
           $ref: '#/components/schemas/PublishStatus'
         creationDate:
@@ -1107,8 +1247,10 @@ components:
           type: array
           items:
             type: string
-        category:
-          type: string
+        categories:
+          type: array
+          items:
+            type: string
         id:
           type: string
           format: uri
@@ -1143,7 +1285,8 @@ components:
         '@context': 'https://rsd.openskillsnetwork.org/context-v1.json'
         type: RichSkillDescriptor
         creator: 'https://credentialengineregistry.org/resources/ce-036d082d-d80e-41a7-99a0-2d63a4ad3a4a'
-        author: Western Governors University
+        authors:
+          - Western Governors University
         status: published
         creationDate: '2023-02-27T21:02:59.918235Z'
         updateDate: '2023-03-14T14:38:15.945775Z'
@@ -1155,7 +1298,8 @@ components:
           -	design
           -	Access Network
           -	'WGUSID: 10407'
-        category: Access Network
+        categories:
+          - Access Network
         id: '-http://localhost:8080/api/skills/cad699ef-64b9-40ee-81db-b5de69a90558'
         uuid: cad699ef-64b9-40ee-81db-b5de69a90558
         certifications:
@@ -1240,10 +1384,14 @@ components:
           type: string
         skillStatement:
           type: string
-        category:
-          type: string
-        author:
-          type: string
+        categories:
+          type: array
+          items:
+            type: string
+        authors:
+          type: array
+          items:
+            type: string
         status:
           $ref: '#/components/schemas/PublishStatus'
         keywords:
@@ -1302,8 +1450,10 @@ components:
           type: string
         skillStatement:
           type: string
-        category:
-          type: string
+        categories:
+          type: array
+          items:
+            type: string
         keywords:
           type: array
           items:
@@ -1322,12 +1472,12 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/PublishStatus'
-        category:
-          type: string
         collections:
           $ref: '#/components/schemas/StringListUpdate'
-        author:
-          type: string
+        authors:
+          $ref: '#/components/schemas/StringListUpdate'
+        categories:
+          $ref: '#/components/schemas/StringListUpdate'
         keywords:
           $ref: '#/components/schemas/StringListUpdate'
         certifications:
@@ -1543,4 +1693,3 @@ tags:
     description: Rich Skill Descriptors (RSDs)
   - name: Workspace
     description: User workspace for staging OSMT edits
-

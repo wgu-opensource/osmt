@@ -1,8 +1,12 @@
 package edu.wgu.osmt.elasticsearch
 
 import org.apache.http.HttpHost
+import org.apache.http.client.config.RequestConfig
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder
 import org.elasticsearch.client.RestClient
+import org.elasticsearch.client.RestClientBuilder.HttpClientConfigCallback
 import org.elasticsearch.client.RestHighLevelClient
+import org.elasticsearch.persistent.RemovePersistentTaskAction.RequestBuilder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -26,7 +30,12 @@ class ElasticsearchClientManager {
     @Override
     @Bean
     fun elasticSearchClient(): RestHighLevelClient {
-        return RestHighLevelClient(RestClient.builder(HttpHost.create(esConfig.uri)))
+        return RestHighLevelClient(RestClient.builder(HttpHost.create(esConfig.uri))
+            .setRequestConfigCallback { requestConfigBuilder: RequestConfig.Builder ->
+                requestConfigBuilder
+                    .setConnectTimeout(esConfig.timeout)
+                    .setSocketTimeout(esConfig.timeout)
+            })
     }
 
     @Bean

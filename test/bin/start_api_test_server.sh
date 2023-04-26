@@ -21,7 +21,6 @@ export BASE_URL="http://${BASE_DOMAIN}"
 export OSMT_FRONT_END_PORT="${APP_PORT}"
 
 declare -ri LOAD_CI_DATASET="${LOAD_CI_DATASET:-0}"
-declare -r OSMT_APP_CLASS='edu.wgu.osmt.ApplicationKt'
 
 _get_osmt_project_dir() {
   local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
@@ -73,14 +72,14 @@ error_handler() {
 
 main() {
   local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
-  local logFile; logFile="${project_dir}/tmp/osmt_spring_app.log"
+  local log_file; log_file="${project_dir}/api/target/osmt_spring_app.log"
 
-  # start the API test Docker compose stack and Spring app server, detached
+  # start the API test Docker compose stack and Spring app server, detached. Send log files to 'osmt_spring_app.log'
   echo_info "Starting OSMT Spring app for ${OSMT_STACK_NAME}. Output is suppressed, because console is detached."
   echo_info "See 'osmt_spring_app.log' for console output. Proceeding..."
-  # "${project_dir}/osmt_cli.sh" -s  1>/dev/null 2>/dev/null & disown  || exit 135
-  touch logFile
-  "${project_dir}/osmt_cli.sh" -s  1>logFile 2>logFile & disown  || exit 135
+
+  touch "$log_file"
+  "${project_dir}/osmt_cli.sh" -s  1>"$log_file" 2>"$log_file" & disown  || exit 135
 
   # curl the Spring app and retry for 2 minutes
   curl_with_retry || exit 135

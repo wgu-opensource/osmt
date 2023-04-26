@@ -67,15 +67,20 @@ echo_err() {
 
 error_handler() {
   echo_err "Trapping at error_handler. Exiting"
+  # clean up API test Docker resources
+  "${project_dir}/osmt_cli.sh" -e || exit 135
 }
 
 main() {
   local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
+  local logFile; logFile="${project_dir}/tmp/osmt_spring_app.log"
 
   # start the API test Docker compose stack and Spring app server, detached
   echo_info "Starting OSMT Spring app for ${OSMT_STACK_NAME}. Output is suppressed, because console is detached."
   echo_info "See 'osmt_spring_app.log' for console output. Proceeding..."
-  "${project_dir}/osmt_cli.sh" -s  1>/dev/null 2>/dev/null & disown  || exit 135
+  # "${project_dir}/osmt_cli.sh" -s  1>/dev/null 2>/dev/null & disown  || exit 135
+  touch logFile
+  "${project_dir}/osmt_cli.sh" -s  1>logFile 2>logFile & disown  || exit 135
 
   # curl the Spring app and retry for 2 minutes
   curl_with_retry || exit 135
@@ -88,5 +93,7 @@ main() {
     "${project_dir}/osmt_cli.sh" -r || exit 135
   fi
 }
+
+trap error_handler ERR SIGINT SIGTERM
 
 main

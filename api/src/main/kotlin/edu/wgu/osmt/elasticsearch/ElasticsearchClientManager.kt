@@ -1,7 +1,14 @@
 package edu.wgu.osmt.elasticsearch
 
+import org.apache.commons.lang3.StringUtils
 import org.apache.http.HttpHost
+import org.apache.http.auth.AuthScope
+import org.apache.http.auth.AuthScope.ANY
+import org.apache.http.auth.UsernamePasswordCredentials
+import org.apache.http.client.CredentialsProvider
+import org.apache.http.impl.client.BasicCredentialsProvider
 import org.elasticsearch.client.RestClient
+import org.elasticsearch.client.RestClientBuilder
 import org.elasticsearch.client.RestHighLevelClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -26,7 +33,24 @@ class ElasticsearchClientManager {
     @Override
     @Bean
     fun elasticSearchClient(): RestHighLevelClient {
-        return RestHighLevelClient(RestClient.builder(HttpHost.create(esConfig.uri)))
+        val login = esConfig.login
+        val password = esConfig.password
+
+        return when (StringUtils.isEmpty(login) && StringUtils.isEmpty(password) ) {
+            true  ->  RestHighLevelClient(RestClient.builder(HttpHost.create(esConfig.uri)))
+            false -> createRestClient(login, password)
+        }
+    }
+
+    fun createRestClient(login: String, password: String): RestHighLevelClient {
+        val credentialsProvider: CredentialsProvider = BasicCredentialsProvider()
+        credentialsProvider.setCredentials(ANY, UsernamePasswordCredentials(login, password) )
+
+        val host_port = esConfig.uri.split(":").toTypedArray()
+        return RestHighLevelClient(
+            RestClient.builder(HttpHost(host_port[0], host_port[1].toInt(), "http")).setHttpClientConfigCallback {
+                    httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider)
+            })
     }
 
     @Bean

@@ -66,7 +66,14 @@ class AppConfig(
     val roleView: String,
 
     @Value("\${osmt.security.scope.read:SCOPE_osmt.read}")
-    val scopeRead: String
+    val scopeRead: String,
+
+    @Value("\${es.login}")
+    val elasticSearchLogin: String,
+
+    @Value("\${es.password}")
+    val elasticSearchPassword: String
+
 ) {
     @Autowired
     lateinit var environment: Environment

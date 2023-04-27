@@ -191,7 +191,7 @@ describe("CollectionSkillSearchComponent", () => {
 
   it("getApiSearch should return canned search", () => {
     // Arrange
-    component.multiplePagesSelected = true
+    component.selectAllChecked = true
     const search = "testQueryString"
     component.searchForm.setValue({search})
 
@@ -204,14 +204,12 @@ describe("CollectionSkillSearchComponent", () => {
 
   it("getApiSearch should return specified search", () => {
     // Arrange
-    component.multiplePagesSelected = false
-    const skill = createMockSkillSummary()
-
-    // Act
-    const result = component.getApiSearch(skill)
+    component.selectAllChecked = false
+    component.selectedSkills = [createMockSkillSummary("1")]
+    const result = component.selectedUuids()
 
     // Assert
-    expect(result).toEqual(new ApiSearch({ uuids: [ skill.uuid ] } ))
+    expect(result).toEqual(component.getApiSearch()?.uuids)
   })
 
   it("handleSelectAll should be correct", () => {
@@ -222,7 +220,7 @@ describe("CollectionSkillSearchComponent", () => {
     // Act
     component.handleSelectAll(true)
     // Assert
-    expect(component.multiplePagesSelected).toBeTrue()
+    expect(component.selectAllChecked).toBeTrue()
 
     // Arrange
     component.results = new PaginatedSkills([], 5)

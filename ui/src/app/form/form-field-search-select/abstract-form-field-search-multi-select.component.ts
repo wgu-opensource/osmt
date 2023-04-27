@@ -27,6 +27,11 @@ export abstract class AbstractFormFieldSearchMultiSelect<TValue>
     return false
   }
 
+  isExactMatchFound(): boolean {
+    if (!this.searchControlResultValue) return false
+    return !!(this.results?.find((r: TValue) => this.areSearchResultsEqual(r, this.searchControlResultValue as TValue)))
+  }
+
   selectResult(result: TValue): void {
     if (this.isSearchResultType(result) && !this.isResultSelected(result)){
       let selected: TValue[] = this.controlValue ?? []

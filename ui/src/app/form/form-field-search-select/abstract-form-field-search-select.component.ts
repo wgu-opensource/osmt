@@ -13,6 +13,7 @@ export abstract class AbstractFormFieldSearchSelect<TSearch, TValue>
   extends AbstractFormField<TValue|null> implements OnInit, OnDestroy {
 
   @Input() createNonExisting = false
+  @Input() allowSaveNew: boolean = false
 
   searchControl: FormControl = new FormControl("")
 
@@ -59,6 +60,11 @@ export abstract class AbstractFormFieldSearchSelect<TSearch, TValue>
     return this.searchControlValue.length <= 0
   }
 
+  isExactMatchFound(): boolean {
+    if (!this.searchControlResultValue) return false
+    return !!(this.results?.find((r: TSearch) => this.areSearchResultsEqual(r, this.searchControlResultValue as TSearch)))
+  }
+
   get searchControlValue(): string {
     return this.searchControl.value?.trim() ?? ""
   }
@@ -73,7 +79,7 @@ export abstract class AbstractFormFieldSearchSelect<TSearch, TValue>
     const searchResult = this.searchResultFromString(this.searchControlValue)
 
     if (searchResult) {
-      const existingResult =this.results?.find((r: TSearch) => this.areSearchResultsEqual(r, searchResult))
+      const existingResult = this.results?.find((r: TSearch) => this.areSearchResultsEqual(r, searchResult))
       return existingResult ?? (this.createNonExisting) ? searchResult : undefined
     }
 

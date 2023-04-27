@@ -67,7 +67,7 @@ describe("HeaderComponent", () => {
     expect(component.myWorkspaceActive).toBeTruthy()
   }))
 
-  it("my workspace is not visible when user doesn't have role data or curator", () => {
+  it("my workspace is not visible when user doesn't have role admin or curator", () => {
     const authService = TestBed.inject(AuthService)
     spyOn(authService, "isEnabledByRoles").and.returnValue( false)
     component.canHaveWorkspace = component["authService"].isEnabledByRoles(ButtonAction.MyWorkspace)
@@ -77,7 +77,7 @@ describe("HeaderComponent", () => {
     expect(component.canHaveWorkspace).toBeFalse()
   })
 
-  xit("my workspace is visible when user has role data or curator", (done) => {
+  xit("my workspace is visible when user has role admin or curator", (done) => {
     component.canHaveWorkspace = true
     fixture.whenStable().then(
       () => {

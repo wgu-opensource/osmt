@@ -31,7 +31,7 @@ export class DefaultAppConfig implements IAppConfig {
   poweredBy = "Powered by the"
   poweredByUrl = "https://rsd.osmt.dev"
   poweredByLabel = "Open Skills Network"
-  idleTimeoutInSeconds = 15 * 60
+  idleTimeoutInSeconds = 24 * 60 * 60
   colorBrandAccent1 = undefined
   dynamicWhitelabel = false
 }

@@ -53,6 +53,7 @@ describe("AppConfig", () => {
 
       settingsService.load().finally(() => {
         expect(AppConfig.settings.baseApiUrl).toBe(dummyConfig.baseApiUrl)
+        expect(AppConfig.settings.idleTimeoutInSeconds).toBe(86400)  // loaded from app.config.ts
       })
 
     })

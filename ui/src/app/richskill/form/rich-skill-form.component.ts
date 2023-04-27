@@ -28,6 +28,7 @@ import {HasFormGroup} from "../../core/abstract-form.component"
 import {notACopyValidator} from "../../validators/not-a-copy.validator"
 import {ApiSkillSummary} from "../ApiSkillSummary"
 import {Whitelabelled} from "../../../whitelabel"
+import { SvgHelper, SvgIcon } from "src/app/core/SvgHelper"
 
 @Component({
   selector: "app-rich-skill-form",
@@ -49,6 +50,9 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
   // for skill statement similarity checking
   searchingSimilarity?: boolean
   similarSkills?: ApiSkillSummary[]
+
+  iconCollection = SvgHelper.path(SvgIcon.COLLECTION)
+  cancelIcon = SvgHelper.path(SvgIcon.CANCEL)
 
   constructor(
     private fb: FormBuilder,

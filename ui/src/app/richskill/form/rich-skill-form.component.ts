@@ -51,7 +51,6 @@ export class RichSkillFormComponent extends Whitelabelled implements OnInit, Has
   searchingSimilarity?: boolean
   similarSkills?: ApiSkillSummary[]
 
-  iconCollection = SvgHelper.path(SvgIcon.COLLECTION)
   cancelIcon = SvgHelper.path(SvgIcon.CANCEL)
 
   constructor(

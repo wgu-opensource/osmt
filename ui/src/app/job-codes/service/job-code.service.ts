@@ -30,7 +30,7 @@ export class JobCodeService extends AbstractDataService{
     sort: ApiSortOrder | undefined
   ): Observable<PaginatedJobCodes> {
     const params = this.buildTableParams(size, from, undefined, sort)
-    return this.get<any[]>({
+    return this.get<ApiJobCode[]>({
       path: `${this.baseServiceUrl}`,
       params,
     })
@@ -43,9 +43,9 @@ export class JobCodeService extends AbstractDataService{
       }))
   }
 
-  getJobCodeById(id: string): Observable<any> {
+  getJobCodeById(id: string): Observable<ApiJobCode> {
     const errorMsg = `Could not find JobCode with id [${id}]`
-    return this.get<any>({
+    return this.get<ApiJobCode>({
       path: `${this.baseServiceUrl}/${id}`
     })
       .pipe(share())
@@ -90,8 +90,8 @@ export class JobCodeService extends AbstractDataService{
 
 export class PaginatedJobCodes {
   totalCount = 0
-  jobCodes: any[] = []
-  constructor(jobCodes: any[], totalCount: number) {
+  jobCodes: ApiJobCode[] = []
+  constructor(jobCodes: ApiJobCode[], totalCount: number) {
     this.jobCodes = jobCodes
     this.totalCount = totalCount
   }

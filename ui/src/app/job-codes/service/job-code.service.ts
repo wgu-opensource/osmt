@@ -7,10 +7,10 @@ import {Location} from "@angular/common"
 import {ApiSortOrder} from "../../richskill/ApiSkill"
 import {Observable} from "rxjs"
 import {map, share} from "rxjs/operators"
-import {ApiCollection, ICollection, ICollectionUpdate} from "../../collection/ApiCollection"
 import {ApiJobCode, IJobCode} from "../Jobcode"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
 import {ApiBatchResult} from "../../richskill/ApiBatchResult"
+import {AuthService} from "../../auth/auth-service"
 
 @Injectable({
   providedIn: "root"
@@ -19,7 +19,7 @@ export class JobCodeService extends AbstractDataService{
 
   private baseServiceUrl = "api/job-codes"
 
-  constructor(protected httpClient: HttpClient, protected authService: IAuthService,
+  constructor(protected httpClient: HttpClient, protected authService: AuthService,
               protected router: Router, protected location: Location) {
     super(httpClient, authService, router, location)
   }
@@ -49,7 +49,7 @@ export class JobCodeService extends AbstractDataService{
       path: `${this.baseServiceUrl}/${id}`
     })
       .pipe(share())
-      .pipe(map(({body}) => new ApiCollection(this.safeUnwrapBody(body, errorMsg))))
+      .pipe(map(({body}) => new ApiJobCode(this.safeUnwrapBody(body, errorMsg))))
   }
 
   createJobCode(updateObject: IJobCode): Observable<ApiJobCode> {

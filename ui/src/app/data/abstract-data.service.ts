@@ -6,6 +6,7 @@ import {AbstractService} from "../abstract.service"
 import {IAuthService} from "../auth/iauth-service"
 import {Router} from "@angular/router"
 import {Location} from "@angular/common"
+import {AuthService} from "../auth/auth-service"
 
 
 interface ApiGetParams {
@@ -21,7 +22,7 @@ providedIn: "root"
 })
 export abstract class AbstractDataService extends AbstractService{
 
-  protected constructor(httpClient: HttpClient, authService: IAuthService, router: Router, location: Location) {
+  protected constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
     super(httpClient, authService, router, location)
   }
 

@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core"
 import {AbstractDataService} from "../../data/abstract-data.service"
 import {HttpClient, HttpHeaders} from "@angular/common/http"
-import {IAuthService} from "../../auth/iauth-service"
 import {Router} from "@angular/router"
 import {Location} from "@angular/common"
 import {ApiSortOrder} from "../../richskill/ApiSkill"

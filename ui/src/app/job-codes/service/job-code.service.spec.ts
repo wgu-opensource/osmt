@@ -1,18 +1,20 @@
 import { TestBed } from "@angular/core/testing"
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing"
-import { JobCodeService } from "./job-code.service"
-import { HttpClient} from "@angular/common/http"
-import {AuthServiceStub, RouterStub} from "../../../../test/resource/mock-stubs"
+import {JobCodeService, PaginatedJobCodes} from "./job-code.service"
+import {AuthServiceData, AuthServiceStub, RouterData, RouterStub} from "../../../../test/resource/mock-stubs"
 import {AppConfig} from "../../app.config"
 import {EnvironmentService} from "../../core/environment.service"
-import {CollectionService} from "../../collection/service/collection.service"
 import {Location} from "@angular/common"
 import {AuthService} from "../../auth/auth-service"
 import {Router} from "@angular/router"
+import {createMockPaginatedJobCodes} from "../../../../test/resource/mock-data"
+import {ApiSortOrder} from "../../richskill/ApiSkill"
 
 
 describe("JobCodeService", () => {
   let testService: JobCodeService
+  let httpTestingController: HttpTestingController
+
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -24,11 +26,40 @@ describe("JobCodeService", () => {
         Location,
         { provide: AuthService, useClass: AuthServiceStub },
         { provide: Router, useClass: RouterStub }
-      ]})
+      ]}).compileComponents()
     testService = TestBed.inject(JobCodeService)
+    httpTestingController = TestBed.inject(HttpTestingController)
+    const appConfig = TestBed.inject(AppConfig)
+    AppConfig.settings = appConfig.defaultConfig()
   })
 
   it("should be created", () => {
     expect(testService).toBeTruthy()
+  })
+
+  it("getJobCodes should return", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const path = "api/job-codes?sort=name.asc&size=3&from=0"
+    const testData: PaginatedJobCodes = createMockPaginatedJobCodes(3, 10)
+
+    // Act
+    // noinspection LocalVariableNamingConventionJS
+    const result$ = testService.getJobCodes(testData.jobCodes.length, 0, ApiSortOrder.NameAsc)
+
+    // Assert
+    result$
+      .subscribe((data: PaginatedJobCodes) => {
+        expect(data).toEqual(testData)
+        expect(RouterData.commands).toEqual([ ])  // No errors
+        expect(AuthServiceData.isDown).toEqual(false)
+      })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    expect(req.request.method).toEqual("GET")
+    req.flush(testData.jobCodes, {
+      headers: { "x-total-count": "" + testData.totalCount}
+    })
   })
 })

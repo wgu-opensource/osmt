@@ -19,6 +19,7 @@ import { ApiCollectionSummary, ICollectionSummary, ISkillSummary } from "../../s
 import { ApiReferenceListUpdate, IRichSkillUpdate, IStringListUpdate } from "../../src/app/richskill/ApiSkillUpdate"
 import { PaginatedCollections, PaginatedSkills } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
+import {PaginatedJobCodes} from "../../src/app/job-codes/service/job-code.service"
 
 // Add mock data here.
 // For more examples, see https://github.com/WGU-edu/ema-eval-ui/blob/develop/src/app/admin/pages/edit-user/edit-user.component.spec.ts
@@ -314,3 +315,20 @@ export const mockTaskResultForExportSearch: ApiTaskResult = {
 
 export const csvContent = {body: "value1,value2,value3"}
 
+export function createMockPaginatedJobCodes(jobCodeCount = 1, total = 10): PaginatedJobCodes {
+  if (jobCodeCount > total) {
+    throw new RangeError(`'pageCount' must be <= 'total'`)
+  }
+
+  const jobCodes = []
+  for (let c = 1; c <= jobCodeCount; ++c) {
+    jobCodes.push(
+      createMockJobcode()
+    )
+  }
+
+  return new PaginatedJobCodes(
+    jobCodes,
+    total
+  )
+}

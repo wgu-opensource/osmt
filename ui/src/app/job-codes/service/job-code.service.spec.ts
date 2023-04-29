@@ -7,8 +7,9 @@ import {EnvironmentService} from "../../core/environment.service"
 import {Location} from "@angular/common"
 import {AuthService} from "../../auth/auth-service"
 import {Router} from "@angular/router"
-import {createMockPaginatedJobCodes} from "../../../../test/resource/mock-data"
+import {createMockJobcode, createMockPaginatedJobCodes} from "../../../../test/resource/mock-data"
 import {ApiSortOrder} from "../../richskill/ApiSkill"
+import {ApiJobCode, ApiJobCodeUpdate, } from "../Jobcode"
 
 
 describe("JobCodeService", () => {
@@ -33,11 +34,11 @@ describe("JobCodeService", () => {
     AppConfig.settings = appConfig.defaultConfig()
   })
 
-  it("should be created", () => {
+  it("JobCode should be created", () => {
     expect(testService).toBeTruthy()
   })
 
-  it("getJobCodes should return", () => {
+  it("getJobCodes should return Array of JobCodes", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
@@ -61,5 +62,40 @@ describe("JobCodeService", () => {
     req.flush(testData.jobCodes, {
       headers: { "x-total-count": "" + testData.totalCount}
     })
+  })
+
+  it("createJobCode should return a JobCode", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const path = "api/job-codes"
+    const now = new Date()
+    const testData = [
+      new ApiJobCode(createMockJobcode())
+    ]
+    const expected = testData[0]
+    const input = new ApiJobCodeUpdate({
+      code : expected.code,
+      targetNodeName : expected.targetNodeName,
+      targetNode : expected.targetNode,
+      frameworkName : expected.frameworkName,
+      level : expected.level,
+      parents : []
+    })
+
+    // Act
+    const result$ = testService.createJobCode(input)
+
+    // Assert
+    result$
+      .subscribe((data: ApiJobCode) => {
+        expect(data).toEqual(expected)
+        expect(RouterData.commands).toEqual([ ])  // No errors
+        expect(AuthServiceData.isDown).toEqual(false)
+      })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    expect(req.request.method).toEqual("POST")
+    req.flush(testData)
   })
 })

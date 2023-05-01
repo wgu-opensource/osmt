@@ -1,4 +1,4 @@
-{
+[{
     "cpu": ${cpu},
     "environment": [
         {
@@ -75,11 +75,11 @@
             "awslogs-stream-prefix": "${log_stream_prefix}"
         }
     },
-    "memory": "${memory}",
-    "name": "{container_name}",
+    "memory": ${memory},
+    "name": "${container_name}",
     "portMappings": [
         {
             "containerPort": ${port}
         }
     ]
-}
+}]

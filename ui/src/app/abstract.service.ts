@@ -43,12 +43,12 @@ export interface IRelatedSkillsService<TEntityId> {
  */
 export abstract class AbstractService {
 
-  constructor(protected httpClient: HttpClient,
-              protected authService: IAuthService,
-              protected router: Router,
-              protected location: Location
-  )
-  {
+  protected constructor(
+    protected httpClient: HttpClient,
+    protected authService: IAuthService,
+    protected router: Router,
+    protected location: Location
+  ) {
   }
 
   redirectToLogin(error: any): void {

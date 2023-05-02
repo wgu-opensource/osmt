@@ -1,4 +1,4 @@
-import { TestBed } from "@angular/core/testing"
+import {fakeAsync, TestBed, tick} from "@angular/core/testing"
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing"
 import {JobCodeService, PaginatedJobCodes} from "./job-code.service"
 import {AuthServiceData, AuthServiceStub, RouterData, RouterStub} from "../../../../test/resource/mock-stubs"
@@ -7,10 +7,16 @@ import {EnvironmentService} from "../../core/environment.service"
 import {Location} from "@angular/common"
 import {AuthService} from "../../auth/auth-service"
 import {Router} from "@angular/router"
-import {createMockJobcode, createMockPaginatedJobCodes} from "../../../../test/resource/mock-data"
+import {
+  apiTaskResultForDeleteJobCode,
+  createMockJobcode,
+  createMockPaginatedJobCodes
+} from "../../../../test/resource/mock-data"
 import {ApiSortOrder} from "../../richskill/ApiSkill"
 import {ApiJobCode, ApiJobCodeUpdate, } from "../Jobcode"
+import {ApiBatchResult} from "../../richskill/ApiBatchResult"
 
+const ASYNC_WAIT_PERIOD = 3000
 
 describe("JobCodeService", () => {
   let testService: JobCodeService
@@ -155,4 +161,16 @@ describe("JobCodeService", () => {
     expect(req.request.method).toEqual("POST")
     req.flush(testData)
   })
+
+  it("deleteJobCodeWithResult() should works", fakeAsync(() => {
+    const result$ = testService.deleteJobCodeWithResult(apiTaskResultForDeleteJobCode.uuid)
+    tick(ASYNC_WAIT_PERIOD)
+    // Assert
+    result$.subscribe((data: ApiBatchResult) => {
+      expect(RouterData.commands).toEqual([]) // No Errors
+    })
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + `/api/job-codes/${apiTaskResultForDeleteJobCode.uuid}/remove`)
+    expect(req.request.method).toEqual("DELETE")
+    expect(req.request.headers.get("Accept")).toEqual("application/json")
+  }))
 })

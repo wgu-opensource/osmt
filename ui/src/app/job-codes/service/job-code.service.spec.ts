@@ -64,12 +64,36 @@ describe("JobCodeService", () => {
     })
   })
 
+  it("getJobCodeByCode should return", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const code = "12345"
+    const path = "api/job-codes/" + code
+    const testData: ApiJobCode = new ApiJobCode(createMockJobcode(42, "my jobcode name", code))
+
+    // Act
+    // noinspection LocalVariableNamingConventionJS
+    const result$ = testService.getJobCodeByCode(code)
+
+    // Assert
+    result$
+      .subscribe((data: ApiJobCode) => {
+        expect(data).toEqual(testData)
+        expect(RouterData.commands).toEqual([ ])  // No errors
+        expect(AuthServiceData.isDown).toEqual(false)
+      })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    expect(req.request.method).toEqual("GET")
+    req.flush(testData)
+  })
+
   it("createJobCode should return a JobCode", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
     const path = "api/job-codes"
-    const now = new Date()
     const testData = [
       new ApiJobCode(createMockJobcode())
     ]
@@ -85,6 +109,39 @@ describe("JobCodeService", () => {
 
     // Act
     const result$ = testService.createJobCode(input)
+
+    // Assert
+    result$
+      .subscribe((data: ApiJobCode) => {
+        expect(data).toEqual(expected)
+        expect(RouterData.commands).toEqual([ ])  // No errors
+        expect(AuthServiceData.isDown).toEqual(false)
+      })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    expect(req.request.method).toEqual("POST")
+    req.flush(testData)
+  })
+
+  it("updateJobCode should return", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const testData = new ApiJobCode(createMockJobcode())
+    const expected = testData
+    const code = expected.code
+    const path = "api/job-codes/" + code + "/update"
+    const input = new ApiJobCodeUpdate({
+      code: expected.code,
+      targetNodeName: expected.targetNodeName,
+      targetNode: expected.targetNode,
+      frameworkName: expected.frameworkName,
+      level: expected.level,
+      parents: expected.parents
+    })
+
+    // Act
+    const result$ = testService.updateJobCode(code, input)
 
     // Assert
     result$

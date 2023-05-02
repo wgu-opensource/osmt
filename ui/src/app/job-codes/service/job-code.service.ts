@@ -6,7 +6,7 @@ import {Location} from "@angular/common"
 import {ApiSortOrder} from "../../richskill/ApiSkill"
 import {Observable} from "rxjs"
 import {map, share} from "rxjs/operators"
-import {ApiJobCode, IJobCode} from "../Jobcode"
+import {ApiJobCode, IJobCode, IJobCodeUpdate} from "../Jobcode"
 import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
 import {ApiBatchResult} from "../../richskill/ApiBatchResult"
 import {AuthService} from "../../auth/auth-service"
@@ -42,10 +42,10 @@ export class JobCodeService extends AbstractDataService{
       }))
   }
 
-  getJobCodeById(id: string): Observable<ApiJobCode> {
-    const errorMsg = `Could not find JobCode with id [${id}]`
+  getJobCodeByCode(code: string): Observable<ApiJobCode> {
+    const errorMsg = `Could not find JobCode with target Node [${code}]`
     return this.get<ApiJobCode>({
-      path: `${this.baseServiceUrl}/${id}`
+      path: `${this.baseServiceUrl}/${code}`
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiJobCode(this.safeUnwrapBody(body, errorMsg))))
@@ -61,10 +61,10 @@ export class JobCodeService extends AbstractDataService{
       .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiJobCode(s))[0]))
   }
 
-  updateJobCode(id: string, updateObject: IJobCode): Observable<ApiJobCode> {
-    const errorMsg = `Could not find JobCode with id: [${id}]`
+  updateJobCode(targetNode: string, updateObject: IJobCodeUpdate): Observable<ApiJobCode> {
+    const errorMsg = `Could not find JobCode with id: [${targetNode}]`
     return this.post<IJobCode>({
-      path: `${this.baseServiceUrl}/${id}/update`,
+      path: `${this.baseServiceUrl}/${targetNode}/update`,
       body: updateObject
     })
       .pipe(share())

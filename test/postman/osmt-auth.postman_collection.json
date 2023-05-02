@@ -3,7 +3,7 @@
 		"_postman_id": "ba41f2eb-d7d7-4ca7-bf20-e216e09c9e18",
 		"name": "OSMT-64-Auth",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "3748969"
+		"_exporter_id": "26333176"
 	},
 	"item": [
 		{
@@ -49,12 +49,9 @@
 					"raw": "{\n    \"username\": \"{{oktaUsername}}\",\n    \"password\": \"{{oktaPassword}}\",\n    \"options\": {\n        \"multiOptionalFactorEnroll\": false,\n        \"warnBeforePasswordExpired\": true\n    }\n}"
 				},
 				"url": {
-					"raw": "https://dev-86780967.okta.com/api/v1/authn",
-					"protocol": "https",
+					"raw": "{{oktaUrl}}/api/v1/authn",
 					"host": [
-						"dev-86780967",
-						"okta",
-						"com"
+						"{{oktaUrl}}"
 					],
 					"path": [
 						"api",

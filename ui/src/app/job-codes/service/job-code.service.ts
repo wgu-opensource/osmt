@@ -72,14 +72,14 @@ export class JobCodeService extends AbstractDataService{
   }
 
   deleteJobCode(id: string): Observable<ApiTaskResult> {
-    return this.httpClient.delete<ITaskResult>(this.buildUrl("api/job-codes/" + id + "/remove"), {
-      headers: this.wrapHeaders(new HttpHeaders({
-          Accept: "application/json"
-        }
-      ))
+    return this.delete<ApiTaskResult>( {
+      path: `${this.baseServiceUrl}/${id}/remove`,
+      headers: new HttpHeaders({
+        Accept: "application/json"
+      })
     })
       .pipe(share())
-      .pipe(map((body) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }
 
   deleteJobCodeWithResult(id: string): Observable<ApiBatchResult> {

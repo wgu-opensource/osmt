@@ -1,6 +1,8 @@
 const fs = require('fs');
+const glob = require('glob');
 const path = require('path');
 
+// TODO: convert to JSON streaming
 // const {chain} = require('stream-chain');
 // const {parser} = require('stream-json/Parser');
 // const {pick} = require('stream-json/filters/Pick');
@@ -13,15 +15,17 @@ const END = false;
 // Files for read/write
 const dataRoot = path.resolve(`${__dirname}/../api-test`);
 let inputFile = `${__dirname}/osmt.postman_collection.json`;
-// let inputFile = `${__dirname}/osmt-auth.postman_collection.json`;
 let outputFile = `${__dirname}/osmt-testing.postman_collection.json`;
 
+// Processing trackers
 let exit = false;
+let availableData = {};
 let failedEndpoints = [];
 
 // Check argument count
 if (process.argv.length > 4) {
-  argsError();
+  console.log("Usage: test-injector.js [input_json_file] [output_json_file]");
+  exit = true;
 }
 else if (process.argv.length == 3) {
   inputFile = path.resolve(process.argv[2]);
@@ -37,13 +41,17 @@ if (!exit) {
 }
 
 
+/**
+ * Driver for injecting tests into api collection.
+ */
 function main() {
+  console.log("Initializing test injection...")
   console.log(`Input: ${inputFile}`);
   console.log(`Output: ${outputFile}`);
+  console.log("");
 
   try {
-    // let count = 0;
-
+    // TODO: convert to JSON streaming
     // chain([
     //   fs.createReadStream(inputFile),
     //   parser(),
@@ -61,10 +69,17 @@ function main() {
     let baseApiRaw = fs.readFileSync(inputFile);
     let baseApi = JSON.parse(baseApiRaw);
 
+    mapAvailableTestData(dataRoot);
+
     for (let key in baseApi) {
-      console.log(`${key}: ${baseApi[key]}`);
+      if (DEBUG) {
+        console.log(`${key}: ${baseApi[key]}`);
+      }
+
       if (key === "item") {
+        console.log("API structure found in input file. Parsing test data...");
         console.log(`Data root: ${dataRoot}`);
+        console.log("");
         processRoutes(baseApi[key], dataRoot);
       }
     }
@@ -76,32 +91,56 @@ function main() {
   }
 
   // Completion message
-  if (failedEndpoints.length > 1) {
-    console.log(`Could not parse test information for the following ${failedEndpoints.length} endpoints:`);
+  if (failedEndpoints.length > 0) {
+    console.log(`\nERROR: Could not parse test information for the following `
+        + `${failedEndpoints.length} endpoint(s):`);
     console.log(failedEndpoints);
   }
   else {
-    console.log("All endpoints successfully populated with tests.");
+    console.log("INFO: All collection endpoints successfully populated with tests.");
   }
-}
 
+  let unusedCount = 0;
+  let unusedData = Object.keys(availableData).reduce((unusedData, key) => {
+    if (availableData[key]) {
+      unusedData[key.replace(dataRoot, '')] = availableData[key];
+      unusedCount++;
+    }
+    return unusedData;
+  }, {});
 
-// Improper arguments (files) specified
-function argsError() {
-  console.log("Usage: test-injector.js [input_json_file] [output_json_file]");
-  exit = true;
+  // console.log(availableData);
+  if (unusedCount > 0) {
+    console.log(`\nWARN: The following ${unusedCount} test data `
+        + `files/directories are unused (consider deletion):`);
+    console.log(unusedData);
+  }
 }
 
 
 /**
+ * Map available test directories and files.
  * 
- * @param {*} array 
- * @param {*} path 
+ * @param {string} root root location of test data
+ */
+function mapAvailableTestData(root) {
+  for (let file of glob.sync(root + '/**/*')) {
+    availableData[file] = true;
+  }
+}
+
+
+/**
+ * Process defined API routes to find associated test data.
+ * 
+ * @param {Object[]} array  JSON object for API
+ * @param {string} path     current route path
  */
 function processRoutes(array, path) {
   if (DEBUG) {
     console.log(`Processing at '${path}'`);
   }
+  availableData[path] = false;
 
   // Process each item in current directory
   for (let item of array) {
@@ -113,7 +152,7 @@ function processRoutes(array, path) {
     if (item?.item) {
       let currentPath = `${path}/${item["name"]}`
 
-      // Handle pre-request scripts
+      // Handle directory-level pre-request scripts
       if (fs.existsSync(`${currentPath}/pre-request.js`)) {
         processPreRequest(item, currentPath);
       }
@@ -128,6 +167,7 @@ function processRoutes(array, path) {
       processEndpoint(item, path);
     }
 
+    // Early exit for debug purposes
     if (END) {
       break;
     }
@@ -136,14 +176,15 @@ function processRoutes(array, path) {
 
 
 /**
+ * Process defined API endpoint to inject provided test data.
  * 
- * @param {*} item 
- * @param {*} path 
+ * @param {Object} item JSON object for endpoint
+ * @param {string} path current route path
  */
 function processEndpoint(item, path) {
   let requestType = item.request?.method.toLowerCase();
 
-  // Handle pre-request scripts
+  // Handle endpoint pre-request scripts
   if (fs.existsSync(`${path}/${requestType}-pre-request.js`)) {
     processPreRequest(item, path, requestType);
   }
@@ -151,11 +192,16 @@ function processEndpoint(item, path) {
   // Retrieve API test information
   try {
     const scriptFile = `${requestType}.js`;
+    const scriptFileFull = `${path}/${scriptFile}`;
     const responseFile = `${requestType}.json`;
+    const responseFileFull = `${path}/${responseFile}`;
+
+    availableData[scriptFileFull] = false;
+    availableData[responseFileFull] = false;
     
     // Read API test files
-    const expectedResponse = fs.readFileSync(`${path}/${responseFile}`);
-    const testScript = fs.readFileSync(`${path}/${scriptFile}`);
+    const expectedResponse = fs.readFileSync(responseFileFull);
+    const testScript = fs.readFileSync(scriptFileFull);
 
     // Build combined test script
     let combinedScript = `var expectedResponse = ${expectedResponse.toString()}`;
@@ -182,23 +228,29 @@ function processEndpoint(item, path) {
 
     item.event.push(testEvent);
   } catch (err) {
-    failedEndpoints.push(path.replace(dataRoot, ''));
+    let failedEndpoint = `${path.replace(dataRoot, '')} : `
+        + `${requestType.toUpperCase()}`;
+    failedEndpoints.push(failedEndpoint);
     console.error(err);
   }
 }
 
 
 /**
+ * Process pre-request script and inject as appropriate into collection.
  * 
- * @param {*} item 
- * @param {*} path 
+ * @param {Object} item JSON object for API
+ * @param {string} path current route path
  */
 function processPreRequest(item, path, requestType=null) {
   try {
     const scriptFile = `${requestType ? `${requestType}-` : ''}pre-request.js`;
-    
+    const scriptFileFull = `${path}/${scriptFile}`;
+
+    availableData[scriptFileFull] = false;
+
     // Read API pre-request script
-    let preRequestScript = fs.readFileSync(`${path}/${scriptFile}`);
+    let preRequestScript = fs.readFileSync(scriptFileFull);
     preRequestScript = preRequestScript.toString();
 
     if (DEBUG) {

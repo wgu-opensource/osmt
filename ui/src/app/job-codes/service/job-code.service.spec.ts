@@ -1,20 +1,20 @@
-import {fakeAsync, TestBed, tick} from "@angular/core/testing"
-import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing"
-import {JobCodeService, PaginatedJobCodes} from "./job-code.service"
-import {AuthServiceData, AuthServiceStub, RouterData, RouterStub} from "../../../../test/resource/mock-stubs"
-import {AppConfig} from "../../app.config"
-import {EnvironmentService} from "../../core/environment.service"
-import {Location} from "@angular/common"
-import {AuthService} from "../../auth/auth-service"
-import {Router} from "@angular/router"
+import { fakeAsync, TestBed, tick } from "@angular/core/testing"
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
+import { Location } from "@angular/common"
+import { Router } from "@angular/router"
+import { JobCodeService, PaginatedJobCodes } from "./job-code.service"
+import { AuthServiceData, AuthServiceStub, RouterData, RouterStub } from "../../../../test/resource/mock-stubs"
+import { AppConfig } from "../../app.config"
+import { EnvironmentService } from "../../core/environment.service"
+import { AuthService } from "../../auth/auth-service"
 import {
   apiTaskResultForDeleteJobCode,
   createMockJobcode,
   createMockPaginatedJobCodes
 } from "../../../../test/resource/mock-data"
-import {ApiSortOrder} from "../../richskill/ApiSkill"
-import {ApiJobCode, ApiJobCodeUpdate, } from "../Jobcode"
-import {ApiBatchResult} from "../../richskill/ApiBatchResult"
+import { ApiSortOrder } from "../../richskill/ApiSkill"
+import { ApiJobCode, ApiJobCodeUpdate } from "../Jobcode"
+import { ApiBatchResult } from "../../richskill/ApiBatchResult"
 
 const ASYNC_WAIT_PERIOD = 3000
 

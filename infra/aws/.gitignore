@@ -1,6 +1,9 @@
 # Local .terraform directories
 **/.terraform/*
 
+# private configuration files
+terraform/invocation/main.tf
+
 # .tfstate files
 *.tfstate
 *.tfstate.*

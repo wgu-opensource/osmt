@@ -13,6 +13,19 @@ Notes and planning:
    - 4-subnet situation: 2 public subnets and 2 private subnets. Everything other than the ALB will be in the private subnet.
 5. How do we actually identify/name and deploy a version of OSMT that a user wants to deploy (for example, at the git commit they currently have checked out, or a specific git commit they desire.)
 
+Discuss:
+
+- health check endpoint responds healthy during init
+- evaluate init state
+  - if unintialized, execute init process
+  - if initialized, pass
+- application startup
+
+deliverables
+
+- healthcheck that handles initialization gracefully
+- intialization script that can evaluate init status
+
 TODOs:
 
 - [ ] Deliver an example config object with sensible defaults and clarity about what needs individual configuration to get started up
@@ -25,6 +38,11 @@ TODOs:
 - [x] Add `.terraform.lock.hcl` to `.gitignore`?
 - [x] Add `iam.tf` to manage policies
   - [ ] create security groups
+- [x] Add context to security decisions.
+- [ ] Document generation of `main.tf` from template (by hand).
+- [ ] Test a `terraform destroy`, `terraform apply` to make sure it comes up. Pay attention for error creating CloudWatch Logs Log Group.
+- [ ] ECS Could not create CloudWatch log stream due to IAM policy.
+- [ ] Discuss above discussion list about deliverables (health check, init check)
 
 Nice to Have Enhancements (probably leave for later):
 
@@ -46,6 +64,8 @@ Advanced installations will likely extend and customize the infrastructure beyon
 
 - WARNING! Migrations are not yet working against RDS due to `utf8mb3_unicode_ci` encoded into migrations. To discuss with maintainer team.
 - App containers are set to run migrations and reindex elasticsearch. There should be a container usually not running that is used to run migrations and reindexing. This is a TODO.
+- Application is using root database credentials. A clever system for swapping out credentials for different procedures is good.
+- Application environment variables, including some application secrets are made available to the application as environment variables. Follow the principles of least privilege and secure access to the AWS account to keep these secrets secure. Only allow need to know access to the IAM roles necessary to access this information. An integration with AWS Secrets Manager would be a well-documented additional layer of improvement from here.
 
 ## Install dependencies on your local computer
 
@@ -103,7 +123,8 @@ A future upgrade to this guide could replace these manual steps with AWS CLI com
 
 To get the app ready to deploy into your AWS account, generate settings files from templates and populate them with your custom environment settings.
 
-- [ ] In the `terraform/invocation` directory, run a script `TODO` to generate `main.tf` from the template `main.tf.tpl`.
+- In the `terraform/invocation` directory, copy the template file `main.tf.tpl` to `main.tf`.
+-
 - Generate `config.auto.tfvars.json` and `secrets.auto.tfvars.json` in the same directory.
 - Begin populating templates with data.
 

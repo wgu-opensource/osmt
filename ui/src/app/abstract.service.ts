@@ -6,7 +6,7 @@ import {ApiTaskResult, ITaskResult} from "./task/ApiTaskResult"
 import {PublishStatus} from "./PublishStatus"
 import {ApiSortOrder} from "./richskill/ApiSkill"
 import {ApiSearch} from "./richskill/service/rich-skill-search.service"
-import {map, share} from "rxjs/operators"
+import {map, share, shareReplay} from "rxjs/operators"
 import {Router} from "@angular/router"
 import {Location} from "@angular/common"
 
@@ -56,7 +56,7 @@ export abstract class AbstractService {
     const observable = this.httpClient.get<T>(this.buildUrl(path), {
       headers: this.wrapHeaders(headers),
       params,
-      observe: "response"}).pipe(share())
+      observe: "response"}).pipe(shareReplay())
     observable
       .subscribe(() => {}, (err) => { this.redirectToLogin(err) })
     return observable
@@ -65,7 +65,7 @@ export abstract class AbstractService {
     const observable =  this.httpClient.post<T>(this.buildUrl(path), body, {
       headers: this.wrapHeaders(headers),
       params,
-      observe: "response"}).pipe(share())
+      observe: "response"}).pipe(shareReplay())
     observable
       .subscribe(() => {}, (err) => { this.redirectToLogin(err) })
     return observable

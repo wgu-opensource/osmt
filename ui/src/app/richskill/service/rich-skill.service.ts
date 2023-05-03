@@ -166,7 +166,6 @@ export class RichSkillService extends AbstractService {
       params,
       body: apiSearch,
     })
-      .pipe(share())
       .pipe(map(({body, headers}) => {
         const totalCount = Number(headers.get("X-Total-Count"))
         const skills = body?.map(skill => skill) || []

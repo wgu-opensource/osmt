@@ -1,14 +1,12 @@
 package edu.wgu.osmt.elasticsearch
 
-import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.StringUtils.isEmpty;
 import org.apache.http.HttpHost
-import org.apache.http.auth.AuthScope
 import org.apache.http.auth.AuthScope.ANY
 import org.apache.http.auth.UsernamePasswordCredentials
 import org.apache.http.client.CredentialsProvider
 import org.apache.http.impl.client.BasicCredentialsProvider
 import org.elasticsearch.client.RestClient
-import org.elasticsearch.client.RestClientBuilder
 import org.elasticsearch.client.RestHighLevelClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -36,7 +34,7 @@ class ElasticsearchClientManager {
         val login = esConfig.login
         val password = esConfig.password
 
-        return when (StringUtils.isEmpty(login) && StringUtils.isEmpty(password) ) {
+        return when (isEmpty(login) && isEmpty(password) ) {
             true  ->  RestHighLevelClient(RestClient.builder(HttpHost.create(esConfig.uri)))
             false -> createRestClient(login, password)
         }

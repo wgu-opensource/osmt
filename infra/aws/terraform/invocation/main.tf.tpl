@@ -14,12 +14,15 @@ provider "aws" {
     region  = "<aws_region>"
 
     default_tags {
-        foo = "bar"
+        tags = {
+            TerraformModule = "OSMT"
+        }
     }
 }
 
 module "osmt" {
     source = "../module/"
 
-    config = ?
+    config  = var.config
+    secrets = var.secrets
 }

@@ -14,7 +14,6 @@ _get_osmt_project_dir() {
 }
 
 function source_osmt_apitest_env_file() {
-
   echo "Sourcing ${apitest_env_file}"
   set -o allexport
   source "${apitest_env_file}"
@@ -23,15 +22,15 @@ function source_osmt_apitest_env_file() {
 
 function get_bearer_token() {
   declare bearer_token
-  declare auth_env; auth_env="${project_dir}/test/postman/osmt-auth.environment.json"
+  declare auth_env; auth_env="${test_dir}/postman/osmt-auth.environment.json"
 
 	# Running postman collections
 	echo "Getting access token from OKTA ..."
-  newman run "${project_dir}/test/postman/osmt-auth.postman_collection.json" \
+  newman run "${test_dir}/postman/osmt-auth.postman_collection.json" \
     --env-var oktaUsername="$OKTA_USERNAME" \
     --env-var oktaPassword="$OKTA_PASSWORD" \
     --env-var oktaUrl="$OKTA_URL" \
-    --env-var baseUrl="$LOCAL_URL" \
+    --env-var baseUrl="$BASE_URL" \
     --ignore-redirects \
     --export-environment "$auth_env"
 
@@ -43,8 +42,16 @@ function get_bearer_token() {
   echo
 }
 
-project_dir="$(_get_osmt_project_dir)" || exit 135
-apitest_env_file="${project_dir}/test/osmt-apitest.env"
+run_api_tests() {
+  npx "$test_dir/node_modules/.bin/newman" \
+    run "$test_dir/postman/osmt.postman_collection.json" \
+    --env-var baseUrl="$BASE_URL"
+}
+
+
+test_dir="$(_get_osmt_project_dir)/test" || exit 135
+apitest_env_file="${test_dir}/osmt-apitest.env"
 
 source_osmt_apitest_env_file
 get_bearer_token
+run_api_tests

@@ -2,12 +2,9 @@
   "name": "package.json",
   "version": "1.0.0",
   "description": "API Tests Package",
-  "main": "index.js",
-  "scripts": {
-    "test-newman": "echo \"Error: no test specified\" && exit 1"
-  },
   "devDependencies": {
-    "newman": "^5.3.2"
+    "newman": "^5.3.2",
+    "openapi-to-postmanv2": "^4.11.0"
   },
   "license": "ISC"
 }

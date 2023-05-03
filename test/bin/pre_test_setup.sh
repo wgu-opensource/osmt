@@ -32,6 +32,13 @@ _get_osmt_project_dir() {
   echo "${project_dir}"
 }
 
+create_postman_collection() {
+  local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
+  npx "$project_dir/test/node_modules/.bin/openapi2postmanv2" \
+    -s "${project_dir}/docs/int/openapi.yaml" \
+    -o "${project_dir}/test/postman/osmt.postman_collection.json" --pretty
+}
+
 curl_with_retry() {
   local -i rc=-1
   local -i retry_limit=12
@@ -50,7 +57,8 @@ curl_with_retry() {
       if [[ ${rc} -ne 0 ]]; then
         echo_info "Could not load the index page. Will retry ${retry_limit} more times. Retrying in 10 seconds..."
       fi
-      let retry_limit-=1
+      # shell check SC2219
+      ((retry_limit--)) || true
       sleep 10
   done
 }
@@ -84,13 +92,16 @@ main() {
   # curl the Spring app and retry for 2 minutes
   curl_with_retry || exit 135
   
-  if [[ ${LOAD_CI_DATASET} -eq 0  ]]; then
+  if [[ "${LOAD_CI_DATASET}" -eq 0  ]]; then
     # load CI static dataset
     "${project_dir}/osmt_cli.sh" -l || exit 135
 
     # reindex ElasticSearch
     "${project_dir}/osmt_cli.sh" -r || exit 135
   fi
+
+  # Create postman collection
+  create_postman_collection || exit 135
 }
 
 trap error_handler ERR SIGINT SIGTERM

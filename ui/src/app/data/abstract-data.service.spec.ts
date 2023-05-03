@@ -6,7 +6,7 @@ import { AbstractDataService } from "./abstract-data.service"
 import { EnvironmentService } from "../core/environment.service"
 import { AppConfig } from "../app.config"
 import { AuthService } from "../auth/auth-service"
-import { AuthServiceStub, RouterStub } from "../../../test/resource/mock-stubs"
+import { AuthServiceStub, RouterStub } from "@test/resource/mock-stubs"
 
 describe("AbstractAdminService", () => {
   let testService: AbstractDataService

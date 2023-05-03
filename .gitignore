@@ -28,3 +28,9 @@ build/
 ui/node
 
 osmt*.env
+
+# Testing ENV
+# Created at runtime
+/test/postman/osmt.postman_collection.json
+/test/postman/osmt-testing.postman_collection.json
+/test/node_modules

@@ -12,6 +12,7 @@ import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS
 import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS_UPDATE
 import edu.wgu.osmt.RoutePaths.COLLECTION_UPDATE
 import edu.wgu.osmt.RoutePaths.COLLECTION_XLSX
+import edu.wgu.osmt.RoutePaths.JOB_CODE_PATH
 import edu.wgu.osmt.RoutePaths.SEARCH_COLLECTIONS
 import edu.wgu.osmt.RoutePaths.SEARCH_JOBCODES_PATH
 import edu.wgu.osmt.RoutePaths.SEARCH_KEYWORDS_PATH
@@ -85,6 +86,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(GET, TASK_DETAIL_BATCH).authenticated()
             .mvcMatchers(GET, SEARCH_JOBCODES_PATH).authenticated()
             .mvcMatchers(GET, SEARCH_KEYWORDS_PATH).authenticated()
+            // .mvcMatchers(JOB_CODE_PATH).hasAnyAuthority("ROLE_Osmt_View", "ROLE_Osmt_Admin")
 
             // public search endpoints
             .mvcMatchers(POST, SEARCH_SKILLS).permitAll()
@@ -131,6 +133,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(POST, SKILL_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
             .mvcMatchers(POST, SKILLS_CREATE).hasAnyAuthority(ADMIN, CURATOR)
             .mvcMatchers(POST, SKILL_PUBLISH).hasAnyAuthority(ADMIN)
+            // .mvcMatchers(JOB_CODE_PATH).hasAnyAuthority(ADMIN, VIEW)
 
             .mvcMatchers(POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN, CURATOR)
             .mvcMatchers(POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)

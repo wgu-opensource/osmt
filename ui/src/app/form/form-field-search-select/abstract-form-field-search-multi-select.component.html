@@ -75,7 +75,7 @@
               </button>
               <!-- Save as new button if not perfect match -->
               <button class="m-buttonText" type="button" *ngIf="allowSaveNew && !isExactMatchFound()" (click)="selectSearchValue()" [disabled]="false">
-                <span class="m-buttonText-x-icon">Save new: {{ searchControlResultValue }} (Enter)</span>
+                <span class="m-buttonText-x-icon">Save new: {{ labelFor(searchControlResultValue) }} (Enter)</span>
               </button>
             </div>
 
@@ -86,7 +86,7 @@
                   <span class="m-selectMenu-x-messageText">No Results</span>
                 </p>
                 <button class="m-buttonText" type="button" *ngIf="allowSaveNew" (click)="selectSearchValue()" [disabled]="false">
-                  <span class="m-buttonText-x-icon">Save new: {{ searchControlResultValue }} (Enter)</span>
+                  <span class="m-buttonText-x-icon">Save new: {{ labelFor(searchControlResultValue) }} (Enter)</span>
                 </button>
               </div>
             </ng-template>

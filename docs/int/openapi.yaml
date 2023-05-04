@@ -944,6 +944,110 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
 
+  /api/job-codes:
+    get:
+      summary: Get all Job Codes
+      description: Returns all Job Codes
+      tags:
+        - Job Codes
+      parameters:
+        - $ref: '#/components/parameters/PaginationSizeQueryRequired'
+        - $ref: '#/components/parameters/PaginationFromQueryRequired'
+        - $ref: '#/components/parameters/SortOrderQuery'
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JobCode'
+    post:
+      summary: Define a Job Code
+      description: Create a new Job Code in OSMT
+      tags:
+        - Job Codes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/JobCode'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JobCode'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/job-codes/{uuid}:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    get:
+      summary: Retrieve a Job Code
+      description: Retrieve all the information about a Job Code
+      tags:
+        - Job Codes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCode'
+
+  /api/job-codes/{uuid}/remove:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    delete:
+      summary: Remove a Job Code
+      description: Delete a Job Code from OSMT
+      tags:
+        - Job Codes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+
+  /api/job-codes/{uuid}/update:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    post:
+      summary: Update a Job Code
+      description: Update an existing Job Code
+      tags:
+        - Job Codes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobCode'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCode'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+
 components:
   schemas:
     AdvancedSearch:
@@ -1510,7 +1614,7 @@ components:
           - code: '15-1231'
             targetNodeName: Computer Network Support Specialists
             frameworkName: bls
-            parents: 
+            parents:
               - code: '15-0000'
                 targetNodeName: Computer and Mathematical Occupations
                 level: Major
@@ -1704,7 +1808,7 @@ components:
           type: string
         status:
           type: string
-          enum: 
+          enum:
             - Processing
             - Ready
         apiResultPath:

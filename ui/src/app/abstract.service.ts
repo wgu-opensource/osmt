@@ -93,26 +93,6 @@ export abstract class AbstractService {
     return observable
   }
 
-  /**
-   * Perform a delete request with a json response.  The resulting promise will return the whole
-   * deleted response object
-   *
-   *   const {body, headers, status, type, url} = response
-   *
-   * @param path The relative path to the endpoint
-   * @param headers Json blob defining headers
-   * @param params Json blob defining path params
-   */
-  delete<T>({path, headers, params}: ApiGetParams): Observable<HttpResponse<T>> {
-    const observable =  this.httpClient.delete<T>(this.buildUrl(path),  {
-      headers: this.wrapHeaders(headers),
-      params,
-      observe: "response"}).pipe(share())
-    observable
-      .subscribe(() => {}, (err) => { this.redirectToLogin(err) })
-    return observable
-  }
-
   protected safeUnwrapBody<T>(body: T | null, failureMessage: string): T {
     if (!body) {
       throw new Error(failureMessage)

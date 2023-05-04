@@ -1151,7 +1151,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
 
-  /api/job-codes:
+  /api/metadata/job-codes:
     get:
       summary: Get all Job Codes
       description: Returns all Job Codes
@@ -1173,7 +1173,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/JobCode'
-    post:
+    put:
       summary: Define a Job Code
       description: Create a new Job Code in OSMT
       tags:
@@ -1198,9 +1198,9 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/job-codes/{uuid}:
+  /api/metadata/job-codes/{id}:
     parameters:
-      - $ref: '#/components/parameters/UuidPath'
+      - $ref: '#/components/parameters/IdPath'
     get:
       summary: Retrieve a Job Code
       description: Retrieve all the information about a Job Code
@@ -1213,10 +1213,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JobCode'
-
-  /api/job-codes/{uuid}/remove:
-    parameters:
-      - $ref: '#/components/parameters/UuidPath'
     delete:
       summary: Remove a Job Code
       description: Delete a Job Code from OSMT
@@ -1229,11 +1225,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskResult'
-
-  /api/job-codes/{uuid}/update:
-    parameters:
-      - $ref: '#/components/parameters/UuidPath'
-    post:
+    patch:
       summary: Update a Job Code
       description: Update an existing Job Code
       tags:
@@ -1243,7 +1235,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/JobCode'
+              $ref: '#/components/schemas/JobCodeUpdate'
       responses:
         '200':
           description: OK
@@ -1550,6 +1542,23 @@ components:
       type: object
       required:
         - code
+      properties:
+        code:
+          type: string
+        targetNode:
+          type: string
+        targetNodeName:
+          type: string
+        frameworkName:
+          type: string
+        level:
+          $ref: '#/components/schemas/JobCodeLevel'
+        parents:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobCode'
+    JobCodePatch:
+      type: object
       properties:
         code:
           type: string
@@ -2162,6 +2171,14 @@ components:
       schema:
         type: string
         format: uuid
+    IdPath:
+      name: id
+      in: path
+      description: id of a resource
+      required: true
+      schema:
+        type: string
+        format: id
 
   headers:
     Link:

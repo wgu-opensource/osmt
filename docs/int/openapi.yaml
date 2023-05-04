@@ -1173,7 +1173,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/JobCode'
-    put:
+    post:
       summary: Define a Job Code
       description: Create a new Job Code in OSMT
       tags:

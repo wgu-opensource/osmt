@@ -1028,7 +1028,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/JobCodeUpdate'
+              $ref: '#/components/schemas/JobCodePatch'
       responses:
         '200':
           description: OK
@@ -1038,7 +1038,6 @@ paths:
                 $ref: '#/components/schemas/JobCode'
         '400':
           $ref: '#/components/responses/BadRequest'
-
 
 components:
   schemas:
@@ -1351,23 +1350,23 @@ components:
           items:
             $ref: '#/components/schemas/JobCode'
     JobCodePatch:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/JSONPatchRequestReplace'
+    JSONPatchRequestReplace:
       type: object
+      additionalProperties: false
+      required:
+        - value
+        - op
+        - path
       properties:
-        code:
+        field:
+          description: A JSON Field representation.
           type: string
-        targetNode:
-          type: string
-        targetNodeName:
-          type: string
-        frameworkName:
-          type: string
-        level:
-          $ref: '#/components/schemas/JobCodeLevel'
-        parents:
-          type: array
-          items:
-            $ref: '#/components/schemas/JobCode'
-
+        value:
+          description: The value to replace.
     JobCodeLevel:
       type: string
       enum:

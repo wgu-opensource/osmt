@@ -10,7 +10,7 @@ import {map, share} from "rxjs/operators"
 import {Router} from "@angular/router"
 import {Location} from "@angular/common"
 
-interface ApiGetParams {
+export interface ApiGetParams {
   path: string,
   headers?: HttpHeaders,
   params?: HttpParams | {
@@ -85,26 +85,6 @@ export abstract class AbstractService {
   }
   post<T>({path, headers, params, body}: ApiGetParams): Observable<HttpResponse<T>> {
     const observable =  this.httpClient.post<T>(this.buildUrl(path), body, {
-      headers: this.wrapHeaders(headers),
-      params,
-      observe: "response"}).pipe(share())
-    observable
-      .subscribe(() => {}, (err) => { this.redirectToLogin(err) })
-    return observable
-  }
-
-  /**
-   * Perform a delete request with a json response.  The resulting promise will return the whole
-   * deleted response object
-   *
-   *   const {body, headers, status, type, url} = response
-   *
-   * @param path The relative path to the endpoint
-   * @param headers Json blob defining headers
-   * @param params Json blob defining path params
-   */
-  delete<T>({path, headers, params}: ApiGetParams): Observable<HttpResponse<T>> {
-    const observable =  this.httpClient.delete<T>(this.buildUrl(path),  {
       headers: this.wrapHeaders(headers),
       params,
       observe: "response"}).pipe(share())

@@ -16,7 +16,7 @@ import { AuthService } from "../../auth/auth-service"
 })
 export class JobCodeService extends AbstractDataService{
 
-  private baseServiceUrl = "api/job-codes"
+  private baseServiceUrl = "api/metadata/job-codes"
 
   constructor(protected httpClient: HttpClient, protected authService: AuthService,
               protected router: Router, protected location: Location) {
@@ -42,29 +42,29 @@ export class JobCodeService extends AbstractDataService{
       }))
   }
 
-  getJobCodeByCode(code: string): Observable<ApiJobCode> {
-    const errorMsg = `Could not find JobCode with target Node [${code}]`
+  getJobCodeById(id: string): Observable<ApiJobCode> {
+    const errorMsg = `Could not find JobCode with id [${id}]`
     return this.get<ApiJobCode>({
-      path: `${this.baseServiceUrl}/${code}`
+      path: `${this.baseServiceUrl}/${id}`
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiJobCode(this.safeUnwrapBody(body, errorMsg))))
   }
 
-  createJobCode(updateObject: IJobCode): Observable<ApiJobCode> {
+  createJobCode(newObject: IJobCode): Observable<ApiJobCode> {
     const errorMsg = `Error creating JobCode`
-    return this.post<ApiJobCode[]>({
+    return this.put<ApiJobCode[]>({
       path: this.baseServiceUrl,
-      body: [updateObject]
+      body: [newObject]
     })
       .pipe(share())
       .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiJobCode(s))[0]))
   }
 
-  updateJobCode(targetNode: string, updateObject: IJobCodeUpdate): Observable<ApiJobCode> {
-    const errorMsg = `Could not find JobCode with id: [${targetNode}]`
-    return this.post<IJobCode>({
-      path: `${this.baseServiceUrl}/${targetNode}/update`,
+  updateJobCode(id: string, updateObject: IJobCodeUpdate): Observable<ApiJobCode> {
+    const errorMsg = `Could not find JobCode with id: [${id}]`
+    return this.patch<IJobCode>({
+      path: `${this.baseServiceUrl}/${id}`,
       body: updateObject
     })
       .pipe(share())
@@ -73,7 +73,7 @@ export class JobCodeService extends AbstractDataService{
 
   deleteJobCode(id: string): Observable<ApiTaskResult> {
     return this.delete<ApiTaskResult>( {
-      path: `${this.baseServiceUrl}/${id}/remove`,
+      path: `${this.baseServiceUrl}/${id}`,
       headers: new HttpHeaders({
         Accept: "application/json"
       })

@@ -1559,8 +1559,7 @@ components:
     JobCodePatch:
       type: array
       items:
-        oneOf:
-          - $ref: '#/components/schemas/JSONPatchRequestReplace'
+        $ref: '#/components/schemas/JSONPatchRequestReplace'
     JSONPatchRequestReplace:
       type: object
       additionalProperties: false

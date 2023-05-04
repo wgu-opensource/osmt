@@ -35,27 +35,6 @@ export abstract class AbstractDataService extends AbstractService {
   }
 
   /**
-   * Perform a put request with a json response.  The resulting promise will return the whole
-   * created response object
-   *
-   *   const {body, headers, status, type, url} = response
-   *
-   * @param path The relative path to the endpoint
-   * @param headers Json blob defining headers
-   * @param params Json blob defining path params
-   * @param body Json blob defining object to be created
-   */
-  put<T>({path, headers, params, body}: ApiGetParams): Observable<HttpResponse<T>> {
-    const observable =  this.httpClient.put<T>(this.buildUrl(path), body, {
-      headers: this.wrapHeaders(headers),
-      params,
-      observe: "response"}).pipe(share())
-    observable
-      .subscribe(() => {}, (err) => { this.redirectToLogin(err) })
-    return observable
-  }
-
-  /**
    * Perform a patch request with a json response.  The resulting promise will return the whole
    * modified response object
    *

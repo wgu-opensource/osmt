@@ -125,7 +125,7 @@ describe("JobCodeService", () => {
       })
 
     const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
-    expect(req.request.method).toEqual("PUT")
+    expect(req.request.method).toEqual("POST")
     req.flush(testData)
   })
 

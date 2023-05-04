@@ -53,7 +53,7 @@ export class JobCodeService extends AbstractDataService{
 
   createJobCode(newObject: IJobCode): Observable<ApiJobCode> {
     const errorMsg = `Error creating JobCode`
-    return this.put<ApiJobCode[]>({
+    return this.post<ApiJobCode[]>({
       path: this.baseServiceUrl,
       body: [newObject]
     })

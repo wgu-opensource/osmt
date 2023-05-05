@@ -62,9 +62,9 @@ object RoutePaths {
     const val JOB_CODE_PATH = "$METADATA_PATH/job-codes"
     const val JOB_CODE_CREATE = JOB_CODE_PATH
     const val JOB_CODE_LIST = JOB_CODE_PATH
-    const val JOB_CODE_DETAIL = "$JOB_CODE_PATH/{uuid}"
-    const val JOB_CODE_UPDATE = "$JOB_CODE_DETAIL/update"
-    const val JOB_CODE_REMOVE = "$JOB_CODE_DETAIL/remove"
+    const val JOB_CODE_DETAIL = "$JOB_CODE_PATH/{id}"
+    const val JOB_CODE_UPDATE = JOB_CODE_DETAIL
+    const val JOB_CODE_REMOVE = JOB_CODE_DETAIL
 
     object QueryParams {
         const val FROM = "from"

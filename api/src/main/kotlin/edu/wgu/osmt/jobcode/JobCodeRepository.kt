@@ -1,5 +1,6 @@
 package edu.wgu.osmt.jobcode
 
+import edu.wgu.osmt.api.model.JobCodeUpdate
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
@@ -19,6 +20,7 @@ interface JobCodeRepository {
     fun findByCodeOrCreate(code: String, framework: String? = null): JobCodeDao
     fun findBlsCode(code: String): JobCodeDao?
     fun create(code: String, framework: String? = null): JobCodeDao
+    fun createFromApi(jobCodeUpdate: JobCodeUpdate): JobCodeDao
     fun onetsByDetailCode(detailedCode: String): SizedIterable<JobCodeDao>
 
     companion object {
@@ -50,6 +52,17 @@ class JobCodeRepositoryImpl: JobCodeRepository {
     override fun findBlsCode(code: String): JobCodeDao? {
         return table.select { table.code eq code and (table.framework eq JobCodeRepository.BLS_FRAMEWORK) }
             .firstOrNull()?.let { dao.wrapRow(it) }
+    }
+
+    override fun createFromApi(jobCodeUpdate: JobCodeUpdate): JobCodeDao {
+        return dao.new {
+            this.code = jobCodeUpdate.code
+            this.framework = jobCodeUpdate.framework
+            this.name = jobCodeUpdate.targetNodeName
+            this.description = jobCodeUpdate.description
+            this.name = "my name"
+            this.major = "my major"
+        }
     }
 
     override fun findByCodeOrCreate(code: String, framework: String?): JobCodeDao {

@@ -1,5 +1,6 @@
 package edu.wgu.osmt.jobcode;
 
+import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiJobCode
 import edu.wgu.osmt.api.model.JobCodeUpdate
@@ -28,13 +29,14 @@ class JobCodeController @Autowired constructor(
     val jobCodeEsRepo: JobCodeEsRepo,
     val jobCodeRepository: JobCodeRepository
 ) {
+    val dao = JobCodeDao.Companion
 
     @GetMapping(RoutePaths.JOB_CODE_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("isAuthenticated()")
     fun allPaginated(
-        @RequestParam(required = true) size: Int,
-        @RequestParam(required = true) from: Int,
-        @RequestParam(required = false) sort: String?
+        @RequestParam query: String,
+        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = "0") from: Int,
     ): HttpEntity<List<ApiJobCode>> {
         val searchResults = jobCodeEsRepo.typeAheadSearch("", OffsetPageable(from, size, null))
         return ResponseEntity.status(200).body(searchResults.map { ApiJobCode.fromJobCode(it.content) }.toList())
@@ -76,7 +78,14 @@ class JobCodeController @Autowired constructor(
     fun deleteJobCode(
         @PathVariable id: Int,
     ): HttpEntity<TaskResult> {
-        return ResponseEntity.status(200).body(TaskResult(uuid = "uuid", contentType = "application/json", status = TaskStatus.Processing, apiResultPath = "path"))
+        return ResponseEntity.status(200).body(
+            TaskResult(
+                uuid = "uuid",
+                contentType = "application/json",
+                status = TaskStatus.Processing,
+                apiResultPath = "path"
+            )
+        )
     }
 
 }

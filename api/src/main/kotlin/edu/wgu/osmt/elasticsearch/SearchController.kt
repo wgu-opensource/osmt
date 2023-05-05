@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestAttribute
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
@@ -55,10 +56,7 @@ class SearchController @Autowired constructor(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
-        @RequestParam(
-            required = false,
-            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
-        ) status: Array<String>,
+        @RequestAttribute status: Array<String>,
         @RequestParam(required = false) sort: String?,
         @RequestBody apiSearch: ApiSearch,
         @AuthenticationPrincipal user: Jwt?

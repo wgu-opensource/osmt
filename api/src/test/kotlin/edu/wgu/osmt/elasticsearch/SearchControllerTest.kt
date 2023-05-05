@@ -54,7 +54,7 @@ internal class SearchControllerTest @Autowired constructor(
                 arrayOf("draft", "published", "workspace"),
                 "",
                 ApiSearch(advanced = ApiAdvancedSearch(collectionName = collectionDoc?.name)),
-                nullJwt)
+            nullJwt)
 
         // Assert
         assertThat(result.body?.first()?.uuid).isEqualTo(collectionDoc?.uuid)

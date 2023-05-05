@@ -18,10 +18,13 @@ class SearchControllerInterceptor: HandlerInterceptor {
     ): Boolean {
         val authorization: String? = request.getHeader("Authorization")
         if (authorization == null) {
-            val status: Array<String> = request.getParameterValues("status")
-            val result = status.map { PublishStatus.forApiValue(it) }.filter { s -> s != PublishStatus.Deleted && s != PublishStatus.Draft}
+            var status: Array<String>? = request.getParameterValues("status")
+            if (status == null || status.isEmpty()) {
+                status = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET.split(",").toTypedArray()
+            }
+            val result = status?.map { PublishStatus.forApiValue(it) }?.filter { s -> s != PublishStatus.Deleted && s != PublishStatus.Draft}
             request.setAttribute("message", "hello")
-            request.setAttribute("status", result.toTypedArray())
+            request.setAttribute("status", result)
             System.out.println(request.getParameter("message"))
             // request.setAttribute("status", request.getParameterValues("status").filter { it != "draft" && it != "delete" })
             // request.getParameterValues("status").filter { it != "draft" && it != "delete" }

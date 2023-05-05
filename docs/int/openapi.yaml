@@ -949,7 +949,7 @@ paths:
       summary: Get all Job Codes
       description: Returns all Job Codes
       tags:
-        - Job Codes
+        - MetaData
       parameters:
         - $ref: '#/components/parameters/PaginationSizeQueryRequired'
         - $ref: '#/components/parameters/PaginationFromQueryRequired'
@@ -970,7 +970,7 @@ paths:
       summary: Define a Job Code
       description: Create a new Job Code in OSMT
       tags:
-        - Job Codes
+        - MetaData
       requestBody:
         required: true
         content:
@@ -998,7 +998,7 @@ paths:
       summary: Retrieve a Job Code
       description: Retrieve all the information about a Job Code
       tags:
-        - Job Codes
+        - MetaData
       responses:
         '200':
           description: OK
@@ -1010,7 +1010,7 @@ paths:
       summary: Remove a Job Code
       description: Delete a Job Code from OSMT
       tags:
-        - Job Codes
+        - MetaData
       responses:
         '200':
           description: OK
@@ -1022,13 +1022,13 @@ paths:
       summary: Update a Job Code
       description: Update an existing Job Code
       tags:
-        - Job Codes
+        - MetaData
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/JobCodePatch'
+              $ref: '#/components/schemas/MetaDataPatch'
       responses:
         '200':
           description: OK
@@ -1036,6 +1036,101 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JobCode'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /api/metadata/named-references:
+    get:
+      summary: Get all Named References of a type
+      description: Returns all Named References of a specific Type
+      tags:
+        - MetaData
+      parameters:
+        - $ref: '#/components/parameters/NameReferenceType'
+        - $ref: '#/components/parameters/PaginationSizeQueryRequired'
+        - $ref: '#/components/parameters/PaginationFromQueryRequired'
+        - $ref: '#/components/parameters/SortOrderQuery'
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NamedReferenceResponse'
+    post:
+      summary: Define a Named Reference
+      description: Create a new Named Reference in OSMT
+      tags:
+        - MetaData
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/NamedReferenceRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NamedReferenceResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/metadata/named-references/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
+    get:
+      summary: Retrieve a Named Reference
+      description: Retrieve all the information about a Named Reference
+      tags:
+        - MetaData
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NamedReferenceResponse'
+    delete:
+      summary: Remove a Named Reference
+      description: Delete a Named Reference from OSMT
+      tags:
+        - MetaData
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+    patch:
+      summary: Update a Named Reference
+      description: Update an existing Named Reference
+      tags:
+        - MetaData
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetaDataPatch'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NamedReferenceResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
 
@@ -1349,7 +1444,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobCode'
-    JobCodePatch:
+    MetaDataPatch:
       type: array
       items:
         $ref: '#/components/schemas/JSONPatchRequestReplace'
@@ -1425,6 +1520,33 @@ components:
           type: string
           format: uri
         name:
+          type: string
+
+    NamedReferenceResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+        name:
+          type: string
+        value:
+          type: string
+        type:
+          $ref: '#/components/schemas/KeywordType'
+        framework:
+          type: string
+
+    NamedReferenceRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        type:
+          $ref: '#/components/schemas/KeywordType'
+        framework:
           type: string
 
     PublishStatus:
@@ -1926,7 +2048,13 @@ components:
       schema:
         type: string
         format: id
-
+    NameReferenceType:
+      name: type
+      in: query
+      description: type of the Named Reference
+      required: true
+      schema:
+        type: string
   headers:
     Link:
       description: |

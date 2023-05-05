@@ -25,6 +25,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
@@ -68,8 +69,10 @@ class SearchController @Autowired constructor(
 
         val publishStatuses = status.mapNotNull {
             val status = PublishStatus.forApiValue(it)
-            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+                    //            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+            status
         }.toSet()
+        System.out.println(publishStatuses)
         val sortEnum: CollectionSortEnum = CollectionSortEnum.forValueOrDefault(sort)
         val pageable = OffsetPageable(from, size, sortEnum.sort)
 

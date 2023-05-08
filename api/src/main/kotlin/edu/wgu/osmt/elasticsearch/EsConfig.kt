@@ -5,8 +5,4 @@ import org.springframework.boot.context.properties.ConstructorBinding
 
 @ConstructorBinding
 @ConfigurationProperties(prefix = "es", ignoreInvalidFields = true)
-data class EsConfig(
-    val uri: String,
-    val login: String,
-    val password: String
-    )
+data class EsConfig(val uri: String)

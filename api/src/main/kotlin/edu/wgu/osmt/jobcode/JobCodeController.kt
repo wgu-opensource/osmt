@@ -29,7 +29,6 @@ class JobCodeController @Autowired constructor(
     val jobCodeEsRepo: JobCodeEsRepo,
     val jobCodeRepository: JobCodeRepository
 ) {
-    val dao = JobCodeDao.Companion
 
     @GetMapping(RoutePaths.JOB_CODE_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("isAuthenticated()")

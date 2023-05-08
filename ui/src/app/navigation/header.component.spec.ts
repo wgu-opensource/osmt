@@ -72,7 +72,7 @@ describe("HeaderComponent", () => {
     spyOn(authService, "isEnabledByRoles").and.returnValue( false)
     component.canHaveWorkspace = component["authService"].isEnabledByRoles(ButtonAction.MyWorkspace)
     fixture.detectChanges()
-    const myWorkspace = fixture.debugElement.query(By.css("#li-my-workspace"))
+    const myWorkspace = fixture.debugElement.query(By.css("#button-my-workspace"))
     expect(myWorkspace).toBeFalsy()
     expect(component.canHaveWorkspace).toBeFalse()
   })
@@ -83,7 +83,7 @@ describe("HeaderComponent", () => {
       () => {
         fixture.detectChanges()
 
-        const myWorkspace = fixture.debugElement.query(By.css("#li-my-workspace"))
+        const myWorkspace = fixture.debugElement.query(By.css("#button-my-workspace"))
         expect(myWorkspace).toBeTruthy()
         expect(component.canHaveWorkspace).toBeTrue()
         done()

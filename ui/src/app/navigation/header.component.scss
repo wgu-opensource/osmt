@@ -1,0 +1,19 @@
+.nav-menu{
+  outline:2px solid transparent;
+  outline-offset:4px;
+  -webkit-transition:outline var(--t-transition),outline-offset var(--t-transition),border-radius var(--t-transition);
+  transition:outline var(--t-transition),outline-offset var(--t-transition),border-radius var(--t-transition);
+  border-radius:12px;
+  font-weight:600;
+  font-size:14px;
+  text-transform:none;
+  color:var(--color-interactive6);
+  display:inline-block;
+  padding:4px 16px;
+  text-decoration:none;
+  -webkit-transition:outline var(--t-transition),outline-offset var(--t-transition),border-radius var(--t-transition),background-color var(--t-transition),color var(--t-transition),-webkit-box-shadow var(--t-transition);
+  transition:outline var(--t-transition),outline-offset var(--t-transition),border-radius var(--t-transition),background-color var(--t-transition),color var(--t-transition),-webkit-box-shadow var(--t-transition);
+  transition:outline var(--t-transition),outline-offset var(--t-transition),border-radius var(--t-transition),background-color var(--t-transition),box-shadow var(--t-transition),color var(--t-transition);
+  transition:outline var(--t-transition),outline-offset var(--t-transition),border-radius var(--t-transition),background-color var(--t-transition),box-shadow var(--t-transition),color var(--t-transition),-webkit-box-shadow var(--t-transition)
+}
+

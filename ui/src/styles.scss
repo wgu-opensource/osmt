@@ -88,7 +88,7 @@
 .m-pill-group-collapsible .read-more-wrapper button {
   width: 100%;
   text-align: center;
-  background-color: var(--color-background300);  // 
+  background-color: var(--color-background300);  //
   color: var(--color-text2);
   border: 1px solid var(--color-text3);
   border-radius: 12px;
@@ -129,3 +129,7 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+#mat-menu-simple {
+  line-height: inherit;
+}

@@ -66,6 +66,13 @@ object RoutePaths {
     const val JOB_CODE_UPDATE = JOB_CODE_DETAIL
     const val JOB_CODE_REMOVE = JOB_CODE_DETAIL
 
+    const val NAMED_REFERENCES_PATH = "$METADATA_PATH/named-references"
+    const val NAMED_REFERENCES_CREATE = NAMED_REFERENCES_PATH
+    const val NAMED_REFERENCES_LIST = NAMED_REFERENCES_PATH
+    const val NAMED_REFERENCES_DETAIL = "$NAMED_REFERENCES_PATH/{id}"
+    const val NAMED_REFERENCES_UPDATE = NAMED_REFERENCES_DETAIL
+    const val NAMED_REFERENCES_REMOVE = NAMED_REFERENCES_DETAIL
+
     object QueryParams {
         const val FROM = "from"
         const val SIZE = "size"

@@ -59,10 +59,11 @@ class JobCodeRepositoryImpl: JobCodeRepository {
             this.code = jobCodeUpdate.code
             this.framework = jobCodeUpdate.framework
             this.name = jobCodeUpdate.targetNodeName
+            this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.description = jobCodeUpdate.description
             this.name = "my name"
             this.major = "my major"
-        }
+        }.also { jobCodeEsRepo.save(it.toModel()) }
     }
 
     override fun findByCodeOrCreate(code: String, framework: String?): JobCodeDao {

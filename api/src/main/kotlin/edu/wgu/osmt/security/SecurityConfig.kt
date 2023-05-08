@@ -86,7 +86,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
             // public search endpoints
             .mvcMatchers(POST, SEARCH_SKILLS).permitAll()
-            .mvcMatchers(POST, SEARCH_COLLECTIONS).permitAll()
+                // .mvcMatchers(POST, SEARCH_COLLECTIONS).permitAll()
 
             // public canonical URL endpoints
             .mvcMatchers(GET, SKILL_DETAIL).permitAll()
@@ -101,6 +101,10 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
             .and().oauth2Login().successHandler(redirectToFrontend)
             .and().oauth2ResourceServer().jwt()
+
+        if (appConfig.allowPublicSearching) {
+            http.authorizeRequests().mvcMatchers(POST, SEARCH_COLLECTIONS).permitAll()
+        }
 
         if (appConfig.enableRoles) {
             configureForRoles(http)

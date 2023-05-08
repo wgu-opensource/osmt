@@ -52,7 +52,7 @@ class SearchController @Autowired constructor(
 
     @PostMapping(RoutePaths.SEARCH_COLLECTIONS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    @PreAuthorize("hasAnyAuthority(@appConfig.roleAdmin) or @appConfig.allowPublicSearching")
+    @PreAuthorize("isAuthenticated()")
     fun searchCollections(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,

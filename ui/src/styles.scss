@@ -126,3 +126,6 @@
   background-color: var(--color-background500);
 }
 /* [END] Pill & Pill Group needed until design system is updated */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -101,7 +101,11 @@ import { ExportRsdComponent } from "./export/export-rsd.component"
 import { OsmtFormModule } from "./form/osmt-form.module"
 import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collection/convert-to-collection.component"
 import { SizePaginationComponent } from "./table/skills-library-table/size-pagination/size-pagination.component"
-import {OsmtTableModule} from "./table/osmt-table.module"
+import {OsmtTableModule} from "./table/osmt-table.module";
+import { NoopAnimationsModule } from '@angular/platform-browser/animations'
+import {MatMenuModule} from '@angular/material/menu'
+import {MatButtonModule} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -225,7 +229,11 @@ export function initializeApp(
     OsmtCoreModule,
     OsmtFormModule,
     FormsModule,
-    OsmtTableModule
+    OsmtTableModule,
+    NoopAnimationsModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule
   ],
   providers: [
     EnvironmentService,

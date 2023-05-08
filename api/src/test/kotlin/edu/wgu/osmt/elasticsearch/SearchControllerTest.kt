@@ -7,6 +7,7 @@ import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionEsRepo
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
@@ -51,10 +52,9 @@ internal class SearchControllerTest @Autowired constructor(
                 UriComponentsBuilder.newInstance(),
                 50,
                 0,
-                arrayOf("draft", "published", "workspace"),
+                arrayOf(PublishStatus.Draft, PublishStatus.Published, PublishStatus.Workspace).toSet(),
                 "",
-                ApiSearch(advanced = ApiAdvancedSearch(collectionName = collectionDoc?.name)),
-            nullJwt)
+                ApiSearch(advanced = ApiAdvancedSearch(collectionName = collectionDoc?.name)))
 
         // Assert
         assertThat(result.body?.first()?.uuid).isEqualTo(collectionDoc?.uuid)

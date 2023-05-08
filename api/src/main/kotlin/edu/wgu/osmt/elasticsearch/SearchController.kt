@@ -52,30 +52,22 @@ class SearchController @Autowired constructor(
 
     @PostMapping(RoutePaths.SEARCH_COLLECTIONS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
+    @PreAuthorize("hasAnyAuthority(@appConfig.roleAdmin) or @appConfig.allowPublicSearching")
     fun searchCollections(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
-        @RequestAttribute status: Array<String>,
+        @RequestAttribute status: Set<PublishStatus>,
         @RequestParam(required = false) sort: String?,
-        @RequestBody apiSearch: ApiSearch,
-        @AuthenticationPrincipal user: Jwt?
+        @RequestBody apiSearch: ApiSearch
     ): HttpEntity<List<CollectionDoc>> {
-        if (!appConfig.allowPublicSearching && user === null) {
-            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
-        }
 
-        val publishStatuses = status.mapNotNull {
-            val status = PublishStatus.forApiValue(it)
-                    //            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
-            status
-        }.toSet()
-        System.out.println(publishStatuses)
+        System.out.println(status)
         val sortEnum: CollectionSortEnum = CollectionSortEnum.forValueOrDefault(sort)
         val pageable = OffsetPageable(from, size, sortEnum.sort)
 
         val searchHits =
-            collectionEsRepo.byApiSearch(apiSearch, publishStatuses, pageable)
+            collectionEsRepo.byApiSearch(apiSearch, status, pageable)
 
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", searchHits.totalHits.toString())

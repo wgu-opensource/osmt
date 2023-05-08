@@ -1,8 +1,10 @@
 package edu.wgu.osmt.task
 
+import org.apache.commons.lang3.StringUtils.isEmpty
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.redis.connection.RedisPassword
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
@@ -20,6 +22,8 @@ class RedisConfig: AbstractHttpSessionApplicationInitializer(){
 
     @Value("\${redis.uri}")
     lateinit var redisUri: String
+    @Value("\${redis.password}")
+    lateinit var redisPassword: String
 
     @Bean
     fun configureRedisAction(): ConfigureRedisAction {
@@ -31,6 +35,9 @@ class RedisConfig: AbstractHttpSessionApplicationInitializer(){
         val (redisHost, redisPort) = redisUri.split(":")
 
         val redisStandaloneConfiguration = RedisStandaloneConfiguration(redisHost, redisPort.toInt())
+        if (!isEmpty(redisPassword)) {
+            redisStandaloneConfiguration.setPassword(RedisPassword.of(redisPassword))
+        }
         return LettuceConnectionFactory(redisStandaloneConfiguration)
     }
 

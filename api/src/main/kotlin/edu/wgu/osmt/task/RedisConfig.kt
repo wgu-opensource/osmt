@@ -22,6 +22,8 @@ class RedisConfig: AbstractHttpSessionApplicationInitializer(){
 
     @Value("\${redis.uri}")
     lateinit var redisUri: String
+    @Value("\${redis.username}")
+    lateinit var redisUsername: String
     @Value("\${redis.password}")
     lateinit var redisPassword: String
 
@@ -36,6 +38,7 @@ class RedisConfig: AbstractHttpSessionApplicationInitializer(){
 
         val redisStandaloneConfiguration = RedisStandaloneConfiguration(redisHost, redisPort.toInt())
         if (!isEmpty(redisPassword)) {
+            redisStandaloneConfiguration.username = redisUsername
             redisStandaloneConfiguration.setPassword(RedisPassword.of(redisPassword))
         }
         return LettuceConnectionFactory(redisStandaloneConfiguration)

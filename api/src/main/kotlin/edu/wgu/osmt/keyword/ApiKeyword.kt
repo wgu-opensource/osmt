@@ -1,6 +1,18 @@
 package edu.wgu.osmt.keyword
 
-import edu.wgu.osmt.api.model.ApiNamedReference
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class ApiKeywordUpdate(
+    @JsonProperty("name")
+    val name: String?,
+    @JsonProperty("value")
+    val value: String?,
+    @JsonProperty("type")
+    val type: KeywordTypeEnum,
+    @JsonProperty("framework")
+    val framework: String?
+) {
+}
 
 data class ApiKeyword(
     val id: Long?,

@@ -20,7 +20,7 @@ interface JobCodeRepository {
     fun findByCodeOrCreate(code: String, framework: String? = null): JobCodeDao
     fun findBlsCode(code: String): JobCodeDao?
     fun create(code: String, framework: String? = null): JobCodeDao
-    fun createFromApi(jobCodeUpdate: JobCodeUpdate): JobCodeDao
+    fun createFromApi(jobCodes: List<JobCodeUpdate>): List<JobCodeDao>
     fun onetsByDetailCode(detailedCode: String): SizedIterable<JobCodeDao>
 
     companion object {
@@ -54,16 +54,18 @@ class JobCodeRepositoryImpl: JobCodeRepository {
             .firstOrNull()?.let { dao.wrapRow(it) }
     }
 
-    override fun createFromApi(jobCodeUpdate: JobCodeUpdate): JobCodeDao {
-        return dao.new {
-            this.code = jobCodeUpdate.code
-            this.framework = jobCodeUpdate.framework
-            this.name = jobCodeUpdate.targetNodeName
-            this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
-            this.description = jobCodeUpdate.description
-            this.name = "my name"
-            this.major = "my major"
-        }.also { jobCodeEsRepo.save(it.toModel()) }
+    override fun createFromApi(jobCodes: List<JobCodeUpdate>): List<JobCodeDao> {
+        return jobCodes.map { jobCodeUpdate ->
+            dao.new {
+                this.code = jobCodeUpdate.code
+                this.framework = jobCodeUpdate.framework
+                this.name = jobCodeUpdate.targetNodeName
+                this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
+                // this.description = jobCodeUpdate.description
+                this.name = "my name"
+                this.major = "my major"
+            }.also { jobCodeEsRepo.save(it.toModel()) }
+        }
     }
 
     override fun findByCodeOrCreate(code: String, framework: String?): JobCodeDao {

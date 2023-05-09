@@ -1,15 +1,12 @@
 package edu.wgu.osmt.jobcode;
 
-import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiJobCode
 import edu.wgu.osmt.api.model.JobCodeUpdate
-import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.task.TaskResult
 import edu.wgu.osmt.task.TaskStatus
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -29,11 +26,11 @@ class JobCodeController @Autowired constructor(
     @GetMapping(RoutePaths.JOB_CODE_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("isAuthenticated()")
     fun allPaginated(
-        @RequestParam query: String,
-        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
-        @RequestParam(required = false, defaultValue = "0") from: Int,
+        @RequestParam(required = true) size: Int,
+        @RequestParam(required = true) from: Int,
+        @RequestParam(required = false) sort: String?
     ): HttpEntity<List<ApiJobCode>> {
-        val searchResults = jobCodeEsRepo.typeAheadSearch(query, OffsetPageable(from, size, null))
+        val searchResults = jobCodeEsRepo.typeAheadSearch("", OffsetPageable(from, size, null))
         return ResponseEntity.status(200).body(searchResults.map { ApiJobCode.fromJobCode(it.content) }.toList())
     }
 
@@ -49,27 +46,27 @@ class JobCodeController @Autowired constructor(
     @PostMapping(RoutePaths.JOB_CODE_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun createJobCode(
-        @RequestBody jobCodeUpdate: JobCodeUpdate
-    ): HttpEntity<ApiJobCode> {
-        val newJobCode = jobCodeRepository.createFromApi(jobCodeUpdate)
-        return ResponseEntity.status(200).body(ApiJobCode.fromJobCode(newJobCode.toModel()))
+        @RequestBody jobCodes: List<JobCodeUpdate>
+    ): HttpEntity<List<ApiJobCode>> {
+        val newJobCodes = jobCodeRepository.createFromApi(jobCodes)
+        return ResponseEntity.status(200).body(newJobCodes.map { ApiJobCode.fromJobCode(it.toModel()) }.toList())
     }
 
-    @PutMapping(RoutePaths.JOB_CODE_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
-    @PreAuthorize("hasAuthority(appConfig.roleAdmin)")
+    @PostMapping(RoutePaths.JOB_CODE_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun updateJobCode(
         @PathVariable id: Int,
         @RequestBody jobCodeUpdate: JobCodeUpdate
     ): HttpEntity<ApiJobCode> {
-        return ResponseEntity.status(200).body(ApiJobCode(code = "1", targetNode = "target", targetNodeName = "targetNodeName", frameworkName = "frameworkName"))
+        return ResponseEntity.status(200).body(ApiJobCode(code = "1", targetNode = "target", targetNodeName = "targetNodeName", frameworkName = "frameworkName", parents = listOf()))
     }
 
     @DeleteMapping(RoutePaths.JOB_CODE_REMOVE)
-    @PreAuthorize("hasAuthority(appConfig.roleAdmin)")
+    @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun deleteJobCode(
         @PathVariable id: Int,
     ): HttpEntity<TaskResult> {
-        return ResponseEntity.status(200).body(TaskResult(uuid = "uuid", contentType = "json", status = TaskStatus.Processing, apiResultPath = "path"))
+        return ResponseEntity.status(200).body(TaskResult(uuid = "uuid", contentType = "application/json", status = TaskStatus.Processing, apiResultPath = "path"))
     }
 
 }

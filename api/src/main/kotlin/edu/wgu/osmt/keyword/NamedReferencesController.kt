@@ -2,6 +2,7 @@ package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
+import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.ApiJobCode
 import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.JobCodeUpdate
@@ -28,13 +29,12 @@ class NamedReferencesController @Autowired constructor(
     @GetMapping(RoutePaths.NAMED_REFERENCES_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("isAuthenticated()")
     fun allPaginated(
-        @RequestParam query: String,
+        @RequestParam(required = true) type: String,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
-        @RequestParam(required = true) type: String
     ): HttpEntity<List<ApiKeyword>> {
         val keywordType = KeywordTypeEnum.forApiValue(type) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
-        val searchResults = keywordEsRepo.typeAheadSearch(query, keywordType)
+        val searchResults = keywordEsRepo.typeAheadSearch("", keywordType)
         return ResponseEntity.status(200).body(searchResults.map { ApiKeyword.fromKeyword(it.content) }.toList())
     }
 
@@ -47,29 +47,33 @@ class NamedReferencesController @Autowired constructor(
         return ResponseEntity.status(200).body(ApiKeyword.fromKeyword(keyword.get()))
     }
 
-    @PostMapping(RoutePaths.JOB_CODE_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.NAMED_REFERENCES_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun createNamedReference(
-        @RequestBody apiKeyword: ApiKeyword
-    ): HttpEntity<ApiKeyword> {
-        return ResponseEntity.status(200).body(ApiKeyword(2, "my keyword", "my value", KeywordTypeEnum.Keyword, "my framework"))
+        @RequestBody keywords: List<ApiKeywordUpdate>
+    ): HttpEntity<List<ApiKeyword>> {
+        return ResponseEntity.status(200).body(
+            keywords.map {
+                ApiKeyword(id = 1, name = it.name, value = it.value, type = it.type, framework = it.framework)
+            }
+        )
     }
 
-    @PutMapping(RoutePaths.NAMED_REFERENCES_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
-    @PreAuthorize("hasAuthority(appConfig.roleAdmin)")
+    @PostMapping(RoutePaths.NAMED_REFERENCES_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun updateNamedReference(
         @PathVariable id: Int,
-        @RequestBody apiKeyword: ApiKeyword
+        @RequestBody apiKeyword: ApiKeywordUpdate
     ): HttpEntity<ApiKeyword> {
         return ResponseEntity.status(200).body(ApiKeyword(134, "my name", "my value", KeywordTypeEnum.Keyword, "my framework"))
     }
 
     @DeleteMapping(RoutePaths.NAMED_REFERENCES_REMOVE)
-    @PreAuthorize("hasAuthority(appConfig.roleAdmin)")
+    @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun deleteNamedReference(
         @PathVariable id: Int,
     ): HttpEntity<TaskResult> {
-        return ResponseEntity.status(200).body(TaskResult(uuid = "uuid", contentType = "json", status = TaskStatus.Processing, apiResultPath = "path"))
+        return ResponseEntity.status(200).body(TaskResult(uuid = "uuid", contentType = "application/json", status = TaskStatus.Processing, apiResultPath = "path"))
     }
 
 }

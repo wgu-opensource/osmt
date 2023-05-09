@@ -63,7 +63,7 @@ export class JobCodeService extends AbstractDataService{
 
   updateJobCode(id: string, updateObject: IJobCodeUpdate): Observable<ApiJobCode> {
     const errorMsg = `Could not find JobCode with id: [${id}]`
-    return this.patch<IJobCode>({
+    return this.post<IJobCode>({
       path: `${this.baseServiceUrl}/${id}`,
       body: updateObject
     })

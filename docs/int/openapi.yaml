@@ -1018,7 +1018,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskResult'
-    patch:
+    post:
       summary: Update a Job Code
       description: Update an existing Job Code
       tags:
@@ -1028,7 +1028,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MetaDataPatch'
+              $ref: '#/components/schemas/JobCode'
       responses:
         '200':
           description: OK
@@ -1113,7 +1113,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskResult'
-    patch:
+    post:
       summary: Update a Named Reference
       description: Update an existing Named Reference
       tags:
@@ -1123,7 +1123,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MetaDataPatch'
+              $ref: '#/components/schemas/NamedReferenceRequest'
       responses:
         '200':
           description: OK

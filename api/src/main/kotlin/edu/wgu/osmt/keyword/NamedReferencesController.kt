@@ -2,10 +2,6 @@ package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
-import edu.wgu.osmt.api.GeneralApiException
-import edu.wgu.osmt.api.model.ApiJobCode
-import edu.wgu.osmt.api.model.ApiNamedReference
-import edu.wgu.osmt.api.model.JobCodeUpdate
 import edu.wgu.osmt.task.TaskResult
 import edu.wgu.osmt.task.TaskStatus
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +12,12 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.server.ResponseStatusException
 
 @Controller

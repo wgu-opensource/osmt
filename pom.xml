@@ -61,6 +61,7 @@
     <modules>
         <module>ui</module>
         <module>api</module>
+        <module>test</module>
     </modules>
 
     <build>

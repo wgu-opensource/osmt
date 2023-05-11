@@ -1,5 +1,8 @@
 package edu.wgu.osmt.jobcode
 
+import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.HasDatabaseReset
+import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.JobCodeUpdate
 import org.assertj.core.api.Assertions
@@ -15,7 +18,7 @@ import java.time.ZoneOffset
 internal class JobCodeControllerTest @Autowired constructor(
     val jobCodeEsRepo: JobCodeEsRepo,
     val jobCodeRepository: JobCodeRepository
-) : SpringTest() {
+) : SpringTest(), BaseDockerizedTest, HasDatabaseReset {
 
     @Autowired
     lateinit var jobCodeController: JobCodeController

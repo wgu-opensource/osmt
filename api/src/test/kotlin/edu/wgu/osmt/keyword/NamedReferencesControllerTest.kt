@@ -1,5 +1,7 @@
 package edu.wgu.osmt.keyword
 
+import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.SpringTest
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -14,7 +16,7 @@ import java.time.ZoneOffset
 internal class NamedReferencesControllerTest @Autowired constructor(
     val keywordRepository: KeywordRepository,
     val keywordEsRepo: KeywordEsRepo
-) : SpringTest() {
+) : SpringTest(), BaseDockerizedTest, HasDatabaseReset {
 
     @Autowired
     lateinit var namedReferencesController: NamedReferencesController

@@ -39,16 +39,19 @@ internal class NamedReferencesControllerTest @Autowired constructor(
 
     @Test
     fun `By id should find a named reference`() {
-        dao.new {
+        val daoKeyword = dao.new {
             this.uri = "uri"
             this.value = "value"
             this.framework = "my framework"
             this.type = KeywordTypeEnum.Keyword
             this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
-        }.also { keywordEsRepo.save(it.toModel()) }
-        val result = namedReferencesController.byId(1)
-        Assertions.assertThat(result.body).isNotNull
+        }
+        val esKeyword = keywordEsRepo.save(daoKeyword.toModel())
+        val result = esKeyword.id?.let { namedReferencesController.byId(it) }
+        if (result != null) {
+            Assertions.assertThat(result.body).isNotNull
+        }
         Assertions.assertThat((result as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
     }
 

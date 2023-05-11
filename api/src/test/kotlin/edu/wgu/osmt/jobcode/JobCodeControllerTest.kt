@@ -40,16 +40,19 @@ internal class JobCodeControllerTest @Autowired constructor(
 
     @Test
     fun `By id should find a job code`() {
-        dao.new {
+        val daoJobCode = dao.new {
             this.code = "code"
             this.framework = "framework"
             this.name = "targetNodeName"
             this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.name = "my name"
             this.major = "my major"
-        }.also { jobCodeEsRepo.save(it.toModel()) }
-        val result = jobCodeController.byId(1)
-        Assertions.assertThat(result.body).isNotNull
+        }
+        val esJobCode = jobCodeEsRepo.save(jobCodeEsRepo.save(daoJobCode.toModel()))
+        val result = esJobCode.id?.let { jobCodeController.byId(it) }
+        if (result != null) {
+            Assertions.assertThat(result.body).isNotNull
+        }
         Assertions.assertThat((result as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
     }
 

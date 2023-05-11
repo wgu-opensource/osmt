@@ -43,10 +43,14 @@ class JobCodeController @Autowired constructor(
     @GetMapping(RoutePaths.JOB_CODE_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("isAuthenticated()")
     fun byId(
-        @PathVariable id: Int,
+        @PathVariable id: Long,
     ): HttpEntity<ApiJobCode> {
-        val jobCode = jobCodeEsRepo.findById(id)
-        return ResponseEntity.status(200).body(ApiJobCode.fromJobCode(jobCode.get()))
+        val jobCode = jobCodeRepository.findById(id)
+        if (jobCode != null) {
+            return ResponseEntity.status(200).body(ApiJobCode.fromJobCode(jobCode.toModel()))
+        } else {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        }
     }
 
     @PostMapping(RoutePaths.JOB_CODE_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])

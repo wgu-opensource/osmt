@@ -2,6 +2,7 @@ package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
+import edu.wgu.osmt.api.model.ApiJobCode
 import edu.wgu.osmt.task.TaskResult
 import edu.wgu.osmt.task.TaskStatus
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,10 +44,14 @@ class NamedReferencesController @Autowired constructor(
     @GetMapping(RoutePaths.NAMED_REFERENCES_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("isAuthenticated()")
     fun byId(
-        @PathVariable id: Int,
+        @PathVariable id: Long,
     ): HttpEntity<ApiKeyword> {
-        val keyword = keywordEsRepo.findById(id)
-        return ResponseEntity.status(200).body(ApiKeyword.fromKeyword(keyword.get()))
+        val keyword = keywordRepository.findById(id)
+        if (keyword != null) {
+            return ResponseEntity.status(200).body(ApiKeyword.fromKeyword(keyword.toModel()))
+        } else {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        }
     }
 
     @PostMapping(RoutePaths.NAMED_REFERENCES_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])

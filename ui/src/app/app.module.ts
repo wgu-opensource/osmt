@@ -116,6 +116,8 @@ import { MetadataLibraryComponent } from "./metadata/detail/metadata-library/met
 import { MetadataTableComponent } from "./metadata/detail/metadata-table/metadata-table.component"
 import { JobCodeListRowComponent } from "./metadata/job-codes/job-code-list-row/job-code-list-row.component"
 import { JobCodeTableComponent } from "./metadata/job-codes/job-code-table/job-code-table.component"
+import { NamedReferenceListRowComponent } from "./metadata/named-references/named-reference-list-row/named-reference-list-row.component"
+import { NamedReferenceTableComponent } from "./metadata/named-references/named-reference-table/named-reference-table.component"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -239,6 +241,8 @@ export function initializeApp(
     MetadataTableComponent,
     JobCodeListRowComponent,
     JobCodeTableComponent,
+    NamedReferenceListRowComponent,
+    NamedReferenceTableComponent,
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

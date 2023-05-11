@@ -1,0 +1,93 @@
+
+<div class="l-stickyBar">
+
+  <div class="l-container t-padding-large t-padding-top">
+
+    <!--    {{render '@listheading'}}-->
+    <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+      <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom">{{title}}</h2>
+      <p class="t-type-bodyLarge t-type-text3">
+        {{metadataCountLabel}}
+        found based on
+        <ng-template [ngIf]="matchingQuery !== undefined">
+          <ng-template ngFor let-q [ngForOf]="matchingQuery" let-last="last">
+            <span class="t-type-bodyLargeBold t-type-text1">{{q}}</span>
+            <ng-template [ngIf]="!last && matchingQuery.length > 1">, </ng-template>
+          </ng-template>
+          and
+        </ng-template>
+        your filters.
+        <ng-template [ngIf]="totalCount > 0">
+          Viewing {{firstRecordNo}}-{{lastRecordNo}}.
+        </ng-template>
+      </p>
+    </div>
+
+    <div class="t-margin-medium t-margin-bottom">
+      <app-blocking-loader [observables]="[resultsLoaded]">
+        <p class="t-visuallyHidden">Select one or more objects in the table, or select all in the table heading, then use the action menu to delete the selected ones.</p>
+        <app-job-code-table
+          *ngIf="isJobCodeDataSelected"
+          [allowSorting]="true"
+          [mobileSortOptions]="getMobileSortOptions()"
+          [items]="results.metadata"
+          [currentSort]="columnSort"
+          [rowActions]="rowActions()"
+          [selectAllCount]="getSelectAllCount()"
+          [selectAllEnabled]="getSelectAllEnabled()"
+          [clearSelected]="clearSelectedItemsFromTable.asObservable()"
+          (selectAllSelected)="handleSelectAll($event)"
+          (rowSelected)="handleNewSelection($event)"
+          (columnSorted)="handleHeaderColumnSort($event)"
+          (focusActionBar)="focusActionBar()"
+        ></app-job-code-table>
+
+        <app-collection-table
+          *ngIf="!isJobCodeDataSelected"
+          [allowSorting]="true"
+          [mobileSortOptions]="getMobileSortOptions()"
+          [items]="results.namedReferences"
+          [currentSort]="columnSort"
+          [rowActions]="rowActions()"
+          [selectAllCount]="getSelectAllCount()"
+          [selectAllEnabled]="getSelectAllEnabled()"
+          [clearSelected]="clearSelectedItemsFromTable.asObservable()"
+          (selectAllSelected)="handleSelectAll($event)"
+          (rowSelected)="handleNewSelection($event)"
+          (columnSorted)="handleHeaderColumnSort($event)"
+          (focusActionBar)="focusActionBar()"
+        ></app-collection-table>
+
+        <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">
+          <p class="m-emptyMessage-x-message">No collections found. Try modifying your search terms or filters.</p>
+        </app-empty-message>
+        <app-empty-message *ngIf="emptyResults && showLibraryEmptyMessage">
+          <p class="m-emptyMessage-x-message">0 Collections in library</p>
+          <p class="m-emptyMessage-x-message">The library is ready to fill with collections.</p>
+          <p class="m-emptyMessage-x-message">
+            <a routerLink="/collections/create">Create a collection</a>.
+          </p>
+        </app-empty-message>
+        <app-empty-message *ngIf="emptyResults && !showSearchEmptyMessage">
+          <p class="m-emptyMessage-x-message">No collections found. Try adjusting your filters.</p>
+        </app-empty-message>
+      </app-blocking-loader>
+    </div>
+
+    <app-pagination
+      [currentPage]="currentPageNo"
+      [totalPages]="totalPageCount"
+      (pageClicked)="handlePageClicked($event)"
+    ></app-pagination>
+
+  </div>
+
+  <div *ngIf="actionsVisible()" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
+    <div class="l-container l-container-tablet">
+      <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
+    </div>
+  </div>
+
+</div>
+
+

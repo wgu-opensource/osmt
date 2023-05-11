@@ -40,6 +40,8 @@ if (!exit) {
   main();
 }
 
+console.log("");
+
 
 /**
  * Driver for injecting tests into api collection.
@@ -200,11 +202,11 @@ function processEndpoint(item, path) {
     availableData[responseFileFull] = false;
     
     // Read API test files
-    const expectedResponse = fs.readFileSync(responseFileFull);
+    const expectedData = fs.readFileSync(responseFileFull);
     const testScript = fs.readFileSync(scriptFileFull);
 
     // Build combined test script
-    let combinedScript = `var expectedResponse = ${expectedResponse.toString()}`;
+    let combinedScript = `let expectedData = ${expectedData.toString()};`;
     combinedScript += '\n';
     combinedScript += testScript.toString();
 

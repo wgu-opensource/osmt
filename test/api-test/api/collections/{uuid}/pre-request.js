@@ -1,2 +1,2 @@
-var uuidId = pm.request.url.variables.indexOf('uuid');
-pm.request.url.variables.idx(uuidId).value = "ce1ccd5d-2ba8-496d-bdb6-87a278752a15";
+let uuidId = pm.request.url.variables.indexOf('uuid');
+pm.request.url.variables.idx(uuidId).value = "42d882da-aec3-4e0d-9582-c8559912a9c6";

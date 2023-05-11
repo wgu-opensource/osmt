@@ -1,7 +1,7 @@
-// var expectedData is injected from <response-type>.json
+// let expectedData is injected from <response-type>.json
 
-ppm.test("Check RSD log", function () {
-    var responseData = pm.response.json();
+pm.test("Check RSD log", function () {
+    let responseData = pm.response.json();
 
     pm.expect(responseData).to.have.deep.equal(expectedData);
 });

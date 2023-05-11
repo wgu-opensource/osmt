@@ -1,4 +1,4 @@
-var sizeId = pm.request.url.query.indexOf('query');
+let sizeId = pm.request.url.query.indexOf('query');
 if (sizeId < 0) {
   pm.request.url.query.add("query=15-121");
 }

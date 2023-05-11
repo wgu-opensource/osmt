@@ -8,7 +8,7 @@ import {ApiAdvancedSearch} from "../../richskill/service/rich-skill-search.servi
 import {ApiNamedReference, IAlignment, INamedReference, KeywordType} from "../../richskill/ApiSkill"
 import {Title} from "@angular/platform-browser";
 import {Whitelabelled} from "../../../whitelabel";
-import {IJobCode} from "../../job-codes/Jobcode";
+import {IJobCode} from "../../metadata/job-codes/Jobcode";
 
 @Component({
   selector: "app-advanced-search",
@@ -65,7 +65,7 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
     const category: string = form.category
     const keywords = (form.keywords && form.keywords.length > 0)
       ? form.keywords.map((v: INamedReference) => v) : undefined
-    // Necessary because of type mismatch between ApiSkill(IAlignment[]) & ApiAdvancedSearch(INamedReference[])
+    // Necessary because of type mismatch between ApiSkill(IAlignment[]) & ApiAdvancedSearch(NamedReference[])
     const standards = (form.standards && form.standards.length > 0)
       ? form.standards.map((v: IAlignment) => new ApiNamedReference({ name: v.skillName })) : undefined
     const certifications = (form.certifications && form.certifications.length > 0)
@@ -74,7 +74,7 @@ export class AdvancedSearchComponent extends Whitelabelled implements OnInit {
       ? form.occupations.map((v: IJobCode) => v.code) : undefined
     const employers = (form.employers && form.employers.length > 0)
       ? form.employers.map((v: INamedReference) => v) : undefined
-    // Necessary because of type mismatch between ApiSkill(IAlignment[]) & ApiAdvancedSearch(INamedReference[])
+    // Necessary because of type mismatch between ApiSkill(IAlignment[]) & ApiAdvancedSearch(NamedReference[])
     const alignments = (form.alignments && form.alignments.length > 0)
       ? form.alignments.map((v: IAlignment) => new ApiNamedReference({ name: v.skillName})) : undefined
     const collectionName = form.collectionName

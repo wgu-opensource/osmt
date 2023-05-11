@@ -1,5 +1,5 @@
 import {ApiNamedReference} from "../richskill/ApiSkill"
-import {ApiJobCode} from "../job-codes/Jobcode"
+import {ApiJobCode} from "../metadata/job-codes/Jobcode"
 
 export interface FilterDropdown {
   categories: ApiNamedReference[]

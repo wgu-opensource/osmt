@@ -32,7 +32,7 @@ export class InlineHeadingComponent {
 }
 
 @Component({
-  selector: "app-named-reference",
+  selector: "app-named-references",
   template: `
     <a *ngIf="hasBoth" href="{{ref.id}}" target="_blank">{{ref.name}}</a>
     <a *ngIf="hasOnlyUrl" href="{{ref.id}}" target="_blank">{{ref.id}}</a>

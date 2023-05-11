@@ -16,8 +16,8 @@ import {HeaderComponent} from "./navigation/header.component"
 import {FooterComponent} from "./navigation/footer.component"
 import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component"
 import {ToastComponent} from "./toast/toast.component"
-import {PillComponent} from "./core/pill/pill.component";
-import {PillGroupComponent} from "./core/pill/group/pill-group.component";
+import {PillComponent} from "./core/pill/pill.component"
+import {PillGroupComponent} from "./core/pill/group/pill-group.component"
 import {AuthService} from "./auth/auth-service"
 import {AuthGuard} from "./auth/auth.guard"
 import {CommoncontrolsComponent} from "./navigation/commoncontrols.component"
@@ -112,6 +112,10 @@ import { SizePaginationComponent } from "./table/skills-library-table/size-pagin
 import {OsmtTableModule} from "./table/osmt-table.module"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { MatMenuModule } from "@angular/material/menu"
+import { MetadataLibraryComponent } from "./metadata/detail/metadata-library/metadata-library.component"
+import { MetadataTableComponent } from "./metadata/detail/metadata-table/metadata-table.component"
+import { JobCodeListRowComponent } from "./metadata/job-codes/job-code-list-row/job-code-list-row.component"
+import { JobCodeTableComponent } from "./metadata/job-codes/job-code-table/job-code-table.component"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -231,6 +235,10 @@ export function initializeApp(
     CollectionPipe,
     ConvertToCollectionComponent,
     SizePaginationComponent,
+    MetadataLibraryComponent,
+    MetadataTableComponent,
+    JobCodeListRowComponent,
+    JobCodeTableComponent,
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

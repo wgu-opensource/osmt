@@ -50,7 +50,7 @@ describe("AuthGuard", () => {
     expect(authGuard.canActivate(routeMock, stateMock)).toEqual(false)
   })
 
-  it("should return true with undefined route.data.roles", () => {
+  it("should return true with undefined route.metadata.roles", () => {
     // Arrange
     const routeWithUndefinedRoles = Object.assign({}, ActivatedRouteSnapshot.prototype, {
       data: {roles: undefined}

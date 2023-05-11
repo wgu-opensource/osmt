@@ -21,7 +21,7 @@ export abstract class ManageRichSkillActionBarComponent implements OnInit {
 
   abstract reloadSkill: EventEmitter<void>
 
-  // Used in invisible labels to house the data to be added to clipboard
+  // Used in invisible labels to house the metadata to be added to clipboard
   abstract href: string
   abstract jsonClipboard: string
 

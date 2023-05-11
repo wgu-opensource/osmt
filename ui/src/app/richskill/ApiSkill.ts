@@ -1,4 +1,4 @@
-import {ApiJobCode, IJobCode} from "../job-codes/Jobcode"
+import {ApiJobCode, IJobCode} from "../metadata/job-codes/Jobcode"
 import {PublishStatus} from "../PublishStatus"
 
 

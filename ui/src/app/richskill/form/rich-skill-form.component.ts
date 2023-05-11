@@ -21,7 +21,7 @@ import {
 } from "../ApiSkillUpdate"
 import {AppConfig} from "../../app.config"
 import {urlValidator} from "../../validators/url.validator"
-import {IJobCode} from "src/app/job-codes/Jobcode"
+import {IJobCode} from "../../metadata/job-codes/Jobcode"
 import {ToastService} from "../../toast/toast.service"
 import {Title} from "@angular/platform-browser"
 import {HasFormGroup} from "../../core/abstract-form.component"

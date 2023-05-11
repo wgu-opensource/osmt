@@ -33,6 +33,7 @@ class NamedReferencesController @Autowired constructor(
         @RequestParam(required = true) type: String,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
+        @RequestParam(required = false) sort: String?
     ): HttpEntity<List<ApiKeyword>> {
         val keywordType = KeywordTypeEnum.forApiValue(type) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         val searchResults = keywordEsRepo.typeAheadSearch("", keywordType)
@@ -41,7 +42,7 @@ class NamedReferencesController @Autowired constructor(
 
     @GetMapping(RoutePaths.NAMED_REFERENCES_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("isAuthenticated()")
-    fun byUuid(
+    fun byId(
         @PathVariable id: Int,
     ): HttpEntity<ApiKeyword> {
         val keyword = keywordEsRepo.findById(id)

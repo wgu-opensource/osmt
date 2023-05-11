@@ -8,6 +8,7 @@ import edu.wgu.osmt.task.TaskResult
 import edu.wgu.osmt.task.TaskStatus
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.server.ResponseStatusException
 
 @Controller
 @Transactional
@@ -40,7 +42,7 @@ class JobCodeController @Autowired constructor(
 
     @GetMapping(RoutePaths.JOB_CODE_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("isAuthenticated()")
-    fun byUuid(
+    fun byId(
         @PathVariable id: Int,
     ): HttpEntity<ApiJobCode> {
         val jobCode = jobCodeEsRepo.findById(id)

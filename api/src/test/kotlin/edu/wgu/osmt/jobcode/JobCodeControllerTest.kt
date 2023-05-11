@@ -33,7 +33,7 @@ internal class JobCodeControllerTest @Autowired constructor(
             this.name = "my name"
             this.major = "my major"
         }.also { jobCodeEsRepo.save(it.toModel()) }
-        val result = jobCodeController.allPaginated(50, 0, null)
+        val result = jobCodeController.allPaginated(50, 0, "name.asc", "name")
         Assertions.assertThat(result.body).hasSizeGreaterThan(0)
     }
 

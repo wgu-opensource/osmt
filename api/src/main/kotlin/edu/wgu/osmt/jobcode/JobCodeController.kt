@@ -33,9 +33,10 @@ class JobCodeController @Autowired constructor(
     @GetMapping(RoutePaths.JOB_CODE_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("isAuthenticated()")
     fun allPaginated(
-        @RequestParam query: String,
-        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
-        @RequestParam(required = false, defaultValue = "0") from: Int,
+        @RequestParam(required = true) size: Int,
+        @RequestParam(required = true) from: Int,
+        @RequestParam(required = false) sort: String?,
+        @RequestParam(required = false) query: String?
     ): HttpEntity<List<ApiJobCode>> {
         val searchResults = jobCodeEsRepo.typeAheadSearch("", OffsetPageable(from, size, null))
         return ResponseEntity.status(200).body(searchResults.map { ApiJobCode.fromJobCode(it.content) }.toList())

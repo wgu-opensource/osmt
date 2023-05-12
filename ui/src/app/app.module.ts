@@ -112,7 +112,7 @@ import { SizePaginationComponent } from "./table/skills-library-table/size-pagin
 import {OsmtTableModule} from "./table/osmt-table.module"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { MatMenuModule } from "@angular/material/menu"
-import { MetadataLibraryComponent } from "./metadata/detail/metadata-library/metadata-library.component"
+import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
 import { MetadataTableComponent } from "./metadata/detail/metadata-table/metadata-table.component"
 import { JobCodeListRowComponent } from "./metadata/job-codes/job-code-list-row/job-code-list-row.component"
 import { JobCodeTableComponent } from "./metadata/job-codes/job-code-table/job-code-table.component"
@@ -237,7 +237,7 @@ export function initializeApp(
     CollectionPipe,
     ConvertToCollectionComponent,
     SizePaginationComponent,
-    MetadataLibraryComponent,
+    MetadataListComponent,
     MetadataTableComponent,
     JobCodeListRowComponent,
     JobCodeTableComponent,

@@ -32,7 +32,7 @@
           [mobileSortOptions]="getMobileSortOptions()"
           [items]="results.metadata"
           [currentSort]="columnSort"
-          [rowActions]="rowActions()"
+          [rowActions]=""
           [selectAllCount]="getSelectAllCount()"
           [selectAllEnabled]="getSelectAllEnabled()"
           [clearSelected]="clearSelectedItemsFromTable.asObservable()"
@@ -42,11 +42,11 @@
           (focusActionBar)="focusActionBar()"
         ></app-job-code-table>
 
-        <app-collection-table
+        <app-named-reference-table
           *ngIf="!isJobCodeDataSelected"
           [allowSorting]="true"
           [mobileSortOptions]="getMobileSortOptions()"
-          [items]="results.namedReferences"
+          [items]="results.metadata"
           [currentSort]="columnSort"
           [rowActions]="rowActions()"
           [selectAllCount]="getSelectAllCount()"
@@ -56,7 +56,7 @@
           (rowSelected)="handleNewSelection($event)"
           (columnSorted)="handleHeaderColumnSort($event)"
           (focusActionBar)="focusActionBar()"
-        ></app-collection-table>
+        ></app-named-reference-table>
 
         <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">
           <p class="m-emptyMessage-x-message">No collections found. Try modifying your search terms or filters.</p>

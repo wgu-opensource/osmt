@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MetadataLibraryComponent } from './metadata-library.component';
+import { MetadataListComponent } from './metadata-list.component';
 
 describe('ManageMetadataComponent', () => {
-  let component: MetadataLibraryComponent;
-  let fixture: ComponentFixture<MetadataLibraryComponent>;
+  let component: MetadataListComponent;
+  let fixture: ComponentFixture<MetadataListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MetadataLibraryComponent ]
+      declarations: [ MetadataListComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MetadataLibraryComponent);
+    fixture = TestBed.createComponent(MetadataListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

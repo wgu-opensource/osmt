@@ -2,7 +2,6 @@ package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
-import edu.wgu.osmt.api.model.ApiJobCode
 import edu.wgu.osmt.task.TaskResult
 import edu.wgu.osmt.task.TaskStatus
 import org.springframework.beans.factory.annotation.Autowired

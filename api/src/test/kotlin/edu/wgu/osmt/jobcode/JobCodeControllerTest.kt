@@ -2,7 +2,6 @@ package edu.wgu.osmt.jobcode
 
 import edu.wgu.osmt.BaseDockerizedTest
 import edu.wgu.osmt.HasDatabaseReset
-import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.JobCodeUpdate
 import org.assertj.core.api.Assertions

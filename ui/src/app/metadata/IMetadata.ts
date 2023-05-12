@@ -1,5 +1,5 @@
-import {ApiJobCode, IJobCode} from "./job-codes/Jobcode"
-import {ApiNamedReference} from "../richskill/ApiSkill"
+import {ApiJobCode} from "./job-codes/Jobcode"
+import {ApiNamedReference} from "./named-references/NamedReference"
 
 export interface IMetadata {
   apiJobCodes?: ApiJobCode[],

@@ -1,6 +1,7 @@
 import {MetadataType} from "../rsd-metadata.enum"
 
 export interface INamedReference {
+  id: string
   name?: string
   value: string
   type?: MetadataType
@@ -8,6 +9,7 @@ export interface INamedReference {
 }
 
 export class ApiNamedReference implements INamedReference {
+  id = ""
   framework = ""
   name = ""
   type = MetadataType.Category

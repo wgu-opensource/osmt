@@ -1,1 +1,56 @@
-<p>job-code-list-row works!</p>
+<ng-template [ngIf]="!!jobcode">
+
+  <th scope="row" id="{{id}}-header">
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink" routerLink="/job-codes/{{jobcode.code}}/manage">{{jobcode.targetNodeName}}</a>
+  </th>
+  <th scope="row" id="{{id}}-header">
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobcode.parents}}</a>
+  </th>
+  <th scope="row" id="{{id}}-header">
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobcode.major}}</a>
+  </th>
+  <th scope="row" id="{{id}}-header">
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobcode.minor}}</a>
+  </th>
+  <th scope="row" id="{{id}}-header">
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobcode.broad}}</a>
+  </th>
+  <th scope="row" id="{{id}}-header">
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobcode.detailed}}</a>
+  </th>
+  <th scope="row" id="{{id}}-header">
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobcode.frameworkName}}</a>
+  </th>
+
+  <td class="m-tableRow-x-actions">
+    <ng-template [ngIf]="singleRowAction" [ngIfElse]="dotActions">
+      <div *ngFor="let action of rowActions">
+        <button class="m-buttonSmall">
+          <span class="m-buttonSmall-x-text" (click)="handleClick(action)">{{action.label}}</span>
+        </button>
+      </div>
+    </ng-template>
+
+    <ng-template #dotActions>
+      <!-- Items must be grouped-->
+      <div>
+        <div class="m-checkbox">
+          <label class="t-visuallyHidden" for="{{id}}-toggle" aria-labelledby="{{id}}-header">Select</label>
+          <input type="checkbox" id="{{id}}-toggle" name="{{id}}-toggle" data-table-row="{{id}}" [checked]="isSelected" (click)="selected()">
+          <div class="m-checkbox-x-icon">
+            <svg class="t-icon" aria-hidden="true">
+              <use [attr.xlink:href]="checkIcon"></use>
+            </svg>
+          </div>
+        </div>
+        <div class="m-quickLinks">
+          <a (click)="focusActionBar.emit()">Actions menu.</a>
+        </div>
+      </div>
+
+      <app-dots-menu [actions]="rowActions" [data]="jobcode"></app-dots-menu>
+    </ng-template>
+
+  </td>
+
+</ng-template>

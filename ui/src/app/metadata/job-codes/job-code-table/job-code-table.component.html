@@ -1,1 +1,100 @@
-<p>job-code-table works!</p>
+<table class="l-table">
+  <caption> </caption>
+  <thead>
+    <tr class="m-tableHeader m-tableHeader-bare">
+      <th class="t-hidden-tabletMin" scope="col" colspan="3"><span class="t-visuallyHidden">Job Codes</span></th>
+      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Target Node Name</span></th>
+      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Parents</span></th>
+      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Major</span></th>
+      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Minor</span></th>
+      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Broad</span></th>
+      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Detailed</span></th>
+    </tr>
+    <tr class="m-tableHeader">
+      <td class="t-hidden-tabletMin" aria-hidden="true">
+        <app-label-with-select
+          label="JobCodes"
+          [options]="mobileSortOptions"
+          [currentSort]="currentSort"
+          (sortChanged)="mobileSortColumn($event)"
+        ></app-label-with-select>
+      </td>
+
+      <td class="t-hidden-tabletMax"  aria-hidden="true">
+        <app-label-with-filter
+          *ngIf="allowSorting; else noSortName"
+          label="Target Node Name"
+          [sortAscending]="getNameSort()"
+          (sortChanged)="sortColumn('name', $event)"
+        ></app-label-with-filter>
+        <ng-template #noSortName>
+          <span class="m-tableLabel">
+            <span class="m-tableLabel-x-text">Target Node Name</span>
+          </span>
+        </ng-template>
+      </td>
+
+      <td class="t-hidden-tabletMax" aria-hidden="true">
+        <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Parents</span>
+        </span>
+      </td>
+
+      <td class="t-hidden-tabletMax" aria-hidden="true">
+        <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Major</span>
+        </span>
+      </td>
+
+      <td class="t-hidden-tabletMax" aria-hidden="true">
+        <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Minor</span>
+        </span>
+      </td>
+
+      <td class="t-hidden-tabletMax" aria-hidden="true">
+        <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Broad</span>
+        </span>
+      </td>
+
+      <td class="t-hidden-tabletMax" aria-hidden="true">
+        <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Detailed</span>
+        </span>
+      </td>
+
+      <td class="t-hidden-tabletMax" aria-hidden="true">
+        <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Framework Name</span>
+        </span>
+      </td>
+
+      <td class="m-tableHeader-x-actions" aria-hidden="true">
+        <app-select-all
+          [selectAllEnabled]="selectAllEnabled"
+          (valueChange)="handleSelectAll($event)"
+          [totalCount]="getSelectAllCount()"
+          [totalPageCount]="items.length">
+        </app-select-all>
+      </td>
+
+    </tr>
+  </thead>
+
+  <tbody>
+  <tr
+    *ngFor="let jobCode of items; let i=index"
+    id="table-row-{{i}}"
+    class="m-tableRow"
+    [class.m-tableRow-is-selected]="isSelected(jobCode)"
+
+    app-job-code-list-row
+    [jobcode]="jobCode"
+    [isSelected]="isSelected(jobCode)"
+    [rowActions]="rowActions"
+    (rowSelected)="onRowToggle($event)"
+    (focusActionBar)="focusActionBar.emit()"
+  ></tr>
+  </tbody>
+</table>

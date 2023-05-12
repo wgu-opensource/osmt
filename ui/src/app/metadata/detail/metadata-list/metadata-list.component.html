@@ -4,6 +4,24 @@
   <div class="l-container t-padding-large t-padding-top">
 
     <!--    {{render '@listheading'}}-->
+    <div class="t-margin-medium t-margin-bottom">
+      <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
+        <div class="m-text">
+          <svg class="m-text-x-icon t-icon" (click)="clearSearch()">
+            <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
+          </svg>
+          <input type="text" placeholder="Search Metadata" [formControl]="searchForm.controls.search">
+        </div>
+
+        <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
+          {{totalCount}} <ng-template [ngIf]="results?.metadata.length > 1" [ngIfElse]="singular">Metadata contain</ng-template><ng-template #singular>Metadata containing</ng-template> the search term
+          <span class="t-type-bodyLargeBold t-type-text1">{{searchQuery}}</span>.
+          <ng-template [ngIf]="totalCount > 0">
+            Viewing {{firstRecordNo}}-{{lastRecordNo}}.
+          </ng-template>
+        </p>
+      </form>
+    </div>
     <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
       <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom">{{title}}</h2>
       <p class="t-type-bodyLarge t-type-text3">
@@ -30,7 +48,7 @@
           *ngIf="isJobCodeDataSelected"
           [allowSorting]="true"
           [mobileSortOptions]="getMobileSortOptions()"
-          [items]="results.metadata"
+          [items]="getJobCodes()"
           [currentSort]="columnSort"
           [rowActions]=""
           [selectAllCount]="getSelectAllCount()"
@@ -46,9 +64,9 @@
           *ngIf="!isJobCodeDataSelected"
           [allowSorting]="true"
           [mobileSortOptions]="getMobileSortOptions()"
-          [items]="results.metadata"
+          [items]="getNamedReferences()"
           [currentSort]="columnSort"
-          [rowActions]="rowActions()"
+          [rowActions]=""
           [selectAllCount]="getSelectAllCount()"
           [selectAllEnabled]="getSelectAllEnabled()"
           [clearSelected]="clearSelectedItemsFromTable.asObservable()"
@@ -58,18 +76,8 @@
           (focusActionBar)="focusActionBar()"
         ></app-named-reference-table>
 
-        <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">
-          <p class="m-emptyMessage-x-message">No collections found. Try modifying your search terms or filters.</p>
-        </app-empty-message>
-        <app-empty-message *ngIf="emptyResults && showLibraryEmptyMessage">
-          <p class="m-emptyMessage-x-message">0 Collections in library</p>
-          <p class="m-emptyMessage-x-message">The library is ready to fill with collections.</p>
-          <p class="m-emptyMessage-x-message">
-            <a routerLink="/collections/create">Create a collection</a>.
-          </p>
-        </app-empty-message>
         <app-empty-message *ngIf="emptyResults && !showSearchEmptyMessage">
-          <p class="m-emptyMessage-x-message">No collections found. Try adjusting your filters.</p>
+          <p class="m-emptyMessage-x-message">No Metadata found. Try adjusting your search criteria.</p>
         </app-empty-message>
       </app-blocking-loader>
     </div>
@@ -80,12 +88,6 @@
       (pageClicked)="handlePageClicked($event)"
     ></app-pagination>
 
-  </div>
-
-  <div *ngIf="actionsVisible()" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
-    <div class="l-container l-container-tablet">
-      <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
-    </div>
   </div>
 
 </div>

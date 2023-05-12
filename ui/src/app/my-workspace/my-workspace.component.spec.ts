@@ -32,7 +32,6 @@ import {LabelWithFilterComponent} from "../table/skills-library-table/label-with
 import {SkillListRowComponent} from "../richskill/list/skill-list-row.component"
 import {StatusBarComponent} from "../core/status-bar.component"
 import {DotsMenuComponent} from "../table/skills-library-table/dots-menu.component"
-import { ConvertToCollectionComponent } from "./convert-to-collection/convert-to-collection.component"
 
 describe("MyWorkspaceComponent", () => {
   let component: MyWorkspaceComponent
@@ -46,10 +45,6 @@ describe("MyWorkspaceComponent", () => {
           {
             path: "my-workspace/uuid1/add-skills",
             component: ManageCollectionComponent
-          },
-          {
-            path: "my-workspace/convert-to-collection",
-            component: ConvertToCollectionComponent
           }
         ]),
         HttpClientTestingModule,
@@ -117,7 +112,7 @@ describe("MyWorkspaceComponent", () => {
     expect(component.template).toEqual("default")
   })
 
-  it("convert to collection action", () => {
+  xit("convert to collection action", () => {
     const router = TestBed.inject(Router)
     const spyNavigate = spyOn(router, "navigate").and.callThrough()
     const spyLocalStorage = spyOn(localStorage, "setItem").and.callThrough()

@@ -1,0 +1,10 @@
+<div class="app-metadata-selector" *ngIf="isVisible()">
+  <label>
+    Select a type of Metadata
+  </label>
+  <select name="metadata-selection" #size (change)="onValueChange(+size.value)" [ngModel]="currentSelection" class="m-text select">
+    <option [value]="value" *ngFor="let value of MetadataType | keyvalue">
+      {{ value.key }}
+    </option>
+  </select>
+</div>

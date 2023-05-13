@@ -20,7 +20,7 @@
     <td class="t-hidden-tabletMax"  aria-hidden="true">
       <app-label-with-filter
         *ngIf="allowSorting; else noSortName"
-        label="Target Node Name"
+        label="Name"
         [sortAscending]="getNameSort()"
         (sortChanged)="sortColumn('name', $event)"
       ></app-label-with-filter>

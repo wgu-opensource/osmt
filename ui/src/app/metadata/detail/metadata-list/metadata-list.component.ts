@@ -21,6 +21,8 @@ export class MetadataListComponent extends Whitelabelled {
   selectedMetadataType = MetadataType.Category
   matchingQuery?: string[]
 
+  sizeControl?: FormControl
+
   searchForm = new FormGroup({
     search: new FormControl("")
   })
@@ -36,17 +38,17 @@ export class MetadataListComponent extends Whitelabelled {
   ], 8)
 
   sampleNamedReference = new PaginatedMetadata([
-    new ApiNamedReference({framework: "framework1", name: "name1", type: MetadataType.Category, value: "value1"}),
-    new ApiNamedReference({framework: "framework2", name: "name2", type: MetadataType.Category, value: "value2"}),
-    new ApiNamedReference({framework: "framework3", name: "name3", type: MetadataType.Category, value: "value3"}),
-    new ApiNamedReference({framework: "framework4", name: "name4", type: MetadataType.Category, value: "value4"}),
-    new ApiNamedReference({framework: "framework5", name: "name5", type: MetadataType.Category, value: "value5"}),
-    new ApiNamedReference({framework: "framework6", name: "name6", type: MetadataType.Category, value: "value6"}),
-    new ApiNamedReference({framework: "framework7", name: "name7", type: MetadataType.Category, value: "value7"}),
-    new ApiNamedReference({framework: "framework8", name: "name8", type: MetadataType.Category, value: "value8"}),
+    new ApiNamedReference({id: "id1", framework: "framework1", name: "name1", type: MetadataType.Category, value: "value1"}),
+    new ApiNamedReference({id: "id2", framework: "framework2", name: "name2", type: MetadataType.Category, value: "value2"}),
+    new ApiNamedReference({id: "id3", framework: "framework3", name: "name3", type: MetadataType.Category, value: "value3"}),
+    new ApiNamedReference({id: "id4", framework: "framework4", name: "name4", type: MetadataType.Category, value: "value4"}),
+    new ApiNamedReference({id: "id5", framework: "framework5", name: "name5", type: MetadataType.Category, value: "value5"}),
+    new ApiNamedReference({id: "id6", framework: "framework6", name: "name6", type: MetadataType.Category, value: "value6"}),
+    new ApiNamedReference({id: "id7", framework: "framework7", name: "name7", type: MetadataType.Category, value: "value7"}),
+    new ApiNamedReference({id: "id8", framework: "framework8", name: "name8", type: MetadataType.Category, value: "value8"}),
   ], 8)
 
-  results: PaginatedMetadata = this.sampleJobCodeResult
+  results: PaginatedMetadata = this.sampleNamedReference
   columnSort: ApiSortOrder = ApiSortOrder.NameAsc
 
   from = 0

@@ -13,13 +13,13 @@ export class MetadataSelectorComponent {
   @Input()
   control?: FormControl
   @Input()
-  currentSelection = MetadataType.Category
+  currentSelection: string = MetadataType.Category
 
   protected readonly MetadataType = MetadataType
   @Input()
   isVisible: () => boolean = () => false
 
-  onValueChange(value: MetadataType): void {
+  onValueChange(value: string): void {
     this.currentSelection = value
   }
 }

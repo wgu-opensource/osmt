@@ -92,7 +92,15 @@ export class MetadataListComponent extends Whitelabelled {
 
   get metadataCountLabel(): string {
     if (this.totalCount > 0)  {
-      return `${this.totalCount} ${this.selectedMetadataType}${this.totalCount > 1 ? "s" : ""}`
+      if (this.selectedMetadataType != MetadataType.Category) {
+        return `${this.totalCount} ${this.selectedMetadataType}${this.totalCount > 1 ? "s" : ""}`
+      }
+      else if (this.totalCount > 1) {
+        return `${this.totalCount} categories`
+      }
+      else {
+        return `${this.totalCount} category`
+      }
     }
     return `0 ${this.selectedMetadataType}s`
   }

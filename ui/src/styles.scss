@@ -4,6 +4,12 @@
   opacity: 0.4;
 }
 
+/* [START] Adjust heading text handling for app-collection-public-detail-card https://github.com/wgu-opensource/osmt/issues/381 */
+h2.t-type-heading1 {
+  overflow-wrap: anywhere;
+}
+/* [END] Adjust heading text handling for app-collection-public-detail-card */
+
 /* [START] Needed for search control refactor until design system is updated */
 .m-search .m-search-x-controls:before,
 .m-search .m-search-x-input:valid+.m-search-x-controls:before {

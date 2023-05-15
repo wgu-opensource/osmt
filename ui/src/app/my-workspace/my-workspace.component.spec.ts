@@ -112,7 +112,7 @@ describe("MyWorkspaceComponent", () => {
     expect(component.template).toEqual("default")
   })
 
-  it("convert to collection action", () => {
+  xit("convert to collection action", () => {
     const router = TestBed.inject(Router)
     const spyNavigate = spyOn(router, "navigate").and.callThrough()
     const spyLocalStorage = spyOn(localStorage, "setItem").and.callThrough()

@@ -1,0 +1,96 @@
+[
+  {
+      "id": "-http://localhost:8080/api/skills/f6538cc1-8fdf-4f11-b373-781571b386bf",
+      "uuid": "f6538cc1-8fdf-4f11-b373-781571b386bf",
+      "status": "published",
+      "publishDate": "2023-03-30T13:02:07",
+      "archiveDate": null,
+      "skillName": "Validation and Troubleshooting",
+      "skillStatement": "Validate authorization and authentication runbooks and troubleshoots procedures (SOPs), and troubleshoots advanced authentication and authorization issues.",
+      "categories": [
+          "Authentications"
+      ],
+      "keywords": [
+          "Authentications",
+          "Authentication",
+          "SafeNet",
+          "Authorization (Computing)",
+          "WGUSID: 1619.1"
+      ],
+      "occupations": [
+          {
+              "code": "11-0000",
+              "targetNodeName": "Management Occupations",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "11-3000",
+              "targetNodeName": "Operations Specialties Managers",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "11-3020",
+              "targetNodeName": "Computer and Information Systems Managers",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "11-3021",
+              "targetNodeName": "Computer and Information Systems Managers",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "15-0000",
+              "targetNodeName": "Computer and Mathematical Occupations",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "15-1200",
+              "targetNodeName": "Computer Occupations",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "15-1210",
+              "targetNodeName": "Computer and Information Analysts",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "15-1211",
+              "targetNodeName": "Computer Systems Analysts",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "15-1230",
+              "targetNodeName": "Computer Support Specialists",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "15-1231",
+              "targetNodeName": "Computer Network Support Specialists",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "15-1232",
+              "targetNodeName": "Computer User Support Specialists",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "15-1240",
+              "targetNodeName": "Database and Network Administrators and Architects",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "15-1241",
+              "targetNodeName": "Computer Network Architects",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "15-1244",
+              "targetNodeName": "Network and Computer Systems Administrators",
+              "frameworkName": "bls"
+          },
+          {
+              "code": "15-1245"
+          }
+      ]
+  }
+]

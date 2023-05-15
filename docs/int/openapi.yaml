@@ -83,15 +83,12 @@ paths:
       tags:
         - Collections
       responses:
-        '200':
-          description: OK
+        '202':
+          description: Accepted
           content:
-            text/csv:
+            application/json:
               schema:
-                type: string
-                example: >-
-                  id,type,authors,skillName,skillStatement,alignments,keywords,categories,occupations
-                  https://osmt.example.com/skills/9cd84455-2086-4f41-bcac-6d518beeb6ac,RichSkillDescriptor,"https://osmt.example.com/organization","Document Saving","The learner copies and saves documents to their local machine.","https://skillsource.example.com/base-skills/simple-compuhacking","documents, file operations, computer basics","Productivity Software","13-0000, 13-2000, 13-2010, 13-2030, 13-2040, 13-2060, 13-2080"
+                $ref: '#/components/schemas/TaskResult'
 
   /api/collections/{uuid}/xlsx:
     parameters:
@@ -102,13 +99,12 @@ paths:
       tags:
         - Collections
       responses:
-        '200':
-          description: OK
+        '202':
+          description: Accepted
           content:
-            application/vnd.ms-excel:
+            application/json:
               schema:
-                type: string
-                format: binary
+                $ref: '#/components/schemas/TaskResult'
 
   /api/collections/{uuid}/log:
     parameters:

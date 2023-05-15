@@ -30,7 +30,7 @@
       ></app-label-with-filter>
     </td>
 
-    <td class="m-tableHeader-x-actions" aria-hidden="true">
+    <td *ngIf="showRowActions" class="m-tableHeader-x-actions" aria-hidden="true">
       <app-select-all
         [selectAllEnabled]="selectAllEnabled"
         (valueChange)="handleSelectAll($event)"
@@ -57,6 +57,7 @@
       [skill]="skill"
       [isSelected]="isSelected(skill)"
       [rowActions]="rowActions"
+      [showActions]="showRowActions"
       (rowSelected)="onRowToggle($event)"
       (focusActionBar)="focusActionBar.emit()"
     ></tr>

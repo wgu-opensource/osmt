@@ -5,7 +5,7 @@ import {IAuthService} from "./auth/iauth-service"
 import {ApiTaskResult, ITaskResult} from "./task/ApiTaskResult"
 import {PublishStatus} from "./PublishStatus"
 import {ApiSortOrder} from "./richskill/ApiSkill"
-import {ApiSearch} from "./richskill/service/rich-skill-search.service"
+import {ApiSearch, PaginatedSkills} from "./richskill/service/rich-skill-search.service"
 import {map, share} from "rxjs/operators"
 import {Router} from "@angular/router"
 import {Location} from "@angular/common"
@@ -17,6 +17,25 @@ interface ApiGetParams {
     [param: string]: string | string[];
   },
   body?: unknown
+}
+
+export interface IRelatedSkillsService<TEntityId> {
+  getRelatedSkills(
+    entityId: TEntityId,
+    size: number,
+    from: number,
+    statusFilters: Set<PublishStatus>,
+    sort?: ApiSortOrder
+  ): Observable<PaginatedSkills>
+
+  searchRelatedSkills(
+    entityId: TEntityId,
+    size: number,
+    from: number,
+    statusFilters: Set<PublishStatus>,
+    sort?: ApiSortOrder,
+    search?: ApiSearch
+  ): Observable<PaginatedSkills>
 }
 
 export abstract class AbstractService {
@@ -143,7 +162,8 @@ export abstract class AbstractService {
     size: number | undefined,
     from: number | undefined,
     filterByStatuses?: Set<PublishStatus>,
-    sort?: ApiSortOrder): any {
+    sort?: any
+  ): any {
 
     const params: any = {
       sort

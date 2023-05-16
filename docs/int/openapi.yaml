@@ -1151,8 +1151,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
 
-
-
 components:
   schemas:
     AdvancedSearch:

@@ -40,6 +40,4 @@ describe("ManageMetadataComponent", () => {
     component.results = new PaginatedMetadata([new ApiJobCode(), new ApiJobCode()], 2)
     expect(component.emptyResults).toBeFalse()
   })
-
-
 })

@@ -1,25 +1,25 @@
-<ng-template [ngIf]="!!jobcode">
+<ng-template [ngIf]="!!jobCode">
 
   <th scope="row" id="{{id}}-header">
-    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink" routerLink="/job-codes/{{jobcode.code}}/manage">{{jobcode.targetNodeName}}</a>
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink" routerLink="/job-codes/{{jobCode.code}}/manage">{{jobCode.targetNodeName}}</a>
   </th>
   <th scope="row" id="{{id}}-header">
-    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobcode.parents}}</a>
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.parents}}</a>
   </th>
   <th scope="row" id="{{id}}-header">
-    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobcode.major}}</a>
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.major}}</a>
   </th>
   <th scope="row" id="{{id}}-header">
-    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobcode.minor}}</a>
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.minor}}</a>
   </th>
   <th scope="row" id="{{id}}-header">
-    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobcode.broad}}</a>
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.broad}}</a>
   </th>
   <th scope="row" id="{{id}}-header">
-    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobcode.detailed}}</a>
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.detailed}}</a>
   </th>
   <th scope="row" id="{{id}}-header">
-    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobcode.frameworkName}}</a>
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.frameworkName}}</a>
   </th>
 
   <td class="m-tableRow-x-actions">
@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <app-dots-menu [actions]="rowActions" [data]="jobcode"></app-dots-menu>
+    <app-dots-menu [actions]="rowActions" [data]="jobCode"></app-dots-menu>
 
   </td>
 

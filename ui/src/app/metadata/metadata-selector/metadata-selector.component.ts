@@ -1,7 +1,6 @@
-import {Component, Input} from "@angular/core"
-import {FormControl} from "@angular/forms"
-import {MetadataType} from "../rsd-metadata.enum"
-import {Meta} from "@angular/platform-browser"
+import { Component, Input } from "@angular/core"
+import { FormControl } from "@angular/forms"
+import { MetadataType } from "../rsd-metadata.enum"
 
 @Component({
   selector: "app-metadata-selector",
@@ -22,6 +21,5 @@ export class MetadataSelectorComponent {
   onValueChange(value: string): void {
     this.control?.patchValue(value)
     this.currentSelection = value
-    console.log(this.control?.value)
   }
 }

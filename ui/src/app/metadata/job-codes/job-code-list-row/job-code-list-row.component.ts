@@ -1,15 +1,15 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
-import {TableActionDefinition} from "../../../table/skills-library-table/has-action-definitions"
-import {SvgHelper, SvgIcon} from "../../../core/SvgHelper"
-import {ApiJobCode, IJobCode} from "../Jobcode"
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core"
+import { TableActionDefinition } from "../../../table/skills-library-table/has-action-definitions"
+import { SvgHelper, SvgIcon } from "../../../core/SvgHelper"
+import { ApiJobCode, IJobCode } from "../Jobcode"
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: "[app-job-code-list-row]",
   templateUrl: "./job-code-list-row.component.html"
 })
-export class JobCodeListRowComponent implements OnInit {
-  @Input() jobcode?: ApiJobCode
+export class JobCodeListRowComponent {
+  @Input() jobCode?: ApiJobCode
   @Input() id = "job-code-list-row"
   @Input() isSelected = false
   @Input() rowActions: TableActionDefinition[] = []
@@ -20,19 +20,12 @@ export class JobCodeListRowComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
   selected(): void {
-    this.rowSelected.emit(this.jobcode)
-  }
-
-  get singleRowAction(): boolean {
-    return this.rowActions.length === 1
+    this.rowSelected.emit(this.jobCode)
   }
 
   handleClick(action: TableActionDefinition): boolean {
-    action.fire(this.jobcode)
+    action.fire(this.jobCode)
     return false
   }
 

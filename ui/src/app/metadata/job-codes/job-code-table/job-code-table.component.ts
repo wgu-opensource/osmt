@@ -1,7 +1,7 @@
-import {AfterViewInit, Component, Input, QueryList, ViewChildren} from "@angular/core"
-import {AbstractTableComponent} from "../../../table/abstract-table.component"
-import {JobCodeListRowComponent} from "../job-code-list-row/job-code-list-row.component"
-import {IJobCode} from "../Jobcode"
+import { AfterViewInit, Component, Input, QueryList, ViewChildren } from "@angular/core"
+import { AbstractTableComponent } from "../../../table/abstract-table.component"
+import { JobCodeListRowComponent } from "../job-code-list-row/job-code-list-row.component"
+import { IJobCode } from "../Jobcode"
 
 @Component({
   selector: "app-job-code-table",

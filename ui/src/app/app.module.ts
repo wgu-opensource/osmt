@@ -113,7 +113,6 @@ import {OsmtTableModule} from "./table/osmt-table.module"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { MatMenuModule } from "@angular/material/menu"
 import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
-import { MetadataTableComponent } from "./metadata/detail/metadata-table/metadata-table.component"
 import { JobCodeListRowComponent } from "./metadata/job-codes/job-code-list-row/job-code-list-row.component"
 import { JobCodeTableComponent } from "./metadata/job-codes/job-code-table/job-code-table.component"
 import { NamedReferenceListRowComponent } from "./metadata/named-references/named-reference-list-row/named-reference-list-row.component"
@@ -239,7 +238,6 @@ export function initializeApp(
     ConvertToCollectionComponent,
     SizePaginationComponent,
     MetadataListComponent,
-    MetadataTableComponent,
     JobCodeListRowComponent,
     JobCodeTableComponent,
     NamedReferenceListRowComponent,

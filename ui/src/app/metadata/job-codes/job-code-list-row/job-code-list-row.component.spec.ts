@@ -1,25 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing"
+import { JobCodeListRowComponent } from "./job-code-list-row.component"
 
-import { JobCodeListRowComponent } from './job-code-list-row.component';
-
-describe('JobCodeListRowComponent', () => {
-  let component: JobCodeListRowComponent;
-  let fixture: ComponentFixture<JobCodeListRowComponent>;
+describe("JobCodeListRowComponent", () => {
+  let component: JobCodeListRowComponent
+  let fixture: ComponentFixture<JobCodeListRowComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ JobCodeListRowComponent ]
     })
-    .compileComponents();
-  });
+    .compileComponents()
+  })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(JobCodeListRowComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(JobCodeListRowComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  it("should create", () => {
+    expect(component).toBeTruthy()
+  })
+})

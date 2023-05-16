@@ -1,7 +1,7 @@
-import {AfterViewInit, Component, Input, QueryList, ViewChildren} from "@angular/core"
-import {AbstractTableComponent} from "../../../table/abstract-table.component"
-import {NamedReferenceListRowComponent} from "../named-reference-list-row/named-reference-list-row.component"
-import {INamedReference} from "../NamedReference"
+import { AfterViewInit, Component, Input, QueryList, ViewChildren } from "@angular/core"
+import { AbstractTableComponent } from "../../../table/abstract-table.component"
+import { NamedReferenceListRowComponent } from "../named-reference-list-row/named-reference-list-row.component"
+import { INamedReference } from "../NamedReference"
 
 @Component({
   selector: "app-named-reference-table",

@@ -8,6 +8,7 @@ import {TableActionBarComponent} from "../../../table/skills-library-table/table
 import {Whitelabelled} from "../../../../whitelabel"
 import {ApiNamedReference, INamedReference} from "../../named-references/NamedReference"
 import {FormControl, FormGroup} from "@angular/forms"
+import {TableActionDefinition} from "../../../table/skills-library-table/has-action-definitions"
 
 @Component({
   selector: "app-metadata-list",
@@ -18,10 +19,17 @@ export class MetadataListComponent extends Whitelabelled {
   @ViewChild(TableActionBarComponent) actionBar!: TableActionBarComponent
 
   title = "Metadata"
-  selectedMetadataType = MetadataType.Category
+  handleSelectedMetadata?: IJobCode[]|INamedReference[]
+  selectedMetadataType = "category"
   matchingQuery?: string[]
 
-  sizeControl?: FormControl
+  typeControl: FormControl = new FormControl(this.selectedMetadataType)
+  columnSort: ApiSortOrder = ApiSortOrder.NameAsc
+
+  from = 0
+  size = 50
+  showSearchEmptyMessage = false
+  resultsLoaded: Observable<PaginatedMetadata> | undefined
 
   searchForm = new FormGroup({
     search: new FormControl("")
@@ -37,7 +45,7 @@ export class MetadataListComponent extends Whitelabelled {
     new ApiJobCode({code: "code8", targetNodeName: "targetNodeName8", frameworkName: "frameworkName8", url: "url8", broad: "broad8"}),
   ], 8)
 
-  sampleNamedReference = new PaginatedMetadata([
+  sampleNamedReferenceResult = new PaginatedMetadata([
     new ApiNamedReference({id: "id1", framework: "framework1", name: "name1", type: MetadataType.Category, value: "value1"}),
     new ApiNamedReference({id: "id2", framework: "framework2", name: "name2", type: MetadataType.Category, value: "value2"}),
     new ApiNamedReference({id: "id3", framework: "framework3", name: "name3", type: MetadataType.Category, value: "value3"}),
@@ -48,18 +56,22 @@ export class MetadataListComponent extends Whitelabelled {
     new ApiNamedReference({id: "id8", framework: "framework8", name: "name8", type: MetadataType.Category, value: "value8"}),
   ], 8)
 
-  results: PaginatedMetadata = this.sampleNamedReference
-  columnSort: ApiSortOrder = ApiSortOrder.NameAsc
-
-  from = 0
-  size = 50
-  selectedMetadata?: IJobCode[]|INamedReference[]
-  showSearchEmptyMessage = false
-  resultsLoaded: Observable<PaginatedMetadata> | undefined
+  results: PaginatedMetadata = this.sampleJobCodeResult
 
   clearSelectedItemsFromTable = new Subject<void>()
   constructor() {
     super()
+    this.typeControl.valueChanges.subscribe(
+      value => {
+        this.selectedMetadataType = value
+        if (this.selectedMetadataType === MetadataType.JobCode) {
+          this.results = this.sampleJobCodeResult
+        }
+        else {
+          this.results = this.sampleNamedReferenceResult
+        }
+      })
+    this.searchForm.get("search")?.valueChanges.subscribe( value => this.matchingQuery = value)
   }
 
   clearSearch(): boolean {
@@ -77,7 +89,7 @@ export class MetadataListComponent extends Whitelabelled {
   handleSelectAll(selectAllChecked: boolean): void {}
 
   handleNewSelection(selected: IJobCode[]|INamedReference[]): void {
-    this.selectedMetadata = selected
+    this.handleSelectedMetadata = selected
   }
 
   handleHeaderColumnSort(sort: ApiSortOrder): void {
@@ -92,7 +104,7 @@ export class MetadataListComponent extends Whitelabelled {
 
   get metadataCountLabel(): string {
     if (this.totalCount > 0)  {
-      if (this.selectedMetadataType != MetadataType.Category) {
+      if (this.selectedMetadataType !== MetadataType.Category) {
         return `${this.totalCount} ${this.selectedMetadataType}${this.totalCount > 1 ? "s" : ""}`
       }
       else if (this.totalCount > 1) {
@@ -122,18 +134,12 @@ export class MetadataListComponent extends Whitelabelled {
     return this.results?.metadata.length ?? 0
   }
 
-  getMobileSortOptions(): {[s: string]: string} {
-    return {
-      "metadata.asc": "Metadata Name (ascending)",
-      "metadata.desc": "Metadata Name (descending)",
-    }
-  }
-
   get emptyResults(): boolean {
     return this.curPageCount < 1
   }
   get isJobCodeDataSelected(): boolean {
-    return  this.selectedMetadataType === MetadataType.JobCode
+    console.log(this.selectedMetadataType === MetadataType.JobCode.toString())
+    return this.selectedMetadataType === MetadataType.JobCode
   }
 
   getSelectAllCount(): number {
@@ -167,8 +173,16 @@ export class MetadataListComponent extends Whitelabelled {
     this.navigateToPage(newPageNo)
   }
 
-  // tslint:disable-next-line:use-lifecycle-interface
-  ngOnInit(): void {
+  rowActions(): TableActionDefinition[] {
+    return [
+      new TableActionDefinition({
+        label: `Delete`,
+        callback: (action: TableActionDefinition, skill?: IJobCode|INamedReference) => this.handleClickDeleteItem(action, skill),
+      })
+    ]
   }
 
+  // tslint:disable-next-line:typedef
+  private handleClickDeleteItem(action: TableActionDefinition, skill: IJobCode|INamedReference | undefined) {
+  }
 }

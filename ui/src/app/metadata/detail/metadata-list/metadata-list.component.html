@@ -11,7 +11,7 @@
             <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
           </svg>
           <input type="text" placeholder="Search Metadata" [formControl]="searchForm.controls.search">
-          <app-metadata-selector [isVisible]="getSelectAllEnabled" [control]="sizeControl" [currentSelection]="selectedMetadataType">
+          <app-metadata-selector [isVisible]="getSelectAllEnabled" [control]="typeControl" [currentSelection]="selectedMetadataType">
           </app-metadata-selector>
         </div>
       </form>
@@ -20,15 +20,11 @@
       <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom">{{title}}</h2>
       <p class="t-type-bodyLarge t-type-text3">
         {{metadataCountLabel}}
-        found based on
-        <ng-template [ngIf]="matchingQuery !== undefined">
-          <ng-template ngFor let-q [ngForOf]="matchingQuery" let-last="last">
-            <span class="t-type-bodyLargeBold t-type-text1">{{q}}</span>
-            <ng-template [ngIf]="!last && matchingQuery.length > 1">, </ng-template>
-          </ng-template>
-          and
-        </ng-template>
-        your filters.
+
+          <span *ngIf="matchingQuery">
+            found based on
+            query: "{{matchingQuery}}"
+          </span>
         <ng-template [ngIf]="totalCount > 0">
           Viewing {{firstRecordNo}}-{{lastRecordNo}}.
         </ng-template>
@@ -37,14 +33,13 @@
 
     <div class="t-margin-medium t-margin-bottom">
       <app-blocking-loader [observables]="[resultsLoaded]">
-        <p class="t-visuallyHidden">Select one or more objects in the table, or select all in the table heading, then use the action menu to delete the selected ones.</p>
+        <p class="t-visuallyHidden">Select one or more records in the table, or select all in the table heading, then use the action menu to delete the selected ones.</p>
         <app-job-code-table
           *ngIf="isJobCodeDataSelected"
           [allowSorting]="true"
-          [mobileSortOptions]="getMobileSortOptions()"
           [items]="getJobCodes()"
           [currentSort]="columnSort"
-          [rowActions]=""
+          [rowActions]="rowActions()"
           [selectAllCount]="getSelectAllCount()"
           [selectAllEnabled]="getSelectAllEnabled()"
           [clearSelected]="clearSelectedItemsFromTable.asObservable()"
@@ -57,10 +52,9 @@
         <app-named-reference-table
           *ngIf="!isJobCodeDataSelected"
           [allowSorting]="true"
-          [mobileSortOptions]="getMobileSortOptions()"
           [items]="getNamedReferences()"
           [currentSort]="columnSort"
-          [rowActions]=""
+          [rowActions]="rowActions()"
           [selectAllCount]="getSelectAllCount()"
           [selectAllEnabled]="getSelectAllEnabled()"
           [clearSelected]="clearSelectedItemsFromTable.asObservable()"

@@ -3,12 +3,12 @@ February 28, 2023
 ## Enhancements
 OSMT 2.5.0 brings 2 new feature enhancements
 
-- Addition of a "My Workspace" feature, allowing a collection-like place for a user to save and sort RSDs. RSDs can be added and removed the the Workspace, and the Workspace can be converted to a real Collection, and exported as a CSV without creating a real Collection. The Workspace can also be reset (emptied).
+- Addition of a "My Workspace" feature, allowing a collection-like place for a user to save and sort RSDs. RSDs can be added to and removed from the Workspace, and the Workspace can be converted to a real Collection, and exported as a CSV without creating a real Collection. The Workspace can also be reset (emptied).
 
 - Collections now have a "description" field. The description is indexed and searchable.
 
 - An RSD now has a "Copy Public URL" button, to simplify coping the canonical URL for that RSD.
--
+
 ## Configuration Changes
 > **Warning**
 > 2.5.0 has database changes that will be applied by Flyway, if that is enabled.
@@ -90,7 +90,7 @@ This release brings several defect fixes, and completes the feature enhancement 
   - CVE-2022-42889
   - CVE-2022-42004
 - Added development as default local Angular configuration
-  - The Maven build continues to to a production Angular build, but the npm commands now default to development
+  - The Maven build continues to run a production Angular build, but the npm commands now default to development
 
 ------------------------------------------------------------------------
 # Announcing OSMT Release 2.0.0

@@ -77,7 +77,7 @@ This release brings several defect fixes, and completes the feature enhancement 
 ## Defect fixes:
 - RSD result counts greater than 10,000 are now accurately reports in the UI
 - BLS and O*NET job code hierarchies have been corrected.
-  - This was an import issue, and to benefit from this fix, you will need to reimport the 2018 BLS Job Code metadata, and reindex your ElasticSearch instace. See https://github.com/wgu-opensource/osmt/discussions/251 for more details about using this fix.
+  - This was an import issue, and to benefit from this fix, you will need to reimport the 2018 BLS Job Code metadata, and reindex your ElasticSearch instance. See https://github.com/wgu-opensource/osmt/discussions/251 for more details about using this fix.
 - The back button now returns from an RSD detail to the originating search results. Previously, the back button return the user to the RSD full library.
 - Resolved issue where all result RSD were added to a collection (instead of just the selected RSDs)
 - Fixed a field mapping for CollectionDoc. This would have resulted in nulls in JSON

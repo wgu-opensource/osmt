@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.1.0
 
 info:
   title: OSMT API
@@ -1069,7 +1069,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/NamedReferenceResponse'
+                  $ref: '#/components/schemas/NamedReferenceResult'
     post:
       summary: Define a Named Reference
       description: Create a new Named Reference in OSMT
@@ -1082,7 +1082,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/NamedReferenceRequest'
+                $ref: '#/components/schemas/NamedReferenceUpdate'
       responses:
         '200':
           description: OK
@@ -1091,7 +1091,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/NamedReferenceResponse'
+                  $ref: '#/components/schemas/NamedReferenceResult'
         '400':
           $ref: '#/components/responses/BadRequest'
 
@@ -1109,7 +1109,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NamedReferenceResponse'
+                $ref: '#/components/schemas/NamedReferenceResult'
 
   /api/metadata/named-references/{id}/remove:
     parameters:
@@ -1140,14 +1140,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NamedReferenceRequest'
+              $ref: '#/components/schemas/NamedReferenceUpdate'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NamedReferenceResponse'
+                $ref: '#/components/schemas/NamedReferenceResult'
         '400':
           $ref: '#/components/responses/BadRequest'
 
@@ -1523,7 +1523,7 @@ components:
         name:
           type: string
 
-    NamedReferenceResponse:
+    NamedReferenceResult:
       type: object
       properties:
         id:
@@ -1538,7 +1538,7 @@ components:
         framework:
           type: string
 
-    NamedReferenceRequest:
+    NamedReferenceUpdate:
       type: object
       properties:
         name:

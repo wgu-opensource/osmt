@@ -3,9 +3,9 @@ import {HttpClient, HttpResponse} from "@angular/common/http"
 import { Router } from "@angular/router"
 import { Location } from "@angular/common"
 import { AuthService } from "../auth/auth-service"
-import {AbstractService, ApiGetParams} from "../abstract.service"
-import {Observable} from "rxjs"
-import {share} from "rxjs/operators"
+import { AbstractService, ApiGetParams } from "../abstract.service"
+import { Observable } from "rxjs"
+import { share } from "rxjs/operators"
 
 @Injectable({ providedIn: "root" })
 export abstract class AbstractDataService extends AbstractService {
@@ -15,8 +15,7 @@ export abstract class AbstractDataService extends AbstractService {
   }
 
   /**
-   * Perform a delete request with a json response.  The resulting promise will return the whole
-   * deleted response object
+   * Perform a delete request.
    *
    *   const {body, headers, status, type, url} = response
    *
@@ -35,8 +34,7 @@ export abstract class AbstractDataService extends AbstractService {
   }
 
   /**
-   * Perform a patch request with a json response.  The resulting promise will return the whole
-   * modified response object
+   * Perform a patch request.
    *
    *   const {body, headers, status, type, url} = response
    *

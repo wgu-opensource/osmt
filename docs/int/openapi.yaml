@@ -944,12 +944,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
 
-  /api/metadata/job-codes:
+  /api/metadata/jobcodes:
     get:
       summary: Get all Job Codes
       description: Returns all Job Codes
       tags:
-        - MetaData
+        - Metadata
       parameters:
         - $ref: '#/components/parameters/PaginationSizeQueryRequired'
         - $ref: '#/components/parameters/PaginationFromQueryRequired'
@@ -970,7 +970,7 @@ paths:
       summary: Define a Job Code
       description: Create a new Job Code in OSMT
       tags:
-        - MetaData
+        - Metadata
       requestBody:
         required: true
         content:
@@ -991,14 +991,14 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/metadata/job-codes/{id}:
+  /api/metadata/jobcodes/{id}:
     parameters:
       - $ref: '#/components/parameters/IdPath'
     get:
       summary: Retrieve a Job Code
       description: Retrieve all the information about a Job Code
       tags:
-        - MetaData
+        - Metadata
       responses:
         '200':
           description: OK
@@ -1006,11 +1006,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JobCode'
+
+  /api/metadata/jobcodes/{id}/remove:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
     delete:
       summary: Remove a Job Code
       description: Delete a Job Code from OSMT
       tags:
-        - MetaData
+        - Metadata
       responses:
         '200':
           description: OK
@@ -1018,11 +1022,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskResult'
+
+  /api/metadata/jobcodes/{id}/update:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
     post:
       summary: Update a Job Code
       description: Update an existing Job Code
       tags:
-        - MetaData
+        - Metadata
       requestBody:
         required: true
         content:
@@ -1038,12 +1046,13 @@ paths:
                 $ref: '#/components/schemas/JobCode'
         '400':
           $ref: '#/components/responses/BadRequest'
+
   /api/metadata/named-references:
     get:
       summary: Get all Named References of a type
       description: Returns all Named References of a specific Type
       tags:
-        - MetaData
+        - Metadata
       parameters:
         - $ref: '#/components/parameters/NameReferenceType'
         - $ref: '#/components/parameters/PaginationSizeQueryRequired'
@@ -1065,7 +1074,7 @@ paths:
       summary: Define a Named Reference
       description: Create a new Named Reference in OSMT
       tags:
-        - MetaData
+        - Metadata
       requestBody:
         required: true
         content:
@@ -1093,7 +1102,7 @@ paths:
       summary: Retrieve a Named Reference
       description: Retrieve all the information about a Named Reference
       tags:
-        - MetaData
+        - Metadata
       responses:
         '200':
           description: OK
@@ -1101,11 +1110,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NamedReferenceResponse'
+
+  /api/metadata/named-references/{id}/remove:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
     delete:
       summary: Remove a Named Reference
       description: Delete a Named Reference from OSMT
       tags:
-        - MetaData
+        - Metadata
       responses:
         '200':
           description: OK
@@ -1113,11 +1126,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TaskResult'
+
+  /api/metadata/named-references/{id}/update:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
     post:
       summary: Update a Named Reference
       description: Update an existing Named Reference
       tags:
-        - MetaData
+        - Metadata
       requestBody:
         required: true
         content:
@@ -1444,23 +1461,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobCode'
-    MetaDataPatch:
-      type: array
-      items:
-        $ref: '#/components/schemas/JSONPatchRequestReplace'
-    JSONPatchRequestReplace:
-      type: object
-      additionalProperties: false
-      required:
-        - value
-        - op
-        - path
-      properties:
-        field:
-          description: A JSON Field representation.
-          type: string
-        value:
-          description: The value to replace.
+
     JobCodeLevel:
       type: string
       enum:
@@ -1970,6 +1971,23 @@ components:
             $ref: '#/components/schemas/ErrorResult'
 
   parameters:
+    IdPath:
+      name: id
+      in: path
+      description: id of a resource
+      required: true
+      schema:
+        type: string
+        format: id
+
+    NameReferenceType:
+      name: type
+      in: query
+      description: type of the Named Reference
+      required: true
+      schema:
+        type: string
+
     PaginationFromQuery:
       name: from
       in: query
@@ -2040,21 +2058,7 @@ components:
       schema:
         type: string
         format: uuid
-    IdPath:
-      name: id
-      in: path
-      description: id of a resource
-      required: true
-      schema:
-        type: string
-        format: id
-    NameReferenceType:
-      name: type
-      in: query
-      description: type of the Named Reference
-      required: true
-      schema:
-        type: string
+
   headers:
     Link:
       description: |

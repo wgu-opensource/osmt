@@ -7,7 +7,7 @@ OSMT 2.5.0 brings 2 new feature enhancements
 
 - Collections now have a "description" field. The description is indexed and searchable.
 
-- An RSD now has a "Copy Public URL" button, to simplify coping the canonical URL for that RSD.
+- An RSD now has a "Copy Public URL" button, to simplify copying the canonical URL for that RSD.
 
 ## Configuration Changes
 > **Warning**

@@ -1054,7 +1054,7 @@ paths:
       tags:
         - Metadata
       parameters:
-        - $ref: '#/components/parameters/NameReferenceType'
+        - $ref: '#/components/parameters/NameReferenceTypeQueryRequired'
         - $ref: '#/components/parameters/PaginationSizeQueryRequired'
         - $ref: '#/components/parameters/PaginationFromQueryRequired'
         - $ref: '#/components/parameters/SortOrderQuery'
@@ -1980,10 +1980,10 @@ components:
         type: string
         format: id
 
-    NameReferenceType:
+    NameReferenceTypeQueryRequired:
       name: type
       in: query
-      description: type of the Named Reference
+      description: Type of the Named Reference
       required: true
       schema:
         type: string

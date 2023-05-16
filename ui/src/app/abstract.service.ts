@@ -165,7 +165,8 @@ export abstract class AbstractService {
     size: number | undefined,
     from: number | undefined,
     filterByStatuses?: Set<PublishStatus>,
-    sort?: ApiSortOrder): any {
+    sort?: any
+  ): any {
 
     const params: any = {
       sort

@@ -48,7 +48,7 @@ describe("JobCodeService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const path = "api/metadata/job-codes?sort=name.asc&size=3&from=0"
+    const path = "api/metadata/jobcodes?sort=name.asc&size=3&from=0"
     const testData: PaginatedJobCodes = createMockPaginatedJobCodes(3, 10)
 
     // Act
@@ -75,7 +75,7 @@ describe("JobCodeService", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const id = "12345"
-    const path = "api/metadata/job-codes/" + id
+    const path = "api/metadata/jobcodes/" + id
     const testData: ApiJobCode = new ApiJobCode(createMockJobcode(42, "my jobcode name", id))
 
     // Act
@@ -99,7 +99,7 @@ describe("JobCodeService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const path = "api/metadata/job-codes"
+    const path = "api/metadata/jobcodes"
     const testData = [
       new ApiJobCode(createMockJobcode())
     ]
@@ -136,7 +136,7 @@ describe("JobCodeService", () => {
     const testData = new ApiJobCode(createMockJobcode())
     const expected = testData
     const id = expected.code
-    const path = "api/metadata/job-codes/" + id
+    const path = "api/metadata/jobcodes/" + id
     const input = new ApiJobCodeUpdate({
       code: expected.code,
       targetNodeName: expected.targetNodeName,
@@ -157,7 +157,7 @@ describe("JobCodeService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path + "/update")
     expect(req.request.method).toEqual("POST")
     req.flush(testData)
   })
@@ -169,7 +169,7 @@ describe("JobCodeService", () => {
     result$.subscribe((data: ApiBatchResult) => {
       expect(RouterData.commands).toEqual([]) // No Errors
     })
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + `/api/metadata/job-codes/${apiTaskResultForDeleteJobCode.uuid}`)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + `/api/metadata/jobcodes/${apiTaskResultForDeleteJobCode.uuid}/remove`)
     expect(req.request.method).toEqual("DELETE")
     expect(req.request.headers.get("Accept")).toEqual("application/json")
   }))

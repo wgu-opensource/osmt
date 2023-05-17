@@ -24,7 +24,7 @@ export abstract class AbstractDataService extends AbstractService {
    * @param params Json blob defining path params
    */
   delete<T>({path, headers, params}: ApiGetParams): Observable<HttpResponse<T>> {
-    const observable =  this.httpClient.delete<T>(this.buildUrl(path),  {
+    const observable =  this.httpClient.delete<T>(this.buildUrl(path + "/remove"),  {
       headers: this.wrapHeaders(headers),
       params,
       observe: "response"}).pipe(share())
@@ -44,7 +44,7 @@ export abstract class AbstractDataService extends AbstractService {
    * @param body Json blob defining the changes to be applied to the object
    */
   patch<T>({path, headers, params, body}: ApiGetParams): Observable<HttpResponse<T>> {
-    const observable =  this.httpClient.patch<T>(this.buildUrl(path), body, {
+    const observable =  this.httpClient.patch<T>(this.buildUrl(path + "/update"), body, {
       headers: this.wrapHeaders(headers),
       params,
       observe: "response"}).pipe(share())

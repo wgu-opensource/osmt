@@ -16,7 +16,7 @@ import { AuthService } from "../../auth/auth-service"
 })
 export class JobCodeService extends AbstractDataService{
 
-  private baseServiceUrl = "api/metadata/job-codes"
+  private baseServiceUrl = "api/metadata/jobcodes"
 
   constructor(protected httpClient: HttpClient, protected authService: AuthService,
               protected router: Router, protected location: Location) {
@@ -64,7 +64,7 @@ export class JobCodeService extends AbstractDataService{
   updateJobCode(id: string, updateObject: IJobCodeUpdate): Observable<ApiJobCode> {
     const errorMsg = `Could not find JobCode with id: [${id}]`
     return this.post<IJobCode>({
-      path: `${this.baseServiceUrl}/${id}`,
+      path: `${this.baseServiceUrl}/${id}/update`,
       body: updateObject
     })
       .pipe(share())
@@ -73,7 +73,7 @@ export class JobCodeService extends AbstractDataService{
 
   deleteJobCode(id: string): Observable<ApiTaskResult> {
     return this.delete<ApiTaskResult>( {
-      path: `${this.baseServiceUrl}/${id}`,
+      path: `${this.baseServiceUrl}/${id}/remove`,
       headers: new HttpHeaders({
         Accept: "application/json"
       })

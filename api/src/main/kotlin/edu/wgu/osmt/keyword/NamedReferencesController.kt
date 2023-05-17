@@ -34,20 +34,20 @@ class NamedReferencesController @Autowired constructor(
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
         @RequestParam(required = false) sort: String?
-    ): HttpEntity<List<ApiKeyword>> {
+    ): HttpEntity<List<NamedReference>> {
         val keywordType = KeywordTypeEnum.forApiValue(type) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         val searchResults = keywordEsRepo.typeAheadSearch("", keywordType)
-        return ResponseEntity.status(200).body(searchResults.map { ApiKeyword.fromKeyword(it.content) }.toList())
+        return ResponseEntity.status(200).body(searchResults.map { NamedReference.fromKeyword(it.content) }.toList())
     }
 
     @GetMapping(RoutePaths.NAMED_REFERENCES_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("isAuthenticated()")
     fun byId(
         @PathVariable id: Long,
-    ): HttpEntity<ApiKeyword> {
+    ): HttpEntity<NamedReference> {
         val keyword = keywordRepository.findById(id)
         if (keyword != null) {
-            return ResponseEntity.status(200).body(ApiKeyword.fromKeyword(keyword.toModel()))
+            return ResponseEntity.status(200).body(NamedReference.fromKeyword(keyword.toModel()))
         } else {
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
@@ -57,10 +57,10 @@ class NamedReferencesController @Autowired constructor(
     @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun createNamedReference(
         @RequestBody keywords: List<ApiKeywordUpdate>
-    ): HttpEntity<List<ApiKeyword>> {
+    ): HttpEntity<List<NamedReference>> {
         return ResponseEntity.status(200).body(
             keywords.map {
-                ApiKeyword(id = 1, name = it.name, value = it.value, type = it.type, framework = it.framework)
+                NamedReference(id = 1, name = it.name, value = it.value, type = it.type, framework = it.framework)
             }
         )
     }
@@ -70,8 +70,8 @@ class NamedReferencesController @Autowired constructor(
     fun updateNamedReference(
         @PathVariable id: Int,
         @RequestBody apiKeyword: ApiKeywordUpdate
-    ): HttpEntity<ApiKeyword> {
-        return ResponseEntity.status(200).body(ApiKeyword(134, "my name", "my value", KeywordTypeEnum.Keyword, "my framework"))
+    ): HttpEntity<NamedReference> {
+        return ResponseEntity.status(200).body(NamedReference(134, "my name", "my value", KeywordTypeEnum.Keyword, "my framework"))
     }
 
     @DeleteMapping(RoutePaths.NAMED_REFERENCES_REMOVE)

@@ -14,7 +14,7 @@ data class ApiKeywordUpdate(
 ) {
 }
 
-data class ApiKeyword(
+data class NamedReference(
     val id: Long?,
     val name: String?,
     val value: String?,
@@ -23,8 +23,8 @@ data class ApiKeyword(
 ) {
 
     companion object factory {
-        fun fromKeyword(keyword: Keyword): ApiKeyword {
-            return ApiKeyword(keyword.id, keyword.value, keyword.value, keyword.type, keyword.framework)
+        fun fromKeyword(keyword: Keyword): NamedReference {
+            return NamedReference(keyword.id, keyword.value, keyword.value, keyword.type, keyword.framework)
         }
     }
 

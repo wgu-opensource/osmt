@@ -15,25 +15,6 @@ export abstract class AbstractDataService extends AbstractService {
   }
 
   /**
-   * Perform a delete request.
-   *
-   *   const {body, headers, status, type, url} = response
-   *
-   * @param path The relative path to the endpoint
-   * @param headers Json blob defining headers
-   * @param params Json blob defining path params
-   */
-  delete<T>({path, headers, params}: ApiGetParams): Observable<HttpResponse<T>> {
-    const observable =  this.httpClient.delete<T>(this.buildUrl(path + "/remove"),  {
-      headers: this.wrapHeaders(headers),
-      params,
-      observe: "response"}).pipe(share())
-    observable
-      .subscribe(() => {}, (err) => { this.redirectToLogin(err) })
-    return observable
-  }
-
-  /**
    * Perform a patch request.
    *
    *   const {body, headers, status, type, url} = response

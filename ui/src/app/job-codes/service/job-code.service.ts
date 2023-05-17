@@ -7,7 +7,7 @@ import { ApiSortOrder } from "../../richskill/ApiSkill"
 import { Observable } from "rxjs"
 import { map, share } from "rxjs/operators"
 import { ApiJobCode, IJobCode, IJobCodeUpdate } from "../Jobcode"
-import { ApiTaskResult } from "../../task/ApiTaskResult"
+import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
 import { ApiBatchResult } from "../../richskill/ApiBatchResult"
 import { AuthService } from "../../auth/auth-service"
 
@@ -71,19 +71,19 @@ export class JobCodeService extends AbstractDataService{
       .pipe(map(({body}) => new ApiJobCode(this.safeUnwrapBody(body, errorMsg))))
   }
 
-  deleteJobCode(id: string): Observable<ApiTaskResult> {
-    return this.delete<ApiTaskResult>( {
-      path: `${this.baseServiceUrl}/${id}/remove`,
-      headers: new HttpHeaders({
-        Accept: "application/json"
-      })
-    })
-      .pipe(share())
-      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
-  }
-
   deleteJobCodeWithResult(id: string): Observable<ApiBatchResult> {
     return this.pollForTaskResult<ApiBatchResult>(this.deleteJobCode(id))
+  }
+
+  deleteJobCode(id: string): Observable<ApiTaskResult> {
+    return this.httpClient.delete<ITaskResult>(this.buildUrl("api/metadata/jobcodes/" + id + "/remove"), {
+      headers: this.wrapHeaders(new HttpHeaders({
+          Accept: "application/json"
+        }
+      ))
+    })
+      .pipe(share())
+      .pipe(map((body) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }
 }
 

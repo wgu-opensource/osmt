@@ -1361,6 +1361,33 @@ components:
         name:
           type: string
 
+    NamedReferenceResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+        name:
+          type: string
+        value:
+          type: string
+        type:
+          $ref: '#/components/schemas/KeywordType'
+        framework:
+          type: string
+
+    NamedReferenceUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        type:
+          $ref: '#/components/schemas/KeywordType'
+        framework:
+          type: string
+
     PublishStatus:
       type: string
       enum:
@@ -1555,7 +1582,7 @@ components:
           - code: '15-1231'
             targetNodeName: Computer Network Support Specialists
             frameworkName: bls
-            parents: 
+            parents:
               - code: '15-0000'
                 targetNodeName: Computer and Mathematical Occupations
                 level: Major
@@ -1749,7 +1776,7 @@ components:
           type: string
         status:
           type: string
-          enum: 
+          enum:
             - Processing
             - Ready
         apiResultPath:
@@ -1782,6 +1809,23 @@ components:
             $ref: '#/components/schemas/ErrorResult'
 
   parameters:
+    IdPath:
+      name: id
+      in: path
+      description: id of a resource
+      required: true
+      schema:
+        type: string
+        format: id
+
+    NameReferenceTypeQueryRequired:
+      name: type
+      in: query
+      description: Type of the Named Reference
+      required: true
+      schema:
+        type: string
+
     PaginationFromQuery:
       name: from
       in: query
@@ -1902,6 +1946,8 @@ tags:
     description: Collections of RSDs
   - name: Export
     description: Export OSMT data
+  - name: Metadata
+    description: Skills Metadata
   - name: Search
     description: Search for OSMT resources
   - name: Skills

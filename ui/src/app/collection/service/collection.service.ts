@@ -30,6 +30,9 @@ import {ApiCollection, ICollection, ICollectionUpdate} from "../ApiCollection"
 import {Router} from "@angular/router"
 import {Location} from "@angular/common"
 
+/**
+ * @deprecated
+ */
 @Injectable({
   providedIn: "root"
 })

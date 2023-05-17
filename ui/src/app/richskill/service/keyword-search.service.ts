@@ -9,6 +9,9 @@ import {ApiJobCode, IJobCode} from "../../job-codes/Jobcode"
 import {Router} from "@angular/router";
 import {Location} from "@angular/common";
 
+/**
+ * @deprecated
+ */
 @Injectable({
   providedIn: "root"
 })

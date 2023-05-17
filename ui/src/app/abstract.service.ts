@@ -54,6 +54,8 @@ export abstract class AbstractService {
     @Inject("BASE_API") baseApi: string
   ) {
     this.baseApi = baseApi
+    protected location: Location
+  ) {
   }
 
   redirectToLogin(error: any): void {

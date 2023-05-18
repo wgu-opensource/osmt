@@ -1151,101 +1151,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Collection'
 
-  /api/metadata/job-codes:
-    get:
-      summary: Get all Job Codes
-      description: Returns all Job Codes
-      tags:
-        - Job Codes
-      parameters:
-        - $ref: '#/components/parameters/PaginationSizeQueryRequired'
-        - $ref: '#/components/parameters/PaginationFromQueryRequired'
-        - $ref: '#/components/parameters/SortOrderQuery'
-      responses:
-        '200':
-          description: OK
-          headers:
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/JobCode'
-    post:
-      summary: Define a Job Code
-      description: Create a new Job Code in OSMT
-      tags:
-        - Job Codes
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/JobCode'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/JobCode'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-
-  /api/metadata/job-codes/{id}:
-    parameters:
-      - $ref: '#/components/parameters/IdPath'
-    get:
-      summary: Retrieve a Job Code
-      description: Retrieve all the information about a Job Code
-      tags:
-        - Job Codes
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JobCode'
-    delete:
-      summary: Remove a Job Code
-      description: Delete a Job Code from OSMT
-      tags:
-        - Job Codes
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskResult'
-    patch:
-      summary: Update a Job Code
-      description: Update an existing Job Code
-      tags:
-        - Job Codes
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/JobCodePatch'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JobCode'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-
 components:
   schemas:
     AdvancedSearch:
@@ -1556,23 +1461,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobCode'
-    JobCodePatch:
-      type: array
-      items:
-        $ref: '#/components/schemas/JSONPatchRequestReplace'
-    JSONPatchRequestReplace:
-      type: object
-      additionalProperties: false
-      required:
-        - value
-        - op
-        - path
-      properties:
-        field:
-          description: A JSON Field representation.
-          type: string
-        value:
-          description: The value to replace.
+
     JobCodeLevel:
       type: string
       enum:
@@ -2169,14 +2058,6 @@ components:
       schema:
         type: string
         format: uuid
-    IdPath:
-      name: id
-      in: path
-      description: id of a resource
-      required: true
-      schema:
-        type: string
-        format: id
 
   headers:
     Link:

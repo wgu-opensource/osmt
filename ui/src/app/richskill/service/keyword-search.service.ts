@@ -5,7 +5,7 @@ import {AuthService} from "../../auth/auth-service"
 import {Observable} from "rxjs"
 import {ApiNamedReference, INamedReference, KeywordType} from "../ApiSkill"
 import {map} from "rxjs/operators"
-import {ApiJobCode, IJobCode} from "../../metadata/job-codes/Jobcode"
+import { ApiJobCode, IJobCode } from "../../metadata/job-codes/Jobcode"
 import {Router} from "@angular/router";
 import {Location} from "@angular/common";
 

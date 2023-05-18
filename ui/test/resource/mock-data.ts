@@ -316,7 +316,7 @@ export const mockTaskResultForExportSearch: ApiTaskResult = {
 export const csvContent = {body: "value1,value2,value3"}
 
 export const apiTaskResultForDeleteJobCode: ApiTaskResult = {
-  uuid: "5ca6ea7f-e008-44fc-9108-eda19b01fa6a",
+  uuid: "5ca6ea7f-e008-44fc-9108-eda19b01fa6b",
   status: "Processing",
   contentType: "application/json",
   id: "/api/results/batch/5ca6ea7f-e008-44fc-9108-eda19b01fa6a"

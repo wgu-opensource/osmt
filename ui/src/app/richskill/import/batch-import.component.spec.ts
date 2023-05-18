@@ -328,7 +328,7 @@ function makeResults(): ParseResult {
                 "RSD Name": "",
                 Authors: "Data and Data Store Access",
                 "Skill Statement": ".NET Framework",
-                Categories: "Access metadata and metadata stores using the .NET Framework.",
+                Categories: "Access data and data stores using the .NET Framework.",
                 Keywords: ".NET Framework; ADO.NET; Language Integrated Query (LINQ); WCF Data Services; XML",
                 Standards: "15-0000",
                 Certifications: "15-1200",

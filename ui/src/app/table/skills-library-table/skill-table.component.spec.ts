@@ -3,7 +3,7 @@ import {SkillTableComponent} from "./skill-table.component"
 import {createMockSkillSummary} from "../../../../test/resource/mock-data"
 import {PublishStatus} from "../../PublishStatus"
 import {ApiSkillSummary, ISkillSummary} from "../../richskill/ApiSkillSummary"
-import {IJobCode} from "../../metadata/job-codes/Jobcode"
+import { IJobCode } from "../../metadata/job-codes/Jobcode"
 
 describe("SkillTableComponent", () => {
 

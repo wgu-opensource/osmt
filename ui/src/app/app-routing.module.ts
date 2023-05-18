@@ -25,7 +25,7 @@ import {BatchImportComponent} from "./richskill/import/batch-import.component"
 import { ActionByRoles, ButtonAction } from "./auth/auth-roles"
 import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
 import {ConvertToCollectionComponent} from "./my-workspace/convert-to-collection/convert-to-collection.component"
-import {MetadataListComponent} from "./metadata/detail/metadata-list/metadata-list.component"
+import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
 
 
 const routes: Routes = [

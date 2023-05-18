@@ -1,5 +1,5 @@
 import { Component, ViewChild } from "@angular/core"
-import { MetadataType } from "../../rsd-metadata.enum"
+import { FormControl, FormGroup } from "@angular/forms"
 import { Observable, Subject } from "rxjs"
 import { PaginatedMetadata } from "../../IMetadata"
 import { ApiSortOrder } from "../../../richskill/ApiSkill"
@@ -7,10 +7,10 @@ import { ApiJobCode, IJobCode } from "../../job-codes/Jobcode"
 import { TableActionBarComponent } from "../../../table/skills-library-table/table-action-bar.component"
 import { Whitelabelled } from "../../../../whitelabel"
 import { ApiNamedReference, INamedReference } from "../../named-references/NamedReference"
-import { FormControl, FormGroup } from "@angular/forms"
 import { TableActionDefinition } from "../../../table/skills-library-table/has-action-definitions"
-import {ButtonAction} from "../../../auth/auth-roles"
-import {AuthService} from "../../../auth/auth-service"
+import { ButtonAction } from "../../../auth/auth-roles"
+import { AuthService } from "../../../auth/auth-service"
+import { MetadataType } from "../../rsd-metadata.enum"
 
 @Component({
   selector: "app-metadata-list",

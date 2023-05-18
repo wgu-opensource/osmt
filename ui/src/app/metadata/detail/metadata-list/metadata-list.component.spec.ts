@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-
 import { MetadataListComponent } from "./metadata-list.component"
-import {MetadataType} from "../../rsd-metadata.enum"
-import {PaginatedMetadata} from "../../IMetadata"
-import {ApiJobCode} from "../../job-codes/Jobcode"
+import { MetadataType } from "../../rsd-metadata.enum"
+import { PaginatedMetadata } from "../../IMetadata"
+import { ApiJobCode } from "../../job-codes/Jobcode"
 import { AuthServiceStub } from "@test/resource/mock-stubs";
 import { AuthService } from "../../../auth/auth-service";
 

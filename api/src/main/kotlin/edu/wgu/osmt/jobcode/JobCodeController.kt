@@ -3,12 +3,15 @@ package edu.wgu.osmt.jobcode;
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiJobCode
+import edu.wgu.osmt.api.model.JobCodeSortEnum
 import edu.wgu.osmt.api.model.JobCodeUpdate
+import edu.wgu.osmt.api.model.KeywordSortEnum
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.task.TaskResult
 import edu.wgu.osmt.task.TaskStatus
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -38,8 +41,11 @@ class JobCodeController @Autowired constructor(
         @RequestParam(required = false) sort: String?,
         @RequestParam(required = false) query: String?
     ): HttpEntity<List<ApiJobCode>> {
-        val searchResults = jobCodeEsRepo.typeAheadSearch("", OffsetPageable(from, size, null))
-        return ResponseEntity.status(200).body(searchResults.map { ApiJobCode.fromJobCode(it.content) }.toList())
+        val sortEnum: JobCodeSortEnum = JobCodeSortEnum.forValueOrDefault(sort)
+        val searchResults = jobCodeEsRepo.typeAheadSearch(query, OffsetPageable(from, size, sortEnum.sort))
+        val responseHeaders = HttpHeaders()
+        responseHeaders.add("X-Total-Count", searchResults.totalHits.toString())
+        return ResponseEntity.status(200).headers(responseHeaders).body(searchResults.map { ApiJobCode.fromJobCode(it.content) }.toList())
     }
 
     @GetMapping(RoutePaths.JOB_CODE_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])

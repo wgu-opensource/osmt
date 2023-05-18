@@ -5,11 +5,11 @@ import { Router } from "@angular/router"
 import { Observable } from "rxjs"
 import { map, share } from "rxjs/operators"
 import { ApiJobCode, IJobCode, IJobCodeUpdate } from "../Jobcode"
-import { AuthService } from "../../auth/auth-service"
-import { AbstractDataService } from "../../data/abstract-data.service"
-import { ApiBatchResult } from "../../richskill/ApiBatchResult"
-import { ApiSortOrder } from "../../richskill/ApiSkill"
-import { ApiTaskResult, ITaskResult } from "../../task/ApiTaskResult"
+import { AuthService } from "../../../auth/auth-service";
+import { AbstractDataService } from "../../abstract-data.service";
+import { ApiSortOrder } from "../../../richskill/ApiSkill";
+import { ApiBatchResult } from "../../../richskill/ApiBatchResult";
+import { ApiTaskResult, ITaskResult } from "../../../task/ApiTaskResult";
 
 @Injectable({
   providedIn: "root"

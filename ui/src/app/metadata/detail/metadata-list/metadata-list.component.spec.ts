@@ -4,6 +4,8 @@ import { MetadataListComponent } from "./metadata-list.component"
 import {MetadataType} from "../../rsd-metadata.enum"
 import {PaginatedMetadata} from "../../IMetadata"
 import {ApiJobCode} from "../../job-codes/Jobcode"
+import { AuthServiceStub } from "@test/resource/mock-stubs";
+import { AuthService } from "../../../auth/auth-service";
 
 describe("ManageMetadataComponent", () => {
   let component: MetadataListComponent
@@ -11,7 +13,10 @@ describe("ManageMetadataComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MetadataListComponent ]
+      declarations: [ MetadataListComponent ],
+      providers: [
+        { provide: AuthService, useClass: AuthServiceStub },
+      ]
     })
     .compileComponents()
   })

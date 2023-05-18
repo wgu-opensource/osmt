@@ -9,6 +9,8 @@ import { Whitelabelled } from "../../../../whitelabel"
 import { ApiNamedReference, INamedReference } from "../../named-references/NamedReference"
 import { FormControl, FormGroup } from "@angular/forms"
 import { TableActionDefinition } from "../../../table/skills-library-table/has-action-definitions"
+import {ButtonAction} from "../../../auth/auth-roles"
+import {AuthService} from "../../../auth/auth-service"
 
 @Component({
   selector: "app-metadata-list",
@@ -30,19 +32,20 @@ export class MetadataListComponent extends Whitelabelled {
   size = 50
   showSearchEmptyMessage = false
   resultsLoaded: Observable<PaginatedMetadata> | undefined
+  canDeleteMetadata = this.authService.isEnabledByRoles(ButtonAction.MetadataAdmin)
 
   searchForm = new FormGroup({
     search: new FormControl("")
   })
   sampleJobCodeResult = new PaginatedMetadata([
-    new ApiJobCode({code: "code1", targetNodeName: "targetNodeName1", frameworkName: "frameworkName1", url: "url1", broad: "broad1"}),
-    new ApiJobCode({code: "code2", targetNodeName: "targetNodeName2", frameworkName: "frameworkName2", url: "url2", broad: "broad2"}),
-    new ApiJobCode({code: "code3", targetNodeName: "targetNodeName3", frameworkName: "frameworkName3", url: "url3", broad: "broad3"}),
-    new ApiJobCode({code: "code4", targetNodeName: "targetNodeName4", frameworkName: "frameworkName4", url: "url4", broad: "broad4"}),
-    new ApiJobCode({code: "code5", targetNodeName: "targetNodeName5", frameworkName: "frameworkName5", url: "url5", broad: "broad5"}),
-    new ApiJobCode({code: "code6", targetNodeName: "targetNodeName6", frameworkName: "frameworkName6", url: "url6", broad: "broad6"}),
-    new ApiJobCode({code: "code7", targetNodeName: "targetNodeName7", frameworkName: "frameworkName7", url: "url7", broad: "broad7"}),
-    new ApiJobCode({code: "code8", targetNodeName: "targetNodeName8", frameworkName: "frameworkName8", url: "url8", broad: "broad8"}),
+    new ApiJobCode({code: "code1", targetNodeName: "targetNodeName1", frameworkName: "frameworkName1", url: "url1", broad: "broad1", level: "Broad"}),
+    new ApiJobCode({code: "code2", targetNodeName: "targetNodeName2", frameworkName: "frameworkName2", url: "url2", broad: "broad1", level: "Broad"}),
+    new ApiJobCode({code: "code3", targetNodeName: "targetNodeName3", frameworkName: "frameworkName3", url: "url3", broad: "broad1", level: "Broad"}),
+    new ApiJobCode({code: "code4", targetNodeName: "targetNodeName4", frameworkName: "frameworkName4", url: "url4", broad: "broad1", level: "Broad"}),
+    new ApiJobCode({code: "code5", targetNodeName: "targetNodeName5", frameworkName: "frameworkName5", url: "url5", broad: "broad1", level: "Broad"}),
+    new ApiJobCode({code: "code6", targetNodeName: "targetNodeName6", frameworkName: "frameworkName6", url: "url6", broad: "broad1", level: "Broad"}),
+    new ApiJobCode({code: "code7", targetNodeName: "targetNodeName7", frameworkName: "frameworkName7", url: "url7", broad: "broad1", level: "Broad"}),
+    new ApiJobCode({code: "code8", targetNodeName: "targetNodeName8", frameworkName: "frameworkName8", url: "url8", broad: "broad1", level: "Broad"}),
   ], 8)
 
   sampleNamedReferenceResult = new PaginatedMetadata([
@@ -59,7 +62,7 @@ export class MetadataListComponent extends Whitelabelled {
   results: PaginatedMetadata = this.sampleJobCodeResult
 
   clearSelectedItemsFromTable = new Subject<void>()
-  constructor() {
+  constructor(protected authService: AuthService) {
     super()
     this.typeControl.valueChanges.subscribe(
       value => {
@@ -174,12 +177,14 @@ export class MetadataListComponent extends Whitelabelled {
   }
 
   rowActions(): TableActionDefinition[] {
-    return [
-      new TableActionDefinition({
+    const tableActions = []
+    if (this.canDeleteMetadata) {
+      tableActions.push(new TableActionDefinition({
         label: `Delete`,
         callback: (action: TableActionDefinition, skill?: IJobCode|INamedReference) => this.handleClickDeleteItem(action, skill),
-      })
-    ]
+      }))
+    }
+    return tableActions
   }
 
   // tslint:disable-next-line:typedef

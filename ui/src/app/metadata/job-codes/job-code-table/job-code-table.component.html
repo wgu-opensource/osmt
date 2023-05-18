@@ -1,15 +1,6 @@
 <table class="l-table">
   <caption> </caption>
   <thead>
-    <tr class="m-tableHeader m-tableHeader-bare">
-      <th class="t-hidden-tabletMin" scope="col" colspan="3"><span class="t-visuallyHidden">Job Codes</span></th>
-      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Target Node Name</span></th>
-      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Parents</span></th>
-      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Major</span></th>
-      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Minor</span></th>
-      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Broad</span></th>
-      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Detailed</span></th>
-    </tr>
     <tr class="m-tableHeader">
       <td class="t-hidden-tabletMin" aria-hidden="true">
         <app-label-with-select
@@ -36,31 +27,13 @@
 
       <td class="t-hidden-tabletMax" aria-hidden="true">
         <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Job Code Level</span>
+        </span>
+      </td>
+
+      <td class="t-hidden-tabletMax" aria-hidden="true">
+        <span class="m-tableLabel">
           <span class="m-tableLabel-x-text">Parents</span>
-        </span>
-      </td>
-
-      <td class="t-hidden-tabletMax" aria-hidden="true">
-        <span class="m-tableLabel">
-          <span class="m-tableLabel-x-text">Major</span>
-        </span>
-      </td>
-
-      <td class="t-hidden-tabletMax" aria-hidden="true">
-        <span class="m-tableLabel">
-          <span class="m-tableLabel-x-text">Minor</span>
-        </span>
-      </td>
-
-      <td class="t-hidden-tabletMax" aria-hidden="true">
-        <span class="m-tableLabel">
-          <span class="m-tableLabel-x-text">Broad</span>
-        </span>
-      </td>
-
-      <td class="t-hidden-tabletMax" aria-hidden="true">
-        <span class="m-tableLabel">
-          <span class="m-tableLabel-x-text">Detailed</span>
         </span>
       </td>
 
@@ -69,7 +42,6 @@
           <span class="m-tableLabel-x-text">Framework Name</span>
         </span>
       </td>
-
       <td class="m-tableHeader-x-actions" aria-hidden="true">
         <app-select-all
           [selectAllEnabled]="selectAllEnabled"

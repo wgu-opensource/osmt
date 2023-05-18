@@ -186,9 +186,6 @@ const routes: Routes = [
     path: "metadata",
     component: MetadataListComponent,
     canActivate: [AuthGuard],
-    data: {
-      roles: ActionByRoles.get(ButtonAction.Metadata)
-    }
   },
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},

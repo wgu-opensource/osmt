@@ -16,7 +16,5 @@ data class JobCodeUpdate(
     val level: JobCodeLevel? = null,
     @JsonProperty("parents")
     val parents: List<JobCodeUpdate>? = null
-    // @JsonProperty("description")
-    // val description: String = ""
 ) {
 }

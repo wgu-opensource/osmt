@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core"
 import { FormControl } from "@angular/forms"
-import { MetadataType } from "../rsd-metadata.enum"
+import { MetadataType } from "../../rsd-metadata.enum"
 
 @Component({
   selector: "app-metadata-selector",

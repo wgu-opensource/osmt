@@ -1,16 +1,15 @@
 package edu.wgu.osmt.api.model
 
-import edu.wgu.osmt.config.NAME_SORT_INSENSITIVE
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
 
 enum class JobCodeSortEnum(override val apiValue: String): SortOrder {
     NameAsc("name.asc") {
-        override val sort = Sort.by("name.keyword").ascending()
+        override val sort = Sort.by("name.sort_insensitive").ascending()
     },
     NameDesc("name.desc") {
-        override val sort = Sort.by("name.keyword").descending()
+        override val sort = Sort.by("name.sort_insensitive").descending()
     };
 
     companion object : SortOrderCompanion<JobCodeSortEnum> {

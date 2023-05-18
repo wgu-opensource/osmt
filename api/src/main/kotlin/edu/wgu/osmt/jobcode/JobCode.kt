@@ -76,7 +76,7 @@ data class JobCode(
             InnerField(suffix = "", type = FieldType.Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = FieldType.Text),
             InnerField(suffix = "keyword", type = FieldType.Keyword),
-            // InnerField(suffix = "sort_insensitive", type = FieldType.Keyword, normalizer = "lowercase_normalizer")
+            InnerField(suffix = "sort_insensitive", type = FieldType.Keyword, normalizer = "lowercase_normalizer")
         ]
     )
     val name: String? = null,                   // human readable label

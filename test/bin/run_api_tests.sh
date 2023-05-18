@@ -50,7 +50,7 @@ run_api_tests() {
   bearer_token="${bearer_token%\"}"
   bearer_token="${bearer_token#\"}"
   npx "$test_dir/node_modules/.bin/newman" \
-    run "$test_dir/postman/osmt.postman_collection.json" \
+    run "$test_dir/postman/osmt-testing.postman_collection.json" \
       --env-var baseUrl="$BASE_URL" \
       --env-var bearerToken="$bearer_token"
 }

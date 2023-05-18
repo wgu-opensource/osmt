@@ -39,6 +39,11 @@ create_postman_collection() {
     -o "${project_dir}/test/postman/osmt.postman_collection.json" --pretty
 }
 
+inject_tests() {
+  local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
+  node "${project_dir}/test/postman/test-injector.js"
+}
+
 curl_with_retry() {
   local -i rc=-1
   local -i retry_limit=12
@@ -102,6 +107,9 @@ main() {
 
   # Create postman collection
   create_postman_collection || exit 135
+
+  # Insert postman assertion tests
+  inject_tests || exit 135
 }
 
 trap error_handler ERR SIGINT SIGTERM

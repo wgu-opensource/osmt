@@ -39,6 +39,10 @@ else if (process.argv.length == 4) {
 if (!exit) {
   main();
 }
+else {
+  // TODO throw error that file is missing args
+  // don't run the rest of the script
+}
 
 console.log("");
 
@@ -92,7 +96,7 @@ function main() {
     console.error(err);
   }
 
-  // Completion message
+  // Display errors for any missing test data
   if (failedEndpoints.length > 0) {
     console.log(`\nERROR: Could not parse test information for the following `
         + `${failedEndpoints.length} endpoint(s):`);
@@ -111,12 +115,15 @@ function main() {
     return unusedData;
   }, {});
 
-  // console.log(availableData);
+  // Display warnings for any unused test data
   if (unusedCount > 0) {
     console.log(`\nWARN: The following ${unusedCount} test data `
         + `files/directories are unused (consider deletion):`);
     console.log(unusedData);
   }
+
+  // TODO return unused data and failed endpoints to shell script
+  // possibly using throwing an exception
 }
 
 

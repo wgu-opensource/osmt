@@ -5,9 +5,11 @@ import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiJobCode
 import edu.wgu.osmt.api.model.JobCodeSortEnum
 import edu.wgu.osmt.api.model.JobCodeUpdate
-import edu.wgu.osmt.api.model.KeywordSortEnum
 import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.elasticsearch.OffsetPageable
+import edu.wgu.osmt.task.RemoveJobCodeTask
+import edu.wgu.osmt.task.Task
+import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskResult
 import edu.wgu.osmt.task.TaskStatus
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,7 +33,8 @@ import org.springframework.web.server.ResponseStatusException
 @Transactional
 class JobCodeController @Autowired constructor(
     val jobCodeEsRepo: JobCodeEsRepo,
-    val jobCodeRepository: JobCodeRepository
+    val jobCodeRepository: JobCodeRepository,
+    val taskMessageService: TaskMessageService,
 ) {
 
     @GetMapping(RoutePaths.JOB_CODE_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -105,14 +108,10 @@ class JobCodeController @Autowired constructor(
     fun deleteJobCode(
         @PathVariable id: Int,
     ): HttpEntity<TaskResult> {
-        return ResponseEntity.status(200).body(
-            TaskResult(
-                uuid = "uuid",
-                contentType = "application/json",
-                status = TaskStatus.Processing,
-                apiResultPath = "path"
-            )
-        )
+        val task = RemoveJobCodeTask(jobCodeId = id.toLong())
+        taskMessageService.enqueueJob(TaskMessageService.removeJobCode, task)
+        // return ResponseEntity.status(200).body(TaskResult(uuid = "uuid", contentType = "application/json", status = TaskStatus.Processing, apiResultPath = "path"))
+        return Task.processingResponse(task)
     }
 
 }

@@ -1,10 +1,13 @@
 package edu.wgu.osmt.jobcode
 
+import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.JobCodeUpdate
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
@@ -22,6 +25,7 @@ interface JobCodeRepository {
     fun create(code: String, framework: String? = null): JobCodeDao
     fun createFromApi(jobCodes: List<JobCodeUpdate>): List<JobCodeDao>
     fun onetsByDetailCode(detailedCode: String): SizedIterable<JobCodeDao>
+    fun remove(jobCodeId: Long): ApiBatchResult
 
     companion object {
         const val BLS_FRAMEWORK = "bls"
@@ -91,5 +95,26 @@ class JobCodeRepositoryImpl: JobCodeRepository {
 
     override fun onetsByDetailCode(detailedCode: String): SizedIterable<JobCodeDao> {
         return table.select {table.code regexp "${detailedCode}.[0-90-9]"}.let{dao.wrapRows(it)}
+    }
+
+    override fun remove(jobCodeId: Long): ApiBatchResult {
+        val jobCodeFound = findById(jobCodeId)
+        val jobCodeEsFound = jobCodeEsRepo.findById(jobCodeId.toInt())
+        if (jobCodeFound != null && jobCodeEsFound.isPresent) {
+            transaction {
+                table.deleteWhere{ table.id eq jobCodeFound.id }
+                jobCodeEsRepo.delete(jobCodeEsFound.get())
+            }
+            return ApiBatchResult(
+                success = true,
+                modifiedCount = 1,
+                totalCount = 1
+            )
+        }
+        return ApiBatchResult(
+            success = false,
+            modifiedCount = 0,
+            totalCount = 0
+        )
     }
 }

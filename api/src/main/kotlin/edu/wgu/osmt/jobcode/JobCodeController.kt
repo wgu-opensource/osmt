@@ -6,6 +6,7 @@ import edu.wgu.osmt.api.model.ApiJobCode
 import edu.wgu.osmt.api.model.JobCodeSortEnum
 import edu.wgu.osmt.api.model.JobCodeUpdate
 import edu.wgu.osmt.api.model.KeywordSortEnum
+import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.task.TaskResult
 import edu.wgu.osmt.task.TaskStatus
@@ -45,7 +46,27 @@ class JobCodeController @Autowired constructor(
         val searchResults = jobCodeEsRepo.typeAheadSearch(query, OffsetPageable(from, size, sortEnum.sort))
         val responseHeaders = HttpHeaders()
         responseHeaders.add("X-Total-Count", searchResults.totalHits.toString())
-        return ResponseEntity.status(200).headers(responseHeaders).body(searchResults.map { ApiJobCode.fromJobCode(it.content) }.toList())
+        return ResponseEntity.status(200).headers(responseHeaders).body(searchResults.map {
+            val jobCodeLevel = ApiJobCode.getLevelFromJobCode(it.content)
+            val parents = mutableListOf<JobCodeDao>()
+            val majorCode = it.content.majorCode
+            val minorCode = it.content.minorCode
+            val broadCode = it.content.broadCode
+            val detailedCode = it.content.detailedCode
+            if (detailedCode != null && jobCodeLevel != JobCodeLevel.Detailed) {
+                jobCodeRepository.findByCode(detailedCode)?.let { jobCodeDao -> parents.add(jobCodeDao) }
+            }
+            if (broadCode != null && jobCodeLevel != JobCodeLevel.Broad) {
+                jobCodeRepository.findByCode(broadCode)?.let { jobCodeDao -> parents.add(jobCodeDao) }
+            }
+            if (minorCode != null && jobCodeLevel != JobCodeLevel.Minor) {
+                jobCodeRepository.findByCode(minorCode)?.let { jobCodeDao -> parents.add(jobCodeDao) }
+            }
+            if (majorCode != null && jobCodeLevel != JobCodeLevel.Major) {
+                jobCodeRepository.findByCode(majorCode)?.let { jobCodeDao -> parents.add(jobCodeDao) }
+            }
+            ApiJobCode.fromJobCode(it.content, jobCodeLevel, parents.map { it2 -> ApiJobCode.fromJobCode(it2.toModel(), ApiJobCode.getLevelFromJobCode(it2.toModel())) })
+        }.toList())
     }
 
     @GetMapping(RoutePaths.JOB_CODE_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])

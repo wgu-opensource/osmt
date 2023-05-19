@@ -6,6 +6,7 @@ import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
+import kotlinx.coroutines.Job
 
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -85,6 +86,23 @@ data class ApiJobCode(
     companion object factory {
         fun fromJobCode(jobCode: JobCode, level: JobCodeLevel? = null, parents: List<ApiJobCode>? = null): ApiJobCode {
             return ApiJobCode(code=jobCode.code, targetNodeName=jobCode.name, targetNode=jobCode.url, frameworkName=jobCode.framework, level=level, parents=parents)
+        }
+
+        fun getLevelFromJobCode(jobCode: JobCode): JobCodeLevel {
+            return when (jobCode.code) {
+                jobCode.majorCode -> {
+                    JobCodeLevel.Major
+                }
+                jobCode.minorCode -> {
+                    JobCodeLevel.Minor
+                }
+                jobCode.broadCode -> {
+                    JobCodeLevel.Broad
+                }
+                else -> {
+                    JobCodeLevel.Detailed
+                }
+            }
         }
     }
 }

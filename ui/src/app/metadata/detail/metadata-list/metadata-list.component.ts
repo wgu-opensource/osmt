@@ -1,7 +1,7 @@
-import { Component, ViewChild } from "@angular/core"
+import {Component, OnInit, ViewChild} from "@angular/core"
 import { FormControl, FormGroup } from "@angular/forms"
 import { Observable, Subject } from "rxjs"
-import { PaginatedMetadata } from "../../IMetadata"
+import { PaginatedMetadata } from "../../PaginatedMetadata"
 import { ApiSortOrder } from "../../../richskill/ApiSkill"
 import { ApiJobCode, IJobCode } from "../../job-codes/Jobcode"
 import { TableActionBarComponent } from "../../../table/skills-library-table/table-action-bar.component"
@@ -16,7 +16,7 @@ import { MetadataType } from "../../rsd-metadata.enum"
   selector: "app-metadata-list",
   templateUrl: "./metadata-list.component.html"
 })
-export class MetadataListComponent extends Whitelabelled {
+export class MetadataListComponent extends Whitelabelled implements OnInit {
 
   @ViewChild(TableActionBarComponent) actionBar!: TableActionBarComponent
 
@@ -59,11 +59,14 @@ export class MetadataListComponent extends Whitelabelled {
     new ApiNamedReference({id: "id8", framework: "framework8", name: "name8", type: MetadataType.Category, value: "value8"}),
   ], 8)
 
-  results: PaginatedMetadata = this.sampleJobCodeResult
+  results: PaginatedMetadata = this.sampleNamedReferenceResult
 
   clearSelectedItemsFromTable = new Subject<void>()
   constructor(protected authService: AuthService) {
     super()
+  }
+
+  ngOnInit(): void {
     this.typeControl.valueChanges.subscribe(
       value => {
         this.selectedMetadataType = value
@@ -75,7 +78,7 @@ export class MetadataListComponent extends Whitelabelled {
         }
       })
     this.searchForm.get("search")?.valueChanges.subscribe( value => this.matchingQuery = value)
-  }
+    }
 
   clearSearch(): boolean {
     this.searchForm.reset()

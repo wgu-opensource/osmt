@@ -11,24 +11,18 @@
         },
         "@schematics/angular:component": {
           "prefix": "app",
-          "style": "scss",
-          "lintFix": true
+          "style": "scss"
         },
         "@schematics/angular:directive": {
-          "prefix": "app",
-          "lintFix": true
+          "prefix": "app"
         },
         "@schematics/angular:pipe": {
-          "lintFix": true
         },
         "@schematics/angular:class": {
-          "lintFix": true
         },
         "@schematics/angular:module": {
-          "lintFix": true
         },
         "@schematics/angular:service": {
-          "lintFix": true
         }
       },
       "root": "",
@@ -70,7 +64,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -136,19 +129,6 @@
             ],
             "scripts": [],
             "codeCoverage": true
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
           }
         },
         "e2e": {

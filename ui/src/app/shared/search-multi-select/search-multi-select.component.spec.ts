@@ -52,7 +52,7 @@ describe("SearchMultiSelectComponent", () => {
   it("clear field should clean input control", () => {
     component.inputFc.patchValue("value")
     component.clearField()
-    expect(component.inputFc.value.length).toBe(0)
+    expect(component.inputFc.value?.length).toBe(0)
   })
 
   it("is result selected should be true", () => {

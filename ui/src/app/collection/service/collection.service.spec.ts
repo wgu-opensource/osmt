@@ -165,7 +165,9 @@ describe("CollectionService", () => {
       testService.getCollectionJson(uuid)
     } catch (e) {
       expect(e instanceof Error).toBeTrue()
-      expect(e.message).toEqual("No uuid provided for collection json export")
+      if (e instanceof Error) {
+        expect(e.message).toEqual("No uuid provided for collection json export")
+      }
     }
 
     // Assert
@@ -244,7 +246,9 @@ describe("CollectionService", () => {
       testService.requestCollectionSkillsCsv(uuid)
     } catch (e) {
       expect(e instanceof Error).toBeTrue()
-      expect(e.message).toEqual("Invalid collection uuid.")
+      if (e instanceof Error) {
+        expect(e.message).toEqual("Invalid collection uuid.")
+      }
     }
 
     // Assert

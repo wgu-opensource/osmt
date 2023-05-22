@@ -44,16 +44,6 @@
                                     <executable>./bin/run_api_tests.sh</executable>
                                 </configuration>
                             </execution>
-                            <execution>
-                                <id>cleanup-api-test-env</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>./bin/stop_api_test_server.sh</executable>
-                                </configuration>
-                            </execution>
                         </executions>
                     </plugin>
                 </plugins>

@@ -55,9 +55,26 @@ run_api_tests() {
       --env-var bearerToken="$bearer_token"
 }
 
+run_shutdown_script() {
+  printf "\n"
+  echo "Running Shutdown script..."
+  "${test_dir}/bin/stop_api_test_server.sh"
+}
+
+error_handler() {
+  printf "\n"
+  echo "Trapping at error_handler. Exiting"
+  # clean up API test Docker resources
+  "${test_dir}/bin/stop_api_test_server.sh"
+  printf "\n"
+}
+
 test_dir="$(_get_osmt_project_dir)/test" || exit 135
 apitest_env_file="$test_dir/osmt-apitest.env"
+
+trap error_handler ERR SIGINT SIGTERM EXIT
 
 source_osmt_apitest_env_file
 get_bearer_token
 run_api_tests
+run_shutdown_script

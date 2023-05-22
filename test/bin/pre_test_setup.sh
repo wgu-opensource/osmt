@@ -32,6 +32,12 @@ _get_osmt_project_dir() {
   echo "${project_dir}"
 }
 
+install_npm_modules() {
+  cd "${project_dir}/test"
+  npm install
+  cd "../"
+}
+
 create_postman_collection() {
   local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
   npx "$project_dir/test/node_modules/.bin/openapi2postmanv2" \
@@ -87,6 +93,10 @@ main() {
   local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
   local log_file; log_file="${project_dir}/api/target/osmt_spring_app.log"
 
+  # Run NPM install
+  echo_info "Installing NPM modules..."
+  install_npm_modules || exit 135
+
   # start the API test Docker compose stack and Spring app server, detached. Send log files to 'osmt_spring_app.log'
   echo_info "Starting OSMT Spring app for ${OSMT_STACK_NAME}. Output is suppressed, because console is detached."
   echo_info "See 'osmt_spring_app.log' for console output. Proceeding..."
@@ -112,6 +122,6 @@ main() {
   inject_tests || exit 135
 }
 
-trap error_handler ERR SIGINT SIGTERM
+trap error_handler ERR SIGINT SIGTERM EXIT
 
 main

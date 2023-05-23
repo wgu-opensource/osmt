@@ -1,7 +1,7 @@
 {
     "type": "RichSkillCollection",
     "name": "My Workspace",
-    "id": "-http://localhost:8080/api/collections/3957adef-bbd6-4b79-a6ad-22e2ae8c6e4c",
+    "id": "http://localhost:8080/api/collections/3957adef-bbd6-4b79-a6ad-22e2ae8c6e4c",
     "owner": "david.holub@wgu.edu",
     "description": null,
     "status": "workspace",

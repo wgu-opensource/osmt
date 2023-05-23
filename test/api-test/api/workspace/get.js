@@ -8,7 +8,7 @@ pm.test("Check response type", function () {
 pm.test("Check name exists", function () {
   pm.expect(responseData.name).exists;
 });
-pm.test("Check ID exists", function () {
+pm.test("Check Id exists", function () {
   pm.expect(responseData.id).exists;
 });
 pm.test("Check owner exists", function () {

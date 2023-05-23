@@ -89,7 +89,7 @@ function main() {
     fs.writeFileSync(outputFile, JSON.stringify(baseApi, null, '\t'));
 
   } catch (err) {
-    console.error(err);
+    throw err;
   }
 
   // Completion message
@@ -111,7 +111,6 @@ function main() {
     return unusedData;
   }, {});
 
-  // console.log(availableData);
   if (unusedCount > 0) {
     console.log(`\nWARN: The following ${unusedCount} test data `
         + `files/directories are unused (consider deletion):`);

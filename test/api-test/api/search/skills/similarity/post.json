@@ -1,6 +1,6 @@
 [
   {
-      "id": "-http://localhost:8080/api/skills/f6538cc1-8fdf-4f11-b373-781571b386bf",
+      "id": "http://localhost:8080/api/skills/f6538cc1-8fdf-4f11-b373-781571b386bf",
       "uuid": "f6538cc1-8fdf-4f11-b373-781571b386bf",
       "status": "published",
       "publishDate": "2023-03-30T13:02:07",

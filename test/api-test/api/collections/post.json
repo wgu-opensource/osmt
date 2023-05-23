@@ -2,13 +2,13 @@
   {
       "type": "RichSkillCollection",
       "name": "API Test Collection - System Admin",
-      "id": "-http://localhost:8080/api/collections/9b367b9a-6b27-488c-89b9-3e7228a16960",
+      "id": "http://localhost:8080/api/collections/9b367b9a-6b27-488c-89b9-3e7228a16960",
       "owner": "",
       "description": "Tests creation of collection",
       "status": "draft",
       "skills": [
           {
-              "id": "-http://localhost:8080/api/skills/bf408208-7e16-4a96-a769-40a9ecc161ff",
+              "id": "http://localhost:8080/api/skills/bf408208-7e16-4a96-a769-40a9ecc161ff",
               "uuid": "bf408208-7e16-4a96-a769-40a9ecc161ff",
               "status": "published",
               "publishDate": "2023-03-30T13:02:07.90878",
@@ -105,7 +105,7 @@
               ]
           },
           {
-              "id": "-http://localhost:8080/api/skills/9d075e9d-2bde-4956-bf8c-83e5616a7c45",
+              "id": "http://localhost:8080/api/skills/9d075e9d-2bde-4956-bf8c-83e5616a7c45",
               "uuid": "9d075e9d-2bde-4956-bf8c-83e5616a7c45",
               "status": "published",
               "publishDate": "2023-03-30T13:01:48.301026",
@@ -151,7 +151,7 @@
               ]
           },
           {
-              "id": "-http://localhost:8080/api/skills/80e70dd1-4827-45e0-8038-f745433b6d86",
+              "id": "http://localhost:8080/api/skills/80e70dd1-4827-45e0-8038-f745433b6d86",
               "uuid": "80e70dd1-4827-45e0-8038-f745433b6d86",
               "status": "published",
               "publishDate": "2023-03-30T13:01:53.092458",

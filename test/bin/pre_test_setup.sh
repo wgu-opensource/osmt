@@ -39,14 +39,14 @@ install_npm_modules() {
 }
 
 create_postman_collection() {
-  local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
+  local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
   npx "$project_dir/test/node_modules/.bin/openapi2postmanv2" \
     -s "${project_dir}/docs/int/openapi.yaml" \
     -o "${project_dir}/test/postman/osmt.postman_collection.json" --pretty
 }
 
 inject_tests() {
-  local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
+  local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
   node "${project_dir}/test/postman/test-injector.js"
 }
 
@@ -84,6 +84,7 @@ echo_err() {
 }
 
 error_handler() {
+  local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
   echo_err "Trapping at error_handler. Exiting"
   # clean up API test Docker resources
   "${project_dir}/osmt_cli.sh" -e || exit 135
@@ -122,6 +123,6 @@ main() {
   inject_tests || exit 135
 }
 
-trap error_handler ERR SIGINT SIGTERM EXIT
+trap error_handler ERR SIGINT SIGTERM
 
 main

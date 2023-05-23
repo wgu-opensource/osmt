@@ -72,7 +72,7 @@ error_handler() {
 test_dir="$(_get_osmt_project_dir)/test" || exit 135
 apitest_env_file="$test_dir/osmt-apitest.env"
 
-trap error_handler ERR SIGINT SIGTERM EXIT
+trap error_handler ERR SIGINT SIGTERM
 
 source_osmt_apitest_env_file
 get_bearer_token

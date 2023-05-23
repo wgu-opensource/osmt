@@ -24,7 +24,7 @@
           >
           <div class="m-search-x-controls">
             <div class="m-search-x-clear">
-              <button class="m-iconInteractive" type="button" (click)="clearField()" *ngIf="inputFc.value?.length > 0">
+              <button class="m-iconInteractive" type="button" (click)="clearField()" *ngIf="inputFc.value!.length > 0">
 
                 <span class="t-visuallyHidden">Clear Search</span>
 

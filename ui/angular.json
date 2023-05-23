@@ -16,14 +16,10 @@
         "@schematics/angular:directive": {
           "prefix": "app"
         },
-        "@schematics/angular:pipe": {
-        },
-        "@schematics/angular:class": {
-        },
-        "@schematics/angular:module": {
-        },
-        "@schematics/angular:service": {
-        }
+        "@schematics/angular:pipe": {},
+        "@schematics/angular:class": {},
+        "@schematics/angular:module": {},
+        "@schematics/angular:service": {}
       },
       "root": "",
       "sourceRoot": "src",
@@ -147,11 +143,24 @@
               "devServerTarget": "ui:serve:production"
             }
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "schematicCollections": [
+      "@angular-eslint/schematics",
+      "@angular-eslint/schematics"
+    ]
   }
 }

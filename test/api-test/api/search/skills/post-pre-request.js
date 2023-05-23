@@ -1,4 +1,4 @@
-let uuidId = pm.request.url.variables.indexOf('collectionId');
+let uuidId = pm.request.url.query.indexOf('collectionId');
 
 if (uuidId > 0) {
   pm.request.url.query.remove('collectionId');

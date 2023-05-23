@@ -39,10 +39,6 @@ else if (process.argv.length == 4) {
 if (!exit) {
   main();
 }
-else {
-  // TODO throw error that file is missing args
-  // don't run the rest of the script
-}
 
 console.log("");
 
@@ -93,7 +89,7 @@ function main() {
     fs.writeFileSync(outputFile, JSON.stringify(baseApi, null, '\t'));
 
   } catch (err) {
-    console.error(err);
+    throw err;
   }
 
   // Display errors for any missing test data

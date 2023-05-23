@@ -1,13 +1,13 @@
 {
     "type": "RichSkillCollection",
     "name": "Bailiffs, Correctional Officers, and Jailers",
-    "id": "-http://localhost:8080/api/collections/ce1ccd5d-2ba8-496d-bdb6-87a278752a15",
+    "id": "http://localhost:8080/api/collections/ce1ccd5d-2ba8-496d-bdb6-87a278752a15",
     "owner": "",
     "description": null,
     "status": "draft",
     "skills": [
         {
-            "id": "-http://localhost:8080/api/skills/f2fd6784-bee2-4417-af43-344308c5f9bf",
+            "id": "http://localhost:8080/api/skills/f2fd6784-bee2-4417-af43-344308c5f9bf",
             "uuid": "f2fd6784-bee2-4417-af43-344308c5f9bf",
             "status": "draft",
             "publishDate": null,
@@ -107,7 +107,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/6d1b83a2-e4a3-4e85-988e-c7e099cec1ad",
+            "id": "http://localhost:8080/api/skills/6d1b83a2-e4a3-4e85-988e-c7e099cec1ad",
             "uuid": "6d1b83a2-e4a3-4e85-988e-c7e099cec1ad",
             "status": "draft",
             "publishDate": null,
@@ -338,7 +338,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/4ad6fa4e-c9ba-4c2f-9f3a-8de89d5e11cb",
+            "id": "http://localhost:8080/api/skills/4ad6fa4e-c9ba-4c2f-9f3a-8de89d5e11cb",
             "uuid": "4ad6fa4e-c9ba-4c2f-9f3a-8de89d5e11cb",
             "status": "draft",
             "publishDate": null,
@@ -451,7 +451,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/7f13ebfa-8dc9-4bdc-97e1-c775850efe1e",
+            "id": "http://localhost:8080/api/skills/7f13ebfa-8dc9-4bdc-97e1-c775850efe1e",
             "uuid": "7f13ebfa-8dc9-4bdc-97e1-c775850efe1e",
             "status": "draft",
             "publishDate": null,
@@ -668,7 +668,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/054ca304-14c4-4710-afa7-12f66eb9163f",
+            "id": "http://localhost:8080/api/skills/054ca304-14c4-4710-afa7-12f66eb9163f",
             "uuid": "054ca304-14c4-4710-afa7-12f66eb9163f",
             "status": "draft",
             "publishDate": null,
@@ -830,7 +830,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/8c481834-3d35-4d1a-93a0-afe7c643ab6f",
+            "id": "http://localhost:8080/api/skills/8c481834-3d35-4d1a-93a0-afe7c643ab6f",
             "uuid": "8c481834-3d35-4d1a-93a0-afe7c643ab6f",
             "status": "draft",
             "publishDate": null,
@@ -1009,7 +1009,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/c415c1cf-5a29-4d44-abb4-aa02dc95b6ae",
+            "id": "http://localhost:8080/api/skills/c415c1cf-5a29-4d44-abb4-aa02dc95b6ae",
             "uuid": "c415c1cf-5a29-4d44-abb4-aa02dc95b6ae",
             "status": "draft",
             "publishDate": null,
@@ -1175,7 +1175,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/06b708f7-1de2-4668-9a35-9743e68ad676",
+            "id": "http://localhost:8080/api/skills/06b708f7-1de2-4668-9a35-9743e68ad676",
             "uuid": "06b708f7-1de2-4668-9a35-9743e68ad676",
             "status": "draft",
             "publishDate": null,
@@ -1340,7 +1340,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/db629418-b982-47ea-b023-1bd0554659e1",
+            "id": "http://localhost:8080/api/skills/db629418-b982-47ea-b023-1bd0554659e1",
             "uuid": "db629418-b982-47ea-b023-1bd0554659e1",
             "status": "draft",
             "publishDate": null,
@@ -1468,7 +1468,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/3de66652-405d-4899-aa44-c1420d57b45d",
+            "id": "http://localhost:8080/api/skills/3de66652-405d-4899-aa44-c1420d57b45d",
             "uuid": "3de66652-405d-4899-aa44-c1420d57b45d",
             "status": "draft",
             "publishDate": null,
@@ -1586,7 +1586,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/10517b19-8395-4136-a3ed-ab78d0f7d014",
+            "id": "http://localhost:8080/api/skills/10517b19-8395-4136-a3ed-ab78d0f7d014",
             "uuid": "10517b19-8395-4136-a3ed-ab78d0f7d014",
             "status": "draft",
             "publishDate": null,
@@ -1703,7 +1703,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/2d30b14a-c8c9-4149-ae8e-880ac4da3c5f",
+            "id": "http://localhost:8080/api/skills/2d30b14a-c8c9-4149-ae8e-880ac4da3c5f",
             "uuid": "2d30b14a-c8c9-4149-ae8e-880ac4da3c5f",
             "status": "draft",
             "publishDate": null,
@@ -1760,7 +1760,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/ff532a84-696f-45cc-bd75-41bd4650be00",
+            "id": "http://localhost:8080/api/skills/ff532a84-696f-45cc-bd75-41bd4650be00",
             "uuid": "ff532a84-696f-45cc-bd75-41bd4650be00",
             "status": "draft",
             "publishDate": null,
@@ -1834,7 +1834,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/8d3e1bc4-181c-4649-a2e8-ffd2d23bcc6a",
+            "id": "http://localhost:8080/api/skills/8d3e1bc4-181c-4649-a2e8-ffd2d23bcc6a",
             "uuid": "8d3e1bc4-181c-4649-a2e8-ffd2d23bcc6a",
             "status": "draft",
             "publishDate": null,
@@ -1984,7 +1984,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/2d1c86bb-bcec-49e8-8ee6-ec040cb1ec1c",
+            "id": "http://localhost:8080/api/skills/2d1c86bb-bcec-49e8-8ee6-ec040cb1ec1c",
             "uuid": "2d1c86bb-bcec-49e8-8ee6-ec040cb1ec1c",
             "status": "draft",
             "publishDate": null,
@@ -2037,7 +2037,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/cb25cae2-3460-4a04-9e12-b5a788f63bc7",
+            "id": "http://localhost:8080/api/skills/cb25cae2-3460-4a04-9e12-b5a788f63bc7",
             "uuid": "cb25cae2-3460-4a04-9e12-b5a788f63bc7",
             "status": "draft",
             "publishDate": null,
@@ -2097,7 +2097,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/283dda49-4b9a-4ee3-89a1-279b3174307b",
+            "id": "http://localhost:8080/api/skills/283dda49-4b9a-4ee3-89a1-279b3174307b",
             "uuid": "283dda49-4b9a-4ee3-89a1-279b3174307b",
             "status": "draft",
             "publishDate": null,
@@ -2157,7 +2157,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/dd88d320-cb78-40a9-82ba-711fd926b6c7",
+            "id": "http://localhost:8080/api/skills/dd88d320-cb78-40a9-82ba-711fd926b6c7",
             "uuid": "dd88d320-cb78-40a9-82ba-711fd926b6c7",
             "status": "draft",
             "publishDate": null,
@@ -2379,7 +2379,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/0caee109-66b5-4a77-ae74-c96493172098",
+            "id": "http://localhost:8080/api/skills/0caee109-66b5-4a77-ae74-c96493172098",
             "uuid": "0caee109-66b5-4a77-ae74-c96493172098",
             "status": "draft",
             "publishDate": null,
@@ -2492,7 +2492,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/ba0ad211-2263-4e85-8475-721a6fe69c10",
+            "id": "http://localhost:8080/api/skills/ba0ad211-2263-4e85-8475-721a6fe69c10",
             "uuid": "ba0ad211-2263-4e85-8475-721a6fe69c10",
             "status": "draft",
             "publishDate": null,
@@ -2544,7 +2544,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/ce401681-5731-4d97-b4d9-8710f7c70272",
+            "id": "http://localhost:8080/api/skills/ce401681-5731-4d97-b4d9-8710f7c70272",
             "uuid": "ce401681-5731-4d97-b4d9-8710f7c70272",
             "status": "draft",
             "publishDate": null,
@@ -2777,7 +2777,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/920db5e9-2516-4e85-a264-107d7d762f05",
+            "id": "http://localhost:8080/api/skills/920db5e9-2516-4e85-a264-107d7d762f05",
             "uuid": "920db5e9-2516-4e85-a264-107d7d762f05",
             "status": "draft",
             "publishDate": null,
@@ -2977,7 +2977,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/1dfc1bce-cc4f-4ffd-afda-47a1259a8012",
+            "id": "http://localhost:8080/api/skills/1dfc1bce-cc4f-4ffd-afda-47a1259a8012",
             "uuid": "1dfc1bce-cc4f-4ffd-afda-47a1259a8012",
             "status": "draft",
             "publishDate": null,
@@ -3063,7 +3063,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/a5e7fd85-5b0a-4186-937b-62b9123fc7ae",
+            "id": "http://localhost:8080/api/skills/a5e7fd85-5b0a-4186-937b-62b9123fc7ae",
             "uuid": "a5e7fd85-5b0a-4186-937b-62b9123fc7ae",
             "status": "draft",
             "publishDate": null,
@@ -3125,7 +3125,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/91987472-3ba9-4d30-be6c-b4f5c0d13119",
+            "id": "http://localhost:8080/api/skills/91987472-3ba9-4d30-be6c-b4f5c0d13119",
             "uuid": "91987472-3ba9-4d30-be6c-b4f5c0d13119",
             "status": "draft",
             "publishDate": null,
@@ -3233,7 +3233,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/ccc96e87-5fff-4b79-bf24-3438b679df48",
+            "id": "http://localhost:8080/api/skills/ccc96e87-5fff-4b79-bf24-3438b679df48",
             "uuid": "ccc96e87-5fff-4b79-bf24-3438b679df48",
             "status": "draft",
             "publishDate": null,
@@ -3372,7 +3372,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/08a832d2-2717-44a1-abb7-287b6a2ee05e",
+            "id": "http://localhost:8080/api/skills/08a832d2-2717-44a1-abb7-287b6a2ee05e",
             "uuid": "08a832d2-2717-44a1-abb7-287b6a2ee05e",
             "status": "deleted",
             "publishDate": null,
@@ -3424,7 +3424,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/3b2b5ab6-5a3d-4474-b640-42aa758322dd",
+            "id": "http://localhost:8080/api/skills/3b2b5ab6-5a3d-4474-b640-42aa758322dd",
             "uuid": "3b2b5ab6-5a3d-4474-b640-42aa758322dd",
             "status": "draft",
             "publishDate": null,
@@ -3476,7 +3476,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/845ef095-2f4f-4b52-9161-6d0a51aaf43e",
+            "id": "http://localhost:8080/api/skills/845ef095-2f4f-4b52-9161-6d0a51aaf43e",
             "uuid": "845ef095-2f4f-4b52-9161-6d0a51aaf43e",
             "status": "draft",
             "publishDate": null,
@@ -3523,7 +3523,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/d31935ef-eebc-4f4c-935f-d728088780fa",
+            "id": "http://localhost:8080/api/skills/d31935ef-eebc-4f4c-935f-d728088780fa",
             "uuid": "d31935ef-eebc-4f4c-935f-d728088780fa",
             "status": "draft",
             "publishDate": null,
@@ -3565,7 +3565,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/5f9ca506-b09f-4d98-8978-56c6173dd612",
+            "id": "http://localhost:8080/api/skills/5f9ca506-b09f-4d98-8978-56c6173dd612",
             "uuid": "5f9ca506-b09f-4d98-8978-56c6173dd612",
             "status": "draft",
             "publishDate": null,
@@ -3612,7 +3612,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/0438ae59-0652-48f3-ba50-6fac54b534de",
+            "id": "http://localhost:8080/api/skills/0438ae59-0652-48f3-ba50-6fac54b534de",
             "uuid": "0438ae59-0652-48f3-ba50-6fac54b534de",
             "status": "draft",
             "publishDate": null,
@@ -3659,7 +3659,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/fd6af3f9-92f6-4065-b6b2-ce509545d40c",
+            "id": "http://localhost:8080/api/skills/fd6af3f9-92f6-4065-b6b2-ce509545d40c",
             "uuid": "fd6af3f9-92f6-4065-b6b2-ce509545d40c",
             "status": "draft",
             "publishDate": null,
@@ -3706,7 +3706,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/c4b30c2e-fde7-4724-85b9-90b43878c7af",
+            "id": "http://localhost:8080/api/skills/c4b30c2e-fde7-4724-85b9-90b43878c7af",
             "uuid": "c4b30c2e-fde7-4724-85b9-90b43878c7af",
             "status": "draft",
             "publishDate": null,
@@ -3753,7 +3753,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/761cab3a-6f29-4f81-bd11-c8f496d7e9fe",
+            "id": "http://localhost:8080/api/skills/761cab3a-6f29-4f81-bd11-c8f496d7e9fe",
             "uuid": "761cab3a-6f29-4f81-bd11-c8f496d7e9fe",
             "status": "draft",
             "publishDate": null,
@@ -3805,7 +3805,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/1dfad376-08e8-47c5-a441-bbafdea74f90",
+            "id": "http://localhost:8080/api/skills/1dfad376-08e8-47c5-a441-bbafdea74f90",
             "uuid": "1dfad376-08e8-47c5-a441-bbafdea74f90",
             "status": "draft",
             "publishDate": null,
@@ -3852,7 +3852,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/a3593d14-a864-455e-ae10-cbfad2a27a29",
+            "id": "http://localhost:8080/api/skills/a3593d14-a864-455e-ae10-cbfad2a27a29",
             "uuid": "a3593d14-a864-455e-ae10-cbfad2a27a29",
             "status": "draft",
             "publishDate": null,
@@ -3899,7 +3899,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/99fe0c6b-0376-466a-8249-838ce6abc41c",
+            "id": "http://localhost:8080/api/skills/99fe0c6b-0376-466a-8249-838ce6abc41c",
             "uuid": "99fe0c6b-0376-466a-8249-838ce6abc41c",
             "status": "draft",
             "publishDate": null,
@@ -3946,7 +3946,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/c7ce6016-6814-4493-8459-ffcef97d6b1d",
+            "id": "http://localhost:8080/api/skills/c7ce6016-6814-4493-8459-ffcef97d6b1d",
             "uuid": "c7ce6016-6814-4493-8459-ffcef97d6b1d",
             "status": "draft",
             "publishDate": null,
@@ -3998,7 +3998,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/910c6ced-b5af-447f-9f24-47d00f9535fc",
+            "id": "http://localhost:8080/api/skills/910c6ced-b5af-447f-9f24-47d00f9535fc",
             "uuid": "910c6ced-b5af-447f-9f24-47d00f9535fc",
             "status": "draft",
             "publishDate": null,
@@ -4066,7 +4066,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/487626df-d5ff-4493-9c24-1b63ede8744e",
+            "id": "http://localhost:8080/api/skills/487626df-d5ff-4493-9c24-1b63ede8744e",
             "uuid": "487626df-d5ff-4493-9c24-1b63ede8744e",
             "status": "draft",
             "publishDate": null,
@@ -4138,7 +4138,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/c81110a7-65e2-407f-a473-ac7a11dce222",
+            "id": "http://localhost:8080/api/skills/c81110a7-65e2-407f-a473-ac7a11dce222",
             "uuid": "c81110a7-65e2-407f-a473-ac7a11dce222",
             "status": "draft",
             "publishDate": null,
@@ -4210,7 +4210,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/e5590e2f-3f03-40e7-affe-1110db4a1bfd",
+            "id": "http://localhost:8080/api/skills/e5590e2f-3f03-40e7-affe-1110db4a1bfd",
             "uuid": "e5590e2f-3f03-40e7-affe-1110db4a1bfd",
             "status": "draft",
             "publishDate": null,
@@ -4247,7 +4247,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/7157daa5-47e6-45d3-ad84-f3e6986cd34b",
+            "id": "http://localhost:8080/api/skills/7157daa5-47e6-45d3-ad84-f3e6986cd34b",
             "uuid": "7157daa5-47e6-45d3-ad84-f3e6986cd34b",
             "status": "draft",
             "publishDate": null,
@@ -4299,7 +4299,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/a7aa8acc-143c-42f8-9f23-1abf10b6b72c",
+            "id": "http://localhost:8080/api/skills/a7aa8acc-143c-42f8-9f23-1abf10b6b72c",
             "uuid": "a7aa8acc-143c-42f8-9f23-1abf10b6b72c",
             "status": "draft",
             "publishDate": null,
@@ -4351,7 +4351,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/9b4990d0-f208-4bbb-9570-b80bfc261e14",
+            "id": "http://localhost:8080/api/skills/9b4990d0-f208-4bbb-9570-b80bfc261e14",
             "uuid": "9b4990d0-f208-4bbb-9570-b80bfc261e14",
             "status": "draft",
             "publishDate": null,
@@ -4403,7 +4403,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/33b1f767-dbc2-4fdf-81c2-a936ffca05ec",
+            "id": "http://localhost:8080/api/skills/33b1f767-dbc2-4fdf-81c2-a936ffca05ec",
             "uuid": "33b1f767-dbc2-4fdf-81c2-a936ffca05ec",
             "status": "draft",
             "publishDate": null,
@@ -4455,7 +4455,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/9c13d5f8-b58d-4c0e-b1dc-77af750efa16",
+            "id": "http://localhost:8080/api/skills/9c13d5f8-b58d-4c0e-b1dc-77af750efa16",
             "uuid": "9c13d5f8-b58d-4c0e-b1dc-77af750efa16",
             "status": "draft",
             "publishDate": null,
@@ -4507,7 +4507,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/b4a6d21c-b9ef-4231-a61d-71f4e6cf2114",
+            "id": "http://localhost:8080/api/skills/b4a6d21c-b9ef-4231-a61d-71f4e6cf2114",
             "uuid": "b4a6d21c-b9ef-4231-a61d-71f4e6cf2114",
             "status": "draft",
             "publishDate": null,
@@ -4554,7 +4554,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/0ada0969-47c3-46bd-a44c-a767ec9d6437",
+            "id": "http://localhost:8080/api/skills/0ada0969-47c3-46bd-a44c-a767ec9d6437",
             "uuid": "0ada0969-47c3-46bd-a44c-a767ec9d6437",
             "status": "draft",
             "publishDate": null,
@@ -4601,7 +4601,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/0ebd7f16-2d47-4f52-bf2f-3a9c6c6dc8c6",
+            "id": "http://localhost:8080/api/skills/0ebd7f16-2d47-4f52-bf2f-3a9c6c6dc8c6",
             "uuid": "0ebd7f16-2d47-4f52-bf2f-3a9c6c6dc8c6",
             "status": "draft",
             "publishDate": null,
@@ -4648,7 +4648,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/af2d4ddb-f2f6-4cfe-bc57-580cdb415ee2",
+            "id": "http://localhost:8080/api/skills/af2d4ddb-f2f6-4cfe-bc57-580cdb415ee2",
             "uuid": "af2d4ddb-f2f6-4cfe-bc57-580cdb415ee2",
             "status": "draft",
             "publishDate": null,
@@ -4695,7 +4695,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/f49e45bb-bf59-40e9-b512-fce9480ffa5e",
+            "id": "http://localhost:8080/api/skills/f49e45bb-bf59-40e9-b512-fce9480ffa5e",
             "uuid": "f49e45bb-bf59-40e9-b512-fce9480ffa5e",
             "status": "draft",
             "publishDate": null,
@@ -4742,7 +4742,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/87db1558-1ab1-46fe-bd38-31186566782c",
+            "id": "http://localhost:8080/api/skills/87db1558-1ab1-46fe-bd38-31186566782c",
             "uuid": "87db1558-1ab1-46fe-bd38-31186566782c",
             "status": "draft",
             "publishDate": null,
@@ -4789,7 +4789,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/c37f3508-a7a9-4b92-bdf0-5885a36eee35",
+            "id": "http://localhost:8080/api/skills/c37f3508-a7a9-4b92-bdf0-5885a36eee35",
             "uuid": "c37f3508-a7a9-4b92-bdf0-5885a36eee35",
             "status": "draft",
             "publishDate": null,
@@ -4836,7 +4836,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/3a4f6625-ff8a-468f-b6e6-3ed6e27530e7",
+            "id": "http://localhost:8080/api/skills/3a4f6625-ff8a-468f-b6e6-3ed6e27530e7",
             "uuid": "3a4f6625-ff8a-468f-b6e6-3ed6e27530e7",
             "status": "draft",
             "publishDate": null,
@@ -4888,7 +4888,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/c721bf59-f319-4b3e-b5c0-e01e5bb5b35e",
+            "id": "http://localhost:8080/api/skills/c721bf59-f319-4b3e-b5c0-e01e5bb5b35e",
             "uuid": "c721bf59-f319-4b3e-b5c0-e01e5bb5b35e",
             "status": "draft",
             "publishDate": null,
@@ -4940,7 +4940,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/ee720fce-db2b-4d47-8f70-0aacc88ee778",
+            "id": "http://localhost:8080/api/skills/ee720fce-db2b-4d47-8f70-0aacc88ee778",
             "uuid": "ee720fce-db2b-4d47-8f70-0aacc88ee778",
             "status": "draft",
             "publishDate": null,
@@ -4992,7 +4992,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/206c770e-e488-4658-aecd-5908f380312b",
+            "id": "http://localhost:8080/api/skills/206c770e-e488-4658-aecd-5908f380312b",
             "uuid": "206c770e-e488-4658-aecd-5908f380312b",
             "status": "draft",
             "publishDate": null,
@@ -5064,7 +5064,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/ac7388c4-c154-4de1-b523-8f50c31771fc",
+            "id": "http://localhost:8080/api/skills/ac7388c4-c154-4de1-b523-8f50c31771fc",
             "uuid": "ac7388c4-c154-4de1-b523-8f50c31771fc",
             "status": "draft",
             "publishDate": null,
@@ -5116,7 +5116,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/3af3eb73-1686-4417-8187-2007eb9a9d36",
+            "id": "http://localhost:8080/api/skills/3af3eb73-1686-4417-8187-2007eb9a9d36",
             "uuid": "3af3eb73-1686-4417-8187-2007eb9a9d36",
             "status": "draft",
             "publishDate": null,
@@ -5168,7 +5168,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/a041eb28-83c2-4eb6-9164-88ff724c8f66",
+            "id": "http://localhost:8080/api/skills/a041eb28-83c2-4eb6-9164-88ff724c8f66",
             "uuid": "a041eb28-83c2-4eb6-9164-88ff724c8f66",
             "status": "draft",
             "publishDate": null,
@@ -5215,7 +5215,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/f88b96e9-7bdb-4778-a647-b8cd13b0050f",
+            "id": "http://localhost:8080/api/skills/f88b96e9-7bdb-4778-a647-b8cd13b0050f",
             "uuid": "f88b96e9-7bdb-4778-a647-b8cd13b0050f",
             "status": "draft",
             "publishDate": null,
@@ -5256,7 +5256,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/b446d047-9be5-4862-99b0-498bd4c6a339",
+            "id": "http://localhost:8080/api/skills/b446d047-9be5-4862-99b0-498bd4c6a339",
             "uuid": "b446d047-9be5-4862-99b0-498bd4c6a339",
             "status": "draft",
             "publishDate": null,
@@ -5307,7 +5307,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/61e489c1-458e-4965-9230-6bb30dcb744b",
+            "id": "http://localhost:8080/api/skills/61e489c1-458e-4965-9230-6bb30dcb744b",
             "uuid": "61e489c1-458e-4965-9230-6bb30dcb744b",
             "status": "draft",
             "publishDate": null,
@@ -5353,7 +5353,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/87407dd2-b7ee-4552-8007-b611ef02a364",
+            "id": "http://localhost:8080/api/skills/87407dd2-b7ee-4552-8007-b611ef02a364",
             "uuid": "87407dd2-b7ee-4552-8007-b611ef02a364",
             "status": "draft",
             "publishDate": null,
@@ -5384,7 +5384,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/ff80707d-2b55-4673-99cf-8265d74053a1",
+            "id": "http://localhost:8080/api/skills/ff80707d-2b55-4673-99cf-8265d74053a1",
             "uuid": "ff80707d-2b55-4673-99cf-8265d74053a1",
             "status": "draft",
             "publishDate": null,
@@ -5430,7 +5430,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/3352da1f-7bba-48cc-85c7-e0700ec8d691",
+            "id": "http://localhost:8080/api/skills/3352da1f-7bba-48cc-85c7-e0700ec8d691",
             "uuid": "3352da1f-7bba-48cc-85c7-e0700ec8d691",
             "status": "draft",
             "publishDate": null,
@@ -5512,7 +5512,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/9f83d714-5d81-471f-8827-8e8fa9a15459",
+            "id": "http://localhost:8080/api/skills/9f83d714-5d81-471f-8827-8e8fa9a15459",
             "uuid": "9f83d714-5d81-471f-8827-8e8fa9a15459",
             "status": "draft",
             "publishDate": null,
@@ -5629,7 +5629,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/8146a0dd-cf75-4c1e-b101-53a10f967983",
+            "id": "http://localhost:8080/api/skills/8146a0dd-cf75-4c1e-b101-53a10f967983",
             "uuid": "8146a0dd-cf75-4c1e-b101-53a10f967983",
             "status": "draft",
             "publishDate": null,
@@ -5773,7 +5773,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/4975b50f-3d91-45f9-95e6-8fd8b498f7b0",
+            "id": "http://localhost:8080/api/skills/4975b50f-3d91-45f9-95e6-8fd8b498f7b0",
             "uuid": "4975b50f-3d91-45f9-95e6-8fd8b498f7b0",
             "status": "draft",
             "publishDate": null,
@@ -6079,7 +6079,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/8d6c025c-b85b-480d-a652-1c3da696da88",
+            "id": "http://localhost:8080/api/skills/8d6c025c-b85b-480d-a652-1c3da696da88",
             "uuid": "8d6c025c-b85b-480d-a652-1c3da696da88",
             "status": "draft",
             "publishDate": null,
@@ -6225,7 +6225,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/ccd2cb8d-0734-463c-8787-cd01853cb274",
+            "id": "http://localhost:8080/api/skills/ccd2cb8d-0734-463c-8787-cd01853cb274",
             "uuid": "ccd2cb8d-0734-463c-8787-cd01853cb274",
             "status": "draft",
             "publishDate": null,
@@ -6277,7 +6277,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/63cf37de-2f99-4733-baae-7d1986f44f1a",
+            "id": "http://localhost:8080/api/skills/63cf37de-2f99-4733-baae-7d1986f44f1a",
             "uuid": "63cf37de-2f99-4733-baae-7d1986f44f1a",
             "status": "draft",
             "publishDate": null,
@@ -6329,7 +6329,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/ee6a6406-ee69-4ada-979c-ac0cfc55761b",
+            "id": "http://localhost:8080/api/skills/ee6a6406-ee69-4ada-979c-ac0cfc55761b",
             "uuid": "ee6a6406-ee69-4ada-979c-ac0cfc55761b",
             "status": "draft",
             "publishDate": null,
@@ -6381,7 +6381,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/0d1e5328-ff36-411c-9af7-04c7f2cc71ae",
+            "id": "http://localhost:8080/api/skills/0d1e5328-ff36-411c-9af7-04c7f2cc71ae",
             "uuid": "0d1e5328-ff36-411c-9af7-04c7f2cc71ae",
             "status": "draft",
             "publishDate": null,
@@ -6433,7 +6433,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/e3877913-689e-4a4b-aa61-668400face90",
+            "id": "http://localhost:8080/api/skills/e3877913-689e-4a4b-aa61-668400face90",
             "uuid": "e3877913-689e-4a4b-aa61-668400face90",
             "status": "draft",
             "publishDate": null,
@@ -6505,7 +6505,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/9de45bf8-d719-4df7-8dc3-3e14ee59e7da",
+            "id": "http://localhost:8080/api/skills/9de45bf8-d719-4df7-8dc3-3e14ee59e7da",
             "uuid": "9de45bf8-d719-4df7-8dc3-3e14ee59e7da",
             "status": "draft",
             "publishDate": null,
@@ -6577,7 +6577,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/92d2f1bb-fd7b-41ae-a851-82ac5045a39c",
+            "id": "http://localhost:8080/api/skills/92d2f1bb-fd7b-41ae-a851-82ac5045a39c",
             "uuid": "92d2f1bb-fd7b-41ae-a851-82ac5045a39c",
             "status": "draft",
             "publishDate": null,
@@ -6649,7 +6649,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/a74d0aaf-8253-4e90-a09b-2110b5d6d940",
+            "id": "http://localhost:8080/api/skills/a74d0aaf-8253-4e90-a09b-2110b5d6d940",
             "uuid": "a74d0aaf-8253-4e90-a09b-2110b5d6d940",
             "status": "draft",
             "publishDate": null,
@@ -6721,7 +6721,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/9d32dbf2-e0fe-4124-9c86-f8a671536163",
+            "id": "http://localhost:8080/api/skills/9d32dbf2-e0fe-4124-9c86-f8a671536163",
             "uuid": "9d32dbf2-e0fe-4124-9c86-f8a671536163",
             "status": "draft",
             "publishDate": null,
@@ -6793,7 +6793,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/2baa8aac-6b61-47e4-babb-d7005064fe0a",
+            "id": "http://localhost:8080/api/skills/2baa8aac-6b61-47e4-babb-d7005064fe0a",
             "uuid": "2baa8aac-6b61-47e4-babb-d7005064fe0a",
             "status": "draft",
             "publishDate": null,
@@ -6835,7 +6835,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/23882016-6e4d-46eb-8633-ef9b0c17e817",
+            "id": "http://localhost:8080/api/skills/23882016-6e4d-46eb-8633-ef9b0c17e817",
             "uuid": "23882016-6e4d-46eb-8633-ef9b0c17e817",
             "status": "draft",
             "publishDate": null,
@@ -6877,7 +6877,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/28c211a7-30e2-4afc-a453-2ee6b9f63019",
+            "id": "http://localhost:8080/api/skills/28c211a7-30e2-4afc-a453-2ee6b9f63019",
             "uuid": "28c211a7-30e2-4afc-a453-2ee6b9f63019",
             "status": "draft",
             "publishDate": null,
@@ -6919,7 +6919,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/40037570-5c4e-4f0d-ad64-8907ae6cd70e",
+            "id": "http://localhost:8080/api/skills/40037570-5c4e-4f0d-ad64-8907ae6cd70e",
             "uuid": "40037570-5c4e-4f0d-ad64-8907ae6cd70e",
             "status": "draft",
             "publishDate": null,
@@ -6961,7 +6961,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/306f0530-8ed2-48c7-a01b-dc0d7f09843b",
+            "id": "http://localhost:8080/api/skills/306f0530-8ed2-48c7-a01b-dc0d7f09843b",
             "uuid": "306f0530-8ed2-48c7-a01b-dc0d7f09843b",
             "status": "draft",
             "publishDate": null,
@@ -7003,7 +7003,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/dab0b23a-ef96-44a0-9dd6-0fabfee37dbe",
+            "id": "http://localhost:8080/api/skills/dab0b23a-ef96-44a0-9dd6-0fabfee37dbe",
             "uuid": "dab0b23a-ef96-44a0-9dd6-0fabfee37dbe",
             "status": "draft",
             "publishDate": null,
@@ -7050,7 +7050,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/bda8325c-ab23-464b-b057-a550391627ee",
+            "id": "http://localhost:8080/api/skills/bda8325c-ab23-464b-b057-a550391627ee",
             "uuid": "bda8325c-ab23-464b-b057-a550391627ee",
             "status": "draft",
             "publishDate": null,
@@ -7102,7 +7102,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/6504936c-e60a-48ef-b009-cad251477685",
+            "id": "http://localhost:8080/api/skills/6504936c-e60a-48ef-b009-cad251477685",
             "uuid": "6504936c-e60a-48ef-b009-cad251477685",
             "status": "draft",
             "publishDate": null,
@@ -7304,7 +7304,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/5e01d555-b3d6-4913-8e69-d469d07f95fc",
+            "id": "http://localhost:8080/api/skills/5e01d555-b3d6-4913-8e69-d469d07f95fc",
             "uuid": "5e01d555-b3d6-4913-8e69-d469d07f95fc",
             "status": "draft",
             "publishDate": null,
@@ -7417,7 +7417,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/992772c8-301c-4b33-8064-3a5f081d93ff",
+            "id": "http://localhost:8080/api/skills/992772c8-301c-4b33-8064-3a5f081d93ff",
             "uuid": "992772c8-301c-4b33-8064-3a5f081d93ff",
             "status": "draft",
             "publishDate": null,
@@ -7565,7 +7565,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/215f6d22-9e08-4713-886b-0613fb733f1d",
+            "id": "http://localhost:8080/api/skills/215f6d22-9e08-4713-886b-0613fb733f1d",
             "uuid": "215f6d22-9e08-4713-886b-0613fb733f1d",
             "status": "draft",
             "publishDate": null,
@@ -7776,7 +7776,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/1ff5a7e3-b646-465c-8128-03c6d514851f",
+            "id": "http://localhost:8080/api/skills/1ff5a7e3-b646-465c-8128-03c6d514851f",
             "uuid": "1ff5a7e3-b646-465c-8128-03c6d514851f",
             "status": "draft",
             "publishDate": null,
@@ -7828,7 +7828,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/651be4fa-683f-4585-990d-71aeb45a16b9",
+            "id": "http://localhost:8080/api/skills/651be4fa-683f-4585-990d-71aeb45a16b9",
             "uuid": "651be4fa-683f-4585-990d-71aeb45a16b9",
             "status": "draft",
             "publishDate": null,
@@ -7880,7 +7880,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/108a9793-c5c4-436b-a3a1-b1b3d75ddcc3",
+            "id": "http://localhost:8080/api/skills/108a9793-c5c4-436b-a3a1-b1b3d75ddcc3",
             "uuid": "108a9793-c5c4-436b-a3a1-b1b3d75ddcc3",
             "status": "draft",
             "publishDate": null,
@@ -7912,7 +7912,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/382abe44-65ef-4212-9f4f-003acffa61c0",
+            "id": "http://localhost:8080/api/skills/382abe44-65ef-4212-9f4f-003acffa61c0",
             "uuid": "382abe44-65ef-4212-9f4f-003acffa61c0",
             "status": "draft",
             "publishDate": null,
@@ -7964,7 +7964,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/e64d5d00-524a-49d1-b94a-85a7919ddbc2",
+            "id": "http://localhost:8080/api/skills/e64d5d00-524a-49d1-b94a-85a7919ddbc2",
             "uuid": "e64d5d00-524a-49d1-b94a-85a7919ddbc2",
             "status": "draft",
             "publishDate": null,
@@ -8016,7 +8016,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/cc31e419-d6c1-433a-b0dc-2c46a91d26c7",
+            "id": "http://localhost:8080/api/skills/cc31e419-d6c1-433a-b0dc-2c46a91d26c7",
             "uuid": "cc31e419-d6c1-433a-b0dc-2c46a91d26c7",
             "status": "draft",
             "publishDate": null,
@@ -8068,7 +8068,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/fa4575c1-7875-4369-96b8-de36e659dc7f",
+            "id": "http://localhost:8080/api/skills/fa4575c1-7875-4369-96b8-de36e659dc7f",
             "uuid": "fa4575c1-7875-4369-96b8-de36e659dc7f",
             "status": "draft",
             "publishDate": null,
@@ -8120,7 +8120,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/55829d1d-7b9b-45b4-9aa4-2ef052666ecc",
+            "id": "http://localhost:8080/api/skills/55829d1d-7b9b-45b4-9aa4-2ef052666ecc",
             "uuid": "55829d1d-7b9b-45b4-9aa4-2ef052666ecc",
             "status": "draft",
             "publishDate": null,
@@ -8162,7 +8162,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/8cbf6316-7a66-438f-8902-7cf291d1ba8d",
+            "id": "http://localhost:8080/api/skills/8cbf6316-7a66-438f-8902-7cf291d1ba8d",
             "uuid": "8cbf6316-7a66-438f-8902-7cf291d1ba8d",
             "status": "draft",
             "publishDate": null,
@@ -8204,7 +8204,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/b688812b-e9dd-4a70-9e6a-163b54e3c589",
+            "id": "http://localhost:8080/api/skills/b688812b-e9dd-4a70-9e6a-163b54e3c589",
             "uuid": "b688812b-e9dd-4a70-9e6a-163b54e3c589",
             "status": "draft",
             "publishDate": null,
@@ -8236,7 +8236,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/9a691955-d2fc-419e-8cc6-4a1229fa60aa",
+            "id": "http://localhost:8080/api/skills/9a691955-d2fc-419e-8cc6-4a1229fa60aa",
             "uuid": "9a691955-d2fc-419e-8cc6-4a1229fa60aa",
             "status": "draft",
             "publishDate": null,
@@ -8268,7 +8268,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/3851c4dd-4323-4a93-a6fd-0959cab0502f",
+            "id": "http://localhost:8080/api/skills/3851c4dd-4323-4a93-a6fd-0959cab0502f",
             "uuid": "3851c4dd-4323-4a93-a6fd-0959cab0502f",
             "status": "draft",
             "publishDate": null,
@@ -8320,7 +8320,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/f4aade51-c0cb-4dc7-bfa8-4f76f47b31e2",
+            "id": "http://localhost:8080/api/skills/f4aade51-c0cb-4dc7-bfa8-4f76f47b31e2",
             "uuid": "f4aade51-c0cb-4dc7-bfa8-4f76f47b31e2",
             "status": "draft",
             "publishDate": null,
@@ -8367,7 +8367,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/bbcefc77-2fbf-445e-9c8b-2feb5e93fd7c",
+            "id": "http://localhost:8080/api/skills/bbcefc77-2fbf-445e-9c8b-2feb5e93fd7c",
             "uuid": "bbcefc77-2fbf-445e-9c8b-2feb5e93fd7c",
             "status": "draft",
             "publishDate": null,
@@ -8429,7 +8429,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/5837827b-a661-457b-b99a-be689a0ba0af",
+            "id": "http://localhost:8080/api/skills/5837827b-a661-457b-b99a-be689a0ba0af",
             "uuid": "5837827b-a661-457b-b99a-be689a0ba0af",
             "status": "draft",
             "publishDate": null,
@@ -8481,7 +8481,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/b4262287-db29-4c09-a28e-468080a16997",
+            "id": "http://localhost:8080/api/skills/b4262287-db29-4c09-a28e-468080a16997",
             "uuid": "b4262287-db29-4c09-a28e-468080a16997",
             "status": "draft",
             "publishDate": null,
@@ -8533,7 +8533,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/8ec1a7f0-db39-4dfb-ab0c-781f80ca0d44",
+            "id": "http://localhost:8080/api/skills/8ec1a7f0-db39-4dfb-ab0c-781f80ca0d44",
             "uuid": "8ec1a7f0-db39-4dfb-ab0c-781f80ca0d44",
             "status": "draft",
             "publishDate": null,
@@ -8585,7 +8585,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/1e0582fb-2465-40c8-a3b8-912fa77c34bd",
+            "id": "http://localhost:8080/api/skills/1e0582fb-2465-40c8-a3b8-912fa77c34bd",
             "uuid": "1e0582fb-2465-40c8-a3b8-912fa77c34bd",
             "status": "draft",
             "publishDate": null,
@@ -8637,7 +8637,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/ae8cea3d-303a-4c5b-9d94-39d5dd21ca66",
+            "id": "http://localhost:8080/api/skills/ae8cea3d-303a-4c5b-9d94-39d5dd21ca66",
             "uuid": "ae8cea3d-303a-4c5b-9d94-39d5dd21ca66",
             "status": "draft",
             "publishDate": null,
@@ -8689,7 +8689,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/c53058e4-1f69-44c7-bb57-107e1d46fb1b",
+            "id": "http://localhost:8080/api/skills/c53058e4-1f69-44c7-bb57-107e1d46fb1b",
             "uuid": "c53058e4-1f69-44c7-bb57-107e1d46fb1b",
             "status": "draft",
             "publishDate": null,
@@ -8741,7 +8741,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/d2601560-fb2b-42fd-9927-82edbfaacde4",
+            "id": "http://localhost:8080/api/skills/d2601560-fb2b-42fd-9927-82edbfaacde4",
             "uuid": "d2601560-fb2b-42fd-9927-82edbfaacde4",
             "status": "draft",
             "publishDate": null,
@@ -8793,7 +8793,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/4eb7d26a-45f1-47eb-99a5-a65492398816",
+            "id": "http://localhost:8080/api/skills/4eb7d26a-45f1-47eb-99a5-a65492398816",
             "uuid": "4eb7d26a-45f1-47eb-99a5-a65492398816",
             "status": "draft",
             "publishDate": null,
@@ -8845,7 +8845,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/48119645-4246-4665-944d-cf30bbfcfd6f",
+            "id": "http://localhost:8080/api/skills/48119645-4246-4665-944d-cf30bbfcfd6f",
             "uuid": "48119645-4246-4665-944d-cf30bbfcfd6f",
             "status": "draft",
             "publishDate": null,
@@ -8887,7 +8887,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/14340519-8581-4a60-975b-dcd38fce43f5",
+            "id": "http://localhost:8080/api/skills/14340519-8581-4a60-975b-dcd38fce43f5",
             "uuid": "14340519-8581-4a60-975b-dcd38fce43f5",
             "status": "draft",
             "publishDate": null,
@@ -8929,7 +8929,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/0da76199-e9a1-47a4-8978-6b992e31b708",
+            "id": "http://localhost:8080/api/skills/0da76199-e9a1-47a4-8978-6b992e31b708",
             "uuid": "0da76199-e9a1-47a4-8978-6b992e31b708",
             "status": "draft",
             "publishDate": null,
@@ -8971,7 +8971,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/7d1dbf03-08dd-4afa-b991-169dfcf164a1",
+            "id": "http://localhost:8080/api/skills/7d1dbf03-08dd-4afa-b991-169dfcf164a1",
             "uuid": "7d1dbf03-08dd-4afa-b991-169dfcf164a1",
             "status": "draft",
             "publishDate": null,
@@ -9013,7 +9013,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/8b32a4f3-ded8-4a29-934d-a5d36ce4d4c1",
+            "id": "http://localhost:8080/api/skills/8b32a4f3-ded8-4a29-934d-a5d36ce4d4c1",
             "uuid": "8b32a4f3-ded8-4a29-934d-a5d36ce4d4c1",
             "status": "draft",
             "publishDate": null,
@@ -9050,7 +9050,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/adee51ec-e47a-4beb-88aa-d248279caef0",
+            "id": "http://localhost:8080/api/skills/adee51ec-e47a-4beb-88aa-d248279caef0",
             "uuid": "adee51ec-e47a-4beb-88aa-d248279caef0",
             "status": "draft",
             "publishDate": null,
@@ -9087,7 +9087,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/25cda411-57d4-49e3-8d81-b31e0d1dc70b",
+            "id": "http://localhost:8080/api/skills/25cda411-57d4-49e3-8d81-b31e0d1dc70b",
             "uuid": "25cda411-57d4-49e3-8d81-b31e0d1dc70b",
             "status": "draft",
             "publishDate": null,
@@ -9119,7 +9119,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/e8277086-a740-49cc-82a3-fcaf32a93e3a",
+            "id": "http://localhost:8080/api/skills/e8277086-a740-49cc-82a3-fcaf32a93e3a",
             "uuid": "e8277086-a740-49cc-82a3-fcaf32a93e3a",
             "status": "draft",
             "publishDate": null,
@@ -9156,7 +9156,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/ba5749c4-f183-44c9-b589-fb24d7501e9e",
+            "id": "http://localhost:8080/api/skills/ba5749c4-f183-44c9-b589-fb24d7501e9e",
             "uuid": "ba5749c4-f183-44c9-b589-fb24d7501e9e",
             "status": "draft",
             "publishDate": null,
@@ -9203,7 +9203,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/5419478f-2eaf-409f-a357-2f439095b26e",
+            "id": "http://localhost:8080/api/skills/5419478f-2eaf-409f-a357-2f439095b26e",
             "uuid": "5419478f-2eaf-409f-a357-2f439095b26e",
             "status": "draft",
             "publishDate": null,
@@ -9255,7 +9255,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/f29c2652-b2fc-4990-82a4-010c4c1c7fbd",
+            "id": "http://localhost:8080/api/skills/f29c2652-b2fc-4990-82a4-010c4c1c7fbd",
             "uuid": "f29c2652-b2fc-4990-82a4-010c4c1c7fbd",
             "status": "draft",
             "publishDate": null,
@@ -9307,7 +9307,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/7e5079ae-7303-49bc-a1aa-03e8dc410909",
+            "id": "http://localhost:8080/api/skills/7e5079ae-7303-49bc-a1aa-03e8dc410909",
             "uuid": "7e5079ae-7303-49bc-a1aa-03e8dc410909",
             "status": "draft",
             "publishDate": null,
@@ -9359,7 +9359,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/2e2f1980-a4b1-4230-9ea7-d50616752469",
+            "id": "http://localhost:8080/api/skills/2e2f1980-a4b1-4230-9ea7-d50616752469",
             "uuid": "2e2f1980-a4b1-4230-9ea7-d50616752469",
             "status": "draft",
             "publishDate": null,
@@ -9411,7 +9411,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/10f72479-1339-4f70-9842-4ebd377980a2",
+            "id": "http://localhost:8080/api/skills/10f72479-1339-4f70-9842-4ebd377980a2",
             "uuid": "10f72479-1339-4f70-9842-4ebd377980a2",
             "status": "draft",
             "publishDate": null,
@@ -9463,7 +9463,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/c5bff240-bd5a-4921-bd56-c698b8f44f1c",
+            "id": "http://localhost:8080/api/skills/c5bff240-bd5a-4921-bd56-c698b8f44f1c",
             "uuid": "c5bff240-bd5a-4921-bd56-c698b8f44f1c",
             "status": "draft",
             "publishDate": null,
@@ -9581,7 +9581,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/3c7f4eda-e1f8-4d1a-ada7-bdab342ba42a",
+            "id": "http://localhost:8080/api/skills/3c7f4eda-e1f8-4d1a-ada7-bdab342ba42a",
             "uuid": "3c7f4eda-e1f8-4d1a-ada7-bdab342ba42a",
             "status": "draft",
             "publishDate": null,
@@ -9722,7 +9722,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/3f637a4d-20c2-46bb-b839-3b1af5a0a32d",
+            "id": "http://localhost:8080/api/skills/3f637a4d-20c2-46bb-b839-3b1af5a0a32d",
             "uuid": "3f637a4d-20c2-46bb-b839-3b1af5a0a32d",
             "status": "draft",
             "publishDate": null,
@@ -9861,7 +9861,7 @@
             ]
         },
         {
-            "id": "-http://localhost:8080/api/skills/42479fd2-6db0-42c2-8d1c-870fc435a1d8",
+            "id": "http://localhost:8080/api/skills/42479fd2-6db0-42c2-8d1c-870fc435a1d8",
             "uuid": "42479fd2-6db0-42c2-8d1c-870fc435a1d8",
             "status": "draft",
             "publishDate": null,

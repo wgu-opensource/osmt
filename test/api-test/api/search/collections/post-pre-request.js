@@ -1,3 +1,11 @@
+let sortId = pm.request.url.query.indexOf('sort');
+if (sortId < 0) {
+  pm.request.url.query.add("sort=name.asc");
+}
+else {
+  pm.request.url.query.idx(sortId).value = "name.asc";
+}
+
 let search = {
   "advanced": {
     "collectionName": "ma",

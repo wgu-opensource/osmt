@@ -3,7 +3,12 @@ package edu.wgu.osmt.collection
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
-import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.api.model.ApiCollection
+import edu.wgu.osmt.api.model.ApiCollectionUpdate
+import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.ApiSkillListUpdate
+import edu.wgu.osmt.api.model.ApiStringListUpdate
+import edu.wgu.osmt.api.model.CollectionSortEnum
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
@@ -13,7 +18,15 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.task.*
+import edu.wgu.osmt.task.AppliesToType
+import edu.wgu.osmt.task.CsvTask
+import edu.wgu.osmt.task.PublishTask
+import edu.wgu.osmt.task.RemoveCollectionSkillsTask
+import edu.wgu.osmt.task.Task
+import edu.wgu.osmt.task.TaskMessageService
+import edu.wgu.osmt.task.TaskResult
+import edu.wgu.osmt.task.UpdateCollectionSkillsTask
+import edu.wgu.osmt.task.XlsxTask
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
@@ -23,20 +36,27 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 
 @Controller
 @Transactional
 class CollectionController @Autowired constructor(
-    val collectionRepository: CollectionRepository,
-    val richSkillRepository: RichSkillRepository,
-    val taskMessageService: TaskMessageService,
-    val auditLogRepository: AuditLogRepository,
-    val collectionEsRepo: CollectionEsRepo,
-    val appConfig: AppConfig,
-    val oAuthHelper: OAuthHelper
+        val collectionRepository: CollectionRepository,
+        val richSkillRepository: RichSkillRepository,
+        val taskMessageService: TaskMessageService,
+        val auditLogRepository: AuditLogRepository,
+        val collectionEsRepo: CollectionEsRepo,
+        val appConfig: AppConfig,
+        val oAuthHelper: OAuthHelper
 ): HasAllPaginated<CollectionDoc> {
     override val elasticRepository = collectionEsRepo
 
@@ -79,8 +99,8 @@ class CollectionController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createCollections(
-        @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
-        @AuthenticationPrincipal user: Jwt?
+            @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
+            @AuthenticationPrincipal user: Jwt?
     ): List<ApiCollection> {
         return collectionRepository.createFromApi(
             apiCollectionUpdates,
@@ -97,9 +117,9 @@ class CollectionController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateCollection(
-        @PathVariable uuid: String,
-        @RequestBody apiUpdate: ApiCollectionUpdate,
-        @AuthenticationPrincipal user: Jwt?
+            @PathVariable uuid: String,
+            @RequestBody apiUpdate: ApiCollectionUpdate,
+            @AuthenticationPrincipal user: Jwt?
     ): ApiCollection {
 
         if (oAuthHelper.hasRole(appConfig.roleCurator) && !oAuthHelper.isArchiveRelated(apiUpdate.publishStatus)) {
@@ -123,13 +143,13 @@ class CollectionController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateSkills(
-        @PathVariable uuid: String,
-        @RequestBody skillListUpdate: ApiSkillListUpdate,
-        @RequestParam(
+            @PathVariable uuid: String,
+            @RequestBody skillListUpdate: ApiSkillListUpdate,
+            @RequestParam(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: List<String>,
-        @AuthenticationPrincipal user: Jwt?
+            @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = oAuthHelper.readableUserName(user))
@@ -142,16 +162,16 @@ class CollectionController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun publishCollections(
-        @RequestBody search: ApiSearch,
-        @RequestParam(
+            @RequestBody search: ApiSearch,
+            @RequestParam(
             required = false,
             defaultValue = "Published"
         ) newStatus: String,
-        @RequestParam(
+            @RequestParam(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) filterByStatus: List<String>,
-        @AuthenticationPrincipal user: Jwt?
+            @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         val filterStatuses = filterByStatus.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val publishStatus = PublishStatus.forApiValue(newStatus) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)

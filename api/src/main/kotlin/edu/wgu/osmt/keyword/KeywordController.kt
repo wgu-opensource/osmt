@@ -3,7 +3,11 @@ package edu.wgu.osmt.keyword
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
-import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.api.model.ApiFilteredSearch
+import edu.wgu.osmt.api.model.ApiKeyword
+import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.KeywordSortEnum
+import edu.wgu.osmt.api.model.SkillSortEnum
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
@@ -18,12 +22,21 @@ import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.wrapAsExpression
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.*
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -96,17 +109,17 @@ class KeywordController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCategorySkills (
-        uriComponentsBuilder: UriComponentsBuilder,
-        @PathVariable identifier: String,
-        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
-        @RequestParam(required = false, defaultValue = "0") from: Int,
-        @RequestParam(
+            uriComponentsBuilder: UriComponentsBuilder,
+            @PathVariable identifier: String,
+            @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+            @RequestParam(required = false, defaultValue = "0") from: Int,
+            @RequestParam(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
-        @RequestParam(required = false) sort: String? = null,
-        @RequestBody(required = false) apiSearch: ApiSearch? = null,
-        @AuthenticationPrincipal user: Jwt? = null
+            @RequestParam(required = false) sort: String? = null,
+            @RequestBody(required = false) apiSearch: ApiSearch? = null,
+            @AuthenticationPrincipal user: Jwt? = null
     ): HttpEntity<List<RichSkillDoc>> {
         val sortEnum = sort?.let{ SkillSortEnum.forApiValue(it)}
 
@@ -186,14 +199,14 @@ class KeywordController @Autowired constructor(
     }
 
     private fun searchRelatedSkills (
-        uriComponentsBuilder: UriComponentsBuilder,
-        keyword: KeywordDao,
-        size: Int,
-        from: Int,
-        statusFilters: Array<String>,
-        sort: SkillSortEnum,
-        apiSearch: ApiSearch,
-        user: Jwt?
+            uriComponentsBuilder: UriComponentsBuilder,
+            keyword: KeywordDao,
+            size: Int,
+            from: Int,
+            statusFilters: Array<String>,
+            sort: SkillSortEnum,
+            apiSearch: ApiSearch,
+            user: Jwt?
     ): HttpEntity<List<RichSkillDoc>> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)

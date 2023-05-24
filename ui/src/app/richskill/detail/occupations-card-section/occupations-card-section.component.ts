@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core"
-import {IJobCode} from "../../../job-codes/Jobcode"
+import {IJobCode} from "../../../metadata/job-codes/Jobcode"
 
 @Component({
   selector: "app-occupations-card-section",

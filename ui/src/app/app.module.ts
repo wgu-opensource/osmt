@@ -16,8 +16,8 @@ import {HeaderComponent} from "./navigation/header.component"
 import {FooterComponent} from "./navigation/footer.component"
 import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component"
 import {ToastComponent} from "./toast/toast.component"
-import {PillComponent} from "./core/pill/pill.component";
-import {PillGroupComponent} from "./core/pill/group/pill-group.component";
+import {PillComponent} from "./core/pill/pill.component"
+import {PillGroupComponent} from "./core/pill/group/pill-group.component"
 import {AuthService} from "./auth/auth-service"
 import {AuthGuard} from "./auth/auth.guard"
 import {CommoncontrolsComponent} from "./navigation/commoncontrols.component"
@@ -113,6 +113,14 @@ import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collecti
 import { SizePaginationComponent } from "./table/skills-library-table/size-pagination/size-pagination.component"
 import {OsmtTableModule} from "./table/osmt-table.module"
 import { getBaseApi } from "./api-versions"
+import { NoopAnimationsModule } from "@angular/platform-browser/animations"
+import { MatMenuModule } from "@angular/material/menu"
+import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
+import { JobCodeListRowComponent } from "./metadata/job-codes/job-code-list-row/job-code-list-row.component"
+import { JobCodeTableComponent } from "./metadata/job-codes/job-code-table/job-code-table.component"
+import { NamedReferenceListRowComponent } from "./metadata/named-references/named-reference-list-row/named-reference-list-row.component"
+import { NamedReferenceTableComponent } from "./metadata/named-references/named-reference-table/named-reference-table.component"
+import { MetadataSelectorComponent } from "./metadata/detail/metadata-selector/metadata-selector.component"
 import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
 import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
 import { BatchImportCollectionComponent } from './collection/create-collection/batch-import-collection/batch-import-collection.component'
@@ -237,6 +245,13 @@ export function initializeApp(
     ConvertToCollectionComponent,
     SizePaginationComponent,
     BatchImportCollectionComponent,
+    MetadataListComponent,
+    JobCodeListRowComponent,
+    JobCodeTableComponent,
+    NamedReferenceListRowComponent,
+    NamedReferenceTableComponent,
+    MetadataSelectorComponent,
+    InlineHeadingComponent
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),
@@ -249,7 +264,9 @@ export function initializeApp(
     OsmtCoreModule,
     OsmtFormModule,
     FormsModule,
-    OsmtTableModule
+    OsmtTableModule,
+    NoopAnimationsModule,
+    MatMenuModule
   ],
   providers: [
     EnvironmentService,

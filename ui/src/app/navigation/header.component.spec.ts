@@ -14,6 +14,7 @@ import {ButtonAction} from "../auth/auth-roles"
 import {By} from "@angular/platform-browser"
 import { Idle, IdleExpiry } from "@ng-idle/core"
 import { Keepalive } from "@ng-idle/keepalive"
+import { MatMenuModule } from "@angular/material/menu";
 
 describe("HeaderComponent", () => {
 
@@ -47,7 +48,8 @@ describe("HeaderComponent", () => {
             path: "skills",
             component: RichSkillsLibraryComponent
           }
-        ])
+        ]),
+        MatMenuModule
       ]
     }).compileComponents()
   })

@@ -1,5 +1,5 @@
-import { createMockJobcode } from "test/resource/mock-data"
-import { deepEqualSkipOuterType, mismatched } from "../../../test/util/deep-equals"
+import { createMockJobcode } from "@test/resource/mock-data"
+import { deepEqualSkipOuterType, mismatched } from "@test/util/deep-equals"
 import { ApiJobCode, IJobCode } from "./Jobcode"
 
 

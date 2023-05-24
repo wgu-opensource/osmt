@@ -28,6 +28,8 @@ import {ConvertToCollectionComponent} from "./my-workspace/convert-to-collection
 import {
   BatchImportCollectionComponent
 } from "./collection/create-collection/batch-import-collection/batch-import-collection.component"
+import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
+
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -190,6 +192,11 @@ const routes: Routes = [
     data: {
       roles: ActionByRoles.get(ButtonAction.MyWorkspace)
     }
+  },
+  {
+    path: "metadata",
+    component: MetadataListComponent,
+    canActivate: [AuthGuard],
   },
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},

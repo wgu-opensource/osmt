@@ -4,11 +4,7 @@ import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.RoutePaths.SKILLS_FILTER
 import edu.wgu.osmt.api.GeneralApiException
-import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.ApiSkill
-import edu.wgu.osmt.api.model.ApiSkillUpdate
-import edu.wgu.osmt.api.model.SkillSortEnum
-import edu.wgu.osmt.api.model.SortOrder
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
@@ -17,38 +13,18 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.elasticsearch.PaginatedLinks
 import edu.wgu.osmt.io.csv.RichSkillCsvExport
-import edu.wgu.osmt.io.xlsx.RichSkillXlsxExport
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.task.AppliesToType
-import edu.wgu.osmt.task.CreateSkillsTask
-import edu.wgu.osmt.task.CsvTask
-import edu.wgu.osmt.task.ExportSkillsToCsvTask
-import edu.wgu.osmt.task.ExportSkillsToXlsxTask
-import edu.wgu.osmt.task.PublishTask
-import edu.wgu.osmt.task.Task
-import edu.wgu.osmt.task.TaskMessageService
-import edu.wgu.osmt.task.TaskResult
-import edu.wgu.osmt.task.XlsxTask
+import edu.wgu.osmt.task.*
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -84,6 +60,25 @@ class RichSkillController @Autowired constructor(
         }
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
     }
+
+    @GetMapping(RoutePaths.V2_SKILLS_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun allPaginatedV2(
+            uriComponentsBuilder: UriComponentsBuilder,
+            size: Int,
+            from: Int,
+            status: Array<String>,
+            sort: String?,
+            @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<List<RichSkillDocV2>> {
+        if (!appConfig.allowPublicLists && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+        val paginated = super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
+        val v2Body = paginated.body?.map { RichSkillDocV2.fromCurrent(it) }
+        return ResponseEntity.status(200).headers(paginated.headers).body(v2Body)
+    }
+
     @PostMapping(SKILLS_FILTER, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun allPaginatedWithFilters(
@@ -129,7 +124,7 @@ class RichSkillController @Autowired constructor(
             .body(searchHits.map { it.content }.toList())
     }
 
-    @PostMapping(RoutePaths.SKILLS_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [RoutePaths.SKILLS_CREATE, RoutePaths.V2_SKILLS_CREATE], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createSkills(
         @RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
@@ -155,7 +150,22 @@ class RichSkillController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @RequestMapping(RoutePaths.SKILL_DETAIL, produces = [MediaType.TEXT_HTML_VALUE])
+    @GetMapping(RoutePaths.V2_SKILL_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun byUUIDv2(
+            @PathVariable uuid: String,
+            @AuthenticationPrincipal user: Jwt?
+    ): ApiSkillV2? {
+        return richSkillRepository.findByUUID(uuid)?.let {
+            if (user == null && it.publishStatus() == PublishStatus.Unarchived) {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND)
+            }
+
+            ApiSkillV2.fromDao(it, appConfig)
+        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    }
+
+    @RequestMapping(path = [RoutePaths.SKILL_DETAIL, RoutePaths.V2_SKILL_DETAIL], produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(
         @PathVariable uuid: String,
         @AuthenticationPrincipal user: Jwt?
@@ -169,7 +179,7 @@ class RichSkillController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @RequestMapping(RoutePaths.SKILL_DETAIL, produces = ["text/csv"])
+    @RequestMapping(path = [RoutePaths.SKILL_DETAIL, RoutePaths.V2_SKILL_DETAIL], produces = ["text/csv"])
     fun byUUIDCsvView(
         @PathVariable uuid: String,
         @AuthenticationPrincipal user: Jwt?
@@ -209,7 +219,28 @@ class RichSkillController @Autowired constructor(
         return ApiSkill.fromDao(updatedSkill, appConfig)
     }
 
-    @PostMapping(RoutePaths.SKILL_PUBLISH, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.V2_SKILL_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun updateSkillV2(
+            @PathVariable uuid: String,
+            @RequestBody skillUpdate: ApiSkillUpdate, @AuthenticationPrincipal user: Jwt?
+    ): ApiSkillV2 {
+
+        if (oAuthHelper.hasRole(appConfig.roleCurator) && !oAuthHelper.isArchiveRelated(skillUpdate.publishStatus)) {
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        }
+
+        val existingSkill = richSkillRepository.findByUUID(uuid)
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        val updatedSkill =
+                richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, oAuthHelper.readableUserName(user), oAuthHelper.readableUserIdentifier(user))
+                        ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+
+        return ApiSkillV2.fromDao(updatedSkill, appConfig)
+    }
+
+    @PostMapping(path = [RoutePaths.SKILL_PUBLISH, RoutePaths.V2_SKILL_PUBLISH], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun publishSkills(
         @RequestBody search: ApiSearch,
@@ -242,7 +273,7 @@ class RichSkillController @Autowired constructor(
         return Task.processingResponse(task)
     }
 
-    @GetMapping(RoutePaths.SKILL_AUDIT_LOG, produces = ["application/json"])
+    @GetMapping(path = [RoutePaths.SKILL_AUDIT_LOG, RoutePaths.V2_SKILL_AUDIT_LOG], produces = ["application/json"])
     fun skillAuditLog(
         @PathVariable uuid: String
     ): HttpEntity<List<AuditLog>> {
@@ -256,7 +287,7 @@ class RichSkillController @Autowired constructor(
     }
 
     @Transactional(readOnly = true)
-    @GetMapping(RoutePaths.EXPORT_LIBRARY_CSV, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = [RoutePaths.EXPORT_LIBRARY_CSV, RoutePaths.V2_EXPORT_LIBRARY_CSV], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportLibraryCsv(
         @AuthenticationPrincipal user: Jwt?
@@ -311,6 +342,23 @@ class RichSkillController @Autowired constructor(
         val task = ExportSkillsToCsvTask(
             collectionUuid = "CustomList", richSkillEsRepo.getUuidsFromApiSearch(apiSearch, publishStatuses, Pageable.unpaged(), user, StringUtils.EMPTY)
         )
+        taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsv, task)
+
+        return Task.processingResponse(task)
+    }
+
+    @Transactional(readOnly = true)
+    @PostMapping(RoutePaths.V2_EXPORT_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun exportCustomList(
+            @RequestBody uuids: List<String>?,
+            @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
+        if (!appConfig.allowPublicSearching && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+
+        val task = ExportSkillsToCsvTask(collectionUuid = "CustomList", uuids)
         taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsv, task)
 
         return Task.processingResponse(task)

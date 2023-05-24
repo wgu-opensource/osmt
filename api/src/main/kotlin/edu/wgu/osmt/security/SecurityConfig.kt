@@ -26,6 +26,12 @@ import edu.wgu.osmt.RoutePaths.TASK_DETAIL_BATCH
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_MEDIA
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_SKILLS
 import edu.wgu.osmt.RoutePaths.TASK_DETAIL_TEXT
+import edu.wgu.osmt.RoutePaths.V2_SKILLS_CREATE
+import edu.wgu.osmt.RoutePaths.V2_SKILLS_LIST
+import edu.wgu.osmt.RoutePaths.V2_SKILL_AUDIT_LOG
+import edu.wgu.osmt.RoutePaths.V2_SKILL_DETAIL
+import edu.wgu.osmt.RoutePaths.V2_SKILL_PUBLISH
+import edu.wgu.osmt.RoutePaths.V2_SKILL_UPDATE
 import edu.wgu.osmt.RoutePaths.WORKSPACE_PATH
 import edu.wgu.osmt.api.model.ApiError
 import edu.wgu.osmt.config.AppConfig
@@ -77,7 +83,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .httpBasic().disable()
             .authorizeRequests()
 
-            .mvcMatchers(GET, SKILL_AUDIT_LOG).authenticated()
+            .mvcMatchers(GET, SKILL_AUDIT_LOG, V2_SKILL_AUDIT_LOG).authenticated()
             .mvcMatchers(GET, COLLECTION_AUDIT_LOG).authenticated()
             .mvcMatchers(GET, TASK_DETAIL_SKILLS).authenticated()
             .mvcMatchers(GET, TASK_DETAIL_BATCH).authenticated()
@@ -89,7 +95,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(POST, SEARCH_COLLECTIONS).permitAll()
 
             // public canonical URL endpoints
-            .mvcMatchers(GET, SKILL_DETAIL).permitAll()
+            .mvcMatchers(GET, SKILL_DETAIL, V2_SKILL_DETAIL).permitAll()
             .mvcMatchers(GET, COLLECTION_DETAIL).permitAll()
 
             .mvcMatchers(POST, COLLECTION_SKILLS).permitAll()
@@ -117,18 +123,18 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
         if (appConfig.allowPublicLists) {
             http.authorizeRequests()
-                .mvcMatchers(GET, SKILLS_LIST).permitAll()
+                .mvcMatchers(GET, SKILLS_LIST, V2_SKILLS_LIST).permitAll()
                 .mvcMatchers(GET, COLLECTIONS_LIST).permitAll()
         } else {
             http.authorizeRequests()
-                .mvcMatchers(GET, SKILLS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+                .mvcMatchers(GET, SKILLS_LIST, V2_SKILLS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
                 .mvcMatchers(GET, COLLECTIONS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
         }
 
         http.authorizeRequests()
-            .mvcMatchers(POST, SKILL_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(POST, SKILLS_CREATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(POST, SKILL_PUBLISH).hasAnyAuthority(ADMIN)
+            .mvcMatchers(POST, SKILL_UPDATE, V2_SKILL_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(POST, SKILLS_CREATE, V2_SKILLS_CREATE).hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(POST, SKILL_PUBLISH, V2_SKILL_PUBLISH).hasAnyAuthority(ADMIN)
 
             .mvcMatchers(POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN, CURATOR)
             .mvcMatchers(POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
@@ -142,12 +148,12 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     fun configureForNoRoles(http: HttpSecurity) {
         http.authorizeRequests()
-            .mvcMatchers(GET, SKILLS_LIST).permitAll()
+            .mvcMatchers(GET, SKILLS_LIST, V2_SKILLS_LIST).permitAll()
             .mvcMatchers(GET, COLLECTIONS_LIST).permitAll()
 
-            .mvcMatchers(POST, SKILL_UPDATE).authenticated()
-            .mvcMatchers(POST, SKILLS_CREATE).authenticated()
-            .mvcMatchers(POST, SKILL_PUBLISH).authenticated()
+            .mvcMatchers(POST, SKILL_UPDATE, V2_SKILL_UPDATE).authenticated()
+            .mvcMatchers(POST, SKILLS_CREATE, V2_SKILLS_CREATE).authenticated()
+            .mvcMatchers(POST, SKILL_PUBLISH, V2_SKILL_PUBLISH).authenticated()
 
             .mvcMatchers(POST, COLLECTION_CREATE).authenticated()
             .mvcMatchers(POST, COLLECTION_PUBLISH).authenticated()

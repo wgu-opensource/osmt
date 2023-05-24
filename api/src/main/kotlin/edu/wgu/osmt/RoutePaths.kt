@@ -1,17 +1,28 @@
 package edu.wgu.osmt
 
 object RoutePaths {
-    const val API = "/api"
+    const val V2 = "/v2"
+    const val V3 = "/v3"
+    private const val LATEST = V3
+
+//latest api version
+    const val API = "/api$LATEST"
     const val SEARCH_PATH = "$API/search"
+
+    //export
     const val EXPORT = "$API/export"
     const val SEARCH_SKILLS = "$SEARCH_PATH/skills"
     const val EXPORT_LIBRARY = "$EXPORT/library"
     const val EXPORT_LIBRARY_CSV = "$EXPORT_LIBRARY/csv"
     const val EXPORT_LIBRARY_XLSX = "$EXPORT_LIBRARY/xlsx"
+    const val EXPORT_SKILLS = "$EXPORT/skills"
+    const val EXPORT_SKILLS_CSV = "$EXPORT_SKILLS/csv"
+    const val EXPORT_SKILLS_XLSX = "$EXPORT_SKILLS/xlsx"
     const val SEARCH_SIMILAR_SKILLS = "$SEARCH_SKILLS/similarity"
     const val SEARCH_SIMILARITIES = "$SEARCH_SKILLS/similarities"
     const val SEARCH_COLLECTIONS = "$SEARCH_PATH/collections"
 
+    //skills
     const val SKILLS_PATH = "$API/skills"
     const val SKILLS_LIST = SKILLS_PATH
     const val SKILLS_CREATE = SKILLS_PATH
@@ -21,15 +32,14 @@ object RoutePaths {
     const val SKILL_DETAIL_XLSX = "$SKILLS_PATH/{uuid}/xlsx"
     const val SKILL_UPDATE = "$SKILL_DETAIL/update"
     const val SKILL_AUDIT_LOG = "$SKILL_DETAIL/log"
-    const val EXPORT_SKILLS = "$EXPORT/skills"
-    const val EXPORT_SKILLS_CSV = "$EXPORT_SKILLS/csv"
-    const val EXPORT_SKILLS_XLSX = "$EXPORT_SKILLS/xlsx"
 
+    //categories
     const val CATEGORY_PATH = "$API/categories"
     const val CATEGORY_LIST = CATEGORY_PATH
     const val CATEGORY_DETAIL = "$CATEGORY_PATH/{identifier}"
     const val CATEGORY_SKILLS = "$CATEGORY_DETAIL/skills"
 
+    //collections
     const val COLLECTIONS_PATH = "$API/collections"
     const val COLLECTIONS_LIST = COLLECTIONS_PATH
     const val COLLECTION_CREATE = COLLECTIONS_PATH
@@ -57,6 +67,20 @@ object RoutePaths {
     const val ES_ADMIN = "$API/es-admin"
     const val ES_ADMIN_DELETE_INDICES = "$ES_ADMIN/delete-indices"
     const val ES_ADMIN_REINDEX = "$ES_ADMIN/reindex"
+
+//v2 api version
+    const val V2_API = "/api$V2"
+    const val V2_SKILLS_PATH = "$V2_API/skills"
+    const val V2_SKILLS_LIST = V2_SKILLS_PATH
+    const val V2_SKILLS_CREATE = V2_SKILLS_PATH
+    const val V2_SKILL_DETAIL = "$V2_SKILLS_PATH/{uuid}"
+    const val V2_SKILL_UPDATE = "$V2_SKILL_DETAIL/update"
+    const val V2_SKILL_PUBLISH = "$V2_SKILLS_PATH/publish"
+    const val V2_SKILL_AUDIT_LOG = "$V2_SKILL_DETAIL/log"
+    const val V2_EXPORT = "$V2_API/export"
+    const val V2_EXPORT_LIBRARY = "$V2_EXPORT/library"
+    const val V2_EXPORT_LIBRARY_CSV = "$V2_EXPORT_LIBRARY/csv"
+    const val V2_EXPORT_SKILLS = "$V2_EXPORT/skills"
 
     object QueryParams {
         const val FROM = "from"

@@ -16,7 +16,7 @@ import { ApiTaskResult, ITaskResult } from "../../task/ApiTaskResult"
 })
 export class JobCodeService extends AbstractDataService{
 
-  private baseServiceUrl = "api/metadata/jobcodes"
+  private baseServiceUrl = "api/v3/metadata/jobcodes"
 
   constructor(protected httpClient: HttpClient, protected authService: AuthService,
               protected router: Router, protected location: Location) {

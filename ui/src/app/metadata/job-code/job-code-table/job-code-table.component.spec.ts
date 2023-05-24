@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { JobCodeTableComponent } from "./job-code-table.component"
 import { ApiSortOrder } from "../../../richskill/ApiSkill"
-import { curry } from "lodash"
 
 describe("JobCodeTableComponent", () => {
   let component: JobCodeTableComponent

@@ -242,6 +242,7 @@ export function initializeApp(
     MetadataPublicComponent,
     InlineHeadingComponent,
     JobCodeParentsPipe,
+    InlineHeadingComponent
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

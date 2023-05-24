@@ -1,13 +1,6 @@
 package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.PaginationDefaults
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.jwt.Jwt
-import org.springframework.stereotype.Controller
-import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.util.UriComponentsBuilder
-
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.*
@@ -24,9 +17,15 @@ import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.wrapAsExpression
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.stereotype.Controller
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import org.springframework.web.util.UriComponentsBuilder
 
 @Controller
 @Transactional
@@ -38,7 +37,8 @@ class KeywordController @Autowired constructor(
     val oAuthHelper: OAuthHelper
 ) {
 
-    @GetMapping(RoutePaths.CATEGORY_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = [RoutePaths.Latest.CATEGORY_LIST, RoutePaths.Unversioned.CATEGORY_LIST],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun allCategoriesPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -49,14 +49,15 @@ class KeywordController @Autowired constructor(
         return allPaginated(
             keywordType = KeywordTypeEnum.Category,
             uriComponentsBuilder = uriComponentsBuilder,
-            path = RoutePaths.CATEGORY_LIST,
+            path = RoutePaths.Latest.CATEGORY_LIST,
             size = size,
             from = from,
             sort = sort,
         )
     }
 
-    @GetMapping(RoutePaths.CATEGORY_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = [RoutePaths.Latest.CATEGORY_DETAIL, RoutePaths.Unversioned.CATEGORY_DETAIL],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun categoryById(
         @PathVariable identifier: String
@@ -65,7 +66,8 @@ class KeywordController @Autowired constructor(
         return this.byId(KeywordTypeEnum.Category, id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @GetMapping(RoutePaths.CATEGORY_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = [RoutePaths.Latest.CATEGORY_SKILLS, RoutePaths.Unversioned.CATEGORY_SKILLS],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun getCategorySkills (
         uriComponentsBuilder: UriComponentsBuilder,
@@ -90,7 +92,8 @@ class KeywordController @Autowired constructor(
         )
     }
 
-    @PostMapping(RoutePaths.CATEGORY_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [RoutePaths.Latest.CATEGORY_SKILLS, RoutePaths.Unversioned.CATEGORY_SKILLS],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCategorySkills (
         uriComponentsBuilder: UriComponentsBuilder,
@@ -260,7 +263,7 @@ class KeywordController @Autowired constructor(
         responseHeaders.add("X-Total-Count", countByApiSearch.toString())
 
         uriComponentsBuilder
-            .path(RoutePaths.SEARCH_SKILLS)
+            .path(RoutePaths.Latest.SEARCH_SKILLS)
             .queryParam(RoutePaths.QueryParams.FROM, from)
             .queryParam(RoutePaths.QueryParams.SIZE, size)
             .queryParam(RoutePaths.QueryParams.SORT, sort)

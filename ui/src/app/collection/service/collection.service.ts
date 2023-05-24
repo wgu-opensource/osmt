@@ -38,7 +38,7 @@ import {Location} from "@angular/common"
 })
 export class CollectionService extends AbstractService {
 
-  private baseServiceUrl = "api/v3/collections"
+  private baseServiceUrl = "api/collections"
 
   constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
     super(httpClient, authService, router, location)
@@ -218,7 +218,7 @@ export class CollectionService extends AbstractService {
   ): Observable<ApiTaskResult> {
     const params = this.buildTableParams(undefined, undefined, filterByStatuses, undefined)
     return this.post<ITaskResult>({
-      path: `api/v3/collections/${collectionUuid}/updateSkills`,
+      path: `api/collections/${collectionUuid}/updateSkills`,
       params,
       body: skillListUpdate
     })

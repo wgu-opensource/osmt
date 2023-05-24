@@ -30,7 +30,7 @@ export class RichSkillService extends AbstractService {
     super(httpClient, authService, router, location)
   }
 
-  private serviceUrl = "api/v3/skills"
+  private serviceUrl = "api/skills"
 
   getSkillsFiltered(
     size: number = 50,

@@ -27,7 +27,7 @@ export class KeywordSearchService extends AbstractService {
     const errorMsg = `Failed to unwrap response for skill search`
 
     return this.get<IJobCode[]>({
-      path: "api/v3/search/jobcodes",
+      path: "api/search/jobcodes",
       params: {
         query
       }
@@ -44,7 +44,7 @@ export class KeywordSearchService extends AbstractService {
     const errorMsg = `Failed to unwrap response for skill search`
 
     return this.get<INamedReference[]>({
-      path: "api/v3/search/keywords",
+      path: "api/search/keywords",
       params: {
         query,
         type

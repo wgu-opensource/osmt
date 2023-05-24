@@ -8,6 +8,7 @@ import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.richskill.RichSkillDescriptor
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
+import org.apache.commons.lang3.StringUtils
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -27,7 +28,7 @@ class ApiSkillV2(private val rsd: RichSkillDescriptor, private val cs: Set<Colle
 
     @get:JsonProperty
     val author: String?
-        get() = rsd.authors.firstOrNull()?.value
+        get() = parseMultiValueToSingleValue(rsd.authors.map { "${it.value}," }.toString())
 
     @get:JsonProperty
     val status: PublishStatus
@@ -63,7 +64,7 @@ class ApiSkillV2(private val rsd: RichSkillDescriptor, private val cs: Set<Colle
 
     @get:JsonProperty
     val category: String?
-        get() = rsd.categories.firstOrNull()?.value
+        get() = parseMultiValueToSingleValue(rsd.categories.map { "${it.value}," }.toString())
 
     @get:JsonProperty
     val id: String
@@ -111,6 +112,16 @@ class ApiSkillV2(private val rsd: RichSkillDescriptor, private val cs: Set<Colle
     companion object {
         fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkillV2{
             return ApiSkillV2(rsdDao.toModel(), rsdDao.collections.map{ it.toModel() }.filter { !it.isWorkspace() }.toSet(), appConfig)
+        }
+
+        private fun parseMultiValueToSingleValue(field: String) : String {
+            return StringUtils.replace(
+                    StringUtils.replace(
+                            StringUtils.replace(
+                                    field, "[", StringUtils.EMPTY
+                            ), ",]", StringUtils.EMPTY
+                    ), ",, ", ";"
+            )
         }
     }
 }

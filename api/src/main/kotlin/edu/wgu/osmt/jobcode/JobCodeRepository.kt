@@ -61,7 +61,6 @@ class JobCodeRepositoryImpl: JobCodeRepository {
                 this.framework = jobCodeUpdate.framework
                 this.name = jobCodeUpdate.targetNodeName
                 this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
-                // this.description = jobCodeUpdate.description
                 this.name = "my name"
                 this.major = "my major"
             }.also { jobCodeEsRepo.save(it.toModel()) }

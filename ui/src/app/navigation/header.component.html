@@ -21,18 +21,13 @@
 
       <ul *ngIf="!showPublicNavbar()" class="m-navBar-x-desktopNav">
         <li>
-          <a class="m-navItem " [class.m-navItem-is-active]="skillsActive" aria-current="page" routerLink="/skills">RSD Library</a>
-        </li>
-        <li>
-          <a class="m-navItem" [class.m-navItem-is-active]="collectionsActive" routerLink="/collections">Collections</a>
-        </li>
-        <li>
-          <a class="m-navItem" [class.m-navItem-is-active]="categoriesActive" routerLink="/categories">Categories</a>
-        </li>
-        <li *ngIf="canHaveWorkspace" id="li-my-workspace">
-          <a class="m-navItem" [class.m-navItem-is-active]="myWorkspaceActive" routerLink="/my-workspace">
-            My Workspace
-          </a>
+          <button class="m-navItem " mat-button [matMenuTriggerFor]="menu">Menu</button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item routerLink="/skills">RSD Library</button>
+            <button mat-menu-item routerLink="/collections">Collections</button>
+            <button mat-menu-item routerLink="/my-workspace">My Workspace</button>
+            <button mat-menu-item routerLink="/metadata">RSD Metadata</button>
+          </mat-menu>
         </li>
         <li>
           <a class="m-iconInteractive m-iconInteractive-onDark" routerLink="/logout">

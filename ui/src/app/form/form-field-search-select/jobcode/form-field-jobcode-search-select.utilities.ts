@@ -1,4 +1,4 @@
-import {IJobCode} from "../../../job-codes/Jobcode"
+import { IJobCode } from "../../../metadata/job-codes/Jobcode"
 
 export const areSearchResultsEqual = (result1: IJobCode, result2: IJobCode): boolean => {
   if (result1 && result2) {

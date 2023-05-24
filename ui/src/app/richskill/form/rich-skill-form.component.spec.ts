@@ -32,7 +32,7 @@ import {
 } from "../ApiSkillUpdate"
 import { RichSkillService } from "../service/rich-skill.service"
 import { RichSkillFormComponent } from "./rich-skill-form.component"
-import {ApiJobCode} from "../../job-codes/Jobcode";
+import { ApiJobCode } from "../../metadata/job-codes/Jobcode";
 
 
 export function createComponent(T: Type<RichSkillFormComponent>): Promise<void> {

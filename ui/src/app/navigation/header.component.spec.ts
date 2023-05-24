@@ -13,6 +13,7 @@ import {MyWorkspaceComponent} from "../my-workspace/my-workspace.component"
 import {RichSkillsLibraryComponent} from "../richskill/library/rich-skills-library.component"
 import {ButtonAction} from "../auth/auth-roles"
 import {By} from "@angular/platform-browser"
+import { MatMenuModule } from "@angular/material/menu";
 
 describe("HeaderComponent", () => {
 
@@ -43,7 +44,8 @@ describe("HeaderComponent", () => {
             path: "skills",
             component: RichSkillsLibraryComponent
           }
-        ])
+        ]),
+        MatMenuModule
       ]
     }).compileComponents()
   })

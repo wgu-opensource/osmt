@@ -24,6 +24,14 @@ export class ApiJobCode implements IJobCode {
   frameworkName?: string
   level?: JobCodeLevel
   parents?: IJobCode[]
+  major?: string
+  majorCode?: string
+  minor?: string
+  minorCode?: string
+  broad?: string
+  broadCode?: string
+  detailed?: string
+  url?: string
 
   constructor(o?: IJobCode) {
     if (o !== undefined) {

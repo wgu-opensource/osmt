@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from "@angular/core"
 import {FormControl} from "@angular/forms"
-import {ApiJobCode} from "../../job-codes/Jobcode"
+import { ApiJobCode } from "../../metadata/job-codes/Jobcode"
 import {ApiNamedReference} from "../../richskill/ApiSkill"
 import {FilterSearchComponent} from "@shared/filter-search/filter-search.component"
 

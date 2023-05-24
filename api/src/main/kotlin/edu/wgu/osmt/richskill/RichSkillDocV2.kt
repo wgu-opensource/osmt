@@ -9,6 +9,7 @@ import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.KeywordTypeEnum
+import org.apache.commons.lang3.StringUtils
 import org.elasticsearch.core.Nullable
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.*
@@ -17,7 +18,7 @@ import java.time.LocalDateTime
 
 
 /**
- * Elasticsearch representation of a Rich Skill.
+ * Elasticsearch representation of a Rich Skill for API v2.
  * Also corresponds to `SkillSummary` API response object
  */
 @Document(indexName = INDEX_RICHSKILL_DOC, createIndex = true, versionType = Document.VersionType.EXTERNAL)
@@ -168,8 +169,8 @@ data class RichSkillDocV2(
                 uri = "${appConfig.baseUrl}/api/skills/${dao.uuid}",
                 name = dao.name,
                 statement = dao.statement,
-                category = dao.keywords.filter { it.type == KeywordTypeEnum.Category }.mapNotNull { it.value }.firstOrNull(),
-                author = dao.keywords.filter { it.type == KeywordTypeEnum.Author }.mapNotNull { it.value }.firstOrNull(),
+                category = parseMultiValueToSingleValue(dao.keywords.filter { it.type == KeywordTypeEnum.Category }.mapNotNull { it.value }.map { "$it," }.toString()),
+                author = parseMultiValueToSingleValue(dao.keywords.filter { it.type == KeywordTypeEnum.Author }.mapNotNull { it.value }.map { "$it," }.toString()),
                 publishStatus = dao.publishStatus(),
                 searchingKeywords = dao.keywords.filter { it.type == KeywordTypeEnum.Keyword }.mapNotNull { it.value },
                 jobCodes = dao.jobCodes.map { it.toModel() },
@@ -191,8 +192,8 @@ data class RichSkillDocV2(
                     uri = rsd.uri,
                     name = rsd.name,
                     statement = rsd.statement,
-                    category = rsd.categories.firstOrNull(),
-                    author = rsd.authors.firstOrNull(),
+                    category = parseMultiValueToSingleValue(rsd.categories.map { "$it," }.toString()),
+                    author = parseMultiValueToSingleValue(rsd.authors.map { "$it," }.toString()),
                     publishStatus = rsd.publishStatus,
                     searchingKeywords = rsd.searchingKeywords,
                     jobCodes = rsd.jobCodes,
@@ -203,6 +204,16 @@ data class RichSkillDocV2(
                     collections = rsd.collections,
                     publishDate = rsd.publishDate,
                     archiveDate = rsd.archiveDate
+            )
+        }
+
+        private fun parseMultiValueToSingleValue(field: String) : String {
+            return StringUtils.replace(
+                    StringUtils.replace(
+                            StringUtils.replace(
+                                    field, "[", StringUtils.EMPTY
+                            ), ",]", StringUtils.EMPTY
+                    ), ",, ", ";"
             )
         }
     }

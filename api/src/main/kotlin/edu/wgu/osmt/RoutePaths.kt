@@ -5,7 +5,6 @@ object RoutePaths {
     const val VERSION3 = "/v3"
     private const val LATEST = VERSION3
 
-
     object Latest {
         const val API = "/api$LATEST"
         private const val SEARCH_PATH = "$API/search"
@@ -68,6 +67,7 @@ object RoutePaths {
         const val ES_ADMIN_DELETE_INDICES = "$ES_ADMIN/delete-indices"
         const val ES_ADMIN_REINDEX = "$ES_ADMIN/reindex"
     }
+
     object Unversioned {
         const val API = "/api"
         const val SEARCH_PATH = "$API/search"

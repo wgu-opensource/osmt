@@ -3,7 +3,14 @@ package edu.wgu.osmt.elasticsearch
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
-import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.api.model.ApiJobCode
+import edu.wgu.osmt.api.model.ApiNamedReference
+import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.ApiSimilaritySearch
+import edu.wgu.osmt.api.model.ApiSkillSummary
+import edu.wgu.osmt.api.model.ApiSkillSummaryV2
+import edu.wgu.osmt.api.model.CollectionSortEnum
+import edu.wgu.osmt.api.model.SkillSortEnum
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.config.AppConfig
@@ -15,12 +22,21 @@ import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillDocV2
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.*
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -38,16 +54,16 @@ class SearchController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCollections(
-        uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
-        @RequestParam(required = false, defaultValue = "0") from: Int,
-        @RequestParam(
+            uriComponentsBuilder: UriComponentsBuilder,
+            @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+            @RequestParam(required = false, defaultValue = "0") from: Int,
+            @RequestParam(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
-        @RequestParam(required = false) sort: String?,
-        @RequestBody apiSearch: ApiSearch,
-        @AuthenticationPrincipal user: Jwt?
+            @RequestParam(required = false) sort: String?,
+            @RequestBody apiSearch: ApiSearch,
+            @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<CollectionDoc>> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
@@ -87,17 +103,17 @@ class SearchController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSkills(
-        uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
-        @RequestParam(required = false, defaultValue = "0") from: Int,
-        @RequestParam(
+            uriComponentsBuilder: UriComponentsBuilder,
+            @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+            @RequestParam(required = false, defaultValue = "0") from: Int,
+            @RequestParam(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
-        @RequestParam(required = false) sort: String?,
-        @RequestParam(required = false) collectionId: String?,
-        @RequestBody apiSearch: ApiSearch,
-        @AuthenticationPrincipal user: Jwt?
+            @RequestParam(required = false) sort: String?,
+            @RequestParam(required = false) collectionId: String?,
+            @RequestBody apiSearch: ApiSearch,
+            @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<RichSkillDoc>> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
@@ -107,7 +123,7 @@ class SearchController @Autowired constructor(
             val status = PublishStatus.forApiValue(it)
             if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
         }.toSet()
-        val sortEnum = sort?.let{SkillSortEnum.forApiValue(it)}
+        val sortEnum = sort?.let{ SkillSortEnum.forApiValue(it)}
         val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum?.sort)
 
         val searchHits = richSkillEsRepo.byApiSearch(
@@ -168,7 +184,7 @@ class SearchController @Autowired constructor(
             val status = PublishStatus.forApiValue(it)
             if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
         }.toSet()
-        val sortEnum = sort?.let{SkillSortEnum.forApiValue(it)}
+        val sortEnum = sort?.let{ SkillSortEnum.forApiValue(it)}
         val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum?.sort)
 
         val searchHits = richSkillEsRepo.byApiSearch(
@@ -212,17 +228,17 @@ class SearchController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun collectionSkills(
-        uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
-        @RequestParam(required = false, defaultValue = "0") from: Int,
-        @RequestParam(
+            uriComponentsBuilder: UriComponentsBuilder,
+            @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+            @RequestParam(required = false, defaultValue = "0") from: Int,
+            @RequestParam(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
-        @RequestParam(required = false) sort: String?,
-        @PathVariable uuid: String,
-        @RequestBody apiSearch: ApiSearch,
-        @AuthenticationPrincipal user: Jwt?
+            @RequestParam(required = false) sort: String?,
+            @PathVariable uuid: String,
+            @RequestBody apiSearch: ApiSearch,
+            @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<RichSkillDoc>> {
         return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
     }
@@ -275,14 +291,14 @@ class SearchController @Autowired constructor(
     @ResponseBody
     fun searchSimilarSkills(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<ApiSkillSummary>> {
         val hits = richSkillEsRepo.findSimilar(apiSimilaritySearch).toList()
-        return ResponseEntity.status(200).body(hits.map{ApiSkillSummary.fromDoc(it.content)})
+        return ResponseEntity.status(200).body(hits.map{ ApiSkillSummary.fromDoc(it.content)})
     }
 
     @PostMapping(RoutePaths.V2.SEARCH_SIMILAR_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSimilarSkillsV2(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<ApiSkillSummaryV2>> {
         val hits = richSkillEsRepo.findSimilar(apiSimilaritySearch).toList()
-        return ResponseEntity.status(200).body(hits.map{ApiSkillSummaryV2.fromDoc(it.content)})
+        return ResponseEntity.status(200).body(hits.map{ ApiSkillSummaryV2.fromDoc(it.content)})
     }
 
     @PostMapping(path = [RoutePaths.Latest.SEARCH_SIMILARITIES, RoutePaths.V2.SEARCH_SIMILARITIES, RoutePaths.Unversioned.SEARCH_SIMILARITIES],

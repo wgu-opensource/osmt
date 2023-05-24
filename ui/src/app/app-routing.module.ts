@@ -25,6 +25,7 @@ import {BatchImportComponent} from "./richskill/import/batch-import.component"
 import { ActionByRoles, ButtonAction } from "./auth/auth-roles"
 import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
 import {ConvertToCollectionComponent} from "./my-workspace/convert-to-collection/convert-to-collection.component"
+import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
 
 
 const routes: Routes = [
@@ -180,6 +181,11 @@ const routes: Routes = [
     data: {
       roles: ActionByRoles.get(ButtonAction.MyWorkspace)
     }
+  },
+  {
+    path: "metadata",
+    component: MetadataListComponent,
+    canActivate: [AuthGuard],
   },
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},

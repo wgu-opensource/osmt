@@ -23,6 +23,7 @@ import { SearchService } from "./search.service"
 import any = jasmine.any
 import {AuthService} from "../auth/auth-service";
 import { of } from "rxjs"
+import { getBaseApi } from "../api-versions"
 
 
 export function createComponent(T: Type<RichSkillSearchResultsComponent>, f?: () => void): Promise<void> {
@@ -75,6 +76,10 @@ describe("RichSkillSearchResultsComponent", () => {
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
         { provide: AuthService, useClass: AuthServiceStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        }
       ]
     })
     .compileComponents()
@@ -271,6 +276,10 @@ describe("RichSkillSearchResultsComponent with latestSearch", () => {
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
         { provide: AuthService, useClass: AuthServiceStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
       ]
     })
     .compileComponents()
@@ -321,6 +330,10 @@ describe("RichSkillSearchResultsComponent with params", () => {
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
         { provide: AuthService, useClass: AuthServiceStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
       ]
     })
     .compileComponents()
@@ -371,6 +384,10 @@ describe("RichSkillSearchResultsComponent with advance search params in history.
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
         { provide: AuthService, useClass: AuthServiceStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
       ]
     })
       .compileComponents()

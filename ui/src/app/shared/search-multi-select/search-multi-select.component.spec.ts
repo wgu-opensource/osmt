@@ -11,6 +11,7 @@ import {createMockApiNamedReference, createMockJobcode} from "../../../../test/r
 import {of} from "rxjs"
 import {ApiNamedReference, KeywordType} from "../../richskill/ApiSkill"
 import {HttpClientTestingModule} from "@angular/common/http/testing"
+import { getBaseApi } from "../../api-versions"
 
 describe("SearchMultiSelectComponent", () => {
   let component: SearchMultiSelectComponent
@@ -26,6 +27,10 @@ describe("SearchMultiSelectComponent", () => {
         AppConfig,
         KeywordSearchService,
         {provide: AuthService, useClass: AuthServiceStub},
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
       ],
       imports: [
         HttpClientTestingModule,

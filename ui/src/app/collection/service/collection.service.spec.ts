@@ -31,6 +31,7 @@ import {
 import { ApiTaskResult, ITaskResult } from "../../task/ApiTaskResult"
 import { ApiCollection, ApiCollectionUpdate } from "../ApiCollection"
 import { CollectionService } from "./collection.service"
+import { getBaseApi } from "../../api-versions"
 
 
 const ASYNC_WAIT_PERIOD = 3000
@@ -54,7 +55,11 @@ describe("CollectionService", () => {
         CollectionService,
         Location,
         { provide: AuthService, useClass: AuthServiceStub },
-        { provide: Router, useClass: RouterStub }
+        { provide: Router, useClass: RouterStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        }
       ]
     })
     .compileComponents()
@@ -499,7 +504,7 @@ describe("CollectionService", () => {
     tick(ASYNC_WAIT_PERIOD)
 
     /* Setup for request 2 */
-    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path2)
+    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/" + path2)
     expect(req2.request.method).toEqual("GET")
     req2.flush(apiBatchResult)
   }))
@@ -512,7 +517,7 @@ describe("CollectionService", () => {
     const taskResult = createMockTaskResult()
     const apiBatchResult = new ApiBatchResult(createMockBatchResult())
     const expected = apiBatchResult
-    const path1 = "api/collections/publish"
+    const path1 = "collections/publish"
     const path2 = taskResult.id
     const query = "testQueryString"
     const apiSearch = new ApiSearch({ query })

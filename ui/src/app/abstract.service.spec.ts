@@ -1,7 +1,7 @@
 import { Location } from "@angular/common"
 import { HttpClient, HttpClientModule } from "@angular/common/http"
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
-import { Injectable } from "@angular/core"
+import { Inject, Injectable } from "@angular/core"
 import { async, TestBed } from "@angular/core/testing"
 import { Data, Router } from "@angular/router"
 import { Observable, of } from "rxjs"
@@ -16,14 +16,21 @@ import { PublishStatus } from "./PublishStatus"
 import { ApiSortOrder } from "./richskill/ApiSkill"
 import { ApiSearch } from "./richskill/service/rich-skill-search.service"
 import { ApiTaskResult } from "./task/ApiTaskResult"
+import { getBaseApi } from "./api-versions"
 
 
 @Injectable({
   providedIn: "root"
 })
 export class ConcreteService extends AbstractService {
-  constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
-    super(httpClient, authService, router, location)
+  constructor(
+    httpClient: HttpClient,
+    authService: AuthService,
+    router: Router,
+    location: Location,
+    @Inject("BASE_API") base: string
+  ) {
+    super(httpClient, authService, router, location, base)
   }
 
   public buildUrl(path: string): string {
@@ -70,7 +77,11 @@ describe("AbstractService (no HTTP needed)", () => {
         ConcreteService,
         Location,
         { provide: AuthService, useClass: AuthServiceStub },
-        { provide: Router, useClass: RouterStub }
+        { provide: Router, useClass: RouterStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
       ]
     })
 
@@ -150,7 +161,11 @@ describe("AbstractService (HTTP needed)", () => {
         ConcreteService,
         Location,
         { provide: AuthService, useClass: AuthServiceStub },
-        { provide: Router, useClass: RouterStub }
+        { provide: Router, useClass: RouterStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        }
       ]
     })
     .compileComponents()
@@ -175,7 +190,7 @@ describe("AbstractService (HTTP needed)", () => {
 
   it("buildUrl should return", () => {
     const path = "data"
-    expect(testService.buildUrl(path)).toEqual(AppConfig.settings.baseApiUrl + "/" + path)
+    expect(testService.buildUrl(path)).toEqual(AppConfig.settings.baseApiUrl + "/api/" + path)
   })
 
   /* See https://angular.io/guide/http#testing-http-requests */
@@ -198,7 +213,7 @@ describe("AbstractService (HTTP needed)", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/" + path)
     expect(req.request.method).toEqual("GET")
     req.flush(testData)
   })
@@ -209,7 +224,7 @@ describe("AbstractService (HTTP needed)", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const path = "any/path"
-    const fullUrl = `${AppConfig.settings.baseApiUrl}/${path}`
+    const fullUrl = `${AppConfig.settings.baseApiUrl}/api/${path}`
     const testData: Data = { foo: "bar" }  // Data that is unlikely to exist in any AbstractService derivative
     const errorMsg = `Could not unwrap Data exception...`
 
@@ -235,7 +250,7 @@ describe("AbstractService (HTTP needed)", () => {
     // Arrange
     const newStatus = PublishStatus.Draft
     const path = "any/path"
-    const fullUrl = `${AppConfig.settings.baseApiUrl}/${path}?newStatus=${newStatus.toString()}`
+    const fullUrl = `${AppConfig.settings.baseApiUrl}/api/${path}?newStatus=${newStatus.toString()}`
     const query = "my query string"
     const apiSearch = new ApiSearch({ query })
     const expected = new ApiTaskResult(createMockTaskResult())
@@ -262,7 +277,7 @@ describe("AbstractService (HTTP needed)", () => {
     // Arrange
     const testData: IWork = { foo: "bar" }  // Data that is unlikely to exist in any AbstractService derivative
     const path = "tasks/42"
-    const fullUrl = AppConfig.settings.baseApiUrl + "/" + path
+    const fullUrl = AppConfig.settings.baseApiUrl + "/api/" + path
     const worker = new Work(testData)
 
     // Act
@@ -282,7 +297,7 @@ describe("AbstractService (HTTP needed)", () => {
     // Arrange
     const testData: IWork = { foo: "bar" }  // Data that is unlikely to exist in any AbstractService derivative
     const path = "tasks/42"
-    const fullUrl = AppConfig.settings.baseApiUrl + "/" + path
+    const fullUrl = AppConfig.settings.baseApiUrl + "/api/" + path
     const worker = new Work(testData)
 
     // Act

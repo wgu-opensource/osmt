@@ -15,6 +15,7 @@ import {AuthService} from "../../auth/auth-service"
 import {EnvironmentService} from "../../core/environment.service"
 import {CategoryService} from "./category.service"
 import {ApiCategory, IKeyword, KeywordSortOrder, PaginatedCategories} from "../ApiCategory"
+import { getBaseApi } from "../../api-versions"
 
 describe("CategoryService", () => {
   let httpClient: HttpClient
@@ -35,7 +36,11 @@ describe("CategoryService", () => {
         CategoryService,
         Location,
         { provide: AuthService, useClass: AuthServiceStub },
-        { provide: Router, useClass: RouterStub }
+        { provide: Router, useClass: RouterStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
       ]
     })
       .compileComponents()

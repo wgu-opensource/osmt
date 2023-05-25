@@ -28,6 +28,7 @@ import { ApiSearch, PaginatedSkills } from "./rich-skill-search.service"
 import { RichSkillService } from "./rich-skill.service"
 import { ApiTaskResult } from "../../task/ApiTaskResult"
 import {query} from "@angular/animations"
+import { getBaseApi } from "../../api-versions"
 
 
 // An example of how to test a service
@@ -54,7 +55,11 @@ describe("RichSkillService", () => {
         RichSkillService,
         Location,
         { provide: AuthService, useClass: AuthServiceStub },
-        { provide: Router, useClass: RouterStub }
+        { provide: Router, useClass: RouterStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
       ]
     })
     .compileComponents()
@@ -219,7 +224,7 @@ describe("RichSkillService", () => {
     const now = new Date()
     const skillResult: ApiSkill = new ApiSkill(createMockSkill(now, now, PublishStatus.Published))
     const expected = skillResult
-    const path1 = "api/skills"
+    const path1 = "skills"
     const path2 = taskResult.id
     const skillUpdate = createMockSkillUpdate()
 
@@ -347,7 +352,7 @@ describe("RichSkillService", () => {
       const path = "api/results/text/" + apiTaskResultForCSV.uuid
       const path2 = taskResult.id.slice(1)
       testService.getResultExportedCsvLibrary(path2).subscribe()
-      const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+      const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/" + path)
       expect(req1.request.method).toEqual("GET")
       req1.flush("csv")
 
@@ -362,7 +367,7 @@ describe("RichSkillService", () => {
     const taskResult = createMockTaskResult()
     const apiBatchResult = new ApiBatchResult(createMockBatchResult())
     const expected = apiBatchResult
-    const path1 = "api/skills/publish"
+    const path1 = "skills/publish"
     const path2 = taskResult.id
     const query = "testQueryString"
     const apiSearch = new ApiSearch({ query })

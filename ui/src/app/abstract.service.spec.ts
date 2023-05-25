@@ -190,7 +190,7 @@ describe("AbstractService (HTTP needed)", () => {
 
   it("buildUrl should return", () => {
     const path = "data"
-    expect(testService.buildUrl(path)).toEqual(AppConfig.settings.baseApiUrl + "/api/" + path)
+    expect(testService.buildUrl(path)).toEqual(AppConfig.settings.baseApiUrl + getBaseApi() + "/" + path)
   })
 
   /* See https://angular.io/guide/http#testing-http-requests */
@@ -213,7 +213,7 @@ describe("AbstractService (HTTP needed)", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + getBaseApi() + "/" + path)
     expect(req.request.method).toEqual("GET")
     req.flush(testData)
   })
@@ -224,7 +224,7 @@ describe("AbstractService (HTTP needed)", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const path = "any/path"
-    const fullUrl = `${AppConfig.settings.baseApiUrl}/api/${path}`
+    const fullUrl = `${AppConfig.settings.baseApiUrl}${getBaseApi()}/${path}`
     const testData: Data = { foo: "bar" }  // Data that is unlikely to exist in any AbstractService derivative
     const errorMsg = `Could not unwrap Data exception...`
 
@@ -249,8 +249,8 @@ describe("AbstractService (HTTP needed)", () => {
   it("bulkStatusChange should return", () => {
     // Arrange
     const newStatus = PublishStatus.Draft
-    const path = "any/path"
-    const fullUrl = `${AppConfig.settings.baseApiUrl}/api/${path}?newStatus=${newStatus.toString()}`
+    const path = "/any/path"
+    const fullUrl = `${AppConfig.settings.baseApiUrl}${getBaseApi()}/${path}?newStatus=${newStatus.toString()}`
     const query = "my query string"
     const apiSearch = new ApiSearch({ query })
     const expected = new ApiTaskResult(createMockTaskResult())
@@ -277,7 +277,7 @@ describe("AbstractService (HTTP needed)", () => {
     // Arrange
     const testData: IWork = { foo: "bar" }  // Data that is unlikely to exist in any AbstractService derivative
     const path = "tasks/42"
-    const fullUrl = AppConfig.settings.baseApiUrl + "/api/" + path
+    const fullUrl = AppConfig.settings.baseApiUrl + getBaseApi() + "/" + path
     const worker = new Work(testData)
 
     // Act
@@ -296,8 +296,8 @@ describe("AbstractService (HTTP needed)", () => {
   it("pollForTaskResult should error", (done) => {
     // Arrange
     const testData: IWork = { foo: "bar" }  // Data that is unlikely to exist in any AbstractService derivative
-    const path = "tasks/42"
-    const fullUrl = AppConfig.settings.baseApiUrl + "/api/" + path
+    const path = "/tasks/42"
+    const fullUrl = AppConfig.settings.baseApiUrl + getBaseApi() + "/" + path
     const worker = new Work(testData)
 
     // Act

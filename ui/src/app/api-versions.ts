@@ -6,5 +6,5 @@ export function getBaseApi(): string {
 }
 
 function getApiVersion(): string {
-  return environment.apiV2
+  return environment.apiV3
 }

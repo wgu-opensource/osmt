@@ -54,16 +54,16 @@ class SearchController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCollections(
-            uriComponentsBuilder: UriComponentsBuilder,
-            @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
-            @RequestParam(required = false, defaultValue = "0") from: Int,
-            @RequestParam(
+        uriComponentsBuilder: UriComponentsBuilder,
+        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = "0") from: Int,
+        @RequestParam(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
-            @RequestParam(required = false) sort: String?,
-            @RequestBody apiSearch: ApiSearch,
-            @AuthenticationPrincipal user: Jwt?
+        @RequestParam(required = false) sort: String?,
+        @RequestBody apiSearch: ApiSearch,
+        @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<CollectionDoc>> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
@@ -103,17 +103,17 @@ class SearchController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSkills(
-            uriComponentsBuilder: UriComponentsBuilder,
-            @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
-            @RequestParam(required = false, defaultValue = "0") from: Int,
-            @RequestParam(
+        uriComponentsBuilder: UriComponentsBuilder,
+        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = "0") from: Int,
+        @RequestParam(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
-            @RequestParam(required = false) sort: String?,
-            @RequestParam(required = false) collectionId: String?,
-            @RequestBody apiSearch: ApiSearch,
-            @AuthenticationPrincipal user: Jwt?
+        @RequestParam(required = false) sort: String?,
+        @RequestParam(required = false) collectionId: String?,
+        @RequestBody apiSearch: ApiSearch,
+        @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<RichSkillDoc>> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
@@ -228,17 +228,17 @@ class SearchController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun collectionSkills(
-            uriComponentsBuilder: UriComponentsBuilder,
-            @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
-            @RequestParam(required = false, defaultValue = "0") from: Int,
-            @RequestParam(
+        uriComponentsBuilder: UriComponentsBuilder,
+        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = "0") from: Int,
+        @RequestParam(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
-            @RequestParam(required = false) sort: String?,
-            @PathVariable uuid: String,
-            @RequestBody apiSearch: ApiSearch,
-            @AuthenticationPrincipal user: Jwt?
+        @RequestParam(required = false) sort: String?,
+        @PathVariable uuid: String,
+        @RequestBody apiSearch: ApiSearch,
+        @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<RichSkillDoc>> {
         return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
     }

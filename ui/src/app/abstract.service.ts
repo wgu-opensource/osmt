@@ -112,7 +112,7 @@ export abstract class AbstractService {
     if (baseUrl && !baseUrl.endsWith("/") && !path.startsWith("/")) {
       return baseUrl + this.baseApi + "/" + path
     } else {
-      return baseUrl + path
+      return baseUrl + this.baseApi + "/" + path
     }
   }
 

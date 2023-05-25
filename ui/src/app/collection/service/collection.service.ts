@@ -113,7 +113,7 @@ export class CollectionService extends AbstractService {
   // tslint:disable-next-line:no-any
   getCsvTaskResultsIfComplete(uuid: string): Observable<any> {
     return this.httpClient
-      .get(this.buildUrl(`/api/results/text/${uuid}`), {
+      .get(this.buildUrl(`results/text/${uuid}`), {
         responseType: "text",
         observe: "response"
       })
@@ -137,7 +137,7 @@ export class CollectionService extends AbstractService {
   // tslint:disable-next-line:no-any
   getXlsxTaskResultsIfComplete(uuid: string): Observable<any> {
     return this.httpClient
-      .get(this.buildUrl(`/api/results/media/${uuid}`), {
+      .get(this.buildUrl(`results/media/${uuid}`), {
         responseType: "blob" as "json",
         observe: "response",
       })
@@ -169,7 +169,7 @@ export class CollectionService extends AbstractService {
   getWorkspace(): Observable<ApiCollection> {
     const errorMsg = `Could not find workspace`
     return this.get<ICollection>({
-      path: "api/workspace"
+      path: "workspace"
     })
       .pipe(share())
       .pipe(map(({body}) => this.collectionFromApiResponse(body, errorMsg)))
@@ -206,7 +206,7 @@ export class CollectionService extends AbstractService {
     const params = this.buildTableParams(size, from, filterByStatuses, sort)
 
     return this.post<ICollectionSummary[]>({
-      path: "api/search/collections",
+      path: "search/collections",
       params,
       body: apiSearch
     })
@@ -224,7 +224,7 @@ export class CollectionService extends AbstractService {
   ): Observable<ApiTaskResult> {
     const params = this.buildTableParams(undefined, undefined, filterByStatuses, undefined)
     return this.post<ITaskResult>({
-      path: `api/collections/${collectionUuid}/updateSkills`,
+      path: `collections/${collectionUuid}/updateSkills`,
       params,
       body: skillListUpdate
     })
@@ -245,7 +245,7 @@ export class CollectionService extends AbstractService {
   }
 
   deleteCollection(uuid: string): Observable<ApiTaskResult> {
-    return this.httpClient.delete<ITaskResult>(this.buildUrl("api/collections/" + uuid + "/remove"), {
+    return this.httpClient.delete<ITaskResult>(this.buildUrl("collections/" + uuid + "/remove"), {
       headers: this.wrapHeaders(new HttpHeaders({
           Accept: "application/json"
         }
@@ -262,7 +262,7 @@ export class CollectionService extends AbstractService {
     pollIntervalMs: number = 1000,
   ): Observable<ApiBatchResult> {
     return this.pollForTaskResult<ApiBatchResult>(
-      this.bulkStatusChange("api/collections/publish", apiSearch, newStatus, filterByStatuses),
+      this.bulkStatusChange("collections/publish", apiSearch, newStatus, filterByStatuses),
       pollIntervalMs
     )
   }

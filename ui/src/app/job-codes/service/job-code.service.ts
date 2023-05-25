@@ -81,7 +81,7 @@ export class JobCodeService extends AbstractDataService{
   }
 
   deleteJobCode(id: string): Observable<ApiTaskResult> {
-    return this.httpClient.delete<ITaskResult>(this.buildUrl("api/metadata/jobcodes/" + id + "/remove"), {
+    return this.httpClient.delete<ITaskResult>(this.buildUrl("metadata/jobcodes/" + id + "/remove"), {
       headers: this.wrapHeaders(new HttpHeaders({
           Accept: "application/json"
         }

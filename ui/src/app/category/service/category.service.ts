@@ -27,7 +27,7 @@ export class CategoryService extends AbstractService implements IRelatedSkillsSe
     super(httpClient, authService, router, location, base)
   }
 
-  private serviceUrl = "api/categories"
+  private serviceUrl = "categories"
 
   getAllPaginated(
     size: number = 50,

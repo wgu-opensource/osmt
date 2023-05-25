@@ -36,7 +36,7 @@ export class RichSkillService extends AbstractService {
     super(httpClient, authService, router, location, base)
   }
 
-  private serviceUrl = "api/skills"
+  private serviceUrl = "skills"
 
   getSkillsFiltered(
     size: number = 50,
@@ -172,7 +172,7 @@ export class RichSkillService extends AbstractService {
     const params = this.buildTableParams(size, from, filterByStatuses, sort)
 
     return this.post<ApiSkillSummary[]>({
-      path: "api/search/skills",
+      path: "search/skills",
       params,
       body: apiSearch,
     })
@@ -187,7 +187,7 @@ export class RichSkillService extends AbstractService {
   libraryExportCsv(): Observable<ApiTaskResult> {
     return this.httpClient
       .get<ApiTaskResult>(
-        this.buildUrl("api/export/library/csv"), {
+        this.buildUrl("export/library/csv"), {
         headers: this.wrapHeaders(new HttpHeaders({
             Accept: "application/json"
           }
@@ -201,7 +201,7 @@ export class RichSkillService extends AbstractService {
   libraryExportXlsx(): Observable<ApiTaskResult> {
     return this.httpClient
       .get<ApiTaskResult>(
-        this.buildUrl("api/export/library/xlsx"), {
+        this.buildUrl("export/library/xlsx"), {
         headers: this.wrapHeaders(new HttpHeaders({
             Accept: "application/json"
           }
@@ -217,7 +217,7 @@ export class RichSkillService extends AbstractService {
     filterByStatuses?: Set<PublishStatus>,
   ): Observable<ApiTaskResult> {
     const params = this.buildTableParams(undefined, undefined, filterByStatuses, undefined)
-    return this.httpClient.post<ApiTaskResult>(this.buildUrl("api/export/skills/csv"), apiSearch, {
+    return this.httpClient.post<ApiTaskResult>(this.buildUrl("export/skills/csv"), apiSearch, {
       params,
       headers: this.wrapHeaders(new HttpHeaders({
           Accept: "application/json"
@@ -235,7 +235,7 @@ export class RichSkillService extends AbstractService {
   ): Observable<ApiTaskResult> {
     const params = this.buildTableParams(undefined, undefined, filterByStatuses, undefined)
     return this.httpClient.post<ApiTaskResult>(
-      this.buildUrl("api/export/skills/xlsx"), apiSearch, {
+      this.buildUrl("export/skills/xlsx"), apiSearch, {
         params,
         headers: this.wrapHeaders(new HttpHeaders({
             Accept: "application/json"
@@ -310,7 +310,7 @@ export class RichSkillService extends AbstractService {
     pollIntervalMs: number = 1000,
   ): Observable<ApiBatchResult> {
     return this.pollForTaskResult(
-      this.bulkStatusChange("api/skills/publish", apiSearch, newStatus, filterByStatuses, collectionUuid),
+      this.bulkStatusChange("skills/publish", apiSearch, newStatus, filterByStatuses, collectionUuid),
       pollIntervalMs
     )
   }
@@ -329,7 +329,7 @@ export class RichSkillService extends AbstractService {
 
   similarityCheck(statement: string): Observable<ApiSkillSummary[]> {
     return this.post<ISkillSummary[]>({
-      path: "api/search/skills/similarity",
+      path: "search/skills/similarity",
       body: {statement}
     })
       .pipe(share())
@@ -340,7 +340,7 @@ export class RichSkillService extends AbstractService {
 
   similaritiesCheck(statements: string[]): Observable<boolean[]> {
     return this.post<boolean[]>({
-      path: "api/search/skills/similarities",
+      path: "search/skills/similarities",
       body: statements.map(statement => ({statement}))
     })
       .pipe(share())

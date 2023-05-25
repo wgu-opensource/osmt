@@ -51,7 +51,7 @@ export abstract class AbstractService {
     protected authService: IAuthService,
     protected router: Router,
     protected location: Location,
-    @Inject("BASE_API") base: string
+    @Inject("BASE_URL") base: string
   ) {
     this.base = base
   }
@@ -111,6 +111,7 @@ export abstract class AbstractService {
 
     // if user defined, make sure it delineates between the host and path
     if (baseUrl && !baseUrl.endsWith("/") && !path.startsWith("/")) {
+      console.log(baseUrl + this.base + "/" + path)
       return baseUrl + this.base + "/" + path
     } else {
       return baseUrl + path

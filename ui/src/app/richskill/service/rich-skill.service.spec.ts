@@ -242,14 +242,14 @@ describe("RichSkillService", () => {
 
     /* Service call will make 2 requests: the requested action + the async task result */
     /* Setup for request 1 */
-    const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path1)
+    const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/" + path1)
     expect(req1.request.method).toEqual("POST")
     req1.flush(taskResult)
 
     tick(ASYNC_WAIT_PERIOD)
 
     /* Setup for request 2 */
-    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path2)
+    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/" + path2)
     expect(req2.request.method).toEqual("GET")
     req2.flush([skillResult])
   }))
@@ -386,7 +386,7 @@ describe("RichSkillService", () => {
 
     /* Service call will make 2 requests: the requested action + the async task result */
     /* Setup for request 1 */
-    const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path1 +
+    const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/" + path1 +
             "?newStatus=published")
     expect(req1.request.method).toEqual("POST")
     req1.flush(taskResult)
@@ -394,7 +394,7 @@ describe("RichSkillService", () => {
     tick(ASYNC_WAIT_PERIOD)
 
     /* Setup for request 2 */
-    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path2)
+    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/api/" + path2)
     expect(req2.request.method).toEqual("GET")
     req2.flush(apiBatchResult)
   }))

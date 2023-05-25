@@ -6,7 +6,7 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.richskill.RichSkillDescriptor
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillDoc
-import org.apache.commons.lang3.StringUtils
+import edu.wgu.osmt.util.OsmtUtil.Companion.parseMultiValueToSingleValue
 import java.time.LocalDateTime
 
 class ApiSkillSummaryV2(
@@ -56,16 +56,6 @@ class ApiSkillSummaryV2(
                     searchingKeywords,
                     jobCodes.map { ApiJobCode.fromJobCode(it) })
             }
-        }
-
-        private fun parseMultiValueToSingleValue(field: String) : String {
-            return StringUtils.replace(
-                    StringUtils.replace(
-                            StringUtils.replace(
-                                    field, "[", StringUtils.EMPTY
-                            ), ",]", StringUtils.EMPTY
-                    ), ",, ", ";"
-            )
         }
     }
 }

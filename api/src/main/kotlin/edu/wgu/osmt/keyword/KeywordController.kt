@@ -105,17 +105,17 @@ class KeywordController @Autowired constructor(
     @PostMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.CATEGORY_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCategorySkills (
-            uriComponentsBuilder: UriComponentsBuilder,
-            @PathVariable identifier: String,
-            @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
-            @RequestParam(required = false, defaultValue = "0") from: Int,
-            @RequestParam(
+        uriComponentsBuilder: UriComponentsBuilder,
+        @PathVariable identifier: String,
+        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+        @RequestParam(required = false, defaultValue = "0") from: Int,
+        @RequestParam(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: Array<String>,
-            @RequestParam(required = false) sort: String? = null,
-            @RequestBody(required = false) apiSearch: ApiSearch? = null,
-            @AuthenticationPrincipal user: Jwt? = null
+        @RequestParam(required = false) sort: String? = null,
+        @RequestBody(required = false) apiSearch: ApiSearch? = null,
+        @AuthenticationPrincipal user: Jwt? = null
     ): HttpEntity<List<RichSkillDoc>> {
         val sortEnum = sort?.let{ SkillSortEnum.forApiValue(it)}
 
@@ -195,14 +195,14 @@ class KeywordController @Autowired constructor(
     }
 
     private fun searchRelatedSkills (
-            uriComponentsBuilder: UriComponentsBuilder,
-            keyword: KeywordDao,
-            size: Int,
-            from: Int,
-            statusFilters: Array<String>,
-            sort: SkillSortEnum,
-            apiSearch: ApiSearch,
-            user: Jwt?
+        uriComponentsBuilder: UriComponentsBuilder,
+        keyword: KeywordDao,
+        size: Int,
+        from: Int,
+        statusFilters: Array<String>,
+        sort: SkillSortEnum,
+        apiSearch: ApiSearch,
+        user: Jwt?
     ): HttpEntity<List<RichSkillDoc>> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)

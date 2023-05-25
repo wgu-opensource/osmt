@@ -9,7 +9,7 @@ import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import org.apache.commons.lang3.StringUtils
+import edu.wgu.osmt.util.OsmtUtil.Companion.parseMultiValueToSingleValue
 import org.elasticsearch.core.Nullable
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.*
@@ -204,16 +204,6 @@ data class RichSkillDocV2(
                     collections = rsd.collections,
                     publishDate = rsd.publishDate,
                     archiveDate = rsd.archiveDate
-            )
-        }
-
-        private fun parseMultiValueToSingleValue(field: String) : String {
-            return StringUtils.replace(
-                    StringUtils.replace(
-                            StringUtils.replace(
-                                    field, "[", StringUtils.EMPTY
-                            ), ",]", StringUtils.EMPTY
-                    ), ",, ", ";"
             )
         }
     }

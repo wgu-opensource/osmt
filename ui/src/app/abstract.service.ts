@@ -106,12 +106,10 @@ export abstract class AbstractService {
   }
 
   protected buildUrl(path: string): string {
-    console.log(this.base)
     const baseUrl = AppConfig.settings.baseApiUrl
 
     // if user defined, make sure it delineates between the host and path
     if (baseUrl && !baseUrl.endsWith("/") && !path.startsWith("/")) {
-      console.log(baseUrl + this.base + "/" + path)
       return baseUrl + this.base + "/" + path
     } else {
       return baseUrl + path

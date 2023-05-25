@@ -50,13 +50,13 @@ import org.springframework.web.util.UriComponentsBuilder
 @Controller
 @Transactional
 class CollectionController @Autowired constructor(
-        val collectionRepository: CollectionRepository,
-        val richSkillRepository: RichSkillRepository,
-        val taskMessageService: TaskMessageService,
-        val auditLogRepository: AuditLogRepository,
-        val collectionEsRepo: CollectionEsRepo,
-        val appConfig: AppConfig,
-        val oAuthHelper: OAuthHelper
+    val collectionRepository: CollectionRepository,
+    val richSkillRepository: RichSkillRepository,
+    val taskMessageService: TaskMessageService,
+    val auditLogRepository: AuditLogRepository,
+    val collectionEsRepo: CollectionEsRepo,
+    val appConfig: AppConfig,
+    val oAuthHelper: OAuthHelper
 ): HasAllPaginated<CollectionDoc> {
     override val elasticRepository = collectionEsRepo
 
@@ -99,8 +99,8 @@ class CollectionController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createCollections(
-            @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
-            @AuthenticationPrincipal user: Jwt?
+        @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
+        @AuthenticationPrincipal user: Jwt?
     ): List<ApiCollection> {
         return collectionRepository.createFromApi(
             apiCollectionUpdates,
@@ -117,9 +117,9 @@ class CollectionController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateCollection(
-            @PathVariable uuid: String,
-            @RequestBody apiUpdate: ApiCollectionUpdate,
-            @AuthenticationPrincipal user: Jwt?
+        @PathVariable uuid: String,
+        @RequestBody apiUpdate: ApiCollectionUpdate,
+        @AuthenticationPrincipal user: Jwt?
     ): ApiCollection {
 
         if (oAuthHelper.hasRole(appConfig.roleCurator) && !oAuthHelper.isArchiveRelated(apiUpdate.publishStatus)) {
@@ -143,9 +143,9 @@ class CollectionController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateSkills(
-            @PathVariable uuid: String,
-            @RequestBody skillListUpdate: ApiSkillListUpdate,
-            @RequestParam(
+        @PathVariable uuid: String,
+        @RequestBody skillListUpdate: ApiSkillListUpdate,
+        @RequestParam(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) status: List<String>,
@@ -162,16 +162,16 @@ class CollectionController @Autowired constructor(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun publishCollections(
-            @RequestBody search: ApiSearch,
-            @RequestParam(
+        @RequestBody search: ApiSearch,
+        @RequestParam(
             required = false,
             defaultValue = "Published"
         ) newStatus: String,
-            @RequestParam(
+        @RequestParam(
             required = false,
             defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
         ) filterByStatus: List<String>,
-            @AuthenticationPrincipal user: Jwt?
+        @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         val filterStatuses = filterByStatus.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         val publishStatus = PublishStatus.forApiValue(newStatus) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)

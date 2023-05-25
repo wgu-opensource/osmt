@@ -1,6 +1,6 @@
 import { Location } from "@angular/common"
 import { HttpClient, HttpHeaders } from "@angular/common/http"
-import { Injectable } from "@angular/core"
+import { Inject, Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { Observable } from "rxjs"
 import { map, share } from "rxjs/operators"
@@ -16,11 +16,16 @@ import { ApiTaskResult, ITaskResult } from "../../task/ApiTaskResult"
 })
 export class JobCodeService extends AbstractDataService{
 
-  private baseServiceUrl = "api/metadata/jobcodes"
+  private baseServiceUrl = "metadata/jobcodes"
 
-  constructor(protected httpClient: HttpClient, protected authService: AuthService,
-              protected router: Router, protected location: Location) {
-    super(httpClient, authService, router, location)
+  constructor(
+    protected httpClient: HttpClient,
+    protected authService: AuthService,
+    protected router: Router,
+    protected location: Location,
+    @Inject("BASE_API") base: string
+  ) {
+    super(httpClient, authService, router, location, base)
   }
 
   getJobCodes(

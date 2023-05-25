@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core"
+import { Inject, Injectable } from "@angular/core"
 import {HttpClient, HttpHeaders} from "@angular/common/http"
 import {AuthService} from "../../auth/auth-service"
 import {AbstractService} from "../../abstract.service"
@@ -38,10 +38,16 @@ import {Location} from "@angular/common"
 })
 export class CollectionService extends AbstractService {
 
-  private baseServiceUrl = "api/collections"
+  private baseServiceUrl = "collections"
 
-  constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
-    super(httpClient, authService, router, location)
+  constructor(
+    httpClient: HttpClient,
+    authService: AuthService,
+    router: Router,
+    location: Location,
+    @Inject("BASE_API") base: string
+  ) {
+    super(httpClient, authService, router, location, base)
   }
 
   getCollections(

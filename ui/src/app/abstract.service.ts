@@ -9,6 +9,7 @@ import {ApiSearch, PaginatedSkills} from "./richskill/service/rich-skill-search.
 import {map, share} from "rxjs/operators"
 import {Router} from "@angular/router"
 import {Location} from "@angular/common"
+import { Inject } from "@angular/core"
 
 export interface ApiGetParams {
   path: string,
@@ -43,12 +44,16 @@ export interface IRelatedSkillsService<TEntityId> {
  */
 export abstract class AbstractService {
 
+  protected base = ""
+
   protected constructor(
     protected httpClient: HttpClient,
     protected authService: IAuthService,
     protected router: Router,
-    protected location: Location
+    protected location: Location,
+    @Inject("BASE_API") base: string
   ) {
+    this.base = base
   }
 
   redirectToLogin(error: any): void {
@@ -101,11 +106,12 @@ export abstract class AbstractService {
   }
 
   protected buildUrl(path: string): string {
+    console.log(this.base)
     const baseUrl = AppConfig.settings.baseApiUrl
 
     // if user defined, make sure it delineates between the host and path
     if (baseUrl && !baseUrl.endsWith("/") && !path.startsWith("/")) {
-      return baseUrl + "/" + path
+      return baseUrl + this.base + "/" + path
     } else {
       return baseUrl + path
     }

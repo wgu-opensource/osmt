@@ -1,6 +1,6 @@
 import { Location } from "@angular/common"
 import { HttpClient, HttpHeaders } from "@angular/common/http"
-import { Injectable } from "@angular/core"
+import { Inject, Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 
 import { Observable, of, throwError } from "rxjs"
@@ -26,8 +26,14 @@ import { ApiTaskResult, ITaskResult } from "../../task/ApiTaskResult"
 
 export class RichSkillService extends AbstractService {
 
-  constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
-    super(httpClient, authService, router, location)
+  constructor(
+    httpClient: HttpClient,
+    authService: AuthService,
+    router: Router,
+    location: Location,
+    @Inject("BASE_API") base: string
+  ) {
+    super(httpClient, authService, router, location, base)
   }
 
   private serviceUrl = "api/skills"

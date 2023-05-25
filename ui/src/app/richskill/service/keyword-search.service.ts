@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core"
+import { Inject, Injectable } from "@angular/core"
 import {AbstractService} from "../../abstract.service"
 import {HttpClient} from "@angular/common/http"
 import {AuthService} from "../../auth/auth-service"
@@ -17,8 +17,14 @@ import {Location} from "@angular/common";
 })
 export class KeywordSearchService extends AbstractService {
 
-  constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
-    super(httpClient, authService, router, location)
+  constructor(
+    httpClient: HttpClient,
+    authService: AuthService,
+    router: Router,
+    location: Location,
+    @Inject("BASE_API") base: string
+  ) {
+    super(httpClient, authService, router, location, base)
   }
 
   searchJobcodes(

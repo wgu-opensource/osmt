@@ -23,9 +23,9 @@ export class JobCodeService extends AbstractDataService{
     protected authService: AuthService,
     protected router: Router,
     protected location: Location,
-    @Inject("BASE_API") base: string
+    @Inject("BASE_API") baseApi: string
   ) {
-    super(httpClient, authService, router, location, base)
+    super(httpClient, authService, router, location, baseApi)
   }
 
   getJobCodes(

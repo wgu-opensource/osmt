@@ -22,9 +22,9 @@ export class CategoryService extends AbstractService implements IRelatedSkillsSe
     authService: AuthService,
     router: Router,
     location: Location,
-    @Inject("BASE_API") base: string
+    @Inject("BASE_API") baseApi: string
   ) {
-    super(httpClient, authService, router, location, base)
+    super(httpClient, authService, router, location, baseApi)
   }
 
   private serviceUrl = "categories"

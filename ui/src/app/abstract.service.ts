@@ -44,16 +44,16 @@ export interface IRelatedSkillsService<TEntityId> {
  */
 export abstract class AbstractService {
 
-  protected base = ""
+  protected baseApi = ""
 
   protected constructor(
     protected httpClient: HttpClient,
     protected authService: IAuthService,
     protected router: Router,
     protected location: Location,
-    @Inject("BASE_URL") base: string
+    @Inject("BASE_API") baseApi: string
   ) {
-    this.base = base
+    this.baseApi = baseApi
   }
 
   redirectToLogin(error: any): void {
@@ -110,7 +110,7 @@ export abstract class AbstractService {
 
     // if user defined, make sure it delineates between the host and path
     if (baseUrl && !baseUrl.endsWith("/") && !path.startsWith("/")) {
-      return baseUrl + this.base + "/" + path
+      return baseUrl + this.baseApi + "/" + path
     } else {
       return baseUrl + path
     }

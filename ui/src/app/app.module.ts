@@ -110,6 +110,7 @@ import { OsmtFormModule } from "./form/osmt-form.module"
 import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collection/convert-to-collection.component"
 import { SizePaginationComponent } from "./table/skills-library-table/size-pagination/size-pagination.component"
 import {OsmtTableModule} from "./table/osmt-table.module"
+import { getBaseApi } from "./api-versions"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -250,9 +251,16 @@ export function initializeApp(
     FormDirtyGuard,
     AuthService,
     AuthGuard,
-    { provide: APP_INITIALIZER,
+    {
+      provide: APP_INITIALIZER,
       useFactory: initializeApp,
-      deps: [AppConfig, AuthService], multi: true }
+      deps: [AppConfig, AuthService],
+      multi: true
+    },
+    {
+      provide: "BASE_API",
+      useFactory: getBaseApi,
+    }
   ],
   bootstrap: [AppComponent]
 })

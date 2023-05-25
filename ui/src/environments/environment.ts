@@ -5,6 +5,11 @@
 export const environment = {
   production: false,
   baseApiUrl: "http://localhost:8080",
+  /**
+   * @deprecated
+   */
+  apiV2: "",
+  apiV3: "v3",
   loginUrl: "http://localhost:8080/oauth2/authorization/okta",
   dynamicWhitelabel: true
 }

@@ -132,7 +132,7 @@ object RoutePaths {
 
     }
     
-    object V2 {
+    object OldSupported {
         private const val API = "/api$VERSION2"
         private const val SEARCH_PATH = "$API/search"
 

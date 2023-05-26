@@ -81,8 +81,7 @@ class CollectionController @Autowired constructor(
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
     }
 
-    @GetMapping(path = [RoutePaths.Latest.COLLECTION_DETAIL, RoutePaths.Unversioned.COLLECTION_DETAIL],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = [RoutePaths.Latest.COLLECTION_DETAIL], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun byUUID(@PathVariable uuid: String): ApiCollection? {
         return collectionRepository.findByUUID(uuid)?.let {
@@ -90,7 +89,7 @@ class CollectionController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @GetMapping(path = [RoutePaths.OldStillSupported.COLLECTION_DETAIL], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = [RoutePaths.OldStillSupported.COLLECTION_DETAIL, RoutePaths.Unversioned.COLLECTION_DETAIL], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun byUUIDv2(@PathVariable uuid: String): ApiCollectionV2? {
         return collectionRepository.findByUUID(uuid)?.let {
@@ -98,19 +97,18 @@ class CollectionController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @RequestMapping(path = [RoutePaths.Latest.COLLECTION_DETAIL, RoutePaths.Unversioned.COLLECTION_DETAIL],
+    @RequestMapping(path = [RoutePaths.Latest.COLLECTION_DETAIL],
             produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(@PathVariable uuid: String): String {
         return "forward:/collections/$uuid"
     }
 
-    @RequestMapping(path = [RoutePaths.OldStillSupported.COLLECTION_DETAIL], produces = [MediaType.TEXT_HTML_VALUE])
+    @RequestMapping(path = [RoutePaths.OldStillSupported.COLLECTION_DETAIL, RoutePaths.Unversioned.COLLECTION_DETAIL], produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlViewV2(@PathVariable uuid: String): String {
         return "forward:/v2/collections/$uuid"
     }
 
-    @PostMapping(path = [RoutePaths.Latest.COLLECTION_CREATE, RoutePaths.Unversioned.COLLECTION_CREATE],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [RoutePaths.Latest.COLLECTION_CREATE], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createCollections(
         @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
@@ -127,7 +125,7 @@ class CollectionController @Autowired constructor(
 
     }
 
-    @PostMapping(path = [RoutePaths.OldStillSupported.COLLECTION_CREATE], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [RoutePaths.OldStillSupported.COLLECTION_CREATE, RoutePaths.Unversioned.COLLECTION_CREATE], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createCollectionsV2(
             @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
@@ -144,8 +142,7 @@ class CollectionController @Autowired constructor(
 
     }
 
-    @PostMapping(path = [RoutePaths.Latest.COLLECTION_UPDATE, RoutePaths.Unversioned.COLLECTION_UPDATE],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [RoutePaths.Latest.COLLECTION_UPDATE], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateCollection(
         @PathVariable uuid: String,
@@ -170,7 +167,7 @@ class CollectionController @Autowired constructor(
         return ApiCollection.fromDao(updated, appConfig)
     }
 
-    @PostMapping(path = [RoutePaths.OldStillSupported.COLLECTION_UPDATE], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [RoutePaths.OldStillSupported.COLLECTION_UPDATE, RoutePaths.Unversioned.COLLECTION_UPDATE], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateCollectionV2(
             @PathVariable uuid: String,
@@ -250,7 +247,7 @@ class CollectionController @Autowired constructor(
         return Task.processingResponse(task)
     }
 
-    @GetMapping(path = [RoutePaths.Latest.COLLECTION_XLSX, RoutePaths.Unversioned.COLLECTION_XLSX],
+    @GetMapping(path = [RoutePaths.Latest.COLLECTION_XLSX],
             produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
     fun getSkillsForCollectionXlsx(
         @PathVariable uuid: String
@@ -286,8 +283,7 @@ class CollectionController @Autowired constructor(
         return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
     }
 
-    @GetMapping(path = [RoutePaths.Latest.WORKSPACE_PATH, RoutePaths.OldStillSupported.WORKSPACE_PATH, RoutePaths.Unversioned.WORKSPACE_PATH],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = [RoutePaths.Latest.WORKSPACE_PATH], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun getOrCreateWorkspace(
         @AuthenticationPrincipal user: Jwt?
@@ -311,7 +307,7 @@ class CollectionController @Autowired constructor(
         ).firstOrNull()?.let { ApiCollection.fromDao(it, appConfig) }
     }
 
-    @GetMapping(path = [RoutePaths.OldStillSupported.WORKSPACE_PATH], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = [RoutePaths.OldStillSupported.WORKSPACE_PATH, RoutePaths.Unversioned.WORKSPACE_PATH], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun getOrCreateWorkspaceV2(
             @AuthenticationPrincipal user: Jwt?

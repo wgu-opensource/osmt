@@ -36,7 +36,7 @@ class TaskController @Autowired constructor(
         return taskResult(uuid)
     }
 
-    @GetMapping(RoutePaths.Latest.TASK_DETAIL_MEDIA, RoutePaths.Unversioned.TASK_DETAIL_MEDIA)
+    @GetMapping(RoutePaths.Latest.TASK_DETAIL_MEDIA)
     @ResponseBody
     fun mediaResult(@PathVariable uuid: String): HttpEntity<*> {
         return taskResult(uuid)
@@ -48,7 +48,7 @@ class TaskController @Autowired constructor(
         return taskResult(uuid)
     }
 
-    @GetMapping(path = [RoutePaths.Latest.TASK_DETAIL_SKILLS, RoutePaths.Unversioned.TASK_DETAIL_SKILLS])
+    @GetMapping(path = [RoutePaths.Latest.TASK_DETAIL_SKILLS])
     @ResponseBody
     fun skillsResult(@PathVariable uuid: String): HttpEntity<*> {
         val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
@@ -67,7 +67,7 @@ class TaskController @Autowired constructor(
         }
     }
 
-    @GetMapping(RoutePaths.OldStillSupported.TASK_DETAIL_SKILLS)
+    @GetMapping(path = [RoutePaths.OldStillSupported.TASK_DETAIL_SKILLS, RoutePaths.Unversioned.TASK_DETAIL_SKILLS])
     @ResponseBody
     fun skillsResultV2(@PathVariable uuid: String): HttpEntity<*> {
         val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)

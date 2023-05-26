@@ -69,8 +69,7 @@ class KeywordController @Autowired constructor(
         )
     }
 
-    @GetMapping(path = [RoutePaths.Latest.CATEGORY_DETAIL, RoutePaths.Unversioned.CATEGORY_DETAIL],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = [RoutePaths.Latest.CATEGORY_DETAIL], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun categoryById(
         @PathVariable identifier: String
@@ -79,8 +78,7 @@ class KeywordController @Autowired constructor(
         return this.byId(KeywordTypeEnum.Category, id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @GetMapping(path = [RoutePaths.Latest.CATEGORY_SKILLS, RoutePaths.Unversioned.CATEGORY_SKILLS],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = [RoutePaths.Latest.CATEGORY_SKILLS], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun getCategorySkills (
         uriComponentsBuilder: UriComponentsBuilder,
@@ -105,8 +103,7 @@ class KeywordController @Autowired constructor(
         )
     }
 
-    @PostMapping(path = [RoutePaths.Latest.CATEGORY_SKILLS, RoutePaths.Unversioned.CATEGORY_SKILLS],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [RoutePaths.Latest.CATEGORY_SKILLS], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCategorySkills (
         uriComponentsBuilder: UriComponentsBuilder,

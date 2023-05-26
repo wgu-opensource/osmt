@@ -85,7 +85,7 @@ class RichSkillController @Autowired constructor(
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
     }
 
-    @GetMapping(RoutePaths.V2.SKILLS_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.OldSupported.SKILLS_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun allPaginatedV2(
             uriComponentsBuilder: UriComponentsBuilder,
@@ -149,7 +149,7 @@ class RichSkillController @Autowired constructor(
             .body(searchHits.map { it.content }.toList())
     }
 
-    @PostMapping(path = [RoutePaths.Latest.SKILLS_CREATE, RoutePaths.V2.SKILLS_CREATE], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [RoutePaths.Latest.SKILLS_CREATE, RoutePaths.OldSupported.SKILLS_CREATE, RoutePaths.Unversioned.SKILLS_CREATE], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createSkills(
         @RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
@@ -176,7 +176,7 @@ class RichSkillController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @GetMapping(RoutePaths.V2.SKILL_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.OldSupported.SKILL_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun byUUIDv2(
             @PathVariable uuid: String,
@@ -191,7 +191,7 @@ class RichSkillController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @RequestMapping(path = [RoutePaths.Latest.SKILL_DETAIL, RoutePaths.V2.SKILL_DETAIL], produces = [MediaType.TEXT_HTML_VALUE])
+    @RequestMapping(path = [RoutePaths.Latest.SKILL_DETAIL, RoutePaths.Unversioned.SKILL_DETAIL], produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(
         @PathVariable uuid: String,
         @AuthenticationPrincipal user: Jwt?
@@ -205,7 +205,21 @@ class RichSkillController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @RequestMapping(path = [RoutePaths.Latest.SKILL_DETAIL, RoutePaths.V2.SKILL_DETAIL], produces = ["text/csv"])
+    @RequestMapping(path = [RoutePaths.OldSupported.SKILL_DETAIL], produces = [MediaType.TEXT_HTML_VALUE])
+    fun byUUIDHtmlViewV2(
+            @PathVariable uuid: String,
+            @AuthenticationPrincipal user: Jwt?
+    ): String {
+        return richSkillRepository.findByUUID(uuid)?.let {
+            if (user == null && it.publishStatus() == PublishStatus.Unarchived) {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND)
+            }
+
+            "forward:/v2/skills/$uuid"
+        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    }
+
+    @RequestMapping(path = [RoutePaths.Latest.SKILL_DETAIL, RoutePaths.OldSupported.SKILL_DETAIL, RoutePaths.Unversioned.SKILL_DETAIL], produces = ["text/csv"])
     fun byUUIDCsvView(
         @PathVariable uuid: String,
         @AuthenticationPrincipal user: Jwt?
@@ -246,7 +260,7 @@ class RichSkillController @Autowired constructor(
         return ApiSkill.fromDao(updatedSkill, appConfig)
     }
 
-    @PostMapping(RoutePaths.V2.SKILL_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.OldSupported.SKILL_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateSkillV2(
             @PathVariable uuid: String,
@@ -267,7 +281,7 @@ class RichSkillController @Autowired constructor(
         return ApiSkillV2.fromDao(updatedSkill, appConfig)
     }
 
-    @PostMapping(path = [RoutePaths.Latest.SKILL_PUBLISH, RoutePaths.V2.SKILL_PUBLISH], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [RoutePaths.Latest.SKILL_PUBLISH, RoutePaths.OldSupported.SKILL_PUBLISH, RoutePaths.Unversioned.SKILL_PUBLISH], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun publishSkills(
         @RequestBody search: ApiSearch,
@@ -300,7 +314,7 @@ class RichSkillController @Autowired constructor(
         return Task.processingResponse(task)
     }
 
-    @GetMapping(path = [RoutePaths.Latest.SKILL_AUDIT_LOG, RoutePaths.V2.SKILL_AUDIT_LOG],
+    @GetMapping(path = [RoutePaths.Latest.SKILL_AUDIT_LOG, RoutePaths.OldSupported.SKILL_AUDIT_LOG, RoutePaths.Unversioned.SKILL_AUDIT_LOG],
             produces = ["application/json"])
     fun skillAuditLog(
         @PathVariable uuid: String
@@ -315,7 +329,7 @@ class RichSkillController @Autowired constructor(
     }
 
     @Transactional(readOnly = true)
-    @GetMapping(path = [RoutePaths.Latest.EXPORT_LIBRARY_CSV, RoutePaths.V2.EXPORT_LIBRARY_CSV, RoutePaths.Unversioned.EXPORT_LIBRARY_CSV],
+    @GetMapping(path = [RoutePaths.Latest.EXPORT_LIBRARY_CSV, RoutePaths.OldSupported.EXPORT_LIBRARY_CSV, RoutePaths.Unversioned.EXPORT_LIBRARY_CSV],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportLibraryCsv(
@@ -379,7 +393,7 @@ class RichSkillController @Autowired constructor(
     }
 
     @Transactional(readOnly = true)
-    @PostMapping(RoutePaths.V2.EXPORT_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.OldSupported.EXPORT_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportCustomList(
             @RequestBody uuids: List<String>?,

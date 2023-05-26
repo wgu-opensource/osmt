@@ -30,7 +30,7 @@ class TaskController @Autowired constructor(
         }
     }
 
-    @GetMapping(path = [RoutePaths.Latest.TASK_DETAIL_TEXT, RoutePaths.Unversioned.TASK_DETAIL_TEXT, RoutePaths.V2.TASK_DETAIL_TEXT])
+    @GetMapping(path = [RoutePaths.Latest.TASK_DETAIL_TEXT, RoutePaths.Unversioned.TASK_DETAIL_TEXT, RoutePaths.OldSupported.TASK_DETAIL_TEXT])
     @ResponseBody
     fun textResult(@PathVariable uuid: String): HttpEntity<*> {
         return taskResult(uuid)
@@ -42,7 +42,7 @@ class TaskController @Autowired constructor(
         return taskResult(uuid)
     }
 
-    @GetMapping(path = [RoutePaths.Latest.TASK_DETAIL_BATCH, RoutePaths.Unversioned.TASK_DETAIL_BATCH, RoutePaths.V2.TASK_DETAIL_BATCH])
+    @GetMapping(path = [RoutePaths.Latest.TASK_DETAIL_BATCH, RoutePaths.Unversioned.TASK_DETAIL_BATCH, RoutePaths.OldSupported.TASK_DETAIL_BATCH])
     @ResponseBody
     fun batchResult(@PathVariable uuid: String): HttpEntity<*> {
         return taskResult(uuid)
@@ -67,7 +67,7 @@ class TaskController @Autowired constructor(
         }
     }
 
-    @GetMapping(RoutePaths.V2.TASK_DETAIL_SKILLS)
+    @GetMapping(RoutePaths.OldSupported.TASK_DETAIL_SKILLS)
     @ResponseBody
     fun skillsResultV2(@PathVariable uuid: String): HttpEntity<*> {
         val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)

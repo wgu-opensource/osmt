@@ -259,7 +259,7 @@ export function initializeApp(
     },
     {
       provide: "BASE_API",
-      useFactory: getBaseApi,
+      useFactory: () =>  getBaseApi(),
     }
   ],
   bootstrap: [AppComponent]

@@ -36,7 +36,7 @@ function get_bearer_token() {
       --ignore-redirects \
       --export-environment "$auth_env"
 
-  bearer_token="$(jq '.["values"][] | select(.key=="bearerToken") | .value' "$auth_env")"
+  bearer_token="$( node "$test_dir/postman/getToken.js")"
   echo "Retrieved token:"
   echo "$bearer_token"
 
@@ -46,9 +46,6 @@ function get_bearer_token() {
 
 run_api_tests() {
   echo "Running postman collection ..."
-  # Removing leading and trailing double quotes.
-  bearer_token="${bearer_token%\"}"
-  bearer_token="${bearer_token#\"}"
   npx "$test_dir/node_modules/.bin/newman" \
     run "$test_dir/postman/osmt-testing.postman_collection.json" \
       --env-var baseUrl="$BASE_URL" \

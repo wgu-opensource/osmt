@@ -2,9 +2,7 @@
   "name": "osmt-tests",
   "version": "1.0.0",
   "description": "OSMT Tests Package",
-  "scripts": {
-    "test-injection": "node ./postman/test-injector.js"
-  },
+  "type": "commonjs",
   "devDependencies": {
     "newman": "^5.3.2",
     "glob": "^10.2.2",

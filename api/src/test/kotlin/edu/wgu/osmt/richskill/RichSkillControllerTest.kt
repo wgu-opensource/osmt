@@ -96,6 +96,27 @@ internal class RichSkillControllerTest @Autowired constructor(
     }
 
     @Test
+    fun testAllPaginatedV2(){
+        // Arrange
+        val size = 50
+        val listOfSkills = mockData.getRichSkillDocs()
+        richSkillEsRepo.saveAll(listOfSkills)
+
+        // Act
+        val result = richSkillController.allPaginatedV2(
+                UriComponentsBuilder.newInstance(),
+                size,
+                0,
+                arrayOf("draft","published"),
+                "",
+                nullJwt
+        )
+
+        // Assert
+        assertThat(result.body?.size).isEqualTo(size)
+    }
+
+    @Test
     fun testAllPaginatedWithNoFilters(){
         // Arrange
         val size = 50
@@ -164,6 +185,28 @@ internal class RichSkillControllerTest @Autowired constructor(
     }
 
     @Test
+    fun testByUUIDv2(){
+        // Arrange
+        val numOfSkills = 3
+        val richSkillRows = mockData.getRichSkillRows()
+        val listOfRichSkillRows = mutableListOf<RichSkillRow>()
+        val jwt = Jwt.withTokenValue("foo").header("foo", "foo").claim("foo", "foo").build()
+
+        for (i in 1..numOfSkills ) {
+            listOfRichSkillRows.add(richSkillRows[i])
+        }
+
+        batchImportRichSkill.handleRows(listOfRichSkillRows)
+
+        // Act
+        val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
+        val result = richSkillController.byUUIDv2(skillResult.searchHits[0].id.toString(),jwt)
+
+        // Assert
+        assertThat(result?.uuid).isEqualTo(skillResult.searchHits[0].id.toString())
+    }
+
+    @Test
     fun testByUUIDHtmlView(){
         // Arrange
         val numOfSkills = 3
@@ -183,6 +226,28 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Assert
         assertThat(result).isEqualTo("forward:/skills/"+skillResult.searchHits[0].id.toString())
+    }
+
+    @Test
+    fun testByUUIDHtmlViewV2(){
+        // Arrange
+        val numOfSkills = 3
+        val richSkillRows = mockData.getRichSkillRows()
+        val listOfRichSkillRows = mutableListOf<RichSkillRow>()
+        val jwt = Jwt.withTokenValue("foo").header("foo", "foo").claim("foo", "foo").build()
+
+        for (i in 1..numOfSkills ) {
+            listOfRichSkillRows.add(richSkillRows[i])
+        }
+
+        batchImportRichSkill.handleRows(listOfRichSkillRows)
+
+        // Act
+        val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
+        val result = richSkillController.byUUIDHtmlViewV2(skillResult.searchHits[0].id.toString(),jwt)
+
+        // Assert
+        assertThat(result).isEqualTo("forward:/v2/skills/"+skillResult.searchHits[0].id.toString())
     }
 
     @Test

@@ -23,7 +23,7 @@ class ApiSkillSummaryV2(
 ) {
 
     companion object {
-        private fun fromSkill(rsd: RichSkillDescriptor, appConfig: AppConfig): ApiSkillSummaryV2 {
+        fun fromSkill(rsd: RichSkillDescriptor, appConfig: AppConfig): ApiSkillSummaryV2 {
             return ApiSkillSummaryV2(
                 id = rsd.canonicalUrl(appConfig.baseUrl),
                 uuid = rsd.uuid,

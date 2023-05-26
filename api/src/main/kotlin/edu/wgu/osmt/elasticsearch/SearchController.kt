@@ -50,7 +50,7 @@ class SearchController @Autowired constructor(
     val appConfig: AppConfig
 ) {
 
-    @PostMapping(path = [RoutePaths.Latest.SEARCH_COLLECTIONS, RoutePaths.OldSupported.SEARCH_COLLECTIONS, RoutePaths.Unversioned.SEARCH_COLLECTIONS],
+    @PostMapping(path = [RoutePaths.Latest.SEARCH_COLLECTIONS, RoutePaths.OldStillSupported.SEARCH_COLLECTIONS, RoutePaths.Unversioned.SEARCH_COLLECTIONS],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCollections(
@@ -161,7 +161,7 @@ class SearchController @Autowired constructor(
             .body(searchHits.map { it.content }.toList())
     }
 
-    @PostMapping(RoutePaths.OldSupported.SEARCH_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.OldStillSupported.SEARCH_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSkillsV2(
             uriComponentsBuilder: UriComponentsBuilder,
@@ -196,7 +196,7 @@ class SearchController @Autowired constructor(
 
         // build up current uri with path and params
         uriComponentsBuilder
-                .path(RoutePaths.OldSupported.SEARCH_SKILLS)
+                .path(RoutePaths.OldStillSupported.SEARCH_SKILLS)
                 .queryParam(RoutePaths.QueryParams.FROM, from)
                 .queryParam(RoutePaths.QueryParams.SIZE, size)
                 .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
@@ -243,7 +243,7 @@ class SearchController @Autowired constructor(
         return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
     }
 
-    @PostMapping(RoutePaths.OldSupported.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.OldStillSupported.COLLECTION_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun collectionSkillsV2(
             uriComponentsBuilder: UriComponentsBuilder,
@@ -261,7 +261,7 @@ class SearchController @Autowired constructor(
         return searchSkillsV2(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
     }
 
-    @GetMapping(path = [RoutePaths.Latest.SEARCH_JOBCODES_PATH, RoutePaths.Unversioned.SEARCH_JOBCODES_PATH, RoutePaths.OldSupported.SEARCH_JOBCODES_PATH,],
+    @GetMapping(path = [RoutePaths.Latest.SEARCH_JOBCODES_PATH, RoutePaths.Unversioned.SEARCH_JOBCODES_PATH, RoutePaths.OldStillSupported.SEARCH_JOBCODES_PATH,],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchJobCodes(
@@ -272,7 +272,7 @@ class SearchController @Autowired constructor(
         return ResponseEntity.status(200).body(searchResults.map { ApiJobCode.fromJobCode(it.content) }.toList())
     }
 
-    @GetMapping(path = [RoutePaths.Latest.SEARCH_KEYWORDS_PATH, RoutePaths.Unversioned.SEARCH_KEYWORDS_PATH, RoutePaths.OldSupported.SEARCH_KEYWORDS_PATH],
+    @GetMapping(path = [RoutePaths.Latest.SEARCH_KEYWORDS_PATH, RoutePaths.Unversioned.SEARCH_KEYWORDS_PATH, RoutePaths.OldStillSupported.SEARCH_KEYWORDS_PATH],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchKeywords(
@@ -294,14 +294,14 @@ class SearchController @Autowired constructor(
         return ResponseEntity.status(200).body(hits.map{ ApiSkillSummary.fromDoc(it.content)})
     }
 
-    @PostMapping(RoutePaths.OldSupported.SEARCH_SIMILAR_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.OldStillSupported.SEARCH_SIMILAR_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSimilarSkillsV2(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<ApiSkillSummaryV2>> {
         val hits = richSkillEsRepo.findSimilar(apiSimilaritySearch).toList()
         return ResponseEntity.status(200).body(hits.map{ ApiSkillSummaryV2.fromDoc(it.content)})
     }
 
-    @PostMapping(path = [RoutePaths.Latest.SEARCH_SIMILARITIES, RoutePaths.OldSupported.SEARCH_SIMILARITIES, RoutePaths.Unversioned.SEARCH_SIMILARITIES],
+    @PostMapping(path = [RoutePaths.Latest.SEARCH_SIMILARITIES, RoutePaths.OldStillSupported.SEARCH_SIMILARITIES, RoutePaths.Unversioned.SEARCH_SIMILARITIES],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun similarSkillWarnings(@RequestBody(required = true) similarities: Array<ApiSimilaritySearch>): HttpEntity<List<Boolean>> {

@@ -21,7 +21,7 @@ class ElasticSearchAdminController @Autowired constructor(
     val esReindexer: ElasticSearchReindexer
 ) {
 
-    @RequestMapping(path = [RoutePaths.Latest.ES_ADMIN_DELETE_INDICES, RoutePaths.Unversioned.ES_ADMIN_DELETE_INDICES, RoutePaths.OldSupported.ES_ADMIN_DELETE_INDICES])
+    @RequestMapping(path = [RoutePaths.Latest.ES_ADMIN_DELETE_INDICES, RoutePaths.Unversioned.ES_ADMIN_DELETE_INDICES, RoutePaths.OldStillSupported.ES_ADMIN_DELETE_INDICES])
     @PostMapping
     fun deleteElasticSearchIndices(): ResponseEntity<String> {
 
@@ -36,7 +36,7 @@ class ElasticSearchAdminController @Autowired constructor(
         )
     }
 
-    @RequestMapping(path = [RoutePaths.Latest.ES_ADMIN_REINDEX, RoutePaths.Unversioned.ES_ADMIN_REINDEX, RoutePaths.OldSupported.ES_ADMIN_REINDEX])
+    @RequestMapping(path = [RoutePaths.Latest.ES_ADMIN_REINDEX, RoutePaths.Unversioned.ES_ADMIN_REINDEX, RoutePaths.OldStillSupported.ES_ADMIN_REINDEX])
     @PostMapping
     fun reindexElasticSearch(): ResponseEntity<String> {
 

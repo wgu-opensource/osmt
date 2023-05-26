@@ -132,7 +132,7 @@ object RoutePaths {
 
     }
     
-    object OldSupported {
+    object OldStillSupported {
         private const val API = "/api$VERSION2"
         private const val SEARCH_PATH = "$API/search"
 
@@ -172,7 +172,6 @@ object RoutePaths {
 
         private const val TASKS_PATH = "${Unversioned.API}/results"
         const val TASK_DETAIL_TEXT = "$TASKS_PATH/text/{uuid}"
-        const val TASK_DETAIL_MEDIA = "$TASKS_PATH/media/{uuid}"
         const val TASK_DETAIL_BATCH = "$TASKS_PATH/batch/{uuid}"
         const val TASK_DETAIL_SKILLS = "$TASKS_PATH/skills/{uuid}"
 

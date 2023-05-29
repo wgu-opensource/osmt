@@ -11,11 +11,14 @@ declare dev_env_file
 # These values are also in application.properties. Providing these env vars to this script will
 # override these local dev defaults. These are in no way suitable for any level of actual deployment
 declare -r OSMT_STACK_NAME="${OSMT_STACK_NAME:-osmt_dev}"
-declare -r DB_HOST="${DB_HOST:-0.0.0.0}"
-declare -r DB_PORT="${DB_PORT:-3306}"
-declare -r DB_NAME="${DB_NAME:-osmt_db}"
-declare -r DB_USER="${DB_USER:-osmt_db_user}"
-declare -r DB_PASSWORD="${DB_PASSWORD:-password}"
+declare -r MYSQL_HOST="${MYSQL_HOST:-0.0.0.0}"
+declare -r MYSQL_PORT="${MYSQL_PORT:-3306}"
+declare -r MYSQL_NAME="${MYSQL_NAME:-osmt_db}"
+declare -r MYSQL_USER="${MYSQL_USER:-osmt_db_user}"
+declare -r MYSQL_PASSWORD="${MYSQL_PASSWORD:-password}"
+declare -r ELASTICSEARCH_HTTP_PORT="${ELASTICSEARCH_HTTP_PORT:-9200}"
+declare -r ELASTICSEARCH_TRANSPORT_PORT="${ELASTICSEARCH_TRANSPORT_PORT:-9300}"
+
 
 # new line formatted to indent with echo_err / echo_info etc
 declare -r indent="       "
@@ -41,18 +44,20 @@ _cd_osmt_project_dir() {
   fi
 }
 
-_source_osmt_dev_env_file() {
-  if [[ ! -f "${dev_env_file}" ||  ! -r "${dev_env_file}" ]]; then
-    echo_err "Can not access ${dev_env_file}. You can initialize the environment files by running $(basename "${0}") -i$"
+_source_osmt_env_file() {
+  local env_file="${1}"
+
+  if [[ ! -f "${env_file}" ||  ! -r "${env_file}" ]]; then
+    echo_err "Can not access ${env_file}. You can initialize the environment files by running $(basename "${0}") -i$"
     return 1
   fi
 
-  _validate_osmt_dev_env_file || return 1
+  _validate_env_file "${env_file}" || return 1
 
-  echo_info "Sourcing ${dev_env_file}"
+  echo_info "Sourcing ${env_file}"
   set -o allexport
   # shellcheck source=/dev/null
-  source "${dev_env_file}"
+  source "${env_file}"
   set +o allexport
 }
 
@@ -194,17 +199,8 @@ _validate_osmt_dev_dependencies() {
   return "${is_dependency_valid}"
 }
 
-_validate_osmt_quickstart_env_file() {
-  _validate_env_file "Quickstart" "${quickstart_env_file}" || return 1
-}
-
-_validate_osmt_dev_env_file() {
-  _validate_env_file "Development" "${dev_env_file}" || return 1
-}
-
 _validate_env_file() {
-  local env_name="${1}"
-  local env_file="${2}"
+  local env_file="${1}"
 
   echo
   if [[ ! -f "${env_file}" ]]; then
@@ -221,10 +217,11 @@ _validate_env_file() {
   fi
 }
 
-_validate_osmt_dev_docker_stack() {
-  local -i dev_container_count; dev_container_count="$(docker ps -q --filter name=${OSMT_STACK_NAME}* | wc -l)"
-  if [[ "${dev_container_count}" -ne 3 ]]; then
-    echo_err "Development Docker stack containers are not running."
+_validate_osmt_docker_stack() {
+  local stack_name="${1}"
+  local -i container_count; container_count="$(docker ps -q --filter name=${stack_name}* | wc -l)"
+  if [[ "${container_count}" -ne 3 ]]; then
+    echo_err "OSMT ${stack_name} stack requires 3 Docker services for MySQL, ElasticSearch, and Redis. See docker ps for more information."
     return 1
   fi
 }
@@ -262,8 +259,8 @@ validate_osmt_environment() {
 
   echo
   echo_info "Checking environment files used in local OSMT instances..."
-  _validate_osmt_quickstart_env_file || is_environment_valid+=1
-  _validate_osmt_dev_env_file || is_environment_valid+=1
+  _validate_env_file "${quickstart_env_file}" || is_environment_valid+=1
+  _validate_env_file "${dev_env_file}" || is_environment_valid+=1
 
   if [[ "${is_environment_valid}" -ne 0 ]]; then
     echo
@@ -272,28 +269,31 @@ validate_osmt_environment() {
   fi
 }
 
-start_osmt_dev_docker_stack() {
+start_osmt_docker_stack() {
+  local stack_name="${1}"
   local -i rc
   echo
-  echo_info "Starting OSMT Development Docker stack. You can stop it with $(basename "${0}") -e"
+  echo_info "Starting OSMT ${stack_name} Docker stack. You can stop it with $(basename "${0}") -e"
   cd "${project_dir}/docker" || return 1
-  docker-compose --file dev-stack.yml --project-name "${OSMT_STACK_NAME}" up --detach
+  # Docker stack should receive the service port variables sourced from the shell environment
+  docker-compose --file dev-stack.yml --project-name "${stack_name}" up --detach
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "Starting OSMT Development Docker stack failed. Exiting..."
+    echo_err "Starting OSMT ${stack_name} Docker stack failed. Exiting..."
     return 1
   fi
 }
 
-stop_osmt_dev_docker_stack() {
+stop_osmt_docker_stack() {
+  local stack_name="${1}"
   local -i rc
   echo
-  echo_info "Stopping OSMT Development Docker stack"
+  echo_info "Stopping OSMT ${stack_name} Docker stack"
   cd "${project_dir}/docker" || return 1
-  docker-compose --file dev-stack.yml --project-name "${OSMT_STACK_NAME}" down
+  docker-compose --file dev-stack.yml --project-name "${stack_name}" down
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "Stopping OSMT Development Docker stack failed. Exiting..."
+    echo_err "Stopping OSMT ${stack_name} Docker stack failed. Exiting..."
     return 1
   fi
 }
@@ -309,7 +309,7 @@ start_osmt_quickstart() {
   fi
 
   _cd_osmt_project_dir || return 1
-  _validate_osmt_quickstart_env_file
+  _validate_env_file "${quickstart_env_file}"
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Aborting OSMT Quickstart. Exiting..."
@@ -321,21 +321,22 @@ start_osmt_quickstart() {
   docker-compose --file docker-compose.quickstart.yml --env-file "${quickstart_env_file}" --project-name osmt_quickstart up
 }
 
-import_osmt_dev_metadata() {
+import_osmt_metadata() {
+  local stack_name="${1}"
   echo
   local -i rc
-  start_osmt_dev_docker_stack
-  _validate_osmt_dev_docker_stack
+  start_osmt_docker_stack "${stack_name}"
+  _validate_osmt_docker_stack "${stack_name}"
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "There was an issue validating your backend Development Docker stack. Exiting..."
+    echo_err "There was an issue validating your backend "${stack_name}" Docker stack. Exiting..."
     return 1
   fi
 
+  _source_osmt_env_file "${dev_env_file}" || return 1
   _cd_osmt_project_dir || return 1
-  _source_osmt_dev_env_file || return 1
-
   cd api || return 1
+
   echo
   echo_info "Importing BLS metadata via Maven Spring Boot plug-in (Maven log output suppressed)..."
   mvn -q -Dspring-boot.run.profiles=dev,import \
@@ -357,22 +358,25 @@ import_osmt_dev_metadata() {
 }
 
 start_osmt_dev_spring_app() {
+  local stack_name="${1}"
   echo
   local -i rc
-  start_osmt_dev_docker_stack
-  _validate_osmt_dev_docker_stack
+  start_osmt_docker_stack "${stack_name}"
+  _validate_osmt_docker_stack "${stack_name}"
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "There was an issue validating your backend Development Docker stack. Exiting..."
+    echo_err "There was an issue validating your backend ${stack_name} Docker stack. Exiting..."
     return 1
   fi
 
+  _source_osmt_env_file "${dev_env_file}" || return 1
+
   _cd_osmt_project_dir || return 1
-  _source_osmt_dev_env_file || return 1
+  cd api || return 1
+
   local security_profile="${OSMT_SECURITY_PROFILE:-oauth2-okta}"
   echo
   echo_info "Starting OSMT via Maven Spring Boot plug-in with ${security_profile} security profile (Maven log output suppressed)..."
-  cd api || return 1
   mvn -q -Dspring-boot.run.profiles=dev,apiserver,"${security_profile}" spring-boot:run
   rc=$?
   if [[ $rc -ne 0 ]]; then
@@ -384,31 +388,32 @@ start_osmt_dev_spring_app() {
 }
 
 load_static_ci_dataset(){
+  local stack_name="${1}"
   local -i rc
   echo
-  echo_info "Loading static CI dataset into MySQL database ${DB_NAME} at ${DB_HOST}:${DB_PORT}"
+  echo_info "Loading static CI dataset into MySQL database ${MYSQL_NAME} at ${MYSQL_HOST}:${MYSQL_PORT}"
   echo
   _validate_mysql_client || return 1
 
   local -i db_container_count=0;
   # some installations of Docker delimit container names with hyphens. Others use underscores.
-  db_container_count+="$(docker ps -q --filter name=${OSMT_STACK_NAME}_db_1 | wc -l)"
-  db_container_count+="$(docker ps -q --filter name=${OSMT_STACK_NAME}-db-1 | wc -l)"
+  db_container_count+="$(docker ps -q --filter name=${stack_name}_db_1 | wc -l)"
+  db_container_count+="$(docker ps -q --filter name=${stack_name}-db-1 | wc -l)"
   echo_debug $db_container_count
   if [[ "${db_container_count}" -ne 1 ]]; then
     echo_err "Development Docker stack MySQL container is not running as expected."
-    echo_err "(${db_container_count} ${OSMT_STACK_NAME} DB containers running. Should be 1). Exiting..."
+    echo_err "(${db_container_count} ${stack_name} DB containers running. Should be 1). Exiting..."
     return 1
   fi
 
   local sql_file="${project_dir}/test/sql/fixed_ci_dataset.sql"
 
   mysql \
-    --host="${DB_HOST}" \
-    --port="${DB_PORT}" \
-    --database="${DB_NAME}" \
-    --user="${DB_USER}" \
-    --password="${DB_PASSWORD}" < "${sql_file}"
+    --host="${MYSQL_HOST}" \
+    --port="${MYSQL_PORT}" \
+    --database="${MYSQL_NAME}" \
+    --user="${MYSQL_USER}" \
+    --password="${MYSQL_PASSWORD}" < "${sql_file}"
 
   rc=$?
   echo
@@ -425,18 +430,19 @@ load_static_ci_dataset(){
 }
 
 start_osmt_dev_spring_app_reindex() {
+  local stack_name="${1}"
   echo
   local -i rc
-  start_osmt_dev_docker_stack
-  _validate_osmt_dev_docker_stack
+  start_osmt_docker_stack "${stack_name}"
+  _validate_osmt_docker_stack "${stack_name}"
   rc=$?
   if [[ $rc -ne 0 ]]; then
-    echo_err "There was an issue validating your backend Development Docker stack. Exiting..."
+    echo_err "There was an issue validating your backend ${stack_name} Docker stack. Exiting..."
     return 1
   fi
 
   _cd_osmt_project_dir || return 1
-  _source_osmt_dev_env_file || return 1
+  _source_osmt_env_file "${dev_env_file}" || return 1
   echo
   echo_info "Starting OSMT via Maven Spring Boot plug-in to reindex ElasticSearch..."
   cd api || return 1
@@ -453,7 +459,8 @@ start_osmt_dev_spring_app_reindex() {
 _remove_osmt_docker_artifacts() {
   echo
   echo_info "Stopping OSMT-related Docker containers..."
-  stop_osmt_dev_docker_stack
+  stop_osmt_docker_stack "osmt_dev"
+  stop_osmt_docker_stack "osmt_api_test"
 
   echo
   echo_info "Removing OSMT-related Docker containers..."
@@ -486,6 +493,7 @@ EOF
       esac
   done
 }
+
 echo_info() {
   echo -e "INFO:  $*"
 }
@@ -575,27 +583,27 @@ while getopts "ivqdelrsmch" flag; do
       exit 0
       ;;
     d)
-      start_osmt_dev_docker_stack || exit 135
+      start_osmt_docker_stack "${OSMT_STACK_NAME}" || exit 135
       exit 0
       ;;
     e)
-      stop_osmt_dev_docker_stack || exit 135
+      stop_osmt_docker_stack "${OSMT_STACK_NAME}" || exit 135
       exit 0
       ;;
     s)
-      start_osmt_dev_spring_app || exit 135
+      start_osmt_dev_spring_app "${OSMT_STACK_NAME}" || exit 135
       exit 0
       ;;
     l)
-      load_static_ci_dataset || exit 135
+      load_static_ci_dataset "${OSMT_STACK_NAME}" || exit 135
       exit 0
       ;;
     r)
-      start_osmt_dev_spring_app_reindex || exit 135
+      start_osmt_dev_spring_app_reindex "${OSMT_STACK_NAME}" || exit 135
       exit 0
       ;;
     m)
-      import_osmt_dev_metadata || exit 135
+      import_osmt_metadata "${OSMT_STACK_NAME}" || exit 135
       exit 0
       ;;
     c)

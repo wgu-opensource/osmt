@@ -1,6 +1,6 @@
 import {FormGroup} from "@angular/forms";
 import {Injectable} from "@angular/core";
-import {ActivatedRouteSnapshot, CanDeactivate, RouterStateSnapshot} from "@angular/router";
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import {Observable} from "rxjs";
 
 export interface HasFormGroup {
@@ -8,7 +8,7 @@ export interface HasFormGroup {
 }
 
 @Injectable()
-export class FormDirtyGuard implements CanDeactivate<HasFormGroup> {
+export class FormDirtyGuard  {
 
   canDeactivate(
     component: HasFormGroup,

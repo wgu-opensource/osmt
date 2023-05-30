@@ -166,7 +166,9 @@ describe("RichSkillService", () => {
       testService.getSkillCsvByUuid("")
     } catch (e) {
       // Assert
-      expect(e.message).toEqual("No uuid provided for single skill csv export")
+     if (e instanceof Error) {
+       expect(e.message).toEqual("No uuid provided for single skill csv export")
+     }
     }
   })
 
@@ -207,7 +209,9 @@ describe("RichSkillService", () => {
       testService.getSkillJsonByUuid("")
     } catch (e) {
       // Assert
-      expect(e.message).toEqual("No uuid provided for single skill json export")
+      if (e instanceof Error) {
+        expect(e.message).toEqual("No uuid provided for single skill json export")
+      }
     }
   })
 

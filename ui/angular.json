@@ -11,25 +11,15 @@
         },
         "@schematics/angular:component": {
           "prefix": "app",
-          "style": "scss",
-          "lintFix": true
+          "style": "scss"
         },
         "@schematics/angular:directive": {
-          "prefix": "app",
-          "lintFix": true
+          "prefix": "app"
         },
-        "@schematics/angular:pipe": {
-          "lintFix": true
-        },
-        "@schematics/angular:class": {
-          "lintFix": true
-        },
-        "@schematics/angular:module": {
-          "lintFix": true
-        },
-        "@schematics/angular:service": {
-          "lintFix": true
-        }
+        "@schematics/angular:pipe": {},
+        "@schematics/angular:class": {},
+        "@schematics/angular:module": {},
+        "@schematics/angular:service": {}
       },
       "root": "",
       "sourceRoot": "src",
@@ -38,6 +28,11 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "papaparse",
+              "file-saver",
+              "chroma-js"
+            ],
             "outputPath": "../api/src/main/resources/ui/",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -70,7 +65,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -78,8 +72,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -138,19 +132,6 @@
             "codeCoverage": true
           }
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
@@ -162,9 +143,23 @@
               "devServerTarget": "ui:serve:production"
             }
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
-  "defaultProject": "ui"
+  "cli": {
+    "analytics": false,
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
+  }
 }

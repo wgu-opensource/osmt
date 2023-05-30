@@ -13,6 +13,7 @@ import { PublishStatus } from "../../../PublishStatus"
 import { ApiSkill } from "../../ApiSkill"
 import { RichSkillService } from "../../service/rich-skill.service"
 import { RichSkillManageComponent } from "./rich-skill-manage.component"
+import { getBaseApi } from "../../../api-versions"
 
 
 export function createComponent(T: Type<RichSkillManageComponent>): Promise<void> {
@@ -49,6 +50,10 @@ describe("RichSkillManageComponent", () => {
         Title,
         RichSkillService,
         { provide: AuthService, useClass: AuthServiceStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
       ]
     })
     .compileComponents()

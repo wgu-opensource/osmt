@@ -12,7 +12,8 @@
     "lint": "./node_modules/@angular/cli/bin/ng.js lint",
     "e2e": "./node_modules/@angular/cli/bin/ng.js e2e",
     "ci-test": "./node_modules/@angular/cli/bin/ng.js test --no-watch --no-progress --karma-config=karma.ci.conf.js",
-    "clean": "rm -rf ../api/src/main/resources/ui/*; rm -rf coverage; rm -rf reports; rm -rf test-results; rm -rf node_modules"
+    "clean": "rm -rf ../api/src/main/resources/ui/*; rm -rf coverage; rm -rf reports; rm -rf test-results; rm -rf node_modules",
+    "wdio": "wdio run ./wdio.conf.ts"
   },
   "private": true,
   "dependencies": {
@@ -54,9 +55,16 @@
     "@types/node": "^12.11.1",
     "@typescript-eslint/eslint-plugin": "5.59.2",
     "@typescript-eslint/parser": "5.59.2",
+    "@wdio/cli": "^8.10.5",
+    "@wdio/codemod": "^0.12.0",
+    "@wdio/jasmine-framework": "^8.10.5",
+    "@wdio/local-runner": "^8.10.5",
+    "@wdio/spec-reporter": "^8.10.5",
+    "chromedriver": "^113.0.0",
     "eslint": "^8.40.0",
     "jasmine-core": "~3.8.0",
     "jasmine-spec-reporter": "~5.0.0",
+    "jscodeshift": "^0.15.0",
     "karma": "~6.3.20",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "^2.0.3",
@@ -65,8 +73,9 @@
     "karma-junit-reporter": "^2.0.1",
     "karma-sonarqube-unit-reporter": "^0.0.23",
     "lodash": "^4.17.21",
-    "protractor": "~7.0.0",
     "ts-node": "~8.3.0",
-    "typescript": "~4.9.5"
+    "typescript": "~4.9.5",
+    "wdio-chromedriver-service": "^8.1.1",
+    "wdio-wait-for": "^3.0.4"
   }
 }

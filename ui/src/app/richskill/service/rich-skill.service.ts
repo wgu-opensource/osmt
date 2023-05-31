@@ -17,13 +17,9 @@ import { PublishStatus } from "../../PublishStatus"
 import { ApiTaskResult, ITaskResult } from "../../task/ApiTaskResult"
 
 
-/**
- * @deprecated
- */
 @Injectable({
   providedIn: "root"
 })
-
 export class RichSkillService extends AbstractService {
 
   constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {

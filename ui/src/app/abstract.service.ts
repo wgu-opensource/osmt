@@ -10,7 +10,7 @@ import {map, share} from "rxjs/operators"
 import {Router} from "@angular/router"
 import {Location} from "@angular/common"
 
-export interface ApiGetParams {
+interface ApiGetParams {
   path: string,
   headers?: HttpHeaders,
   params?: HttpParams | {
@@ -38,17 +38,14 @@ export interface IRelatedSkillsService<TEntityId> {
   ): Observable<PaginatedSkills>
 }
 
-/**
- * @deprecated
- */
 export abstract class AbstractService {
 
-  protected constructor(
-    protected httpClient: HttpClient,
-    protected authService: IAuthService,
-    protected router: Router,
-    protected location: Location
-  ) {
+  constructor(protected httpClient: HttpClient,
+              protected authService: IAuthService,
+              protected router: Router,
+              protected location: Location
+  )
+  {
   }
 
   redirectToLogin(error: any): void {

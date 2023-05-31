@@ -330,6 +330,7 @@ describe("ManageCollectionComponent", () => {
   })
 
   it("delete collection should not be visible", () => {
+    // @ts-ignore
     const spy = spyOnProperty(Auth, "ENABLE_ROLES").and.returnValue(false)
     const actions = component.actionDefinitions()
     const action = actions[5]

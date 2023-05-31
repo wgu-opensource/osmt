@@ -171,10 +171,10 @@ describe("ManageSkillActionBarVerticalComponent", () => {
     expect(clicked).toBeTruthy()
   })
 
-  it("handleCopyPublicUrl should return", async (done) => {
+  it("handleCopyPublicUrl should return", async () => {
     // Arrange
     let clipboardWriteTextSpy = spyOn(navigator.clipboard, "writeText").and.returnValue(Promise.resolve())
-    let showToastSpy = spyOn(toastService, "showToast").and.callFake(() => { done() })
+    let showToastSpy = spyOn(toastService, "showToast").and.callFake(() => { return })
 
     // Act
     childComponent.handleCopyPublicURL()

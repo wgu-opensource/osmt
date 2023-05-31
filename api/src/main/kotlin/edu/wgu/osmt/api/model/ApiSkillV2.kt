@@ -21,7 +21,7 @@ class ApiSkillV2(private val rsd: RichSkillDescriptor, private val cs: Set<Colle
     val author: String?
         get() = parseMultiValueToSingleValue(rsd.authors.map { "${it.value}," }.toString())
 
-    @get:JsonProperty
+    @get:JsonIgnore
     override val categories: List<String>
         get() = rsd.categories.mapNotNull { it.value }
 

@@ -19,9 +19,9 @@ class ApiCollection(
     private val ss: List<RichSkillDescriptor>,
     private val keywords: Map<KeywordTypeEnum, List<KeywordCount>>,
     private val appConfig: AppConfig
-) {
+) : IApiCollection {
     @get:JsonProperty
-    val id: String
+    override val id: String
         get() = collection.canonicalUrl(appConfig.baseUrl)
 
     @JsonProperty("@context")
@@ -31,47 +31,47 @@ class ApiCollection(
     val `type` = "RichSkillCollection"
 
     @get:JsonProperty
-    val uuid: String
+    override val uuid: String
         get() = collection.uuid.toString()
 
     @get:JsonProperty
-    val name: String
+    override val name: String
         get() = collection.name
 
     @get:JsonProperty
-    val description: String?
+    override val description: String?
         get() = collection.description
 
     @get:JsonProperty
-    val creator: String
+    override val creator: String
         get() = appConfig.defaultCreatorUri
 
     @get:JsonProperty
-    val author: String?
+    override val author: String?
         get() = collection.author?.let { it.value }
 
     @get:JsonProperty
-    val status: PublishStatus?
+    override val status: PublishStatus?
         get() = collection.status
 
     @get:JsonProperty
-    val creationDate: ZonedDateTime
+    override val creationDate: ZonedDateTime
         get() = collection.creationDate.atZone(ZoneId.of("UTC"))
 
     @get:JsonProperty
-    val updateDate: ZonedDateTime
+    override val updateDate: ZonedDateTime
         get() = collection.updateDate.atZone(ZoneId.of("UTC"))
 
     @get:JsonProperty
-    val publishDate: ZonedDateTime?
+    override val publishDate: ZonedDateTime?
         get() = collection.publishDate?.atZone(ZoneId.of("UTC"))
 
     @get:JsonProperty
-    val archiveDate: ZonedDateTime?
+    override val archiveDate: ZonedDateTime?
         get() = collection.archiveDate?.atZone(ZoneId.of("UTC"))
 
     @get:JsonProperty
-    val skills: List<ApiSkillSummary>
+    override val skills: List<ApiSkillSummary>
         get() = ss.map { ApiSkillSummary.fromSkill(it, appConfig) }
 
     @get:JsonProperty
@@ -79,7 +79,7 @@ class ApiCollection(
         get() = keywords
 
     @get:JsonProperty
-    val owner: String?
+    override val owner: String?
         get() = collection.workspaceOwner
 
     companion object {

@@ -12,7 +12,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
-class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collection>, private val appConfig: AppConfig) {
+open class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collection>, private val appConfig: AppConfig) {
 
     @JsonProperty("@context")
     val context = appConfig.rsdContextUrl

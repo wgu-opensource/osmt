@@ -71,6 +71,21 @@ object RoutePaths {
     const val ES_ADMIN_DELETE_INDICES = "$ES_ADMIN/delete-indices"
     const val ES_ADMIN_REINDEX = "$ES_ADMIN/reindex"
 
+    const val METADATA_PATH = "$API/metadata"
+    const val JOB_CODE_PATH = "$METADATA_PATH/jobcodes"
+    const val JOB_CODE_CREATE = JOB_CODE_PATH
+    const val JOB_CODE_LIST = JOB_CODE_PATH
+    const val JOB_CODE_DETAIL = "$JOB_CODE_PATH/{id}"
+    const val JOB_CODE_UPDATE = "$JOB_CODE_DETAIL/update"
+    const val JOB_CODE_REMOVE = "$JOB_CODE_DETAIL/remove"
+
+    const val NAMED_REFERENCES_PATH = "$METADATA_PATH/named-references"
+    const val NAMED_REFERENCES_CREATE = NAMED_REFERENCES_PATH
+    const val NAMED_REFERENCES_LIST = NAMED_REFERENCES_PATH
+    const val NAMED_REFERENCES_DETAIL = "$NAMED_REFERENCES_PATH/{id}"
+    const val NAMED_REFERENCES_UPDATE = "$NAMED_REFERENCES_DETAIL/update"
+    const val NAMED_REFERENCES_REMOVE = "$NAMED_REFERENCES_DETAIL/remove"
+
     object QueryParams {
         const val FROM = "from"
         const val SIZE = "size"

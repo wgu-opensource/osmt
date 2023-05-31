@@ -26,7 +26,7 @@ open class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Co
         get() = appConfig.defaultCreatorUri
 
     @get:JsonProperty
-    val authors: List<String>
+    open val authors: List<String>
         get() = rsd.authors.mapNotNull { it.value }
 
     @get:JsonProperty
@@ -62,7 +62,7 @@ open class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Co
         get() = rsd.searchingKeywords.mapNotNull { it.value }
 
     @get:JsonProperty
-    val categories: List<String>
+    open val categories: List<String>
         get() = rsd.categories.mapNotNull { it.value }
 
     @get:JsonProperty

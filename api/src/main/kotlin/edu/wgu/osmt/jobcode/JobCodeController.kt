@@ -1,6 +1,5 @@
 package edu.wgu.osmt.jobcode;
 
-import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiJobCode
 import edu.wgu.osmt.api.model.JobCodeSortEnum
@@ -11,7 +10,6 @@ import edu.wgu.osmt.task.RemoveJobCodeTask
 import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskResult
-import edu.wgu.osmt.task.TaskStatus
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -110,7 +108,6 @@ class JobCodeController @Autowired constructor(
     ): HttpEntity<TaskResult> {
         val task = RemoveJobCodeTask(jobCodeId = id.toLong())
         taskMessageService.enqueueJob(TaskMessageService.removeJobCode, task)
-        // return ResponseEntity.status(200).body(TaskResult(uuid = "uuid", contentType = "application/json", status = TaskStatus.Processing, apiResultPath = "path"))
         return Task.processingResponse(task)
     }
 

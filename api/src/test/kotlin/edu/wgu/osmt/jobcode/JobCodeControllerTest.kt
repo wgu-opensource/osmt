@@ -3,7 +3,6 @@ package edu.wgu.osmt.jobcode
 import edu.wgu.osmt.BaseDockerizedTest
 import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.SpringTest
-import edu.wgu.osmt.api.model.JobCodeSortEnum
 import edu.wgu.osmt.api.model.JobCodeUpdate
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -76,11 +75,12 @@ internal class JobCodeControllerTest @Autowired constructor(
 
     @Test
     fun `Delete should return status 200`() {
+        jobCodeController.taskMessageService.rqueueMessageSender.registerQueue("remove-job-code")
         val result = jobCodeController.deleteJobCode(
             1
         )
         Assertions.assertThat(result).isNotNull
-        Assertions.assertThat((result as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
+        Assertions.assertThat((result as ResponseEntity).statusCode).isEqualTo(HttpStatus.ACCEPTED)
     }
 
 

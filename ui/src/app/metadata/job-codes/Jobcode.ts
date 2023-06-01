@@ -1,6 +1,7 @@
 export type JobCodeLevel =  "Major" | "Minor" | "Broad" | "Detailed" | "Onet"
 
 export interface IJobCode {
+  id?: number
   targetNodeName?: string
   code: string
   targetNode?: number
@@ -18,6 +19,7 @@ export interface IJobCode {
 }
 
 export class ApiJobCode implements IJobCode {
+  id?: number
   code = ""
   targetNodeName?: string
   targetNode?: number

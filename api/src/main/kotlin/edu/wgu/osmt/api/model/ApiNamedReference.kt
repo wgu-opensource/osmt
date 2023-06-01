@@ -76,6 +76,7 @@ data class ApiStringListUpdate(
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class ApiJobCode(
+    val id: Long? = null,
     val code: String,
     val targetNode: String? = null,
     val targetNodeName: String? = null,
@@ -85,7 +86,7 @@ data class ApiJobCode(
 ) {
     companion object factory {
         fun fromJobCode(jobCode: JobCode, level: JobCodeLevel? = null, parents: List<ApiJobCode>? = null): ApiJobCode {
-            return ApiJobCode(code=jobCode.code, targetNodeName=jobCode.name, targetNode=jobCode.url, frameworkName=jobCode.framework, level=level, parents=parents)
+            return ApiJobCode(id = jobCode.id, code=jobCode.code, targetNodeName=jobCode.name, targetNode=jobCode.url, frameworkName=jobCode.framework, level=level, parents=parents)
         }
 
         fun getLevelFromJobCode(jobCode: JobCode): JobCodeLevel {

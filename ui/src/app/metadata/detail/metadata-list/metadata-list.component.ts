@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from "@angular/forms"
 import { Observable, Subject } from "rxjs"
 import { PaginatedMetadata } from "../../PaginatedMetadata"
 import { ApiSortOrder } from "../../../richskill/ApiSkill"
-import { IJobCode } from "../../job-codes/Jobcode"
+import { ApiJobCode, IJobCode } from "../../job-codes/Jobcode"
 import { TableActionBarComponent } from "../../../table/skills-library-table/table-action-bar.component"
 import { Whitelabelled } from "../../../../whitelabel"
 import { ApiNamedReference, INamedReference } from "../../named-references/NamedReference"
@@ -81,7 +81,7 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
   }
 
   loadNextPage(): void {
-    if (this.selectedMetadataType === MetadataType.JobCode) {
+    if (this.isJobCodeDataSelected) {
       this.jobCodeService.paginatedJobCodes(this.size, this.from, this.columnSort, this.matchingQuery).subscribe(
         jobCodes => this.results = jobCodes
       )
@@ -181,13 +181,15 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
     if (this.canDeleteMetadata) {
       tableActions.push(new TableActionDefinition({
         label: `Delete`,
-        callback: (action: TableActionDefinition, skill?: IJobCode|INamedReference) => this.handleClickDeleteItem(action, skill),
+        callback: (action: TableActionDefinition, jobCode?: IJobCode | INamedReference) => this.handleClickDeleteItem(jobCode),
       }))
     }
     return tableActions
   }
 
-  // tslint:disable-next-line:typedef
-  private handleClickDeleteItem(action: TableActionDefinition, skill: IJobCode|INamedReference | undefined) {
+  private handleClickDeleteItem(jobCode: IJobCode | INamedReference | undefined): void {
+    if (this.isJobCodeDataSelected) {
+      this.jobCodeService.deleteJobCodeWithResult((jobCode as ApiJobCode)?.id ?? 0).subscribe()
+    }
   }
 }

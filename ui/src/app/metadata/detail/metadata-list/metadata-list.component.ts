@@ -191,11 +191,14 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
 
   private handleClickDeleteItem(jobCode: IJobCode | INamedReference | undefined): void {
     if (this.isJobCodeDataSelected) {
-      this.jobCodeService.deleteJobCodeWithResult((jobCode as ApiJobCode)?.id ?? 0).subscribe(data => {
-        if (data?.success) {
-          this.toastService.showToast("Success", "You deleted a job code with name " + (jobCode as ApiJobCode)?.targetNodeName)
-        }
-      })
+      if (confirm("Confirm that you want to delete the job code with name " + (jobCode as ApiJobCode)?.targetNodeName)) {
+        this.jobCodeService.deleteJobCodeWithResult((jobCode as ApiJobCode)?.id ?? 0).subscribe(data => {
+          if (data?.success) {
+            this.toastService.showToast("Success", "You deleted a job code with name " + (jobCode as ApiJobCode)?.targetNodeName)
+            this.loadNextPage()
+          }
+        })
+      }
     }
   }
 }

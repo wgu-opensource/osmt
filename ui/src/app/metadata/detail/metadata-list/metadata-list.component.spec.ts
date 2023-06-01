@@ -5,6 +5,8 @@ import { PaginatedMetadata } from "../../PaginatedMetadata"
 import { ApiJobCode } from "../../job-codes/Jobcode"
 import { AuthServiceStub } from "@test/resource/mock-stubs";
 import { AuthService } from "../../../auth/auth-service";
+import { JobCodeService } from "../../job-codes/service/job-code.service"
+import { HttpClientTestingModule } from "@angular/common/http/testing"
 
 describe("ManageMetadataComponent", () => {
   let component: MetadataListComponent
@@ -15,6 +17,10 @@ describe("ManageMetadataComponent", () => {
       declarations: [ MetadataListComponent ],
       providers: [
         { provide: AuthService, useClass: AuthServiceStub },
+        JobCodeService
+      ],
+      imports: [
+        HttpClientTestingModule
       ]
     })
     .compileComponents()

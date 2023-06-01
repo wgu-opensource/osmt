@@ -49,7 +49,7 @@ describe("JobCodeService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const path = "api/metadata/jobcodes?sort=name.asc&size=3&from=0"
+    const path = "api/metadata/jobcodes?size=3&from=0&sort=name.asc&query="
     const testData: PaginatedMetadata = createMockPaginatedMetaDataWithJobCodes(3, 10)
 
     // Act
@@ -164,13 +164,14 @@ describe("JobCodeService", () => {
   })
 
   it("deleteJobCodeWithResult() should works", fakeAsync(() => {
-    const result$ = testService.deleteJobCodeWithResult(apiTaskResultForDeleteJobCode.uuid)
+    const jobCodeId = 2
+    const result$ = testService.deleteJobCodeWithResult(jobCodeId)
     tick(ASYNC_WAIT_PERIOD)
     // Assert
     result$.subscribe((data: ApiBatchResult) => {
       expect(RouterData.commands).toEqual([]) // No Errors
     })
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + `/api/metadata/jobcodes/${apiTaskResultForDeleteJobCode.uuid}/remove`)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + `/api/metadata/jobcodes/${jobCodeId}/remove`)
     expect(req.request.method).toEqual("DELETE")
     expect(req.request.headers.get("Accept")).toEqual("application/json")
   }))

@@ -19,7 +19,7 @@ import { ApiReferenceListUpdate, IRichSkillUpdate, IStringListUpdate } from "../
 import { PaginatedCollections, PaginatedSkills } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
 import { IJobCode } from "../../src/app/metadata/job-codes/Jobcode";
-import { PaginatedJobCodes } from "../../src/app/metadata/job-codes/service/job-code.service"
+import { PaginatedMetadata } from "../../src/app/metadata/PaginatedMetadata"
 
 // Add mock data here.
 // For more examples, see https://github.com/WGU-edu/ema-eval-ui/blob/develop/src/app/admin/pages/edit-user/edit-user.component.spec.ts
@@ -322,7 +322,7 @@ export const apiTaskResultForDeleteJobCode: ApiTaskResult = {
   id: "/api/results/batch/5ca6ea7f-e008-44fc-9108-eda19b01fa6b"
 }
 
-export function createMockPaginatedJobCodes(jobCodeCount = 1, total = 10): PaginatedJobCodes {
+export function createMockPaginatedMetaDataWithJobCodes(jobCodeCount = 1, total = 10): PaginatedMetadata {
   if (jobCodeCount > total) {
     throw new RangeError(`'pageCount' must be <= 'total'`)
   }
@@ -334,7 +334,7 @@ export function createMockPaginatedJobCodes(jobCodeCount = 1, total = 10): Pagin
     )
   }
 
-  return new PaginatedJobCodes(
+  return new PaginatedMetadata(
     jobCodes,
     total
   )

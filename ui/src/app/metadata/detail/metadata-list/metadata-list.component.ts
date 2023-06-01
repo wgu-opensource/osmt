@@ -11,6 +11,7 @@ import { TableActionDefinition } from "../../../table/skills-library-table/has-a
 import { ButtonAction } from "../../../auth/auth-roles"
 import { AuthService } from "../../../auth/auth-service"
 import { MetadataType } from "../../rsd-metadata.enum"
+import { JobCodeService } from "../../job-codes/service/job-code.service"
 
 @Component({
   selector: "app-metadata-list",
@@ -37,16 +38,7 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
   searchForm = new FormGroup({
     search: new FormControl("")
   })
-  sampleJobCodeResult = new PaginatedMetadata([
-    new ApiJobCode({code: "code1", targetNodeName: "targetNodeName1", frameworkName: "frameworkName1", url: "url1", broad: "broad1", level: "Broad"}),
-    new ApiJobCode({code: "code2", targetNodeName: "targetNodeName2", frameworkName: "frameworkName2", url: "url2", broad: "broad1", level: "Broad"}),
-    new ApiJobCode({code: "code3", targetNodeName: "targetNodeName3", frameworkName: "frameworkName3", url: "url3", broad: "broad1", level: "Broad"}),
-    new ApiJobCode({code: "code4", targetNodeName: "targetNodeName4", frameworkName: "frameworkName4", url: "url4", broad: "broad1", level: "Broad"}),
-    new ApiJobCode({code: "code5", targetNodeName: "targetNodeName5", frameworkName: "frameworkName5", url: "url5", broad: "broad1", level: "Broad"}),
-    new ApiJobCode({code: "code6", targetNodeName: "targetNodeName6", frameworkName: "frameworkName6", url: "url6", broad: "broad1", level: "Broad"}),
-    new ApiJobCode({code: "code7", targetNodeName: "targetNodeName7", frameworkName: "frameworkName7", url: "url7", broad: "broad1", level: "Broad"}),
-    new ApiJobCode({code: "code8", targetNodeName: "targetNodeName8", frameworkName: "frameworkName8", url: "url8", broad: "broad1", level: "Broad"}),
-  ], 8)
+  sampleJobCodeResult = new PaginatedMetadata([], 0)
 
   sampleNamedReferenceResult = new PaginatedMetadata([
     new ApiNamedReference({id: "id1", framework: "framework1", name: "name1", type: MetadataType.Category, value: "value1"}),
@@ -62,7 +54,10 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
   results: PaginatedMetadata = this.sampleNamedReferenceResult
 
   clearSelectedItemsFromTable = new Subject<void>()
-  constructor(protected authService: AuthService) {
+  constructor(
+    protected authService: AuthService,
+    protected jobCodeService: JobCodeService
+  ) {
     super()
   }
 
@@ -85,13 +80,17 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
     return false
   }
 
-  handleDefaultSubmit(): boolean {
+  handleDefaultSubmit(): void {
     this.loadNextPage()
     this.from = 0
-
-    return false
   }
-  loadNextPage(): void {}
+
+  loadNextPage(): void {
+    this.jobCodeService.paginatedJobCodes(this.size, this.from, this.columnSort, this.matchingQuery).subscribe(
+      jobCodes => this.results = jobCodes
+    )
+  }
+
   handleSelectAll(selectAllChecked: boolean): void {}
 
   handleNewSelection(selected: IJobCode[]|INamedReference[]): void {

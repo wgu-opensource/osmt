@@ -24,7 +24,7 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
   title = "Metadata"
   handleSelectedMetadata?: IJobCode[]|INamedReference[]
   selectedMetadataType = "category"
-  matchingQuery = ""
+  matchingQuery?: string = ""
 
   typeControl: FormControl = new FormControl(this.selectedMetadataType)
   columnSort: ApiSortOrder = ApiSortOrder.NameAsc
@@ -66,18 +66,18 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
         this.selectedMetadataType = value
         this.loadNextPage()
       })
-    this.searchForm.get("search")?.valueChanges.subscribe( value => this.matchingQuery = value!)
+    this.searchForm.get("search")?.valueChanges.subscribe( value => this.matchingQuery = value ?? "")
     this.loadNextPage()
     }
 
-  clearSearch(): boolean {
-    this.searchForm.reset()
-    return false
+  clearSearch(): void {
+    this.searchForm.get("search")?.patchValue("")
+    this.handleDefaultSubmit()
   }
 
   handleDefaultSubmit(): void {
-    this.loadNextPage()
     this.from = 0
+    this.loadNextPage()
   }
 
   loadNextPage(): void {

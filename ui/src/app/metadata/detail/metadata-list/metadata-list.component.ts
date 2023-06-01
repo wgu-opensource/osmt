@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from "@angular/forms"
 import { Observable, Subject } from "rxjs"
 import { PaginatedMetadata } from "../../PaginatedMetadata"
 import { ApiSortOrder } from "../../../richskill/ApiSkill"
-import { ApiJobCode, IJobCode } from "../../job-codes/Jobcode"
+import { IJobCode } from "../../job-codes/Jobcode"
 import { TableActionBarComponent } from "../../../table/skills-library-table/table-action-bar.component"
 import { Whitelabelled } from "../../../../whitelabel"
 import { ApiNamedReference, INamedReference } from "../../named-references/NamedReference"
@@ -24,7 +24,7 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
   title = "Metadata"
   handleSelectedMetadata?: IJobCode[]|INamedReference[]
   selectedMetadataType = "category"
-  matchingQuery: string = ""
+  matchingQuery = ""
 
   typeControl: FormControl = new FormControl(this.selectedMetadataType)
   columnSort: ApiSortOrder = ApiSortOrder.NameAsc
@@ -38,7 +38,6 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
   searchForm = new FormGroup({
     search: new FormControl("")
   })
-  sampleJobCodeResult = new PaginatedMetadata([], 0)
 
   sampleNamedReferenceResult = new PaginatedMetadata([
     new ApiNamedReference({id: "id1", framework: "framework1", name: "name1", type: MetadataType.Category, value: "value1"}),
@@ -65,14 +64,10 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
     this.typeControl.valueChanges.subscribe(
       value => {
         this.selectedMetadataType = value
-        if (this.selectedMetadataType === MetadataType.JobCode) {
-          this.results = this.sampleJobCodeResult
-        }
-        else {
-          this.results = this.sampleNamedReferenceResult
-        }
+        this.loadNextPage()
       })
     this.searchForm.get("search")?.valueChanges.subscribe( value => this.matchingQuery = value!)
+    this.loadNextPage()
     }
 
   clearSearch(): boolean {
@@ -86,9 +81,13 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
   }
 
   loadNextPage(): void {
-    this.jobCodeService.paginatedJobCodes(this.size, this.from, this.columnSort, this.matchingQuery).subscribe(
-      jobCodes => this.results = jobCodes
-    )
+    if (this.selectedMetadataType === MetadataType.JobCode) {
+      this.jobCodeService.paginatedJobCodes(this.size, this.from, this.columnSort, this.matchingQuery).subscribe(
+        jobCodes => this.results = jobCodes
+      )
+    } else {
+      this.results = this.sampleNamedReferenceResult
+    }
   }
 
   handleSelectAll(selectAllChecked: boolean): void {}
@@ -143,7 +142,6 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
     return this.curPageCount < 1
   }
   get isJobCodeDataSelected(): boolean {
-    console.log(this.selectedMetadataType === MetadataType.JobCode.toString())
     return this.selectedMetadataType === MetadataType.JobCode
   }
 

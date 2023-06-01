@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core"
+import { Component, EventEmitter, Input, Output } from "@angular/core"
 import { TableActionDefinition } from "../../../table/skills-library-table/has-action-definitions"
 import { SvgHelper, SvgIcon } from "../../../core/SvgHelper"
 import { ApiJobCode, IJobCode } from "../Jobcode"

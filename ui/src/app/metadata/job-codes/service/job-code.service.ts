@@ -19,8 +19,12 @@ export class JobCodeService extends AbstractDataService {
 
   private baseServiceUrl = "api/metadata/jobcodes"
 
-  constructor(protected httpClient: HttpClient, protected authService: AuthService,
-              protected router: Router, protected location: Location) {
+  constructor(
+    protected httpClient: HttpClient,
+    protected authService: AuthService,
+    protected router: Router,
+    protected location: Location
+  ) {
     super(httpClient, authService, router, location)
   }
 

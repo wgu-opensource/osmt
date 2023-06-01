@@ -12,6 +12,7 @@ import { ButtonAction } from "../../../auth/auth-roles"
 import { AuthService } from "../../../auth/auth-service"
 import { MetadataType } from "../../rsd-metadata.enum"
 import { JobCodeService } from "../../job-codes/service/job-code.service"
+import { ToastService } from "../../../toast/toast.service"
 
 @Component({
   selector: "app-metadata-list",
@@ -55,7 +56,8 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
   clearSelectedItemsFromTable = new Subject<void>()
   constructor(
     protected authService: AuthService,
-    protected jobCodeService: JobCodeService
+    protected jobCodeService: JobCodeService,
+    protected toastService: ToastService
   ) {
     super()
   }
@@ -189,7 +191,11 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
 
   private handleClickDeleteItem(jobCode: IJobCode | INamedReference | undefined): void {
     if (this.isJobCodeDataSelected) {
-      this.jobCodeService.deleteJobCodeWithResult((jobCode as ApiJobCode)?.id ?? 0).subscribe()
+      this.jobCodeService.deleteJobCodeWithResult((jobCode as ApiJobCode)?.id ?? 0).subscribe(data => {
+        if (data?.success) {
+          this.toastService.showToast("Success", "You deleted a job code with name " + (jobCode as ApiJobCode)?.targetNodeName)
+        }
+      })
     }
   }
 }

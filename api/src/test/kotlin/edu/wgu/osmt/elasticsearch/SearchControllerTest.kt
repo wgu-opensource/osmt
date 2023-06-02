@@ -74,7 +74,6 @@ internal class SearchControllerTest @Autowired constructor(
 
         // Act
         val result = searchController.searchSkills(
-                StringUtils.EMPTY,
                 UriComponentsBuilder.newInstance(),
                 50,
                 0,

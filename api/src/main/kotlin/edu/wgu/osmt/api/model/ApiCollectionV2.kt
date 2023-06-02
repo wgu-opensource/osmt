@@ -44,5 +44,19 @@ class ApiCollectionV2(
 
             return result
         }
+
+        fun fromLatest(apiCollection: ApiCollection, appConfig: AppConfig) : ApiCollectionV2{
+
+            val result = ApiCollectionV2(
+                    collection = apiCollection.collection,
+                    ss = apiCollection.ss,
+                    keywords = apiCollection.keywords,
+                    appConfig
+            )
+
+            return result
+        }
+
+
     }
 }

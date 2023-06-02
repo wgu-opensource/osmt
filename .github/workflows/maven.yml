@@ -11,7 +11,8 @@ on:
 
 jobs:
   build:
-
+    env:
+      BASE_URL: 'http://localhost:8080'
     runs-on: ubuntu-20.04
 
     steps:
@@ -25,3 +26,9 @@ jobs:
       run: mvn -version
     - name: Build with Maven
       run: mvn -B package
+    - name: API testing with Maven
+      run: mvn verify -Prun-api-tests \
+          oktaUsername=${{secrets.OKTA_USERNAME}} \
+          oktaPassword=${{secrets.OKTA_PASSWORD}} \
+          oktaUrl=${{secrets.OAUTH_ISSUER}} \
+          baseUrl=$BASE_URL

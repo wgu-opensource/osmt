@@ -159,7 +159,7 @@ data class RichSkillDoc(
     @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     @get:JsonProperty("archiveDate")
     val archiveDate: LocalDateTime? = null
-) {
+): IRichSkillDoc {
     companion object {
         fun fromDao(dao: RichSkillDescriptorDao, appConfig: AppConfig): RichSkillDoc {
             return RichSkillDoc(

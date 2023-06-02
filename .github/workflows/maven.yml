@@ -28,7 +28,7 @@ jobs:
       run: mvn -B package
     - name: API testing with Maven
       run: mvn verify -Prun-api-tests \
-          oktaUsername=${{secrets.OKTA_USERNAME}} \
-          oktaPassword=${{secrets.OKTA_PASSWORD}} \
-          oktaUrl=${{secrets.OAUTH_ISSUER}} \
-          baseUrl=${{env.BASE_URL}}
+          oktaUsername="${{secrets.OKTA_USERNAME}}" \
+          oktaPassword="${{secrets.OKTA_PASSWORD}}" \
+          oktaUrl="${{secrets.OAUTH_ISSUER}}" \
+          baseUrl="${{env.BASE_URL}}"

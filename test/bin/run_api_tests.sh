@@ -15,11 +15,14 @@ _get_osmt_project_dir() {
 }
 
 function source_osmt_apitest_env_file() {
-  echo "Sourcing $apitest_env_file"
-  set -o allexport
-  # shellcheck source="test/osmt-apitest.env"
-  source "$apitest_env_file"
-  set +o allexport
+  # Checks to see if osmt-apitest.env file exists
+  if [[ -f "${apitest_env_file}" || -r "${apitest_env_file}" ]]; then
+    echo "Sourcing $apitest_env_file"
+    set -o allexport
+    # shellcheck source="test/osmt-apitest.env"
+    source "$apitest_env_file"
+    set +o allexport
+  fi
 }
 
 function get_bearer_token() {

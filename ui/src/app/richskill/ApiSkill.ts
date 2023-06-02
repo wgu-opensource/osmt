@@ -203,9 +203,10 @@ export enum ApiSortOrder {
   SkillAsc = "skill.asc",
   SkillDesc = "skill.desc",
   NameAsc = "name.asc",
-  NameDesc = "name.desc"
+  NameDesc = "name.desc",
+  CodeAsc = "code.asc",
+  CodeDesc = "code.desc"
 }
-
 
 export enum AuditOperationType {
   Insert = "Insert",

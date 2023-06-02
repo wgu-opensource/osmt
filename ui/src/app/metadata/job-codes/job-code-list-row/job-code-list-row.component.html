@@ -4,13 +4,13 @@
     <a id="{{id}}-header-name" class="t-focus t-type-bodyLink" routerLink="/job-codes/{{jobCode.code}}/manage">{{jobCode.targetNodeName}}</a>
   </th>
   <th scope="row" id="{{id}}-header">
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.code}}</a>
+  </th>
+  <th scope="row" id="{{id}}-header">
     <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.level}}</a>
   </th>
   <th scope="row" id="{{id}}-header">
     <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.parents | json}}</a>
-  </th>
-  <th scope="row" id="{{id}}-header">
-    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.frameworkName}}</a>
   </th>
 
   <td class="m-tableRow-x-actions">

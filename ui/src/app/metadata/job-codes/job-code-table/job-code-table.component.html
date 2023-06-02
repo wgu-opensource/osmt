@@ -25,6 +25,20 @@
         </ng-template>
       </td>
 
+      <td class="t-hidden-tabletMax"  aria-hidden="true">
+        <app-label-with-filter
+          *ngIf="allowSorting; else noSortName"
+          label="Code"
+          [sortAscending]="getCodeSort()"
+          (sortChanged)="sortColumn('code', $event)"
+        ></app-label-with-filter>
+        <ng-template #noSortName>
+          <span class="m-tableLabel">
+            <span class="m-tableLabel-x-text">Code</span>
+          </span>
+        </ng-template>
+      </td>
+
       <td class="t-hidden-tabletMax" aria-hidden="true">
         <span class="m-tableLabel">
           <span class="m-tableLabel-x-text">Job Code Level</span>
@@ -34,12 +48,6 @@
       <td class="t-hidden-tabletMax" aria-hidden="true">
         <span class="m-tableLabel">
           <span class="m-tableLabel-x-text">Parents</span>
-        </span>
-      </td>
-
-      <td class="t-hidden-tabletMax" aria-hidden="true">
-        <span class="m-tableLabel">
-          <span class="m-tableLabel-x-text">Framework Name</span>
         </span>
       </td>
       <td class="m-tableHeader-x-actions" aria-hidden="true">

@@ -55,6 +55,7 @@ curl_with_retry() {
   local -i retry_limit=12
   until [ ${rc} -eq 0 ] && [ ${retry_limit} -eq 0 ]; do
       echo_info "Attempting to request the index page of the OSMT Spring app with curl..."
+      echo_info "${BASE_URL}"
       curl -s "${BASE_URL}" 1>/dev/null 2>/dev/null
       rc=$?
       if [[ ${rc} -eq 0 ]]; then
@@ -133,7 +134,8 @@ main() {
   echo_info "See 'osmt_spring_app.log' for console output. Proceeding..."
 
   touch "$log_file"
-  "${project_dir}/osmt_cli.sh" -s  1>"$log_file" 2>"$log_file" & disown  || exit 135
+#  "${project_dir}/osmt_cli.sh" -s  1>"$log_file" 2>"$log_file" & disown  || exit 135
+  "${project_dir}/osmt_cli.sh" -s  1>"$log_file" 2>"$log_file" || exit 135
 
   # curl the Spring app and retry for 2 minutes
   curl_with_retry || exit 135

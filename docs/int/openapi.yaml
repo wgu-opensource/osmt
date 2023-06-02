@@ -518,13 +518,14 @@ paths:
   /api/metadata/jobcodes:
     get:
       summary: Get all Job Codes
-      description: Returns all Job Codes
+      description: Returns all Job Codes with pagination, also supports search by query.
       tags:
         - Metadata
       parameters:
         - $ref: '#/components/parameters/PaginationSizeQueryRequired'
         - $ref: '#/components/parameters/PaginationFromQueryRequired'
         - $ref: '#/components/parameters/SortOrderQuery'
+        - $ref: '#/components/parameters/Query'
       responses:
         '200':
           description: OK
@@ -2038,6 +2039,14 @@ components:
         type: array
         items:
           $ref: '#/components/schemas/PublishStatus'
+
+    Query:
+      name: query
+      in: query
+      description: Matching query to search
+      required: false
+      schema:
+        type: string
 
     SortOrderQuery:
       name: sort

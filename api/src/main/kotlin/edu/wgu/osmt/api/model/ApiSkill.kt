@@ -1,5 +1,6 @@
 package edu.wgu.osmt.api.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.collection.Collection
@@ -11,8 +12,9 @@ import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
+
 @JsonInclude(JsonInclude.Include.ALWAYS)
-open class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collection>, private val appConfig: AppConfig) {
+open class ApiSkill(@JsonIgnore open val rsd: RichSkillDescriptor, @JsonIgnore open val cs: Set<Collection>, private val appConfig: AppConfig) {
 
     @JsonProperty("@context")
     val context = appConfig.rsdContextUrl

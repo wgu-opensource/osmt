@@ -64,26 +64,26 @@ class CollectionController @Autowired constructor(
         }
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
     }
-    
+
+    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun byUUID(@PathVariable uuid: String): ApiCollection? {
+        return collectionRepository.findByUUID(uuid)?.let {
+            ApiCollection.fromDao(it, appConfig)
+        }
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    }
+
     @GetMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_DETAIL}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_DETAIL}",
-                       ],
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_DETAIL}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_DETAIL}"],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun byUUID(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
-            @PathVariable uuid: String
-    ): ApiCollection? {
-        
+    fun legacyByUUID(@PathVariable uuid: String): ApiCollection? {
         return collectionRepository.findByUUID(uuid)?.let {
-            if (StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
-                ApiCollection.fromDao(it, appConfig)
-            } else {
-                ApiCollectionV2.fromDao(it, appConfig)
-            }
+            byUUID(uuid)?.let { ac -> ApiCollectionV2.fromLatest(ac, appConfig) }
         }
-        ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
     
     @RequestMapping(path = [
@@ -95,39 +95,36 @@ class CollectionController @Autowired constructor(
         
         return "forward:${RoutePaths.LATEST}/collections/$uuid"
     }
-    
-    @PostMapping(path = [
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_CREATE}",
-        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_CREATE}"
-                        ],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+
+    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_CREATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createCollections(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
             @AuthenticationPrincipal user: Jwt?
     ): List<ApiCollection> {
-        
-        return if (StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
-            collectionRepository.createFromApi(
-                    apiCollectionUpdates,
-                    richSkillRepository,
-                    oAuthHelper.readableUserName(user),
-                    oAuthHelper.readableUserIdentifier(user)
-            ).map {
-                ApiCollection.fromDao(it, appConfig)
-            }
-        } else {
-            collectionRepository.createFromApi(
-                    apiCollectionUpdates,
-                    richSkillRepository,
-                    oAuthHelper.readableUserName(user),
-                    oAuthHelper.readableUserIdentifier(user)
-            ).map {
-                ApiCollectionV2.fromDao(it, appConfig)
-            }
+        return collectionRepository.createFromApi(
+                apiCollectionUpdates,
+                richSkillRepository,
+                oAuthHelper.readableUserName(user),
+                oAuthHelper.readableUserIdentifier(user)
+        ).map {
+            ApiCollection.fromDao(it, appConfig)
         }
     }
+
+    @PostMapping(path = [
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_CREATE}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_CREATE}"
+    ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun legacyCreateCollections(
+            @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
+            @AuthenticationPrincipal user: Jwt?
+    ): List<ApiCollection> {
+        return createCollections(apiCollectionUpdates, user).map { ApiCollectionV2.fromLatest(it, appConfig) }
+    }
+
     
     @PostMapping(path = [
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_UPDATE}",
@@ -274,55 +271,46 @@ class CollectionController @Autowired constructor(
         
         return ResponseEntity.status(200).body(sizedIterable.toList().map { it.toModel() })
     }
-    
+
     @GetMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.WORKSPACE_PATH}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.WORKSPACE_PATH}",
-                       ],
+        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.WORKSPACE_PATH}",
+    ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun getOrCreateWorkspace(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @AuthenticationPrincipal user: Jwt?
     ): ApiCollection? {
-        
-        return if (StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
-            collectionRepository.findByOwner(
-                    oAuthHelper.readableUserIdentifier(user))?.let {
-                ApiCollection.fromDao(it, appConfig
-                )
-            } ?: collectionRepository.createFromApi(
-                    listOf(
-                            ApiCollectionUpdate(
-                                    name = DEFAULT_WORKSPACE_NAME,
-                                    publishStatus = PublishStatus.Workspace,
-                                    author = oAuthHelper.readableUserName(user),
-                                    skills = ApiStringListUpdate()
-                            )
-                    ),
-                    richSkillRepository,
-                    oAuthHelper.readableUserName(user),
-                    oAuthHelper.readableUserIdentifier(user)
-            ).firstOrNull()?.let { ApiCollection.fromDao(it, appConfig) }
-        } else {
-            collectionRepository.findByOwner(
-                    oAuthHelper.readableUserIdentifier(user))?.let {
-                ApiCollectionV2.fromDao(it, appConfig
-                )
-            } ?: collectionRepository.createFromApi(
-                    listOf(
-                            ApiCollectionUpdate(
-                                    name = DEFAULT_WORKSPACE_NAME,
-                                    publishStatus = PublishStatus.Workspace,
-                                    author = oAuthHelper.readableUserName(user),
-                                    skills = ApiStringListUpdate()
-                            )
-                    ),
-                    richSkillRepository,
-                    oAuthHelper.readableUserName(user),
-                    oAuthHelper.readableUserIdentifier(user)
-            ).firstOrNull()?.let { ApiCollectionV2.fromDao(it, appConfig) }
-        }
-        
+        return collectionRepository.findByOwner(
+                oAuthHelper.readableUserIdentifier(user))?.let {
+            ApiCollection.fromDao(it, appConfig
+            )
+        } ?: collectionRepository.createFromApi(
+                listOf(
+                        ApiCollectionUpdate(
+                                name = DEFAULT_WORKSPACE_NAME,
+                                publishStatus = PublishStatus.Workspace,
+                                author = oAuthHelper.readableUserName(user),
+                                skills = ApiStringListUpdate()
+                        )
+                ),
+                richSkillRepository,
+                oAuthHelper.readableUserName(user),
+                oAuthHelper.readableUserIdentifier(user)
+        ).firstOrNull()?.let { ApiCollection.fromDao(it, appConfig) }
+
     }
+
+    @GetMapping(path = [
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.WORKSPACE_PATH}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.WORKSPACE_PATH}"
+                       ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun legacyGetOrCreateWorkspace(
+            @AuthenticationPrincipal user: Jwt?
+    ): ApiCollection? {
+        return getOrCreateWorkspace(user)?.let { ApiCollectionV2.fromLatest(it, appConfig) }
+
+    }
+
 }

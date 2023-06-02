@@ -1,8 +1,8 @@
 package edu.wgu.osmt.api.model
 
+import edu.wgu.osmt.config.SEMICOLON
 import edu.wgu.osmt.jobcode.JobCodeTest
 import edu.wgu.osmt.mockdata.MockData
-import edu.wgu.osmt.util.OsmtUtil.Companion.parseMultiValueStringFieldToSingleStringField
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
@@ -19,43 +19,6 @@ internal class ApiSkillSummaryV2Test {
         mockData = MockData()
     }
 
-    @Test
-    fun verifyFromDoc() {
-        // Arrange
-        var expected: edu.wgu.osmt.richskill.RichSkillDoc? = null
-        for (r in mockData.getRichSkillDocs()) {
-            if (r.jobCodes.isNotEmpty()) {
-                expected = r
-                break
-            }
-        }
-
-        if (expected == null) {
-            Assertions.fail<Any>("Unable to find suitable RichSkillDoc")
-        }
-
-        // Act
-        val api = ApiSkillSummaryV2.fromDoc(expected!!)
-
-        // Assert
-        Assertions.assertThat(api.uuid).isEqualTo(expected.uuid)
-        Assertions.assertThat(api.status.toString()).isEqualTo(expected.publishStatus.toString())
-        Assertions.assertThat(api.publishDate).isEqualTo(expected.publishDate)
-        Assertions.assertThat(api.archiveDate).isEqualTo(expected.archiveDate)
-        Assertions.assertThat(api.skillName).isEqualTo(expected.name)
-        Assertions.assertThat(api.skillStatement).isEqualTo(expected.statement)
-        Assertions.assertThat(api.category).isEqualTo(parseMultiValueStringFieldToSingleStringField(expected.categories.toString()))
-
-        // Search Keywords
-        assertTrue(expected.searchingKeywords.containsAll(api.keywords))
-        assertTrue(api.keywords.containsAll(expected.searchingKeywords))
-
-        // jobCodes
-        Assertions.assertThat(api.occupations.size).isEqualTo(expected.jobCodes.size)
-        for (i in expected.jobCodes.indices) {
-            JobCodeTest.assertEquals(expected.jobCodes[i], api.occupations[i])
-        }
-    }
 
     @Test
     fun testFromSkill() {
@@ -85,7 +48,9 @@ internal class ApiSkillSummaryV2Test {
         Assertions.assertThat(skill.archiveDate).isEqualTo(expected.archiveDate)
         Assertions.assertThat(skill.skillName).isEqualTo(expected.name)
         Assertions.assertThat(skill.skillStatement).isEqualTo(expected.statement)
-        Assertions.assertThat(skill.category).isEqualTo(parseMultiValueStringFieldToSingleStringField(expected.categories?.mapNotNull { it.value }.toString()))
+        Assertions.assertThat(skill.category).isEqualTo(
+                (expected.categories.mapNotNull { it.value }.sorted().joinToString(SEMICOLON))
+        )
 
         // Search Keywords
         assertTrue(expected.keywords.map{it.value}.containsAll(skill.keywords))

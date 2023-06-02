@@ -1,6 +1,7 @@
 package edu.wgu.osmt.api.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.collection.CollectionDao
@@ -11,11 +12,12 @@ import edu.wgu.osmt.richskill.RichSkillDescriptor
 import java.util.*
 
 
+@JsonInclude(JsonInclude.Include.ALWAYS)
 class ApiCollectionV2(
         collection: Collection,
-        private val ss: List<RichSkillDescriptor>,
-        override val keywords: Map<KeywordTypeEnum, List<KeywordCount>>,
-        private val appConfig: AppConfig
+        @JsonIgnore override val ss: List<RichSkillDescriptor>,
+        @JsonIgnore override val keywords: Map<KeywordTypeEnum, List<KeywordCount>>,
+        @JsonIgnore private val appConfig: AppConfig
 ) : ApiCollection(collection, ss, keywords, appConfig) {
 
     @get:JsonIgnore
@@ -40,5 +42,19 @@ class ApiCollectionV2(
                     RichSkillDescriptor.getKeywordsFromSkills(skills),
                     appConfig)
         }
+
+        fun fromLatest(apiCollection: ApiCollection, appConfig: AppConfig) : ApiCollectionV2{
+
+            val result = ApiCollectionV2(
+                    collection = apiCollection.collection,
+                    ss = apiCollection.ss,
+                    keywords = apiCollection.keywords,
+                    appConfig
+            )
+
+            return result
+        }
+
+
     }
 }

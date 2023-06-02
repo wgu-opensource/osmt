@@ -4,9 +4,6 @@ package edu.wgu.osmt.config
 const val UNAUTHENTICATED_USERNAME = "unauthenticated"
 const val QUOTED_SEARCH_REGEX_PATTERN = "([\"\'])(?:(?=(\\\\?))\\2.)*?\\1"
 const val DEFAULT_WORKSPACE_NAME = "My Workspace"
-const val OPENING_BRACKET = "["
-const val CLOSING_BRACKET = "]"
-const val COMMA = ","
 const val SEMICOLON = ";"
 
 // API parameter constants

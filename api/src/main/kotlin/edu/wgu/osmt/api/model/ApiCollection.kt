@@ -1,5 +1,6 @@
 package edu.wgu.osmt.api.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.collection.Collection
@@ -15,9 +16,9 @@ import java.time.ZonedDateTime
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 open class ApiCollection(
-        private val collection: Collection,
-        private val ss: List<RichSkillDescriptor>,
-        open val keywords: Map<KeywordTypeEnum, List<KeywordCount>>,
+        @JsonIgnore open val collection: Collection,
+        @JsonIgnore open val ss: List<RichSkillDescriptor>,
+        @JsonIgnore open val keywords: Map<KeywordTypeEnum, List<KeywordCount>>,
         private val appConfig: AppConfig
 ) {
     @get:JsonProperty
@@ -48,7 +49,7 @@ open class ApiCollection(
 
     @get:JsonProperty
     val author: String?
-        get() = collection.author?.let { it.value }
+        get() = collection.author?.value
 
     @get:JsonProperty
     val status: PublishStatus?

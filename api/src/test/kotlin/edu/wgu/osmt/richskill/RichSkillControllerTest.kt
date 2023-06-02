@@ -171,7 +171,7 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Act
         val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
-        val result = richSkillController.byUUID(StringUtils.EMPTY, skillResult.searchHits[0].id.toString(),jwt)
+        val result = richSkillController.byUUID(skillResult.searchHits[0].id.toString(),jwt)
 
         // Assert
         assertThat(result?.uuid).isEqualTo(skillResult.searchHits[0].id.toString())

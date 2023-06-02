@@ -30,25 +30,33 @@ class TaskController @Autowired constructor(
         }
     }
 
-    @GetMapping(path = [RoutePaths.Latest.TASK_DETAIL_TEXT, RoutePaths.OldStillSupported.TASK_DETAIL_TEXT, RoutePaths.Unversioned.TASK_DETAIL_TEXT])
+    @GetMapping(path = [
+        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_TEXT}",
+        "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.TASK_DETAIL_TEXT}",
+        "${RoutePaths.API}${RoutePaths.TASK_DETAIL_TEXT}",
+    ])
     @ResponseBody
     fun textResult(@PathVariable uuid: String): HttpEntity<*> {
         return taskResult(uuid)
     }
 
-    @GetMapping(RoutePaths.Latest.TASK_DETAIL_MEDIA)
+    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_MEDIA}")
     @ResponseBody
     fun mediaResult(@PathVariable uuid: String): HttpEntity<*> {
         return taskResult(uuid)
     }
 
-    @GetMapping(path = [RoutePaths.Latest.TASK_DETAIL_BATCH, RoutePaths.OldStillSupported.TASK_DETAIL_BATCH, RoutePaths.Unversioned.TASK_DETAIL_BATCH])
+    @GetMapping(path = [
+        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_BATCH}",
+        "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.TASK_DETAIL_BATCH}",
+        "${RoutePaths.API}${RoutePaths.TASK_DETAIL_BATCH}",
+    ])
     @ResponseBody
     fun batchResult(@PathVariable uuid: String): HttpEntity<*> {
         return taskResult(uuid)
     }
 
-    @GetMapping(path = [RoutePaths.Latest.TASK_DETAIL_SKILLS])
+    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_SKILLS}")
     @ResponseBody
     fun skillsResult(@PathVariable uuid: String): HttpEntity<*> {
         val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
@@ -67,13 +75,14 @@ class TaskController @Autowired constructor(
         }
     }
 
-    @GetMapping(path = [RoutePaths.OldStillSupported.TASK_DETAIL_SKILLS, RoutePaths.Unversioned.TASK_DETAIL_SKILLS])
-    @ResponseBody
-    fun skillsResultV2(@PathVariable uuid: String): HttpEntity<*> {
+    @GetMapping(path = [
+        "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.TASK_DETAIL_SKILLS}",
+        "${RoutePaths.API}${RoutePaths.TASK_DETAIL_SKILLS}",
+    ])    @ResponseBody
+    fun oldSupportedSkillsResult(@PathVariable uuid: String): HttpEntity<*> {
         val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
         return when (task?.status) {
             TaskStatus.Ready -> {
-                // CreateSkillsTask.results is a list of skill uuids, look them up and return
                 val createSkillsTaskV2: CreateSkillsTaskV2 = task as CreateSkillsTaskV2
                 val skillDaos = richSkillRepository.findManyByUUIDs(createSkillsTaskV2.result!!)
                 val apiSkillsV2 = skillDaos?.map { ApiSkillV2.fromDao(it, appConfig)}

@@ -68,7 +68,7 @@ data class CsvTask(
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = "text/csv"
-    override val apiResultPath = RoutePaths.Latest.TASK_DETAIL_TEXT
+    override val apiResultPath = "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_TEXT}"
 }
 
 data class XlsxTask(
@@ -79,7 +79,7 @@ data class XlsxTask(
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = "application/vnd.ms-excel"
-    override val apiResultPath = RoutePaths.Latest.TASK_DETAIL_MEDIA
+    override val apiResultPath = "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_MEDIA}"
 }
 
 data class ExportSkillsToCsvTask(
@@ -91,7 +91,7 @@ data class ExportSkillsToCsvTask(
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = RoutePaths.Latest.TASK_DETAIL_BATCH
+    override val apiResultPath = "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_BATCH}"
 }
 
 data class ExportSkillsToXlsxTask(
@@ -103,7 +103,7 @@ data class ExportSkillsToXlsxTask(
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = "application/vnd.ms-excel"
-    override val apiResultPath = RoutePaths.Latest.TASK_DETAIL_BATCH
+    override val apiResultPath = "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_BATCH}"
 }
 
 data class CreateSkillsTask(
@@ -116,7 +116,7 @@ data class CreateSkillsTask(
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = RoutePaths.Latest.TASK_DETAIL_SKILLS
+    override val apiResultPath = "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_SKILLS}"
 }
 
 data class CreateSkillsTaskV2(
@@ -129,7 +129,7 @@ data class CreateSkillsTaskV2(
         override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = RoutePaths.OldStillSupported.TASK_DETAIL_SKILLS
+    override val apiResultPath = "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.TASK_DETAIL_SKILLS}"
 }
 
 
@@ -150,7 +150,7 @@ data class PublishTask(
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = RoutePaths.Latest.TASK_DETAIL_BATCH
+    override val apiResultPath = "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_BATCH}"
 }
 
 data class UpdateCollectionSkillsTask(
@@ -164,7 +164,7 @@ data class UpdateCollectionSkillsTask(
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = RoutePaths.Latest.TASK_DETAIL_BATCH
+    override val apiResultPath = "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_BATCH}"
 }
 
 data class RemoveCollectionSkillsTask(
@@ -175,7 +175,7 @@ data class RemoveCollectionSkillsTask(
     override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = RoutePaths.Latest.TASK_DETAIL_BATCH
+    override val apiResultPath = "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_BATCH}"
 }
 
 enum class TaskStatus {

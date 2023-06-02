@@ -8,8 +8,8 @@ import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSimilaritySearch
 import edu.wgu.osmt.api.model.ApiSkillSummary
-import edu.wgu.osmt.api.model.ApiSkillSummaryV2
 import edu.wgu.osmt.api.model.CollectionSortEnum
+import edu.wgu.osmt.api.model.ApiSkillSummaryV2
 import edu.wgu.osmt.api.model.SkillSortEnum
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.collection.CollectionEsRepo
@@ -18,8 +18,8 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillDocV2
+import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
+import kotlin.streams.toList
 
 @Controller
 @Transactional
@@ -50,8 +51,7 @@ class SearchController @Autowired constructor(
     val appConfig: AppConfig
 ) {
 
-    @PostMapping(path = [RoutePaths.Latest.SEARCH_COLLECTIONS, RoutePaths.OldStillSupported.SEARCH_COLLECTIONS, RoutePaths.Unversioned.SEARCH_COLLECTIONS],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_COLLECTIONS}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCollections(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -84,7 +84,7 @@ class SearchController @Autowired constructor(
 
         // build up current uri with path and params
         uriComponentsBuilder
-            .path(RoutePaths.Latest.SEARCH_COLLECTIONS)
+            .path("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_COLLECTIONS}")
             .queryParam(RoutePaths.QueryParams.FROM, from)
             .queryParam(RoutePaths.QueryParams.SIZE, size)
             .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
@@ -99,7 +99,43 @@ class SearchController @Autowired constructor(
         return ResponseEntity.status(200).headers(responseHeaders).body(searchHits.map { it.content }.toList())
     }
 
-    @PostMapping(path = [RoutePaths.Latest.SEARCH_SKILLS], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SEARCH_COLLECTIONS}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun oldSupportedSearchCollections(
+            uriComponentsBuilder: UriComponentsBuilder,
+            @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+            @RequestParam(required = false, defaultValue = "0") from: Int,
+            @RequestParam(
+                    required = false,
+                    defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+            ) status: Array<String>,
+            @RequestParam(required = false) sort: String?,
+            @RequestBody apiSearch: ApiSearch,
+            @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<List<CollectionDoc>> {
+
+       return searchCollections(uriComponentsBuilder, size, from, status, sort, apiSearch, user)
+    }
+
+    @PostMapping("${RoutePaths.API}${RoutePaths.SEARCH_COLLECTIONS}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun unversionedSearchCollections(
+            uriComponentsBuilder: UriComponentsBuilder,
+            @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+            @RequestParam(required = false, defaultValue = "0") from: Int,
+            @RequestParam(
+                    required = false,
+                    defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+            ) status: Array<String>,
+            @RequestParam(required = false) sort: String?,
+            @RequestBody apiSearch: ApiSearch,
+            @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<List<CollectionDoc>> {
+
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).body(oldSupportedSearchCollections(uriComponentsBuilder, size, from, status, sort, apiSearch, user).body)
+    }
+
+    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSkills(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -134,7 +170,7 @@ class SearchController @Autowired constructor(
 
         // build up current uri with path and params
         uriComponentsBuilder
-            .path(RoutePaths.Latest.SEARCH_SKILLS)
+            .path("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_SKILLS}")
             .queryParam(RoutePaths.QueryParams.FROM, from)
             .queryParam(RoutePaths.QueryParams.SIZE, size)
             .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
@@ -160,10 +196,9 @@ class SearchController @Autowired constructor(
             .body(searchHits.map { it.content }.toList())
     }
 
-    @PostMapping(path = [RoutePaths.OldStillSupported.SEARCH_SKILLS,RoutePaths.Unversioned.SEARCH_SKILLS],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SEARCH_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun searchSkillsV2(
+    fun oldSupportedSearchSkills(
             uriComponentsBuilder: UriComponentsBuilder,
             @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
             @RequestParam(required = false, defaultValue = "0") from: Int,
@@ -176,55 +211,34 @@ class SearchController @Autowired constructor(
             @RequestBody apiSearch: ApiSearch,
             @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<RichSkillDocV2>> {
-        if (!appConfig.allowPublicSearching && user === null) {
-            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
-        }
 
-        val publishStatuses = status.mapNotNull {
-            val status = PublishStatus.forApiValue(it)
-            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
-        }.toSet()
-        val sortEnum = sort?.let{ SkillSortEnum.forApiValue(it)}
-        val pageable = OffsetPageable(offset = from, limit = size, sort = sortEnum?.sort)
-
-        val searchHits = richSkillEsRepo.byApiSearch(
-                apiSearch,
-                publishStatuses,
-                pageable,
-                collectionId
-        )
-
-        // build up current uri with path and params
-        uriComponentsBuilder
-                .path(RoutePaths.OldStillSupported.SEARCH_SKILLS)
-                .queryParam(RoutePaths.QueryParams.FROM, from)
-                .queryParam(RoutePaths.QueryParams.SIZE, size)
-                .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
-        sort?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.SORT, it) }
-        collectionId?.let { uriComponentsBuilder.queryParam(RoutePaths.QueryParams.COLLECTION_ID, it) }
-
-        val countByApiSearch = richSkillEsRepo.countByApiSearch(
-                apiSearch,
-                publishStatuses,
-                pageable,
-                collectionId
-        )
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("X-Total-Count", countByApiSearch.toString())
-
-        PaginatedLinks(
-                pageable,
-                searchHits.totalHits.toInt(),
-                uriComponentsBuilder
-        ).addToHeaders(responseHeaders)
-
-        val body = searchHits.map { it.content }.map { RichSkillDocV2.fromCurrent(it) }.toList()
-
-        return ResponseEntity.status(200).headers(responseHeaders)
-                .body(body)
+        val latest = searchSkills(uriComponentsBuilder, size, from, status, sort, collectionId, apiSearch, user)
+        return ResponseEntity.status(200).headers(latest.headers)
+                .body(latest.body?.stream()?.map { RichSkillDocV2.fromLatest(it) }?.toList())
     }
 
-    @PostMapping(path = [RoutePaths.Latest.COLLECTION_SKILLS], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.SEARCH_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun unversionedSearchSkills(
+            uriComponentsBuilder: UriComponentsBuilder,
+            @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+            @RequestParam(required = false, defaultValue = "0") from: Int,
+            @RequestParam(
+                    required = false,
+                    defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+            ) status: Array<String>,
+            @RequestParam(required = false) sort: String?,
+            @RequestParam(required = false) collectionId: String?,
+            @RequestBody apiSearch: ApiSearch,
+            @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<List<RichSkillDocV2>> {
+
+
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
+                .body(oldSupportedSearchSkills(uriComponentsBuilder, size, from, status, sort, collectionId, apiSearch, user).body)
+    }
+
+    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun collectionSkills(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -242,10 +256,9 @@ class SearchController @Autowired constructor(
         return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
     }
 
-    @PostMapping(path = [RoutePaths.OldStillSupported.COLLECTION_SKILLS, RoutePaths.Unversioned.COLLECTION_SKILLS],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun collectionSkillsV2(
+    fun oldSupportedCollectionSkills(
             uriComponentsBuilder: UriComponentsBuilder,
             @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
             @RequestParam(required = false, defaultValue = "0") from: Int,
@@ -258,22 +271,62 @@ class SearchController @Autowired constructor(
             @RequestBody apiSearch: ApiSearch,
             @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<RichSkillDocV2>> {
-        return searchSkillsV2(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
+
+        return oldSupportedSearchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
     }
 
-    @GetMapping(path = [RoutePaths.Latest.SEARCH_JOBCODES_PATH, RoutePaths.Unversioned.SEARCH_JOBCODES_PATH, RoutePaths.OldStillSupported.SEARCH_JOBCODES_PATH,],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.COLLECTION_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun unversionedCollectionSkills(
+            uriComponentsBuilder: UriComponentsBuilder,
+            @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
+            @RequestParam(required = false, defaultValue = "0") from: Int,
+            @RequestParam(
+                    required = false,
+                    defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+            ) status: Array<String>,
+            @RequestParam(required = false) sort: String?,
+            @PathVariable uuid: String,
+            @RequestBody apiSearch: ApiSearch,
+            @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<List<RichSkillDocV2>> {
+
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
+                .body(oldSupportedSearchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user).body)
+    }
+
+    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_JOBCODES_PATH}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchJobCodes(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = true) query: String
     ): HttpEntity<List<ApiJobCode>> {
         val searchResults = jobCodeEsRepo.typeAheadSearch(query)
+
         return ResponseEntity.status(200).body(searchResults.map { ApiJobCode.fromJobCode(it.content) }.toList())
     }
 
-    @GetMapping(path = [RoutePaths.Latest.SEARCH_KEYWORDS_PATH, RoutePaths.Unversioned.SEARCH_KEYWORDS_PATH, RoutePaths.OldStillSupported.SEARCH_KEYWORDS_PATH],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SEARCH_JOBCODES_PATH}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun oldSupportedSearchJobCodes(
+            uriComponentsBuilder: UriComponentsBuilder,
+            @RequestParam(required = true) query: String
+    ): HttpEntity<List<ApiJobCode>> {
+
+        return ResponseEntity.status(200).body(searchJobCodes(uriComponentsBuilder, query).body)
+    }
+
+    @GetMapping("${RoutePaths.API}${RoutePaths.SEARCH_JOBCODES_PATH}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun unversionedSearchJobCodes(
+            uriComponentsBuilder: UriComponentsBuilder,
+            @RequestParam(required = true) query: String
+    ): HttpEntity<List<ApiJobCode>> {
+
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).body(oldSupportedSearchJobCodes(uriComponentsBuilder, query).body)
+    }
+
+    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_KEYWORDS_PATH}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchKeywords(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -286,23 +339,52 @@ class SearchController @Autowired constructor(
         return ResponseEntity.status(200).body(searchResults.map { ApiNamedReference.fromKeyword(it.content) }.toList())
     }
 
-    @PostMapping(path = [RoutePaths.Latest.SEARCH_SIMILAR_SKILLS], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SEARCH_KEYWORDS_PATH}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun oldSupportedSearchKeywords(
+            uriComponentsBuilder: UriComponentsBuilder,
+            @RequestParam(required = true) query: String,
+            @RequestParam(required = true) type: String
+    ): HttpEntity<List<ApiNamedReference>> {
+
+        return searchKeywords(uriComponentsBuilder, query, type)
+    }
+
+    @GetMapping("${RoutePaths.API}${RoutePaths.SEARCH_KEYWORDS_PATH}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun unversionedSearchKeywords(
+            uriComponentsBuilder: UriComponentsBuilder,
+            @RequestParam(required = true) query: String,
+            @RequestParam(required = true) type: String
+    ): HttpEntity<List<ApiNamedReference>> {
+
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).body(oldSupportedSearchKeywords(uriComponentsBuilder, query, type).body)
+    }
+
+    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_SIMILAR_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSimilarSkills(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<ApiSkillSummary>> {
         val hits = richSkillEsRepo.findSimilar(apiSimilaritySearch).toList()
         return ResponseEntity.status(200).body(hits.map{ ApiSkillSummary.fromDoc(it.content)})
     }
 
-    @PostMapping(path = [RoutePaths.OldStillSupported.SEARCH_SIMILAR_SKILLS,RoutePaths.Unversioned.SEARCH_SIMILAR_SKILLS],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SEARCH_SIMILAR_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun searchSimilarSkillsV2(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<ApiSkillSummaryV2>> {
+    fun oldSupportedSearchSimilarSkills(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<ApiSkillSummaryV2>> {
         val hits = richSkillEsRepo.findSimilar(apiSimilaritySearch).toList()
         return ResponseEntity.status(200).body(hits.map{ ApiSkillSummaryV2.fromDoc(it.content)})
     }
 
-    @PostMapping(path = [RoutePaths.Latest.SEARCH_SIMILARITIES, RoutePaths.OldStillSupported.SEARCH_SIMILARITIES, RoutePaths.Unversioned.SEARCH_SIMILARITIES],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.SEARCH_SIMILAR_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun unversionedSearchSimilarSkills(
+            @RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch
+    ): HttpEntity<List<ApiSkillSummaryV2>> {
+
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).body(oldSupportedSearchSimilarSkills(apiSimilaritySearch).body)
+    }
+
+    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_SIMILARITIES}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun similarSkillWarnings(@RequestBody(required = true) similarities: Array<ApiSimilaritySearch>): HttpEntity<List<Boolean>> {
         val arrayLimit = 100
@@ -311,6 +393,20 @@ class SearchController @Autowired constructor(
         }
         val hits = similarities.map{richSkillEsRepo.findSimilar(it).count() > 0}
         return ResponseEntity.status(200).body(hits)
+    }
+
+    @PostMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SEARCH_SIMILARITIES}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun oldSupportedSimilarSkillWarnings(@RequestBody(required = true) similarities: Array<ApiSimilaritySearch>): HttpEntity<List<Boolean>> {
+
+        return similarSkillWarnings(similarities)
+    }
+
+    @PostMapping("${RoutePaths.API}${RoutePaths.SEARCH_SIMILARITIES}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun unversionedSimilarSkillWarnings(@RequestBody(required = true) similarities: Array<ApiSimilaritySearch>): HttpEntity<List<Boolean>> {
+
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).body(oldSupportedSimilarSkillWarnings(similarities).body)
     }
 }
 

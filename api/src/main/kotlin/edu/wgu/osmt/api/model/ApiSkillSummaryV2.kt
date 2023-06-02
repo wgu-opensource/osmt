@@ -10,17 +10,17 @@ import edu.wgu.osmt.util.OsmtUtil.Companion.parseMultiValueToSingleValue
 import java.time.LocalDateTime
 
 class ApiSkillSummaryV2(
-    @JsonProperty val id: String,
-    @JsonProperty val uuid: String,
-    @JsonProperty val status: PublishStatus,
-    @JsonProperty val publishDate: LocalDateTime? = null,
-    @JsonProperty val archiveDate: LocalDateTime? = null,
-    @JsonProperty val skillName: String,
-    @JsonProperty val skillStatement: String,
-    @JsonProperty val category: String? = null,
-    @JsonProperty val keywords: List<String> = listOf(),
-    @JsonProperty val occupations: List<ApiJobCode> = listOf()
-) {
+        @JsonProperty override val id: String,
+        @JsonProperty override val uuid: String,
+        @JsonProperty override val status: PublishStatus,
+        @JsonProperty override val publishDate: LocalDateTime? = null,
+        @JsonProperty override val archiveDate: LocalDateTime? = null,
+        @JsonProperty override val skillName: String,
+        @JsonProperty override val skillStatement: String,
+        @JsonProperty val category: String? = null,
+        @JsonProperty override val keywords: List<String> = listOf(),
+        @JsonProperty override val occupations: List<ApiJobCode> = listOf()
+): AbstractApiSkillSummary() {
 
     companion object {
         fun fromSkill(rsd: RichSkillDescriptor, appConfig: AppConfig): ApiSkillSummaryV2 {

@@ -52,26 +52,56 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .httpBasic().disable()
             .authorizeRequests()
 
-            .mvcMatchers(GET, RoutePaths.Latest.SKILL_AUDIT_LOG, RoutePaths.Unversioned.SKILL_AUDIT_LOG, RoutePaths.OldStillSupported.SKILL_AUDIT_LOG).authenticated()
-            .mvcMatchers(GET, RoutePaths.Latest.COLLECTION_AUDIT_LOG, RoutePaths.Unversioned.COLLECTION_AUDIT_LOG, RoutePaths.OldStillSupported.SKILL_AUDIT_LOG).authenticated()
-            .mvcMatchers(GET, RoutePaths.Latest.TASK_DETAIL_SKILLS, RoutePaths.Unversioned.TASK_DETAIL_SKILLS, RoutePaths.OldStillSupported.SKILL_AUDIT_LOG).authenticated()
-            .mvcMatchers(GET, RoutePaths.Latest.TASK_DETAIL_BATCH, RoutePaths.Unversioned.TASK_DETAIL_BATCH, RoutePaths.OldStillSupported.SKILL_AUDIT_LOG).authenticated()
-            .mvcMatchers(GET, RoutePaths.Latest.SEARCH_JOBCODES_PATH, RoutePaths.Unversioned.SEARCH_JOBCODES_PATH, RoutePaths.OldStillSupported.SKILL_AUDIT_LOG).authenticated()
-            .mvcMatchers(GET, RoutePaths.Latest.SEARCH_KEYWORDS_PATH, RoutePaths.Unversioned.SEARCH_KEYWORDS_PATH, RoutePaths.OldStillSupported.SKILL_AUDIT_LOG).authenticated()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_AUDIT_LOG}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SKILL_AUDIT_LOG}",
+                    "${RoutePaths.API}${RoutePaths.SKILL_AUDIT_LOG}").authenticated()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_AUDIT_LOG}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_AUDIT_LOG}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_AUDIT_LOG}").authenticated()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_SKILLS}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.TASK_DETAIL_SKILLS}",
+                    "${RoutePaths.API}${RoutePaths.TASK_DETAIL_SKILLS}").authenticated()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_BATCH}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.TASK_DETAIL_BATCH}",
+                    "${RoutePaths.API}${RoutePaths.TASK_DETAIL_BATCH}").authenticated()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_JOBCODES_PATH}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SEARCH_JOBCODES_PATH}",
+                    "${RoutePaths.API}${RoutePaths.SEARCH_JOBCODES_PATH}").authenticated()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_KEYWORDS_PATH}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SEARCH_KEYWORDS_PATH}",
+                    "${RoutePaths.API}${RoutePaths.SEARCH_KEYWORDS_PATH}").authenticated()
 
             // public search endpoints
-            .mvcMatchers(POST, RoutePaths.Latest.SEARCH_SKILLS, RoutePaths.Unversioned.SEARCH_SKILLS, RoutePaths.OldStillSupported.SKILL_AUDIT_LOG).permitAll()
-            .mvcMatchers(POST, RoutePaths.Latest.SEARCH_COLLECTIONS, RoutePaths.Unversioned.SEARCH_COLLECTIONS, RoutePaths.OldStillSupported.SKILL_AUDIT_LOG).permitAll()
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_SKILLS}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SEARCH_SKILLS}",
+                    "${RoutePaths.API}${RoutePaths.SEARCH_SKILLS}").permitAll()
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_COLLECTIONS}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SEARCH_COLLECTIONS}",
+                    "${RoutePaths.API}${RoutePaths.SEARCH_COLLECTIONS}").permitAll()
 
             // public canonical URL endpoints
-            .mvcMatchers(GET, RoutePaths.Latest.SKILL_DETAIL, RoutePaths.OldStillSupported.SKILL_DETAIL, RoutePaths.Unversioned.SKILL_DETAIL, RoutePaths.OldStillSupported.SKILL_AUDIT_LOG).permitAll()
-            .mvcMatchers(GET, RoutePaths.Latest.COLLECTION_DETAIL, RoutePaths.Unversioned.COLLECTION_DETAIL, RoutePaths.OldStillSupported.SKILL_AUDIT_LOG).permitAll()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_DETAIL}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SKILL_DETAIL}",
+                    "${RoutePaths.API}${RoutePaths.SKILL_DETAIL}").permitAll()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_DETAIL}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_DETAIL}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_DETAIL}").permitAll()
 
-            .mvcMatchers(POST, RoutePaths.Latest.COLLECTION_SKILLS, RoutePaths.Unversioned.COLLECTION_SKILLS, RoutePaths.OldStillSupported.SKILL_AUDIT_LOG).permitAll()
-            .mvcMatchers(GET, RoutePaths.Latest.COLLECTION_CSV, RoutePaths.Unversioned.COLLECTION_CSV, RoutePaths.OldStillSupported.SKILL_AUDIT_LOG).permitAll()
-            .mvcMatchers(GET, RoutePaths.Latest.TASK_DETAIL_TEXT, RoutePaths.Unversioned.TASK_DETAIL_TEXT, RoutePaths.OldStillSupported.SKILL_AUDIT_LOG).permitAll()   // public csv results
-            .mvcMatchers(GET, RoutePaths.Latest.COLLECTION_XLSX, RoutePaths.Unversioned.COLLECTION_XLSX).permitAll()
-            .mvcMatchers(GET, RoutePaths.Latest.TASK_DETAIL_MEDIA, RoutePaths.Unversioned.TASK_DETAIL_MEDIA).permitAll()   // public excel results
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_SKILLS}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_SKILLS}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_SKILLS}").permitAll()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_CSV}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_CSV}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_CSV}").permitAll()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_TEXT}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.TASK_DETAIL_TEXT}",
+                    "${RoutePaths.API}${RoutePaths.TASK_DETAIL_TEXT}").permitAll()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_XLSX}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_XLSX}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_XLSX}").permitAll()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_MEDIA}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.TASK_DETAIL_MEDIA}",
+                    "${RoutePaths.API}${RoutePaths.TASK_DETAIL_MEDIA}").permitAll()
 
             .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
             .and().oauth2Login().successHandler(redirectToFrontend)
@@ -92,43 +122,89 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
         if (appConfig.allowPublicLists) {
             http.authorizeRequests()
-                .mvcMatchers(GET, RoutePaths.Latest.SKILLS_LIST, RoutePaths.Unversioned.SKILLS_LIST, RoutePaths.OldStillSupported.SKILLS_LIST).permitAll()
-                .mvcMatchers(GET, RoutePaths.Latest.COLLECTIONS_LIST, RoutePaths.Unversioned.COLLECTIONS_LIST).permitAll()
+                .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILLS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SKILLS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.SKILLS_LIST}").permitAll()
+                .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTIONS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTIONS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.COLLECTIONS_LIST}").permitAll()
         } else {
             http.authorizeRequests()
-                .mvcMatchers(GET, RoutePaths.Latest.SKILLS_LIST, RoutePaths.Unversioned.SKILLS_LIST, RoutePaths.Unversioned.SKILLS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-                .mvcMatchers(GET, RoutePaths.Latest.COLLECTIONS_LIST, RoutePaths.Unversioned.COLLECTIONS_LIST, RoutePaths.OldStillSupported.COLLECTIONS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+                .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILLS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SKILLS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.SKILLS_LIST}").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+                .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTIONS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTIONS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.COLLECTIONS_LIST}").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
         }
 
         http.authorizeRequests()
-            .mvcMatchers(POST, RoutePaths.Latest.SKILL_UPDATE, RoutePaths.Unversioned.SKILL_UPDATE, RoutePaths.OldStillSupported.SKILL_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(POST, RoutePaths.Latest.SKILLS_CREATE, RoutePaths.Unversioned.SKILLS_CREATE, RoutePaths.OldStillSupported.SKILLS_CREATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(POST, RoutePaths.Latest.SKILL_PUBLISH, RoutePaths.Unversioned.SKILL_PUBLISH, RoutePaths.OldStillSupported.SKILL_PUBLISH).hasAnyAuthority(ADMIN)
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SKILL_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.SKILL_UPDATE}").hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILLS_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SKILLS_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.SKILLS_CREATE}").hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SKILL_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.SKILL_PUBLISH}").hasAnyAuthority(ADMIN)
 
-            .mvcMatchers(POST, RoutePaths.Latest.COLLECTION_CREATE, RoutePaths.Unversioned.COLLECTION_CREATE, RoutePaths.OldStillSupported.COLLECTION_CREATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(POST, RoutePaths.Latest.COLLECTION_PUBLISH, RoutePaths.Unversioned.COLLECTION_PUBLISH, RoutePaths.OldStillSupported.COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
-            .mvcMatchers(POST, RoutePaths.Latest.COLLECTION_UPDATE, RoutePaths.Unversioned.COLLECTION_UPDATE, RoutePaths.OldStillSupported.COLLECTION_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(POST, RoutePaths.Latest.COLLECTION_SKILLS_UPDATE, RoutePaths.Unversioned.COLLECTION_SKILLS_UPDATE, RoutePaths.OldStillSupported.COLLECTION_SKILLS_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(DELETE, RoutePaths.Latest.COLLECTION_REMOVE, RoutePaths.Unversioned.COLLECTION_REMOVE, RoutePaths.OldStillSupported.COLLECTION_REMOVE).hasAnyAuthority(ADMIN)
-            .mvcMatchers(GET, RoutePaths.Latest.WORKSPACE_PATH, RoutePaths.Unversioned.WORKSPACE_PATH, RoutePaths.OldStillSupported.WORKSPACE_PATH).hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_CREATE}").hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_PUBLISH}").hasAnyAuthority(ADMIN)
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_UPDATE}").hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_SKILLS_UPDATE}").hasAnyAuthority(ADMIN, CURATOR)
+            .mvcMatchers(DELETE, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_REMOVE}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_REMOVE}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_REMOVE}").hasAnyAuthority(ADMIN)
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.WORKSPACE_PATH}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.WORKSPACE_PATH}",
+                    "${RoutePaths.API}${RoutePaths.WORKSPACE_PATH}").hasAnyAuthority(ADMIN, CURATOR)
 
             .mvcMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
     }
 
     fun configureForNoRoles(http: HttpSecurity) {
         http.authorizeRequests()
-            .mvcMatchers(GET, RoutePaths.Latest.SKILLS_LIST, RoutePaths.Unversioned.SKILLS_LIST, RoutePaths.OldStillSupported.SKILLS_LIST).permitAll()
-            .mvcMatchers(GET, RoutePaths.Latest.COLLECTIONS_LIST, RoutePaths.Unversioned.COLLECTIONS_LIST, RoutePaths.OldStillSupported.COLLECTIONS_LIST).permitAll()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILLS_LIST}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SKILLS_LIST}",
+                    "${RoutePaths.API}${RoutePaths.SKILLS_LIST}").permitAll()
+            .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTIONS_LIST}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTIONS_LIST}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTIONS_LIST}").permitAll()
 
-            .mvcMatchers(POST, RoutePaths.Latest.SKILL_UPDATE, RoutePaths.Unversioned.SKILL_UPDATE, RoutePaths.OldStillSupported.SKILL_UPDATE).authenticated()
-            .mvcMatchers(POST, RoutePaths.Latest.SKILLS_CREATE, RoutePaths.Unversioned.SKILLS_CREATE, RoutePaths.OldStillSupported.SKILLS_CREATE).authenticated()
-            .mvcMatchers(POST, RoutePaths.Latest.SKILL_PUBLISH, RoutePaths.Unversioned.SKILL_PUBLISH, RoutePaths.OldStillSupported.SKILL_PUBLISH).authenticated()
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SKILL_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.SKILL_UPDATE}").authenticated()
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILLS_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SKILLS_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.SKILLS_CREATE}").authenticated()
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.SKILL_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.SKILL_PUBLISH}").authenticated()
 
-            .mvcMatchers(POST, RoutePaths.Latest.COLLECTION_CREATE, RoutePaths.Unversioned.COLLECTION_CREATE, RoutePaths.OldStillSupported.COLLECTION_CREATE).authenticated()
-            .mvcMatchers(POST, RoutePaths.Latest.COLLECTION_PUBLISH, RoutePaths.Unversioned.COLLECTION_PUBLISH, RoutePaths.OldStillSupported.COLLECTION_CREATE).authenticated()
-            .mvcMatchers(POST, RoutePaths.Latest.COLLECTION_UPDATE, RoutePaths.Unversioned.COLLECTION_UPDATE, RoutePaths.OldStillSupported.COLLECTION_CREATE).authenticated()
-            .mvcMatchers(POST, RoutePaths.Latest.COLLECTION_SKILLS_UPDATE, RoutePaths.Unversioned.SKILL_UPDATE, RoutePaths.OldStillSupported.COLLECTION_CREATE).authenticated()
-            .mvcMatchers(DELETE, RoutePaths.Latest.COLLECTION_REMOVE, RoutePaths.Unversioned.COLLECTION_REMOVE, RoutePaths.OldStillSupported.COLLECTION_CREATE).denyAll()
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_CREATE}").authenticated()
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_PUBLISH}").authenticated()
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_UPDATE}").authenticated()
+            .mvcMatchers(POST, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_SKILLS_UPDATE}").authenticated()
+            .mvcMatchers(DELETE, "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_REMOVE}",
+                    "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_REMOVE}",
+                    "${RoutePaths.API}${RoutePaths.COLLECTION_REMOVE}").denyAll()
 
             // fall-through
             .mvcMatchers("/api/**").permitAll()

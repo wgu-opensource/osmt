@@ -185,7 +185,7 @@ data class RichSkillDocV2(
             )
         }
 
-        fun fromCurrent(rsd: RichSkillDoc): RichSkillDocV2 {
+        fun fromLatest(rsd: RichSkillDoc): RichSkillDocV2 {
             return RichSkillDocV2(
                     id = rsd.id,
                     uuid = rsd.uuid,

@@ -183,5 +183,6 @@ data class RichSkillDoc(
                 archiveDate = dao.archiveDate
             )
         }
+
     }
 }

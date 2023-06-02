@@ -103,7 +103,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         richSkillEsRepo.saveAll(listOfSkills)
 
         // Act
-        val result = richSkillController.allPaginatedV2(
+        val result = richSkillController.oldSupportedAllPaginated(
                 UriComponentsBuilder.newInstance(),
                 size,
                 0,
@@ -200,7 +200,7 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Act
         val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
-        val result = richSkillController.byUUIDv2(skillResult.searchHits[0].id.toString(),jwt)
+        val result = richSkillController.oldSupportedByUUID(skillResult.searchHits[0].id.toString(),jwt)
 
         // Assert
         assertThat(result?.uuid).isEqualTo(skillResult.searchHits[0].id.toString())
@@ -244,7 +244,7 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Act
         val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
-        val result = richSkillController.byUUIDHtmlViewV2(skillResult.searchHits[0].id.toString(),jwt)
+        val result = richSkillController.oldSupportedByUUIDHtmlView(skillResult.searchHits[0].id.toString(),jwt)
 
         // Assert
         assertThat(result).isEqualTo("forward:/v2/skills/"+skillResult.searchHits[0].id.toString())
@@ -317,7 +317,11 @@ internal class RichSkillControllerTest @Autowired constructor(
         val headers : MutableMap<String, Any> = HashMap()
         headers["key"] = "value"
         val notNullJwt : Jwt? = Jwt("tokenValue", Instant.MIN, Instant.MAX,headers,headers)
-        val csvTaskResult = TaskResult(UUID.randomUUID().toString(),MediaType.APPLICATION_JSON_VALUE, TaskStatus.Processing, RoutePaths.Latest.EXPORT_LIBRARY_CSV)
+        val csvTaskResult = TaskResult(UUID.randomUUID().toString(),
+                MediaType.APPLICATION_JSON_VALUE,
+                TaskStatus.Processing,
+                "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.EXPORT_LIBRARY_CSV}"
+        )
 
 
         val service = mockk<TaskMessageService>()

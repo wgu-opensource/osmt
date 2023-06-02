@@ -3,14 +3,7 @@ package edu.wgu.osmt.collection
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
-import edu.wgu.osmt.api.model.AbstractApiCollection
-import edu.wgu.osmt.api.model.ApiCollection
-import edu.wgu.osmt.api.model.ApiCollectionUpdate
-import edu.wgu.osmt.api.model.ApiCollectionV2
-import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.ApiSkillListUpdate
-import edu.wgu.osmt.api.model.ApiStringListUpdate
-import edu.wgu.osmt.api.model.CollectionSortEnum
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
@@ -20,15 +13,7 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.task.AppliesToType
-import edu.wgu.osmt.task.CsvTask
-import edu.wgu.osmt.task.PublishTask
-import edu.wgu.osmt.task.RemoveCollectionSkillsTask
-import edu.wgu.osmt.task.Task
-import edu.wgu.osmt.task.TaskMessageService
-import edu.wgu.osmt.task.TaskResult
-import edu.wgu.osmt.task.UpdateCollectionSkillsTask
-import edu.wgu.osmt.task.XlsxTask
+import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
@@ -38,14 +23,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -66,7 +44,12 @@ class CollectionController @Autowired constructor(
     override val sortOrderCompanion = CollectionSortEnum.Companion
 
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTIONS_LIST}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = [
+        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTIONS_LIST}",
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTIONS_LIST}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTIONS_LIST}"
+                       ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     override fun allPaginated(
             uriComponentsBuilder: UriComponentsBuilder,
@@ -81,36 +64,6 @@ class CollectionController @Autowired constructor(
         }
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
     }
-    @GetMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTIONS_LIST}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun oldSupportedAllPaginated(
-        uriComponentsBuilder: UriComponentsBuilder,
-        size: Int,
-        from: Int,
-        status: Array<String>,
-        sort: String?,
-        @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<List<CollectionDoc>> {
-        if (!appConfig.allowPublicLists && user === null) {
-            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
-        }
-        return super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
-    }
-
-    @GetMapping("${RoutePaths.API}${RoutePaths.COLLECTIONS_LIST}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun unversionedAllPaginated(
-            uriComponentsBuilder: UriComponentsBuilder,
-            size: Int,
-            from: Int,
-            status: Array<String>,
-            sort: String?,
-            @AuthenticationPrincipal user: Jwt?
-    ): ResponseEntity<List<CollectionDoc>> {
-        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT).body(
-                allPaginated(uriComponentsBuilder, size, from, status, sort, user).body
-        )
-    }
 
     @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -121,39 +74,34 @@ class CollectionController @Autowired constructor(
         ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun oldSupportedByUUID(@PathVariable uuid: String): AbstractApiCollection? {
+    fun legacyByUUID(@PathVariable uuid: String): AbstractApiCollection? {
         return collectionRepository.findByUUID(uuid)?.let {
-            ApiCollection.fromDao(it, appConfig)
+            ApiCollectionV2.fromDao(it, appConfig)
         }
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @GetMapping(path = [
-    "${RoutePaths.API}${RoutePaths.COLLECTION_DETAIL}"
-    ],
-    produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = ["${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_DETAIL}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun unversionedByUUID(@PathVariable uuid: String): ResponseEntity<AbstractApiCollection>? {
-        return ResponseEntity.status(HttpStatus.MOVED_TEMPORARILY).body(oldSupportedByUUID(uuid))
+    fun unversionedByUUID(@PathVariable uuid: String): AbstractApiCollection? {
+        return when(RoutePaths.DEFAULT) {
+            RoutePaths.LATEST -> byUUID(uuid)
+            RoutePaths.LEGACY -> legacyByUUID(uuid)
+            else -> {
+                byUUID(uuid)
+            }
+        }
     }
 
     @RequestMapping(path = [
         "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_DETAIL}",
-        ],
-        produces = [MediaType.TEXT_HTML_VALUE])
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_DETAIL}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_DETAIL}"
+        ], produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(@PathVariable uuid: String): String {
         return "forward:${RoutePaths.LATEST}/collections/$uuid"
-    }
-
-    @RequestMapping(path = [
-        "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_DETAIL}",
-        "${RoutePaths.API}${RoutePaths.COLLECTION_DETAIL}"
-    ],
-            produces = [MediaType.TEXT_HTML_VALUE])
-    fun oldSupportedByUUIDHtmlView(@PathVariable uuid: String): String {
-        return "forward:${RoutePaths.OLD_SUPPORTED}/collections/$uuid"
     }
 
     @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_CREATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -172,9 +120,9 @@ class CollectionController @Autowired constructor(
             }
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_CREATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_CREATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun oldSupportedCreateCollections(
+    fun legacyCreateCollections(
             @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
             @AuthenticationPrincipal user: Jwt?
     ): List<AbstractApiCollection> {
@@ -188,14 +136,20 @@ class CollectionController @Autowired constructor(
         }
     }
 
-    @PostMapping(path = ["${RoutePaths.API}${RoutePaths.COLLECTION_CREATE}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = ["${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_CREATE}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun unversionedCreateCollections(
             @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
             @AuthenticationPrincipal user: Jwt?
-    ): ResponseEntity<List<AbstractApiCollection>> {
+    ): List<AbstractApiCollection> {
+        return when(RoutePaths.DEFAULT) {
+            RoutePaths.LATEST -> createCollections(apiCollectionUpdates, user)
+            RoutePaths.LEGACY -> legacyCreateCollections(apiCollectionUpdates, user)
+            else -> {
+                createCollections(apiCollectionUpdates, user)
+            }
+        }
 
-        return ResponseEntity.status(HttpStatus.MOVED_TEMPORARILY).body(oldSupportedCreateCollections(apiCollectionUpdates, user))
     }
 
     @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -222,9 +176,9 @@ class CollectionController @Autowired constructor(
         return ApiCollection.fromDao(updated, appConfig)
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun oldSupportedUpdateCollection(
+    fun legacyUpdateCollection(
             @PathVariable uuid: String,
             @RequestBody apiUpdate: ApiCollectionUpdate,
             @AuthenticationPrincipal user: Jwt?
@@ -246,17 +200,28 @@ class CollectionController @Autowired constructor(
         return ApiCollectionV2.fromDao(updated, appConfig)
     }
 
-    @PostMapping(path = ["${RoutePaths.API}${RoutePaths.COLLECTION_UPDATE}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = ["${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_UPDATE}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun unversionedUpdateCollection(
             @PathVariable uuid: String,
             @RequestBody apiUpdate: ApiCollectionUpdate,
             @AuthenticationPrincipal user: Jwt?
-    ): ResponseEntity<AbstractApiCollection> {
-        return ResponseEntity.status(HttpStatus.MOVED_TEMPORARILY).body(oldSupportedUpdateCollection(uuid, apiUpdate, user))
+    ): AbstractApiCollection {
+        return when(RoutePaths.DEFAULT) {
+            RoutePaths.LATEST -> updateCollection(uuid, apiUpdate, user)
+            RoutePaths.LEGACY -> legacyUpdateCollection(uuid, apiUpdate, user)
+            else -> {
+                updateCollection(uuid, apiUpdate, user)
+            }
+        }
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_SKILLS_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [
+        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_SKILLS_UPDATE}"
+                        ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateSkills(
             @PathVariable uuid: String,
@@ -274,41 +239,11 @@ class CollectionController @Autowired constructor(
         return Task.processingResponse(task)
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_SKILLS_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun oldSupportedUpdateSkills(
-            @PathVariable uuid: String,
-            @RequestBody skillListUpdate: ApiSkillListUpdate,
-            @RequestParam(
-                    required = false,
-                    defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
-            ) status: List<String>,
-            @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<TaskResult> {
-        val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = oAuthHelper.readableUserName(user))
-
-        taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
-        return Task.processingResponse(task)
-    }
-
-    @PostMapping("${RoutePaths.API}${RoutePaths.COLLECTION_SKILLS_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun unversionedUpdateSkills(
-            @PathVariable uuid: String,
-            @RequestBody skillListUpdate: ApiSkillListUpdate,
-            @RequestParam(
-                    required = false,
-                    defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
-            ) status: List<String>,
-            @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<TaskResult>? {
-
-        return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).body(oldSupportedUpdateSkills(uuid, skillListUpdate, status, user).body)
-    }
-
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_PUBLISH}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
+    @PostMapping(path = [
+        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_PUBLISH}",
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_PUBLISH}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_PUBLISH}"
+    ], produces = [MediaType.APPLICATION_JSON_VALUE])    @ResponseBody
     fun publishCollections(
             @RequestBody search: ApiSearch,
             @RequestParam(
@@ -329,50 +264,11 @@ class CollectionController @Autowired constructor(
         return Task.processingResponse(task)
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_PUBLISH}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun oldSupportedPublishCollections(
-            @RequestBody search: ApiSearch,
-            @RequestParam(
-                    required = false,
-                    defaultValue = "Published"
-            ) newStatus: String,
-            @RequestParam(
-                    required = false,
-                    defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
-            ) filterByStatus: List<String>,
-            @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<TaskResult> {
-        val filterStatuses = filterByStatus.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val publishStatus = PublishStatus.forApiValue(newStatus) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
-        val task = PublishTask(AppliesToType.Collection, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = oAuthHelper.readableUserName(user))
-
-        taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
-        return Task.processingResponse(task)
-    }
-
-    @PostMapping("${RoutePaths.API}${RoutePaths.COLLECTION_PUBLISH}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun unversionedPublishCollections(
-            @RequestBody search: ApiSearch,
-            @RequestParam(
-                    required = false,
-                    defaultValue = "Published"
-            ) newStatus: String,
-            @RequestParam(
-                    required = false,
-                    defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
-            ) filterByStatus: List<String>,
-            @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<TaskResult> {
-
-        return ResponseEntity.status(HttpStatus.MOVED_TEMPORARILY).body(oldSupportedPublishCollections(search, newStatus, filterByStatus, user).body)
-    }
-
     @GetMapping(path = [
         "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_CSV}",
-    ],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_CSV}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_CSV}"
+    ], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getSkillsForCollectionCsv(
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
@@ -382,26 +278,6 @@ class CollectionController @Autowired constructor(
         val task = CsvTask(collectionUuid = uuid)
         taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
         return Task.processingResponse(task)
-    }
-
-    @GetMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_CSV}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun oldSupportedGetSkillsForCollectionCsv(
-            @PathVariable uuid: String
-    ): HttpEntity<TaskResult> {
-        if (collectionRepository.findByUUID(uuid)!!.status == PublishStatus.Draft && !oAuthHelper.hasRole(appConfig.roleAdmin)) {
-            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
-        }
-        val task = CsvTask(collectionUuid = uuid)
-        taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
-        return Task.processingResponse(task)
-    }
-
-    @GetMapping("${RoutePaths.API}${RoutePaths.COLLECTION_CSV}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getSkillsForCollectionCsvUnversioned(
-            @PathVariable uuid: String
-    ): HttpEntity<TaskResult> {
-
-        return ResponseEntity.status(HttpStatus.MOVED_TEMPORARILY).body(getSkillsForCollectionCsv(uuid).body)
     }
 
     @GetMapping( "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_XLSX}", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
@@ -416,7 +292,11 @@ class CollectionController @Autowired constructor(
         return Task.processingResponse(task)
     }
 
-    @DeleteMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_REMOVE}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @DeleteMapping(path = [
+        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_REMOVE}",
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_REMOVE}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_REMOVE}"
+    ], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun removeCollection(
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
@@ -425,24 +305,11 @@ class CollectionController @Autowired constructor(
         return Task.processingResponse(task)
     }
 
-    @DeleteMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_REMOVE}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun oldSupportedRemoveCollection(
-            @PathVariable uuid: String
-    ): HttpEntity<TaskResult> {
-        val task = RemoveCollectionSkillsTask(collectionUuid = uuid)
-        taskMessageService.enqueueJob(TaskMessageService.removeCollectionSkills, task)
-        return Task.processingResponse(task)
-    }
-
-    @DeleteMapping("${RoutePaths.API}${RoutePaths.COLLECTION_REMOVE}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun unversionedRemoveCollection(
-            @PathVariable uuid: String
-    ): HttpEntity<TaskResult> {
-
-        return ResponseEntity.status(HttpStatus.MOVED_TEMPORARILY).body(oldSupportedRemoveCollection(uuid).body)
-    }
-
-    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_AUDIT_LOG}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = [
+        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_AUDIT_LOG}",
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_AUDIT_LOG}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_AUDIT_LOG}"
+    ], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun collectionAuditLog(
         @PathVariable uuid: String
     ): HttpEntity<List<AuditLog>> {
@@ -452,26 +319,6 @@ class CollectionController @Autowired constructor(
 
         val sizedIterable = auditLogRepository.findByTableAndId(CollectionTable.tableName, entityId = collection!!.id.value, offsetPageable = pageable)
         return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
-    }
-
-    @GetMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.COLLECTION_AUDIT_LOG}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun oldSupportedCollectionAuditLog(
-            @PathVariable uuid: String
-    ): HttpEntity<List<AuditLog>> {
-        val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateDesc.apiValue).sort)
-
-        val collection = collectionRepository.findByUUID(uuid)
-
-        val sizedIterable = auditLogRepository.findByTableAndId(CollectionTable.tableName, entityId = collection!!.id.value, offsetPageable = pageable)
-        return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
-    }
-
-    @GetMapping("${RoutePaths.API}${RoutePaths.COLLECTION_AUDIT_LOG}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun unversionedCollectionAuditLog(
-            @PathVariable uuid: String
-    ): HttpEntity<List<AuditLog>> {
-
-        return ResponseEntity.status(HttpStatus.MOVED_TEMPORARILY).body(oldSupportedCollectionAuditLog(uuid).body)
     }
 
     @GetMapping(path = [
@@ -502,9 +349,9 @@ class CollectionController @Autowired constructor(
 
     }
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.WORKSPACE_PATH}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.WORKSPACE_PATH}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun oldSupportedGetOrCreateWorkspace(
+    fun legacyGetOrCreateWorkspace(
             @AuthenticationPrincipal user: Jwt?
     ): AbstractApiCollection? {
         return collectionRepository.findByOwner(
@@ -527,11 +374,17 @@ class CollectionController @Autowired constructor(
 
     }
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.WORKSPACE_PATH}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.WORKSPACE_PATH}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun getOrCreateWorkspaceUnversioned(
             @AuthenticationPrincipal user: Jwt?
-    ): ResponseEntity<AbstractApiCollection> {
-        return ResponseEntity.status(HttpStatus.MOVED_TEMPORARILY).body(oldSupportedGetOrCreateWorkspace(user))
+    ): AbstractApiCollection? {
+        return when(RoutePaths.DEFAULT) {
+            RoutePaths.LATEST -> getOrCreateWorkspace(user)
+            RoutePaths.LEGACY -> legacyGetOrCreateWorkspace(user)
+            else -> {
+                getOrCreateWorkspace(user)
+            }
+        }
     }
 }

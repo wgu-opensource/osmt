@@ -32,8 +32,8 @@ class TaskController @Autowired constructor(
 
     @GetMapping(path = [
         "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_TEXT}",
-        "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.TASK_DETAIL_TEXT}",
-        "${RoutePaths.API}${RoutePaths.TASK_DETAIL_TEXT}",
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.TASK_DETAIL_TEXT}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_TEXT}"
     ])
     @ResponseBody
     fun textResult(@PathVariable uuid: String): HttpEntity<*> {
@@ -48,8 +48,8 @@ class TaskController @Autowired constructor(
 
     @GetMapping(path = [
         "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_BATCH}",
-        "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.TASK_DETAIL_BATCH}",
-        "${RoutePaths.API}${RoutePaths.TASK_DETAIL_BATCH}",
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.TASK_DETAIL_BATCH}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_BATCH}"
     ])
     @ResponseBody
     fun batchResult(@PathVariable uuid: String): HttpEntity<*> {
@@ -76,10 +76,9 @@ class TaskController @Autowired constructor(
     }
 
     @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.TASK_DETAIL_SKILLS}",
-        "${RoutePaths.API}${RoutePaths.TASK_DETAIL_SKILLS}",
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.TASK_DETAIL_SKILLS}",
     ])    @ResponseBody
-    fun oldSupportedSkillsResult(@PathVariable uuid: String): HttpEntity<*> {
+    fun legacySkillsResult(@PathVariable uuid: String): HttpEntity<*> {
         val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
         return when (task?.status) {
             TaskStatus.Ready -> {
@@ -92,6 +91,19 @@ class TaskController @Autowired constructor(
                 return ResponseEntity.ok().headers(responseHeaders).body(apiSkillsV2)
             }
             else -> ResponseEntity.status(404).body("Task with id $uuid not ready or not found")
+        }
+    }
+
+    @GetMapping(path = ["${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_SKILLS}"])
+    @ResponseBody
+    fun unversionedSkillsResult(@PathVariable uuid: String): HttpEntity<*> {
+
+        return when(RoutePaths.DEFAULT) {
+            RoutePaths.LATEST -> skillsResult(uuid)
+            RoutePaths.LEGACY -> legacySkillsResult(uuid)
+            else -> {
+                skillsResult(uuid)
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
+import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
@@ -81,7 +82,7 @@ internal class SearchControllerTest @Autowired constructor(
                 nullJwt)
 
         // Assert
-        assertThat(result.body?.map { it.uuid }).contains(listOfSkills[0].uuid)
+        assertThat(result.body?.map { (it as RichSkillDoc).uuid }).contains(listOfSkills[0].uuid)
     }
 
     @Test

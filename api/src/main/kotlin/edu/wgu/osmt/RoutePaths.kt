@@ -1,8 +1,14 @@
 package edu.wgu.osmt
 
+import org.apache.commons.lang3.StringUtils
+
 object RoutePaths {
-    const val OLD_SUPPORTED = "/v2"
+
+
+    const val LEGACY = "/v2"
     const val LATEST = "/v3"
+    const val DEFAULT = LATEST
+    const val UNVERSIONED = StringUtils.EMPTY
 
     const val API = "/api"
     private const val SEARCH_PATH = "/search"

@@ -23,7 +23,7 @@ class ElasticSearchAdminController @Autowired constructor(
 
     @RequestMapping(path = [
         "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.ES_ADMIN_DELETE_INDICES}",
-        "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.ES_ADMIN_DELETE_INDICES}",
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.ES_ADMIN_DELETE_INDICES}",
         "${RoutePaths.API}${RoutePaths.ES_ADMIN_DELETE_INDICES}"]
     )
         @PostMapping
@@ -42,7 +42,7 @@ class ElasticSearchAdminController @Autowired constructor(
 
     @RequestMapping(path = [
         "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.ES_ADMIN_REINDEX}",
-        "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.ES_ADMIN_REINDEX}",
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.ES_ADMIN_REINDEX}",
         "${RoutePaths.API}${RoutePaths.ES_ADMIN_REINDEX}"]
     )
     @PostMapping

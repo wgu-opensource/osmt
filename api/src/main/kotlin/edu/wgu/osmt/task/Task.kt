@@ -129,7 +129,7 @@ data class CreateSkillsTaskV2(
         override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.OLD_SUPPORTED}${RoutePaths.TASK_DETAIL_SKILLS}"
+    override val apiResultPath = "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.TASK_DETAIL_SKILLS}"
 }
 
 

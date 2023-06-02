@@ -103,7 +103,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         richSkillEsRepo.saveAll(listOfSkills)
 
         // Act
-        val result = richSkillController.oldSupportedAllPaginated(
+        val result = richSkillController.legacyAllPaginated(
                 UriComponentsBuilder.newInstance(),
                 size,
                 0,
@@ -200,7 +200,7 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Act
         val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
-        val result = richSkillController.oldSupportedByUUID(skillResult.searchHits[0].id.toString(),jwt)
+        val result = richSkillController.legacyByUUID(skillResult.searchHits[0].id.toString(),jwt)
 
         // Assert
         assertThat(result?.uuid).isEqualTo(skillResult.searchHits[0].id.toString())
@@ -244,7 +244,7 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Act
         val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
-        val result = richSkillController.oldSupportedByUUIDHtmlView(skillResult.searchHits[0].id.toString(),jwt)
+        val result = richSkillController.legacyByUUIDHtmlView(skillResult.searchHits[0].id.toString(),jwt)
 
         // Assert
         assertThat(result).isEqualTo("forward:/v2/skills/"+skillResult.searchHits[0].id.toString())

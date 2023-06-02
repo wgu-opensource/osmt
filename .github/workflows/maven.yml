@@ -31,4 +31,4 @@ jobs:
           oktaUsername=${{secrets.OKTA_USERNAME}} \
           oktaPassword=${{secrets.OKTA_PASSWORD}} \
           oktaUrl=${{secrets.OAUTH_ISSUER}} \
-          baseUrl=$BASE_URL
+          baseUrl=${{env.BASE_URL}}

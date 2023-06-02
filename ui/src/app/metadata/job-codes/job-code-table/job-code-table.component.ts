@@ -35,9 +35,9 @@ export class JobCodeTableComponent extends AbstractTableComponent<IJobCode> impl
       }
     } else {
       if (ascending) {
-        this.currentSort = ApiSortOrder.SkillAsc
+        this.currentSort = ApiSortOrder.JobCodeLevelAsc
       } else {
-        this.currentSort = ApiSortOrder.SkillDesc
+        this.currentSort = ApiSortOrder.JobCodeLevelDesc
       }
     }
     this.columnSorted.emit(this.currentSort)
@@ -45,6 +45,11 @@ export class JobCodeTableComponent extends AbstractTableComponent<IJobCode> impl
 
   getCodeSort(): boolean | undefined {
     return this.currentSort == ApiSortOrder.CodeAsc;
+
+  }
+
+  getJobCodeLevelSort(): boolean | undefined {
+    return this.currentSort == ApiSortOrder.JobCodeLevelAsc;
 
   }
 

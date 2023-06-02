@@ -16,6 +16,12 @@ enum class JobCodeSortEnum(override val apiValue: String): SortOrder {
     },
     CodeDesc("code.desc") {
         override val sort = Sort.by("code.keyword").descending()
+    },
+    JobCodeAsc("jobCodeLevel.asc") {
+        override val sort = Sort.by("jobCodeLevelAsNumber").ascending()
+    },
+    JobCodeDesc("jobCodeLevel.desc") {
+        override val sort = Sort.by("jobCodeLevelAsNumber").descending()
     };
 
     companion object : SortOrderCompanion<JobCodeSortEnum> {

@@ -39,10 +39,18 @@
         </ng-template>
       </td>
 
-      <td class="t-hidden-tabletMax" aria-hidden="true">
-        <span class="m-tableLabel">
-          <span class="m-tableLabel-x-text">Job Code Level</span>
-        </span>
+      <td class="t-hidden-tabletMax"  aria-hidden="true">
+        <app-label-with-filter
+          *ngIf="allowSorting; else noSortName"
+          label="Job Code Level"
+          [sortAscending]="getJobCodeLevelSort()"
+          (sortChanged)="sortColumn('jobCodeLevel', $event)"
+        ></app-label-with-filter>
+        <ng-template #noSortName>
+          <span class="m-tableLabel">
+            <span class="m-tableLabel-x-text">Job Code Level</span>
+          </span>
+        </ng-template>
       </td>
 
       <td class="t-hidden-tabletMax" aria-hidden="true">

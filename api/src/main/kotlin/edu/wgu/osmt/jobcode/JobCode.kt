@@ -3,6 +3,7 @@ package edu.wgu.osmt.jobcode
 import com.fasterxml.jackson.annotation.JsonIgnore
 import edu.wgu.osmt.config.INDEX_JOBCODE_DOC
 import edu.wgu.osmt.db.DatabaseData
+import edu.wgu.osmt.db.JobCodeLevel
 import org.elasticsearch.core.Nullable
 import org.springframework.data.elasticsearch.annotations.*
 import java.time.LocalDateTime
@@ -122,7 +123,24 @@ data class JobCode(
 
     @Field
     @Nullable
-    val jobRoleCode: String? = JobCodeBreakout.jobRoleCode(code)
+    val jobRoleCode: String? = JobCodeBreakout.jobRoleCode(code),
+
+    @Field(excludeFromSource = true)
+    @Nullable
+    val jobCodeLevelAsNumber: Int = when (code) {
+        majorCode -> {
+            1
+        }
+        minorCode -> {
+            2
+        }
+        broadCode -> {
+            3
+        }
+        else -> {
+            4
+        }
+    }
 ) : DatabaseData {
 
     companion object {

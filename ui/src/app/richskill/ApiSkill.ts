@@ -205,7 +205,9 @@ export enum ApiSortOrder {
   NameAsc = "name.asc",
   NameDesc = "name.desc",
   CodeAsc = "code.asc",
-  CodeDesc = "code.desc"
+  CodeDesc = "code.desc",
+  JobCodeLevelAsc = "jobCodeLevel.asc",
+  JobCodeLevelDesc = "jobCodeLevel.desc",
 }
 
 export enum AuditOperationType {

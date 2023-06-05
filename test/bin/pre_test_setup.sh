@@ -117,7 +117,7 @@ error_handler() {
 
 main() {
   local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
-  local log_file; log_file="${project_dir}/api/target/osmt_spring_app.log"
+  local log_file; log_file="${project_dir}/test/target/osmt_spring_app.log"
 
   # Adding docker clean up at the beginning to keep previous test state
   # in case we need to debug and cleaning up docker could remove logs.
@@ -134,8 +134,7 @@ main() {
   echo_info "See 'osmt_spring_app.log' for console output. Proceeding..."
 
   touch "$log_file"
-#  "${project_dir}/osmt_cli.sh" -s  1>"$log_file" 2>"$log_file" & disown  || exit 135
-  "${project_dir}/osmt_cli.sh" -s || exit 135
+  "${project_dir}/osmt_cli.sh" -s  1>"$log_file" 2>"$log_file" & disown  || exit 135
 
   # curl the Spring app and retry for 2 minutes
   curl_with_retry || exit 135

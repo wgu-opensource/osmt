@@ -1,0 +1,1861 @@
+openapi: 3.1.0
+
+info:
+  title: OSMT API
+  description: API for the Open Skills Management Toolset
+  termsOfService: TODO
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 3.0.0
+
+paths:
+
+  /api/v3/categories:
+    get:
+      tags:
+        - Categories
+      summary: Get all categories
+      description: Retrieve all the categories
+      parameters:
+        - $ref: '#/components/parameters/PaginationSizeQuery'
+        - $ref: '#/components/parameters/PaginationFromQuery'
+        - name: sort
+          in: query
+          schema:
+            $ref: '#/components/schemas/KeywordSortOrder'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Keyword'
+
+  /api/v3/categories/{identifier}:
+    get:
+      tags:
+        - Categories
+      summary: Get category by identifier
+      description: Retrieve category with identifier
+      parameters:
+        - name: identifier
+          in: path
+          required: true
+          description: identifying key for category
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Keyword'
+
+  /api/v3/categories/{identifier}/skills:
+    get:
+      tags:
+        - Categories
+      summary: Get skills with category
+      description: Retrieve skills with category
+      parameters:
+        - name: identifier
+          in: path
+          required: true
+          description: identifying key for category
+          schema:
+            type: string
+        - $ref: '#/components/parameters/PaginationSizeQuery'
+        - $ref: '#/components/parameters/PaginationFromQuery'
+        - $ref: '#/components/parameters/PublishStatusQuery'
+        - name: sort
+          in: query
+          description: order records should be sorted
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Keyword'
+    post:
+      tags:
+        - Categories
+      summary: Search skills with category
+      description: Search skills with category
+      parameters:
+        - name: identifier
+          in: path
+          required: true
+          description: identifying key for category
+          schema:
+            type: string
+        - $ref: '#/components/parameters/PaginationSizeQuery'
+        - $ref: '#/components/parameters/PaginationFromQuery'
+        - $ref: '#/components/parameters/PublishStatusQuery'
+        - name: sort
+          in: query
+          description: order records should be sorted
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Search'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Link:
+              $ref: '#/components/headers/Link'
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/XRateLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/XRateRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/XRateReset'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Keyword'
+
+  /api/v3/collections:
+    get:
+      summary: Get all collections
+      description: Returns all collections
+      tags:
+        - Collections
+      parameters:
+        - $ref: '#/components/parameters/PaginationSizeQueryRequired'
+        - $ref: '#/components/parameters/PaginationFromQueryRequired'
+        - $ref: '#/components/parameters/PublishStatusQueryRequired'
+        - $ref: '#/components/parameters/SortOrderQuery'
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CollectionDoc'
+    post:
+      summary: Define a collection
+      description: Create a new collection in OSMT
+      tags:
+        - Collections
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CollectionUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collection'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/v3/collections/{uuid}:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    get:
+      summary: Retrieve a collection
+      description: Retrieve all the information about a collection
+      tags:
+        - Collections
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+
+  /api/v3/collections/{uuid}/csv:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    get:
+      summary: Request a collection export as a CSV
+      description: Request all the information about a collection to be exported as a CSV
+      tags:
+        - Collections
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+
+  /api/v3/collections/{uuid}/xlsx:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    get:
+      summary: Request a collection export as an Excel Workbook
+      description: Request all the information about a collection to be exported as an Excel Workbook
+      tags:
+        - Collections
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+
+  /api/v3/collections/{uuid}/log:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    get:
+      summary: Retrieve a collection log
+      description: Retrieve the audit log entries of a collection
+      tags:
+        - Collections
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+
+  /api/v3/collections/{uuid}/remove:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    delete:
+      summary: Remove a collection
+      description: Delete a collection from OSMT
+      tags:
+        - Collections
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+
+  /api/v3/collections/{uuid}/skills:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    post:
+      summary: Retrieve the skills in a collection
+      description: Retrieve paginated summaries of skills that belong to the collection
+      tags:
+        - Collections
+      parameters:
+        - $ref: '#/components/parameters/PaginationSizeQuery'
+        - $ref: '#/components/parameters/PaginationFromQuery'
+        - $ref: '#/components/parameters/PublishStatusQuery'
+        - $ref: '#/components/parameters/SortOrderQuery'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Search'
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SkillDoc'
+
+  /api/v3/collections/{uuid}/update:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    post:
+      summary: Update a collection
+      description: Update an existing collection
+      tags:
+        - Collections
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/v3/collections/{uuid}/updateSkills:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    post:
+      summary: Add or remove skills from a collection
+      description: Add or remove one or more skills from an existing collection
+      tags:
+        - Collections
+      parameters:
+        - $ref: '#/components/parameters/PublishStatusQuery'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillListUpdate'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          links:
+            UpdateSkillsBatchResults:
+              operationRef: '/api/v3/results/batch/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
+
+  /api/v3/collections/publish:
+    post:
+      summary: Publish, Archive, or Unarchive multiple collections
+      description: Publish, Archive, or Unarchive one or more collections
+      tags:
+        - Collections
+      parameters:
+        - name: newStatus
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Published
+            enum:
+              - Published
+              - Archived
+              - Draft
+        - name: filterByStatus
+          in: query
+          required: false
+          schema:
+            type: array
+            default:
+              - Draft
+              - Published
+            items:
+              $ref: '#/components/schemas/PublishStatus'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Search'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          links:
+            PublishCollectionsBatchResults:
+              operationRef: '/api/v3/results/batch/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
+
+  /api/v3/export/library/csv:
+    get:
+      summary: Export OSMT RSD library as a CSV
+      description: Export all RSDs contained in OSMT as a CSV
+      tags:
+        - Export
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          links:
+            PublishLibraryTextResults:
+              operationRef: '/api/v3/results/text/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
+
+  /api/v3/export/library/xlsx:
+    get:
+      summary: Export OSMT RSD library as an Excel Workbook
+      description: Export all RSDs contained in OSMT as an Excel Workbook
+      tags:
+        - Export
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          links:
+            PublishLibraryTextResults:
+              operationRef: '/api/v3/results/media/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
+
+  /api/v3/export/skills/csv:
+    post:
+      summary: Export RSDs as a CSV
+      description: Export one or more RSDs as a CSV
+      tags:
+        - Export
+      parameters:
+        - $ref: '#/components/parameters/PublishStatusQueryRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Search'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          links:
+            PublishLibraryTextResults:
+              operationRef: '/api/v3/results/text/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
+
+  /api/v3/export/skills/xlsx:
+    post:
+      summary: Export RSDs as an Excel Workbook
+      description: Export one or more RSDs as an Excel Workbook
+      tags:
+        - Export
+      parameters:
+        - $ref: '#/components/parameters/PublishStatusQueryRequired'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Search'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          links:
+            PublishLibraryTextResults:
+              operationRef: '/api/v3/results/media/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
+
+  /api/v3/results/batch/{uuid}:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    get:
+      summary: Retrieve the results of a batch task
+      description: Return the results of a previously requested batch task
+      tags:
+        - Export
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+        '404':
+          description: NOT READY
+
+  /api/v3/results/media/{uuid}:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    get:
+      summary: Retrieve the results of an Excel Workbook task
+      description: Return the results of a previously requested Excel Workbook task
+      tags:
+        - Export
+      responses:
+        '200':
+          description: OK
+          content:
+            application/vnd.ms-excel:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: NOT READY
+
+  /api/v3/results/skills/{uuid}:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    get:
+      summary: Retrieve an RSD
+      description: Retrieve all the information about a Rich Skill Descriptor
+      tags:
+        - Export
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Skill'
+
+  /api/v3/results/text/{uuid}:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    get:
+      summary: Retrieve the results of a CSV task
+      description: Return the results of a previously requested csv task
+      tags:
+        - Export
+      responses:
+        '200':
+          description: OK
+          content:
+            text/csv:
+              schema:
+                type: string
+        '404':
+          description: NOT READY
+
+  /api/v3/search/collections:
+    post:
+      summary: Search for collections using filters
+      description: Return summaries of collections that match the provided query
+      tags:
+        - Search
+      parameters:
+        - $ref: '#/components/parameters/PaginationSizeQuery'
+        - $ref: '#/components/parameters/PaginationFromQuery'
+        - $ref: '#/components/parameters/PublishStatusQuery'
+        - $ref: '#/components/parameters/SortOrderQuery'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Search'
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CollectionDoc'
+
+  /api/v3/search/jobcodes:
+    get:
+      summary: Search for job codes (occupations)
+      description: Return job codes (occupations) that match the provided query
+      tags:
+        - Search
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JobCode'
+
+  /api/v3/search/keywords:
+    get:
+      summary: Search for keyword like objects
+      description: Return matching or partially matching keywords
+      tags:
+        - Search
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/KeywordType'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NamedReference'
+
+  /api/v3/search/skills:
+    post:
+      summary: Search for skills
+      description: Return summaries for skills that match the provided query
+      tags:
+        - Search
+      parameters:
+        - $ref: '#/components/parameters/PaginationSizeQuery'
+        - $ref: '#/components/parameters/PaginationFromQuery'
+        - $ref: '#/components/parameters/PublishStatusQuery'
+        - $ref: '#/components/parameters/SortOrderQuery'
+        - name: collectionId
+          in: query
+          schema:
+            type: string
+            format: uri
+            description: Limit skills to those associated with given collection id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Search'
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SkillDoc'
+
+  /api/v3/search/skills/similarities:
+    post:
+      summary: Check skill multiple statements for similar statements on existing skills
+      description: Returns indicators that signify whether duplicates are found for each submitted statement
+      tags:
+        - Search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Similarity'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: boolean
+
+  /api/v3/search/skills/similarity:
+    post:
+      summary: Check a skills statement for similar statements on existing skills
+      description: Returns skills which have a similar skills statement to the queried skills statement
+      tags:
+        - Search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Similarity'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SkillSummary'
+
+  /api/v3/skills:
+    get:
+      summary: Get all RSDs
+      description: Returns all Rich Skill Descriptors (RSDs)
+      tags:
+        - Skills
+      parameters:
+        - $ref: '#/components/parameters/PaginationSizeQueryRequired'
+        - $ref: '#/components/parameters/PaginationFromQueryRequired'
+        - $ref: '#/components/parameters/PublishStatusQueryRequired'
+        - $ref: '#/components/parameters/SortOrderQuery'
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SkillDoc'
+    post:
+      summary: Define an RSD
+      description: Create a new Rich Skill Descriptor (RSD) in OSMT
+      tags:
+        - Skills
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/SkillUpdate'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          links:
+            CreateSkillResults:
+              operationRef: '/api/v3/results/skills/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/v3/skills/{uuid}/log:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    get:
+      summary: Retrieve a Rich Skill Descriptor (RSD) log
+      description: Retrieve the audit log entries of a Rich Skill Descriptor (RSD)
+      tags:
+        - Skills
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+
+  /api/v3/skills/{uuid}/update:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
+    post:
+      summary: Update a Rich Skill Descriptor (RSD)
+      description: Update an existing Rich Skill Descriptor (RSD)
+      tags:
+        - Skills
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Skill'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/v3/skills/filter:
+    post:
+      summary: Advanced filtered search for Rich Skill Descriptors (RSDs)
+      description: Return list of Rich Skill Descriptors (RSDs) that match the provided query
+      tags:
+        - Skills
+      parameters:
+        - $ref: '#/components/parameters/PaginationSizeQueryRequired'
+        - $ref: '#/components/parameters/PaginationFromQueryRequired'
+        - $ref: '#/components/parameters/PublishStatusQueryRequired'
+        - $ref: '#/components/parameters/SortOrderQuery'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Search'
+      responses:
+        '202':
+          description: Ok
+          headers:
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SkillDoc'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/v3/skills/publish:
+    post:
+      summary: Publish, Archive, or Unarchive multiple Rich Skill Descriptors (RSDs)
+      description: Publish, Archive, or Unarchive one or more Rich Skill Descriptors (RSDs)
+      tags:
+        - Skills
+      parameters:
+        - name: newStatus
+          in: query
+          required: false
+          schema:
+            type: string
+            default: Published
+            enum:
+              - Draft
+              - Published
+        - name: filterByStatus
+          in: query
+          required: false
+          schema:
+            type: array
+            default:
+              - Draft
+              - Published
+            items:
+              $ref: '#/components/schemas/PublishStatus'
+        - $ref: 'components/parameters/UuidReference'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Search'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+          links:
+            PublishBatchResults:
+              operationRef: '/api/v3/results/batch/{uuid}'
+              parameters:
+                uuid: '$response.body#/uuid'
+
+  /api/v3/workspace:
+    get:
+      summary: Retrieve user workspace
+      description: Retrieves or initializes the user's workspace
+      tags:
+        - Workspace
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+
+components:
+  schemas:
+    AdvancedSearch:
+      type: object
+      properties:
+        skillName:
+          type: string
+        collectionName:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+        skillStatement:
+          type: string
+        authors:
+          type: array
+          items:
+            type: string
+        keywords:
+          type: array
+          items:
+            type: string
+        occupations:
+          type: array
+          items:
+            type: string
+        standards:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+        certifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+        employers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+        alignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+
+    Alignment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+        skillName:
+          type: string
+        isPartOf:
+          $ref: '#/components/schemas/NamedReference'
+
+    AlignmentListUpdate:
+      type: object
+      properties:
+        add:
+          type: array
+          items:
+            $ref: '#/components/schemas/Alignment'
+        remove:
+          type: array
+          items:
+            $ref: '#/components/schemas/Alignment'
+
+    AuditLog:
+      type: object
+      required:
+        - creationDate
+        - operationType
+        - user
+        - changedFields
+      properties:
+        creationDate:
+          type: string
+          format: date-time
+        operationType:
+          type: string
+          enum:
+            - Insert
+            - Update
+            - PublishStatusChange
+        user:
+          type: string
+        changedFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/Change'
+
+    Change:
+      type: object
+      required:
+        - fieldName
+      properties:
+        fieldName:
+          type: string
+        old:
+          type: string
+        new:
+          type: string
+
+    Collection:
+      type: object
+      required:
+        - id
+        - context
+        - type
+        - uuid
+        - name
+        - creator
+        - creationDate
+        - updateDate
+        - skills
+        - skillKeywords
+      properties:
+        id:
+          type: string
+          format: uri
+        '@context':
+          type: string
+          format: uri
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        creator:
+          type: string
+          format: uri
+        status:
+          $ref: '#/components/schemas/PublishStatus'
+        creationDate:
+          type: string
+          format: date-time
+        updateDate:
+          type: string
+          format: date-time
+        publishDate:
+          type: string
+          format: date-time
+        archiveDate:
+          type: string
+          format: date-time
+        author:
+          type: string
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillSummary'
+        skillKeywords:
+          type: object
+          properties:
+            Alignment:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Author:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Category:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Certification:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Employer:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Keyword:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+            Standard:
+              type: array
+              items:
+                $ref: '#/components/schemas/KeywordCount'
+
+    CollectionDoc:
+      type: object
+      required:
+        - uuid
+        - name
+        - status
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/PublishStatus'
+        skillCount:
+          type: integer
+        publishDate:
+          type: string
+          format: date-time
+        archiveDate:
+          type: string
+          format: date-time
+        workspaceOwner:
+          type: string
+
+    CollectionUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/PublishStatus'
+        author:
+          type: string
+        skills:
+          $ref: '#/components/schemas/StringListUpdate'
+
+    ErrorResult:
+      type: object
+      required:
+        - errors
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldError'
+
+    FieldError:
+      type: object
+      required:
+        - field
+        - message
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+        rowNumber:
+          type: number
+
+    FilteredSearch:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            type: string
+        keywords:
+          type: array
+          items:
+            type: string
+        standards:
+          type: array
+          items:
+            type: string
+        certifications:
+          type: array
+          items:
+            type: string
+        alignments:
+          type: array
+          items:
+            type: string
+        jobcodes:
+          type: array
+          items:
+            type: string
+        employers:
+          type: array
+          items:
+            type: string
+        authors:
+          type: array
+          items:
+            type: string
+        occupations:
+          type: array
+          items:
+            type: string
+
+    JobCode:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: string
+        targetNode:
+          type: string
+        targetNodeName:
+          type: string
+        frameworkName:
+          type: string
+        level:
+          $ref: '#/components/schemas/JobCodeLevel'
+        parents:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobCode'
+
+    JobCodeLevel:
+      type: string
+      enum:
+        - onet
+        - detailed
+        - broad
+        - minor
+        - major
+
+    Keyword:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/KeywordType'
+        id:
+          type: number
+        value:
+          type: string
+        skillCount:
+          type: number
+
+    KeywordCount:
+      type: object
+      properties:
+        keyword:
+          oneOf:
+            - type: string
+            - $ref: '#/components/schemas/Alignment'
+            - $ref: '#/components/schemas/NamedReference'
+        count:
+          type: number
+
+
+    KeywordType:
+      type: string
+      enum:
+        - categories
+        - keyword
+        - standard
+        - certification
+        - alignment
+        - employer
+        - author
+
+    KeywordSortOrder:
+      type: string
+      enum:
+        - keyword.asc
+        - keyword.desc
+        - skillCount.asc
+        - skillCount.desc
+
+    NamedReference:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+        name:
+          type: string
+
+    PublishStatus:
+      type: string
+      enum:
+        - Unarchived
+        - Deleted
+        - Workspace
+        - Published
+        - Archived
+        - Draft
+
+    ReferenceListUpdate:
+      type: object
+      properties:
+        add:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+        remove:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+
+    Search:
+      type: object
+      properties:
+        query:
+          type: string
+        advanced:
+          $ref: '#/components/schemas/AdvancedSearch'
+        filtered:
+          $ref: '#/components/schemas/FilteredSearch'
+        uuids:
+          type: array
+          items:
+            type: string
+
+    Similarity:
+      type: object
+      required:
+        - statement
+      properties:
+        statement:
+          type: string
+
+    Skill:
+      type: object
+      required:
+        - context
+        - type
+        - creator
+        - creationDate
+        - updateDate
+        - skillName
+        - skillStatement
+        - keywords
+        - id
+        - uuid
+        - certifications
+        - standards
+        - alignments
+        - occupations
+        - employers
+        - collections
+      properties:
+        '@context':
+          type: string
+          format: uri
+        type:
+          type: string
+          default: RichSkillDescriptor
+        creator:
+          type: string
+          format: uri
+        authors:
+          type: array
+          items:
+            type: string
+        status:
+          $ref: '#/components/schemas/PublishStatus'
+        creationDate:
+          type: string
+          format: date-time
+        updateDate:
+          type: string
+          format: date-time
+        publishDate:
+          type: string
+          format: date-time
+        archiveDate:
+          type: string
+          format: date-time
+        skillName:
+          type: string
+        skillStatement:
+          type: string
+        keywords:
+          type: array
+          items:
+            type: string
+        categories:
+          type: array
+          items:
+            type: string
+        id:
+          type: string
+          format: uri
+        uuid:
+          type: string
+          format: uuid
+        certifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+        standards:
+          type: array
+          items:
+            $ref: '#/components/schemas/Alignment'
+        alignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Alignment'
+        occupations:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobCode'
+        employers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedReference'
+        collections:
+          type: array
+          items:
+            $ref: '#/components/schemas/UuidReference'
+      example:
+        '@context': 'https://rsd.openskillsnetwork.org/context-v1.json'
+        type: RichSkillDescriptor
+        creator: 'https://credentialengineregistry.org/resources/ce-036d082d-d80e-41a7-99a0-2d63a4ad3a4a'
+        authors:
+          - Western Governors University
+        status: published
+        creationDate: '2023-02-27T21:02:59.918235Z'
+        updateDate: '2023-03-14T14:38:15.945775Z'
+        publishDate: '2023-03-14T14:38:15.946228Z'
+        archiveDate: null
+        skillName: Network Connection Design
+        skillStatement: Design network connections between a core network and an internet service provider.
+        keywords:
+          - design
+          - Access Network
+          - 'WGUSID: 10407'
+        categories:
+          - Access Network
+        id: '-http://localhost:8080/api/v3/skills/cad699ef-64b9-40ee-81db-b5de69a90558'
+        uuid: cad699ef-64b9-40ee-81db-b5de69a90558
+        certifications:
+          - name: '300-420_ENSLD'
+        standards: []
+        alignments:
+          - id: 'https://skills.emsidata.com/skills/KS1203M5X6LQVSRTW88J'
+          - skillName: Access Network
+        occupations:
+          - code: '15-0000'
+            targetNodeName: Computer and Mathematical Occupations
+            frameworkName: bls
+            parents:
+              - code: '15-0000'
+                targetNodeName: Computer and Mathematical Occupations
+                level: Major
+          - code: '15-1200'
+            targetNodeName: Computer Occupations
+            frameworkName: bls
+            parents:
+              - code: '15-0000'
+                targetNodeName: Computer and Mathematical Occupations
+                level: Major
+              - code: '15-1200'
+                targetNodeName: Computer Occupations
+                level: Minor
+          - code: '15-1230'
+            targetNodeName: Computer Support Specialists
+            frameworkName: bls
+            parents:
+              - code: '15-0000'
+                targetNodeName: Computer and Mathematical Occupations
+                level: Major
+              - code: '15-1200'
+                targetNodeName: Computer Occupations
+                level: Minor
+              - code: '15-1230'
+                targetNodeName: Computer Support Specialists
+                level: Broad
+          - code: '15-1231'
+            targetNodeName: Computer Network Support Specialists
+            frameworkName: bls
+            parents: 
+              - code: '15-0000'
+                targetNodeName: Computer and Mathematical Occupations
+                level: Major
+              - code: '15-1200'
+                targetNodeName: Computer Occupations
+                level: Minor
+              - code: '15-1230'
+                targetNodeName: Computer Support Specialists
+                level: Broad
+              - code: '15-1231'
+                targetNodeName: Computer Network Support Specialists
+                level: Detailed
+        employers: []
+        collections:
+          - uuid: '79914f33-0ef2-43a1-b5b0-e1fc70d5173c'
+            name: IT field
+          - uuid: '42d882da-aec3-4e0d-9582-c8559912a9c6'
+            name: I.T Network
+
+    SkillDoc:
+      type: object
+      required:
+        - uuid
+        - id
+        - skillName
+        - skillStatement
+        - publishStatus
+        - keywords
+        - occupations
+        - standards
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        id:
+          type: string
+          format: uri
+        skillName:
+          type: string
+        skillStatement:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+        authors:
+          type: array
+          items:
+            type: string
+        status:
+          $ref: '#/components/schemas/PublishStatus'
+        keywords:
+          type: array
+          items:
+            type: string
+        occupations:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobCode'
+        standards:
+          type: array
+          items:
+            type: string
+        publishDate:
+          type: string
+          format: date-time
+        archiveDate:
+          type: string
+          format: date-time
+
+    SkillListUpdate:
+      type: object
+      properties:
+        add:
+          $ref: '#/components/schemas/Search'
+        remove:
+          $ref: '#/components/schemas/Search'
+
+    SkillSummary:
+      type: object
+      required:
+        - id
+        - uuid
+        - status
+        - skillName
+        - skillStatement
+        - keywords
+        - occupations
+      properties:
+        id:
+          type: string
+          format: uri
+        uuid:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/PublishStatus'
+        publishDate:
+          type: string
+          format: date-time
+        archiveDate:
+          type: string
+          format: date-time
+        skillName:
+          type: string
+        skillStatement:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+        keywords:
+          type: array
+          items:
+            type: string
+        occupations:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobCode'
+
+    SkillUpdate:
+      type: object
+      properties:
+        skillName:
+          type: string
+        skillStatement:
+          type: string
+        status:
+          $ref: '#/components/schemas/PublishStatus'
+        collections:
+          $ref: '#/components/schemas/StringListUpdate'
+        authors:
+          $ref: '#/components/schemas/StringListUpdate'
+        categories:
+          $ref: '#/components/schemas/StringListUpdate'
+        keywords:
+          $ref: '#/components/schemas/StringListUpdate'
+        certifications:
+          $ref: '#/components/schemas/ReferenceListUpdate'
+        standards:
+          $ref: '#/components/schemas/AlignmentListUpdate'
+        alignments:
+          $ref: '#/components/schemas/AlignmentListUpdate'
+        employers:
+          $ref: '#/components/schemas/ReferenceListUpdate'
+        occupations:
+          $ref: '#/components/schemas/StringListUpdate'
+      example:
+        skillName: "New Skill Name"
+        keywords:
+          add:
+            - "Collaboration"
+          remove:
+            - "Medical Assistant"
+        occupations:
+          add:
+            - 11-9013
+
+    SortOrder:
+      type: string
+      enum:
+        - name.asc
+        - name.desc
+        - skill.asc
+        - skill.desc
+
+    StringListUpdate:
+      type: object
+      properties:
+        add:
+          type: array
+          items:
+            type: string
+        remove:
+          type: array
+          items:
+            type: string
+
+    TaskResult:
+      type: object
+      required:
+        - uuid
+        - content-type
+        - status
+        - apiResultPath
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        content-type:
+          type: string
+        status:
+          type: string
+          enum: 
+            - Processing
+            - Ready
+        apiResultPath:
+          type: string
+          format: uri
+      example:
+        uuid: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        content-type: 'text/csv'
+        apiResultPath: '/results/batch/3fa85f64-5717-4562-b3fc-2c963f66afa6'
+        status: Processing
+
+    UuidReference:
+      type: object
+      required:
+        - uuid
+        - name
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResult'
+
+  parameters:
+    PaginationFromQuery:
+      name: from
+      in: query
+      description: Zero-indexed offset from beginning of records
+      required: false
+      schema:
+        type: integer
+        default: 0
+
+    PaginationFromQueryRequired:
+      name: from
+      in: query
+      description: Zero-indexed offset from beginning of records
+      required: true
+      schema:
+        type: integer
+
+    PaginationSizeQuery:
+      name: size
+      in: query
+      description: Number of records to return per page
+      required: false
+      schema:
+        type: integer
+        default: 50
+
+    PaginationSizeQueryRequired:
+      name: size
+      in: query
+      description: Number of records to return per page
+      required: true
+      schema:
+        type: integer
+
+    PublishStatusQuery:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: array
+        default:
+          - Draft
+          - Published
+        items:
+          $ref: '#/components/schemas/PublishStatus'
+
+    PublishStatusQueryRequired:
+      name: status
+      in: query
+      required: true
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/PublishStatus'
+
+    SortOrderQuery:
+      name: sort
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/SortOrder'
+
+    UuidPath:
+      name: uuid
+      in: path
+      description: uuid of a resource
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  headers:
+    Link:
+      description: |
+        Links to related resources in
+        [RFC 5988](https://tools.ietf.org/html/rfc5988#section-5) format.
+        This will include a link with relation type `next` or `prev` if present.
+      schema:
+        type: string
+
+    XTotalCount:
+      schema:
+        type: string
+      description: |
+        The total number of records returned on all pages for this request.
+
+    XRateLimit:
+      schema:
+        type: number
+      description: |
+        The number of requests permitted to make per hour.
+
+    XRateRemaining:
+      schema:
+        type: number
+      description: |
+        The number of requests remaining in the current rate limit window.
+
+    XRateReset:
+      schema:
+        type: string
+      description: |
+        The time at which the current rate limit window resets in UTC epoch seconds.
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Categories
+    description: RSD Metadata - Categories
+  - name: Collections
+    description: Collections of RSDs
+  - name: Export
+    description: Export OSMT data
+  - name: Search
+    description: Search for OSMT resources
+  - name: Skills
+    description: Rich Skill Descriptors (RSDs)
+  - name: Workspace
+    description: User workspace for staging OSMT edits

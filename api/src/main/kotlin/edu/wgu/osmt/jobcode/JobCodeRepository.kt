@@ -2,6 +2,7 @@ package edu.wgu.osmt.jobcode
 
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.JobCodeUpdate
+import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.richskill.RichSkillJobCodeRepository
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.Table
@@ -115,21 +116,46 @@ class JobCodeRepositoryImpl: JobCodeRepository {
     override fun remove(jobCodeId: Long): ApiBatchResult {
         val jobCodeFound = findById(jobCodeId)
         val jobCodeEsFound = jobCodeEsRepo.findById(jobCodeId.toInt())
-        if (jobCodeFound != null && jobCodeEsFound.isPresent && !hasChildren(jobCodeFound) && !richSkillJobCodeRepository.hasRSDs(jobCodeFound)) {
-            transaction {
-                table.deleteWhere{ table.id eq jobCodeFound.id }
-                jobCodeEsRepo.delete(jobCodeEsFound.get())
+        var hasChildren = false
+        var hasRSDs = false
+        if (jobCodeFound != null && jobCodeEsFound.isPresent) {
+            hasChildren = hasChildren(jobCodeFound)
+            hasRSDs = richSkillJobCodeRepository.hasRSDs(jobCodeFound)
+            if (!hasChildren && !hasRSDs) {
+                transaction {
+                    table.deleteWhere{ table.id eq jobCodeFound.id }
+                    jobCodeEsRepo.delete(jobCodeEsFound.get())
+                }
+                return ApiBatchResult(
+                    success = true,
+                    modifiedCount = 1,
+                    totalCount = 1
+                )
             }
-            return ApiBatchResult(
-                success = true,
-                modifiedCount = 1,
-                totalCount = 1
-            )
         }
         return ApiBatchResult(
             success = false,
             modifiedCount = 0,
-            totalCount = 0
+            totalCount = 0,
+            message = JobCodeErrorMessages.forDeleteError(hasChildren, hasRSDs)
         )
+    }
+}
+
+enum class JobCodeErrorMessages(val apiValue: String) {
+    JobCodeNotExist("You cannot delete this job code because you doesn't exist"),
+    JobCodeHasChildren("You cannot delete this job code because has children"),
+    JobCodeHasRSD("You cannot delete this job code because is used in one or more RSDs");
+
+    companion object {
+        fun forDeleteError(hasChildren: Boolean, hasRSDs: Boolean): String {
+            return if (hasChildren) {
+                JobCodeHasChildren.apiValue
+            } else if (hasRSDs) {
+                JobCodeHasRSD.apiValue
+            } else {
+                JobCodeNotExist.apiValue
+            }
+        }
     }
 }

@@ -194,10 +194,10 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
       if (confirm("Confirm that you want to delete the job code with name " + (jobCode as ApiJobCode)?.targetNodeName)) {
         this.jobCodeService.deleteJobCodeWithResult((jobCode as ApiJobCode)?.id ?? 0).subscribe(data => {
           if (data && data.success) {
-            this.toastService.showToast("Success", "You deleted a job code with name " + (jobCode as ApiJobCode)?.targetNodeName)
+            this.toastService.showToast("Success", "You deleted a job code " + (jobCode as ApiJobCode)?.targetNodeName)
             this.loadNextPage()
           } else if (data && !data.success) {
-            this.toastService.showToast("Warning", "You cannot delete this job code")
+            this.toastService.showToast("Warning", data.message ?? "You cannot delete this job code")
           }
         })
       }

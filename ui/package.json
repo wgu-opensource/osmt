@@ -12,8 +12,7 @@
     "lint": "./node_modules/@angular/cli/bin/ng.js lint",
     "e2e": "./node_modules/@angular/cli/bin/ng.js e2e",
     "ci-test": "./node_modules/@angular/cli/bin/ng.js test --no-watch --no-progress --karma-config=karma.ci.conf.cjs",
-    "clean": "rm -rf ../api/src/main/resources/ui/*; rm -rf coverage; rm -rf reports; rm -rf test-results; rm -rf node_modules",
-    "wdio": "wdio run ./e2e/wdio.conf.ts"
+    "clean": "rm -rf ../api/src/main/resources/ui/*; rm -rf coverage; rm -rf reports; rm -rf test-results; rm -rf node_modules"
   },
   "private": true,
   "dependencies": {

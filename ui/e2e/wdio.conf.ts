@@ -1,6 +1,9 @@
 import type { Options } from '@wdio/types'
 
-import { AppPage } from './src/app.po';
+import * as path from 'path'
+import { URL } from 'url'; 
+
+const __dirname = new URL('.', import.meta.url).pathname;
 
 export const config: Options.Testrunner = {
     //
@@ -12,7 +15,7 @@ export const config: Options.Testrunner = {
     autoCompileOpts: {
         autoCompile: true,
         tsNodeOpts: {
-            project: require('path').join(__dirname, './tsconfig.e2e.json'),
+            project: path.join(__dirname, './tsconfig.e2e.json'),
             transpileOnly: true
         }
     },

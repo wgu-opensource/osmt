@@ -1,6 +1,7 @@
 {
   "name": "ui",
   "version": "1.1.1-SNAPSHOT",
+  "type": "module",
   "scripts": {
     "ng": "./node_modules/@angular/cli/bin/ng.js",
     "start": "./node_modules/@angular/cli/bin/ng.js serve",
@@ -11,9 +12,9 @@
     "test": "./node_modules/@angular/cli/bin/ng.js test",
     "lint": "./node_modules/@angular/cli/bin/ng.js lint",
     "e2e": "./node_modules/@angular/cli/bin/ng.js e2e",
-    "ci-test": "./node_modules/@angular/cli/bin/ng.js test --no-watch --no-progress --karma-config=karma.ci.conf.js",
+    "ci-test": "./node_modules/@angular/cli/bin/ng.js test --no-watch --no-progress --karma-config=karma.ci.conf.cjs",
     "clean": "rm -rf ../api/src/main/resources/ui/*; rm -rf coverage; rm -rf reports; rm -rf test-results; rm -rf node_modules",
-    "wdio": "wdio run ./wdio.conf.ts"
+    "wdio": "wdio run ./e2e/wdio.conf.ts"
   },
   "private": true,
   "dependencies": {
@@ -73,7 +74,7 @@
     "karma-junit-reporter": "^2.0.1",
     "karma-sonarqube-unit-reporter": "^0.0.23",
     "lodash": "^4.17.21",
-    "ts-node": "~8.3.0",
+    "ts-node": "~10.9.1",
     "typescript": "~4.9.5",
     "wdio-chromedriver-service": "^8.1.1",
     "wdio-wait-for": "^3.0.4"

@@ -2,6 +2,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "outDir": "../out-tsc/e2e",
     "module": "commonjs",
     "target": "ES2022",

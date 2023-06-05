@@ -71,7 +71,6 @@ class JobCodeRepositoryImpl: JobCodeRepository {
                 this.framework = jobCodeUpdate.framework
                 this.name = jobCodeUpdate.targetNodeName
                 this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
-                this.name = "my name"
                 this.major = "my major"
             }.also { jobCodeEsRepo.save(it.toModel()) }
         }
@@ -116,7 +115,7 @@ class JobCodeRepositoryImpl: JobCodeRepository {
     override fun remove(jobCodeId: Long): ApiBatchResult {
         val jobCodeFound = findById(jobCodeId)
         val jobCodeEsFound = jobCodeEsRepo.findById(jobCodeId.toInt())
-        if (jobCodeFound != null && jobCodeEsFound.isPresent && !hasChildren(jobCodeFound) && richSkillJobCodeRepository.hasRSDs(jobCodeFound)) {
+        if (jobCodeFound != null && jobCodeEsFound.isPresent && !hasChildren(jobCodeFound) && !richSkillJobCodeRepository.hasRSDs(jobCodeFound)) {
             transaction {
                 table.deleteWhere{ table.id eq jobCodeFound.id }
                 jobCodeEsRepo.delete(jobCodeEsFound.get())

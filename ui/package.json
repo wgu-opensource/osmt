@@ -1,6 +1,7 @@
 {
   "name": "ui",
   "version": "1.1.1-SNAPSHOT",
+  "type": "module",
   "scripts": {
     "ng": "./node_modules/@angular/cli/bin/ng.js",
     "start": "./node_modules/@angular/cli/bin/ng.js serve",
@@ -10,7 +11,7 @@
     "build-prod": "./node_modules/@angular/cli/bin/ng.js build --configuration production",
     "test": "./node_modules/@angular/cli/bin/ng.js test",
     "lint": "./node_modules/@angular/cli/bin/ng.js lint",
-    "e2e": "./node_modules/@angular/cli/bin/ng.js e2e",
+    "e2e": "wdio ./e2e/wdio.conf.ts",
     "ci-test": "./node_modules/@angular/cli/bin/ng.js test --no-watch --no-progress --karma-config=karma.ci.conf.cjs",
     "clean": "rm -rf ../api/src/main/resources/ui/*; rm -rf coverage; rm -rf reports; rm -rf test-results; rm -rf node_modules"
   },

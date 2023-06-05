@@ -1,15 +1,16 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "allowImportingTsExtensions": true,
-    "outDir": "../out-tsc/e2e",
-    "module": "commonjs",
-    "target": "ES2022",
-    "types": [
-      "jasmine",
-      "jasminewd2",
-      "node"
-    ]
-  }
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "module": "ES2022",
+        "moduleResolution": "node",
+        "target": "ES2022",
+        "types": [
+            "node",
+            "webdriverio/async",
+            "expect-webdriverio",
+            "@wdio/local-runner",
+            "@wdio/jasmine-framework",
+            "@wdio/spec-reporter"
+        ]
+    }
 }

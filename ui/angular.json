@@ -133,9 +133,9 @@
           }
         },
         "e2e": {
-          "builder": "@angular-devkit/build-angular:wdio",
+          "builder": "@migalons/angular-wdio-builder:test",
           "options": {
-            "wdioConfig": "e2e/wdio.conf.js",
+            "wdioConfig": "e2e/wdio.conf.ts",
             "devServerTarget": "ui:serve"
           },
           "configurations": {

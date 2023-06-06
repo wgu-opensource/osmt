@@ -39,7 +39,7 @@ describe("ManageMetadataComponent", () => {
     expect(component.isJobCodeDataSelected).toBeFalse()
   })
   it("isJobCodeDataSelected returns true if JobCode MetadataType is selected", () => {
-    component.selectedMetadataType = MetadataType.JobCode
+    component.selectedMetadataType = MetadataType.Occupation
     expect(component.isJobCodeDataSelected).toBeTrue()
   })
   it("emptyResults returns true if Metadata is empty", () => {

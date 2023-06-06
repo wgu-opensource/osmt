@@ -24,7 +24,7 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
 
   title = "Metadata"
   handleSelectedMetadata?: IJobCode[]|INamedReference[]
-  selectedMetadataType = "category"
+  selectedMetadataType = "categories"
   matchingQuery?: string = ""
 
   typeControl: FormControl = new FormControl(this.selectedMetadataType)
@@ -109,19 +109,9 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
   }
 
   get metadataCountLabel(): string {
-    if (this.totalCount > 0)  {
-      if (this.selectedMetadataType !== MetadataType.Category) {
-        return `${this.totalCount} ${this.selectedMetadataType}${this.totalCount > 1 ? "s" : ""}`
-      }
-      else if (this.totalCount > 1) {
-        return `${this.totalCount} categories`
-      }
-      else {
-        return `${this.totalCount} category`
-      }
-    }
-    return `0 ${this.selectedMetadataType}s`
+    return `${this.totalCount} ${this.selectedMetadataType}`
   }
+
   get firstRecordNo(): number {
     return this.from + 1
   }
@@ -144,7 +134,7 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
     return this.curPageCount < 1
   }
   get isJobCodeDataSelected(): boolean {
-    return this.selectedMetadataType === MetadataType.JobCode
+    return this.selectedMetadataType === MetadataType.Occupation
   }
 
   getSelectAllCount(): number {

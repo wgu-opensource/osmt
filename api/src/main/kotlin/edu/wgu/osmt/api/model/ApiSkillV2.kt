@@ -6,7 +6,7 @@ import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.richskill.RichSkillDescriptor
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
-import edu.wgu.osmt.util.OsmtUtil.Companion.parseMultiValueToSingleValue
+import edu.wgu.osmt.util.OsmtUtil
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 class ApiSkillV2(
@@ -17,12 +17,12 @@ class ApiSkillV2(
 
     @get:JsonProperty
     val author: String?
-        get() = parseMultiValueToSingleValue(rsd.authors.map { "${it.value}," }.toString())
+        get() = OsmtUtil.parseMultiValueStringFieldToSingleStringField(rsd.authors.map { "${it.value}," }.toString())
 
 
     @get:JsonProperty
     val category: String?
-        get() = parseMultiValueToSingleValue(rsd.categories.map { "${it.value}," }.toString())
+        get() = OsmtUtil.parseMultiValueStringFieldToSingleStringField(rsd.categories.map { "${it.value}," }.toString())
 
     companion object {
         fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkillV2{

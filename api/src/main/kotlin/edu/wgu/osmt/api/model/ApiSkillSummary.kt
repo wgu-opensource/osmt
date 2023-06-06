@@ -8,18 +8,18 @@ import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.richskill.RichSkillDoc
 import java.time.LocalDateTime
 
-class ApiSkillSummary(
-        @JsonProperty override val id: String,
-        @JsonProperty override val uuid: String,
-        @JsonProperty override val status: PublishStatus,
-        @JsonProperty override val publishDate: LocalDateTime? = null,
-        @JsonProperty override val archiveDate: LocalDateTime? = null,
-        @JsonProperty override val skillName: String,
-        @JsonProperty override val skillStatement: String,
-        @JsonProperty val categories: List<String> = listOf(),
-        @JsonProperty override val keywords: List<String> = listOf(),
-        @JsonProperty override val occupations: List<ApiJobCode> = listOf()
-): AbstractApiSkillSummary() {
+open class ApiSkillSummary(
+        @JsonProperty open val id: String,
+        @JsonProperty open val uuid: String,
+        @JsonProperty open val status: PublishStatus,
+        @JsonProperty open val publishDate: LocalDateTime? = null,
+        @JsonProperty open val archiveDate: LocalDateTime? = null,
+        @JsonProperty open val skillName: String,
+        @JsonProperty open val skillStatement: String,
+        @JsonProperty open val categories: List<String> = listOf(),
+        @JsonProperty open val keywords: List<String> = listOf(),
+        @JsonProperty open val occupations: List<ApiJobCode> = listOf()
+) {
 
     companion object {
         fun fromSkill(rsd: RichSkillDescriptor, appConfig: AppConfig): ApiSkillSummary {

@@ -2,7 +2,9 @@ package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.api.model.ApiAlignment
 import edu.wgu.osmt.api.model.ApiNamedReference
-import edu.wgu.osmt.auditlog.*
+import edu.wgu.osmt.auditlog.Change
+import edu.wgu.osmt.auditlog.Comparison
+import edu.wgu.osmt.auditlog.DELIMITER
 import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionSkills
@@ -19,18 +21,18 @@ import java.time.ZoneOffset
 import java.util.*
 import kotlin.reflect.KProperty1
 
-data class RichSkillDescriptor(
-    override val id: Long?,
-    override val creationDate: LocalDateTime,
-    override val updateDate: LocalDateTime,
-    val uuid: String,
-    val name: String,
-    val statement: String,
-    val jobCodes: List<JobCode> = listOf(),
-    val keywords: List<Keyword> = listOf(),
-    override val archiveDate: LocalDateTime? = null,
-    override val publishDate: LocalDateTime? = null,
-    val collections: List<Collection> = listOf()
+open class RichSkillDescriptor(
+        override val id: Long?,
+        override val creationDate: LocalDateTime,
+        override val updateDate: LocalDateTime,
+        open val uuid: String,
+        open val name: String,
+        open val statement: String,
+        open val jobCodes: List<JobCode> = listOf(),
+        open val keywords: List<Keyword> = listOf(),
+        override val archiveDate: LocalDateTime? = null,
+        override val publishDate: LocalDateTime? = null,
+        open val collections: List<Collection> = listOf()
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
 
     // Keyword collections

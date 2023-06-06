@@ -31,7 +31,7 @@ internal class ApiSkillV2Test {
 
         // Assert
         Assertions.assertThat(mockData.appConfig.defaultCreatorUri).isEqualTo(actual.creator)
-        Assertions.assertThat(OsmtUtil.parseMultiValueToSingleValue(rsd.authors.mapNotNull { it.value }.toString())).isEqualTo(actual.author)
+        Assertions.assertThat(OsmtUtil.parseMultiValueStringFieldToSingleStringField(rsd.authors.mapNotNull { it.value }.toString())).isEqualTo(actual.author)
         Assertions.assertThat(rsd.publishStatus()).isEqualTo(actual.status)
         Assertions.assertThat(rsd.creationDate).isEqualTo(actual.creationDate.toLocalDateTime())
         Assertions.assertThat(rsd.updateDate).isEqualTo(actual.updateDate.toLocalDateTime())
@@ -39,7 +39,7 @@ internal class ApiSkillV2Test {
         Assertions.assertThat(rsd.archiveDate).isEqualTo(actual.archiveDate?.toLocalDateTime())
         Assertions.assertThat(rsd.name).isEqualTo(actual.skillName)
         Assertions.assertThat(rsd.statement).isEqualTo(actual.skillStatement)
-        Assertions.assertThat(OsmtUtil.parseMultiValueToSingleValue(rsd.categories.mapNotNull { it.value }.toString())).isEqualTo(actual.category)
+        Assertions.assertThat(OsmtUtil.parseMultiValueStringFieldToSingleStringField(rsd.categories.mapNotNull { it.value }.toString())).isEqualTo(actual.category)
         Assertions.assertThat(mockData.appConfig.baseUrl + "/api/skills/" + rsd.uuid).isEqualTo(actual.id)
         Assertions.assertThat(rsd.uuid).isEqualTo(actual.uuid)
 

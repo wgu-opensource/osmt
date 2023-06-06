@@ -2,7 +2,7 @@ package edu.wgu.osmt.api.model
 
 import edu.wgu.osmt.jobcode.JobCodeTest
 import edu.wgu.osmt.mockdata.MockData
-import edu.wgu.osmt.util.OsmtUtil.Companion.parseMultiValueToSingleValue
+import edu.wgu.osmt.util.OsmtUtil.Companion.parseMultiValueStringFieldToSingleStringField
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
@@ -44,7 +44,7 @@ internal class ApiSkillSummaryV2Test {
         Assertions.assertThat(api.archiveDate).isEqualTo(expected.archiveDate)
         Assertions.assertThat(api.skillName).isEqualTo(expected.name)
         Assertions.assertThat(api.skillStatement).isEqualTo(expected.statement)
-        Assertions.assertThat(api.category).isEqualTo(parseMultiValueToSingleValue(expected.categories.toString()))
+        Assertions.assertThat(api.category).isEqualTo(parseMultiValueStringFieldToSingleStringField(expected.categories.toString()))
 
         // Search Keywords
         assertTrue(expected.searchingKeywords.containsAll(api.keywords))
@@ -85,7 +85,7 @@ internal class ApiSkillSummaryV2Test {
         Assertions.assertThat(skill.archiveDate).isEqualTo(expected.archiveDate)
         Assertions.assertThat(skill.skillName).isEqualTo(expected.name)
         Assertions.assertThat(skill.skillStatement).isEqualTo(expected.statement)
-        Assertions.assertThat(skill.category).isEqualTo(parseMultiValueToSingleValue(expected.categories?.mapNotNull { it.value }.toString()))
+        Assertions.assertThat(skill.category).isEqualTo(parseMultiValueStringFieldToSingleStringField(expected.categories?.mapNotNull { it.value }.toString()))
 
         // Search Keywords
         assertTrue(expected.keywords.map{it.value}.containsAll(skill.keywords))

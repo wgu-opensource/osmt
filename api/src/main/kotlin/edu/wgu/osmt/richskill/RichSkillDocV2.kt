@@ -9,7 +9,7 @@ import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.util.OsmtUtil.Companion.parseMultiValueToSingleValue
+import edu.wgu.osmt.util.OsmtUtil.Companion.parseMultiValueStringFieldToSingleStringField
 import org.elasticsearch.core.Nullable
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.*
@@ -169,8 +169,8 @@ data class RichSkillDocV2(
                 uri = "${appConfig.baseUrl}/api/skills/${dao.uuid}",
                 name = dao.name,
                 statement = dao.statement,
-                category = parseMultiValueToSingleValue(dao.keywords.filter { it.type == KeywordTypeEnum.Category }.mapNotNull { it.value }.map { "$it," }.toString()),
-                author = parseMultiValueToSingleValue(dao.keywords.filter { it.type == KeywordTypeEnum.Author }.mapNotNull { it.value }.map { "$it," }.toString()),
+                category = parseMultiValueStringFieldToSingleStringField(dao.keywords.filter { it.type == KeywordTypeEnum.Category }.mapNotNull { it.value }.map { "$it," }.toString()),
+                author = parseMultiValueStringFieldToSingleStringField(dao.keywords.filter { it.type == KeywordTypeEnum.Author }.mapNotNull { it.value }.map { "$it," }.toString()),
                 publishStatus = dao.publishStatus(),
                 searchingKeywords = dao.keywords.filter { it.type == KeywordTypeEnum.Keyword }.mapNotNull { it.value },
                 jobCodes = dao.jobCodes.map { it.toModel() },
@@ -192,8 +192,8 @@ data class RichSkillDocV2(
                     uri = rsd.uri,
                     name = rsd.name,
                     statement = rsd.statement,
-                    category = parseMultiValueToSingleValue(rsd.categories.map { "$it," }.toString()),
-                    author = parseMultiValueToSingleValue(rsd.authors.map { "$it," }.toString()),
+                    category = parseMultiValueStringFieldToSingleStringField(rsd.categories.map { "$it," }.toString()),
+                    author = parseMultiValueStringFieldToSingleStringField(rsd.authors.map { "$it," }.toString()),
                     publishStatus = rsd.publishStatus,
                     searchingKeywords = rsd.searchingKeywords,
                     jobCodes = rsd.jobCodes,

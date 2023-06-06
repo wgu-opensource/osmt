@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Scope
+import org.springframework.context.annotation.ScopedProxyMode
 import org.springframework.http.converter.HttpMessageConverter
+import org.springframework.stereotype.Component
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
@@ -32,4 +35,10 @@ class WebMvcConfig : WebMvcConfigurer {
         this.messageConvertersProvider
             .ifAvailable({ customConverters -> converters.addAll(customConverters.getConverters()) })
     }
+}
+
+@Component
+@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
+class RequestInfo {
+    var requestPath: String? = ""
 }

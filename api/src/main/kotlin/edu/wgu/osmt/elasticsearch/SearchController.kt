@@ -292,14 +292,14 @@ class SearchController @Autowired constructor(
 
     @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_SIMILAR_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun searchSimilarSkills(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<AbstractApiSkillSummary>> {
+    fun searchSimilarSkills(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<ApiSkillSummary>> {
         val hits = richSkillEsRepo.findSimilar(apiSimilaritySearch).toList()
         return ResponseEntity.status(200).body(hits.map{ ApiSkillSummary.fromDoc(it.content)})
     }
 
     @PostMapping("${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SEARCH_SIMILAR_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun legacySearchSimilarSkills(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<AbstractApiSkillSummary>> {
+    fun legacySearchSimilarSkills(@RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch): HttpEntity<List<ApiSkillSummary>> {
         val hits = richSkillEsRepo.findSimilar(apiSimilaritySearch).toList()
         return ResponseEntity.status(200).body(hits.map{ ApiSkillSummaryV2.fromDoc(it.content)})
     }
@@ -308,7 +308,7 @@ class SearchController @Autowired constructor(
     @ResponseBody
     fun unversionedSearchSimilarSkills(
             @RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch
-    ): HttpEntity<List<AbstractApiSkillSummary>> {
+    ): HttpEntity<List<ApiSkillSummary>> {
 
         return when(RoutePaths.DEFAULT) {
             RoutePaths.LATEST -> searchSimilarSkills(apiSimilaritySearch)

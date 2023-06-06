@@ -78,4 +78,23 @@ object RoutePaths {
         const val SORT = "sort"
         const val COLLECTION_ID = "collectionId"
     }
+
+    fun getApiVersionCalled(requestPath: String?): String {
+
+        //TODO: REGEX implementation "^\/api\/[(v2)(v3)]"
+        return if(StringUtils.contains(requestPath, RoutePaths.LATEST) ||
+
+                (
+                        !StringUtils.contains(requestPath, RoutePaths.LEGACY) &&
+                                !StringUtils.equals(RoutePaths.DEFAULT, RoutePaths.LEGACY)
+                        )
+        ) {
+            RoutePaths.LATEST
+        }
+        else {
+            RoutePaths.LEGACY
+        }
+    }
 }
+
+

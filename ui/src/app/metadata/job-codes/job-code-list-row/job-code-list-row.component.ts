@@ -38,4 +38,15 @@ export class JobCodeListRowComponent {
       return false
     }
   }
+
+  sortedParents(): IJobCode[] {
+    return this.jobCode?.parents?.sort((a, b) => {
+      if (a.code < b.code) {
+        return -1
+      } else if (a.code > b.code) {
+        return 1
+      }
+      return 0
+    }) ?? []
+  }
 }

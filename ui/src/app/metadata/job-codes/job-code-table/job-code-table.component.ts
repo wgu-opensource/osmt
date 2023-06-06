@@ -22,35 +22,21 @@ export class JobCodeTableComponent extends AbstractTableComponent<IJobCode> impl
 
   sortColumn(column: string, ascending: boolean): void {
     if (column.toLowerCase() === "name") {
-      if (ascending) {
-        this.currentSort = ApiSortOrder.NameAsc
-      } else {
-        this.currentSort = ApiSortOrder.NameDesc
-      }
+      this.currentSort = ascending ? ApiSortOrder.NameAsc : this.currentSort = ApiSortOrder.NameDesc
     } else if (column.toLowerCase() === "code") {
-      if (ascending) {
-        this.currentSort = ApiSortOrder.CodeAsc
-      } else {
-        this.currentSort = ApiSortOrder.CodeDesc
-      }
+      this.currentSort = ascending ? ApiSortOrder.CodeAsc : ApiSortOrder.CodeDesc
     } else {
-      if (ascending) {
-        this.currentSort = ApiSortOrder.JobCodeLevelAsc
-      } else {
-        this.currentSort = ApiSortOrder.JobCodeLevelDesc
-      }
+        this.currentSort = ascending ? ApiSortOrder.JobCodeLevelAsc : ApiSortOrder.JobCodeLevelDesc
     }
     this.columnSorted.emit(this.currentSort)
   }
 
   getCodeSort(): boolean | undefined {
     return this.currentSort == ApiSortOrder.CodeAsc;
-
   }
 
   getJobCodeLevelSort(): boolean | undefined {
     return this.currentSort == ApiSortOrder.JobCodeLevelAsc;
-
   }
 
 }

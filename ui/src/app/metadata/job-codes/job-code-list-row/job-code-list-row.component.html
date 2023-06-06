@@ -10,7 +10,11 @@
     <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.level}}</a>
   </th>
   <th scope="row" id="{{id}}-header">
-    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.parents | jobCodeParents}}</a>
+    <ul>
+      <li id="{{id}}-header-name" class="t-focus t-type-bodyLink" *ngFor="let parent of sortedParents()" style="padding: 5px">
+            {{parent | jobCodeParents}}
+      </li>
+    </ul>
   </th>
 
   <td class="m-tableRow-x-actions">

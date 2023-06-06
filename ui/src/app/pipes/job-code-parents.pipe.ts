@@ -6,15 +6,8 @@ import { IJobCode } from "../metadata/job-codes/Jobcode"
 })
 export class JobCodeParentsPipe implements PipeTransform {
 
-  transform(value: IJobCode[]): string {
-    return value?.sort((a, b) => {
-      if (a.code < b.code) {
-        return -1
-      } else if (a.code > b.code) {
-        return 1
-      }
-      return 0
-    }).map(jobCode => jobCode.code + " " + jobCode.targetNodeName).join(",");
+  transform(jobCode: IJobCode): string {
+    return jobCode.code + " " + jobCode.targetNodeName;
   }
 
 }

@@ -10,6 +10,7 @@ import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
 import edu.wgu.osmt.richskill.RichSkillEsRepo
+import org.apache.commons.lang3.StringUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -46,7 +47,7 @@ internal class OnetImportTest @Autowired constructor(
 
         // Act
         onetImport.handleRows(listOfOnetCodes)
-        val result = listOfOnetCodes[0].code?.let { searchController.searchJobCodes(UriComponentsBuilder.newInstance(), it) }
+        val result = listOfOnetCodes[0].code?.let { searchController.searchJobCodes(StringUtils.EMPTY, UriComponentsBuilder.newInstance(), it) }
 
 
         // Assert

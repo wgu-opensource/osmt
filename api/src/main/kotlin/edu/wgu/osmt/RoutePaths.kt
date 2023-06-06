@@ -11,6 +11,8 @@ object RoutePaths {
     const val UNVERSIONED = StringUtils.EMPTY
 
     const val API = "/api"
+    const val VERSIONED_API = "/api/{apiVersion}"
+    const val UNVERSIONED_API = "/api"
     private const val SEARCH_PATH = "/search"
 
     //export
@@ -79,20 +81,18 @@ object RoutePaths {
         const val COLLECTION_ID = "collectionId"
     }
 
-    fun getApiVersionCalled(requestPath: String?): String {
+    fun getApiVersionCalled(apiVersion: String?): String {
 
-        //TODO: REGEX implementation "^\/api\/[(v2)(v3)]"
-        return if(StringUtils.contains(requestPath, RoutePaths.LATEST) ||
-
-                (
-                        !StringUtils.contains(requestPath, RoutePaths.LEGACY) &&
-                                !StringUtils.equals(RoutePaths.DEFAULT, RoutePaths.LEGACY)
-                        )
+        return if(StringUtils.contains(LATEST, apiVersion) ||
+            (
+                !StringUtils.contains(LEGACY, apiVersion) &&
+                !StringUtils.equals(DEFAULT, LEGACY)
+            )
         ) {
-            RoutePaths.LATEST
+            LATEST
         }
         else {
-            RoutePaths.LEGACY
+            LEGACY
         }
     }
 }

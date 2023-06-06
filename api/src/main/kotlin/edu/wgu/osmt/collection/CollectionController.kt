@@ -10,7 +10,6 @@ import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.config.DEFAULT_WORKSPACE_NAME
-import edu.wgu.osmt.config.RequestInfo
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.richskill.RichSkillRepository
@@ -40,25 +39,20 @@ class CollectionController @Autowired constructor(
         val collectionEsRepo: CollectionEsRepo,
         val appConfig: AppConfig,
         val oAuthHelper: OAuthHelper,
-        var requestInfo: RequestInfo
 ): HasAllPaginated<CollectionDoc> {
-    override val elasticRepository = collectionEsRepo
 
+    override val elasticRepository = collectionEsRepo
     override val allPaginatedPath: String = "${RoutePaths.LATEST}${RoutePaths.COLLECTIONS_LIST}"
     override val sortOrderCompanion = CollectionSortEnum.Companion
 
-
-    init {
-        this.requestInfo =  requestInfo
-    }
     @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTIONS_LIST}",
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTIONS_LIST}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTIONS_LIST}"
+        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTIONS_LIST}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTIONS_LIST}"
                        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    override fun allPaginated(
+    fun allPaginated(
+            @PathVariable(name = "apiVersion", required = false) version: String?,
             uriComponentsBuilder: UriComponentsBuilder,
             size: Int,
             from: Int,
@@ -74,19 +68,17 @@ class CollectionController @Autowired constructor(
 
     @GetMapping(
         path = [
-            "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_DETAIL}",
-            "${RoutePaths.API}/{apiVersion}${RoutePaths.COLLECTION_DETAIL}"
-            ],
+            "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_DETAIL}",
+            "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_DETAIL}",
+        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun byUUID(
-            @PathVariable(name = "apiVersion", required = false) version: String?,
+            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
                @PathVariable uuid: String
     ): ApiCollection? {
-        println("requestPath:: ${requestInfo.requestPath}")
-        println("apiVersion:: $version")
         val result = collectionRepository.findByUUID(uuid)?.let {
-                if(StringUtils.equals(getApiVersionCalled(requestInfo.requestPath), RoutePaths.LATEST)) {
+                if(StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
                     ApiCollection.fromDao(it, appConfig)
                 }
                 else {
@@ -99,8 +91,8 @@ class CollectionController @Autowired constructor(
 
     @RequestMapping(
             path = [
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_DETAIL}",
-        "${RoutePaths.API}/{apiVersion}${RoutePaths.COLLECTION_DETAIL}"
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_DETAIL}",
+        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_DETAIL}"
                    ],
             produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(@PathVariable(name = "apiVersion", required = false) version: String?, @PathVariable uuid: String): String {
@@ -109,17 +101,17 @@ class CollectionController @Autowired constructor(
 
     @PostMapping(
             path = [
-                "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_CREATE}",
-                "${RoutePaths.API}/{apiVersion}${RoutePaths.COLLECTION_CREATE}"
+                "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_CREATE}",
+                "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_CREATE}"
             ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createCollections(
-            @PathVariable(name = "apiVersion", required = false) version: String?,
+            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
             @AuthenticationPrincipal user: Jwt?
     ): List<ApiCollection> {
-        return if(StringUtils.equals(getApiVersionCalled(requestInfo.requestPath), RoutePaths.LATEST)) {
+        return if(StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
              collectionRepository.createFromApi(
                     apiCollectionUpdates,
                     richSkillRepository,
@@ -141,9 +133,14 @@ class CollectionController @Autowired constructor(
         }
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_UPDATE}",
+        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_UPDATE}"
+    ],
+    produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateCollection(
+            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @PathVariable uuid: String,
             @RequestBody apiUpdate: ApiCollectionUpdate,
             @AuthenticationPrincipal user: Jwt?
@@ -162,57 +159,22 @@ class CollectionController @Autowired constructor(
         )
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
-        return ApiCollection.fromDao(updated, appConfig)
-    }
-
-    @PostMapping("${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun legacyUpdateCollection(
-            @PathVariable uuid: String,
-            @RequestBody apiUpdate: ApiCollectionUpdate,
-            @AuthenticationPrincipal user: Jwt?
-    ): ApiCollection {
-        if (oAuthHelper.hasRole(appConfig.roleCurator) && !oAuthHelper.isArchiveRelated(apiUpdate.publishStatus)) {
-            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        return if(StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
+            ApiCollection.fromDao(updated, appConfig)
         }
-
-        val existing = collectionRepository.findByUUID(uuid)
-                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-
-        val updated = collectionRepository.updateFromApi(
-                existing.id.value,
-                apiUpdate,
-                richSkillRepository, oAuthHelper.readableUserName(user)
-        )
-                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-
-        return ApiCollectionV2.fromDao(updated, appConfig)
-    }
-
-    @PostMapping(path = ["${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_UPDATE}"], produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun unversionedUpdateCollection(
-            @PathVariable uuid: String,
-            @RequestBody apiUpdate: ApiCollectionUpdate,
-            @AuthenticationPrincipal user: Jwt?
-    ): ApiCollection {
-        return when(RoutePaths.DEFAULT) {
-            RoutePaths.LATEST -> updateCollection(uuid, apiUpdate, user)
-            RoutePaths.LEGACY -> legacyUpdateCollection(uuid, apiUpdate, user)
-            else -> {
-                updateCollection(uuid, apiUpdate, user)
-            }
+        else {
+            ApiCollectionV2.fromDao(updated, appConfig)
         }
     }
 
     @PostMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_SKILLS_UPDATE}"
+        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_SKILLS_UPDATE}"
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateSkills(
+            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @PathVariable uuid: String,
             @RequestBody skillListUpdate: ApiSkillListUpdate,
             @RequestParam(
@@ -229,11 +191,11 @@ class CollectionController @Autowired constructor(
     }
 
     @PostMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_PUBLISH}",
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_PUBLISH}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_PUBLISH}"
+        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_PUBLISH}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_PUBLISH}"
     ], produces = [MediaType.APPLICATION_JSON_VALUE])    @ResponseBody
     fun publishCollections(
+            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @RequestBody search: ApiSearch,
             @RequestParam(
             required = false,
@@ -254,11 +216,11 @@ class CollectionController @Autowired constructor(
     }
 
     @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_CSV}",
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_CSV}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_CSV}"
+        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_CSV}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_CSV}"
     ], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getSkillsForCollectionCsv(
+        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
         if (collectionRepository.findByUUID(uuid)!!.status == PublishStatus.Draft && !oAuthHelper.hasRole(appConfig.roleAdmin)) {
@@ -269,7 +231,7 @@ class CollectionController @Autowired constructor(
         return Task.processingResponse(task)
     }
 
-    @GetMapping( "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_XLSX}", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
+    @GetMapping( "${RoutePaths.VERSIONED_API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_XLSX}", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
     fun getSkillsForCollectionXlsx(
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
@@ -282,11 +244,11 @@ class CollectionController @Autowired constructor(
     }
 
     @DeleteMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_REMOVE}",
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_REMOVE}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_REMOVE}"
+        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_REMOVE}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_REMOVE}"
     ], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun removeCollection(
+        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
         val task = RemoveCollectionSkillsTask(collectionUuid = uuid)
@@ -295,11 +257,11 @@ class CollectionController @Autowired constructor(
     }
 
     @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_AUDIT_LOG}",
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_AUDIT_LOG}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_AUDIT_LOG}"
+        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_AUDIT_LOG}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_AUDIT_LOG}"
     ], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun collectionAuditLog(
+        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @PathVariable uuid: String
     ): HttpEntity<List<AuditLog>> {
         val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateDesc.apiValue).sort)
@@ -311,15 +273,19 @@ class CollectionController @Autowired constructor(
     }
 
     @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.WORKSPACE_PATH}",
+        "${RoutePaths.VERSIONED_API}${RoutePaths.WORKSPACE_PATH}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.WORKSPACE_PATH}",
     ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun getOrCreateWorkspace(
+        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @AuthenticationPrincipal user: Jwt?
     ): ApiCollection? {
-        return collectionRepository.findByOwner(
-                oAuthHelper.readableUserIdentifier(user))?.let {
+
+        return if(StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
+            collectionRepository.findByOwner(
+                    oAuthHelper.readableUserIdentifier(user))?.let {
                 ApiCollection.fromDao(it, appConfig
                 )
             } ?: collectionRepository.createFromApi(
@@ -335,45 +301,26 @@ class CollectionController @Autowired constructor(
                     oAuthHelper.readableUserName(user),
                     oAuthHelper.readableUserIdentifier(user)
             ).firstOrNull()?.let { ApiCollection.fromDao(it, appConfig) }
-
-    }
-
-    @GetMapping("${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.WORKSPACE_PATH}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun legacyGetOrCreateWorkspace(
-            @AuthenticationPrincipal user: Jwt?
-    ): ApiCollection? {
-        return collectionRepository.findByOwner(
-                oAuthHelper.readableUserIdentifier(user))?.let {
-            ApiCollectionV2.fromDao(it, appConfig
-            )
-        } ?: collectionRepository.createFromApi(
-                listOf(
-                        ApiCollectionUpdate(
-                                name = DEFAULT_WORKSPACE_NAME,
-                                publishStatus = PublishStatus.Workspace,
-                                author = oAuthHelper.readableUserName(user),
-                                skills = ApiStringListUpdate()
-                        )
-                ),
-                richSkillRepository,
-                oAuthHelper.readableUserName(user),
-                oAuthHelper.readableUserIdentifier(user)
-        ).firstOrNull()?.let { ApiCollectionV2.fromDao(it, appConfig) }
-
-    }
-
-    @GetMapping("${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.WORKSPACE_PATH}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun getOrCreateWorkspaceUnversioned(
-            @AuthenticationPrincipal user: Jwt?
-    ): ApiCollection? {
-        return when(RoutePaths.DEFAULT) {
-            RoutePaths.LATEST -> getOrCreateWorkspace(user)
-            RoutePaths.LEGACY -> legacyGetOrCreateWorkspace(user)
-            else -> {
-                getOrCreateWorkspace(user)
-            }
         }
+        else {
+            collectionRepository.findByOwner(
+                    oAuthHelper.readableUserIdentifier(user))?.let {
+                ApiCollectionV2.fromDao(it, appConfig
+                )
+            } ?: collectionRepository.createFromApi(
+                    listOf(
+                            ApiCollectionUpdate(
+                                    name = DEFAULT_WORKSPACE_NAME,
+                                    publishStatus = PublishStatus.Workspace,
+                                    author = oAuthHelper.readableUserName(user),
+                                    skills = ApiStringListUpdate()
+                            )
+                    ),
+                    richSkillRepository,
+                    oAuthHelper.readableUserName(user),
+                    oAuthHelper.readableUserIdentifier(user)
+            ).firstOrNull()?.let { ApiCollectionV2.fromDao(it, appConfig) }
+        }
+
     }
 }

@@ -15,10 +15,10 @@ import java.time.ZonedDateTime
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 open class ApiCollection(
-    private val collection: Collection,
-    private val ss: List<RichSkillDescriptor>,
-    val keywords: Map<KeywordTypeEnum, List<KeywordCount>>,
-    private val appConfig: AppConfig
+        private val collection: Collection,
+        private val ss: List<RichSkillDescriptor>,
+        open val keywords: Map<KeywordTypeEnum, List<KeywordCount>>,
+        private val appConfig: AppConfig
 ) {
     @get:JsonProperty
     val id: String

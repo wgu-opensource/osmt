@@ -46,8 +46,8 @@ class RichSkillController @Autowired constructor(
 
     @GetMapping(path = [
         "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILLS_LIST}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}"
-                       ], produces = [MediaType.APPLICATION_JSON_VALUE])
+                       ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun legacyAllPaginated(
             uriComponentsBuilder: UriComponentsBuilder,
@@ -110,92 +110,59 @@ class RichSkillController @Autowired constructor(
             .body(searchHits.map { it.content }.toList())
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILLS_CREATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [
+        "${RoutePaths.VERSIONED_API}${RoutePaths.SKILLS_CREATE}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SKILLS_CREATE}"
+                        ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createSkills(
+        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
-        val task = CreateSkillsTask(apiSkillUpdates, oAuthHelper.readableUserName(user), oAuthHelper.readableUserIdentifier(user))
-        taskMessageService.enqueueJob(TaskMessageService.createSkills, task)
-        return Task.processingResponse(task)
-    }
-
-    @PostMapping("${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILLS_CREATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun legacyCreateSkills(
-            @RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
-            @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<TaskResult> {
-        val task = CreateSkillsTaskV2(apiSkillUpdates, oAuthHelper.readableUserName(user), oAuthHelper.readableUserIdentifier(user))
-        taskMessageService.enqueueJob(TaskMessageService.createSkills, task)
-        return Task.processingResponse(task)
-    }
-
-    @PostMapping("${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_CREATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun unversionedCreateSkills(
-            @RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
-            @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<TaskResult> {
-
-        return when(RoutePaths.DEFAULT) {
-            RoutePaths.LATEST -> createSkills(apiSkillUpdates, user)
-            RoutePaths.LEGACY -> legacyCreateSkills(apiSkillUpdates, user)
-            else -> {
-                createSkills(apiSkillUpdates, user)
-            }
+        val task = if(StringUtils.equals(RoutePaths.getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
+            CreateSkillsTask(apiSkillUpdates, oAuthHelper.readableUserName(user), oAuthHelper.readableUserIdentifier(user))
         }
+        else {
+            CreateSkillsTaskV2(apiSkillUpdates, oAuthHelper.readableUserName(user), oAuthHelper.readableUserIdentifier(user))
+        }
+        taskMessageService.enqueueJob(TaskMessageService.createSkills, task)
+
+        return Task.processingResponse(task)
     }
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(path = [
+        "${RoutePaths.VERSIONED_API}${RoutePaths.SKILL_DETAIL}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SKILL_DETAIL}"
+    ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun byUUID(
+        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @PathVariable uuid: String,
         @AuthenticationPrincipal user: Jwt?
-    ): AbstractApiSkill? {
+    ): ApiSkill? {
         return richSkillRepository.findByUUID(uuid)?.let {
             if (user == null && it.publishStatus() == PublishStatus.Unarchived) {
                 throw ResponseStatusException(HttpStatus.NOT_FOUND)
             }
-
-            ApiSkill.fromDao(it, appConfig)
+            if(StringUtils.equals(RoutePaths.getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
+                ApiSkill.fromDao(it, appConfig)
+            }
+            else {
+                ApiSkillV2.fromDao(it, appConfig)
+            }
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILL_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun legacyByUUID(
-            @PathVariable uuid: String,
-            @AuthenticationPrincipal user: Jwt?
-    ): AbstractApiSkill? {
-        return richSkillRepository.findByUUID(uuid)?.let {
-            if (user == null && it.publishStatus() == PublishStatus.Unarchived) {
-                throw ResponseStatusException(HttpStatus.NOT_FOUND)
-            }
-
-            ApiSkillV2.fromDao(it, appConfig)
-        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-    }
-
-    @GetMapping("${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun UnversionedByUUID(
-            @PathVariable uuid: String,
-            @AuthenticationPrincipal user: Jwt?
-    ): AbstractApiSkill? {
-
-        return when(RoutePaths.DEFAULT) {
-            RoutePaths.LATEST -> byUUID(uuid, user)
-            RoutePaths.LEGACY -> legacyByUUID(uuid, user)
-            else -> {
-                byUUID(uuid, user)
-            }
-        }
-    }
-
-    @RequestMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_DETAIL}", produces = [MediaType.TEXT_HTML_VALUE])
+    @RequestMapping(path = [
+        "${RoutePaths.VERSIONED_API}${RoutePaths.SKILL_DETAIL}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SKILL_DETAIL}"
+    ],
+    produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(
+        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @PathVariable uuid: String,
         @AuthenticationPrincipal user: Jwt?
     ): String {
@@ -203,36 +170,24 @@ class RichSkillController @Autowired constructor(
             if (user == null && it.publishStatus() == PublishStatus.Unarchived) {
                 throw ResponseStatusException(HttpStatus.NOT_FOUND)
             }
-
-            "forward:/skills/$uuid"
-        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-    }
-
-    //TODO: define which endpoint to forward when UNversioned
-    @RequestMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILL_DETAIL}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_DETAIL}"],
-        produces = [MediaType.TEXT_HTML_VALUE])
-    fun legacyByUUIDHtmlView(
-            @PathVariable uuid: String,
-            @AuthenticationPrincipal user: Jwt?
-    ): String {
-        return richSkillRepository.findByUUID(uuid)?.let {
-            if (user == null && it.publishStatus() == PublishStatus.Unarchived) {
-                throw ResponseStatusException(HttpStatus.NOT_FOUND)
+            if(StringUtils.equals(RoutePaths.getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
+                "forward:/skills/$uuid"
+            }
+            else {
+                //TODO: define which endpoint to forward when Unversioned
+                "forward:/v2/skills/$uuid"
             }
 
-            "forward:/v2/skills/$uuid"
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
     @RequestMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_DETAIL}",
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILL_DETAIL}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_DETAIL}"
+        "${RoutePaths.VERSIONED_API}${RoutePaths.SKILL_DETAIL}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SKILL_DETAIL}"
                 ],
         produces = ["text/csv"])
     fun byUUIDCsvView(
+        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @PathVariable uuid: String,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<*> {
@@ -240,23 +195,28 @@ class RichSkillController @Autowired constructor(
             if (user == null && it.publishStatus() == PublishStatus.Unarchived) {
                 throw ResponseStatusException(HttpStatus.NOT_FOUND)
             }
-
             val skill = it.toModel()
             val collections = it.collections.map { it.toModel() }.toSet()
             val result = RichSkillCsvExport(appConfig).toCsv(listOf(RichSkillAndCollections(skill, collections)))
             val responseHeaders = HttpHeaders()
             responseHeaders.add("Content-Type", "text/csv")
+
             return ResponseEntity.ok().headers(responseHeaders).body(result)
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [
+        "${RoutePaths.VERSIONED_API}${RoutePaths.SKILL_UPDATE}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SKILL_UPDATE}"
+        ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateSkill(
+        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @PathVariable uuid: String,
         @RequestBody skillUpdate: ApiSkillUpdate,
         @AuthenticationPrincipal user: Jwt?
-    ): AbstractApiSkill {
+    ): ApiSkill {
         if (oAuthHelper.hasRole(appConfig.roleCurator) && !oAuthHelper.isArchiveRelated(skillUpdate.publishStatus)) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
@@ -268,55 +228,22 @@ class RichSkillController @Autowired constructor(
             richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, oAuthHelper.readableUserName(user), oAuthHelper.readableUserIdentifier(user))
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
-        return ApiSkill.fromDao(updatedSkill, appConfig)
-    }
-
-    @PostMapping("${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILL_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun legacyUpdateSkill(
-            @PathVariable uuid: String,
-            @RequestBody skillUpdate: ApiSkillUpdate,
-            @AuthenticationPrincipal user: Jwt?
-    ): AbstractApiSkill {
-        if (oAuthHelper.hasRole(appConfig.roleCurator) && !oAuthHelper.isArchiveRelated(skillUpdate.publishStatus)) {
-            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+        return if(StringUtils.equals(RoutePaths.getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
+            ApiSkill.fromDao(updatedSkill, appConfig)
         }
-
-        val existingSkill = richSkillRepository.findByUUID(uuid)
-                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-
-        val updatedSkill =
-                richSkillRepository.updateFromApi(existingSkill.id.value, skillUpdate, oAuthHelper.readableUserName(user), oAuthHelper.readableUserIdentifier(user))
-                        ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-
-        return ApiSkillV2.fromDao(updatedSkill, appConfig)
-    }
-
-    @PostMapping("${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun unversionedUpdateSkill(
-            @PathVariable uuid: String,
-            @RequestBody skillUpdate: ApiSkillUpdate,
-            @AuthenticationPrincipal user: Jwt?
-    ): AbstractApiSkill {
-
-        return when(RoutePaths.DEFAULT) {
-            RoutePaths.LATEST -> updateSkill(uuid, skillUpdate, user)
-            RoutePaths.LEGACY -> legacyUpdateSkill(uuid, skillUpdate, user)
-            else -> {
-                updateSkill(uuid, skillUpdate, user)
-            }
+        else {
+            ApiSkillV2.fromDao(updatedSkill, appConfig)
         }
     }
 
     @PostMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_PUBLISH}",
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILL_PUBLISH}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_PUBLISH}"
+        "${RoutePaths.VERSIONED_API}${RoutePaths.SKILL_PUBLISH}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SKILL_PUBLISH}"
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun publishSkills(
+        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @RequestBody search: ApiSearch,
         @RequestParam(
             required = false,
@@ -349,30 +276,29 @@ class RichSkillController @Autowired constructor(
 
 
     @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_AUDIT_LOG}",
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILL_AUDIT_LOG}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_AUDIT_LOG}"
+        "${RoutePaths.VERSIONED_API}${RoutePaths.SKILL_AUDIT_LOG}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SKILL_AUDIT_LOG}"
     ], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun skillAuditLog(
+        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @PathVariable uuid: String
     ): HttpEntity<List<AuditLog>> {
 
         val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateDesc.apiValue).sort)
-
         val skill = richSkillRepository.findByUUID(uuid)
-
         val sizedIterable = auditLogRepository.findByTableAndId(RichSkillDescriptorTable.tableName, entityId = skill!!.id.value, offsetPageable = pageable)
+
         return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
     }
 
     @Transactional(readOnly = true)
     @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.EXPORT_LIBRARY_CSV}",
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.EXPORT_LIBRARY_CSV}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.EXPORT_LIBRARY_CSV}"
+        "${RoutePaths.VERSIONED_API}${RoutePaths.EXPORT_LIBRARY_CSV}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.EXPORT_LIBRARY_CSV}"
     ], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportLibraryCsv(
+        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         if (!appConfig.allowPublicSearching && user === null) {
@@ -409,12 +335,12 @@ class RichSkillController @Autowired constructor(
 
     @Transactional(readOnly = true)
     @PostMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.EXPORT_SKILLS_CSV}",
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.EXPORT_SKILLS_CSV}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.EXPORT_SKILLS_CSV}"
+        "${RoutePaths.VERSIONED_API}${RoutePaths.EXPORT_SKILLS_CSV}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.EXPORT_SKILLS_CSV}"
     ], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportCustomListCsv(
+        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @RequestBody apiSearch: ApiSearch,
         status: Array<String>,
         @AuthenticationPrincipal user: Jwt?

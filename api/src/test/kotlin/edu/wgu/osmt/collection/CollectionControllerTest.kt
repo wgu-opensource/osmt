@@ -13,6 +13,7 @@ import edu.wgu.osmt.mockdata.MockData
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import io.mockk.every
 import io.mockk.mockk
+import org.apache.commons.lang3.StringUtils
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -74,7 +75,7 @@ internal class CollectionControllerTest @Autowired constructor(
         val jwt = Jwt.withTokenValue("foo").header("foo", "foo").claim("email", userEmail).build()
 
         // act
-        val result = collectionController.getOrCreateWorkspace(jwt)
+        val result = collectionController.getOrCreateWorkspace(StringUtils.EMPTY, jwt)
 
         // assert
         Assertions.assertThat(result).isNotNull
@@ -87,7 +88,7 @@ internal class CollectionControllerTest @Autowired constructor(
 
         // act
         Assertions.assertThat(collectionRepository.findAll().toList()).hasSize(0)
-        val result = collectionController.getOrCreateWorkspace(jwt)
+        val result = collectionController.getOrCreateWorkspace(StringUtils.EMPTY, jwt)
 
         // assert
         Assertions.assertThat(collectionRepository.findAll().toList()).hasSize(1)
@@ -108,7 +109,7 @@ internal class CollectionControllerTest @Autowired constructor(
         collection.archiveDate = LocalDateTime.now()
 
         // act
-        val result = collectionController.updateCollection(collection.uuid, update, jwt)
+        val result = collectionController.updateCollection(StringUtils.EMPTY, collection.uuid, update, jwt)
 
         // assert
         Assertions.assertThat(result).isNotNull

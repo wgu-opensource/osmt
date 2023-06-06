@@ -8,155 +8,8 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   version: 2.5.0
-
+#TODO add /api/v2/skills/{uuid}
 paths:
-
-  /api/v2/categories:
-    get:
-      tags:
-        - Categories
-      summary: Get all categories
-      description: Retrieve all the categories
-      parameters:
-        - $ref: '#/components/parameters/PaginationSizeQuery'
-        - $ref: '#/components/parameters/PaginationFromQuery'
-        - name: sort
-          in: query
-          schema:
-            $ref: '#/components/schemas/KeywordSortOrder'
-      responses:
-        '200':
-          description: OK
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-
-  /api/v2/categories/{identifier}:
-    get:
-      tags:
-        - Categories
-      summary: Get category by identifier
-      description: Retrieve category with identifier
-      parameters:
-        - name: identifier
-          in: path
-          required: true
-          description: identifying key for category
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-
-  /api/v2/categories/{identifier}/skills:
-    get:
-      tags:
-        - Categories
-      summary: Get skills with category
-      description: Retrieve skills with category
-      parameters:
-        - name: identifier
-          in: path
-          required: true
-          description: identifying key for category
-          schema:
-            type: string
-        - $ref: '#/components/parameters/PaginationSizeQuery'
-        - $ref: '#/components/parameters/PaginationFromQuery'
-        - $ref: '#/components/parameters/PublishStatusQuery'
-        - name: sort
-          in: query
-          description: order records should be sorted
-          schema:
-            $ref: '#/components/schemas/SortOrder'
-      responses:
-        '200':
-          description: OK
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-    post:
-      tags:
-        - Categories
-      summary: Search skills with category
-      description: Search skills with category
-      parameters:
-        - name: identifier
-          in: path
-          required: true
-          description: identifying key for category
-          schema:
-            type: string
-        - $ref: '#/components/parameters/PaginationSizeQuery'
-        - $ref: '#/components/parameters/PaginationFromQuery'
-        - $ref: '#/components/parameters/PublishStatusQuery'
-        - name: sort
-          in: query
-          description: order records should be sorted
-          schema:
-            $ref: '#/components/schemas/SortOrder'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Search'
-      responses:
-        '200':
-          description: OK
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
 
   /api/v2/collections:
     get:
@@ -228,22 +81,6 @@ paths:
     get:
       summary: Request a collection export as a CSV
       description: Request all the information about a collection to be exported as a CSV
-      tags:
-        - Collections
-      responses:
-        '202':
-          description: Accepted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskResult'
-
-  /api/v2/collections/{uuid}/xlsx:
-    parameters:
-      - $ref: '#/components/parameters/UuidPath'
-    get:
-      summary: Request a collection export as an Excel Workbook
-      description: Request all the information about a collection to be exported as an Excel Workbook
       tags:
         - Collections
       responses:
@@ -423,7 +260,7 @@ paths:
               parameters:
                 uuid: '$response.body#/uuid'
 
-  /api/v2/export/library/csv:
+  /api/v2/export/library:
     get:
       summary: Export OSMT RSD library as a CSV
       description: Export all RSDs contained in OSMT as a CSV
@@ -442,26 +279,7 @@ paths:
               parameters:
                 uuid: '$response.body#/uuid'
 
-  /api/v2/export/library/xlsx:
-    get:
-      summary: Export OSMT RSD library as an Excel Workbook
-      description: Export all RSDs contained in OSMT as an Excel Workbook
-      tags:
-        - Export
-      responses:
-        '202':
-          description: Accepted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskResult'
-          links:
-            PublishLibraryTextResults:
-              operationRef: '/api/v2/results/media/{uuid}'
-              parameters:
-                uuid: '$response.body#/uuid'
-
-  /api/v2/export/skills/csv:
+  /api/v2/export/skills:
     post:
       summary: Export RSDs as a CSV
       description: Export one or more RSDs as a CSV
@@ -488,33 +306,6 @@ paths:
               parameters:
                 uuid: '$response.body#/uuid'
 
-  /api/v2/export/skills/xlsx:
-    post:
-      summary: Export RSDs as an Excel Workbook
-      description: Export one or more RSDs as an Excel Workbook
-      tags:
-        - Export
-      parameters:
-        - $ref: '#/components/parameters/PublishStatusQueryRequired'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Search'
-      responses:
-        '202':
-          description: Accepted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskResult'
-          links:
-            PublishLibraryTextResults:
-              operationRef: '/api/v2/results/media/{uuid}'
-              parameters:
-                uuid: '$response.body#/uuid'
-
   /api/v2/results/batch/{uuid}:
     parameters:
       - $ref: '#/components/parameters/UuidPath'
@@ -530,25 +321,6 @@ paths:
             application/json:
               schema:
                 type: string
-        '404':
-          description: NOT READY
-
-  /api/v2/results/media/{uuid}:
-    parameters:
-      - $ref: '#/components/parameters/UuidPath'
-    get:
-      summary: Retrieve the results of an Excel Workbook task
-      description: Return the results of a previously requested Excel Workbook task
-      tags:
-        - Export
-      responses:
-        '200':
-          description: OK
-          content:
-            application/vnd.ms-excel:
-              schema:
-                type: string
-                format: binary
         '404':
           description: NOT READY
 
@@ -804,6 +576,30 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
+  /api/v2/skills/{uuid}:
+    get:
+      summary: Retrieve a Rich Skill Descriptor (RSD)
+      description: Retrieve a Rich Skill Descriptor (RSD) by UUID
+      tags:
+        - Skills
+      parameters:
+        - $ref: '#/components/parameters/UuidPath'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SkillDoc'
+            text/html:
+              schema:
+                type: string
+            text/csv:
+              schema:
+                type: string
+
   /api/v2/skills/{uuid}/log:
     parameters:
       - $ref: '#/components/parameters/UuidPath'
@@ -843,38 +639,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Skill'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-
-  /api/v2/skills/filter:
-    post:
-      summary: Advanced filtered search for Rich Skill Descriptors (RSDs)
-      description: Return list of Rich Skill Descriptors (RSDs) that match the provided query
-      tags:
-        - Skills
-      parameters:
-        - $ref: '#/components/parameters/PaginationSizeQueryRequired'
-        - $ref: '#/components/parameters/PaginationFromQueryRequired'
-        - $ref: '#/components/parameters/PublishStatusQueryRequired'
-        - $ref: '#/components/parameters/SortOrderQuery'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Search'
-      responses:
-        '202':
-          description: Ok
-          headers:
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SkillDoc'
         '400':
           $ref: '#/components/responses/BadRequest'
 

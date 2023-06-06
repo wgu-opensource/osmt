@@ -7,6 +7,8 @@ import { AuthServiceStub } from "@test/resource/mock-stubs";
 import { AuthService } from "../../../auth/auth-service";
 import { JobCodeService } from "../../job-codes/service/job-code.service"
 import { HttpClientTestingModule } from "@angular/common/http/testing"
+import { createMockJobcode } from "@test/resource/mock-data"
+import { of } from "rxjs"
 
 describe("ManageMetadataComponent", () => {
   let component: MetadataListComponent
@@ -35,19 +37,59 @@ describe("ManageMetadataComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy()
   })
+
   it("isJobCodeDataSelected returns false if JobCode MetadataType is not selected", () => {
     expect(component.isJobCodeDataSelected).toBeFalse()
   })
+
   it("isJobCodeDataSelected returns true if JobCode MetadataType is selected", () => {
     component.selectedMetadataType = MetadataType.Occupation
     expect(component.isJobCodeDataSelected).toBeTrue()
   })
+
   it("emptyResults returns true if Metadata is empty", () => {
     component.results = new PaginatedMetadata([], 0)
     expect(component.emptyResults).toBeTrue()
   })
+
   it("emptyResults returns false if Metadata is not empty", () => {
     component.results = new PaginatedMetadata([new ApiJobCode(), new ApiJobCode()], 2)
     expect(component.emptyResults).toBeFalse()
+  })
+
+  it("matching query should be updated", () => {
+    const matchingQuery = "95-0000"
+    component.searchForm.get("search")?.patchValue(matchingQuery)
+    expect(component.matchingQuery).toEqual(matchingQuery)
+  })
+
+  it("When clearSearch is called matching query should be empty", () => {
+    component.matchingQuery = "This is a query"
+    component.clearSearch()
+    expect(component.matchingQuery).toBe("")
+  })
+
+  it("handleDeleteJobCode should call deleteJobCodeWithResult", () => {
+    const mockJobCode = createMockJobcode()
+    const spyService = spyOn(component["jobCodeService"], "deleteJobCodeWithResult").and.returnValue(
+      of({success: true})
+    )
+    spyOn(window, 'confirm').and.callFake(function () {
+      return true;
+    });
+    component["handleDeleteJobCode"](mockJobCode)
+    expect(spyService).toHaveBeenCalled()
+  })
+
+  it("handleDeleteJobCode should not call deleteJobCodeWithResult", () => {
+    const mockJobCode = createMockJobcode()
+    const spyService = spyOn(component["jobCodeService"], "deleteJobCodeWithResult").and.returnValue(
+      of({success: true})
+    )
+    spyOn(window, 'confirm').and.callFake(function () {
+      return false;
+    });
+    component["handleDeleteJobCode"](mockJobCode)
+    expect(spyService).not.toHaveBeenCalled()
   })
 })

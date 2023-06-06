@@ -94,7 +94,7 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
 
   handleSelectAll(selectAllChecked: boolean): void {}
 
-  handleNewSelection(selected: IJobCode[]|INamedReference[]): void {
+  handleNewSelection(selected: IJobCode[] | INamedReference[]): void {
     this.handleSelectedMetadata = selected
   }
 
@@ -155,9 +155,6 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
   getNamedReferences(): INamedReference[] {
     return (this.results?.metadata) as INamedReference[]
   }
-  public get searchQuery(): string {
-    return this.searchForm.get("search")?.value ?? ""
-  }
 
   navigateToPage(newPageNo: number): void {
     this.from = (newPageNo - 1) * this.size
@@ -179,18 +176,22 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
     return tableActions
   }
 
-  private handleClickDeleteItem(jobCode: IJobCode | INamedReference | undefined): void {
+  private handleClickDeleteItem(metadata: IJobCode | INamedReference | undefined): void {
     if (this.isJobCodeDataSelected) {
-      if (confirm("Confirm that you want to delete the job code with name " + (jobCode as ApiJobCode)?.targetNodeName)) {
-        this.jobCodeService.deleteJobCodeWithResult((jobCode as ApiJobCode)?.id ?? 0).subscribe(data => {
-          if (data && data.success) {
-            this.toastService.showToast("Success", "You deleted a job code " + (jobCode as ApiJobCode)?.targetNodeName)
-            this.loadNextPage()
-          } else if (data && !data.success) {
-            this.toastService.showToast("Warning", data.message ?? "You cannot delete this job code")
-          }
-        })
-      }
+      this.handleDeleteJobCode(metadata as IJobCode)
+    }
+  }
+
+  private handleDeleteJobCode(jobCode: IJobCode): void {
+    if (confirm("Confirm that you want to delete the job code with name " + (jobCode as ApiJobCode)?.targetNodeName)) {
+      this.jobCodeService.deleteJobCodeWithResult((jobCode as ApiJobCode)?.id ?? 0).subscribe(data => {
+        if (data && data.success) {
+          this.toastService.showToast("Success", "You deleted a job code " + (jobCode as ApiJobCode)?.targetNodeName)
+          this.loadNextPage()
+        } else if (data && !data.success) {
+          this.toastService.showToast("Warning", data.message ?? "You cannot delete this job code")
+        }
+      })
     }
   }
 }

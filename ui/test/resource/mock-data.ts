@@ -53,6 +53,47 @@ export function createMockJobcode(targetNode = 42, targetNodeName = "my jobcode 
   }
 }
 
+export const mockJobCodesParents: IJobCode[] = [
+  {
+    id: 111,
+    code: "13-2010",
+    targetNodeName: "Accountants and Auditors",
+    frameworkName: "bls",
+    level: "Broad",
+  },
+  {
+    id: 110,
+    code: "13-2000",
+    targetNodeName: "Financial Specialists",
+    frameworkName: "bls",
+    level: "Minor"
+  },
+  {
+    id: 74,
+    code: "13-0000",
+    targetNodeName: "Business and Financial Operations Occupations",
+    frameworkName: "bls",
+    level: "Major"
+  }
+]
+
+export const mockJobCodeWithParents: IJobCode = {
+  targetNode: 2,
+  targetNodeName: "Mocked Job Code",
+  code: "95-000",
+  broad: "my jobcode broad",
+  broadCode: "my jobcode broadCode",
+  detailed: "my jobcode detailed",
+  level: "Broad",
+  major: "my jobcode major",
+  majorCode: "my jobcode majorCode",
+  frameworkName: "my jobcode framework",
+  minor: "my jobcode minor",
+  minorCode: "my jobcode minorCode",
+  url: "my jobcode url",
+  parents: mockJobCodesParents
+}
+
 export function createMockUuidReference(uuid = "my uuidReference id", name = "my uuidReference name"): IUuidReference {
   return {
     uuid,

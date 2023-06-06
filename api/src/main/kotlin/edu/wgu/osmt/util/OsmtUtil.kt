@@ -9,12 +9,14 @@ import org.apache.commons.lang3.StringUtils
 class OsmtUtil {
 
     companion object {
-        fun parseMultiValueToSingleValue(field: String) : String {
-            return StringUtils.replace(
+        fun parseMultiValueStringFieldToSingleStringField(field: String) : String {
+            val result = StringUtils.replace(
                     StringUtils.replace(
                             StringUtils.replace(field, OPENING_BRACKET, StringUtils.EMPTY),
                             COMMA.plus(CLOSING_BRACKET), StringUtils.EMPTY),
-                    COMMA.plus(COMMA).plus(StringUtils.SPACE), SEMICOLON)
+                    COMMA.plus(COMMA).plus(StringUtils.SPACE), SEMICOLON).replace(CLOSING_BRACKET, StringUtils.EMPTY)
+
+            return result
         }
     }
 }

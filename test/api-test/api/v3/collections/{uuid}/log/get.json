@@ -1,0 +1,24 @@
+[
+  {
+      "creationDate": "2023-03-30T13:15:01.584206",
+      "operationType": "Insert",
+      "user": "OSMT Developer",
+      "changedFields": [
+          {
+              "fieldName": "name",
+              "old": null,
+              "new": "Bailiffs, Correctional Officers, and Jailers"
+          },
+          {
+              "fieldName": "author",
+              "old": null,
+              "new": "Western Governors University"
+          },
+          {
+              "fieldName": "publishStatus",
+              "old": null,
+              "new": "Draft"
+          }
+      ]
+  }
+]

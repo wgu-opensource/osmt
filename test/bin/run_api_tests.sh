@@ -45,9 +45,10 @@ function get_bearer_token() {
 }
 
 run_api_tests() {
+  local apiVersion; apiVersion=${1}
   echo "Running postman collection ..."
   npx "$test_dir/node_modules/.bin/newman" \
-    run "$test_dir/postman/osmt-testing.postman_collection.json" \
+    run "$test_dir/postman/osmt-testing-api-${apiVersion}.postman_collection.json" \
       --env-var baseUrl="$BASE_URL" \
       --env-var bearerToken="$bearer_token"
 }
@@ -73,5 +74,12 @@ trap error_handler ERR SIGINT SIGTERM
 
 source_osmt_apitest_env_file
 get_bearer_token
-run_api_tests
+run_api_tests "v2"
 run_shutdown_script
+# Need to refresh CI data between versioned tests
+# clean_docker_stack
+# Start_OSMT_APP (osmt_cli)
+# LOAD_CI_DATASET
+
+#run_api_tests "v3"
+#run_shutdown_script

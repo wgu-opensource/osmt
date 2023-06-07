@@ -804,14 +804,14 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/v2/skills/{uuid}:
+  /api/v3/skills/{uuid}:
+    parameters:
+      - $ref: '#/components/parameters/UuidPath'
     get:
       summary: Retrieve a Rich Skill Descriptor (RSD)
       description: Retrieve a Rich Skill Descriptor (RSD) by UUID
       tags:
         - Skills
-      parameters:
-        - $ref: '#/components/parameters/UuidPath'
       responses:
         '200':
           description: OK

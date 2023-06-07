@@ -63,7 +63,7 @@ project_dir="$(_get_osmt_project_dir)" || exit 135
 # stop the API test server
 shutdown_osmt_app
 
-# clean up API test Docker resources
+# shutdown API test Docker resources
 "${project_dir}/osmt_cli.sh" -e || exit 135
 
 

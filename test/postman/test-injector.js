@@ -18,21 +18,25 @@ let inputFile = `${__dirname}/osmt.postman_collection.json`;
 let outputFile = `${__dirname}/osmt-testing.postman_collection.json`;
 
 // Processing trackers
+let apiVersion = null;
 let exit = false;
 let availableData = {};
 let failedEndpoints = [];
 
 // Check argument count
-if (process.argv.length > 4) {
-  console.log("Usage: test-injector.js [input_json_file] [output_json_file]");
+if (process.argv.length > 5) {
+  console.log("Usage: test-injector.js [input_json_file] [output_json_file] [api_version]");
   exit = true;
 }
 else if (process.argv.length == 3) {
   inputFile = path.resolve(process.argv[2]);
 }
-else if (process.argv.length == 4) {
+else if (process.argv.length >= 4) {
   inputFile = path.resolve(process.argv[2]);
   outputFile = path.resolve(process.argv[3]);
+}
+if (process.argv.length >= 5) {
+  apiVersion = path.resolve(process.argv[4]);
 }
 
 // Requirements met
@@ -71,7 +75,7 @@ function main() {
     let baseApiRaw = fs.readFileSync(inputFile);
     let baseApi = JSON.parse(baseApiRaw);
 
-    mapAvailableTestData(dataRoot);
+    mapAvailableTestData(dataRoot, apiVersion);
 
     for (let key in baseApi) {
       if (DEBUG) {
@@ -127,8 +131,15 @@ function main() {
  * Map available test directories and files.
  * 
  * @param {string} root root location of test data
+ * @param {string} apiVersion api version (if present)
  */
-function mapAvailableTestData(root) {
+function mapAvailableTestData(root, apiVersion=null) {
+  root += "/api";
+
+  if (apiVersion) {
+    root += `/${apiVersion}`;
+  }
+
   for (let file of glob.sync(root + '/**/*')) {
     availableData[file] = true;
   }

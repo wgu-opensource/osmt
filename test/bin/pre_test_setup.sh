@@ -39,15 +39,19 @@ install_npm_modules() {
 }
 
 create_postman_collection() {
+  local version; version=${1}
   local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
   npx "$project_dir/test/node_modules/.bin/openapi2postmanv2" \
-    -s "${project_dir}/docs/int/openapi.yaml" \
-    -o "${project_dir}/test/postman/osmt.postman_collection.json" --pretty
+    -s "${project_dir}/docs/int/openapi-${version}.yaml" \
+    -o "${project_dir}/test/postman/osmt-api-${version}.postman_collection.json" --pretty
 }
 
 inject_tests() {
+  local inputFile; inputFile=${1}
+  local outputFile; outputFile=${2}
+  local apiVersion; apiVersion=${3}
   local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
-  node "${project_dir}/test/postman/test-injector.js"
+  node "${project_dir}/test/postman/test-injector.js" "${inputFile}" "${outputFile}" "${apiVersion}"
 }
 
 curl_with_retry() {
@@ -138,19 +142,28 @@ main() {
   # curl the Spring app and retry for 2 minutes
   curl_with_retry || exit 135
 
-  if [[ "${LOAD_CI_DATASET}" -eq 0  ]]; then
-    # load CI static dataset
-    "${project_dir}/osmt_cli.sh" -l || exit 135
-
-    # reindex ElasticSearch
-    "${project_dir}/osmt_cli.sh" -r || exit 135
-  fi
+#  if [[ "${LOAD_CI_DATASET}" -eq 0  ]]; then
+#    # load CI static dataset
+#    "${project_dir}/osmt_cli.sh" -l || exit 135
+#
+#    # reindex ElasticSearch
+#    "${project_dir}/osmt_cli.sh" -r || exit 135
+#  fi
 
   # Create postman collection
-  create_postman_collection || exit 135
+  create_postman_collection "v2"|| exit 135
+  create_postman_collection "v3"|| exit 135
 
   # Insert postman assertion tests
-  inject_tests || exit 135
+  inject_tests \
+  "${project_dir}/test/postman/osmt-api-v2.postman_collection.json" \
+  "${project_dir}/test/postman/osmt-testing-api-v2.postman_collection.json" \
+  "v2"
+
+  inject_tests \
+  "${project_dir}/test/postman/osmt-api-v3.postman_collection.json" \
+  "${project_dir}/test/postman/osmt-testing-api-v3.postman_collection.json" \
+  "v3"
 }
 
 trap error_handler ERR SIGINT SIGTERM

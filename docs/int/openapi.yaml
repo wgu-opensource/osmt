@@ -550,7 +550,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/JobCode'
+                $ref: '#/components/schemas/JobCodeUpdate'
       responses:
         '200':
           description: OK
@@ -608,7 +608,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/JobCode'
+              $ref: '#/components/schemas/JobCodeUpdate'
       responses:
         '200':
           description: OK
@@ -1439,7 +1439,7 @@ components:
           items:
             type: string
 
-    JobCode:
+    JobCodeUpdate:
       type: object
       required:
         - code
@@ -1457,7 +1457,14 @@ components:
         parents:
           type: array
           items:
-            $ref: '#/components/schemas/JobCode'
+            $ref: '#/components/schemas/JobCodeUpdate'
+
+    JobCode:
+      allOf:
+        - $ref: '#/components/schemas/JobCodeUpdate'
+        - properties:
+            id:
+              type: number
 
     JobCodeLevel:
       type: string

@@ -3,18 +3,18 @@ package edu.wgu.osmt
 import org.apache.commons.lang3.StringUtils
 
 object RoutePaths {
-    
+
+
     const val LEGACY = "/v2"
     const val LATEST = "/v3"
     const val DEFAULT = LATEST
     const val UNVERSIONED = StringUtils.EMPTY
-    
-    
+
+    const val API = "/api"
     const val VERSIONED_API = "/api/{apiVersion}"
-    const val UNVERSIONED_API = "/api"
-    const val API = UNVERSIONED
+    const val UNVERSIONED_API = API
     private const val SEARCH_PATH = "/search"
-    
+
     //export
     private const val EXPORT = "/export"
     const val SEARCH_SKILLS = "$SEARCH_PATH/skills"
@@ -27,7 +27,7 @@ object RoutePaths {
     const val SEARCH_SIMILAR_SKILLS = "$SEARCH_SKILLS/similarity"
     const val SEARCH_SIMILARITIES = "$SEARCH_SKILLS/similarities"
     const val SEARCH_COLLECTIONS = "$SEARCH_PATH/collections"
-    
+
     //skills
     private const val SKILLS_PATH = "/skills"
     const val SKILLS_LIST = SKILLS_PATH
@@ -37,13 +37,13 @@ object RoutePaths {
     const val SKILL_DETAIL = "$SKILLS_PATH/{uuid}"
     const val SKILL_UPDATE = "$SKILL_DETAIL/update"
     const val SKILL_AUDIT_LOG = "$SKILL_DETAIL/log"
-    
+
     //categories
     private const val CATEGORY_PATH = "/categories"
     const val CATEGORY_LIST = CATEGORY_PATH
     const val CATEGORY_DETAIL = "$CATEGORY_PATH/{identifier}"
     const val CATEGORY_SKILLS = "$CATEGORY_DETAIL/skills"
-    
+
     //collections
     private const val COLLECTIONS_PATH = "/collections"
     const val COLLECTIONS_LIST = COLLECTIONS_PATH
@@ -57,22 +57,22 @@ object RoutePaths {
     const val COLLECTION_CSV = "$COLLECTION_DETAIL/csv"
     const val COLLECTION_XLSX = "$COLLECTION_DETAIL/xlsx"
     const val COLLECTION_REMOVE = "$COLLECTION_DETAIL/remove"
-    
+
     const val WORKSPACE_PATH = "/workspace"
-    
+
     private const val TASKS_PATH = "/results"
     const val TASK_DETAIL_TEXT = "$TASKS_PATH/text/{uuid}"
     const val TASK_DETAIL_MEDIA = "$TASKS_PATH/media/{uuid}"
     const val TASK_DETAIL_BATCH = "$TASKS_PATH/batch/{uuid}"
     const val TASK_DETAIL_SKILLS = "$TASKS_PATH/skills/{uuid}"
-    
+
     const val SEARCH_JOBCODES_PATH = "$SEARCH_PATH/jobcodes"
     const val SEARCH_KEYWORDS_PATH = "$SEARCH_PATH/keywords"
-    
+
     const val ES_ADMIN = "/es-admin"
     const val ES_ADMIN_DELETE_INDICES = "$ES_ADMIN/delete-indices"
     const val ES_ADMIN_REINDEX = "$ES_ADMIN/reindex"
-    
+
     object QueryParams {
         const val FROM = "from"
         const val SIZE = "size"
@@ -80,17 +80,18 @@ object RoutePaths {
         const val SORT = "sort"
         const val COLLECTION_ID = "collectionId"
     }
-    
+
     fun getApiVersionCalled(apiVersion: String?): String {
-        
-        return if (StringUtils.contains(LATEST, apiVersion) ||
-                (
-                        !StringUtils.contains(LEGACY, apiVersion) &&
-                                !StringUtils.equals(DEFAULT, LEGACY)
-                        )
+
+        return if(StringUtils.contains(LATEST, apiVersion) ||
+            (
+                !StringUtils.contains(LEGACY, apiVersion) &&
+                !StringUtils.equals(DEFAULT, LEGACY)
+            )
         ) {
             LATEST
-        } else {
+        }
+        else {
             LEGACY
         }
     }

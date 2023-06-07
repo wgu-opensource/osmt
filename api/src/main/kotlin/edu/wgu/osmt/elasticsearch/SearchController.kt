@@ -37,7 +37,8 @@ class SearchController @Autowired constructor(
     @PostMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.SEARCH_COLLECTIONS}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.SEARCH_COLLECTIONS}"
-    ], produces = [MediaType.APPLICATION_JSON_VALUE])
+                        ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCollections(
         @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
@@ -161,7 +162,7 @@ class SearchController @Autowired constructor(
     @PostMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_SKILLS}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_SKILLS}"
-    ],
+                        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun collectionSkills(
@@ -184,7 +185,8 @@ class SearchController @Autowired constructor(
     @GetMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.SEARCH_JOBCODES_PATH}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.SEARCH_JOBCODES_PATH}"
-    ], produces = [MediaType.APPLICATION_JSON_VALUE])
+                       ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchJobCodes(
         @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
@@ -199,7 +201,8 @@ class SearchController @Autowired constructor(
     @GetMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.SEARCH_KEYWORDS_PATH}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.SEARCH_KEYWORDS_PATH}"
-    ], produces = [MediaType.APPLICATION_JSON_VALUE])
+                       ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchKeywords(
         @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
@@ -216,7 +219,8 @@ class SearchController @Autowired constructor(
     @PostMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.SEARCH_SIMILAR_SKILLS}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.SEARCH_SIMILAR_SKILLS}"
-    ], produces = [MediaType.APPLICATION_JSON_VALUE])
+                        ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSimilarSkills(
             @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
@@ -234,7 +238,8 @@ class SearchController @Autowired constructor(
     @PostMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.SEARCH_SIMILARITIES}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.SEARCH_SIMILARITIES}"
-    ], produces = [MediaType.APPLICATION_JSON_VALUE])
+                        ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun similarSkillWarnings(
             @PathVariable(name = "apiVersion", required = false) apiVersion: String?,

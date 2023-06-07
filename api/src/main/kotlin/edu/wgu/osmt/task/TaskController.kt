@@ -64,8 +64,7 @@ class TaskController @Autowired constructor(
     @GetMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.TASK_DETAIL_SKILLS}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.TASK_DETAIL_SKILLS}"
-            ]
-    )
+    ])
     @ResponseBody
     fun skillsResult(
             @PathVariable(name = "apiVersion", required = false) apiVersion: String?,

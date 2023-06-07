@@ -38,13 +38,12 @@ class CollectionController @Autowired constructor(
         val auditLogRepository: AuditLogRepository,
         val collectionEsRepo: CollectionEsRepo,
         val appConfig: AppConfig,
-        val oAuthHelper: OAuthHelper,
-): HasAllPaginated<CollectionDoc> {
-
+        val oAuthHelper: OAuthHelper
+) : HasAllPaginated<CollectionDoc> {
     override val elasticRepository = collectionEsRepo
     override val allPaginatedPath: String = "${RoutePaths.LATEST}${RoutePaths.COLLECTIONS_LIST}"
     override val sortOrderCompanion = CollectionSortEnum.Companion
-
+    
     @GetMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTIONS_LIST}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTIONS_LIST}"
@@ -65,45 +64,42 @@ class CollectionController @Autowired constructor(
         }
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
     }
-
-    @GetMapping(
-        path = [
-            "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_DETAIL}",
-            "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_DETAIL}",
-        ],
+    
+    @GetMapping(path = [
+        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_DETAIL}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_DETAIL}",
+                       ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun byUUID(
             @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
-               @PathVariable uuid: String
+            @PathVariable uuid: String
     ): ApiCollection? {
-        val result = collectionRepository.findByUUID(uuid)?.let {
-                if(StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
-                    ApiCollection.fromDao(it, appConfig)
-                }
-                else {
-                    ApiCollectionV2.fromDao(it, appConfig)
-                }
+        
+        return collectionRepository.findByUUID(uuid)?.let {
+            if (StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
+                ApiCollection.fromDao(it, appConfig)
+            } else {
+                ApiCollectionV2.fromDao(it, appConfig)
+            }
         }
-                return result
         ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
-
-    @RequestMapping(
-            path = [
+    
+    @RequestMapping(path = [
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_DETAIL}",
         "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_DETAIL}"
-                   ],
+                           ],
             produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(@PathVariable(name = "apiVersion", required = false) version: String?, @PathVariable uuid: String): String {
+        
         return "forward:${RoutePaths.LATEST}/collections/$uuid"
     }
-
-    @PostMapping(
-            path = [
-                "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_CREATE}",
-                "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_CREATE}"
-            ],
+    
+    @PostMapping(path = [
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_CREATE}",
+        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_CREATE}"
+                        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createCollections(
@@ -111,8 +107,9 @@ class CollectionController @Autowired constructor(
             @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
             @AuthenticationPrincipal user: Jwt?
     ): List<ApiCollection> {
-        return if(StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
-             collectionRepository.createFromApi(
+        
+        return if (StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
+            collectionRepository.createFromApi(
                     apiCollectionUpdates,
                     richSkillRepository,
                     oAuthHelper.readableUserName(user),
@@ -120,8 +117,7 @@ class CollectionController @Autowired constructor(
             ).map {
                 ApiCollection.fromDao(it, appConfig)
             }
-        }
-        else {
+        } else {
             collectionRepository.createFromApi(
                     apiCollectionUpdates,
                     richSkillRepository,
@@ -132,12 +128,12 @@ class CollectionController @Autowired constructor(
             }
         }
     }
-
+    
     @PostMapping(path = [
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_UPDATE}",
         "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_UPDATE}"
-    ],
-    produces = [MediaType.APPLICATION_JSON_VALUE])
+                        ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateCollection(
             @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
@@ -148,25 +144,24 @@ class CollectionController @Autowired constructor(
         if (oAuthHelper.hasRole(appConfig.roleCurator) && !oAuthHelper.isArchiveRelated(apiUpdate.publishStatus)) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
-
+        
         val existing = collectionRepository.findByUUID(uuid)
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        
         val updated = collectionRepository.updateFromApi(
-            existing.id.value,
-            apiUpdate,
-            richSkillRepository, oAuthHelper.readableUserName(user)
+                existing.id.value,
+                apiUpdate,
+                richSkillRepository, oAuthHelper.readableUserName(user)
         )
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-
-        return if(StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
+        ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        
+        return if (StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
             ApiCollection.fromDao(updated, appConfig)
-        }
-        else {
+        } else {
             ApiCollectionV2.fromDao(updated, appConfig)
         }
     }
-
+    
     @PostMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_SKILLS_UPDATE}"
@@ -178,112 +173,120 @@ class CollectionController @Autowired constructor(
             @PathVariable uuid: String,
             @RequestBody skillListUpdate: ApiSkillListUpdate,
             @RequestParam(
-            required = false,
-            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
-        ) status: List<String>,
+                    required = false,
+                    defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+            ) status: List<String>,
             @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses=publishStatuses, userString = oAuthHelper.readableUserName(user))
-
+        val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses = publishStatuses, userString = oAuthHelper.readableUserName(user))
         taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
+        
         return Task.processingResponse(task)
     }
-
+    
     @PostMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_PUBLISH}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_PUBLISH}"
-    ], produces = [MediaType.APPLICATION_JSON_VALUE])    @ResponseBody
+                        ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
     fun publishCollections(
             @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @RequestBody search: ApiSearch,
             @RequestParam(
-            required = false,
-            defaultValue = "Published"
-        ) newStatus: String,
+                    required = false,
+                    defaultValue = "Published"
+            ) newStatus: String,
             @RequestParam(
-            required = false,
-            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
-        ) filterByStatus: List<String>,
+                    required = false,
+                    defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+            ) filterByStatus: List<String>,
             @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         val filterStatuses = filterByStatus.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val publishStatus = PublishStatus.forApiValue(newStatus) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
-        val task = PublishTask(AppliesToType.Collection, search, filterByStatus=filterStatuses, publishStatus = publishStatus, userString = oAuthHelper.readableUserName(user))
-
+        val publishStatus = PublishStatus.forApiValue(newStatus)
+                ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        val task = PublishTask(AppliesToType.Collection, search, filterByStatus = filterStatuses, publishStatus = publishStatus, userString = oAuthHelper.readableUserName(user))
         taskMessageService.enqueueJob(TaskMessageService.publishSkills, task)
+        
         return Task.processingResponse(task)
     }
-
+    
     @GetMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_CSV}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_CSV}"
-    ], produces = [MediaType.APPLICATION_JSON_VALUE])
+                       ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getSkillsForCollectionCsv(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
-        @PathVariable uuid: String
+            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
+            @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
         if (collectionRepository.findByUUID(uuid)!!.status == PublishStatus.Draft && !oAuthHelper.hasRole(appConfig.roleAdmin)) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
         val task = CsvTask(collectionUuid = uuid)
         taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
+        
         return Task.processingResponse(task)
     }
-
-    @GetMapping( "${RoutePaths.VERSIONED_API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_XLSX}", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
+    
+    @GetMapping("${RoutePaths.VERSIONED_API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_XLSX}", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
     fun getSkillsForCollectionXlsx(
-        @PathVariable uuid: String
+            @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
         if (collectionRepository.findByUUID(uuid)!!.status == PublishStatus.Draft && !oAuthHelper.hasRole(appConfig.roleAdmin)) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
         val task = XlsxTask(collectionUuid = uuid)
         taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionXlsx, task)
+        
         return Task.processingResponse(task)
     }
-
+    
     @DeleteMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_REMOVE}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_REMOVE}"
-    ], produces = [MediaType.APPLICATION_JSON_VALUE])
+                          ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     fun removeCollection(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
-        @PathVariable uuid: String
+            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
+            @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
         val task = RemoveCollectionSkillsTask(collectionUuid = uuid)
         taskMessageService.enqueueJob(TaskMessageService.removeCollectionSkills, task)
+        
         return Task.processingResponse(task)
     }
-
+    
     @GetMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_AUDIT_LOG}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_AUDIT_LOG}"
-    ], produces = [MediaType.APPLICATION_JSON_VALUE])
+                       ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     fun collectionAuditLog(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
-        @PathVariable uuid: String
+            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
+            @PathVariable uuid: String
     ): HttpEntity<List<AuditLog>> {
         val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateDesc.apiValue).sort)
-
         val collection = collectionRepository.findByUUID(uuid)
-
         val sizedIterable = auditLogRepository.findByTableAndId(CollectionTable.tableName, entityId = collection!!.id.value, offsetPageable = pageable)
-        return ResponseEntity.status(200).body(sizedIterable.toList().map{it.toModel()})
+        
+        return ResponseEntity.status(200).body(sizedIterable.toList().map { it.toModel() })
     }
-
+    
     @GetMapping(path = [
         "${RoutePaths.VERSIONED_API}${RoutePaths.WORKSPACE_PATH}",
         "${RoutePaths.UNVERSIONED_API}${RoutePaths.WORKSPACE_PATH}",
-    ],
+                       ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun getOrCreateWorkspace(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
-        @AuthenticationPrincipal user: Jwt?
+            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
+            @AuthenticationPrincipal user: Jwt?
     ): ApiCollection? {
-
-        return if(StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
+        
+        return if (StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
             collectionRepository.findByOwner(
                     oAuthHelper.readableUserIdentifier(user))?.let {
                 ApiCollection.fromDao(it, appConfig
@@ -301,8 +304,7 @@ class CollectionController @Autowired constructor(
                     oAuthHelper.readableUserName(user),
                     oAuthHelper.readableUserIdentifier(user)
             ).firstOrNull()?.let { ApiCollection.fromDao(it, appConfig) }
-        }
-        else {
+        } else {
             collectionRepository.findByOwner(
                     oAuthHelper.readableUserIdentifier(user))?.let {
                 ApiCollectionV2.fromDao(it, appConfig
@@ -321,6 +323,6 @@ class CollectionController @Autowired constructor(
                     oAuthHelper.readableUserIdentifier(user)
             ).firstOrNull()?.let { ApiCollectionV2.fromDao(it, appConfig) }
         }
-
+        
     }
 }

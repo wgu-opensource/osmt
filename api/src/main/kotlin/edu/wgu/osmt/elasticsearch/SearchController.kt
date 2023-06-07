@@ -11,7 +11,6 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.richskill.IRichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillDocV2
 import edu.wgu.osmt.richskill.RichSkillEsRepo
@@ -102,7 +101,7 @@ class SearchController @Autowired constructor(
             @RequestParam(required = false) collectionId: String?,
             @RequestBody apiSearch: ApiSearch,
             @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<List<IRichSkillDoc>> {
+    ): HttpEntity<List<RichSkillDoc>> {
         if (!appConfig.allowPublicSearching && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
@@ -167,7 +166,7 @@ class SearchController @Autowired constructor(
             @RequestParam(required = false) collectionId: String?,
             @RequestBody apiSearch: ApiSearch,
             @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<List<IRichSkillDoc>> {
+    ): HttpEntity<List<RichSkillDocV2>> {
         val latest = searchSkills(uriComponentsBuilder, size, from, status, sort, collectionId, apiSearch, user)
 
         return ResponseEntity.status(200).headers(latest.headers)
@@ -191,7 +190,7 @@ class SearchController @Autowired constructor(
         @PathVariable uuid: String,
         @RequestBody apiSearch: ApiSearch,
         @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<List<IRichSkillDoc>> {
+    ): HttpEntity<List<RichSkillDoc>> {
         return searchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
     }
 
@@ -213,7 +212,7 @@ class SearchController @Autowired constructor(
             @PathVariable uuid: String,
             @RequestBody apiSearch: ApiSearch,
             @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<List<IRichSkillDoc>> {
+    ): HttpEntity<List<RichSkillDocV2>> {
 
         return legacySearchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
     }

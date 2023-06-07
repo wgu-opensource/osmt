@@ -22,9 +22,7 @@ class ElasticSearchAdminController @Autowired constructor(
 ) {
 
     @RequestMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.LATEST}${RoutePaths.ES_ADMIN_DELETE_INDICES}",
-        "${RoutePaths.VERSIONED_API}${RoutePaths.LEGACY}${RoutePaths.ES_ADMIN_DELETE_INDICES}",
-        "${RoutePaths.VERSIONED_API}${RoutePaths.ES_ADMIN_DELETE_INDICES}"]
+        "${RoutePaths.API}${RoutePaths.ES_ADMIN_DELETE_INDICES}"]
     )
         @PostMapping
     fun deleteElasticSearchIndices(): ResponseEntity<String> {
@@ -41,9 +39,7 @@ class ElasticSearchAdminController @Autowired constructor(
     }
 
     @RequestMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.LATEST}${RoutePaths.ES_ADMIN_REINDEX}",
-        "${RoutePaths.VERSIONED_API}${RoutePaths.LEGACY}${RoutePaths.ES_ADMIN_REINDEX}",
-        "${RoutePaths.VERSIONED_API}${RoutePaths.ES_ADMIN_REINDEX}"]
+        "${RoutePaths.API}${RoutePaths.ES_ADMIN_REINDEX}"]
     )
     @PostMapping
     fun reindexElasticSearch(): ResponseEntity<String> {

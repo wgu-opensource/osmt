@@ -43,7 +43,7 @@ class TaskController @Autowired constructor(
         return taskResult(uuid)
     }
 
-    @GetMapping("${RoutePaths.VERSIONED_API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_MEDIA}")
+    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_MEDIA}")
     @ResponseBody
     fun mediaResult(@PathVariable uuid: String): HttpEntity<*> {
         return taskResult(uuid)

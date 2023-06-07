@@ -231,7 +231,7 @@ class CollectionController @Autowired constructor(
         return Task.processingResponse(task)
     }
     
-    @GetMapping("${RoutePaths.VERSIONED_API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_XLSX}", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_XLSX}", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
     fun getSkillsForCollectionXlsx(
             @PathVariable uuid: String
     ): HttpEntity<TaskResult> {

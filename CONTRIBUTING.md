@@ -30,7 +30,7 @@ We use GitHub's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues).
   - We use integration tests as needed to stand up subsets of the application. These may require Docker containers or interactions between several components or services.
     - Integration test classes will be run by Maven in the "verify" phase by the Failsafe plugin, and need to end in "IT". Failsafe has "pre-integration-test" and "post-integration-test" phases for standing up and tearing down integration test resources. The "post-integration-test" phase is always processed, regardless of test failures. This allows Maven to clean up and destroy integration test resources.
   - We want to have as few E2E (end to end) tests as possible.
-    - Our E2E tests are implemented in WebdriverIO as automated browser tests, and require walking through functionality on an actual OSMT instance. These are the most expensive and time-consuming tests. They are needed to ensure that layers of the application are wired up correctly, but should be used sparingly.
+    - Our E2E tests should be implemented in WebdriverIO as automated browser tests, and should require walking through functionality on an actual OSMT instance. These are the most expensive and time-consuming tests. They are needed to ensure that layers of the application are wired up correctly, but should be used sparingly.
 
 ## Release / Branching Strategy
 The OSMT project will follow the [GitFlow](https://nvie.com/posts/a-successful-git-branching-model/) model, with

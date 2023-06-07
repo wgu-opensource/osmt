@@ -132,18 +132,6 @@
             "codeCoverage": true
           }
         },
-        "e2e": {
-          "builder": "@migalons/angular-wdio-builder:test",
-          "options": {
-            "wdioConfig": "e2e/wdio.conf.ts",
-            "devServerTarget": "ui:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "ui:serve:production"
-            }
-          }
-        },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {

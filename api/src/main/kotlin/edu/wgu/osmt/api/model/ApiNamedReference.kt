@@ -6,8 +6,6 @@ import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
-import kotlinx.coroutines.Job
-
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class ApiNamedReference(

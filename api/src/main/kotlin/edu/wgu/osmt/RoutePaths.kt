@@ -82,10 +82,10 @@ object RoutePaths {
 
     fun getApiVersionCalled(apiVersion: String?): String {
 
-        return if(StringUtils.contains(LATEST, apiVersion) ||
+        return if((LATEST.lowercase() == apiVersion) ||
             (
-                !StringUtils.contains(LEGACY, apiVersion) &&
-                !StringUtils.equals(DEFAULT, LEGACY)
+                (LEGACY.lowercase() != apiVersion) &&
+                (DEFAULT.lowercase() != LEGACY.lowercase())
             )
         ) {
             LATEST

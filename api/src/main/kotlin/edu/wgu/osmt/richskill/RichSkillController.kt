@@ -111,7 +111,11 @@ class RichSkillController @Autowired constructor(
             .body(searchHits.map { it.content }.toList())
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILLS_CREATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(path = [
+        "${RoutePaths.VERSIONED_API}${RoutePaths.SKILLS_CREATE}",
+        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SKILLS_CREATE}",
+                        ],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createSkills(
             @RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
@@ -119,17 +123,7 @@ class RichSkillController @Autowired constructor(
     ): HttpEntity<TaskResult> {
         val task = CreateSkillsTask(apiSkillUpdates, oAuthHelper.readableUserName(user), oAuthHelper.readableUserIdentifier(user))
         taskMessageService.enqueueJob(TaskMessageService.createSkills, task)
-        return Task.processingResponse(task)
-    }
-
-    @PostMapping("${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILLS_CREATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    @ResponseBody
-    fun legacyCreateSkills(
-            @RequestBody apiSkillUpdates: List<ApiSkillUpdate>,
-            @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<TaskResult> {
-        val task = CreateSkillsTaskV2(apiSkillUpdates, oAuthHelper.readableUserName(user), oAuthHelper.readableUserIdentifier(user))
-        taskMessageService.enqueueJob(TaskMessageService.createSkills, task)
+        
         return Task.processingResponse(task)
     }
 
@@ -156,30 +150,35 @@ class RichSkillController @Autowired constructor(
     ): ApiSkill? {
         return byUUID(uuid, user)?.let { ApiSkillV2.fromLatest(it, appConfig) }
     }
-
-    @RequestMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.SKILL_DETAIL}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SKILL_DETAIL}"
-                           ],
-    produces = [MediaType.TEXT_HTML_VALUE])
+    
+    @RequestMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_DETAIL}", produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
-        @PathVariable uuid: String,
-        @AuthenticationPrincipal user: Jwt?
+            @PathVariable uuid: String,
+            @AuthenticationPrincipal user: Jwt?
     ): String {
-        
         return richSkillRepository.findByUUID(uuid)?.let {
             if (user == null && it.publishStatus() == PublishStatus.Unarchived) {
                 throw ResponseStatusException(HttpStatus.NOT_FOUND)
             }
-            if(StringUtils.equals(RoutePaths.getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
-                "forward:/skills/$uuid"
+            
+            "forward:/v3/skills/$uuid"
+        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    }
+    
+    @RequestMapping(path = [
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILL_DETAIL}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_DETAIL}"],
+            produces = [MediaType.TEXT_HTML_VALUE])
+    fun legacyByUUIDHtmlView(
+            @PathVariable uuid: String,
+            @AuthenticationPrincipal user: Jwt?
+    ): String {
+        return richSkillRepository.findByUUID(uuid)?.let {
+            if (user == null && it.publishStatus() == PublishStatus.Unarchived) {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND)
             }
-            else {
-                //TODO: define which endpoint to forward when Unversioned
-                "forward:/v2/skills/$uuid"
-            }
-
+            
+            "forward:/v2/skills/$uuid"
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 

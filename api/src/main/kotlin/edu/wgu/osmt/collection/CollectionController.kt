@@ -2,7 +2,6 @@ package edu.wgu.osmt.collection
 
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
-import edu.wgu.osmt.RoutePaths.getApiVersionCalled
 import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.auditlog.AuditLog
@@ -15,7 +14,6 @@ import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.security.OAuthHelper
 import edu.wgu.osmt.task.*
-import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
@@ -124,16 +122,11 @@ class CollectionController @Autowired constructor(
     ): List<ApiCollection> {
         return createCollections(apiCollectionUpdates, user).map { ApiCollectionV2.fromLatest(it, appConfig) }
     }
-
     
-    @PostMapping(path = [
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_UPDATE}",
-        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_UPDATE}"
-                        ],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+    
+    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateCollection(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @PathVariable uuid: String,
             @RequestBody apiUpdate: ApiCollectionUpdate,
             @AuthenticationPrincipal user: Jwt?
@@ -150,13 +143,24 @@ class CollectionController @Autowired constructor(
                 apiUpdate,
                 richSkillRepository, oAuthHelper.readableUserName(user)
         )
-        ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
         
-        return if (StringUtils.equals(getApiVersionCalled(apiVersion), RoutePaths.LATEST)) {
-            ApiCollection.fromDao(updated, appConfig)
-        } else {
-            ApiCollectionV2.fromDao(updated, appConfig)
-        }
+        return ApiCollection.fromDao(updated, appConfig)
+    }
+    
+    @PostMapping(path = [
+        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_UPDATE}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_UPDATE}",
+        ]
+        , produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun legacyUpdateCollection(
+            @PathVariable uuid: String,
+            @RequestBody apiUpdate: ApiCollectionUpdate,
+            @AuthenticationPrincipal user: Jwt?
+    ): ApiCollection {
+        
+        return ApiCollectionV2.fromLatest(updateCollection(uuid, apiUpdate, user), appConfig)
     }
     
     @PostMapping(path = [

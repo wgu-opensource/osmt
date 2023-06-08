@@ -119,20 +119,6 @@ data class CreateSkillsTask(
     override val apiResultPath = "${RoutePaths.VERSIONED_API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_SKILLS}"
 }
 
-data class CreateSkillsTaskV2(
-        val apiSkillUpdates: List<ApiSkillUpdate> = listOf(),
-        val userString: String = "",
-        val userIdentifier: String = "",
-        override val uuid: String = UUID.randomUUID().toString(),
-        override val start: Date = Date(),
-        override val result: List<String>? = null,
-        override val status: TaskStatus = TaskStatus.Processing
-) : Task {
-    override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = "${RoutePaths.VERSIONED_API}${RoutePaths.LEGACY}${RoutePaths.TASK_DETAIL_SKILLS}"
-}
-
-
 enum class AppliesToType {
     Collection,
     Skill,

@@ -193,10 +193,10 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Act
         val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
-        val result = richSkillController.byUUIDHtmlView(StringUtils.EMPTY, skillResult.searchHits[0].id.toString(),jwt)
+        val result = richSkillController.byUUIDHtmlView(skillResult.searchHits[0].id.toString(),jwt)
 
         // Assert
-        assertThat(result).isEqualTo("forward:/skills/"+skillResult.searchHits[0].id.toString())
+        assertThat(result).isEqualTo("forward:/v3/skills/"+skillResult.searchHits[0].id.toString())
     }
 
     @Test

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.collection.Collection
-import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.keyword.KeywordCount
 import edu.wgu.osmt.keyword.KeywordTypeEnum
@@ -33,15 +32,6 @@ class ApiCollectionV2(
         get() = ss.map { ApiSkillSummaryV2.fromSkill(it, appConfig) }
 
     companion object {
-        fun fromDao(collectionDao: CollectionDao, appConfig: AppConfig): ApiCollectionV2 {
-            val skills = collectionDao.skills.map{ it.toModel() }
-
-            return ApiCollectionV2(
-                    collectionDao.toModel(),
-                    collectionDao.skills.map{ it.toModel() },
-                    RichSkillDescriptor.getKeywordsFromSkills(skills),
-                    appConfig)
-        }
 
         fun fromLatest(apiCollection: ApiCollection, appConfig: AppConfig) : ApiCollectionV2{
 

@@ -79,7 +79,7 @@ run_shutdown_script
 # Need to refresh CI data between versioned tests
 # clean_docker_stack
 # Start_OSMT_APP (osmt_cli)
-# LOAD_CI_DATASET
+# LOAD_CI_DATASET AND REINDEX
 
 #run_api_tests "v3"
 #run_shutdown_script

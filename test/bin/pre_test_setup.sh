@@ -142,13 +142,13 @@ main() {
   # curl the Spring app and retry for 2 minutes
   curl_with_retry || exit 135
 
-#  if [[ "${LOAD_CI_DATASET}" -eq 0  ]]; then
-#    # load CI static dataset
-#    "${project_dir}/osmt_cli.sh" -l || exit 135
-#
-#    # reindex ElasticSearch
-#    "${project_dir}/osmt_cli.sh" -r || exit 135
-#  fi
+  if [[ "${LOAD_CI_DATASET}" -eq 0  ]]; then
+    # load CI static dataset
+    "${project_dir}/osmt_cli.sh" -l || exit 135
+
+    # reindex ElasticSearch
+    "${project_dir}/osmt_cli.sh" -r || exit 135
+  fi
 
   # Create postman collection
   create_postman_collection "v2"|| exit 135

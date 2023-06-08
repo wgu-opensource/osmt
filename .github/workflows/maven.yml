@@ -27,6 +27,10 @@ jobs:
     - name: API testing with Maven
       run: mvn verify -Prun-api-tests
       env:
+        OAUTH_CLIENTID: "${{secrets.OAUTH_CLIENTID}}"
+        OAUTH_CLIENTSECRET: "${{secrets.OAUTH_CLIENTSECRET}}"
+        OAUTH_AUDIENCE: "${{secrets.OAUTH_AUDIENCE}}"
+        OAUTH_ISSUER: "${{secrets.OAUTH_ISSUER}}"
         OKTA_USERNAME: "${{secrets.OKTA_USERNAME}}"
         OKTA_PASSWORD: "${{secrets.OKTA_PASSWORD}}"
         OKTA_URL: "${{secrets.OAUTH_ISSUER}}"

@@ -65,6 +65,9 @@ curl_with_retry() {
         return 0
       fi
       if [[ ${retry_limit} -eq 0 ]]; then
+        echo
+        echo_info "osmt_spring_app log file below..."
+        echo
         echo_err "Could not load the index page."
         cat "${log_file}"
         return 1
@@ -137,7 +140,8 @@ main() {
   echo_info "See 'osmt_spring_app.log' for console output. Proceeding..."
 
   touch "$log_file"
-  "${project_dir}/osmt_cli.sh" -s  1>"$log_file" 2>"$log_file" & disown  || exit 135
+#  "${project_dir}/osmt_cli.sh" -s  1>"$log_file" 2>"$log_file" & disown  || exit 135
+  "${project_dir}/osmt_cli.sh" -s || exit 135
 
   # curl the Spring app and retry for 2 minutes
   curl_with_retry || exit 135

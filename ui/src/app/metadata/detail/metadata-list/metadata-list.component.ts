@@ -182,39 +182,48 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
       new TableActionDefinition({
         label: "Delete selected",
         icon: "dismiss",
-        callback: (action: TableActionDefinition, metadata?: IJobCode | INamedReference) => this.handleDeleteMultipleMetadata(metadata),
+        callback: () => this.handleDeleteMultipleMetadata(),
         visible: () => (this.handleSelectedMetadata?.length ?? 0) > 0
       })
     )
     return tableActions
   }
 
-  private handleDeleteMultipleMetadata(metadata?: IJobCode | INamedReference): void {
+  get selectedJobCodesOrderedByLevel(): IJobCode[] {
+    return (this.handleSelectedMetadata as IJobCode[]).sort((a, b) => {
+      if ((a.jobCodeLevelAsNumber ?? 0) > (b.jobCodeLevelAsNumber ?? 0)) {
+        return -1
+      } else if ((a.jobCodeLevelAsNumber) ?? 0 < (b.jobCodeLevelAsNumber ?? 0)) {
+        return 1
+      }
+      return 0
+    })
+  }
+
+  private handleDeleteMultipleMetadata(): void {
     if (this.isJobCodeDataSelected) {
       if (confirm("Confirm that you want to delete multiple job codes")) {
-        const jobCodesOrderedByLevel = (this.handleSelectedMetadata as IJobCode[]).sort((a, b) => {
-          if ((a.jobCodeLevelAsNumber ?? 0) > (b.jobCodeLevelAsNumber ?? 0)) {
-            return -1
-          } else if ((a.jobCodeLevelAsNumber) ?? 0 < (b.jobCodeLevelAsNumber ?? 0)) {
-            return 1
-          }
-          return 0
-        })
-        console.log(jobCodesOrderedByLevel)
-        this.handleDeleteMultipleJobCodes(jobCodesOrderedByLevel, 0)
+        this.handleDeleteMultipleJobCodes(this.selectedJobCodesOrderedByLevel, 0)
       }
     }
   }
 
-  private handleDeleteMultipleJobCodes(jobCodes: IJobCode[], index: number): void {
+  private handleDeleteMultipleJobCodes(jobCodes: IJobCode[], index: number, notDeleted = 0): void {
     if (index < jobCodes.length) {
       this.jobCodeService.deleteJobCodeWithResult(jobCodes[index].id ?? 0).subscribe(data => {
         if (data && data.success) {
           this.handleDeleteMultipleJobCodes(jobCodes, index + 1)
+        } else if (data && !data.success) {
+          this.handleDeleteMultipleJobCodes(jobCodes, index + 1, notDeleted + 1)
         }
       })
     } else {
       this.handleSelectedMetadata = []
+      if (notDeleted > 0) {
+        this.toastService.showToast("Warning", "Some occupations cannot be deleted")
+      } else {
+        this.toastService.showToast("Success", "All selected occupations have been deleted")
+      }
       this.loadNextPage()
     }
   }

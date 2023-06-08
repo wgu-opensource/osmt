@@ -143,9 +143,9 @@ class JobCodeRepositoryImpl: JobCodeRepository {
 }
 
 enum class JobCodeErrorMessages(val apiValue: String) {
-    JobCodeNotExist("You cannot delete this job code because you doesn't exist"),
-    JobCodeHasChildren("You cannot delete this job code because has children"),
-    JobCodeHasRSD("You cannot delete this job code because is used in one or more RSDs");
+    JobCodeNotExist("You cannot delete this occupation because you doesn't exist"),
+    JobCodeHasChildren("You cannot delete this occupation because has children"),
+    JobCodeHasRSD("You cannot delete this occupation because is used in one or more RSDs");
 
     companion object {
         fun forDeleteError(hasChildren: Boolean, hasRSDs: Boolean): String {

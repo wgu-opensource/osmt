@@ -79,21 +79,6 @@ object RoutePaths {
         const val SORT = "sort"
         const val COLLECTION_ID = "collectionId"
     }
-
-    fun getApiVersionCalled(apiVersion: String?): String {
-
-        return if((LATEST.lowercase() == apiVersion) ||
-            (
-                (LEGACY.lowercase() != apiVersion) &&
-                (DEFAULT.lowercase() != LEGACY.lowercase())
-            )
-        ) {
-            LATEST
-        }
-        else {
-            LEGACY
-        }
-    }
 }
 
 

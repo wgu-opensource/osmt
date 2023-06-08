@@ -23,7 +23,7 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
   @ViewChild(TableActionBarComponent) actionBar!: TableActionBarComponent
 
   title = "Metadata"
-  handleSelectedMetadata?: IJobCode[]|INamedReference[]
+  handleSelectedMetadata?: IJobCode[] | INamedReference[]
   selectedMetadataType = "categories"
   matchingQuery?: string = ""
 
@@ -170,10 +170,53 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
     if (this.canDeleteMetadata) {
       tableActions.push(new TableActionDefinition({
         label: `Delete`,
-        callback: (action: TableActionDefinition, jobCode?: IJobCode | INamedReference) => this.handleClickDeleteItem(jobCode),
+        callback: (action: TableActionDefinition, metadata?: IJobCode | INamedReference) => this.handleClickDeleteItem(metadata),
       }))
     }
     return tableActions
+  }
+
+  tableActions(): TableActionDefinition[] {
+    const tableActions: TableActionDefinition[] = []
+    tableActions.push(
+      new TableActionDefinition({
+        label: "Delete selected",
+        icon: "dismiss",
+        callback: (action: TableActionDefinition, metadata?: IJobCode | INamedReference) => this.handleDeleteMultipleMetadata(metadata),
+        visible: () => (this.handleSelectedMetadata?.length ?? 0) > 0
+      })
+    )
+    return tableActions
+  }
+
+  private handleDeleteMultipleMetadata(metadata?: IJobCode | INamedReference): void {
+    if (this.isJobCodeDataSelected) {
+      if (confirm("Confirm that you want to delete multiple job codes")) {
+        const jobCodesOrderedByLevel = (this.handleSelectedMetadata as IJobCode[]).sort((a, b) => {
+          if ((a.jobCodeLevelAsNumber ?? 0) > (b.jobCodeLevelAsNumber ?? 0)) {
+            return -1
+          } else if ((a.jobCodeLevelAsNumber) ?? 0 < (b.jobCodeLevelAsNumber ?? 0)) {
+            return 1
+          }
+          return 0
+        })
+        console.log(jobCodesOrderedByLevel)
+        this.handleDeleteMultipleJobCodes(jobCodesOrderedByLevel, 0)
+      }
+    }
+  }
+
+  private handleDeleteMultipleJobCodes(jobCodes: IJobCode[], index: number): void {
+    if (index < jobCodes.length) {
+      this.jobCodeService.deleteJobCodeWithResult(jobCodes[index].id ?? 0).subscribe(data => {
+        if (data && data.success) {
+          this.handleDeleteMultipleJobCodes(jobCodes, index + 1)
+        }
+      })
+    } else {
+      this.handleSelectedMetadata = []
+      this.loadNextPage()
+    }
   }
 
   private handleClickDeleteItem(metadata: IJobCode | INamedReference | undefined): void {

@@ -80,11 +80,21 @@ data class ApiJobCode(
     val targetNodeName: String? = null,
     val frameworkName: String? = null,
     val level: JobCodeLevel? = null,
-    val parents: List<ApiJobCode>? = null
+    val parents: List<ApiJobCode>? = null,
+    val jobCodeLevelAsNumber: Int? = null
 ) {
     companion object factory {
         fun fromJobCode(jobCode: JobCode, level: JobCodeLevel? = null, parents: List<ApiJobCode>? = null): ApiJobCode {
-            return ApiJobCode(id = jobCode.id, code=jobCode.code, targetNodeName=jobCode.name, targetNode=jobCode.url, frameworkName=jobCode.framework, level=level, parents=parents)
+            return ApiJobCode(
+                id = jobCode.id,
+                code = jobCode.code,
+                targetNodeName = jobCode.name,
+                targetNode = jobCode.url,
+                frameworkName = jobCode.framework,
+                level = level,
+                parents = parents,
+                jobCodeLevelAsNumber = jobCode.jobCodeLevelAsNumber
+            )
         }
 
         fun getLevelFromJobCode(jobCode: JobCode): JobCodeLevel {

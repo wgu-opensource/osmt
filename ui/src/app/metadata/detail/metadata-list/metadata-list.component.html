@@ -76,6 +76,12 @@
       (pageClicked)="handlePageClicked($event)"
     ></app-pagination>
 
+    <div *ngIf="totalCount > 0" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
+      <div class="l-container l-container-tablet">
+        <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
+      </div>
+    </div>
+
   </div>
 
 </div>

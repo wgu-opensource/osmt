@@ -6,6 +6,7 @@ export interface IJobCode {
   code: string
   targetNode?: number
   frameworkName?: string
+  jobCodeLevelAsNumber?: number
   level?: JobCodeLevel
   parents?: IJobCode[]
   major?: string

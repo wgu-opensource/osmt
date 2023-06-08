@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild } from "@angular/core"
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core"
 import { FormControl, FormGroup } from "@angular/forms"
 import { Observable, Subject } from "rxjs"
 import { PaginatedMetadata } from "../../PaginatedMetadata"
 import { ApiSortOrder } from "../../../richskill/ApiSkill"
 import { ApiJobCode, IJobCode } from "../../job-codes/Jobcode"
 import { TableActionBarComponent } from "../../../table/skills-library-table/table-action-bar.component"
-import { Whitelabelled } from "../../../../whitelabel"
 import { ApiNamedReference, INamedReference } from "../../named-references/NamedReference"
 import { TableActionDefinition } from "../../../table/skills-library-table/has-action-definitions"
 import { ButtonAction } from "../../../auth/auth-roles"
@@ -13,12 +12,14 @@ import { AuthService } from "../../../auth/auth-service"
 import { MetadataType } from "../../rsd-metadata.enum"
 import { JobCodeService } from "../../job-codes/service/job-code.service"
 import { ToastService } from "../../../toast/toast.service"
+import { ApiSkillSummary } from "../../../richskill/ApiSkillSummary"
+import { QuickLinksHelper } from "../../../core/quick-links-helper"
 
 @Component({
   selector: "app-metadata-list",
   templateUrl: "./metadata-list.component.html"
 })
-export class MetadataListComponent extends Whitelabelled implements OnInit {
+export class MetadataListComponent extends QuickLinksHelper implements OnInit {
 
   @ViewChild(TableActionBarComponent) actionBar!: TableActionBarComponent
 
@@ -26,6 +27,7 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
   handleSelectedMetadata?: IJobCode[] | INamedReference[]
   selectedMetadataType = "categories"
   matchingQuery?: string = ""
+  @ViewChild("titleHeading") titleElement!: ElementRef
 
   typeControl: FormControl = new FormControl(this.selectedMetadataType)
   columnSort: ApiSortOrder = ApiSortOrder.NameAsc
@@ -180,13 +182,25 @@ export class MetadataListComponent extends Whitelabelled implements OnInit {
     const tableActions: TableActionDefinition[] = []
     tableActions.push(
       new TableActionDefinition({
+        label: "Back to Top",
+        icon: "up",
+        offset: true,
+        callback: () => this.handleClickBackToTop(),
+        visible: () => true
+      }),
+      new TableActionDefinition({
         label: "Delete selected",
-        icon: "dismiss",
+        icon: "remove",
         callback: () => this.handleDeleteMultipleMetadata(),
         visible: () => (this.handleSelectedMetadata?.length ?? 0) > 0
       })
     )
     return tableActions
+  }
+
+  handleClickBackToTop(): boolean {
+    this.focusAndScrollIntoView(this.titleElement.nativeElement)
+    return false
   }
 
   get selectedJobCodesOrderedByLevel(): IJobCode[] {

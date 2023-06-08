@@ -3,6 +3,21 @@
 
   <div class="l-container t-padding-large t-padding-top">
 
+    <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+      <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom" #titleHeading>{{title}}</h2>
+      <p class="t-type-bodyLarge t-type-text3">
+        {{metadataCountLabel}}
+
+        <span *ngIf="matchingQuery">
+            found based on
+            query: "{{matchingQuery}}"
+          </span>
+        <ng-template [ngIf]="totalCount > 0">
+          Viewing {{firstRecordNo}}-{{lastRecordNo}}.
+        </ng-template>
+      </p>
+    </div>
+
     <!--    {{render '@listheading'}}-->
     <div class="t-margin-medium t-margin-bottom">
       <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
@@ -15,20 +30,6 @@
           </app-metadata-selector>
         </div>
       </form>
-    </div>
-    <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
-      <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom">{{title}}</h2>
-      <p class="t-type-bodyLarge t-type-text3">
-        {{metadataCountLabel}}
-
-          <span *ngIf="matchingQuery">
-            found based on
-            query: "{{matchingQuery}}"
-          </span>
-        <ng-template [ngIf]="totalCount > 0">
-          Viewing {{firstRecordNo}}-{{lastRecordNo}}.
-        </ng-template>
-      </p>
     </div>
 
     <div class="t-margin-medium t-margin-bottom">

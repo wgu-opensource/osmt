@@ -116,7 +116,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
         visible: () => true
       }),
       new TableActionDefinition({
-        label: "Delete selected",
+        label: "Delete Selected",
         icon: "remove",
         callback: () => this.handleDeleteMultipleMetadata(),
         visible: () => (this.handleSelectedData?.length ?? 0) > 0

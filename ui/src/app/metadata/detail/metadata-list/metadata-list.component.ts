@@ -1,10 +1,8 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core"
-import { FormControl, FormGroup } from "@angular/forms"
-import { Observable, Subject } from "rxjs"
+import { Component, OnInit } from "@angular/core"
+import { FormControl } from "@angular/forms"
+import { Subject } from "rxjs"
 import { PaginatedMetadata } from "../../PaginatedMetadata"
-import { ApiSortOrder } from "../../../richskill/ApiSkill"
 import { ApiJobCode, IJobCode } from "../../job-codes/Jobcode"
-import { TableActionBarComponent } from "../../../table/skills-library-table/table-action-bar.component"
 import { ApiNamedReference, INamedReference } from "../../named-references/NamedReference"
 import { TableActionDefinition } from "../../../table/skills-library-table/has-action-definitions"
 import { ButtonAction } from "../../../auth/auth-roles"
@@ -12,35 +10,20 @@ import { AuthService } from "../../../auth/auth-service"
 import { MetadataType } from "../../rsd-metadata.enum"
 import { JobCodeService } from "../../job-codes/service/job-code.service"
 import { ToastService } from "../../../toast/toast.service"
-import { ApiSkillSummary } from "../../../richskill/ApiSkillSummary"
-import { QuickLinksHelper } from "../../../core/quick-links-helper"
+import { AbstractListComponent } from "../../../table/abstract-list.component"
 
 @Component({
   selector: "app-metadata-list",
   templateUrl: "./metadata-list.component.html"
 })
-export class MetadataListComponent extends QuickLinksHelper implements OnInit {
+export class MetadataListComponent extends AbstractListComponent<IJobCode | INamedReference> implements OnInit {
 
-  @ViewChild(TableActionBarComponent) actionBar!: TableActionBarComponent
-
-  title = "Metadata"
-  handleSelectedMetadata?: IJobCode[] | INamedReference[]
   selectedMetadataType = "categories"
-  matchingQuery?: string = ""
-  @ViewChild("titleHeading") titleElement!: ElementRef
 
   typeControl: FormControl = new FormControl(this.selectedMetadataType)
-  columnSort: ApiSortOrder = ApiSortOrder.NameAsc
 
-  from = 0
-  size = 50
   showSearchEmptyMessage = false
-  resultsLoaded: Observable<PaginatedMetadata> | undefined
   canDeleteMetadata = this.authService.isEnabledByRoles(ButtonAction.MetadataAdmin)
-
-  searchForm = new FormGroup({
-    search: new FormControl("")
-  })
 
   sampleNamedReferenceResult = new PaginatedMetadata([
     new ApiNamedReference({id: "id1", framework: "framework1", name: "name1", type: MetadataType.Category, value: "value1"}),
@@ -86,9 +69,8 @@ export class MetadataListComponent extends QuickLinksHelper implements OnInit {
 
   loadNextPage(): void {
     if (this.isJobCodeDataSelected) {
-      this.jobCodeService.paginatedJobCodes(this.size, this.from, this.columnSort, this.matchingQuery).subscribe(
-        jobCodes => this.results = jobCodes
-      )
+      this.resultsLoaded = this.jobCodeService.paginatedJobCodes(this.size, this.from, this.columnSort, this.matchingQuery)
+      this.resultsLoaded.subscribe(jobCodes => this.results = jobCodes)
     } else {
       this.results = this.sampleNamedReferenceResult
     }
@@ -96,75 +78,20 @@ export class MetadataListComponent extends QuickLinksHelper implements OnInit {
 
   handleSelectAll(selectAllChecked: boolean): void {}
 
-  handleNewSelection(selected: IJobCode[] | INamedReference[]): void {
-    this.handleSelectedMetadata = selected
-  }
-
-  handleHeaderColumnSort(sort: ApiSortOrder): void {
-    this.columnSort = sort
-    this.from = 0
-    this.loadNextPage()
-  }
-
-  get totalCount(): number {
-    return this.results?.totalCount ?? 0
-  }
-
   get metadataCountLabel(): string {
     return `${this.totalCount} ${this.selectedMetadataType}`
   }
 
-  get firstRecordNo(): number {
-    return this.from + 1
-  }
-  get lastRecordNo(): number {
-    return Math.min(this.from + this.curPageCount, this.totalCount)
-  }
-
-  get totalPageCount(): number {
-    return Math.ceil(this.totalCount / this.size)
-  }
-  get currentPageNo(): number {
-    return Math.floor(this.from / this.size) + 1
-  }
-
-  get curPageCount(): number {
-    return this.results?.metadata.length ?? 0
-  }
-
-  get emptyResults(): boolean {
-    return this.curPageCount < 1
-  }
   get isJobCodeDataSelected(): boolean {
     return this.selectedMetadataType === MetadataType.Occupation
   }
 
-  getSelectAllCount(): number {
-    return this.curPageCount
-  }
-
-  getSelectAllEnabled(): boolean {
-    return true
-  }
-
-  focusActionBar(): void {
-    this.actionBar?.focus()
-  }
   getJobCodes(): IJobCode[] {
-    return (this.results?.metadata) as IJobCode[]
+    return (this.results?.data) as IJobCode[]
   }
 
   getNamedReferences(): INamedReference[] {
-    return (this.results?.metadata) as INamedReference[]
-  }
-
-  navigateToPage(newPageNo: number): void {
-    this.from = (newPageNo - 1) * this.size
-    this.loadNextPage()
-  }
-
-  handlePageClicked(newPageNo: number): void {
-    this.navigateToPage(newPageNo)
+    return (this.results?.data) as INamedReference[]
   }
 
   rowActions(): TableActionDefinition[] {
@@ -192,19 +119,14 @@ export class MetadataListComponent extends QuickLinksHelper implements OnInit {
         label: "Delete selected",
         icon: "remove",
         callback: () => this.handleDeleteMultipleMetadata(),
-        visible: () => (this.handleSelectedMetadata?.length ?? 0) > 0
+        visible: () => (this.handleSelectedData?.length ?? 0) > 0
       })
     )
     return tableActions
   }
 
-  handleClickBackToTop(): boolean {
-    this.focusAndScrollIntoView(this.titleElement.nativeElement)
-    return false
-  }
-
   get selectedJobCodesOrderedByLevel(): IJobCode[] {
-    return (this.handleSelectedMetadata as IJobCode[]).sort((a, b) => {
+    return (this.handleSelectedData as IJobCode[]).sort((a, b) => {
       if ((a.jobCodeLevelAsNumber ?? 0) > (b.jobCodeLevelAsNumber ?? 0)) {
         return -1
       } else if ((a.jobCodeLevelAsNumber) ?? 0 < (b.jobCodeLevelAsNumber ?? 0)) {
@@ -232,7 +154,7 @@ export class MetadataListComponent extends QuickLinksHelper implements OnInit {
         }
       })
     } else {
-      this.handleSelectedMetadata = []
+      this.handleSelectedData = []
       if (notDeleted > 0) {
         this.toastService.showToast("Warning", "Some occupations cannot be deleted")
       } else {
@@ -260,4 +182,5 @@ export class MetadataListComponent extends QuickLinksHelper implements OnInit {
       })
     }
   }
+
 }

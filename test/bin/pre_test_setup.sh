@@ -66,8 +66,7 @@ curl_with_retry() {
       fi
       if [[ ${retry_limit} -eq 0 ]]; then
         echo_err "Could not load the index page."
-        cat "${log_file}">STDOUT
-        cat "${log_file}">STDERR
+        cat "${log_file}"
         return 1
       fi
       if [[ ${rc} -ne 0 ]]; then

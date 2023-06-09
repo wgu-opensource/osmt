@@ -18,6 +18,10 @@ declare -r MYSQL_USER="${MYSQL_USER:-osmt_db_user}"
 declare -r MYSQL_PASSWORD="${MYSQL_PASSWORD:-password}"
 declare -r ELASTICSEARCH_HTTP_PORT="${ELASTICSEARCH_HTTP_PORT:-9200}"
 declare -r ELASTICSEARCH_TRANSPORT_PORT="${ELASTICSEARCH_TRANSPORT_PORT:-9300}"
+declare OAUTH_ISSUER="${OAUTH_ISSUER:-}"
+declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
+declare OAUTH_CLIENTSECRET="${OAUTH_CLIENTSECRET:-}"
+declare OAUTH_AUDIENCE="${OAUTH_AUDIENCE:-}"
 
 
 # new line formatted to indent with echo_err / echo_info etc
@@ -46,6 +50,17 @@ _cd_osmt_project_dir() {
 
 _source_osmt_env_file() {
   local env_file="${1}"
+
+ # gracefully bypass sourcing env file if these 4 OAUTH values are provided
+  if [[ \
+      -n "${OAUTH_ISSUER}" && \
+      -n "${OAUTH_CLIENTID}" &&\
+      -n "${OAUTH_CLIENTSECRET}" && \
+      -n "${OAUTH_AUDIENCE}" \
+    ]]; then
+      echo_info "Using OAUTH environment variables, not using ${env_file} env file."
+      return 0
+    fi
 
   if [[ ! -f "${env_file}" ||  ! -r "${env_file}" ]]; then
     echo_err "Can not access ${env_file}. You can initialize the environment files by running $(basename "${0}") -i$"

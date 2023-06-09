@@ -97,6 +97,7 @@ function main() {
     console.log(`\nERROR: Could not parse test information for the following `
         + `${failedEndpoints.length} endpoint(s):`);
     console.log(failedEndpoints);
+    throw 135
   }
   else {
     console.log("INFO: All collection endpoints successfully populated with tests.");

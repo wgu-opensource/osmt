@@ -11,7 +11,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-20.04
 
     steps:
@@ -23,5 +22,15 @@ jobs:
         distribution: 'adopt'
     - name: Maven version
       run: mvn -version
-    - name: Build with Maven
-      run: mvn -B package
+    - name: API testing with Maven
+      run: mvn clean install -Prun-api-tests
+      env:
+        OAUTH_CLIENTID: "${{secrets.OAUTH_CLIENTID}}"
+        OAUTH_CLIENTSECRET: "${{secrets.OAUTH_CLIENTSECRET}}"
+        OAUTH_AUDIENCE: "${{secrets.OAUTH_AUDIENCE}}"
+        OAUTH_ISSUER: "${{secrets.OAUTH_ISSUER}}"
+        OKTA_USERNAME: "${{secrets.OKTA_USERNAME}}"
+        OKTA_PASSWORD: "${{secrets.OKTA_PASSWORD}}"
+        OKTA_URL: "${{secrets.OKTA_URL}}"
+        BASE_URL: "http://localhost:8080"
+        APP_START_CHECK_RETRY_LIMIT: 100

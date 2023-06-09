@@ -21,6 +21,7 @@ export BASE_URL="http://${BASE_DOMAIN}"
 export OSMT_FRONT_END_PORT="${APP_PORT}"
 
 declare -ri LOAD_CI_DATASET="${LOAD_CI_DATASET:-0}"
+declare -i APP_START_CHECK_RETRY_LIMIT="${APP_START_CHECK_RETRY_LIMIT:-12}"
 
 _get_osmt_project_dir() {
   local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
@@ -51,10 +52,12 @@ inject_tests() {
 }
 
 curl_with_retry() {
+  local log_file; log_file="${project_dir}/test/target/osmt_spring_app.log"
   local -i rc=-1
-  local -i retry_limit=12
+  local -i retry_limit=${APP_START_CHECK_RETRY_LIMIT}
   until [ ${rc} -eq 0 ] && [ ${retry_limit} -eq 0 ]; do
       echo_info "Attempting to request the index page of the OSMT Spring app with curl..."
+      echo_info "${BASE_URL}"
       curl -s "${BASE_URL}" 1>/dev/null 2>/dev/null
       rc=$?
       if [[ ${rc} -eq 0 ]]; then
@@ -62,7 +65,11 @@ curl_with_retry() {
         return 0
       fi
       if [[ ${retry_limit} -eq 0 ]]; then
+        echo
+        echo_info "osmt_spring_app log file below..."
+        echo
         echo_err "Could not load the index page."
+        cat "${log_file}"
         return 1
       fi
       if [[ ${rc} -ne 0 ]]; then
@@ -116,7 +123,7 @@ error_handler() {
 
 main() {
   local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
-  local log_file; log_file="${project_dir}/api/target/osmt_spring_app.log"
+  local log_file; log_file="${project_dir}/test/target/osmt_spring_app.log"
 
   # Adding docker clean up at the beginning to keep previous test state
   # in case we need to debug and cleaning up docker could remove logs.

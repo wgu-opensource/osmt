@@ -1,17 +1,16 @@
 <table class="l-table">
-  <caption> </caption>
   <thead>
     <tr class="m-tableHeader">
-      <td class="t-hidden-tabletMin" aria-hidden="true">
+      <th class="t-hidden-tabletMin" aria-hidden="true">
         <app-label-with-select
           label="Occupation"
           [options]="mobileSortOptions"
           [currentSort]="currentSort"
           (sortChanged)="mobileSortColumn($event)"
         ></app-label-with-select>
-      </td>
+      </th>
 
-      <td class="t-hidden-tabletMax"  aria-hidden="true">
+      <th class="t-hidden-tabletMax" aria-hidden="true">
         <app-label-with-filter
           *ngIf="allowSorting; else noSortName"
           label="Occupation"
@@ -23,9 +22,9 @@
             <span class="m-tableLabel-x-text">Target Node Name</span>
           </span>
         </ng-template>
-      </td>
+      </th>
 
-      <td class="t-hidden-tabletMax"  aria-hidden="true">
+      <th class="t-hidden-tabletMax"  aria-hidden="true">
         <app-label-with-filter
           *ngIf="allowSorting; else noSortName"
           label="Job Code"
@@ -37,9 +36,9 @@
             <span class="m-tableLabel-x-text">Code</span>
           </span>
         </ng-template>
-      </td>
+      </th>
 
-      <td class="t-hidden-tabletMax"  aria-hidden="true">
+      <th class="t-hidden-tabletMax" aria-hidden="true">
         <app-label-with-filter
           *ngIf="allowSorting; else noSortName"
           label="Level"
@@ -51,21 +50,22 @@
             <span class="m-tableLabel-x-text">Job Code Level</span>
           </span>
         </ng-template>
-      </td>
+      </th>
 
-      <td class="t-hidden-tabletMax" aria-hidden="true">
+      <th class="t-hidden-tabletMax" aria-hidden="true">
         <span class="m-tableLabel">
-          <span class="m-tableLabel-x-text">Parents</span>
+          <span class="m-tableLabel-x-text">Parent Groups</span>
         </span>
-      </td>
-      <td class="m-tableHeader-x-actions" aria-hidden="true" style="width: 80px">
+      </th>
+
+      <th class="m-tableHeader-x-actions" aria-hidden="true">
         <app-select-all
           [selectAllEnabled]="selectAllEnabled"
           (valueChange)="handleSelectAll($event)"
           [totalCount]="getSelectAllCount()"
           [totalPageCount]="items.length">
         </app-select-all>
-      </td>
+      </th>
 
     </tr>
   </thead>

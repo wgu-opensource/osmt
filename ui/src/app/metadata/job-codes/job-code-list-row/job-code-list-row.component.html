@@ -1,21 +1,21 @@
 <ng-template [ngIf]="!!jobCode">
 
-  <th scope="row" id="{{id}}-header">
+  <td id="{{id}}-header">
     <a id="{{id}}-header-name" class="t-focus t-type-bodyLink" routerLink="/job-codes/{{jobCode.code}}/manage">{{jobCode.targetNodeName}}</a>
-  </th>
-  <th scope="row" id="{{id}}-header">
+  </td>
+  <td id="{{id}}-header">
     <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.code}}</a>
-  </th>
-  <th scope="row" id="{{id}}-header">
+  </td>
+  <td id="{{id}}-header">
     <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{jobCode.level}}</a>
-  </th>
-  <th scope="row" id="{{id}}-header">
+  </td>
+  <td id="{{id}}-header">
     <ul>
       <li id="{{id}}-header-name" class="t-focus t-type-bodyLink" *ngFor="let parent of sortedParents()" style="padding: 5px">
             {{parent | jobCodeParents}}
       </li>
     </ul>
-  </th>
+  </td>
 
   <td class="m-tableRow-x-actions">
     <div>

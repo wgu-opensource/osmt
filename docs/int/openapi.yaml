@@ -1465,6 +1465,8 @@ components:
         - properties:
             id:
               type: number
+            jobCodeLevelAsNumber:
+              type: number
 
     JobCodeLevel:
       type: string

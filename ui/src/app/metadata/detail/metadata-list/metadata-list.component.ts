@@ -18,7 +18,7 @@ import { AbstractListComponent } from "../../../table/abstract-list.component"
 })
 export class MetadataListComponent extends AbstractListComponent<IJobCode | INamedReference> implements OnInit {
 
-  selectedMetadataType = "categories"
+  selectedMetadataType = MetadataType.Category
 
   typeControl: FormControl = new FormControl(this.selectedMetadataType)
 
@@ -82,7 +82,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
   }
 
   get isJobCodeDataSelected(): boolean {
-    return this.selectedMetadataType === MetadataType.Occupation
+    return this.selectedMetadataType === MetadataType.JobCode
   }
 
   getJobCodes(): IJobCode[] {

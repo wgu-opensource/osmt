@@ -6,5 +6,5 @@ export enum MetadataType {
   Alignment = "alignments",
   Employer = "employers",
   Author = "authors",
-  Occupation = "occupations"
+  JobCode = "occupations"
 }

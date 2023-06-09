@@ -99,6 +99,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
       tableActions.push(new TableActionDefinition({
         label: `Delete`,
         callback: (action: TableActionDefinition, metadata?: IJobCode | INamedReference) => this.handleClickDeleteItem(metadata),
+        visible: () => !this.selectAllChecked
       }))
     }
     return tableActions

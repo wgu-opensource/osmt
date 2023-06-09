@@ -31,6 +31,6 @@ jobs:
         OAUTH_ISSUER: "${{secrets.OAUTH_ISSUER}}"
         OKTA_USERNAME: "${{secrets.OKTA_USERNAME}}"
         OKTA_PASSWORD: "${{secrets.OKTA_PASSWORD}}"
-        OKTA_URL: "${{secrets.OAUTH_ISSUER}}"
+        OKTA_URL: "${{secrets.OKTA_URL}}"
         BASE_URL: "http://localhost:8080"
         APP_START_CHECK_RETRY_LIMIT: 100

@@ -37,7 +37,8 @@ function get_bearer_token() {
       --env-var oktaUrl="$OKTA_URL" \
       --env-var baseUrl="$BASE_URL" \
       --ignore-redirects \
-      --export-environment "$auth_env"
+      --export-environment "$auth_env" \
+      --verbose
 
   bearer_token="$( node "$test_dir/postman/getToken.js")"
   echo "Retrieved token:"
@@ -52,7 +53,8 @@ run_api_tests() {
   npx "$test_dir/node_modules/.bin/newman" \
     run "$test_dir/postman/osmt-testing.postman_collection.json" \
       --env-var baseUrl="$BASE_URL" \
-      --env-var bearerToken="$bearer_token"
+      --env-var bearerToken="$bearer_token" \
+      --verbose
 }
 
 run_shutdown_script() {

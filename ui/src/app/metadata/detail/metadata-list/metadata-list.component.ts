@@ -149,7 +149,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
     if (index < jobCodes.length) {
       this.jobCodeService.deleteJobCodeWithResult(jobCodes[index].id ?? 0).subscribe(data => {
         if (data && data.success) {
-          this.handleDeleteMultipleJobCodes(jobCodes, index + 1)
+          this.handleDeleteMultipleJobCodes(jobCodes, index + 1, notDeleted)
         } else if (data && !data.success) {
           this.handleDeleteMultipleJobCodes(jobCodes, index + 1, notDeleted + 1)
         }

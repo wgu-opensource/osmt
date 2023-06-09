@@ -1,4 +1,4 @@
-import {Component, EventEmitter, HostListener, Input, OnInit, Output} from "@angular/core"
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core"
 import {ApiSortOrder} from "../richskill/ApiSkill"
 import {TableActionDefinition} from "./skills-library-table/has-action-definitions"
 import {SvgHelper, SvgIcon} from "../core/SvgHelper"
@@ -13,7 +13,7 @@ import {SelectAllEvent} from "../models"
   selector: "app-abstract-table",
   template: ``
 })
-export class AbstractTableComponent<SummaryT> implements OnInit {
+export class AbstractTableComponent<SummaryT> implements OnInit, OnChanges {
 
   @Input() items: SummaryT[] = []
   @Input() currentSort?: ApiSortOrder = undefined
@@ -41,6 +41,14 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
 
   ngOnInit(): void {
     this.clearSelected.subscribe(next => this.selectedItems = new Set())
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.items) {
+      this.isAllSelected = false
+      this.selectedItems.clear()
+      this.rowSelected.emit(Array.from(this.selectedItems))
+    }
   }
 
   getNameSort(): boolean | undefined {

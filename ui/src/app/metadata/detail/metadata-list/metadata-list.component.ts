@@ -68,6 +68,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
   }
 
   loadNextPage(): void {
+    this.selectedData = []
     if (this.isJobCodeDataSelected) {
       this.resultsLoaded = this.jobCodeService.paginatedJobCodes(this.size, this.from, this.columnSort, this.matchingQuery)
       this.resultsLoaded.subscribe(jobCodes => this.results = jobCodes)
@@ -75,8 +76,6 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
       this.results = this.sampleNamedReferenceResult
     }
   }
-
-  handleSelectAll(selectAllChecked: boolean): void {}
 
   get metadataCountLabel(): string {
     return `${this.totalCount} ${this.selectedMetadataType}`
@@ -119,14 +118,14 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
         label: "Delete Selected",
         icon: "remove",
         callback: () => this.handleDeleteMultipleMetadata(),
-        visible: () => (this.handleSelectedData?.length ?? 0) > 0
+        visible: () => (this.selectedData?.length ?? 0) > 0
       })
     )
     return tableActions
   }
 
   get selectedJobCodesOrderedByLevel(): IJobCode[] {
-    return (this.handleSelectedData as IJobCode[]).sort((a, b) => {
+    return (this.selectedData as IJobCode[]).sort((a, b) => {
       if ((a.jobCodeLevelAsNumber ?? 0) > (b.jobCodeLevelAsNumber ?? 0)) {
         return -1
       } else if ((a.jobCodeLevelAsNumber) ?? 0 < (b.jobCodeLevelAsNumber ?? 0)) {
@@ -154,7 +153,6 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
         }
       })
     } else {
-      this.handleSelectedData = []
       if (notDeleted > 0) {
         this.toastService.showToast("Warning", "Some occupations cannot be deleted")
       } else {

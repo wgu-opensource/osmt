@@ -25,8 +25,9 @@ export abstract class AbstractListComponent<T> extends QuickLinksHelper {
     search: new FormControl("")
   })
   results!: PaginatedData<T>
-  handleSelectedData?: T[]
+  selectedData?: T[]
   resultsLoaded: Observable<PaginatedMetadata> | undefined
+  selectAllChecked = false
 
   abstract rowActions(): TableActionDefinition[]
 
@@ -86,13 +87,17 @@ export abstract class AbstractListComponent<T> extends QuickLinksHelper {
   }
 
   handleNewSelection(selected: T[]): void {
-    this.handleSelectedData = selected
+    this.selectedData = selected
   }
 
   handleHeaderColumnSort(sort: ApiSortOrder): void {
     this.columnSort = sort
     this.from = 0
     this.loadNextPage()
+  }
+
+  handleSelectAll(selectAllChecked: boolean): void {
+    this.selectAllChecked = selectAllChecked
   }
 
 }

@@ -35,6 +35,7 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
 
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
   isShiftPressed = false
+  isAllSelected = false
 
   constructor() { }
 
@@ -100,20 +101,24 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
   onRowToggle(item: SummaryT): void {
     if (this.selectedItems.has(item)) {
       this.selectedItems.delete(item)
+      if (this.isAllSelected) {
+        this.isAllSelected = false
+      }
     } else {
       this.selectedItems.add(item)
       this.shiftSelection(item)
     }
+    this.selectAllSelected.emit(this.isAllSelected)
     this.rowSelected.emit(Array.from(this.selectedItems))
   }
 
   shiftSelection(item: SummaryT): void {}
 
   handleSelectAll(event: SelectAllEvent): void {
-    const isCheckboxSelected: boolean = event.selected
-    const isAllResultsSelected: boolean = event.selected && event.value === SelectAll.SELECT_ALL
+    this.isAllSelected = event.selected
+    const isAllResultsSelected: boolean = event.selected && event.value === SelectAll.SELECT_ALL // select all across pages
     this.selectAllSelected.emit(isAllResultsSelected)
-    if (isCheckboxSelected) {
+    if (this.isAllSelected) {
       this.items.forEach(it => this.selectedItems.add(it))
     } else {
       this.selectedItems.clear()

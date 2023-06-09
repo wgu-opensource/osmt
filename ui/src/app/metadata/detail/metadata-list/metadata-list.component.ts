@@ -53,16 +53,17 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
         this.selectedMetadataType = value
         this.loadNextPage()
       })
-    this.searchForm.get("search")?.valueChanges.subscribe( value => this.matchingQuery = value ?? "")
     this.loadNextPage()
     }
 
   clearSearch(): void {
     this.searchForm.get("search")?.patchValue("")
+    this.matchingQuery = ""
     this.handleDefaultSubmit()
   }
 
   handleDefaultSubmit(): void {
+    this.matchingQuery = this.searchForm.get("search")?.value ?? ""
     this.from = 0
     this.loadNextPage()
   }
@@ -95,7 +96,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
 
   rowActions(): TableActionDefinition[] {
     const tableActions = []
-    if (this.canDeleteMetadata) {
+    if (this.canDeleteMetadata && !this.selectAllChecked) {
       tableActions.push(new TableActionDefinition({
         label: `Delete`,
         callback: (action: TableActionDefinition, metadata?: IJobCode | INamedReference) => this.handleClickDeleteItem(metadata),

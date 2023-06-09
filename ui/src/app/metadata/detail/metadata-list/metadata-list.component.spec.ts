@@ -60,6 +60,7 @@ describe("ManageMetadataComponent", () => {
   it("matching query should be updated", () => {
     const matchingQuery = "95-0000"
     component.searchForm.get("search")?.patchValue(matchingQuery)
+    component.handleDefaultSubmit()
     expect(component.matchingQuery).toEqual(matchingQuery)
   })
 

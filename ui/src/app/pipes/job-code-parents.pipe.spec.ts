@@ -10,6 +10,7 @@ describe("JobCodeParentsPipe", () => {
 
   it("should transform correctly", () => {
     const pipe = new JobCodeParentsPipe();
-    expect(pipe.transform(mockJobCodesParents[2])).toEqual("13-0000 Business and Financial Operations Occupations")
+    const [parent] = mockJobCodesParents
+    expect(pipe.transform(parent)).toEqual(parent.code + " " + parent.targetNodeName)
   })
 });

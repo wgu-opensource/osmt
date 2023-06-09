@@ -54,7 +54,7 @@ describe("JobCodeService", () => {
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.paginatedJobCodes(testData.metadata.length, 0, ApiSortOrder.NameAsc, undefined)
+    const result$ = testService.paginatedJobCodes(testData.data.length, 0, ApiSortOrder.NameAsc, undefined)
 
     // Assert
     result$
@@ -66,7 +66,7 @@ describe("JobCodeService", () => {
 
     const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
     expect(req.request.method).toEqual("GET")
-    req.flush(testData.metadata, {
+    req.flush(testData.data, {
       headers: { "x-total-count": "" + testData.totalCount}
     })
   })

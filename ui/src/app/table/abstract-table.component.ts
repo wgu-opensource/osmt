@@ -35,7 +35,7 @@ export class AbstractTableComponent<SummaryT> implements OnInit, OnChanges {
 
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
   isShiftPressed = false
-  isAllSelected = false
+  isAllPageSelected = false
 
   constructor() { }
 
@@ -45,7 +45,7 @@ export class AbstractTableComponent<SummaryT> implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.items) {
-      this.isAllSelected = false
+      this.isAllPageSelected = false
       this.selectedItems.clear()
       this.rowSelected.emit(Array.from(this.selectedItems))
     }
@@ -109,24 +109,27 @@ export class AbstractTableComponent<SummaryT> implements OnInit, OnChanges {
   onRowToggle(item: SummaryT): void {
     if (this.selectedItems.has(item)) {
       this.selectedItems.delete(item)
-      if (this.isAllSelected) {
-        this.isAllSelected = false
+      if (this.isAllPageSelected) {
+        this.isAllPageSelected = false
       }
     } else {
       this.selectedItems.add(item)
       this.shiftSelection(item)
+      if (this.selectedItems.size === this.items.length) {
+        this.isAllPageSelected = true
+      }
     }
-    this.selectAllSelected.emit(this.isAllSelected)
+    this.selectAllSelected.emit(this.isAllPageSelected)
     this.rowSelected.emit(Array.from(this.selectedItems))
   }
 
   shiftSelection(item: SummaryT): void {}
 
   handleSelectAll(event: SelectAllEvent): void {
-    this.isAllSelected = event.selected
+    this.isAllPageSelected = event.selected
     const isAllResultsSelected: boolean = event.selected && event.value === SelectAll.SELECT_ALL // select all across pages
     this.selectAllSelected.emit(isAllResultsSelected)
-    if (this.isAllSelected) {
+    if (this.isAllPageSelected) {
       this.items.forEach(it => this.selectedItems.add(it))
     } else {
       this.selectedItems.clear()

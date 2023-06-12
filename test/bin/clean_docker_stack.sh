@@ -2,9 +2,11 @@
 
 set -eu
 
+export OSMT_STACK_NAME=osmt_api_test
+
 clean_docker_stack() {
-  local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
-  echo_info "Stopping OSMT ${OSMT_STACK_NAME} Docker stack"
+  local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
+  echo "INFO: Stopping OSMT ${OSMT_STACK_NAME} Docker stack"
   cd "${project_dir}/docker" || return 1
   docker-compose --file dev-stack.yml --project-name "${OSMT_STACK_NAME}" down
   rc=$?
@@ -14,14 +16,16 @@ clean_docker_stack() {
   fi
 
   echo
-  echo_info "Removing OSMT-related Docker containers..."
+  echo "INFO: Removing OSMT-related Docker containers..."
   docker ps -aq --filter=name='osmt_api*' | xargs docker rm
 
   echo
-  echo_info "Removing OSMT-related Docker images..."
+  echo "INFO: Removing OSMT-related Docker images..."
   docker images -q --filter=reference='osmt_api*' | xargs docker rmi
 
   echo
-  echo_info "Removing OSMT-related Docker volumes..."
+  echo "INFO: Removing OSMT-related Docker volumes..."
   docker volume ls -q -f name=osmt_api | xargs docker volume rm -f {} &> /dev/null
 }
+
+clean_docker_stack

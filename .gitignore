@@ -41,8 +41,8 @@ osmt*.env
 
 # Testing ENV
 # Created at runtime
-/test/postman/osmt.postman_collection.json
-/test/postman/osmt-testing.postman_collection.json
+/test/postman/osmt-testing-*
+/test/postman/osmt-api-*
 /test/postman/osmt-auth.environment.json
 /test/postman/token.env
 /test/node_modules

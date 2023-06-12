@@ -54,30 +54,6 @@ inject_tests() {
   node "${project_dir}/test/postman/test-injector.js" "${inputFile}" "${outputFile}" "${apiVersion}"
 }
 
-curl_with_retry() {
-  local -i rc=-1
-  local -i retry_limit=12
-  until [ ${rc} -eq 0 ] && [ ${retry_limit} -eq 0 ]; do
-      echo_info "Attempting to request the index page of the OSMT Spring app with curl..."
-      curl -s "${BASE_URL}" 1>/dev/null 2>/dev/null
-      rc=$?
-      if [[ ${rc} -eq 0 ]]; then
-        echo_info "Index page loaded. Proceeding..."
-        return 0
-      fi
-      if [[ ${retry_limit} -eq 0 ]]; then
-        echo_err "Could not load the index page."
-        return 1
-      fi
-      if [[ ${rc} -ne 0 ]]; then
-        echo_info "Could not load the index page. Will retry ${retry_limit} more times. Retrying in 10 seconds..."
-      fi
-      # shell check SC2219
-      ((retry_limit--)) || true
-      sleep 10
-  done
-}
-
 echo_info() {
   echo "INFO: $*"
 }
@@ -100,7 +76,7 @@ main() {
   # Adding docker clean up at the beginning to keep previous test state
   # in case we need to debug and cleaning up docker could remove logs.
   if [[ -n $(docker ps -aq --filter=name="osmt_api*") ]]; then
-    ./clean_docker_stack
+    "${project_dir}/test/bin/clean_docker_stack.sh"
   fi
 
   # Run NPM install
@@ -111,15 +87,15 @@ main() {
   echo_info "Starting OSMT Spring app for ${OSMT_STACK_NAME}. Output is suppressed, because console is detached."
   echo_info "See 'osmt_spring_app.log' for console output. Proceeding..."
 
+  # create log file
   touch "$log_file"
-  ./start_osmt_app.sh
 
   # curl the Spring app and retry for 2 minutes
-  curl_with_retry || exit 135
+  "${project_dir}/test/bin/start_osmt_app.sh"
 
   if [[ "${LOAD_CI_DATASET}" -eq 0  ]]; then
     # load CI static dataset and reindex ElasticSearch
-    ./load_and_reindex_ci_data.sh || exit 135
+    "${project_dir}/test/bin/load_and_reindex_ci_data.sh" || exit 135
   fi
 
   # Create postman collection

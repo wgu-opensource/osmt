@@ -77,9 +77,9 @@ get_bearer_token
 run_api_tests "v2"
 run_shutdown_script
 # Need to refresh CI data between versioned tests
-# clean_docker_stack
-# Start_OSMT_APP (osmt_cli)
-# LOAD_CI_DATASET AND REINDEX
+#./clean_docker_stack.sh
+# ./start_osmt_app.sh
+# ./load_and_reindex_ci_data.sh
 
 #run_api_tests "v3"
 #run_shutdown_script

@@ -1,0 +1,235 @@
+{
+	"type": "RichSkillDescriptor",
+	"id": "http://localhost:8080/api/skills/c9d819b3-de84-401e-808a-ddcbfbdd4953",
+	"archiveDate": null,
+	"publishDate": "2023-03-30T13:02:07.411364Z",
+	"creationDate": "2023-02-27T21:02:47.15505Z",
+	"updateDate": "2023-03-30T13:02:07.411354Z",
+	"alignments": [
+		{
+			"id": "https://skills.emsidata.com/skills/KS1254M6N7QPZ96MGR0L",
+			"skillName": "Information Security Management"
+		}
+	],
+	"categories": [
+		"Information Security Management"
+	],
+	"certifications": [],
+	"employers": [],
+	"keywords": [
+		"Risk",
+		"Information Security Management",
+		"Compromise Assessment",
+		"Computer Emergency Response Teams (CERT)",
+		"Computer Security Incident Response (CSIRT)",
+		"Defense Information Systems Agency (DISA)",
+		"Dynamic Application Security Testing (DAST)",
+		"Information Asset Classification",
+		"Personnel Security",
+		"Security Architecture",
+		"Security by Design",
+		"Security Event Triage",
+		"Security Implementation",
+		"Security Integration",
+		"Security Models and Design",
+		"Security Operations Center (SOC)",
+		"Security Operations Management",
+		"Symantec Packages",
+		"Systems",
+		"Applications & Products (SAP) Enterprise Threat Detection (ETD)",
+		"Applications & Products (SAP) in Data Processing Business Suite 4 (S/4) Fiori Security",
+		"Applications & Products (SAP) in Data Processing Business Suite 4 (S/4) User Interface 5 (UI5) Security",
+		"Applications & Products (SAP) in Data Processing Business Suite 4 High-Performance Analytic Appliance (S/4HANA) Security",
+		"Applications & Products (SAP) in Data Processing Business Suite 4 High-Performance Analytic Appliance (S/4HANA)",
+		"Fiori",
+		"and User Interface 5 (UI5) Security",
+		"Applications & Products (SAP) Security & Governance",
+		"and Compliance (GRC)",
+		"ThreadFix",
+		"ThreatConnect",
+		"TippingPoint",
+		"TrapX DeceptionGrid",
+		"Varonis",
+		"Virtual Domains (VDOMs)",
+		"Vormetric",
+		"Vormetric Application Encryption",
+		"Vormetric Tokenization"
+	],
+	"standards": [
+		{
+			"skillName": "NICE_SP_RSK"
+		},
+		{
+			"skillName": "NICE_SP_DEV"
+		},
+		{
+			"skillName": "NICE_SP_ARC"
+		},
+		{
+			"skillName": "NICE_SP_TRD"
+		},
+		{
+			"skillName": "NICE_SP_SRP"
+		},
+		{
+			"skillName": "NICE_SP_TST"
+		},
+		{
+			"skillName": "NICE_SP_SYS"
+		},
+		{
+			"skillName": "NICE_OV_MGT"
+		},
+		{
+			"skillName": "NICE_AN_LNG"
+		},
+		{
+			"skillName": "NICE_CO_OPS"
+		},
+		{
+			"skillName": "NICE_OV_PMA"
+		},
+		{
+			"skillName": "NICE_OM_ANA"
+		},
+		{
+			"skillName": "NICE_PR_CIR"
+		},
+		{
+			"skillName": "NICE_OM_NET"
+		},
+		{
+			"skillName": "NICE_OM_ADM"
+		}
+	],
+	"collections": [
+		{
+			"uuid": "fb14bd66-e1b0-40d8-b6b5-377c920b1d35",
+			"name": "Software Development"
+		}
+	],
+	"occupations": [
+		{
+			"code": "15-0000",
+			"targetNodeName": "Computer and Mathematical Occupations",
+			"frameworkName": "bls",
+			"parents": [
+				{
+					"code": "15-0000",
+					"targetNodeName": "Computer and Mathematical Occupations",
+					"level": "Major"
+				}
+			]
+		},
+		{
+			"code": "15-1200",
+			"targetNodeName": "Computer Occupations",
+			"frameworkName": "bls",
+			"parents": [
+				{
+					"code": "15-0000",
+					"targetNodeName": "Computer and Mathematical Occupations",
+					"level": "Major"
+				},
+				{
+					"code": "15-1200",
+					"targetNodeName": "Computer Occupations",
+					"level": "Minor"
+				}
+			]
+		},
+		{
+			"code": "15-1240",
+			"targetNodeName": "Database and Network Administrators and Architects",
+			"frameworkName": "bls",
+			"parents": [
+				{
+					"code": "15-0000",
+					"targetNodeName": "Computer and Mathematical Occupations",
+					"level": "Major"
+				},
+				{
+					"code": "15-1200",
+					"targetNodeName": "Computer Occupations",
+					"level": "Minor"
+				},
+				{
+					"code": "15-1240",
+					"targetNodeName": "Database and Network Administrators and Architects",
+					"level": "Broad"
+				}
+			]
+		},
+		{
+			"code": "15-1244",
+			"targetNodeName": "Network and Computer Systems Administrators",
+			"frameworkName": "bls",
+			"parents": [
+				{
+					"code": "15-0000",
+					"targetNodeName": "Computer and Mathematical Occupations",
+					"level": "Major"
+				},
+				{
+					"code": "15-1200",
+					"targetNodeName": "Computer Occupations",
+					"level": "Minor"
+				},
+				{
+					"code": "15-1240",
+					"targetNodeName": "Database and Network Administrators and Architects",
+					"level": "Broad"
+				},
+				{
+					"code": "15-1244",
+					"targetNodeName": "Network and Computer Systems Administrators",
+					"level": "Detailed"
+				}
+			]
+		},
+		{
+			"code": "15-1250",
+			"targetNodeName": "Software and Web Developers, Programmers, and Testers",
+			"frameworkName": "bls",
+			"parents": [
+				{
+					"code": "15-0000",
+					"targetNodeName": "Computer and Mathematical Occupations",
+					"level": "Major"
+				},
+				{
+					"code": "15-1200",
+					"targetNodeName": "Computer Occupations",
+					"level": "Minor"
+				},
+				{
+					"code": "15-1250",
+					"targetNodeName": "Software and Web Developers, Programmers, and Testers",
+					"level": "Broad"
+				}
+			]
+		},
+		{
+			"code": "15-1259",
+			"parents": [
+				{
+					"code": "15-0000",
+					"level": "Major"
+				},
+				{
+					"code": "15-1200",
+					"level": "Minor"
+				}
+			]
+		}
+	],
+	"skillName": "Access and Security Levels Standardization",
+	"skillStatement": "Standardize levels of access and security to maintain information security.",
+	"authors": [
+		"Western Governors University"
+	],
+	"uuid": "c9d819b3-de84-401e-808a-ddcbfbdd4953",
+	"status": "published",
+	"creator": "https://credentialengineregistry.org/resources/ce-036d082d-d80e-41a7-99a0-2d63a4ad3a4a",
+	"@context": "https://rsd.openskillsnetwork.org/context-v1.json"
+}

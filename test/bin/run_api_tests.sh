@@ -76,10 +76,11 @@ source_osmt_apitest_env_file
 get_bearer_token
 run_api_tests "v2"
 run_shutdown_script
-# Need to refresh CI data between versioned tests
-#./clean_docker_stack.sh
-# ./start_osmt_app.sh
-# ./load_and_reindex_ci_data.sh
 
-#run_api_tests "v3"
-#run_shutdown_script
+# Need to refresh CI data between versioned tests
+"${test_dir}/bin/clean_docker_stack.sh"
+"${test_dir}/bin/start_osmt_app.sh"
+"${test_dir}/bin/load_and_reindex_ci_data.sh"
+
+run_api_tests "v3"
+run_shutdown_script

@@ -2,6 +2,8 @@
 
 set -eu
 
+export OSMT_STACK_NAME=osmt_api_test
+
 load_and_reindex_ci_data() {
 local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
 

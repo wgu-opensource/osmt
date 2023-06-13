@@ -37,7 +37,7 @@ class KeywordController @Autowired constructor(
     val oAuthHelper: OAuthHelper
 ) {
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.CATEGORY_LIST}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.CATEGORY_LIST}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun allCategoriesPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -48,14 +48,14 @@ class KeywordController @Autowired constructor(
         return allPaginated(
             keywordType = KeywordTypeEnum.Category,
             uriComponentsBuilder = uriComponentsBuilder,
-            path = "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.CATEGORY_LIST}",
+            path = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.CATEGORY_LIST}",
             size = size,
             from = from,
             sort = sort,
         )
     }
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.CATEGORY_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.CATEGORY_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun categoryById(
         @PathVariable identifier: String
@@ -64,7 +64,7 @@ class KeywordController @Autowired constructor(
         return this.byId(KeywordTypeEnum.Category, id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.CATEGORY_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.CATEGORY_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun getCategorySkills (
         uriComponentsBuilder: UriComponentsBuilder,
@@ -89,7 +89,7 @@ class KeywordController @Autowired constructor(
         )
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.CATEGORY_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.CATEGORY_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCategorySkills (
         uriComponentsBuilder: UriComponentsBuilder,
@@ -259,7 +259,7 @@ class KeywordController @Autowired constructor(
         responseHeaders.add("X-Total-Count", countByApiSearch.toString())
 
         uriComponentsBuilder
-            .path("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_SKILLS}")
+            .path("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_SKILLS}")
             .queryParam(RoutePaths.QueryParams.FROM, from)
             .queryParam(RoutePaths.QueryParams.SIZE, size)
             .queryParam(RoutePaths.QueryParams.SORT, sort)

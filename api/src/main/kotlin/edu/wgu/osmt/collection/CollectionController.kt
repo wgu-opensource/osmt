@@ -39,17 +39,17 @@ class CollectionController @Autowired constructor(
         val oAuthHelper: OAuthHelper
 ) : HasAllPaginated<CollectionDoc> {
     override val elasticRepository = collectionEsRepo
-    override val allPaginatedPath: String = "${RoutePaths.LATEST}${RoutePaths.COLLECTIONS_LIST}"
+    override val allPaginatedPath: String = "${RoutePaths.API_V3}${RoutePaths.COLLECTIONS_LIST}"
     override val sortOrderCompanion = CollectionSortEnum.Companion
     
     @GetMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTIONS_LIST}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTIONS_LIST}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTIONS_LIST}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTIONS_LIST}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTIONS_LIST}"
                        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun allPaginated(
-            @PathVariable(name = "apiVersion", required = false) version: String?,
+    override fun allPaginated(
             uriComponentsBuilder: UriComponentsBuilder,
             size: Int,
             from: Int,
@@ -63,7 +63,7 @@ class CollectionController @Autowired constructor(
         return super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
     }
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun byUUID(@PathVariable uuid: String): ApiCollection? {
         return collectionRepository.findByUUID(uuid)?.let {
@@ -73,7 +73,7 @@ class CollectionController @Autowired constructor(
     }
 
     @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_DETAIL}",
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_DETAIL}",
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_DETAIL}"],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -85,16 +85,17 @@ class CollectionController @Autowired constructor(
     }
     
     @RequestMapping(path = [
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_DETAIL}",
-        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_DETAIL}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_DETAIL}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_DETAIL}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_DETAIL}"
                            ],
             produces = [MediaType.TEXT_HTML_VALUE])
-    fun byUUIDHtmlView(@PathVariable(name = "apiVersion", required = false) version: String?, @PathVariable uuid: String): String {
+    fun byUUIDHtmlView(@PathVariable uuid: String): String {
         
-        return "forward:${RoutePaths.LATEST}/collections/$uuid"
+        return "forward:${RoutePaths.API_V3}/collections/$uuid"
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_CREATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_CREATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun createCollections(
             @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
@@ -111,7 +112,7 @@ class CollectionController @Autowired constructor(
     }
 
     @PostMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_CREATE}",
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_CREATE}",
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_CREATE}"
     ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -124,7 +125,7 @@ class CollectionController @Autowired constructor(
     }
     
     
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateCollection(
             @PathVariable uuid: String,
@@ -149,7 +150,7 @@ class CollectionController @Autowired constructor(
     }
     
     @PostMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_UPDATE}",
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_UPDATE}",
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_UPDATE}",
         ]
         , produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -164,13 +165,13 @@ class CollectionController @Autowired constructor(
     }
     
     @PostMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_SKILLS_UPDATE}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_SKILLS_UPDATE}"
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateSkills(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @PathVariable uuid: String,
             @RequestBody skillListUpdate: ApiSkillListUpdate,
             @RequestParam(
@@ -187,13 +188,13 @@ class CollectionController @Autowired constructor(
     }
     
     @PostMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_PUBLISH}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_PUBLISH}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_PUBLISH}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_PUBLISH}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_PUBLISH}"
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun publishCollections(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @RequestBody search: ApiSearch,
             @RequestParam(
                     required = false,
@@ -215,12 +216,12 @@ class CollectionController @Autowired constructor(
     }
     
     @GetMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_CSV}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_CSV}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_CSV}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_CSV}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_CSV}"
                        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getSkillsForCollectionCsv(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
         if (collectionRepository.findByUUID(uuid)!!.status == PublishStatus.Draft && !oAuthHelper.hasRole(appConfig.roleAdmin)) {
@@ -232,7 +233,7 @@ class CollectionController @Autowired constructor(
         return Task.processingResponse(task)
     }
     
-    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_XLSX}", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_XLSX}", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
     fun getSkillsForCollectionXlsx(
             @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
@@ -246,12 +247,12 @@ class CollectionController @Autowired constructor(
     }
     
     @DeleteMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_REMOVE}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_REMOVE}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_REMOVE}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_REMOVE}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_REMOVE}"
                           ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     fun removeCollection(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
         val task = RemoveCollectionSkillsTask(collectionUuid = uuid)
@@ -261,12 +262,12 @@ class CollectionController @Autowired constructor(
     }
     
     @GetMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.COLLECTION_AUDIT_LOG}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.COLLECTION_AUDIT_LOG}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_AUDIT_LOG}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_AUDIT_LOG}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_AUDIT_LOG}"
                        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     fun collectionAuditLog(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @PathVariable uuid: String
     ): HttpEntity<List<AuditLog>> {
         val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateDesc.apiValue).sort)
@@ -277,7 +278,7 @@ class CollectionController @Autowired constructor(
     }
 
     @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.WORKSPACE_PATH}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.WORKSPACE_PATH}",
     ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -305,7 +306,7 @@ class CollectionController @Autowired constructor(
     }
 
     @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.WORKSPACE_PATH}",
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.WORKSPACE_PATH}",
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.WORKSPACE_PATH}"
                        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])

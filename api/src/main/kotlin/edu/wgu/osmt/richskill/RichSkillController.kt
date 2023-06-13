@@ -41,12 +41,14 @@ class RichSkillController @Autowired constructor(
 
     val keywordDao = KeywordDao.Companion
 
-    override val allPaginatedPath: String = "${RoutePaths.LATEST}${RoutePaths.SKILLS_LIST}"
+    override val allPaginatedPath: String = "${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}"
     override val sortOrderCompanion = SkillSortEnum.Companion
 
+    @Deprecated("replaced in v3 with filters endpoint.")
     @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILLS_LIST}",
-                       ],
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_LIST}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}"
+    ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun legacyAllPaginated(
@@ -66,7 +68,7 @@ class RichSkillController @Autowired constructor(
         return ResponseEntity.status(200).headers(paginated.headers).body(v2Body)
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILLS_FILTER}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_FILTER}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun allPaginatedWithFilters(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -95,7 +97,7 @@ class RichSkillController @Autowired constructor(
         responseHeaders.add("X-Total-Count", countAllFiltered.toString())
 
         uriComponentsBuilder
-            .path("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILLS_FILTER}")
+            .path("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_FILTER}")
             .queryParam(RoutePaths.QueryParams.FROM, from)
             .queryParam(RoutePaths.QueryParams.SIZE, size)
             .queryParam(RoutePaths.QueryParams.SORT, sort)
@@ -112,8 +114,9 @@ class RichSkillController @Autowired constructor(
     }
 
     @PostMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.SKILLS_CREATE}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SKILLS_CREATE}",
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_CREATE}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_CREATE}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_CREATE}"
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -127,7 +130,7 @@ class RichSkillController @Autowired constructor(
         return Task.processingResponse(task)
     }
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun byUUID(
             @PathVariable uuid: String,
@@ -142,7 +145,7 @@ class RichSkillController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILL_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun legacyByUUID(
             @PathVariable uuid: String,
@@ -151,7 +154,7 @@ class RichSkillController @Autowired constructor(
         return byUUID(uuid, user)?.let { ApiSkillV2.fromLatest(it, appConfig) }
     }
     
-    @RequestMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_DETAIL}", produces = [MediaType.TEXT_HTML_VALUE])
+    @RequestMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_DETAIL}", produces = [MediaType.TEXT_HTML_VALUE])
     fun byUUIDHtmlView(
             @PathVariable uuid: String,
             @AuthenticationPrincipal user: Jwt?
@@ -166,8 +169,9 @@ class RichSkillController @Autowired constructor(
     }
     
     @RequestMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILL_DETAIL}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_DETAIL}"],
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_DETAIL}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_DETAIL}"
+                           ],
             produces = [MediaType.TEXT_HTML_VALUE])
     fun legacyByUUIDHtmlView(
             @PathVariable uuid: String,
@@ -183,12 +187,12 @@ class RichSkillController @Autowired constructor(
     }
 
     @RequestMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.SKILL_DETAIL}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SKILL_DETAIL}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_DETAIL}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_DETAIL}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_DETAIL}"
                            ],
         produces = ["text/csv"])
     fun byUUIDCsvView(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @PathVariable uuid: String,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<*> {
@@ -207,7 +211,7 @@ class RichSkillController @Autowired constructor(
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SKILL_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_UPDATE}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun updateSkill(
             @PathVariable uuid: String,
@@ -229,7 +233,7 @@ class RichSkillController @Autowired constructor(
     }
 
     @PostMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SKILL_UPDATE}",
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_UPDATE}",
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_UPDATE}",
         ]
         , produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -244,13 +248,13 @@ class RichSkillController @Autowired constructor(
     }
 
     @PostMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.SKILL_PUBLISH}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SKILL_PUBLISH}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_PUBLISH}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_PUBLISH}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_PUBLISH}"
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun publishSkills(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @RequestBody search: ApiSearch,
         @RequestParam(
             required = false,
@@ -281,14 +285,13 @@ class RichSkillController @Autowired constructor(
         return Task.processingResponse(task)
     }
 
-
     @GetMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.SKILL_AUDIT_LOG}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SKILL_AUDIT_LOG}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_AUDIT_LOG}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_AUDIT_LOG}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_AUDIT_LOG}"
                        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     fun skillAuditLog(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @PathVariable uuid: String
     ): HttpEntity<List<AuditLog>> {
         val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateDesc.apiValue).sort)
@@ -300,13 +303,13 @@ class RichSkillController @Autowired constructor(
 
     @Transactional(readOnly = true)
     @GetMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.EXPORT_LIBRARY_CSV}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.EXPORT_LIBRARY_CSV}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.EXPORT_LIBRARY_CSV}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.EXPORT_LIBRARY_CSV}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.EXPORT_LIBRARY_CSV}"
                        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportLibraryCsv(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         if (!appConfig.allowPublicSearching && user === null) {
@@ -322,7 +325,7 @@ class RichSkillController @Autowired constructor(
     }
 
     @Transactional(readOnly = true)
-    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.EXPORT_LIBRARY_XLSX}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.EXPORT_LIBRARY_XLSX}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportLibraryXlsx(
         @AuthenticationPrincipal user: Jwt?
@@ -342,13 +345,13 @@ class RichSkillController @Autowired constructor(
 
     @Transactional(readOnly = true)
     @PostMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.EXPORT_SKILLS_CSV}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.EXPORT_SKILLS_CSV}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.EXPORT_SKILLS_CSV}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.EXPORT_SKILLS_CSV}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.EXPORT_SKILLS_CSV}"
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportCustomListCsv(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @RequestBody apiSearch: ApiSearch,
         status: Array<String>,
         @AuthenticationPrincipal user: Jwt?
@@ -369,7 +372,7 @@ class RichSkillController @Autowired constructor(
     }
 
     @Transactional(readOnly = true)
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.EXPORT_SKILLS_XLSX}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.EXPORT_SKILLS_XLSX}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportCustomListXlsx(
         @RequestBody apiSearch: ApiSearch,

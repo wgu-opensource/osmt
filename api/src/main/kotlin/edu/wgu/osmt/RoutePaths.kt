@@ -5,14 +5,11 @@ import org.apache.commons.lang3.StringUtils
 object RoutePaths {
 
 
-    const val LEGACY = "/v2"
-    const val LATEST = "/v3"
-    const val DEFAULT = LATEST
+    const val API_V2 = "/v2"
+    const val API_V3 = "/v3"
     const val UNVERSIONED = StringUtils.EMPTY
 
     const val API = "/api"
-    const val VERSIONED_API = "/api/{apiVersion}"
-    const val UNVERSIONED_API = API
     private const val SEARCH_PATH = "/search"
 
     //export
@@ -69,7 +66,7 @@ object RoutePaths {
     const val SEARCH_JOBCODES_PATH = "$SEARCH_PATH/jobcodes"
     const val SEARCH_KEYWORDS_PATH = "$SEARCH_PATH/keywords"
 
-    const val ES_ADMIN = "/es-admin"
+    private const val ES_ADMIN = "/es-admin"
     const val ES_ADMIN_DELETE_INDICES = "$ES_ADMIN/delete-indices"
     const val ES_ADMIN_REINDEX = "$ES_ADMIN/reindex"
 
@@ -81,5 +78,3 @@ object RoutePaths {
         const val COLLECTION_ID = "collectionId"
     }
 }
-
-

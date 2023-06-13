@@ -30,26 +30,27 @@ class TaskController @Autowired constructor(
     }
 
     @GetMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.TASK_DETAIL_TEXT}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.TASK_DETAIL_TEXT}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_TEXT}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_TEXT}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_TEXT}"
     ])
     @ResponseBody
     fun textResult(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @PathVariable uuid: String
     ): HttpEntity<*> {
         return taskResult(uuid)
     }
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_MEDIA}")
+    @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_MEDIA}")
     @ResponseBody
     fun mediaResult(@PathVariable uuid: String): HttpEntity<*> {
         return taskResult(uuid)
     }
 
     @GetMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.TASK_DETAIL_BATCH}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.TASK_DETAIL_BATCH}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_BATCH}"
     ])
     @ResponseBody
     fun batchResult(
@@ -59,7 +60,7 @@ class TaskController @Autowired constructor(
         return taskResult(uuid)
     }
 
-    @GetMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.TASK_DETAIL_SKILLS}")
+    @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_SKILLS}")
     @ResponseBody
     fun skillsResult(@PathVariable uuid: String): HttpEntity<*> {
         val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
@@ -79,7 +80,7 @@ class TaskController @Autowired constructor(
     }
 
     @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.TASK_DETAIL_SKILLS}",
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_SKILLS}",
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_SKILLS}",
     ],)
     @ResponseBody

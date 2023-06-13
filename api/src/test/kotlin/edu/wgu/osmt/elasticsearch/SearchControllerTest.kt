@@ -12,7 +12,6 @@ import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
 import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
-import org.apache.commons.lang3.StringUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -50,7 +49,6 @@ internal class SearchControllerTest @Autowired constructor(
 
         // Act
         val result = searchController.searchCollections(
-                StringUtils.EMPTY,
                 UriComponentsBuilder.newInstance(),
                 50,
                 0,
@@ -94,7 +92,7 @@ internal class SearchControllerTest @Autowired constructor(
         jobCodeEsRepo.saveAll(listOfJobCodes)
 
         // Act
-        val result = searchController.searchJobCodes(StringUtils.EMPTY, UriComponentsBuilder.newInstance(),listOfJobCodes[0].code)
+        val result = searchController.searchJobCodes(UriComponentsBuilder.newInstance(),listOfJobCodes[0].code)
 
         // Assert
         assertThat(result.body?.map { it.targetNodeName }).contains(listOfJobCodes[0].name)
@@ -108,7 +106,6 @@ internal class SearchControllerTest @Autowired constructor(
 
         // Act
         val result = searchController.searchKeywords(
-                StringUtils.EMPTY,
                 UriComponentsBuilder.newInstance(),
                 listOfKeywords[0].value.toString(),
                 listOfKeywords[0].type.toString())

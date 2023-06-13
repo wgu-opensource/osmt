@@ -15,7 +15,6 @@ import edu.wgu.osmt.task.*
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import org.apache.commons.lang3.StringUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
@@ -215,7 +214,7 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Act
         val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
-        val result = richSkillController.byUUIDCsvView(StringUtils.EMPTY, skillResult.searchHits[0].id.toString(),jwt)
+        val result = richSkillController.byUUIDCsvView(skillResult.searchHits[0].id.toString(),jwt)
 
         // Assert
         assertThat(result.body.toString()).contains(skillResult.searchHits[0].id.toString())
@@ -236,7 +235,7 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Act
         val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
-        val result = richSkillController.skillAuditLog(StringUtils.EMPTY, skillResult.searchHits[0].id.toString())
+        val result = richSkillController.skillAuditLog(skillResult.searchHits[0].id.toString())
 
         // Assert
         assertThat(result.body?.get(0)?.operationType).isEqualTo("Insert")
@@ -269,7 +268,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         val csvTaskResult = TaskResult(UUID.randomUUID().toString(),
                 MediaType.APPLICATION_JSON_VALUE,
                 TaskStatus.Processing,
-                "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.EXPORT_LIBRARY_CSV}"
+                "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.EXPORT_LIBRARY_CSV}"
         )
 
 
@@ -279,7 +278,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         mockkStatic(TaskResult::class)
         every { Task.processingResponse(any()) } returns HttpEntity(csvTaskResult)
 
-        val result = richSkillController.exportLibraryCsv(StringUtils.EMPTY, user = notNullJwt)
+        val result = richSkillController.exportLibraryCsv(user = notNullJwt)
         assertThat(result.body?.uuid).isNotBlank()
     }
 

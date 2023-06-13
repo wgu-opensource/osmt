@@ -35,13 +35,13 @@ class SearchController @Autowired constructor(
     val appConfig: AppConfig
 ) {
     @PostMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.SEARCH_COLLECTIONS}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SEARCH_COLLECTIONS}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_COLLECTIONS}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_COLLECTIONS}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_COLLECTIONS}"
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchCollections(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
@@ -72,7 +72,7 @@ class SearchController @Autowired constructor(
 
         // build up current uri with path and params
         uriComponentsBuilder
-            .path("${RoutePaths.VERSIONED_API}${RoutePaths.LATEST}${RoutePaths.SEARCH_COLLECTIONS}")
+            .path("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_COLLECTIONS}")
             .queryParam(RoutePaths.QueryParams.FROM, from)
             .queryParam(RoutePaths.QueryParams.SIZE, size)
             .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
@@ -87,7 +87,7 @@ class SearchController @Autowired constructor(
         return ResponseEntity.status(200).headers(responseHeaders).body(searchHits.map { it.content }.toList())
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_SKILLS}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSkills(
             uriComponentsBuilder: UriComponentsBuilder,
@@ -122,7 +122,7 @@ class SearchController @Autowired constructor(
 
         // build up current uri with path and params
         uriComponentsBuilder
-                .path("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_SKILLS}")
+                .path("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_SKILLS}")
                 .queryParam(RoutePaths.QueryParams.FROM, from)
                 .queryParam(RoutePaths.QueryParams.SIZE, size)
                 .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
@@ -149,7 +149,7 @@ class SearchController @Autowired constructor(
     }
 
     @PostMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SEARCH_SKILLS}",
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_SKILLS}",
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_SKILLS}",
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -174,7 +174,7 @@ class SearchController @Autowired constructor(
     }
 
     @PostMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.COLLECTION_SKILLS}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_SKILLS}",
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -195,7 +195,7 @@ class SearchController @Autowired constructor(
     }
 
     @PostMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.COLLECTION_SKILLS}",
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_SKILLS}",
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_SKILLS}"
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -219,13 +219,13 @@ class SearchController @Autowired constructor(
 
 
     @GetMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.SEARCH_JOBCODES_PATH}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SEARCH_JOBCODES_PATH}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_JOBCODES_PATH}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_JOBCODES_PATH}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_JOBCODES_PATH}"
                        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchJobCodes(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = true) query: String
     ): HttpEntity<List<ApiJobCode>> {
@@ -235,13 +235,13 @@ class SearchController @Autowired constructor(
     }
 
     @GetMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.SEARCH_KEYWORDS_PATH}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SEARCH_KEYWORDS_PATH}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_KEYWORDS_PATH}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_KEYWORDS_PATH}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_KEYWORDS_PATH}"
                        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchKeywords(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = true) query: String,
         @RequestParam(required = true) type: String
@@ -252,7 +252,7 @@ class SearchController @Autowired constructor(
         return ResponseEntity.status(200).body(searchResults.map { ApiNamedReference.fromKeyword(it.content) }.toList())
     }
 
-    @PostMapping("${RoutePaths.API}${RoutePaths.LATEST}${RoutePaths.SEARCH_SIMILAR_SKILLS}",
+    @PostMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_SIMILAR_SKILLS}",
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchSimilarSkills(
@@ -263,7 +263,7 @@ class SearchController @Autowired constructor(
     }
 
     @PostMapping(path = [
-        "${RoutePaths.API}${RoutePaths.LEGACY}${RoutePaths.SEARCH_SIMILAR_SKILLS}",
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_SIMILAR_SKILLS}",
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_SIMILAR_SKILLS}"
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -280,13 +280,13 @@ class SearchController @Autowired constructor(
     }
 
     @PostMapping(path = [
-        "${RoutePaths.VERSIONED_API}${RoutePaths.SEARCH_SIMILARITIES}",
-        "${RoutePaths.UNVERSIONED_API}${RoutePaths.SEARCH_SIMILARITIES}"
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_SIMILARITIES}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_SIMILARITIES}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_SIMILARITIES}"
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun similarSkillWarnings(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @RequestBody(required = true) similarities: Array<ApiSimilaritySearch>
     ): HttpEntity<List<Boolean>> {
         val arrayLimit = 100

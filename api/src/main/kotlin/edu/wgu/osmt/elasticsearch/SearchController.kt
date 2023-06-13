@@ -154,7 +154,7 @@ class SearchController @Autowired constructor(
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun legacySearchSkills(
+    fun searchSkillsV2(
             uriComponentsBuilder: UriComponentsBuilder,
             @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
             @RequestParam(required = false, defaultValue = "0") from: Int,
@@ -200,7 +200,7 @@ class SearchController @Autowired constructor(
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun legacyCollectionSkills(
+    fun collectionSkillsV2(
             uriComponentsBuilder: UriComponentsBuilder,
             @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
             @RequestParam(required = false, defaultValue = "0") from: Int,
@@ -214,7 +214,7 @@ class SearchController @Autowired constructor(
             @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<RichSkillDocV2>> {
 
-        return legacySearchSkills(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
+        return searchSkillsV2(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
     }
 
 
@@ -268,7 +268,7 @@ class SearchController @Autowired constructor(
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun legacySearchSimilarSkills(
+    fun searchSimilarSkillsV2(
             @RequestBody(required = true) apiSimilaritySearch: ApiSimilaritySearch
     ): HttpEntity<List<ApiSkillSummary>> {
 

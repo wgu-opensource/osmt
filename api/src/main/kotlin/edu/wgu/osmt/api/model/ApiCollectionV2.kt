@@ -33,7 +33,7 @@ class ApiCollectionV2(
 
     companion object {
 
-        fun fromLatest(apiCollection: ApiCollection, appConfig: AppConfig) : ApiCollectionV2{
+        fun fromLatest(apiCollection: ApiCollection, appConfig: AppConfig) : ApiCollectionV2 {
 
             val result = ApiCollectionV2(
                     collection = apiCollection.collection,

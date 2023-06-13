@@ -77,7 +77,7 @@ class CollectionController @Autowired constructor(
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_DETAIL}"],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun legacyByUUID(@PathVariable uuid: String): ApiCollection? {
+    fun byUUIDV2(@PathVariable uuid: String): ApiCollection? {
         return collectionRepository.findByUUID(uuid)?.let {
             byUUID(uuid)?.let { ac -> ApiCollectionV2.fromLatest(ac, appConfig) }
         }
@@ -117,7 +117,7 @@ class CollectionController @Autowired constructor(
     ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun legacyCreateCollections(
+    fun createCollectionsV2(
             @RequestBody apiCollectionUpdates: List<ApiCollectionUpdate>,
             @AuthenticationPrincipal user: Jwt?
     ): List<ApiCollection> {
@@ -155,7 +155,7 @@ class CollectionController @Autowired constructor(
         ]
         , produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun legacyUpdateCollection(
+    fun updateCollectionV2(
             @PathVariable uuid: String,
             @RequestBody apiUpdate: ApiCollectionUpdate,
             @AuthenticationPrincipal user: Jwt?
@@ -311,7 +311,7 @@ class CollectionController @Autowired constructor(
                        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun legacyGetOrCreateWorkspace(
+    fun getOrCreateWorkspaceV2(
             @AuthenticationPrincipal user: Jwt?
     ): ApiCollection? {
         return getOrCreateWorkspace(user)?.let { ApiCollectionV2.fromLatest(it, appConfig) }

@@ -44,14 +44,14 @@ class RichSkillController @Autowired constructor(
     override val allPaginatedPath: String = "${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}"
     override val sortOrderCompanion = SkillSortEnum.Companion
 
-    @Deprecated("replaced in v3 with filters endpoint.")
     @GetMapping(path = [
         "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_LIST}",
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}"
     ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun legacyAllPaginated(
+    fun allPaginatedV2(
             uriComponentsBuilder: UriComponentsBuilder,
             size: Int,
             from: Int,
@@ -147,7 +147,7 @@ class RichSkillController @Autowired constructor(
 
     @GetMapping("${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_DETAIL}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun legacyByUUID(
+    fun byUUIDV2(
             @PathVariable uuid: String,
             @AuthenticationPrincipal user: Jwt?
     ): ApiSkill? {
@@ -173,7 +173,7 @@ class RichSkillController @Autowired constructor(
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_DETAIL}"
                            ],
             produces = [MediaType.TEXT_HTML_VALUE])
-    fun legacyByUUIDHtmlView(
+    fun byUUIDHtmlViewV2(
             @PathVariable uuid: String,
             @AuthenticationPrincipal user: Jwt?
     ): String {
@@ -238,7 +238,7 @@ class RichSkillController @Autowired constructor(
         ]
         , produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun legacyUpdateSkill(
+    fun updateSkillV2(
             @PathVariable uuid: String,
             @RequestBody skillUpdate: ApiSkillUpdate,
             @AuthenticationPrincipal user: Jwt?

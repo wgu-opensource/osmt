@@ -32,7 +32,7 @@ class ApiSkillV2(
         get() = rsd.categories.mapNotNull { it.value }.sorted().joinToString(SEMICOLON)
 
     companion object {
-        fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkillV2{
+        fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkillV2 {
             return ApiSkillV2(rsdDao.toModel(), rsdDao.collections.map{ it.toModel() }.filter { !it.isWorkspace() }.toSet(), appConfig)
         }
 

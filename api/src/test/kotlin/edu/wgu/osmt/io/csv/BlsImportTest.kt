@@ -10,7 +10,6 @@ import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
 import edu.wgu.osmt.richskill.RichSkillEsRepo
-import org.apache.commons.lang3.StringUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,7 +42,7 @@ internal class BlsImportTest @Autowired constructor(
         // this major code should pull back many related minor, borad, and detailed job codes
         val expectedMajorCode = "15-0000"
         // searchJobCodes will only return 10 items in the list
-        val result = expectedMajorCode?.let { searchController.searchJobCodes(StringUtils.EMPTY, UriComponentsBuilder.newInstance(), it) }
+        val result = expectedMajorCode?.let { searchController.searchJobCodes(UriComponentsBuilder.newInstance(), it) }
         val listOfApiJobCodes = result?.body?.map { it.code }
 
         // Assert

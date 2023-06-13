@@ -52,9 +52,6 @@ for (let collectionIndex = 0; collectionIndex < expectedData.length; collectionI
   pm.test(`Collection ${colNum} - Check creator exists`, function () {
   pm.expect(responseCol.creator).exists;
   });
-  pm.test(`Collection ${colNum} - Check skills keywords`, function () {
-  pm.expect(responseCol.skillKeywords).to.have.deep.equal(expectedCol.skillKeywords);
-  });
   pm.test(`Collection ${colNum} - Check context`, function () {
   pm.expect(responseCol["@context"]).to.equal(expectedCol["@context"]);
   });

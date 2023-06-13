@@ -23,8 +23,8 @@ pm.test("Check collections", function () {
 pm.test("Check occupations", function () {
   pm.expect(responseData.occupations).exists;
 });
-pm.test("Check categories", function () {
-  pm.expect(responseData.categories).exists;
+pm.test("Check category", function () {
+  pm.expect(responseData.category).exists;
 });
 pm.test("Check keywords", function () {
   pm.expect(responseData.keywords).exists;
@@ -53,8 +53,8 @@ pm.test("Check status", function () {
 pm.test("Check UUID", function () {
   pm.expect(responseData.UUID).to.equal(expectedData.UUID);
 });
-pm.test("Check authors", function () {
-  pm.expect(responseData.authors).exists;
+pm.test("Check author", function () {
+  pm.expect(responseData.author).exists;
 });
 pm.test("Check creator exists", function () {
   pm.expect(responseData.creator).exists;

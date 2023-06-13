@@ -71,7 +71,7 @@ test_dir="$(_get_osmt_project_dir)/test" || exit 135
 apitest_env_file="$test_dir/osmt-apitest.env"
 
 trap error_handler ERR SIGINT SIGTERM
-
+# TODO run v3 first
 source_osmt_apitest_env_file
 get_bearer_token
 run_api_tests "v2"

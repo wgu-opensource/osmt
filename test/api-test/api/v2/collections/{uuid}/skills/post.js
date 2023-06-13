@@ -26,11 +26,11 @@ for (let skillsIndex = 0; skillsIndex < expectedData.length; skillsIndex++) {
   pm.test(`Skill ${skillNum} - Check skill statement`, function () {
     pm.expect(responseSkill.skillStatement).exists;
   });
-  pm.test(`Skill ${skillNum} - Check categories`, function () {
-    pm.expect(responseSkill.categories).exists;
+  pm.test(`Skill ${skillNum} - Check category`, function () {
+    pm.expect(responseSkill.category).exists;
   });
-  pm.test(`Skill ${skillNum} - Check authors`, function () {
-    pm.expect(responseSkill.authors).exists;
+  pm.test(`Skill ${skillNum} - Check author`, function () {
+    pm.expect(responseSkill.author).exists;
   });
   pm.test(`Skill ${skillNum} - Check skill status`, function () {
     pm.expect(responseSkill.status).exists;

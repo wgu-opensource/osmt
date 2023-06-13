@@ -32,9 +32,6 @@ pm.test("Check creation date exists", function () {
 pm.test("Check Id exists", function () {
   pm.expect(responseData.id).exists;
 });
-pm.test("Check skill keywords", function () {
-  pm.expect(responseData.skillKeywords).exists;
-});
 pm.test("Check context", function () {
   pm.expect(responseData["@context"]).exists;
 });

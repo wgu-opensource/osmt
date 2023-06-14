@@ -75,7 +75,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         richSkillEsRepo.saveAll(listOfSkills)
 
         // Act
-        val result = richSkillController.legacyAllPaginated(
+        val result = richSkillController.allPaginatedV2(
                 UriComponentsBuilder.newInstance(),
                 size,
                 0,
@@ -96,7 +96,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         richSkillEsRepo.saveAll(listOfSkills)
 
         // Act
-        val result = richSkillController.legacyAllPaginated(
+        val result = richSkillController.allPaginatedV2(
                 UriComponentsBuilder.newInstance(),
                 size,
                 0,

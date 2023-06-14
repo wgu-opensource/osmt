@@ -58,7 +58,7 @@ internal class RichSkillSortOrderTest @Autowired constructor(
         @Test
         fun `sorted by default(name ASC)`() {
             // Act
-            val result = richSkillController.legacyAllPaginated(
+            val result = richSkillController.allPaginatedV2(
                     UriComponentsBuilder.newInstance(),
                     size,
                     0,
@@ -76,7 +76,7 @@ internal class RichSkillSortOrderTest @Autowired constructor(
         @Test
         fun `sorted by name ASC`() {
             // Act
-            val result = richSkillController.legacyAllPaginated(
+            val result = richSkillController.allPaginatedV2(
                 UriComponentsBuilder.newInstance(),
                 size,
                 0,
@@ -94,7 +94,7 @@ internal class RichSkillSortOrderTest @Autowired constructor(
         @Test
         fun `sorted by name DESC`() {
             // Act
-            val result = richSkillController.legacyAllPaginated(
+            val result = richSkillController.allPaginatedV2(
                 UriComponentsBuilder.newInstance(),
                 size,
                 0,

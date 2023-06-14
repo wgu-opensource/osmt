@@ -56,14 +56,14 @@ run_api_tests() {
 run_shutdown_script() {
   printf "\n"
   echo "Running Shutdown script..."
-  "${test_dir}/bin/stop_api_test_server.sh"
+  "${test_dir}/bin/stop_osmt_app.sh"
 }
 
 error_handler() {
   printf "\n"
   echo "Trapping at error_handler. Exiting"
   # clean up API test Docker resources
-  "${test_dir}/bin/stop_api_test_server.sh"
+  "${test_dir}/bin/stop_osmt_app.sh"
   printf "\n"
 }
 

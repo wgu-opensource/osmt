@@ -25,8 +25,7 @@ class ApiSkillV2(
     @get:JsonProperty
     val author: String
         get() = rsd.authors.mapNotNull { it.value }.sorted().joinToString(SEMICOLON)
-
-
+    
     @get:JsonProperty
     val category: String
         get() = rsd.categories.mapNotNull { it.value }.sorted().joinToString(SEMICOLON)

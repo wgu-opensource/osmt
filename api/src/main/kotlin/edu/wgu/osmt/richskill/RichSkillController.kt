@@ -373,12 +373,11 @@ class RichSkillController @Autowired constructor(
 
     @Transactional(readOnly = true)
     @GetMapping(path = [
-        "${RoutePaths.API}/{apiVersion}${RoutePaths.EXPORT_LIBRARY_CSV}"
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.EXPORT_LIBRARY_CSV}",
                        ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportLibraryCsv(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         if (!appConfig.allowPublicSearching && user === null) {
@@ -387,17 +386,30 @@ class RichSkillController @Autowired constructor(
         if (!oAuthHelper.hasRole(appConfig.roleAdmin)) {
             throw GeneralApiException("OSMT user must have an Admin role.", HttpStatus.UNAUTHORIZED)
         }
-        val task: Task
-        if(RoutePaths.API_V3 == RoutePaths.getApiVersionCalled(apiVersion)) {
-            task = CsvTask(collectionUuid = "FullLibrary")
-            taskMessageService.enqueueJob(TaskMessageService.skillsForFullLibraryCsv, task)
-        } else if(RoutePaths.API_V2 == RoutePaths.getApiVersionCalled(apiVersion)){
-            task = CsvTaskV2(collectionUuid = "FullLibrary")
-            taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsvV2, task)
-        } else {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        val task = CsvTask(collectionUuid = "FullLibrary")
+        taskMessageService.enqueueJob(TaskMessageService.skillsForFullLibraryCsv, task)
+        return Task.processingResponse(task)
+    }
+    
+    @Transactional(readOnly = true)
+    @GetMapping(path = [
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.EXPORT_LIBRARY}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.EXPORT_LIBRARY}",
+    
+    ],
+        produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun exportLibraryV2(
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
+        if (!appConfig.allowPublicSearching && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
-
+        if (!oAuthHelper.hasRole(appConfig.roleAdmin)) {
+            throw GeneralApiException("OSMT user must have an Admin role.", HttpStatus.UNAUTHORIZED)
+        }
+        val task = CsvTaskV2(collectionUuid = "FullLibrary")
+        taskMessageService.enqueueJob(TaskMessageService.skillsForFullLibraryCsv, task)
         return Task.processingResponse(task)
     }
 
@@ -422,12 +434,11 @@ class RichSkillController @Autowired constructor(
 
     @Transactional(readOnly = true)
     @PostMapping(path = [
-        "${RoutePaths.API}/{apiVersion}${RoutePaths.EXPORT_SKILLS_CSV}"
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.EXPORT_SKILLS_CSV}"
                         ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun exportCustomListCsv(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @RequestBody apiSearch: ApiSearch,
             status: Array<String>,
             @AuthenticationPrincipal user: Jwt?
@@ -439,21 +450,52 @@ class RichSkillController @Autowired constructor(
             val status = PublishStatus.forApiValue(it)
             if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
         }.toSet()
-        val task: Task
-        if(RoutePaths.API_V3 == RoutePaths.getApiVersionCalled(apiVersion)) {
-            task = ExportSkillsToCsvTask(
-                    collectionUuid = "CustomList", richSkillEsRepo.getUuidsFromApiSearch(apiSearch, publishStatuses, Pageable.unpaged(), user, StringUtils.EMPTY)
+        val task =ExportSkillsToCsvTask(
+            collectionUuid = "CustomList",
+            richSkillEsRepo.getUuidsFromApiSearch(
+                apiSearch,
+                publishStatuses,
+                Pageable.unpaged(),
+                user,
+                StringUtils.EMPTY
             )
-            taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsv, task)
-        }else if(RoutePaths.API_V2 == RoutePaths.getApiVersionCalled(apiVersion)){
-            task = ExportSkillsToCsvTaskV2(
-                    collectionUuid = "CustomList", richSkillEsRepo.getUuidsFromApiSearch(apiSearch, publishStatuses, Pageable.unpaged(), user, StringUtils.EMPTY)
+        )
+        taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsv, task)
+
+        return Task.processingResponse(task)
+    }
+    
+    @Transactional(readOnly = true)
+    @PostMapping(path = [
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.EXPORT_SKILLS}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.EXPORT_SKILLS}"
+                        ],
+        produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun exportCustomListCsvV2(
+        @RequestBody apiSearch: ApiSearch,
+        status: Array<String>,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<TaskResult> {
+        if (!appConfig.allowPublicSearching && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+        val publishStatuses = status.mapNotNull {
+            val status = PublishStatus.forApiValue(it)
+            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
+        }.toSet()
+        val task = ExportSkillsToCsvTaskV2(
+                collectionUuid = "CustomList",
+            richSkillEsRepo.getUuidsFromApiSearch(
+                apiSearch,
+                publishStatuses,
+                Pageable.unpaged(),
+                user,
+                StringUtils.EMPTY
+            )
             )
             taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsvV2, task)
-        } else {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
-
+        
         return Task.processingResponse(task)
     }
 

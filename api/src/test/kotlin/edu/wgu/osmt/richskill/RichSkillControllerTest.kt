@@ -1,10 +1,6 @@
 package edu.wgu.osmt.richskill
 
-import edu.wgu.osmt.BaseDockerizedTest
-import edu.wgu.osmt.HasDatabaseReset
-import edu.wgu.osmt.HasElasticsearchReset
-import edu.wgu.osmt.RoutePaths
-import edu.wgu.osmt.SpringTest
+import edu.wgu.osmt.*
 import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionEsRepo
@@ -15,11 +11,7 @@ import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.task.CsvTask
-import edu.wgu.osmt.task.Task
-import edu.wgu.osmt.task.TaskMessageService
-import edu.wgu.osmt.task.TaskResult
-import edu.wgu.osmt.task.TaskStatus
+import edu.wgu.osmt.task.*
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -280,14 +272,13 @@ internal class RichSkillControllerTest @Autowired constructor(
                 "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.EXPORT_LIBRARY_CSV}"
         )
 
-
         val service = mockk<TaskMessageService>()
         every { service.enqueueJob(any(), any()) } returns Unit
         mockkStatic(CsvTask::class)
         mockkStatic(TaskResult::class)
         every { Task.processingResponse(any()) } returns HttpEntity(csvTaskResult)
 
-        val result = richSkillController.exportLibraryCsv(StringUtils.EMPTY, user = notNullJwt)
+        val result = richSkillController.exportLibraryCsv(user = notNullJwt)
         assertThat(result.body?.uuid).isNotBlank()
     }
 

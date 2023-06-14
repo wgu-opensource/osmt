@@ -16,10 +16,10 @@ object RoutePaths {
     //export
     private const val EXPORT = "/export"
     const val SEARCH_SKILLS = "$SEARCH_PATH/skills"
-    private const val EXPORT_LIBRARY = "$EXPORT/library"
+    const val EXPORT_LIBRARY = "$EXPORT/library"
     const val EXPORT_LIBRARY_CSV = "$EXPORT_LIBRARY/csv"
     const val EXPORT_LIBRARY_XLSX = "$EXPORT_LIBRARY/xlsx"
-    private const val EXPORT_SKILLS = "$EXPORT/skills"
+    const val EXPORT_SKILLS = "$EXPORT/skills"
     const val EXPORT_SKILLS_CSV = "$EXPORT_SKILLS/csv"
     const val EXPORT_SKILLS_XLSX = "$EXPORT_SKILLS/xlsx"
     const val SEARCH_SIMILAR_SKILLS = "$SEARCH_SKILLS/similarity"

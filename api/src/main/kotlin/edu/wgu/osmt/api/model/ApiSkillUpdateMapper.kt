@@ -42,13 +42,13 @@ class ApiSkillUpdateMapper {
             val sum = split + stored
             var add: List<String> = listOf()
             var remove: List<String> = listOf()
-            if((sum.size != split.size + stored.size) && (split.size >= stored.size)){
+            if ((sum.size != split.size + stored.size) && (split.size >= stored.size)) {
                 add = sum.groupBy { it }
                         .filter { it.value.size == 1 }
                         .flatMap { it.value }
-            }else if(split.size >= stored.size){
+            }else if (split.size >= stored.size) {
                 add = split
-            } else if(sum.size != split.size + stored.size){
+            } else if (sum.size != split.size + stored.size) {
                 remove = sum.groupBy { it }
                     .filter { it.value.size == 1 }
                     .flatMap { it.value }

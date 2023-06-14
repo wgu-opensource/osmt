@@ -1,6 +1,10 @@
 package edu.wgu.osmt.richskill
 
-import edu.wgu.osmt.*
+import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.HasDatabaseReset
+import edu.wgu.osmt.HasElasticsearchReset
+import edu.wgu.osmt.RoutePaths
+import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionEsRepo
@@ -11,10 +15,15 @@ import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.task.*
+import edu.wgu.osmt.task.CsvTask
+import edu.wgu.osmt.task.Task
+import edu.wgu.osmt.task.TaskMessageService
+import edu.wgu.osmt.task.TaskResult
+import edu.wgu.osmt.task.TaskStatus
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import org.apache.commons.lang3.StringUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
@@ -74,7 +83,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         richSkillEsRepo.saveAll(listOfSkills)
 
         // Act
-        val result = richSkillController.allPaginatedV2(
+        val result = richSkillController.legacyAllPaginated(
                 UriComponentsBuilder.newInstance(),
                 size,
                 0,
@@ -95,7 +104,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         richSkillEsRepo.saveAll(listOfSkills)
 
         // Act
-        val result = richSkillController.allPaginatedV2(
+        val result = richSkillController.legacyAllPaginated(
                 UriComponentsBuilder.newInstance(),
                 size,
                 0,
@@ -214,7 +223,7 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Act
         val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
-        val result = richSkillController.byUUIDCsvView(skillResult.searchHits[0].id.toString(),jwt)
+        val result = richSkillController.byUUIDCsvView(StringUtils.EMPTY, skillResult.searchHits[0].id.toString(), jwt)
 
         // Assert
         assertThat(result.body.toString()).contains(skillResult.searchHits[0].id.toString())
@@ -278,7 +287,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         mockkStatic(TaskResult::class)
         every { Task.processingResponse(any()) } returns HttpEntity(csvTaskResult)
 
-        val result = richSkillController.exportLibraryCsv(user = notNullJwt)
+        val result = richSkillController.exportLibraryCsv(StringUtils.EMPTY, user = notNullJwt)
         assertThat(result.body?.uuid).isNotBlank()
     }
 

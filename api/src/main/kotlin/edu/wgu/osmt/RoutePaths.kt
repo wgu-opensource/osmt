@@ -7,6 +7,7 @@ object RoutePaths {
 
     const val API_V2 = "/v2"
     const val API_V3 = "/v3"
+    const val DEFAULT = API_V3
     const val UNVERSIONED = StringUtils.EMPTY
 
     const val API = "/api"
@@ -76,5 +77,20 @@ object RoutePaths {
         const val STATUS = "status"
         const val SORT = "sort"
         const val COLLECTION_ID = "collectionId"
+    }
+
+    fun getApiVersionCalled(apiVersion: String?): String {
+
+        return if((API_V3.lowercase() == "/${apiVersion}") ||
+            (
+                (API_V2.lowercase() != "/${apiVersion}") &&
+                (DEFAULT.lowercase() != API_V3.lowercase())
+            )
+        ) {
+            API_V3
+        }
+        else {
+            API_V2
+        }
     }
 }

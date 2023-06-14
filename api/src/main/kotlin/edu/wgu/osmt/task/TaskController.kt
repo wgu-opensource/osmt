@@ -2,6 +2,7 @@ package edu.wgu.osmt.task
 
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiSkill
+import edu.wgu.osmt.api.model.ApiSkillV2
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.richskill.RichSkillRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -54,7 +55,6 @@ class TaskController @Autowired constructor(
     ])
     @ResponseBody
     fun batchResult(
-            @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @PathVariable uuid: String
     ): HttpEntity<*> {
         return taskResult(uuid)
@@ -64,6 +64,7 @@ class TaskController @Autowired constructor(
     @ResponseBody
     fun skillsResult(@PathVariable uuid: String): HttpEntity<*> {
         val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
+        
         return when (task?.status) {
             TaskStatus.Ready -> {
                 // CreateSkillsTask.results is a list of skill uuids, look them up and return
@@ -85,8 +86,21 @@ class TaskController @Autowired constructor(
     ],)
     @ResponseBody
     fun skillsResultV2(@PathVariable uuid: String): HttpEntity<*> {
+        val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
         
-        return skillsResult(uuid)
+        return when (task?.status) {
+            TaskStatus.Ready -> {
+                // CreateSkillsTask.results is a list of skill uuids, look them up and return
+                val createSkillsTaskV2: CreateSkillsTaskV2 = task as CreateSkillsTaskV2
+                val skillDaos = richSkillRepository.findManyByUUIDs(createSkillsTaskV2.result!!)
+                val apiSkills = skillDaos?.map { ApiSkillV2.fromDao(it, appConfig)}
+                
+                val responseHeaders = HttpHeaders()
+                responseHeaders.add("Content-Type", task.contentType)
+                return ResponseEntity.ok().headers(responseHeaders).body(apiSkills)
+            }
+            else -> ResponseEntity.status(404).body("Task with id $uuid not ready or not found")
+        }
     }
 
 }

@@ -197,10 +197,16 @@ class SearchController @Autowired constructor(
             @RequestBody apiSearch: ApiSearchV2,
             @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<RichSkillDocV2>> {
-        val latest = searchSkillsV2(uriComponentsBuilder, size, from, status, sort, collectionId, apiSearch, user)
+        val latest = searchSkills(uriComponentsBuilder, size, from, status, sort, collectionId,
+            ApiSearch(apiSearch.query,
+                apiSearch.advanced,
+                null,
+                apiSearch.uuids
+            ),
+            user)
 
         return ResponseEntity.status(200).headers(latest.headers)
-                .body(latest.body)
+                .body(latest.body?.map { RichSkillDocV2.fromLatest(it) })
     }
 
     @PostMapping(path = [

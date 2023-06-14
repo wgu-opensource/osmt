@@ -287,7 +287,7 @@ class CollectionController @Autowired constructor(
     }
     
     @DeleteMapping(path = [
-        "${RoutePaths.API}/{apiVersion}${RoutePaths.COLLECTION_CSV}"
+        "${RoutePaths.API}/{apiVersion}${RoutePaths.COLLECTION_REMOVE}"
                           ],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     fun removeCollection(

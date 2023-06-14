@@ -107,7 +107,7 @@ export abstract class AbstractService {
 
     // if user defined, make sure it delineates between the host and path
     if (path.includes("api")) {
-      return baseUrl + path
+      return baseUrl + (path.startsWith("/") ? (path) : ("/" + path))
     } else if (baseUrl && !baseUrl.endsWith("/") && !path.startsWith("/")) {
       return baseUrl + this.baseApi + "/" + path
     } else {

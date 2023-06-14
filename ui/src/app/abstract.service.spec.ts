@@ -195,8 +195,10 @@ describe("AbstractService (HTTP needed)", () => {
 
   it("buildUrl should works with tasks", () => {
     const mockTaskResult = createMockTaskResult()
-    const builtUrl = testService.buildUrl(mockTaskResult.id)
+    const builtUrl = testService.buildUrl(mockTaskResult.id.slice(1))
+    const builtUrlWithSlice = testService.buildUrl(mockTaskResult.id)
     expect(builtUrl).toEqual(AppConfig.settings.baseApiUrl + mockTaskResult.id)
+    expect(builtUrlWithSlice).toEqual(AppConfig.settings.baseApiUrl + mockTaskResult.id)
   })
 
   /* See https://angular.io/guide/http#testing-http-requests */

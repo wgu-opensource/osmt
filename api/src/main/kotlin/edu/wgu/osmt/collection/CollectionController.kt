@@ -3,14 +3,7 @@ package edu.wgu.osmt.collection
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
-import edu.wgu.osmt.api.model.ApiCollection
-import edu.wgu.osmt.api.model.ApiCollectionUpdate
-import edu.wgu.osmt.api.model.ApiCollectionV2
-import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.ApiSearchV2
-import edu.wgu.osmt.api.model.ApiSkillListUpdate
-import edu.wgu.osmt.api.model.ApiStringListUpdate
-import edu.wgu.osmt.api.model.CollectionSortEnum
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
@@ -20,18 +13,7 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.task.AppliesToType
-import edu.wgu.osmt.task.CsvTask
-import edu.wgu.osmt.task.CsvTaskV2
-import edu.wgu.osmt.task.PublishTask
-import edu.wgu.osmt.task.PublishTaskV2
-import edu.wgu.osmt.task.RemoveCollectionSkillsTask
-import edu.wgu.osmt.task.RemoveCollectionSkillsTaskV2
-import edu.wgu.osmt.task.Task
-import edu.wgu.osmt.task.TaskMessageService
-import edu.wgu.osmt.task.TaskResult
-import edu.wgu.osmt.task.UpdateCollectionSkillsTask
-import edu.wgu.osmt.task.XlsxTask
+import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
@@ -41,14 +23,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -205,14 +180,19 @@ class CollectionController @Autowired constructor(
             @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
-        val task = if(RoutePaths.API_V3 == RoutePaths.getApiVersionCalled(apiVersion)) {
-            UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses = publishStatuses, userString = oAuthHelper.readableUserName(user), apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}")
-
+        
+        return if(RoutePaths.API_V3 == RoutePaths.getApiVersionCalled(apiVersion)) {
+            val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses = publishStatuses, userString = oAuthHelper.readableUserName(user), apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}")
+            taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
+            Task.processingResponse(task)
+        } else if(RoutePaths.API_V2 == RoutePaths.getApiVersionCalled(apiVersion)){
+            val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses = publishStatuses, userString = oAuthHelper.readableUserName(user), apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}")
+            taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
+            Task.processingResponse(task)
         } else {
-            UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses = publishStatuses, userString = oAuthHelper.readableUserName(user), apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}")
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
-        taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
-        return Task.processingResponse(task)
+
 
     }
     
@@ -280,16 +260,17 @@ class CollectionController @Autowired constructor(
         if (collectionRepository.findByUUID(uuid)!!.status == PublishStatus.Draft && !oAuthHelper.hasRole(appConfig.roleAdmin)) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
-        val task: Task
-        if(RoutePaths.API_V3 == RoutePaths.getApiVersionCalled(apiVersion)) {
-            task = CsvTask(collectionUuid = uuid)
+        return if(RoutePaths.API_V3 == RoutePaths.getApiVersionCalled(apiVersion)) {
+            val task = CsvTask(collectionUuid = uuid)
             taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
-        } else {
-            task = CsvTaskV2(collectionUuid = uuid)
+            Task.processingResponse(task)
+        } else if(RoutePaths.API_V2 == RoutePaths.getApiVersionCalled(apiVersion)){
+            val task = CsvTaskV2(collectionUuid = uuid)
             taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsvV2, task)
+            Task.processingResponse(task)
+        } else {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
-        
-        return Task.processingResponse(task)
     }
     
     @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_XLSX}", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
@@ -314,9 +295,11 @@ class CollectionController @Autowired constructor(
             @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
         val task = if(RoutePaths.API_V3 == RoutePaths.getApiVersionCalled(apiVersion)) {
-            RemoveCollectionSkillsTask(collectionUuid = uuid)
+            RemoveCollectionSkillsTask(collectionUuid = uuid, apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}")
+        } else if(RoutePaths.API_V2 == RoutePaths.getApiVersionCalled(apiVersion)){
+            RemoveCollectionSkillsTask(collectionUuid = uuid, apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}")
         } else {
-            RemoveCollectionSkillsTaskV2(collectionUuid = uuid)
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
         taskMessageService.enqueueJob(TaskMessageService.removeCollectionSkills, task)
         

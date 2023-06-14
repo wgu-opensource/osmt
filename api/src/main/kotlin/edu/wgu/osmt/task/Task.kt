@@ -3,12 +3,7 @@ package edu.wgu.osmt.task
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import edu.wgu.osmt.RoutePaths
-import edu.wgu.osmt.api.model.ApiBatchResult
-import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.ApiSearchV2
-import edu.wgu.osmt.api.model.ApiSkillListUpdate
-import edu.wgu.osmt.api.model.ApiSkillUpdate
-import edu.wgu.osmt.api.model.ApiSkillUpdateV2
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.db.PublishStatus
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -36,7 +31,6 @@ import java.util.*
     JsonSubTypes.Type(value = ExportSkillsToCsvTask::class, name = "ExportSkillsToCsvTask"),
     JsonSubTypes.Type(value = ExportSkillsToXlsxTask::class, name = "ExportSkillsToXlsxTask"),
     JsonSubTypes.Type(value = RemoveCollectionSkillsTask::class, name = "RemoveCollectionSkillsTask"),
-    JsonSubTypes.Type(value = RemoveCollectionSkillsTaskV2::class, name = "RemoveCollectionSkillsTaskV2"),
     JsonSubTypes.Type(value = ExportSkillsToCsvTaskV2::class, name = "ExportSkillsToCsvTaskV2")
 )
 
@@ -213,41 +207,18 @@ data class UpdateCollectionSkillsTask(
     
 }
 
-data class UpdateCollectionSkillsTaskV2(
-        val collectionUuid: String = "",
-        val skillListUpdate: ApiSkillListUpdate = ApiSkillListUpdate(),
-        val publishStatuses: Set<PublishStatus> = setOf(PublishStatus.Draft),
-        val userString: String = "",
-        override val uuid: String = UUID.randomUUID().toString(),
-        override val start: Date = Date(),
-        override val result: ApiBatchResult? = null,
-        override val status: TaskStatus = TaskStatus.Processing
-) : Task {
-    override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}"
-}
-
 data class RemoveCollectionSkillsTask(
     val collectionUuid: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: ApiBatchResult? = null,
-    override val status: TaskStatus = TaskStatus.Processing
+    override val status: TaskStatus = TaskStatus.Processing,
+    override val apiResultPath: String = ""
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}"
+
 }
 
-data class RemoveCollectionSkillsTaskV2(
-        val collectionUuid: String = "",
-        override val uuid: String = UUID.randomUUID().toString(),
-        override val start: Date = Date(),
-        override val result: ApiBatchResult? = null,
-        override val status: TaskStatus = TaskStatus.Processing
-) : Task {
-    override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}"
-}
 
 enum class TaskStatus {
     Processing,

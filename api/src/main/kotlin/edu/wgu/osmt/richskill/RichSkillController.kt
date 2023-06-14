@@ -3,15 +3,7 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
-import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.ApiSearchV2
-import edu.wgu.osmt.api.model.ApiSkill
-import edu.wgu.osmt.api.model.ApiSkillUpdate
-import edu.wgu.osmt.api.model.ApiSkillUpdateMapper
-import edu.wgu.osmt.api.model.ApiSkillUpdateV2
-import edu.wgu.osmt.api.model.ApiSkillV2
-import edu.wgu.osmt.api.model.SkillSortEnum
-import edu.wgu.osmt.api.model.SortOrder
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
@@ -23,39 +15,16 @@ import edu.wgu.osmt.io.csv.RichSkillCsvExport
 import edu.wgu.osmt.io.csv.RichSkillCsvExportV2
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.task.AppliesToType
-import edu.wgu.osmt.task.CreateSkillsTask
-import edu.wgu.osmt.task.CreateSkillsTaskV2
-import edu.wgu.osmt.task.CsvTask
-import edu.wgu.osmt.task.CsvTaskV2
-import edu.wgu.osmt.task.ExportSkillsToCsvTask
-import edu.wgu.osmt.task.ExportSkillsToCsvTaskV2
-import edu.wgu.osmt.task.ExportSkillsToXlsxTask
-import edu.wgu.osmt.task.PublishTask
-import edu.wgu.osmt.task.PublishTaskV2
-import edu.wgu.osmt.task.Task
-import edu.wgu.osmt.task.TaskMessageService
-import edu.wgu.osmt.task.TaskResult
-import edu.wgu.osmt.task.XlsxTask
+import edu.wgu.osmt.task.*
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
+import org.springframework.http.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -254,8 +223,11 @@ class RichSkillController @Autowired constructor(
             val collections = it.collections.map { it.toModel() }.toSet()
             val result = if(RoutePaths.API_V3 == RoutePaths.getApiVersionCalled(apiVersion)) {
                 RichSkillCsvExport(appConfig).toCsv(listOf(RichSkillAndCollections(skill, collections)))
-            } else {
+            } else if(RoutePaths.API_V2 == RoutePaths.getApiVersionCalled(apiVersion)){
                 RichSkillCsvExportV2(appConfig).toCsv(listOf(RichSkillAndCollections(skill, collections)))
+            }
+            else {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND)
             }
             val responseHeaders = HttpHeaders()
             responseHeaders.add("Content-Type", "text/csv")
@@ -419,9 +391,11 @@ class RichSkillController @Autowired constructor(
         if(RoutePaths.API_V3 == RoutePaths.getApiVersionCalled(apiVersion)) {
             task = CsvTask(collectionUuid = "FullLibrary")
             taskMessageService.enqueueJob(TaskMessageService.skillsForFullLibraryCsv, task)
-        } else {
+        } else if(RoutePaths.API_V2 == RoutePaths.getApiVersionCalled(apiVersion)){
             task = CsvTaskV2(collectionUuid = "FullLibrary")
             taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsvV2, task)
+        } else {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
 
         return Task.processingResponse(task)
@@ -471,11 +445,13 @@ class RichSkillController @Autowired constructor(
                     collectionUuid = "CustomList", richSkillEsRepo.getUuidsFromApiSearch(apiSearch, publishStatuses, Pageable.unpaged(), user, StringUtils.EMPTY)
             )
             taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsv, task)
-        }else {
+        }else if(RoutePaths.API_V2 == RoutePaths.getApiVersionCalled(apiVersion)){
             task = ExportSkillsToCsvTaskV2(
                     collectionUuid = "CustomList", richSkillEsRepo.getUuidsFromApiSearch(apiSearch, publishStatuses, Pageable.unpaged(), user, StringUtils.EMPTY)
             )
             taskMessageService.enqueueJob(TaskMessageService.skillsForCustomListExportCsvV2, task)
+        } else {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
 
         return Task.processingResponse(task)

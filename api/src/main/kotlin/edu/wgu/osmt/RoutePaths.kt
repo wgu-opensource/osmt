@@ -81,16 +81,25 @@ object RoutePaths {
 
     fun getApiVersionCalled(apiVersion: String?): String {
 
-        return if((API_V3.lowercase() == "/${apiVersion}") ||
+       if((API_V3.lowercase() == "/${apiVersion}") ||
             (
-                (API_V2.lowercase() != "/${apiVersion}") &&
-                (DEFAULT.lowercase() != API_V3.lowercase())
+                (UNVERSIONED.lowercase() == apiVersion) &&
+                (DEFAULT.lowercase() == API_V3.lowercase())
             )
         ) {
-            API_V3
+            return API_V3
         }
         else {
-            API_V2
-        }
+           if((API_V2.lowercase() == "/${apiVersion}") ||
+                   (
+                       (UNVERSIONED.lowercase() == apiVersion) &&
+                                   (DEFAULT.lowercase() == API_V2.lowercase())
+                       )
+           ){
+               return API_V2
+           } else {
+               return UNVERSIONED
+           }
+       }
     }
 }

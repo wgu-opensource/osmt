@@ -220,7 +220,7 @@ export function createMockTaskResult(uuid: string = "uuid1"): ITaskResult {
   return {
     status: PublishStatus.Draft,
     contentType: "my content type",
-    id: "api/tasks/" + uuid,
+    id: "/api/v3/tasks/" + uuid,
     uuid
   }
 }
@@ -295,7 +295,7 @@ export const apiTaskResultForCSV: ApiTaskResult = {
   uuid: "c2624480-4935-4362-bc71-86e052dcb852",
   status: "Processing",
   contentType: "text/csv",
-  id: "/api/results/text/c2624480-4935-4362-bc71-86e052dcb852"
+  id: "/api/v3/results/text/c2624480-4935-4362-bc71-86e052dcb852"
 }
 
 export const apiTaskResultForDeleteCollection: ApiTaskResult = {

@@ -48,7 +48,7 @@ data class ApiSkillUpdate(
     
     fun validateForCreation(rowNumber: Number? = null): List<ApiFieldError>? {
         val errors = mutableListOf<ApiFieldError>()
-
+        
         if (skillName.isNullOrBlank()) {
             errors.add(ApiFieldError(field = "skillName", message = "Name is required", rowNumber = rowNumber))
         }
@@ -61,9 +61,9 @@ data class ApiSkillUpdate(
                 )
             )
         }
-
+        
         validate()?.let { errors.addAll(it) }
-
+        
         return if (errors.size > 0) errors else null
     }
 }

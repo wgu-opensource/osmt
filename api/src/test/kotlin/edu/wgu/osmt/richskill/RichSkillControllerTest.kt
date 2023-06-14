@@ -83,7 +83,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         richSkillEsRepo.saveAll(listOfSkills)
 
         // Act
-        val result = richSkillController.allPaginatedV2(
+        val result = richSkillController.legacyAllPaginated(
                 UriComponentsBuilder.newInstance(),
                 size,
                 0,
@@ -104,7 +104,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         richSkillEsRepo.saveAll(listOfSkills)
 
         // Act
-        val result = richSkillController.allPaginatedV2(
+        val result = richSkillController.legacyAllPaginated(
                 UriComponentsBuilder.newInstance(),
                 size,
                 0,
@@ -351,7 +351,7 @@ internal class RichSkillControllerTest @Autowired constructor(
         mockkStatic(TaskResult::class)
         every { Task.processingResponse(any()) } returns HttpEntity(csvTaskResult)
 
-        val result = richSkillController.exportLibraryCsv(user = notNullJwt)
+        val result = richSkillController.exportLibraryCsv(StringUtils.EMPTY, user = notNullJwt)
         assertThat(result.body?.uuid).isNotBlank()
     }
 

@@ -35,11 +35,11 @@ data class RichSkillDocV2(
     @Field(type = Keyword)
     @get:JsonProperty
     val uuid: String,
-
+    
     @Field(type = Keyword)
     @get:JsonProperty("id")
     val uri: String,
-
+    
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
@@ -51,7 +51,7 @@ data class RichSkillDocV2(
     )
     @get:JsonProperty("skillName")
     val name: String,
-
+    
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
@@ -63,7 +63,7 @@ data class RichSkillDocV2(
     )
     @get:JsonProperty("skillStatement")
     val statement: String,
-
+    
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
@@ -74,7 +74,7 @@ data class RichSkillDocV2(
     )
     @get:JsonProperty
     val category: String? = null,
-
+    
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
@@ -85,11 +85,11 @@ data class RichSkillDocV2(
     )
     @get:JsonProperty("author")
     val author: String? = null,
-
+    
     @Field(type = Keyword)
     @get:JsonProperty("status")
     val publishStatus: PublishStatus,
-
+    
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
@@ -100,11 +100,11 @@ data class RichSkillDocV2(
     )
     @get:JsonProperty("keywords")
     val searchingKeywords: List<String> = listOf(),
-
+    
     @Field(type = Nested)
     @get:JsonProperty("occupations")
     val jobCodes: List<JobCode> = listOf(),
-
+    
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
@@ -115,7 +115,7 @@ data class RichSkillDocV2(
     )
     @get:JsonProperty("standards")
     val standards: List<String> = listOf(),
-
+    
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
@@ -126,7 +126,7 @@ data class RichSkillDocV2(
     )
     @get:JsonIgnore
     val certifications: List<String> = listOf(),
-
+    
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
@@ -137,7 +137,7 @@ data class RichSkillDocV2(
     )
     @get:JsonIgnore
     val employers: List<String> = listOf(),
-
+    
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
@@ -148,15 +148,15 @@ data class RichSkillDocV2(
     )
     @get:JsonIgnore
     val alignments: List<String> = listOf(),
-
+    
     @Field(type = Nested)
     @get:JsonIgnore
     val collections: List<CollectionDoc> = listOf(),
-
+    
     @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     @get:JsonProperty("publishDate")
     val publishDate: LocalDateTime? = null,
-
+    
     @Field(type = FieldType.Date, format = [DateFormat.date_hour_minute_second])
     @get:JsonProperty("archiveDate")
     val archiveDate: LocalDateTime? = null

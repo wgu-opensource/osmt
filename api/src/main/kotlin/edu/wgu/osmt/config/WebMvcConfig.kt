@@ -33,4 +33,3 @@ class WebMvcConfig : WebMvcConfigurer {
             .ifAvailable({ customConverters -> converters.addAll(customConverters.getConverters()) })
     }
 }
-

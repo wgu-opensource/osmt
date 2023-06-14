@@ -45,20 +45,39 @@ class RichSkillController @Autowired constructor(
     override val allPaginatedPath: String = "${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}"
     override val sortOrderCompanion = SkillSortEnum.Companion
 
+    @Deprecated("Replaced with allPaginatedWithFilters")
+    @GetMapping(path = [
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",
+    ],
+    produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    override fun allPaginated(
+        uriComponentsBuilder: UriComponentsBuilder,
+        size: Int,
+        from: Int,
+        status: Array<String>,
+        sort: String?,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<List<RichSkillDoc>> {
+        if (!appConfig.allowPublicLists && user === null) {
+            throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
+        }
+        return super.allPaginated(uriComponentsBuilder, size, from, status, sort, user)
+    }
+    
     @GetMapping(path = [
         "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_LIST}",
-        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}"
     ],
-            produces = [MediaType.APPLICATION_JSON_VALUE])
+        produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun legacyAllPaginated(
-            uriComponentsBuilder: UriComponentsBuilder,
-            size: Int,
-            from: Int,
-            status: Array<String>,
-            sort: String?,
-            @AuthenticationPrincipal user: Jwt?
+    fun allPaginatedV2(
+        uriComponentsBuilder: UriComponentsBuilder,
+        size: Int,
+        from: Int,
+        status: Array<String>,
+        sort: String?,
+        @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<List<RichSkillDocV2>> {
         if (!appConfig.allowPublicLists && user === null) {
             throw GeneralApiException("Unauthorized", HttpStatus.UNAUTHORIZED)
@@ -221,9 +240,9 @@ class RichSkillController @Autowired constructor(
             }
             val skill = it.toModel()
             val collections = it.collections.map { it.toModel() }.toSet()
-            val result = if(RoutePaths.API_V3 == RoutePaths.getApiVersionCalled(apiVersion)) {
+            val result = if(RoutePaths.API_V3 == "/${apiVersion}") {
                 RichSkillCsvExport(appConfig).toCsv(listOf(RichSkillAndCollections(skill, collections)))
-            } else if(RoutePaths.API_V2 == RoutePaths.getApiVersionCalled(apiVersion)){
+            } else if(RoutePaths.API_V2 == "/${apiVersion}" || RoutePaths.UNVERSIONED == apiVersion){
                 RichSkillCsvExportV2(appConfig).toCsv(listOf(RichSkillAndCollections(skill, collections)))
             }
             else {

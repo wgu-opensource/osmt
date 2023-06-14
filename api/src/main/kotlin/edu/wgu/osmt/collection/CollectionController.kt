@@ -181,11 +181,11 @@ class CollectionController @Autowired constructor(
     ): HttpEntity<TaskResult> {
         val publishStatuses = status.mapNotNull { PublishStatus.forApiValue(it) }.toSet()
         
-        return if(RoutePaths.API_V3 == RoutePaths.getApiVersionCalled(apiVersion)) {
+        return if(RoutePaths.API_V3 == "/${apiVersion}") {
             val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses = publishStatuses, userString = oAuthHelper.readableUserName(user), apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}")
             taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
             Task.processingResponse(task)
-        } else if(RoutePaths.API_V2 == RoutePaths.getApiVersionCalled(apiVersion)){
+        } else if(RoutePaths.API_V2 == "/${apiVersion}" || RoutePaths.UNVERSIONED == apiVersion){
             val task = UpdateCollectionSkillsTask(uuid, skillListUpdate, publishStatuses = publishStatuses, userString = oAuthHelper.readableUserName(user), apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}")
             taskMessageService.enqueueJob(TaskMessageService.updateCollectionSkills, task)
             Task.processingResponse(task)
@@ -260,11 +260,11 @@ class CollectionController @Autowired constructor(
         if (collectionRepository.findByUUID(uuid)!!.status == PublishStatus.Draft && !oAuthHelper.hasRole(appConfig.roleAdmin)) {
             throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
         }
-        return if(RoutePaths.API_V3 == RoutePaths.getApiVersionCalled(apiVersion)) {
+        return if(RoutePaths.API_V3 == "/${apiVersion}") {
             val task = CsvTask(collectionUuid = uuid)
             taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsv, task)
             Task.processingResponse(task)
-        } else if(RoutePaths.API_V2 == RoutePaths.getApiVersionCalled(apiVersion)){
+        } else if(RoutePaths.API_V2 == "/${apiVersion}" || RoutePaths.UNVERSIONED == apiVersion){
             val task = CsvTaskV2(collectionUuid = uuid)
             taskMessageService.enqueueJob(TaskMessageService.skillsForCollectionCsvV2, task)
             Task.processingResponse(task)
@@ -294,9 +294,9 @@ class CollectionController @Autowired constructor(
             @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
             @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
-        val task = if(RoutePaths.API_V3 == RoutePaths.getApiVersionCalled(apiVersion)) {
+        val task = if(RoutePaths.API_V3 == "/${apiVersion}") {
             RemoveCollectionSkillsTask(collectionUuid = uuid, apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}")
-        } else if(RoutePaths.API_V2 == RoutePaths.getApiVersionCalled(apiVersion)){
+        } else if(RoutePaths.API_V2 == "/${apiVersion}" || RoutePaths.UNVERSIONED == apiVersion){
             RemoveCollectionSkillsTask(collectionUuid = uuid, apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}")
         } else {
             throw ResponseStatusException(HttpStatus.NOT_FOUND)

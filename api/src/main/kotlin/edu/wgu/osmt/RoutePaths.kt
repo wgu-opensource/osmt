@@ -3,8 +3,7 @@ package edu.wgu.osmt
 import org.apache.commons.lang3.StringUtils
 
 object RoutePaths {
-
-
+    
     const val API_V2 = "/v2"
     const val API_V3 = "/v3"
     const val DEFAULT = API_V3
@@ -77,29 +76,5 @@ object RoutePaths {
         const val STATUS = "status"
         const val SORT = "sort"
         const val COLLECTION_ID = "collectionId"
-    }
-
-    fun getApiVersionCalled(apiVersion: String?): String {
-
-       if((API_V3.lowercase() == "/${apiVersion}") ||
-            (
-                (UNVERSIONED.lowercase() == apiVersion) &&
-                (DEFAULT.lowercase() == API_V3.lowercase())
-            )
-        ) {
-            return API_V3
-        }
-        else {
-           if((API_V2.lowercase() == "/${apiVersion}") ||
-                   (
-                       (UNVERSIONED.lowercase() == apiVersion) &&
-                                   (DEFAULT.lowercase() == API_V2.lowercase())
-                       )
-           ){
-               return API_V2
-           } else {
-               return UNVERSIONED
-           }
-       }
     }
 }

@@ -1,6 +1,5 @@
 let payload = {
-  query: "",
-  filtered: {}
+  query: ""
 };
 
 let body = {

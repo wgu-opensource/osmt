@@ -71,10 +71,10 @@ test_dir="$(_get_osmt_project_dir)/test" || exit 135
 apitest_env_file="$test_dir/osmt-apitest.env"
 
 trap error_handler ERR SIGINT SIGTERM
-# TODO run v3 first
+
 source_osmt_apitest_env_file
 get_bearer_token
-run_api_tests "v2"
+run_api_tests "v3"
 run_shutdown_script
 
 # Need to refresh CI data between versioned tests
@@ -82,5 +82,5 @@ run_shutdown_script
 "${test_dir}/bin/start_osmt_app.sh"
 "${test_dir}/bin/load_and_reindex_ci_data.sh"
 
-run_api_tests "v3"
+run_api_tests "v2"
 run_shutdown_script

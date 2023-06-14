@@ -2,24 +2,14 @@ let skill = [
   {
       "skillName": "API Test RSD - Master Basketweaver",
       "skillStatement": "Most proficient in the weaving of baskets.",
-      "categories": {
-          "add": [
-              "Home Care"
-          ],
-          "remove": []
-      },
+      "category": "Home Care",
       "occupations": {
           "add": [
               "11-1011"
           ],
           "remove": []
       },
-      "authors": {
-          "add": [
-              "Western Governors University"
-          ],
-          "remove": []
-      }
+      "author": "Western Governors University"
   }
 ];
 

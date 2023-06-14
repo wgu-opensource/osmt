@@ -1,14 +1,6 @@
 let payload = {
-  authors: {
-    add: [
-      "Bilbo Baggins"
-    ]
-  },
-  categories: {
-    add: [
-      "Walls of Fire"
-    ]
-  }
+  author: "Bilbo Baggins",
+  category: "Walls of Fire"
 };
 
 let body = {

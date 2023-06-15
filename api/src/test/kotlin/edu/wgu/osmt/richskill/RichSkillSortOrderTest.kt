@@ -58,7 +58,7 @@ internal class RichSkillSortOrderTest @Autowired constructor(
         @Test
         fun `sorted by default(name ASC)`() {
             // Act
-            val result = richSkillController.allPaginated(
+            val result = richSkillController.allPaginatedV2(
                     UriComponentsBuilder.newInstance(),
                     size,
                     0,
@@ -66,17 +66,17 @@ internal class RichSkillSortOrderTest @Autowired constructor(
                     "",
                     nullJwt
             )
-            val rsdList: List<RichSkillDoc>? = result.body
+            val rsdList: List<RichSkillDocV2>? = result.body
 
             // Assert
             assertThat(rsdList).isSortedAccordingTo(
-                Comparator.comparing(RichSkillDoc::name, CASE_INSENSITIVE_ORDER)
+                Comparator.comparing(RichSkillDocV2::name, CASE_INSENSITIVE_ORDER)
             )
         }
         @Test
         fun `sorted by name ASC`() {
             // Act
-            val result = richSkillController.allPaginated(
+            val result = richSkillController.allPaginatedV2(
                 UriComponentsBuilder.newInstance(),
                 size,
                 0,
@@ -84,17 +84,17 @@ internal class RichSkillSortOrderTest @Autowired constructor(
                 NAME_ASC,
                 nullJwt
             )
-            val rsdList: List<RichSkillDoc>? = result.body
+            val rsdList: List<RichSkillDocV2>? = result.body
 
             // Assert
             assertThat(rsdList).isSortedAccordingTo(
-                Comparator.comparing(RichSkillDoc::name, CASE_INSENSITIVE_ORDER)
+                Comparator.comparing(RichSkillDocV2::name, CASE_INSENSITIVE_ORDER)
             )
         }
         @Test
         fun `sorted by name DESC`() {
             // Act
-            val result = richSkillController.allPaginated(
+            val result = richSkillController.allPaginatedV2(
                 UriComponentsBuilder.newInstance(),
                 size,
                 0,
@@ -102,11 +102,11 @@ internal class RichSkillSortOrderTest @Autowired constructor(
                 NAME_DESC,
                 nullJwt
             )
-            val rsdList: List<RichSkillDoc>? = result.body
+            val rsdList: List<RichSkillDocV2>? = result.body
 
             // Assert
             assertThat(rsdList).isSortedAccordingTo(
-                Comparator.comparing(RichSkillDoc::name, CASE_INSENSITIVE_ORDER).reversed()
+                Comparator.comparing(RichSkillDocV2::name, CASE_INSENSITIVE_ORDER).reversed()
             )
         }
     }

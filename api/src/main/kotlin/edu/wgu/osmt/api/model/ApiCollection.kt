@@ -1,5 +1,6 @@
 package edu.wgu.osmt.api.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.collection.Collection
@@ -14,10 +15,10 @@ import java.time.ZonedDateTime
 
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
-class ApiCollection(
-    private val collection: Collection,
-    private val ss: List<RichSkillDescriptor>,
-    private val keywords: Map<KeywordTypeEnum, List<KeywordCount>>,
+open class ApiCollection(
+    @JsonIgnore open val collection: Collection,
+    @JsonIgnore open val ss: List<RichSkillDescriptor>,
+    @JsonIgnore open val keywords: Map<KeywordTypeEnum, List<KeywordCount>>,
     private val appConfig: AppConfig
 ) {
     @get:JsonProperty
@@ -48,7 +49,7 @@ class ApiCollection(
 
     @get:JsonProperty
     val author: String?
-        get() = collection.author?.let { it.value }
+        get() = collection.author?.value
 
     @get:JsonProperty
     val status: PublishStatus?
@@ -71,11 +72,11 @@ class ApiCollection(
         get() = collection.archiveDate?.atZone(ZoneId.of("UTC"))
 
     @get:JsonProperty
-    val skills: List<ApiSkillSummary>
+    open val skills: List<ApiSkillSummary>
         get() = ss.map { ApiSkillSummary.fromSkill(it, appConfig) }
 
     @get:JsonProperty
-    val skillKeywords: Map<KeywordTypeEnum, List<KeywordCount>>
+    open val skillKeywords: Map<KeywordTypeEnum, List<KeywordCount>>
         get() = keywords
 
     @get:JsonProperty

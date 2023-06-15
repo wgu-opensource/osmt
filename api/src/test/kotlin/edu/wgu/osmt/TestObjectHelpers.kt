@@ -165,10 +165,10 @@ object TestObjectHelpers {
         val skillStatement = statement ?: UUID.randomUUID().toString()
 
         val authors = ApiStringListUpdate(
-            add = (1..keywordCount).toList().map { UUID.randomUUID().toString() }
+            add = (1..keywordCount).toList().map { "Author${it}" }
         )
         val categories = ApiStringListUpdate(
-            add = (1..keywordCount).toList().map { UUID.randomUUID().toString() }
+            add = (1..keywordCount).toList().map { "Category${it}" }
         )
         val keywords = ApiStringListUpdate(
             add = (1..keywordCount).toList().map { UUID.randomUUID().toString() }

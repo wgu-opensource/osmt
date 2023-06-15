@@ -229,7 +229,7 @@ describe("RichSkillService", () => {
     const skillResult: ApiSkill = new ApiSkill(createMockSkill(now, now, PublishStatus.Published))
     const expected = skillResult
     const path1 = getBaseApi() + "/skills"
-    const path2 = getBaseApi() + "/" + taskResult.id
+    const path2 = taskResult.id
     const skillUpdate = createMockSkillUpdate()
 
     // Act
@@ -353,10 +353,9 @@ describe("RichSkillService", () => {
   it("getResultExportedLibrary", fakeAsync(() => {
     {
       const taskResult = apiTaskResultForCSV
-      const path = "/results/text/" + apiTaskResultForCSV.uuid
-      const path2 = taskResult.id.slice(1)
+      const path2 = taskResult.id
       testService.getResultExportedCsvLibrary(path2).subscribe()
-      const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + getBaseApi() + "/" + path2)
+      const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path2)
       expect(req1.request.method).toEqual("GET")
       req1.flush("csv")
 
@@ -372,7 +371,7 @@ describe("RichSkillService", () => {
     const apiBatchResult = new ApiBatchResult(createMockBatchResult())
     const expected = apiBatchResult
     const path1 = getBaseApi() + "/skills/publish"
-    const path2 = getBaseApi() + "/" + taskResult.id
+    const path2 = taskResult.id
     const query = "testQueryString"
     const apiSearch = new ApiSearch({ query })
 

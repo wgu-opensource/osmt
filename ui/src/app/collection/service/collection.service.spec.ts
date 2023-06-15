@@ -478,7 +478,7 @@ describe("CollectionService", () => {
     const expected = apiBatchResult
     const uuid: string = taskResult.uuid ? taskResult.uuid : ""
     const path1 = getBaseApi() + "/collections/" + uuid + "/updateSkills"
-    const path2 = getBaseApi() + "/" + taskResult.id
+    const path2 = taskResult.id
     const query = "testQueryString"
     const update = new ApiSkillListUpdate({
       add: new ApiSearch({query}),
@@ -522,7 +522,7 @@ describe("CollectionService", () => {
     const apiBatchResult = new ApiBatchResult(createMockBatchResult())
     const expected = apiBatchResult
     const path1 = getBaseApi() + "/collections/publish"
-    const path2 = getBaseApi() + "/" + taskResult.id
+    const path2 = taskResult.id
     const query = "testQueryString"
     const apiSearch = new ApiSearch({ query })
     const filter = new Set<PublishStatus>([PublishStatus.Draft])

@@ -106,7 +106,9 @@ export abstract class AbstractService {
     const baseUrl = AppConfig.settings.baseApiUrl
 
     // if user defined, make sure it delineates between the host and path
-    if (baseUrl && !baseUrl.endsWith("/") && !path.startsWith("/")) {
+    if (path.includes("api")) {
+      return baseUrl + (path.startsWith("/") ? (path) : ("/" + path))
+    } else if (baseUrl && !baseUrl.endsWith("/") && !path.startsWith("/")) {
       return baseUrl + this.baseApi + "/" + path
     } else {
       return baseUrl + this.baseApi + "/" + path

@@ -1,16 +1,13 @@
 package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.PaginationDefaults
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.jwt.Jwt
-import org.springframework.stereotype.Controller
-import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.util.UriComponentsBuilder
-
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
-import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.api.model.ApiFilteredSearch
+import edu.wgu.osmt.api.model.ApiKeyword
+import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.KeywordSortEnum
+import edu.wgu.osmt.api.model.SkillSortEnum
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
@@ -24,9 +21,24 @@ import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.wrapAsExpression
-import org.springframework.http.*
-import org.springframework.web.bind.annotation.*
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.stereotype.Controller
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.server.ResponseStatusException
+import org.springframework.web.util.UriComponentsBuilder
 
 @Controller
 @Transactional
@@ -40,14 +52,15 @@ class KeywordController @Autowired constructor(
 
     @GetMapping(RoutePaths.CATEGORY_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun allCategoriesPaginated(
+    fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
+        @RequestParam(required = true, defaultValue = "0") keywordType: KeywordTypeEnum,
         size: Int,
         from: Int,
         sort: String?,
     ): HttpEntity<List<ApiKeyword>> {
         return allPaginated(
-            keywordType = KeywordTypeEnum.Category,
+            keywordType = keywordType,
             uriComponentsBuilder = uriComponentsBuilder,
             path = RoutePaths.CATEGORY_LIST,
             size = size,
@@ -58,17 +71,19 @@ class KeywordController @Autowired constructor(
 
     @GetMapping(RoutePaths.CATEGORY_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun categoryById(
-        @PathVariable identifier: String
+    fun keywordById(
+        @PathVariable identifier: String,
+        @RequestParam(required = true, defaultValue = "0") keywordType: KeywordTypeEnum,
     ): ApiKeyword? {
         val id: Long = identifier.toLong()
-        return this.byId(KeywordTypeEnum.Category, id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        return this.byId(keywordType, id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
     @GetMapping(RoutePaths.CATEGORY_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun getCategorySkills (
+    fun getKeywordSkills (
         uriComponentsBuilder: UriComponentsBuilder,
+        @RequestParam(required = true, defaultValue = "0") keywordType: KeywordTypeEnum,
         @PathVariable identifier: String,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
@@ -79,8 +94,9 @@ class KeywordController @Autowired constructor(
         @RequestParam(required = false) sort: String?,
         @AuthenticationPrincipal user: Jwt? = null
     ): HttpEntity<List<RichSkillDoc>> {
-        return searchCategorySkills(
+        return searchKeywordSkills(
             uriComponentsBuilder = uriComponentsBuilder,
+            keywordType = keywordType,
             identifier = identifier,
             size = size,
             from = from,
@@ -92,8 +108,9 @@ class KeywordController @Autowired constructor(
 
     @PostMapping(RoutePaths.CATEGORY_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun searchCategorySkills (
+    fun searchKeywordSkills (
         uriComponentsBuilder: UriComponentsBuilder,
+        @RequestParam(required = true, defaultValue = "0") keywordType: KeywordTypeEnum,
         @PathVariable identifier: String,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
@@ -108,10 +125,8 @@ class KeywordController @Autowired constructor(
         val sortEnum = sort?.let{ SkillSortEnum.forApiValue(it)}
 
         val id: Long = identifier.toLong()
-        val keyword = keywordRepository.findById(id)
-
-        if (keyword?.type != KeywordTypeEnum.Category) throw ResponseStatusException(HttpStatus.NOT_FOUND)
-
+        val keyword = keywordRepository.findById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        
         return searchRelatedSkills(
             uriComponentsBuilder = uriComponentsBuilder,
             keyword = keyword,
@@ -139,9 +154,9 @@ class KeywordController @Autowired constructor(
         val query = keywordRepository.findByType(keywordType)
 
         when (sortEnum) {
-            KeywordSortEnum.KeywordAsc -> query.orderBy(KeywordTable.value to SortOrder.ASC)
+            KeywordSortEnum.KeywordNameAsc -> query.orderBy(KeywordTable.value to SortOrder.ASC)
 
-            KeywordSortEnum.KeywordDesc -> query.orderBy(KeywordTable.value to SortOrder.DESC)
+            KeywordSortEnum.KeywordNameDesc -> query.orderBy(KeywordTable.value to SortOrder.DESC)
 
             KeywordSortEnum.SkillCountAsc -> query.orderBy(
                 wrapAsExpression<Int>(

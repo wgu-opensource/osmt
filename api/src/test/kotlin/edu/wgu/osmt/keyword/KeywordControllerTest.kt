@@ -18,7 +18,6 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -55,8 +54,9 @@ internal class KeywordControllerTest @Autowired constructor(
         }
 
         // act
-        val result = kwController.allCategoriesPaginated(
+        val result = kwController.allPaginated(
             uriComponentsBuilder = UriComponentsBuilder.newInstance(),
+            keywordType = KeywordTypeEnum.Category,
             size = size,
             from = from,
             sort = sort.toString(),
@@ -68,19 +68,19 @@ internal class KeywordControllerTest @Autowired constructor(
     }
 
     @Test
-    fun `categoryById() should retrieve an existing category`() {
+    fun `keywordById() should retrieve an existing category`() {
         // arrange
         val keyword = keywordRepository.create(KeywordTypeEnum.Category, "category1")
 
         // act
-        val result = kwController.categoryById(keyword?.id?.value.toString())
+        val result = kwController.keywordById(keyword?.id?.value.toString(), KeywordTypeEnum.Category)
 
         // assert
         Assertions.assertThat(result).isNotNull
     }
 
     @Test
-    fun `getCategorySkills() should retrieve an existing category`() {
+    fun `getKeywordSkills() should retrieve an existing category`() {
         // arrange
         val category1 = keywordRepository.create(KeywordTypeEnum.Category, "category1")
         val category2 = keywordRepository.create(KeywordTypeEnum.Category, "category2")
@@ -104,8 +104,9 @@ internal class KeywordControllerTest @Autowired constructor(
         )
 
         // act
-        val result = kwController.getCategorySkills(
+        val result = kwController.getKeywordSkills(
             uriComponentsBuilder = UriComponentsBuilder.newInstance(),
+            keywordType = KeywordTypeEnum.Category,
             identifier = category2.id.toString(),
             size = 10,
             from = 0,
@@ -119,7 +120,7 @@ internal class KeywordControllerTest @Autowired constructor(
     }
 
     @Test
-    fun `searchCategorySkills() should retrieve an existing category`() {
+    fun `searchKeywordSkills() should retrieve an existing category`() {
         // arrange
         val category1 = keywordRepository.create(KeywordTypeEnum.Category, "category1")
         val category2 = keywordRepository.create(KeywordTypeEnum.Category, "category2")
@@ -143,8 +144,9 @@ internal class KeywordControllerTest @Autowired constructor(
         )
 
         // act
-        val result = kwController.searchCategorySkills(
+        val result = kwController.searchKeywordSkills(
             uriComponentsBuilder = UriComponentsBuilder.newInstance(),
+            keywordType = KeywordTypeEnum.Category,
             identifier = category2.id.toString(),
             size = 10,
             from = 0,

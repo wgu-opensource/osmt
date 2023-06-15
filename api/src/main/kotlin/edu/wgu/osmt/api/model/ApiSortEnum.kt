@@ -95,10 +95,10 @@ enum class CollectionSortEnum(override val apiValue: String) : SortOrder {
  * Provides an enum for Keywords that defines elasticsearch sorting
  */
 enum class KeywordSortEnum(override val apiValue: String) : SortOrder {
-    KeywordAsc("keyword.asc") {
+    KeywordNameAsc("keyword.asc") {
         override val sort = Sort.by("value").ascending()
     },
-    KeywordDesc("keyword.desc") {
+    KeywordNameDesc("keyword.desc") {
         override val sort = Sort.by("value").descending()
     },
     SkillCountAsc("skillCount.asc") {
@@ -111,11 +111,11 @@ enum class KeywordSortEnum(override val apiValue: String) : SortOrder {
     companion object : SortOrderCompanion<KeywordSortEnum> {
         override val logger: Logger = LoggerFactory.getLogger(KeywordSortEnum::class.java)
 
-        override val defaultSort = KeywordAsc
+        override val defaultSort = KeywordNameAsc
 
         override fun forApiValue(apiValue: String): KeywordSortEnum {
-            return values().find { it.apiValue == apiValue } ?: KeywordAsc.also {
-                logger.warn("Sort with value ${apiValue} could not be found; using default ${KeywordAsc.apiValue} sort")
+            return values().find { it.apiValue == apiValue } ?: KeywordNameAsc.also {
+                logger.warn("Sort with value ${apiValue} could not be found; using default ${KeywordNameAsc.apiValue} sort")
             }
         }
     }

@@ -22,6 +22,10 @@ class ApiKeyword(
     @get:JsonProperty
     val value: String?
         get() = keyword.value
+    
+    @get:JsonProperty
+    val framework: String?
+        get() = keyword.framework
 
     @get:JsonProperty
     val skillCount: Long?

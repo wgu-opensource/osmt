@@ -1,6 +1,10 @@
 package edu.wgu.osmt.richskill
 
-import edu.wgu.osmt.*
+import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.HasDatabaseReset
+import edu.wgu.osmt.HasElasticsearchReset
+import edu.wgu.osmt.RoutePaths
+import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.collection.CollectionEsRepo
@@ -11,7 +15,11 @@ import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.task.*
+import edu.wgu.osmt.task.CsvTask
+import edu.wgu.osmt.task.Task
+import edu.wgu.osmt.task.TaskMessageService
+import edu.wgu.osmt.task.TaskResult
+import edu.wgu.osmt.task.TaskStatus
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -40,13 +48,13 @@ import java.util.*
 
 @Transactional
 internal class RichSkillControllerTest @Autowired constructor(
-        override val richSkillEsRepo: RichSkillEsRepo,
-        val taskMessageService: TaskMessageService,
-        val oAuthHelper: OAuthHelper,
-        val appConfig: AppConfig,
-        override val collectionEsRepo: CollectionEsRepo,
-        override val keywordEsRepo: KeywordEsRepo,
-        override val jobCodeEsRepo: JobCodeEsRepo
+    override val richSkillEsRepo: RichSkillEsRepo,
+    val taskMessageService: TaskMessageService,
+    val oAuthHelper: OAuthHelper,
+    val appConfig: AppConfig,
+    override val collectionEsRepo: CollectionEsRepo,
+    override val keywordEsRepo: KeywordEsRepo,
+    override val jobCodeEsRepo: JobCodeEsRepo
 ): SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset {
 
     var authentication: Authentication = Mockito.mock(Authentication::class.java)

@@ -1,6 +1,10 @@
 package edu.wgu.osmt.api.model
 
-import edu.wgu.osmt.*
+import edu.wgu.osmt.BaseDockerizedTest
+import edu.wgu.osmt.HasDatabaseReset
+import edu.wgu.osmt.HasElasticsearchReset
+import edu.wgu.osmt.SpringTest
+import edu.wgu.osmt.TestObjectHelpers
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo

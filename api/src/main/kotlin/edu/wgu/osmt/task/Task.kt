@@ -3,7 +3,12 @@ package edu.wgu.osmt.task
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import edu.wgu.osmt.RoutePaths
-import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.api.model.ApiBatchResult
+import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.ApiSearchV2
+import edu.wgu.osmt.api.model.ApiSkillListUpdate
+import edu.wgu.osmt.api.model.ApiSkillUpdate
+import edu.wgu.osmt.api.model.ApiSkillUpdateV2
 import edu.wgu.osmt.db.PublishStatus
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -144,13 +149,13 @@ data class CreateSkillsTask(
 }
 
 data class CreateSkillsTaskV2(
-        val apiSkillUpdates: List<ApiSkillUpdateV2> = listOf(),
-        val userString: String = "",
-        val userIdentifier: String = "",
-        override val uuid: String = UUID.randomUUID().toString(),
-        override val start: Date = Date(),
-        override val result: List<String>? = null,
-        override val status: TaskStatus = TaskStatus.Processing
+    val apiSkillUpdates: List<ApiSkillUpdateV2> = listOf(),
+    val userString: String = "",
+    val userIdentifier: String = "",
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: List<String>? = null,
+    override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
     override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_SKILLS}"
@@ -177,16 +182,16 @@ data class PublishTask(
 }
 
 data class PublishTaskV2(
-        val appliesToType: AppliesToType = AppliesToType.Skill,
-        val search: ApiSearchV2 = ApiSearchV2(),
-        val filterByStatus: Set<PublishStatus> = setOf(PublishStatus.Draft),
-        val publishStatus: PublishStatus = PublishStatus.Published,
-        val userString: String = "",
-        val collectionUuid: String? = null,
-        override val uuid: String = UUID.randomUUID().toString(),
-        override val start: Date = Date(),
-        override val result: ApiBatchResult? = null,
-        override val status: TaskStatus = TaskStatus.Processing
+    val appliesToType: AppliesToType = AppliesToType.Skill,
+    val search: ApiSearchV2 = ApiSearchV2(),
+    val filterByStatus: Set<PublishStatus> = setOf(PublishStatus.Draft),
+    val publishStatus: PublishStatus = PublishStatus.Published,
+    val userString: String = "",
+    val collectionUuid: String? = null,
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: ApiBatchResult? = null,
+    override val status: TaskStatus = TaskStatus.Processing
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
     override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}"

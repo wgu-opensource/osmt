@@ -77,12 +77,14 @@ describe("HeaderComponent", () => {
     expect(component.canHaveWorkspace).toBeFalse()
   })
 
-  xit("my workspace is visible when user has role admin or curator", (done) => {
+  it("my workspace is visible when user has role admin or curator", (done) => {
     component.canHaveWorkspace = true
+    spyOn(component, "showPublicNavbar").and.returnValue(false)
     fixture.whenStable().then(
       () => {
         fixture.detectChanges()
-
+        console.log(document.getElementsByTagName("body")[0])
+        console.log(component.showPublicNavbar())
         const myWorkspace = fixture.debugElement.query(By.css("#li-my-workspace"))
         expect(myWorkspace).toBeTruthy()
         expect(component.canHaveWorkspace).toBeTrue()

@@ -77,7 +77,7 @@ describe("HeaderComponent", () => {
     expect(component.canHaveWorkspace).toBeFalse()
   })
 
-  xit("my workspace is visible when user has role admin or curator", (done) => {
+  it("my workspace is visible when user has role admin or curator", (done) => {
     component.canHaveWorkspace = true
     fixture.whenStable().then(
       () => {

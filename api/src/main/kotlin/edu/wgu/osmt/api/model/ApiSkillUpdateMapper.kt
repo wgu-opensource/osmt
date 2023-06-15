@@ -16,12 +16,12 @@ class ApiSkillUpdateMapper {
                     skillStatement = apiSkillUpdateV2.skillStatement,
                     publishStatus = apiSkillUpdateV2.publishStatus,
                     collections = apiSkillUpdateV2.collections,
-                    authors = getDiff(apiSkillUpdateV2.author, skillUUID, richSkillRepository, KeywordTypeEnum.Author),
-                    categories = getDiff(apiSkillUpdateV2.category, skillUUID, richSkillRepository, KeywordTypeEnum.Category)
+                    authors = getApiStringListUpdate(apiSkillUpdateV2.author, skillUUID, richSkillRepository, KeywordTypeEnum.Author),
+                    categories = getApiStringListUpdate(apiSkillUpdateV2.category, skillUUID, richSkillRepository, KeywordTypeEnum.Category)
             )
         }
 
-        private fun getDiff(
+        private fun getApiStringListUpdate(
             newFieldValue: String?,
             skillUUID: String,
             richSkillRepository: RichSkillRepository,

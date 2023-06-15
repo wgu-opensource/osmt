@@ -40,19 +40,21 @@ class ApiSkillUpdateMapperTest @Autowired constructor(
         ).first()
         val apiSkillUpdateV2 = ApiSkillUpdateV2(
             skillName = originalSkillDao.name,
-            author = "Author Prueba",
-            category = "Category Prueba"
+            author = "Author1",
+            category = "Category1"
         )
-        val authorStoredList = originalSkillDao.keywords.filter { it.type == KeywordTypeEnum.Author }.map { it.value }.toList()
-        val categoryStoredList = originalSkillDao.keywords.filter { it.type == KeywordTypeEnum.Category }.map { it.value }.toList()
         
         // act
+        val storedAuthors = originalSkillDao.keywords.filter { it.type == KeywordTypeEnum.Author }.map { it.value }.toList()
+        val storedCategories = originalSkillDao.keywords.filter { it.type == KeywordTypeEnum.Category }.map { it.value }.toList()
         val actual = ApiSkillUpdateMapper.mapApiSkillUpdateV2ToApiSkillUpdate(apiSkillUpdateV2, originalSkillDao.uuid, richSkillRepository)
         
         // assert
-        assertThat(actual.authors!!.add).contains("Author Prueba")
-        assertThat(actual.authors!!.remove).containsAll(authorStoredList)
-        assertThat(actual.categories!!.add).contains("Category Prueba")
-        assertThat(actual.categories!!.remove).containsAll(categoryStoredList)
+        assertThat(storedAuthors).containsAll(listOf("Author1", "Author2", "Author3"))
+        assertThat(storedCategories).containsAll(listOf("Category1", "Category2", "Category3"))
+        assertThat(actual.authors!!.add).contains("Author1")
+        assertThat(actual.authors!!.remove).containsAll(listOf("Author2","Author3"))
+        assertThat(actual.categories!!.add).contains("Category1")
+        assertThat(actual.categories!!.remove).containsAll(listOf("Category2","Category3"))
     }
 }

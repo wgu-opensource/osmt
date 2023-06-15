@@ -1,11 +1,6 @@
 package edu.wgu.osmt
 
-import edu.wgu.osmt.api.model.ApiAlignment
-import edu.wgu.osmt.api.model.ApiAlignmentListUpdate
-import edu.wgu.osmt.api.model.ApiNamedReference
-import edu.wgu.osmt.api.model.ApiReferenceListUpdate
-import edu.wgu.osmt.api.model.ApiSkillUpdate
-import edu.wgu.osmt.api.model.ApiStringListUpdate
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
@@ -165,10 +160,10 @@ object TestObjectHelpers {
         val skillStatement = statement ?: UUID.randomUUID().toString()
 
         val authors = ApiStringListUpdate(
-            add = (1..keywordCount).toList().map { UUID.randomUUID().toString() }
+            add = (1..keywordCount).toList().map { "Author${it}" }
         )
         val categories = ApiStringListUpdate(
-            add = (1..keywordCount).toList().map { UUID.randomUUID().toString() }
+            add = (1..keywordCount).toList().map { "Category${it}" }
         )
         val keywords = ApiStringListUpdate(
             add = (1..keywordCount).toList().map { UUID.randomUUID().toString() }

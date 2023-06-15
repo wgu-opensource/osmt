@@ -1,10 +1,8 @@
 package edu.wgu.osmt.api.model
 
-import edu.wgu.osmt.config.SEMICOLON
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillRepository
 
-//TODO: Add coverage for this class
 class ApiSkillUpdateMapper {
     
     companion object {
@@ -18,21 +16,29 @@ class ApiSkillUpdateMapper {
                     skillStatement = apiSkillUpdateV2.skillStatement,
                     publishStatus = apiSkillUpdateV2.publishStatus,
                     collections = apiSkillUpdateV2.collections,
-                    authors = getDiff(apiSkillUpdateV2.author?.split(SEMICOLON), skillUUID, richSkillRepository, KeywordTypeEnum.Author),
-                    categories = getDiff(apiSkillUpdateV2.category?.split(SEMICOLON), skillUUID, richSkillRepository, KeywordTypeEnum.Category)
+                    authors = getDiff(apiSkillUpdateV2.author, skillUUID, richSkillRepository, KeywordTypeEnum.Author),
+                    categories = getDiff(apiSkillUpdateV2.category, skillUUID, richSkillRepository, KeywordTypeEnum.Category)
             )
         }
 
         private fun getDiff(
-                split: List<String>?,
-                skillUUID: String,
-                richSkillRepository: RichSkillRepository,
-                type: KeywordTypeEnum
+            newFieldValue: String?,
+            skillUUID: String,
+            richSkillRepository: RichSkillRepository,
+            type: KeywordTypeEnum
         ): ApiStringListUpdate {
-            val storedList = richSkillRepository.findByUUID(skillUUID)?.keywords?.filter { it.type == type }?.mapNotNull { it.value }
-
-            return if (split != null && storedList != null) {
-                ApiStringListUpdate(split, storedList)
+            val storedFieldValues = richSkillRepository.findByUUID(skillUUID)?.keywords?.filter { it.type == type }?.mapNotNull { it.value }
+            
+            return if (newFieldValue != null && storedFieldValues != null) {
+                if(storedFieldValues.contains(newFieldValue)) {
+                    val sum = storedFieldValues + listOf(newFieldValue)
+                    val toBeRemoved = sum.groupBy { it }
+                        .filter { it.value.size == 1 }
+                        .flatMap { it.value }
+                    ApiStringListUpdate(listOf(newFieldValue), toBeRemoved)
+                }else {
+                    ApiStringListUpdate(listOf(newFieldValue), storedFieldValues)
+                }
             } else {
                 ApiStringListUpdate(listOf(), listOf())
             }

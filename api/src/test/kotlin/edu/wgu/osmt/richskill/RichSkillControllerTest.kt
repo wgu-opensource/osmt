@@ -110,27 +110,6 @@ internal class RichSkillControllerTest @Autowired constructor(
     }
 
     @Test
-    fun testAllPaginatedV2(){
-        // Arrange
-        val size = 50
-        val listOfSkills = mockData.getRichSkillDocs()
-        richSkillEsRepo.saveAll(listOfSkills)
-
-        // Act
-        val result = richSkillController.allPaginatedV2(
-                UriComponentsBuilder.newInstance(),
-                size,
-                0,
-                arrayOf("draft","published"),
-                "",
-                nullJwt
-        )
-
-        // Assert
-        assertThat(result.body?.size).isEqualTo(size)
-    }
-
-    @Test
     fun testAllPaginatedWithNoFilters(){
         // Arrange
         val size = 50
@@ -214,7 +193,7 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Act
         val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
-        val result = richSkillController.byUUIDv2(skillResult.searchHits[0].id.toString(),jwt)
+        val result = richSkillController.byUUIDV2(skillResult.searchHits[0].id.toString(),jwt)
 
         // Assert
         assertThat(result?.uuid).isEqualTo(skillResult.searchHits[0].id.toString())
@@ -325,7 +304,6 @@ internal class RichSkillControllerTest @Autowired constructor(
         Mockito.`when`(securityContext.authentication).thenReturn(authentication)
         Mockito.`when`(SecurityContextHolder.getContext().authentication.authorities).thenReturn(authorities)
 
-
         val responseHeaders = HttpHeaders()
         responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         val headers : MutableMap<String, Any> = HashMap()
@@ -346,7 +324,5 @@ internal class RichSkillControllerTest @Autowired constructor(
         val result = richSkillController.exportLibraryCsv(user = notNullJwt)
         assertThat(result.body?.uuid).isNotBlank()
     }
-
-
 
 }

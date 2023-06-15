@@ -24,12 +24,13 @@ class TaskController @Autowired constructor(
 ) {
     private fun taskResult(uuid: String): HttpEntity<*> {
         val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
+        
         return when (task?.status) {
             TaskStatus.Ready -> Task.resultResponse(task)
             else -> ResponseEntity.status(404).body("Task with id $uuid not ready or not found")
         }
     }
-
+    
     @GetMapping(path = [
         "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_TEXT}",
         "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_TEXT}",
@@ -37,17 +38,19 @@ class TaskController @Autowired constructor(
     ])
     @ResponseBody
     fun textResult(
-            @PathVariable uuid: String
+        @PathVariable uuid: String
     ): HttpEntity<*> {
+        
         return taskResult(uuid)
     }
-
+    
     @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_MEDIA}")
     @ResponseBody
     fun mediaResult(@PathVariable uuid: String): HttpEntity<*> {
+        
         return taskResult(uuid)
     }
-
+    
     @GetMapping(path = [
         "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}",
         "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}",
@@ -55,11 +58,12 @@ class TaskController @Autowired constructor(
     ])
     @ResponseBody
     fun batchResult(
-            @PathVariable uuid: String
+        @PathVariable uuid: String
     ): HttpEntity<*> {
+        
         return taskResult(uuid)
     }
-
+    
     @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_SKILLS}")
     @ResponseBody
     fun skillsResult(@PathVariable uuid: String): HttpEntity<*> {
@@ -70,20 +74,23 @@ class TaskController @Autowired constructor(
                 // CreateSkillsTask.results is a list of skill uuids, look them up and return
                 val createSkillsTask: CreateSkillsTask = task as CreateSkillsTask
                 val skillDaos = richSkillRepository.findManyByUUIDs(createSkillsTask.result!!)
-                val apiSkills = skillDaos?.map { ApiSkill.fromDao(it, appConfig)}
-
+                val apiSkills = skillDaos?.map { ApiSkill.fromDao(it, appConfig) }
+                
                 val responseHeaders = HttpHeaders()
                 responseHeaders.add("Content-Type", task.contentType)
                 return ResponseEntity.ok().headers(responseHeaders).body(apiSkills)
             }
+            
             else -> ResponseEntity.status(404).body("Task with id $uuid not ready or not found")
         }
     }
-
-    @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_SKILLS}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_SKILLS}",
-    ],)
+    
+    @GetMapping(
+        path = [
+            "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_SKILLS}",
+            "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_SKILLS}",
+        ],
+    )
     @ResponseBody
     fun skillsResultV2(@PathVariable uuid: String): HttpEntity<*> {
         val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
@@ -93,14 +100,15 @@ class TaskController @Autowired constructor(
                 // CreateSkillsTask.results is a list of skill uuids, look them up and return
                 val createSkillsTaskV2: CreateSkillsTaskV2 = task as CreateSkillsTaskV2
                 val skillDaos = richSkillRepository.findManyByUUIDs(createSkillsTaskV2.result!!)
-                val apiSkills = skillDaos?.map { ApiSkillV2.fromDao(it, appConfig)}
+                val apiSkills = skillDaos?.map { ApiSkillV2.fromDao(it, appConfig) }
                 
                 val responseHeaders = HttpHeaders()
                 responseHeaders.add("Content-Type", task.contentType)
                 return ResponseEntity.ok().headers(responseHeaders).body(apiSkills)
             }
+            
             else -> ResponseEntity.status(404).body("Task with id $uuid not ready or not found")
         }
     }
-
+    
 }

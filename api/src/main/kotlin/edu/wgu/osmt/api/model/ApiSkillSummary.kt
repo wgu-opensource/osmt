@@ -9,16 +9,16 @@ import edu.wgu.osmt.richskill.RichSkillDoc
 import java.time.LocalDateTime
 
 open class ApiSkillSummary(
-        @JsonProperty open val id: String,
-        @JsonProperty open val uuid: String,
-        @JsonProperty open val status: PublishStatus,
-        @JsonProperty open val publishDate: LocalDateTime? = null,
-        @JsonProperty open val archiveDate: LocalDateTime? = null,
-        @JsonProperty open val skillName: String,
-        @JsonProperty open val skillStatement: String,
-        @JsonProperty open val categories: List<String> = listOf(),
-        @JsonProperty open val keywords: List<String> = listOf(),
-        @JsonProperty open val occupations: List<ApiJobCode> = listOf()
+    @JsonProperty open val id: String,
+    @JsonProperty open val uuid: String,
+    @JsonProperty open val status: PublishStatus,
+    @JsonProperty open val publishDate: LocalDateTime? = null,
+    @JsonProperty open val archiveDate: LocalDateTime? = null,
+    @JsonProperty open val skillName: String,
+    @JsonProperty open val skillStatement: String,
+    @JsonProperty open val categories: List<String> = listOf(),
+    @JsonProperty open val keywords: List<String> = listOf(),
+    @JsonProperty open val occupations: List<ApiJobCode> = listOf()
 ) {
 
     companion object {

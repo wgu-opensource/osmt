@@ -50,7 +50,7 @@ class KeywordController @Autowired constructor(
     val oAuthHelper: OAuthHelper
 ) {
 
-    @GetMapping(RoutePaths.CATEGORY_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.KEYWORD_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -62,14 +62,14 @@ class KeywordController @Autowired constructor(
         return allPaginated(
             keywordType = keywordType,
             uriComponentsBuilder = uriComponentsBuilder,
-            path = RoutePaths.CATEGORY_LIST,
+            path = RoutePaths.KEYWORD_LIST,
             size = size,
             from = from,
             sort = sort,
         )
     }
 
-    @GetMapping(RoutePaths.CATEGORY_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.KEYWORD_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun keywordById(
         @PathVariable identifier: String,
@@ -79,7 +79,7 @@ class KeywordController @Autowired constructor(
         return this.byId(keywordType, id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @GetMapping(RoutePaths.CATEGORY_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(RoutePaths.KEYWORD_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun getKeywordSkills (
         uriComponentsBuilder: UriComponentsBuilder,
@@ -106,7 +106,7 @@ class KeywordController @Autowired constructor(
         )
     }
 
-    @PostMapping(RoutePaths.CATEGORY_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.KEYWORD_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun searchKeywordSkills (
         uriComponentsBuilder: UriComponentsBuilder,

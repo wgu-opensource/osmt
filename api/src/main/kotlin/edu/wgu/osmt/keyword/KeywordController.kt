@@ -5,22 +5,19 @@ import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiKeyword
+import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.KeywordSortEnum
 import edu.wgu.osmt.api.model.SkillSortEnum
+import edu.wgu.osmt.api.model.SortOrder
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.elasticsearch.PaginatedLinks
 import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
-import edu.wgu.osmt.richskill.RichSkillKeywords
 import edu.wgu.osmt.security.OAuthHelper
 import edu.wgu.osmt.task.TaskMessageService
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.count
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.wrapAsExpression
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -44,6 +41,7 @@ import org.springframework.web.util.UriComponentsBuilder
 @Transactional
 class KeywordController @Autowired constructor(
     val keywordRepository: KeywordRepository,
+    val keywordEsRepo: KeywordEsRepo,
     val richSkillEsRepo: RichSkillEsRepo,
     val taskMessageService: TaskMessageService,
     val appConfig: AppConfig,
@@ -54,19 +52,19 @@ class KeywordController @Autowired constructor(
     @ResponseBody
     fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = true, defaultValue = "0") keywordType: KeywordTypeEnum,
+        @RequestParam(required = true, defaultValue = "0") type: String,
+        @RequestParam(required = true) query: String,
         size: Int,
         from: Int,
         sort: String?,
-    ): HttpEntity<List<ApiKeyword>> {
-        return allPaginated(
-            keywordType = keywordType,
-            uriComponentsBuilder = uriComponentsBuilder,
-            path = RoutePaths.KEYWORD_LIST,
-            size = size,
-            from = from,
-            sort = sort,
-        )
+    ): HttpEntity<List<ApiNamedReference>> {
+        val sortEnum: SortOrder = KeywordSortEnum.forValueOrDefault(sort)
+        val pageable = OffsetPageable(from, size, sortEnum.sort)
+        val keywordType = KeywordTypeEnum.forApiValue(type) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        val searchResults = keywordEsRepo.typeAheadSearch(query, keywordType, pageable)
+        
+        
+        return ResponseEntity.status(200).body(searchResults.map { ApiNamedReference.fromKeyword(it.content) }.toList())
     }
 
     @GetMapping(RoutePaths.KEYWORD_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -139,55 +137,42 @@ class KeywordController @Autowired constructor(
         )
     }
 
-    private fun allPaginated(
-        keywordType: KeywordTypeEnum,
-        uriComponentsBuilder: UriComponentsBuilder,
-        path: String,
-        size: Int,
-        from: Int,
-        sort: String?,
-    ): HttpEntity<List<ApiKeyword>> {
-        val sortEnum: KeywordSortEnum = KeywordSortEnum.Companion.forValueOrDefault(sort)
-        val pageable = OffsetPageable(from, size, sortEnum.sort)
-        val totalKeywords = keywordRepository.findByType(keywordType).count().toInt()
-
-        val query = keywordRepository.findByType(keywordType)
-
-        when (sortEnum) {
-            KeywordSortEnum.KeywordNameAsc -> query.orderBy(KeywordTable.value to SortOrder.ASC)
-
-            KeywordSortEnum.KeywordNameDesc -> query.orderBy(KeywordTable.value to SortOrder.DESC)
-
-            KeywordSortEnum.SkillCountAsc -> query.orderBy(
-                wrapAsExpression<Int>(
-                    RichSkillKeywords
-                        .slice(RichSkillKeywords.keywordId.count())
-                        .select { KeywordTable.id eq RichSkillKeywords.keywordId }
-                ) to SortOrder.ASC)
-
-            KeywordSortEnum.SkillCountDesc -> query.orderBy(
-                wrapAsExpression<Int>(
-                    RichSkillKeywords
-                        .slice(RichSkillKeywords.richSkillId.count())
-                        .select { KeywordTable.id eq RichSkillKeywords.keywordId }
-                ) to SortOrder.DESC)
-        }
-
-        val responseHeaders = HttpHeaders()
-        responseHeaders.add("X-Total-Count", totalKeywords.toString())
-
-        uriComponentsBuilder
-            .path(path)
-            .queryParam(RoutePaths.QueryParams.FROM, from)
-            .queryParam(RoutePaths.QueryParams.SIZE, size)
-            .queryParam(RoutePaths.QueryParams.SORT, sort)
-
-        PaginatedLinks(pageable, totalKeywords, uriComponentsBuilder).addToHeaders(responseHeaders)
-
-        return ResponseEntity.status(200)
-            .headers(responseHeaders)
-            .body(query.limit(size, from.toLong()).map { ApiKeyword.fromDao(it) })
-    }
+//    private fun allPaginated(
+//        keywordType: KeywordTypeEnum,
+//        uriComponentsBuilder: UriComponentsBuilder,
+//        path: String,
+//        size: Int,
+//        from: Int,
+//        sort: String?,
+//    ): HttpEntity<List<ApiKeyword>> {
+//        val sortEnum: KeywordSortEnum = KeywordSortEnum.Companion.forValueOrDefault(sort)
+//        val pageable = OffsetPageable(from, size, sortEnum.sort)
+//        val totalKeywords = keywordRepository.findByType(keywordType).count().toInt()
+//
+//        val query = keywordRepository.findByType(keywordType)
+//
+//        when (sortEnum) {
+//            KeywordSortEnum.KeywordNameAsc -> query.orderBy(KeywordTable.value to SortOrder.ASC)
+//
+//            KeywordSortEnum.KeywordNameDesc -> query.orderBy(KeywordTable.value to SortOrder.DESC)
+//
+//        }
+//
+//        val responseHeaders = HttpHeaders()
+//        responseHeaders.add("X-Total-Count", totalKeywords.toString())
+//
+//        uriComponentsBuilder
+//            .path(path)
+//            .queryParam(RoutePaths.QueryParams.FROM, from)
+//            .queryParam(RoutePaths.QueryParams.SIZE, size)
+//            .queryParam(RoutePaths.QueryParams.SORT, sort)
+//
+//        PaginatedLinks(pageable, totalKeywords, uriComponentsBuilder).addToHeaders(responseHeaders)
+//
+//        return ResponseEntity.status(200)
+//            .headers(responseHeaders)
+//            .body(query.limit(size, from.toLong()).map { ApiKeyword.fromDao(it) })
+//    }
 
     private fun byId(
         keywordType: KeywordTypeEnum,

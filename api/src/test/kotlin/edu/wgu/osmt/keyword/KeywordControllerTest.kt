@@ -47,7 +47,7 @@ internal class KeywordControllerTest @Autowired constructor(
         // arrange
         val size: Int = 2
         val from: Int = 2
-        val sort: KeywordSortEnum = KeywordSortEnum.SkillCountDesc
+        val sort: KeywordSortEnum = KeywordSortEnum.KeywordNameAsc
 
         mockData.getKeywords().map {
             keywordRepository.create(it.type, it.value, it.uri, it.framework)
@@ -56,7 +56,8 @@ internal class KeywordControllerTest @Autowired constructor(
         // act
         val result = kwController.allPaginated(
             uriComponentsBuilder = UriComponentsBuilder.newInstance(),
-            keywordType = KeywordTypeEnum.Category,
+            type = KeywordTypeEnum.Category.toString(),
+            org.apache.commons.lang3.StringUtils.EMPTY,
             size = size,
             from = from,
             sort = sort.toString(),

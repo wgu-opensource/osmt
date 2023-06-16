@@ -100,12 +100,6 @@ enum class KeywordSortEnum(override val apiValue: String) : SortOrder {
     },
     KeywordNameDesc("keyword.desc") {
         override val sort = Sort.by("value").descending()
-    },
-    SkillCountAsc("skillCount.asc") {
-        override val sort = Sort.by("skillCount").ascending()
-    },
-    SkillCountDesc("skillCount.desc") {
-        override val sort = Sort.by("skillCount").descending()
     };
 
     companion object : SortOrderCompanion<KeywordSortEnum> {

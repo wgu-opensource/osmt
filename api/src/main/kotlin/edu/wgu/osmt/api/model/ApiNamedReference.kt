@@ -7,6 +7,7 @@ import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 
+
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class ApiNamedReference(
     val id: String? = null,

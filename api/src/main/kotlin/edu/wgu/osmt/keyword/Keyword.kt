@@ -38,7 +38,7 @@ data class Keyword(
 
     @Nullable
     @MultiField(
-        mainField = Field(type = FieldType.Text, analyzer = "english_stemmer"),
+        mainField = Field(type = FieldType.Text, analyzer = "english_stemmer", fielddata = true),
         otherFields = [
             InnerField(suffix = "", type = FieldType.Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = FieldType.Text),

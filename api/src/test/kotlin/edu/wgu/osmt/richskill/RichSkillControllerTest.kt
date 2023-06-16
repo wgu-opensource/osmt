@@ -15,7 +15,6 @@ import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.task.*
 import edu.wgu.osmt.task.CsvTask
 import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService

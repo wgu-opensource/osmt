@@ -1,6 +1,5 @@
 package edu.wgu.osmt
 
-import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.api.model.ApiAlignment
 import edu.wgu.osmt.api.model.ApiAlignmentListUpdate
 import edu.wgu.osmt.api.model.ApiNamedReference

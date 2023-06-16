@@ -10,8 +10,6 @@ object RoutePaths {
     const val UNVERSIONED = StringUtils.EMPTY
 
     const val API = "/api"
-    const val VERSIONED_API = "/api/{apiVersion}"
-    const val UNVERSIONED_API = "/api"
     private const val SEARCH_PATH = "/search"
 
     //export
@@ -80,5 +78,3 @@ object RoutePaths {
         const val COLLECTION_ID = "collectionId"
     }
 }
-
-

@@ -29,4 +29,16 @@ class KeywordDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Keyword> {
         uri = uri,
         framework = framework
     )
+
+    fun toDoc(): Keyword {
+        return Keyword(
+            id = id.value,
+            creationDate = creationDate,
+            updateDate = updateDate,
+            value = value,
+            uri = uri,
+            type = type,
+            framework = framework
+        )
+    }
 }

@@ -1472,11 +1472,11 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: number
           format: uri
         name:
           type: string
-        value:
+        uri:
           type: string
         type:
           $ref: '#/components/schemas/KeywordType'

@@ -11,7 +11,7 @@ import { ApiNamedReference } from "./NamedReference"
 })
 export class NamedReferenceService extends AbstractDataService{
 
-  private baseServiceUrl = "api/named-references"
+  private baseServiceUrl = "api/keywords"
 
   constructor(protected httpClient: HttpClient, protected authService: AuthService,
               protected router: Router, protected location: Location) {

@@ -4,8 +4,8 @@ import {Meta} from "@angular/platform-browser"
 export interface INamedReference {
   id: string
   name?: string
-  value: string
   type?: MetadataType
+  url: string
   framework: string
 }
 
@@ -14,12 +14,14 @@ export class ApiNamedReference implements INamedReference {
   framework = ""
   name?: string = ""
   type?: MetadataType = MetadataType.Category
-  value = ""
+  url = ""
 
   constructor(o?: INamedReference) {
     if (o !== undefined) {
       Object.assign(this, o)
     }
   }
+
+
 
 }

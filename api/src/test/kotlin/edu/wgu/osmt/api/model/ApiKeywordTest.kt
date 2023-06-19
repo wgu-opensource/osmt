@@ -1,7 +1,6 @@
 package edu.wgu.osmt.api.model
 
 import edu.wgu.osmt.keyword.Keyword
-import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.mockdata.MockData
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeAll
@@ -25,12 +24,11 @@ internal class ApiKeywordTest {
         val skillsCount: Long = 7
 
         // Act
-        val api: ApiKeyword = ApiKeyword(kw, skillsCount)
+        val api: ApiKeyword = ApiKeyword(kw)
 
         // Assert
         Assertions.assertThat(api.id).isEqualTo(kw.id)
         Assertions.assertThat(api.type).isEqualTo(kw.type)
-        Assertions.assertThat(api.skillCount).isEqualTo(skillsCount)
-        Assertions.assertThat(api.value).isEqualTo(kw.value)
+        Assertions.assertThat(api.name).isEqualTo(kw.value)
     }
 }

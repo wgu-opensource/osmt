@@ -1,12 +1,14 @@
 package edu.wgu.osmt.keyword
 
+import edu.wgu.osmt.api.model.ApiKeywordUpdate
 import edu.wgu.osmt.config.AppConfig
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -40,17 +42,23 @@ interface KeywordRepository {
         framework: String? = null
     ): KeywordDao?
 
+    fun updateFromApi(existingKeywordId: Long, apiKeywordUpdate: ApiKeywordUpdate): KeywordDao?
+
+    fun createFromApi(apiKeywordUpdate: ApiKeywordUpdate): KeywordDao?
+
+    fun remove(existingKeywordId: Long): Boolean
+
     fun getDefaultAuthor(): KeywordDao
 }
 
 
 @Repository
 @Transactional
-class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : KeywordRepository {
+class KeywordRepositoryImpl @Autowired constructor(
+    val appConfig: AppConfig,
+    val keywordEsRepo: KeywordEsRepo,
+) : KeywordRepository {
 
-    @Autowired
-    @Lazy
-    lateinit var keywordEsRepo: KeywordEsRepo
 
     override val dao = KeywordDao.Companion
     override val table = KeywordTable
@@ -90,5 +98,52 @@ class KeywordRepositoryImpl @Autowired constructor(val appConfig: AppConfig) : K
             this.uri = uri
             this.framework = framework
         }.also { keywordEsRepo.save(it.toModel()) } else null
+    }
+
+    override fun updateFromApi(existingKeywordId: Long, apiKeywordUpdate: ApiKeywordUpdate): KeywordDao? {
+        val found = dao.findById(existingKeywordId)
+        if (found!=null) {
+            transaction {
+                found.updateDate = LocalDateTime.now(ZoneOffset.UTC)
+                found.value = apiKeywordUpdate.name
+                found.uri = apiKeywordUpdate.uri
+                found.framework = apiKeywordUpdate.framework
+                found.type = apiKeywordUpdate.type
+                keywordEsRepo.save(found.toModel())
+            }.also { return found }
+        } else {
+          return null
+        }
+    }
+
+    override fun createFromApi(apiKeywordUpdate: ApiKeywordUpdate): KeywordDao? {
+        var created: KeywordDao? = null
+        transaction {
+            created = dao.new {
+                updateDate = LocalDateTime.now(ZoneOffset.UTC)
+                creationDate = LocalDateTime.now(ZoneOffset.UTC)
+                this.type = apiKeywordUpdate.type
+                this.value = apiKeywordUpdate.name
+                this.uri = apiKeywordUpdate.uri
+                this.framework = apiKeywordUpdate.framework
+            }
+                .also { keywordEsRepo.save(it.toModel()) }
+        }
+        return created
+    }
+
+    override fun remove(existingKeywordId: Long): Boolean {
+        return if(dao.findById(existingKeywordId) != null) {
+
+            transaction {
+                table.deleteWhere { table.id eq existingKeywordId }
+                    .also {
+                        keywordEsRepo.deleteById(existingKeywordId.toInt())
+                    }
+            }
+            true
+        } else {
+            false
+        }
     }
 }

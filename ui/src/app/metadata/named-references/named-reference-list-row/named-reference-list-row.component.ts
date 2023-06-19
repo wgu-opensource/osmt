@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core"
 import { TableActionDefinition } from "../../../table/skills-library-table/has-action-definitions"
 import { SvgHelper, SvgIcon } from "../../../core/SvgHelper"
 import { ApiNamedReference, INamedReference } from "../NamedReference"
+import {MetadataType} from "../../rsd-metadata.enum";
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -13,6 +14,8 @@ export class NamedReferenceListRowComponent {
   @Input() id = "named-reference-list-row"
   @Input() isSelected = false
   @Input() rowActions: TableActionDefinition[] = []
+  @Input() metadataSelected?: MetadataType
+
 
   @Output() rowSelected = new EventEmitter<INamedReference>()
   @Output() focusActionBar = new EventEmitter<void>()
@@ -27,6 +30,10 @@ export class NamedReferenceListRowComponent {
   handleClick(action: TableActionDefinition): boolean {
     action.fire(this.namedReference)
     return false
+  }
+
+  get isAlignmentSelected(): boolean {
+    return this.metadataSelected == MetadataType.Alignment
   }
 
   focusFirstColumnInRow(): boolean {

@@ -1,3 +1,4 @@
+{{items|json}}
 <table class="l-table">
   <caption> </caption>
   <thead>
@@ -5,7 +6,7 @@
     <th class="t-hidden-tabletMin" scope="col" colspan="3"><span class="t-visuallyHidden">Named References</span></th>
     <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Name</span></th>
     <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Framework</span></th>
-    <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Value</span></th>
+    <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">URL</span></th>
   </tr>
   <tr class="m-tableHeader">
     <td class="t-hidden-tabletMin" aria-hidden="true">
@@ -31,15 +32,15 @@
       </ng-template>
     </td>
 
-    <td class="t-hidden-tabletMax" aria-hidden="true">
+    <td *ngIf="isAlignmentSelected" class="t-hidden-tabletMax" aria-hidden="true">
         <span class="m-tableLabel">
           <span class="m-tableLabel-x-text">Framework</span>
         </span>
     </td>
 
-    <td class="t-hidden-tabletMax" aria-hidden="true">
+    <td *ngIf="isAlignmentSelected" class="t-hidden-tabletMax" aria-hidden="true">
         <span class="m-tableLabel">
-          <span class="m-tableLabel-x-text">Value</span>
+          <span class="m-tableLabel-x-text">URL</span>
         </span>
     </td>
 
@@ -63,6 +64,7 @@
     [class.m-tableRow-is-selected]="isSelected(namedReference)"
 
     app-named-reference-list-row
+    [metadataSelected]=metadataSelected
     [namedReference]="namedReference"
     [isSelected]="isSelected(namedReference)"
     [rowActions]="rowActions"

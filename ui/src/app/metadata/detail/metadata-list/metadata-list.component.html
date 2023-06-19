@@ -51,6 +51,7 @@
 
         <app-named-reference-table
           *ngIf="!isJobCodeDataSelected"
+          [metadataSelected] = selectedMetadataType
           [allowSorting]="true"
           [items]="getNamedReferences()"
           [currentSort]="columnSort"

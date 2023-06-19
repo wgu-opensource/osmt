@@ -96,10 +96,16 @@ enum class CollectionSortEnum(override val apiValue: String) : SortOrder {
  */
 enum class KeywordSortEnum(override val apiValue: String) : SortOrder {
     KeywordNameAsc("keyword.asc") {
-        override val sort = Sort.by("value").ascending()
+        override val sort = Sort.by("value.keyword").ascending()
     },
     KeywordNameDesc("keyword.desc") {
-        override val sort = Sort.by("value").descending()
+        override val sort = Sort.by("value.keyword").descending()
+    },
+    KeywordFrameworkAsc("framework.asc") {
+        override val sort = Sort.by("framework.keyword").ascending()
+    },
+    KeywordFrameworkDesc("framework.desc") {
+        override val sort = Sort.by("framework.keyword").descending()
     };
 
     companion object : SortOrderCompanion<KeywordSortEnum> {

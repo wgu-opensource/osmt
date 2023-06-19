@@ -3,9 +3,9 @@ import { HttpClientTestingModule } from "@angular/common/http/testing"
 import { NamedReferenceService } from "./named-reference.service"
 import { Location } from "@angular/common"
 import { Router } from "@angular/router"
-import { EnvironmentService } from "../core/environment.service"
-import { AppConfig } from "../app.config"
-import { AuthService } from "../auth/auth-service"
+import { EnvironmentService } from "../../../core/environment.service"
+import { AppConfig } from "../../../app.config"
+import { AuthService } from "../../../auth/auth-service"
 import { AuthServiceStub, RouterStub } from "@test/resource/mock-stubs"
 
 describe("NamedReferenceService", () => {

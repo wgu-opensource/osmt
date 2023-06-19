@@ -27,8 +27,12 @@ object RoutePaths {
 
     const val KEYWORD_PATH = "$API/keywords"
     const val KEYWORD_LIST = KEYWORD_PATH
-    const val KEYWORD_DETAIL = "$KEYWORD_PATH/{identifier}"
+    const val KEYWORD_CREATE = KEYWORD_PATH
+    const val KEYWORD_DETAIL = "$KEYWORD_PATH/{id}"
+    const val KEYWORD_UPDATE = "$KEYWORD_DETAIL/update"
+    const val KEYWORD_REMOVE = "$KEYWORD_DETAIL/remove"
     const val KEYWORD_SKILLS = "$KEYWORD_DETAIL/skills"
+
 
     const val COLLECTIONS_PATH = "$API/collections"
     const val COLLECTIONS_LIST = COLLECTIONS_PATH
@@ -65,13 +69,6 @@ object RoutePaths {
     const val JOB_CODE_DETAIL = "$JOB_CODE_PATH/{id}"
     const val JOB_CODE_UPDATE = "$JOB_CODE_DETAIL/update"
     const val JOB_CODE_REMOVE = "$JOB_CODE_DETAIL/remove"
-
-    const val NAMED_REFERENCES_PATH = "$METADATA_PATH/named-references"
-    const val NAMED_REFERENCES_CREATE = NAMED_REFERENCES_PATH
-    const val NAMED_REFERENCES_LIST = NAMED_REFERENCES_PATH
-    const val NAMED_REFERENCES_DETAIL = "$NAMED_REFERENCES_PATH/{id}"
-    const val NAMED_REFERENCES_UPDATE = "$NAMED_REFERENCES_DETAIL/update"
-    const val NAMED_REFERENCES_REMOVE = "$NAMED_REFERENCES_DETAIL/remove"
 
     object QueryParams {
         const val FROM = "from"

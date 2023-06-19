@@ -11,6 +11,7 @@ import { MetadataType } from "../../rsd-metadata.enum"
 import { JobCodeService } from "../../job-codes/service/job-code.service"
 import { ToastService } from "../../../toast/toast.service"
 import { AbstractListComponent } from "../../../table/abstract-list.component"
+import {NamedReferenceService} from "../../named-references/service/named-reference.service";
 
 @Component({
   selector: "app-metadata-list",
@@ -26,14 +27,14 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
   canDeleteMetadata = this.authService.isEnabledByRoles(ButtonAction.MetadataAdmin)
 
   sampleNamedReferenceResult = new PaginatedMetadata([
-    new ApiNamedReference({id: "id1", framework: "framework1", name: "name1", type: MetadataType.Category, value: "value1"}),
-    new ApiNamedReference({id: "id2", framework: "framework2", name: "name2", type: MetadataType.Category, value: "value2"}),
-    new ApiNamedReference({id: "id3", framework: "framework3", name: "name3", type: MetadataType.Category, value: "value3"}),
-    new ApiNamedReference({id: "id4", framework: "framework4", name: "name4", type: MetadataType.Category, value: "value4"}),
-    new ApiNamedReference({id: "id5", framework: "framework5", name: "name5", type: MetadataType.Category, value: "value5"}),
-    new ApiNamedReference({id: "id6", framework: "framework6", name: "name6", type: MetadataType.Category, value: "value6"}),
-    new ApiNamedReference({id: "id7", framework: "framework7", name: "name7", type: MetadataType.Category, value: "value7"}),
-    new ApiNamedReference({id: "id8", framework: "framework8", name: "name8", type: MetadataType.Category, value: "value8"}),
+    new ApiNamedReference({id: "id1", framework: "framework1", name: "name1", type: MetadataType.Category, url : ""}),
+    new ApiNamedReference({id: "id2", framework: "framework2", name: "name2", type: MetadataType.Category, url : ""}),
+    new ApiNamedReference({id: "id3", framework: "framework3", name: "name3", type: MetadataType.Category, url : ""}),
+    new ApiNamedReference({id: "id4", framework: "framework4", name: "name4", type: MetadataType.Category, url : ""}),
+    new ApiNamedReference({id: "id5", framework: "framework5", name: "name5", type: MetadataType.Category, url : ""}),
+    new ApiNamedReference({id: "id6", framework: "framework6", name: "name6", type: MetadataType.Category, url : ""}),
+    new ApiNamedReference({id: "id7", framework: "framework7", name: "name7", type: MetadataType.Category, url : ""}),
+    new ApiNamedReference({id: "id8", framework: "framework8", name: "name8", type: MetadataType.Category, url : ""}),
   ], 8)
 
   results: PaginatedMetadata = this.sampleNamedReferenceResult
@@ -42,7 +43,8 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
   constructor(
     protected authService: AuthService,
     protected jobCodeService: JobCodeService,
-    protected toastService: ToastService
+    protected toastService: ToastService,
+    protected namedReferenceService: NamedReferenceService
   ) {
     super()
   }
@@ -74,7 +76,9 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
       this.resultsLoaded = this.jobCodeService.paginatedJobCodes(this.size, this.from, this.columnSort, this.matchingQuery)
       this.resultsLoaded.subscribe(jobCodes => this.results = jobCodes)
     } else {
-      this.results = this.sampleNamedReferenceResult
+      // this.results = this.sampleNamedReferenceResult
+      this.resultsLoaded = this.namedReferenceService.paginatedNamedReferences(this.size, this.from, this.columnSort, this.selectedMetadataType, this.matchingQuery)
+      this.resultsLoaded.subscribe(namedReferences => this.results = namedReferences)
     }
   }
 

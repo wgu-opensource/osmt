@@ -3,9 +3,6 @@ package edu.wgu.osmt.keyword
 import edu.wgu.osmt.config.INDEX_KEYWORD_DOC
 import edu.wgu.osmt.config.SORT_INSENSITIVE
 import edu.wgu.osmt.elasticsearch.OffsetPageable
-import edu.wgu.osmt.jobcode.JobCode
-import edu.wgu.osmt.jobcode.JobCodeQueries
-import edu.wgu.osmt.richskill.RichSkillDoc
 import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.sort.SortBuilders

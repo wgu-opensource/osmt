@@ -1,6 +1,5 @@
 import { ApiJobCode } from "./job-codes/Jobcode"
 import { ApiNamedReference } from "./named-references/NamedReference"
-import { PaginatedData } from "../models"
 
 export class PaginatedMetadata implements PaginatedData<ApiJobCode | ApiNamedReference> {
 
@@ -11,5 +10,4 @@ export class PaginatedMetadata implements PaginatedData<ApiJobCode | ApiNamedRef
     this.data = data
     this.totalCount = totalCount
   }
-
 }

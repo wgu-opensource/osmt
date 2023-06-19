@@ -5,7 +5,7 @@ import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiKeyword
-import edu.wgu.osmt.api.model.ApiNamedReference
+import edu.wgu.osmt.api.model.ApiKeywordUpdate
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.KeywordSortEnum
 import edu.wgu.osmt.api.model.SkillSortEnum
@@ -24,10 +24,12 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -52,63 +54,67 @@ class KeywordController @Autowired constructor(
     @ResponseBody
     fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = true, defaultValue = "0") type: String,
+        @RequestParam(required = true, defaultValue = "Category") type: String,
         @RequestParam(required = true) query: String,
         size: Int,
         from: Int,
         sort: String?,
-    ): HttpEntity<List<ApiNamedReference>> {
+    ): HttpEntity<List<ApiKeyword>> {
         val sortEnum: SortOrder = KeywordSortEnum.forValueOrDefault(sort)
         val pageable = OffsetPageable(from, size, sortEnum.sort)
         val keywordType = KeywordTypeEnum.forApiValue(type) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         val searchResults = keywordEsRepo.typeAheadSearch(query, keywordType, pageable)
         
         
-        return ResponseEntity.status(200).body(searchResults.map { ApiNamedReference.fromKeyword(it.content) }.toList())
+        return ResponseEntity.status(200).body(searchResults.map { ApiKeyword(it.content) }.toList())
     }
 
     @GetMapping(RoutePaths.KEYWORD_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun keywordById(
-        @PathVariable identifier: String,
-        @RequestParam(required = true, defaultValue = "0") keywordType: KeywordTypeEnum,
-    ): ApiKeyword? {
-        val id: Long = identifier.toLong()
-        return this.byId(keywordType, id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        @PathVariable id: Long,
+    ): HttpEntity<ApiKeyword> {
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(this.byId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND))
     }
 
-    @GetMapping(RoutePaths.KEYWORD_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(RoutePaths.KEYWORD_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun getKeywordSkills (
-        uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = true, defaultValue = "0") keywordType: KeywordTypeEnum,
-        @PathVariable identifier: String,
-        @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
-        @RequestParam(required = false, defaultValue = "0") from: Int,
-        @RequestParam(
-            required = false,
-            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
-        ) status: Array<String>,
-        @RequestParam(required = false) sort: String?,
-        @AuthenticationPrincipal user: Jwt? = null
-    ): HttpEntity<List<RichSkillDoc>> {
-        return searchKeywordSkills(
-            uriComponentsBuilder = uriComponentsBuilder,
-            keywordType = keywordType,
-            identifier = identifier,
-            size = size,
-            from = from,
-            status = status,
-            sort = sort,
-            user = user,
-        )
+    @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
+    fun createKeyword(
+        @RequestBody apiKeywordUpdate: ApiKeywordUpdate,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<ApiKeyword> {
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(keywordRepository.createFromApi(apiKeywordUpdate)?.let { ApiKeyword(it.toModel()) })
+    }
+
+    @PostMapping(RoutePaths.KEYWORD_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
+    fun updateKeyword(
+        @PathVariable id: Int,
+        @RequestBody apiKeywordUpdate: ApiKeywordUpdate,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<ApiKeyword> {
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(keywordRepository.updateFromApi(
+                id.toLong(),apiKeywordUpdate)
+                ?.let {
+                ApiKeyword(it.toModel())
+                }
+            )
     }
 
     @PostMapping(RoutePaths.KEYWORD_SKILLS, produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun searchKeywordSkills (
+    fun searchCategorySkills (
         uriComponentsBuilder: UriComponentsBuilder,
-        @RequestParam(required = true, defaultValue = "0") keywordType: KeywordTypeEnum,
         @PathVariable identifier: String,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,
         @RequestParam(required = false, defaultValue = "0") from: Int,
@@ -124,7 +130,7 @@ class KeywordController @Autowired constructor(
 
         val id: Long = identifier.toLong()
         val keyword = keywordRepository.findById(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        
+
         return searchRelatedSkills(
             uriComponentsBuilder = uriComponentsBuilder,
             keyword = keyword,
@@ -137,49 +143,25 @@ class KeywordController @Autowired constructor(
         )
     }
 
-//    private fun allPaginated(
-//        keywordType: KeywordTypeEnum,
-//        uriComponentsBuilder: UriComponentsBuilder,
-//        path: String,
-//        size: Int,
-//        from: Int,
-//        sort: String?,
-//    ): HttpEntity<List<ApiKeyword>> {
-//        val sortEnum: KeywordSortEnum = KeywordSortEnum.Companion.forValueOrDefault(sort)
-//        val pageable = OffsetPageable(from, size, sortEnum.sort)
-//        val totalKeywords = keywordRepository.findByType(keywordType).count().toInt()
-//
-//        val query = keywordRepository.findByType(keywordType)
-//
-//        when (sortEnum) {
-//            KeywordSortEnum.KeywordNameAsc -> query.orderBy(KeywordTable.value to SortOrder.ASC)
-//
-//            KeywordSortEnum.KeywordNameDesc -> query.orderBy(KeywordTable.value to SortOrder.DESC)
-//
-//        }
-//
-//        val responseHeaders = HttpHeaders()
-//        responseHeaders.add("X-Total-Count", totalKeywords.toString())
-//
-//        uriComponentsBuilder
-//            .path(path)
-//            .queryParam(RoutePaths.QueryParams.FROM, from)
-//            .queryParam(RoutePaths.QueryParams.SIZE, size)
-//            .queryParam(RoutePaths.QueryParams.SORT, sort)
-//
-//        PaginatedLinks(pageable, totalKeywords, uriComponentsBuilder).addToHeaders(responseHeaders)
-//
-//        return ResponseEntity.status(200)
-//            .headers(responseHeaders)
-//            .body(query.limit(size, from.toLong()).map { ApiKeyword.fromDao(it) })
-//    }
+    @DeleteMapping(RoutePaths.KEYWORD_REMOVE)
+    @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
+    fun deleteKeyword(
+        @PathVariable id: Long,
+        @AuthenticationPrincipal user: Jwt?
+    ): HttpEntity<Boolean> {
+
+        if (byId(id) != null) {
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(keywordRepository.remove(id))
+        } else {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        }
+    }
 
     private fun byId(
-        keywordType: KeywordTypeEnum,
         id: Long,
     ): ApiKeyword? {
-        val keyword = keywordRepository.findById(id)
-        return if (keyword?.type == keywordType) ApiKeyword.fromDao(keyword) else null
+        return keywordRepository.findById(id)?.let { ApiKeyword(it.toModel()) }
     }
 
     private fun searchRelatedSkills (
@@ -215,26 +197,26 @@ class KeywordController @Autowired constructor(
         keyword.value?.let {
             when(keyword.type) {
                 KeywordTypeEnum.Alignment -> {
-                        filterAlignments = filterAlignments?.plus(listOf(it)) ?: listOf(it)
-                    }
+                    filterAlignments = filterAlignments?.plus(listOf(it)) ?: listOf(it)
+                }
                 KeywordTypeEnum.Author -> {
-                        filterAuthors = filterAuthors?.plus(listOf(it)) ?: listOf(it)
-                    }
+                    filterAuthors = filterAuthors?.plus(listOf(it)) ?: listOf(it)
+                }
                 KeywordTypeEnum.Category -> {
-                        filterCategories = filterCategories?.plus(listOf(it)) ?: listOf(it)
-                    }
+                    filterCategories = filterCategories?.plus(listOf(it)) ?: listOf(it)
+                }
                 KeywordTypeEnum.Certification -> {
-                        filterCertifications = filterCertifications?.plus(listOf(it)) ?: listOf(it)
-                    }
+                    filterCertifications = filterCertifications?.plus(listOf(it)) ?: listOf(it)
+                }
                 KeywordTypeEnum.Employer -> {
-                        filterEmployers = filterEmployers?.plus(listOf(it)) ?: listOf(it)
-                    }
+                    filterEmployers = filterEmployers?.plus(listOf(it)) ?: listOf(it)
+                }
                 KeywordTypeEnum.Keyword ->  {
-                        filterKeywords = filterKeywords?.plus(listOf(it)) ?: listOf(it)
-                    }
+                    filterKeywords = filterKeywords?.plus(listOf(it)) ?: listOf(it)
+                }
                 KeywordTypeEnum.Standard -> {
-                        filterStandards = filterStandards?.plus(listOf(it)) ?: listOf(it)
-                    }
+                    filterStandards = filterStandards?.plus(listOf(it)) ?: listOf(it)
+                }
             }
         }
 

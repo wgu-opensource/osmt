@@ -1,4 +1,4 @@
-import {Component, EventEmitter, HostListener, Input, OnInit, Output} from "@angular/core"
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core"
 import {ApiSortOrder} from "../richskill/ApiSkill"
 import {TableActionDefinition} from "./skills-library-table/has-action-definitions"
 import {SvgHelper, SvgIcon} from "../core/SvgHelper"
@@ -13,7 +13,7 @@ import {SelectAllEvent} from "../models"
   selector: "app-abstract-table",
   template: ``
 })
-export class AbstractTableComponent<SummaryT> implements OnInit {
+export class AbstractTableComponent<SummaryT> implements OnInit, OnChanges {
 
   @Input() items: SummaryT[] = []
   @Input() currentSort?: ApiSortOrder = undefined
@@ -35,11 +35,20 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
 
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
   isShiftPressed = false
+  isAllPageSelected = false
 
   constructor() { }
 
   ngOnInit(): void {
     this.clearSelected.subscribe(next => this.selectedItems = new Set())
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.items) {
+      this.isAllPageSelected = false
+      this.selectedItems.clear()
+      this.rowSelected.emit(Array.from(this.selectedItems))
+    }
   }
 
   getNameSort(): boolean | undefined {
@@ -100,20 +109,27 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
   onRowToggle(item: SummaryT): void {
     if (this.selectedItems.has(item)) {
       this.selectedItems.delete(item)
+      if (this.isAllPageSelected) {
+        this.isAllPageSelected = false
+      }
     } else {
       this.selectedItems.add(item)
       this.shiftSelection(item)
+      if (this.selectedItems.size === this.items.length) {
+        this.isAllPageSelected = true
+      }
     }
+    this.selectAllSelected.emit(this.isAllPageSelected)
     this.rowSelected.emit(Array.from(this.selectedItems))
   }
 
   shiftSelection(item: SummaryT): void {}
 
   handleSelectAll(event: SelectAllEvent): void {
-    const isCheckboxSelected: boolean = event.selected
-    const isAllResultsSelected: boolean = event.selected && event.value === SelectAll.SELECT_ALL
+    this.isAllPageSelected = event.selected
+    const isAllResultsSelected: boolean = event.selected && event.value === SelectAll.SELECT_ALL // select all across pages
     this.selectAllSelected.emit(isAllResultsSelected)
-    if (isCheckboxSelected) {
+    if (this.isAllPageSelected) {
       this.items.forEach(it => this.selectedItems.add(it))
     } else {
       this.selectedItems.clear()

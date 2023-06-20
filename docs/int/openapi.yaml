@@ -518,13 +518,14 @@ paths:
   /api/metadata/jobcodes:
     get:
       summary: Get all Job Codes
-      description: Returns all Job Codes
+      description: Returns all Job Codes with pagination, also supports search by query.
       tags:
         - Metadata
       parameters:
         - $ref: '#/components/parameters/PaginationSizeQueryRequired'
         - $ref: '#/components/parameters/PaginationFromQueryRequired'
         - $ref: '#/components/parameters/SortOrderQuery'
+        - $ref: '#/components/parameters/Query'
       responses:
         '200':
           description: OK
@@ -549,7 +550,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/JobCode'
+                $ref: '#/components/schemas/JobCodeUpdate'
       responses:
         '200':
           description: OK
@@ -607,7 +608,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/JobCode'
+              $ref: '#/components/schemas/JobCodeUpdate'
       responses:
         '200':
           description: OK
@@ -1438,7 +1439,7 @@ components:
           items:
             type: string
 
-    JobCode:
+    JobCodeUpdate:
       type: object
       required:
         - code
@@ -1456,7 +1457,16 @@ components:
         parents:
           type: array
           items:
-            $ref: '#/components/schemas/JobCode'
+            $ref: '#/components/schemas/JobCodeUpdate'
+
+    JobCode:
+      allOf:
+        - $ref: '#/components/schemas/JobCodeUpdate'
+        - properties:
+            id:
+              type: number
+            jobCodeLevelAsNumber:
+              type: number
 
     JobCodeLevel:
       type: string
@@ -2038,6 +2048,14 @@ components:
         type: array
         items:
           $ref: '#/components/schemas/PublishStatus'
+
+    Query:
+      name: query
+      in: query
+      description: Matching query to search
+      required: false
+      schema:
+        type: string
 
     SortOrderQuery:
       name: sort

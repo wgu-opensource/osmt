@@ -40,4 +40,37 @@ class JobCodeRepositoryTest @Autowired constructor(
         assertThat(result.map{it.code}).containsAll(listOf(jobCode1, jobCode2, jobCode3))
         assertThat(result.count()).isEqualTo(3)
     }
+
+    @Test
+    fun `JobCode has children`() {
+        val majorJobCode = jobCodeRepository.create("95-0000")
+        jobCodeRepository.create("95-1000")
+        jobCodeRepository.create("95-1100")
+        val majorJobCodeHasChildren = jobCodeRepository.hasChildren(majorJobCode)
+        assertThat(majorJobCodeHasChildren).isEqualTo(true)
+    }
+
+    @Test
+    fun `Job code doesn't have children`() {
+        val majorJobCode = jobCodeRepository.create("96-0000")
+        val majorJobCodeHasChildren = jobCodeRepository.hasChildren(majorJobCode)
+        assertThat(majorJobCodeHasChildren).isEqualTo(false)
+    }
+
+    @Test
+    fun `Job code cannot be deleted`() {
+        val majorJobCode = jobCodeRepository.create("97-0000")
+        jobCodeRepository.create("97-1000")
+        val apiBatchResult = jobCodeRepository.remove(majorJobCode.id.value)
+        assertThat(apiBatchResult.success).isEqualTo(false)
+        assertThat(apiBatchResult.totalCount).isEqualTo(0)
+    }
+
+    @Test
+    fun `Job code can be deleted`() {
+        val majorJobCode = jobCodeRepository.create("98-0000")
+        val apiBatchResult = jobCodeRepository.remove(majorJobCode.id.value)
+        assertThat(apiBatchResult.success).isEqualTo(true)
+        assertThat(apiBatchResult.totalCount).isEqualTo(1)
+    }
 }

@@ -49,5 +49,6 @@ class TaskMessageService {
         const val skillsForFullLibraryXlsx = "full-library-skills-xlsx-process"
         const val skillsForCustomListExportCsv = "custom-rsd-list-csv-export"
         const val skillsForCustomListExportXlsx = "custom-rsd-list-xlsx-export"
+        const val removeJobCode = "remove-job-code"
     }
 }

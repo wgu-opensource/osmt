@@ -4,7 +4,7 @@
   </label>
   <select name="metadata-selection" #type (change)="onValueChange(type.value)" [ngModel]="currentSelection" class="m-text select">
     <option [value]="value.value" *ngFor="let value of MetadataType | keyvalue">
-      {{ value.key }}
+      {{ value.value | titlecase }}
     </option>
   </select>
 </div>

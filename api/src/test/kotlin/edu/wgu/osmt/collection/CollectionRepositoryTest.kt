@@ -69,8 +69,8 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
 
     private fun random_skill(): RichSkillDescriptorDao {
         return richSkillRepository.create(RsdUpdateObject(
-            name=UUID.randomUUID().toString(),
-            statement=UUID.randomUUID().toString()
+            name =UUID.randomUUID().toString(),
+            statement =UUID.randomUUID().toString()
         ), userString)!!
     }
 

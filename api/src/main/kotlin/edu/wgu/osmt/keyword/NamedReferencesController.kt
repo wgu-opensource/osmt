@@ -79,7 +79,14 @@ class NamedReferencesController @Autowired constructor(
     fun deleteNamedReference(
         @PathVariable id: Int,
     ): HttpEntity<TaskResult> {
-        return ResponseEntity.status(200).body(TaskResult(uuid = "uuid", contentType = "application/json", status = TaskStatus.Processing, apiResultPath = "path"))
+        return ResponseEntity.status(200).body(
+            TaskResult(
+                uuid = "uuid",
+                contentType = "application/json",
+                status = TaskStatus.Processing,
+                apiResultPath = "path"
+            )
+        )
     }
 
 }

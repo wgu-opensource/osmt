@@ -1280,7 +1280,7 @@ components:
           items:
             type: string
 
-    JobCode:
+    JobCodeUpdate:
       type: object
       required:
         - code
@@ -1298,7 +1298,16 @@ components:
         parents:
           type: array
           items:
-            $ref: '#/components/schemas/JobCode'
+            $ref: '#/components/schemas/JobCodeUpdate'
+
+    JobCode:
+      allOf:
+        - $ref: '#/components/schemas/JobCodeUpdate'
+        - properties:
+            id:
+              type: number
+            jobCodeLevelAsNumber:
+              type: number
 
     JobCodeLevel:
       type: string
@@ -1880,6 +1889,14 @@ components:
         type: array
         items:
           $ref: '#/components/schemas/PublishStatus'
+
+    Query:
+      name: query
+      in: query
+      description: Matching query to search
+      required: false
+      schema:
+        type: string
 
     SortOrderQuery:
       name: sort

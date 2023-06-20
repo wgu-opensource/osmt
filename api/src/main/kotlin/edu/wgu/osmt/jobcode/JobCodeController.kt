@@ -2,12 +2,17 @@ package edu.wgu.osmt.jobcode;
 
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiJobCode
+import edu.wgu.osmt.api.model.JobCodeSortEnum
 import edu.wgu.osmt.api.model.JobCodeUpdate
+import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.elasticsearch.OffsetPageable
+import edu.wgu.osmt.task.RemoveJobCodeTask
+import edu.wgu.osmt.task.Task
+import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskResult
-import edu.wgu.osmt.task.TaskStatus
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -26,7 +31,8 @@ import org.springframework.web.server.ResponseStatusException
 @Transactional
 class JobCodeController @Autowired constructor(
     val jobCodeEsRepo: JobCodeEsRepo,
-    val jobCodeRepository: JobCodeRepository
+    val jobCodeRepository: JobCodeRepository,
+    val taskMessageService: TaskMessageService,
 ) {
 
     @GetMapping(RoutePaths.JOB_CODE_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -34,10 +40,34 @@ class JobCodeController @Autowired constructor(
     fun allPaginated(
         @RequestParam(required = true) size: Int,
         @RequestParam(required = true) from: Int,
-        @RequestParam(required = false) sort: String?
+        @RequestParam(required = false) sort: String?,
+        @RequestParam(required = false) query: String?
     ): HttpEntity<List<ApiJobCode>> {
-        val searchResults = jobCodeEsRepo.typeAheadSearch("", OffsetPageable(from, size, null))
-        return ResponseEntity.status(200).body(searchResults.map { ApiJobCode.fromJobCode(it.content) }.toList())
+        val sortEnum: JobCodeSortEnum = JobCodeSortEnum.forValueOrDefault(sort)
+        val searchResults = jobCodeEsRepo.typeAheadSearch(query, OffsetPageable(from, size, sortEnum.sort))
+        val responseHeaders = HttpHeaders()
+        responseHeaders.add("X-Total-Count", searchResults.totalHits.toString())
+        return ResponseEntity.status(200).headers(responseHeaders).body(searchResults.map {
+            val jobCodeLevel = ApiJobCode.getLevelFromJobCode(it.content)
+            val parents = mutableListOf<JobCodeDao>()
+            val majorCode = it.content.majorCode
+            val minorCode = it.content.minorCode
+            val broadCode = it.content.broadCode
+            val detailedCode = it.content.detailedCode
+            if (detailedCode != null && jobCodeLevel != JobCodeLevel.Detailed) {
+                jobCodeRepository.findByCode(detailedCode)?.let { jobCodeDao -> parents.add(jobCodeDao) }
+            }
+            if (broadCode != null && jobCodeLevel != JobCodeLevel.Broad) {
+                jobCodeRepository.findByCode(broadCode)?.let { jobCodeDao -> parents.add(jobCodeDao) }
+            }
+            if (minorCode != null && jobCodeLevel != JobCodeLevel.Minor) {
+                jobCodeRepository.findByCode(minorCode)?.let { jobCodeDao -> parents.add(jobCodeDao) }
+            }
+            if (majorCode != null && jobCodeLevel != JobCodeLevel.Major) {
+                jobCodeRepository.findByCode(majorCode)?.let { jobCodeDao -> parents.add(jobCodeDao) }
+            }
+            ApiJobCode.fromJobCode(it.content, jobCodeLevel, parents.map { it2 -> ApiJobCode.fromJobCode(it2.toModel(), ApiJobCode.getLevelFromJobCode(it2.toModel())) })
+        }.toList())
     }
 
     @GetMapping(RoutePaths.JOB_CODE_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -68,7 +98,7 @@ class JobCodeController @Autowired constructor(
         @PathVariable id: Int,
         @RequestBody jobCodeUpdate: JobCodeUpdate
     ): HttpEntity<ApiJobCode> {
-        return ResponseEntity.status(200).body(ApiJobCode(code = "1", targetNode = "target", targetNodeName = "targetNodeName", frameworkName = "frameworkName", parents = listOf()))
+        return ResponseEntity.status(200).body(ApiJobCode(id = 1, code = "1", targetNode = "target", targetNodeName = "targetNodeName", frameworkName = "frameworkName", parents = listOf()))
     }
 
     @DeleteMapping(RoutePaths.JOB_CODE_REMOVE)
@@ -76,7 +106,9 @@ class JobCodeController @Autowired constructor(
     fun deleteJobCode(
         @PathVariable id: Int,
     ): HttpEntity<TaskResult> {
-        return ResponseEntity.status(200).body(TaskResult(uuid = "uuid", contentType = "application/json", status = TaskStatus.Processing, apiResultPath = "path"))
+        val task = RemoveJobCodeTask(jobCodeId = id.toLong())
+        taskMessageService.enqueueJob(TaskMessageService.removeJobCode, task)
+        return Task.processingResponse(task)
     }
 
 }

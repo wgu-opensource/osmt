@@ -124,6 +124,7 @@ import { MetadataSelectorComponent } from "./metadata/detail/metadata-selector/m
 import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
 import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
 import { BatchImportCollectionComponent } from './collection/create-collection/batch-import-collection/batch-import-collection.component'
+import { JobCodeParentsPipe } from "./pipes"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -251,7 +252,8 @@ export function initializeApp(
     NamedReferenceListRowComponent,
     NamedReferenceTableComponent,
     MetadataSelectorComponent,
-    InlineHeadingComponent
+    InlineHeadingComponent,
+    JobCodeParentsPipe,
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

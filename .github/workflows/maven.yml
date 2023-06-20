@@ -28,7 +28,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: osmt-artifact
-        path: /target/osmt-api.jar
+        path: ./target/osmt-api.jar
   api-test:
     needs: build
     runs-on: ubuntu-20.04

@@ -30,7 +30,7 @@ import java.util.*
     JsonSubTypes.Type(value = CreateSkillsTask::class, name = "CreateSkillsTask"),
     JsonSubTypes.Type(value = ExportSkillsToCsvTask::class, name = "ExportSkillsToCsvTask"),
     JsonSubTypes.Type(value = ExportSkillsToXlsxTask::class, name = "ExportSkillsToXlsxTask"),
-    JsonSubTypes.Type(value = RemoveCollectionSkillsTask::class, name = "RemoveCollectionSkillsTask"),
+    JsonSubTypes.Type(value = RemoveItemTask::class, name = "RemoveCollectionSkillsTask"),
     JsonSubTypes.Type(value = RemoveJobCodeTask::class, name = "RemoveJobCodeTask")
 )
 
@@ -155,8 +155,8 @@ data class UpdateCollectionSkillsTask(
     override val apiResultPath = RoutePaths.TASK_DETAIL_BATCH
 }
 
-data class RemoveCollectionSkillsTask(
-    val collectionUuid: String = "",
+data class RemoveItemTask(
+    val identifier: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: ApiBatchResult? = null,

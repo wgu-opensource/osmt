@@ -21,7 +21,7 @@ import edu.wgu.osmt.security.OAuthHelper
 import edu.wgu.osmt.task.AppliesToType
 import edu.wgu.osmt.task.CsvTask
 import edu.wgu.osmt.task.PublishTask
-import edu.wgu.osmt.task.RemoveCollectionSkillsTask
+import edu.wgu.osmt.task.RemoveItemTask
 import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskResult
@@ -202,7 +202,7 @@ class CollectionController @Autowired constructor(
     fun removeCollection(
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
-        val task = RemoveCollectionSkillsTask(collectionUuid = uuid)
+        val task = RemoveItemTask(identifier = uuid)
         taskMessageService.enqueueJob(TaskMessageService.removeCollectionSkills, task)
         return Task.processingResponse(task)
     }

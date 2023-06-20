@@ -25,7 +25,7 @@ object RoutePaths {
     const val EXPORT_SKILLS_CSV = "$EXPORT_SKILLS/csv"
     const val EXPORT_SKILLS_XLSX = "$EXPORT_SKILLS/xlsx"
 
-    const val KEYWORD_PATH = "$API/keywords"
+    const val KEYWORD_PATH = "$API/metadata/keywords"
     const val KEYWORD_LIST = KEYWORD_PATH
     const val KEYWORD_CREATE = KEYWORD_PATH
     const val KEYWORD_DETAIL = "$KEYWORD_PATH/{id}"

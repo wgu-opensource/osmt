@@ -17,7 +17,10 @@ import edu.wgu.osmt.elasticsearch.PaginatedLinks
 import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.security.OAuthHelper
+import edu.wgu.osmt.task.RemoveItemTask
+import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
+import edu.wgu.osmt.task.TaskResult
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -64,9 +67,12 @@ class KeywordController @Autowired constructor(
         val pageable = OffsetPageable(from, size, sortEnum.sort)
         val keywordType = KeywordTypeEnum.forApiValue(type) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         val searchResults = keywordEsRepo.typeAheadSearch(query, keywordType, pageable)
+        val responseHeaders = HttpHeaders()
+        responseHeaders.add("X-Total-Count", searchResults.totalHits.toString())
         
-        
-        return ResponseEntity.status(200).body(searchResults.map { ApiKeyword(it.content) }.toList())
+        return ResponseEntity.status(200)
+            .headers(responseHeaders)
+            .body(searchResults.map { ApiKeyword(it.content) }.toList())
     }
 
     @GetMapping(RoutePaths.KEYWORD_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -148,20 +154,18 @@ class KeywordController @Autowired constructor(
     fun deleteKeyword(
         @PathVariable id: Long,
         @AuthenticationPrincipal user: Jwt?
-    ): HttpEntity<Boolean> {
+    ): HttpEntity<TaskResult> {
 
-        if (byId(id) != null) {
-            return ResponseEntity.status(HttpStatus.OK)
-                .body(keywordRepository.remove(id))
-        } else {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
+        val task = RemoveItemTask(identifier = id.toString())
+        taskMessageService.enqueueJob(TaskMessageService.removeKeyword, task)
+        return Task.processingResponse(task)
     }
 
     private fun byId(
         id: Long,
     ): ApiKeyword? {
-        return keywordRepository.findById(id)?.let { ApiKeyword(it.toModel()) }
+        val found = keywordRepository.findById(id)?.let { ApiKeyword(it.toModel()) }
+        return found
     }
 
     private fun searchRelatedSkills (

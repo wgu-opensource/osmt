@@ -95,10 +95,10 @@ enum class CollectionSortEnum(override val apiValue: String) : SortOrder {
  * Provides an enum for Keywords that defines elasticsearch sorting
  */
 enum class KeywordSortEnum(override val apiValue: String) : SortOrder {
-    KeywordNameAsc("keyword.asc") {
+    KeywordNameAsc("name.asc") {
         override val sort = Sort.by("value.keyword").ascending()
     },
-    KeywordNameDesc("keyword.desc") {
+    KeywordNameDesc("name.desc") {
         override val sort = Sort.by("value.keyword").descending()
     },
     KeywordFrameworkAsc("framework.asc") {

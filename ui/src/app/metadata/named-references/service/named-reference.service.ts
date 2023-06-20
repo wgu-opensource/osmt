@@ -12,13 +12,15 @@ import {ApiNamedReference, INamedReference} from "../NamedReference";
 import {PublishStatus} from "../../../PublishStatus";
 import {ApiSearch, PaginatedSkills} from "../../../richskill/service/rich-skill-search.service";
 import {ApiSkillSummary} from "../../../richskill/ApiSkillSummary";
+import {ApiTaskResult, ITaskResult} from "../../../task/ApiTaskResult";
+import {ApiBatchResult} from "../../../richskill/ApiBatchResult";
 
 @Injectable({
   providedIn: "root"
 })
 export class NamedReferenceService extends AbstractDataService{
 
-  private baseServiceUrl = "api/keywords"
+  private baseServiceUrl = "api/metadata/keywords"
 
   constructor(protected httpClient: HttpClient, protected authService: AuthService,
               protected router: Router, protected location: Location) {
@@ -76,15 +78,19 @@ export class NamedReferenceService extends AbstractDataService{
       .pipe(map(({body}) => new ApiNamedReference(this.safeUnwrapBody(body, errorMsg))))
   }
 
-  deleteNamedReference(id: number): Observable<Boolean> {
-    return this.httpClient.delete<Boolean>(this.buildUrl("api/metadata/keywords/" + id + "/remove"), {
+  deleteNamedReferenceWithResult(id: number): Observable<ApiBatchResult> {
+    return this.pollForTaskResult<ApiBatchResult>(this.deleteNamedReference(id))
+  }
+
+  deleteNamedReference(id: number): Observable<ApiTaskResult> {
+    return this.httpClient.delete<ITaskResult>(this.buildUrl("api/metadata/keywords/" + id + "/remove"), {
       headers: this.wrapHeaders(new HttpHeaders({
           Accept: "application/json"
         }
       ))
     })
       .pipe(share())
-      .pipe(map((body) => Boolean(this.safeUnwrapBody(body, "unwrap failure"))))
+      .pipe(map((body) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
   }
 
   getRelatedSkills(

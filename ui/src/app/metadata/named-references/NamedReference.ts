@@ -2,7 +2,7 @@ import {MetadataType} from "../rsd-metadata.enum"
 import {Meta} from "@angular/platform-browser"
 
 export interface INamedReference {
-  id: string
+  id: number
   name?: string
   type?: MetadataType
   url: string
@@ -10,7 +10,7 @@ export interface INamedReference {
 }
 
 export class ApiNamedReference implements INamedReference {
-  id = ""
+  id = 0
   framework = ""
   name?: string = ""
   type?: MetadataType = MetadataType.Category

@@ -2,7 +2,7 @@ import { fakeAsync, TestBed, tick } from "@angular/core/testing"
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
 import { Location } from "@angular/common"
 import { Router } from "@angular/router"
-import { JobCodeService, PaginatedJobCodes } from "./job-code.service"
+import { JobCodeService } from "./job-code.service"
 import { AuthServiceData, AuthServiceStub, RouterData, RouterStub } from "@test/resource/mock-stubs"
 import { AppConfig } from "../../../app.config"
 import { EnvironmentService } from "../../../core/environment.service"
@@ -10,11 +10,12 @@ import { AuthService } from "../../../auth/auth-service"
 import {
   apiTaskResultForDeleteJobCode,
   createMockJobcode,
-  createMockPaginatedJobCodes
+  createMockPaginatedMetaDataWithJobCodes
 } from "@test/resource/mock-data"
 import { ApiSortOrder } from "../../../richskill/ApiSkill"
 import { ApiJobCode, ApiJobCodeUpdate } from "../Jobcode"
 import { ApiBatchResult } from "../../../richskill/ApiBatchResult"
+import { PaginatedMetadata } from "../../PaginatedMetadata"
 
 const ASYNC_WAIT_PERIOD = 3000
 
@@ -48,16 +49,16 @@ describe("JobCodeService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const path = "api/metadata/jobcodes?sort=name.asc&size=3&from=0"
-    const testData: PaginatedJobCodes = createMockPaginatedJobCodes(3, 10)
+    const path = "api/metadata/jobcodes?size=3&from=0&sort=name.asc&query="
+    const testData: PaginatedMetadata = createMockPaginatedMetaDataWithJobCodes(3, 10)
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.getJobCodes(testData.jobCodes.length, 0, ApiSortOrder.NameAsc)
+    const result$ = testService.paginatedJobCodes(testData.data.length, 0, ApiSortOrder.NameAsc, undefined)
 
     // Assert
     result$
-      .subscribe((data: PaginatedJobCodes) => {
+      .subscribe((data: PaginatedMetadata) => {
         expect(data).toEqual(testData)
         expect(RouterData.commands).toEqual([ ])  // No errors
         expect(AuthServiceData.isDown).toEqual(false)
@@ -65,7 +66,7 @@ describe("JobCodeService", () => {
 
     const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
     expect(req.request.method).toEqual("GET")
-    req.flush(testData.jobCodes, {
+    req.flush(testData.data, {
       headers: { "x-total-count": "" + testData.totalCount}
     })
   })
@@ -163,13 +164,14 @@ describe("JobCodeService", () => {
   })
 
   it("deleteJobCodeWithResult() should works", fakeAsync(() => {
-    const result$ = testService.deleteJobCodeWithResult(apiTaskResultForDeleteJobCode.uuid)
+    const jobCodeId = 2
+    const result$ = testService.deleteJobCodeWithResult(jobCodeId)
     tick(ASYNC_WAIT_PERIOD)
     // Assert
     result$.subscribe((data: ApiBatchResult) => {
       expect(RouterData.commands).toEqual([]) // No Errors
     })
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + `/api/metadata/jobcodes/${apiTaskResultForDeleteJobCode.uuid}/remove`)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + `/api/metadata/jobcodes/${jobCodeId}/remove`)
     expect(req.request.method).toEqual("DELETE")
     expect(req.request.headers.get("Accept")).toEqual("application/json")
   }))

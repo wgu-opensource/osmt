@@ -19,7 +19,7 @@ import { ApiReferenceListUpdate, IRichSkillUpdate, IStringListUpdate } from "../
 import { PaginatedCollections, PaginatedSkills } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
 import { IJobCode } from "../../src/app/metadata/job-codes/Jobcode";
-import { PaginatedJobCodes } from "../../src/app/metadata/job-codes/service/job-code.service"
+import { PaginatedMetadata } from "../../src/app/metadata/PaginatedMetadata"
 
 // Add mock data here.
 // For more examples, see https://github.com/WGU-edu/ema-eval-ui/blob/develop/src/app/admin/pages/edit-user/edit-user.component.spec.ts
@@ -51,6 +51,47 @@ export function createMockJobcode(targetNode = 42, targetNodeName = "my jobcode 
     url: "my jobcode url",
     parents: undefined
   }
+}
+
+export const mockJobCodesParents: IJobCode[] = [
+  {
+    id: 111,
+    code: "13-2010",
+    targetNodeName: "Accountants and Auditors",
+    frameworkName: "bls",
+    level: "Broad",
+  },
+  {
+    id: 110,
+    code: "13-2000",
+    targetNodeName: "Financial Specialists",
+    frameworkName: "bls",
+    level: "Minor"
+  },
+  {
+    id: 74,
+    code: "13-0000",
+    targetNodeName: "Business and Financial Operations Occupations",
+    frameworkName: "bls",
+    level: "Major"
+  }
+]
+
+export const mockJobCodeWithParents: IJobCode = {
+  targetNode: 2,
+  targetNodeName: "Mocked Job Code",
+  code: "95-000",
+  broad: "my jobcode broad",
+  broadCode: "my jobcode broadCode",
+  detailed: "my jobcode detailed",
+  level: "Broad",
+  major: "my jobcode major",
+  majorCode: "my jobcode majorCode",
+  frameworkName: "my jobcode framework",
+  minor: "my jobcode minor",
+  minorCode: "my jobcode minorCode",
+  url: "my jobcode url",
+  parents: mockJobCodesParents
 }
 
 export function createMockUuidReference(uuid = "my uuidReference id", name = "my uuidReference name"): IUuidReference {
@@ -322,7 +363,7 @@ export const apiTaskResultForDeleteJobCode: ApiTaskResult = {
   id: "/api/results/batch/5ca6ea7f-e008-44fc-9108-eda19b01fa6b"
 }
 
-export function createMockPaginatedJobCodes(jobCodeCount = 1, total = 10): PaginatedJobCodes {
+export function createMockPaginatedMetaDataWithJobCodes(jobCodeCount = 1, total = 10): PaginatedMetadata {
   if (jobCodeCount > total) {
     throw new RangeError(`'pageCount' must be <= 'total'`)
   }
@@ -334,7 +375,7 @@ export function createMockPaginatedJobCodes(jobCodeCount = 1, total = 10): Pagin
     )
   }
 
-  return new PaginatedJobCodes(
+  return new PaginatedMetadata(
     jobCodes,
     total
   )

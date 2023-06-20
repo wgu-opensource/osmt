@@ -15,7 +15,7 @@
     </div>
     <div class="m-tableLabel-x-control">
       <div class="m-checkbox">
-        <input type="checkbox" id="checkbox" name="checkbox" #checkbox (change)="onClickCheckbox(checkbox.checked)">
+        <input type="checkbox" id="checkbox" name="checkbox" [checked]="checkAll" #checkbox (change)="onClickCheckbox(checkbox.checked)">
         <div class="m-checkbox-x-icon">
           <svg class="t-icon" aria-hidden="true">
             <use [attr.xlink:href]="checkIcon"></use>

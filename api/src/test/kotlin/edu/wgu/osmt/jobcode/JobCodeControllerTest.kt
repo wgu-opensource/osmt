@@ -33,7 +33,7 @@ internal class JobCodeControllerTest @Autowired constructor(
             this.name = "my name"
             this.major = "my major"
         }.also { jobCodeEsRepo.save(it.toModel()) }
-        val result = jobCodeController.allPaginated(50, 0, null)
+        val result = jobCodeController.allPaginated(50, 0, "name.asc", "name")
         Assertions.assertThat(result.body).hasSizeGreaterThan(0)
     }
 
@@ -75,11 +75,12 @@ internal class JobCodeControllerTest @Autowired constructor(
 
     @Test
     fun `Delete should return status 200`() {
+        jobCodeController.taskMessageService.rqueueMessageSender.registerQueue("remove-job-code")
         val result = jobCodeController.deleteJobCode(
             1
         )
         Assertions.assertThat(result).isNotNull
-        Assertions.assertThat((result as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
+        Assertions.assertThat((result as ResponseEntity).statusCode).isEqualTo(HttpStatus.ACCEPTED)
     }
 
 

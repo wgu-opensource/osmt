@@ -1,41 +1,48 @@
 import { Location } from "@angular/common"
-import { HttpClient, HttpHeaders } from "@angular/common/http"
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { Observable } from "rxjs"
 import { map, share } from "rxjs/operators"
 import { ApiJobCode, IJobCode, IJobCodeUpdate } from "../Jobcode"
-import { AuthService } from "../../../auth/auth-service";
-import { AbstractDataService } from "../../abstract-data.service";
-import { ApiSortOrder } from "../../../richskill/ApiSkill";
-import { ApiBatchResult } from "../../../richskill/ApiBatchResult";
-import { ApiTaskResult, ITaskResult } from "../../../task/ApiTaskResult";
+import { AuthService } from "../../../auth/auth-service"
+import { AbstractDataService } from "../../abstract-data.service"
+import { ApiSortOrder } from "../../../richskill/ApiSkill"
+import { ApiBatchResult } from "../../../richskill/ApiBatchResult"
+import { ApiTaskResult, ITaskResult } from "../../../task/ApiTaskResult"
+import { PaginatedMetadata } from "../../PaginatedMetadata"
 
 @Injectable({
   providedIn: "root"
 })
-export class JobCodeService extends AbstractDataService{
+export class JobCodeService extends AbstractDataService {
 
   private baseServiceUrl = "api/metadata/jobcodes"
 
-  constructor(protected httpClient: HttpClient, protected authService: AuthService,
-              protected router: Router, protected location: Location) {
+  constructor(
+    protected httpClient: HttpClient,
+    protected authService: AuthService,
+    protected router: Router,
+    protected location: Location
+  ) {
     super(httpClient, authService, router, location)
   }
 
-  getJobCodes(
-    size: number = 50,
-    from: number = 0,
-    sort: ApiSortOrder | undefined
-  ): Observable<PaginatedJobCodes> {
-    const params = this.buildTableParams(size, from, undefined, sort)
+  paginatedJobCodes(
+    size = 50,
+    from = 0,
+    sort: ApiSortOrder | undefined,
+    query: string | undefined
+  ): Observable<PaginatedMetadata> {
+    const params = new HttpParams({
+      fromObject: {size, from, sort: sort ?? "", query: query ?? ""}
+    })
     return this.get<ApiJobCode[]>({
       path: `${this.baseServiceUrl}`,
       params,
-    })
-      .pipe(share())
+    }).pipe(share())
       .pipe(map(({body, headers}) => {
-        return new PaginatedJobCodes(
+        return new PaginatedMetadata(
           body || [],
           Number(headers.get("X-Total-Count"))
         )
@@ -71,11 +78,11 @@ export class JobCodeService extends AbstractDataService{
       .pipe(map(({body}) => new ApiJobCode(this.safeUnwrapBody(body, errorMsg))))
   }
 
-  deleteJobCodeWithResult(id: string): Observable<ApiBatchResult> {
+  deleteJobCodeWithResult(id: number): Observable<ApiBatchResult> {
     return this.pollForTaskResult<ApiBatchResult>(this.deleteJobCode(id))
   }
 
-  deleteJobCode(id: string): Observable<ApiTaskResult> {
+  deleteJobCode(id: number): Observable<ApiTaskResult> {
     return this.httpClient.delete<ITaskResult>(this.buildUrl("api/metadata/jobcodes/" + id + "/remove"), {
       headers: this.wrapHeaders(new HttpHeaders({
           Accept: "application/json"
@@ -84,14 +91,5 @@ export class JobCodeService extends AbstractDataService{
     })
       .pipe(share())
       .pipe(map((body) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
-  }
-}
-
-export class PaginatedJobCodes {
-  totalCount = 0
-  jobCodes: ApiJobCode[] = []
-  constructor(jobCodes: ApiJobCode[], totalCount: number) {
-    this.jobCodes = jobCodes
-    this.totalCount = totalCount
   }
 }

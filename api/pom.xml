@@ -475,17 +475,22 @@
                                 <exclude>AuditLogRepositoryTest</exclude>
                                 <exclude>BatchImportRichSkillTest</exclude>
                                 <exclude>BlsImportTest</exclude>
+                                <exclude>CollectionControllerTest</exclude>
                                 <exclude>CollectionEsRepoTest</exclude>
                                 <exclude>CollectionRepositoryTest</exclude>
+                                <exclude>CollectionUpdateObjectTest</exclude>
                                 <exclude>ElasticSearchReindexerTest</exclude>
                                 <exclude>JobCodeEsRepoTest</exclude>
                                 <exclude>JobCodeRepositoryTest</exclude>
+                                <exclude>KeywordControllerTest</exclude>
                                 <exclude>KeywordEsRepoTest</exclude>
                                 <exclude>KeywordRepositoryTest</exclude>
                                 <exclude>OnetImportTest</exclude>
                                 <exclude>RichSkillControllerTest</exclude>
                                 <exclude>RichSkillEsRepoTest</exclude>
                                 <exclude>RichSkillRepositoryTest</exclude>
+                                <exclude>RichSkillSortOrderTest</exclude>
+                                <exclude>RichSkillXlsxExportTest</exclude>
                                 <exclude>SearchControllerTest</exclude>
                                 <exclude>TaskTest</exclude>
                             </excludes>

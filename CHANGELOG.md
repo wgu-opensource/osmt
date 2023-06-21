@@ -1,39 +1,36 @@
 # Announcing the release of OSMT 3.0.0
 June 20, 2023
 ## Enhancements
-OSMT 3.0.0 brings 6 new feature enhancements
-
-- Versioned API routes to support backward compatibility with legacy integrations (pre-OSMT 3.0)
-
+OSMT 3.0.0 brings these new feature enhancements
+- Versioned API routes with backward compatibility for integrations using the pre-OSMT 3.0 (legacy) API
 - Skills (RSDs) now support multiple categories
-
 - Skills (RSDs) now support multiple authors
-
 - Search result filtering
-
-- Selectable pagination quantity
-
-- Export to Excel Workbook .xlsx option (previously only CSV)
+- Selectable page size controls
+- Allow shift-selection of contiguous RSDs
+- Allow selecting all RSDs in result set (across multiple pages)
+- Export to Excel workbook (previously only CSV)
+- View Categories in Library
+- Categories in Collection
 
 ## Updates
-
 - Updated UI to Angular v16 (previously v12)
-
 - Updated other dependencies
 
 ## Developer/Integrator Enhancements
-
 - OpenAPI compliant API specification
-
 - New API test suite
+- Full support for loading and reindexing a static development dataset via `osmt_cli.sh`
 
 ## Model Changes:
 - RSD 'category' -> 'categories'
-
 - RSD 'author' -> 'authors'
 
 ## Defect Fixes
-- Removed leading `'-'` character from URLs in export files
+- Remove 1 RSD from a Collection (Bug)
+- Collection RSD Type Malfunction (Bug)
+- Fix wrapping behavior for card heading
+- Removed leading `'-'` character from URLs in export files in `dev` Spring profile
 
 ## Removed
 - Protractor e2e (end-to-end) testing framework (deprecated & unused by OSMT)

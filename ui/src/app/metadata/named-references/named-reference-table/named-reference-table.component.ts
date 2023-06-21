@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, Input, QueryList, ViewChildren} from "@angular/core"
 import {AbstractTableComponent} from "../../../table/abstract-table.component"
 import {NamedReferenceListRowComponent} from "../named-reference-list-row/named-reference-list-row.component"
-import {INamedReference} from "../NamedReference"
+import {NamedReferenceInterface} from "../NamedReference"
 import {MetadataType} from "../../rsd-metadata.enum";
 import {ApiSortOrder} from "../../../richskill/ApiSkill";
 
@@ -9,7 +9,7 @@ import {ApiSortOrder} from "../../../richskill/ApiSkill";
   selector: "app-named-reference-table",
   templateUrl: "./named-reference-table.component.html"
 })
-export class NamedReferenceTableComponent extends AbstractTableComponent<INamedReference> implements AfterViewInit {
+export class NamedReferenceTableComponent extends AbstractTableComponent<NamedReferenceInterface> implements AfterViewInit {
 
   @ViewChildren(NamedReferenceListRowComponent) rowReferences: QueryList<NamedReferenceListRowComponent> | undefined = undefined
 

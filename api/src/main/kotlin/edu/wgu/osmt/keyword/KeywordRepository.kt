@@ -174,7 +174,7 @@ class KeywordRepositoryImpl @Autowired constructor(
     }
 }
 
-enum class ErrorMessages(val apiValue: String) {
+private enum class ErrorMessages(val apiValue: String) {
     DoesNotExist("You cannot delete this Keyword because it does not exist"),
     HasRSDRelated("You cannot delete this Keyword because it is used in one or more RSDs");
 

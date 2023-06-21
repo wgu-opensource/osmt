@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core"
 import { TableActionDefinition } from "../../../table/skills-library-table/has-action-definitions"
 import { SvgHelper, SvgIcon } from "../../../core/SvgHelper"
-import { ApiNamedReference, INamedReference } from "../NamedReference"
+import { ApiNamedReference, NamedReferenceInterface } from "../NamedReference"
 import {MetadataType} from "../../rsd-metadata.enum";
 
 @Component({
@@ -17,7 +17,7 @@ export class NamedReferenceListRowComponent {
   @Input() metadataSelected?: MetadataType
 
 
-  @Output() rowSelected = new EventEmitter<INamedReference>()
+  @Output() rowSelected = new EventEmitter<NamedReferenceInterface>()
   @Output() focusActionBar = new EventEmitter<void>()
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
 

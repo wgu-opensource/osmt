@@ -8,7 +8,7 @@ import {ApiSortOrder} from "../../../richskill/ApiSkill";
 import {Observable} from "rxjs";
 import {PaginatedMetadata} from "../../PaginatedMetadata";
 import {map, share} from "rxjs/operators";
-import {ApiNamedReference, INamedReference} from "../NamedReference";
+import {ApiNamedReference, ApiNamedReferenceUpdate, NamedReferenceInterface} from "../NamedReference";
 import {PublishStatus} from "../../../PublishStatus";
 import {ApiSearch, PaginatedSkills} from "../../../richskill/service/rich-skill-search.service";
 import {ApiSkillSummary} from "../../../richskill/ApiSkillSummary";
@@ -58,9 +58,9 @@ export class NamedReferenceService extends AbstractDataService{
       .pipe(map(({body}) => new ApiNamedReference(this.safeUnwrapBody(body, errorMsg))))
   }
 
-  createNamedReference(newObject: INamedReference): Observable<INamedReference> {
+  createNamedReference(newObject: ApiNamedReferenceUpdate): Observable<ApiNamedReference> {
     const errorMsg = `Error creating NamedReference`
-    return this.post<INamedReference[]>({
+    return this.post<NamedReferenceInterface[]>({
       path: this.baseServiceUrl,
       body: [newObject]
     })
@@ -68,9 +68,9 @@ export class NamedReferenceService extends AbstractDataService{
       .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiNamedReference(s))[0]))
   }
 
-  updateNamedReference(id: string, updateObject: INamedReference): Observable<ApiNamedReference> {
+  updateNamedReference(id: number, updateObject: ApiNamedReferenceUpdate): Observable<ApiNamedReference> {
     const errorMsg = `Could not find NamedReference with id: [${id}]`
-    return this.post<INamedReference>({
+    return this.post<NamedReferenceInterface>({
       path: `${this.baseServiceUrl}/${id}/update`,
       body: updateObject
     })

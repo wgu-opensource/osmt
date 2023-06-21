@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core"
 import { FormControl } from "@angular/forms"
 import { Subject } from "rxjs"
 import { ApiJobCode, IJobCode } from "../../job-codes/Jobcode"
-import { ApiNamedReference, INamedReference } from "../../named-references/NamedReference"
+import { ApiNamedReference, NamedReferenceInterface } from "../../named-references/NamedReference"
 import { TableActionDefinition } from "../../../table/skills-library-table/has-action-definitions"
 import { ButtonAction } from "../../../auth/auth-roles"
 import { AuthService } from "../../../auth/auth-service"
@@ -16,7 +16,7 @@ import { NamedReferenceService } from "../../named-references/service/named-refe
   selector: "app-metadata-list",
   templateUrl: "./metadata-list.component.html"
 })
-export class MetadataListComponent extends AbstractListComponent<IJobCode | INamedReference> implements OnInit {
+export class MetadataListComponent extends AbstractListComponent<IJobCode | NamedReferenceInterface> implements OnInit {
 
   selectedMetadataType = MetadataType.Category
 
@@ -81,8 +81,8 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
     return (this.results?.data) as IJobCode[]
   }
 
-  getNamedReferences(): INamedReference[] {
-    return (this.results?.data) as INamedReference[]
+  getNamedReferences(): NamedReferenceInterface[] {
+    return (this.results?.data) as NamedReferenceInterface[]
   }
 
   rowActions(): TableActionDefinition[] {
@@ -90,7 +90,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
     if (this.canDeleteMetadata && !this.selectAllChecked) {
       tableActions.push(new TableActionDefinition({
         label: `Delete`,
-        callback: (action: TableActionDefinition, metadata?: IJobCode | INamedReference) => this.handleClickDeleteItem(metadata),
+        callback: (action: TableActionDefinition, metadata?: IJobCode | NamedReferenceInterface) => this.handleClickDeleteItem(metadata),
         visible: () => !this.selectAllChecked
       }))
     }
@@ -131,12 +131,16 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
   private handleDeleteMultipleMetadata(): void {
     if (this.isJobCodeDataSelected) {
       if (confirm("Confirm that you want to delete multiple job codes")) {
+        this.toastService.showBlockingLoader()
         this.handleDeleteMultipleJobCodes(this.selectedJobCodesOrderedByLevel, 0)
+
       }
     }
     else {
       if (confirm("Confirm that you want to delete multiple Named References..")) {
-        this.handleDeleteMultipleNamedReferences(this.selectedData as INamedReference[], 0)
+        this.toastService.showBlockingLoader()
+        this.handleDeleteMultipleNamedReferences(this.selectedData as NamedReferenceInterface[], 0)
+
       }
     }
   }
@@ -160,12 +164,12 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
     }
   }
 
-  private handleDeleteMultipleNamedReferences(namedReferences: INamedReference[], index: number, notDeleted = 0): void {
+  private handleDeleteMultipleNamedReferences(namedReferences: NamedReferenceInterface[], index: number, notDeleted = 0): void {
     if (index < namedReferences.length) {
       this.namedReferenceService.deleteNamedReferenceWithResult(namedReferences[index].id ?? 0).subscribe(data => {
         if (data && data.success) {
           this.handleDeleteMultipleNamedReferences(namedReferences, index + 1, notDeleted)
-        } else {
+        } else if (data && !data.success) {
           this.handleDeleteMultipleNamedReferences(namedReferences, index + 1, notDeleted + 1)
         }
       })
@@ -179,11 +183,11 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
     }
   }
 
-  private handleClickDeleteItem(metadata: IJobCode | INamedReference | undefined): void {
+  private handleClickDeleteItem(metadata: IJobCode | NamedReferenceInterface | undefined): void {
     if (this.isJobCodeDataSelected) {
       this.handleDeleteJobCode(metadata as IJobCode)
     } else {
-      this.handleDeleteNamedReference(metadata as INamedReference)
+      this.handleDeleteNamedReference(metadata as NamedReferenceInterface)
 
     }
   }
@@ -201,7 +205,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
     }
   }
 
-  private handleDeleteNamedReference(namedReference: INamedReference): void {
+  private handleDeleteNamedReference(namedReference: NamedReferenceInterface): void {
     if (confirm("Confirm that you want to delete the Named Reference with name " + (namedReference as ApiNamedReference)?.name)) {
       this.namedReferenceService.deleteNamedReferenceWithResult((namedReference as ApiNamedReference)?.id ?? 0).subscribe(data => {
         if (data && data.success) {

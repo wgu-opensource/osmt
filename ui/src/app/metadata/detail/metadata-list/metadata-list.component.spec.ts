@@ -93,4 +93,16 @@ describe("ManageMetadataComponent", () => {
     component["handleDeleteJobCode"](mockJobCode)
     expect(spyService).not.toHaveBeenCalled()
   })
+
+  it("handleDeleteNamedReference should call deleteJobCodeWithResult", () => {
+    const mockJobCode = createMockJobcode()
+    const spyService = spyOn(component["jobCodeService"], "deleteJobCodeWithResult").and.returnValue(
+      of({success: true})
+    )
+    spyOn(window, 'confirm').and.callFake(function () {
+      return true;
+    });
+    component["handleDeleteJobCode"](mockJobCode)
+    expect(spyService).toHaveBeenCalled()
+  })
 })

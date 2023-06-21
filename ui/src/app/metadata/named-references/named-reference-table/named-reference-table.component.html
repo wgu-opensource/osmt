@@ -10,7 +10,7 @@
   <tr class="m-tableHeader">
     <td class="t-hidden-tabletMin" aria-hidden="true">
       <app-label-with-select
-        label="JobCodes"
+        label="NamedReferences"
         [options]="mobileSortOptions"
         [currentSort]="currentSort"
         (sortChanged)="mobileSortColumn($event)"
@@ -32,9 +32,17 @@
     </td>
 
     <td *ngIf="isAlignmentSelected" class="t-hidden-tabletMax" aria-hidden="true">
-        <span class="m-tableLabel">
-          <span class="m-tableLabel-x-text">Framework</span>
-        </span>
+      <app-label-with-filter
+        *ngIf="allowSorting; else noSortName"
+        label="Framework"
+        [sortAscending]="getFrameworkSort()"
+        (sortChanged)="sortColumn('framework', $event)"
+      ></app-label-with-filter>
+      <ng-template #noSortName>
+          <span class="m-tableLabel">
+            <span class="m-tableLabel-x-text">Framework</span>
+          </span>
+      </ng-template>
     </td>
 
     <td *ngIf="isAlignmentSelected" class="t-hidden-tabletMax" aria-hidden="true">
@@ -48,7 +56,7 @@
         [selectAllEnabled]="selectAllEnabled"
         (valueChange)="handleSelectAll($event)"
         [totalCount]="getSelectAllCount()"
-        [totalPageCount]="items.length">
+        [totalPageCount]="0">
       </app-select-all>
     </td>
 

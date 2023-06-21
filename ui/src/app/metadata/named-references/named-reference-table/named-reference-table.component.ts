@@ -3,6 +3,7 @@ import {AbstractTableComponent} from "../../../table/abstract-table.component"
 import {NamedReferenceListRowComponent} from "../named-reference-list-row/named-reference-list-row.component"
 import {INamedReference} from "../NamedReference"
 import {MetadataType} from "../../rsd-metadata.enum";
+import {ApiSortOrder} from "../../../richskill/ApiSkill";
 
 @Component({
   selector: "app-named-reference-table",
@@ -25,4 +26,18 @@ export class NamedReferenceTableComponent extends AbstractTableComponent<INamedR
       this.rowReferences.first.focusFirstColumnInRow()
     }
   }
+
+  sortColumn(column: string, ascending: boolean): void {
+    if (column.toLowerCase() === "name") {
+      this.currentSort = ascending ? ApiSortOrder.KeywordNameAsc : this.currentSort = ApiSortOrder.KeywordNameDesc
+    } else if (column.toLowerCase() === "framework") {
+      this.currentSort = ascending ? ApiSortOrder.KeywordFrameworkAsc : ApiSortOrder.KeywordFrameworkDesc
+    }
+    this.columnSorted.emit(this.currentSort)
+  }
+
+  getFrameworkSort(): boolean | undefined {
+    return this.currentSort == ApiSortOrder.KeywordFrameworkAsc;
+  }
+
 }

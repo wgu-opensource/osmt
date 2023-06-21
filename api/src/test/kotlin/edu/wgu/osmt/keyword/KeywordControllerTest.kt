@@ -15,7 +15,6 @@ import edu.wgu.osmt.richskill.RichSkillRepository
 import io.mockk.spyk
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -123,23 +122,5 @@ internal class KeywordControllerTest @Autowired constructor(
         Assertions.assertThat(result.body!!.name).isEqualTo("updated Name")
         Assertions.assertThat(result.body!!.framework).isEqualTo("updated framework")
         Assertions.assertThat((result as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
-    }
-
-    @Disabled
-    @Test
-    fun `deleteKeyword() should delete an existing keyword`() {
-        //arrange
-        val keyword = keywordRepository.create(KeywordTypeEnum.Category, "category1")
-
-        // act
-        Assertions.assertThat(keyword!!.value).isEqualTo("category1")
-        Assertions.assertThat((keywordRepository.findAll().count())).isEqualTo(1)
-        val result = kwController.deleteKeyword(keyword!!.id.value, nullJwt)
-
-        // assert
-        Assertions.assertThat(result).isExactlyInstanceOf(ResponseEntity::class.java)
-        Assertions.assertThat(result.body).isEqualTo(true)
-        Assertions.assertThat((result as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
-        Assertions.assertThat((keywordRepository.findAll().count())).isEqualTo(0)
     }
 }

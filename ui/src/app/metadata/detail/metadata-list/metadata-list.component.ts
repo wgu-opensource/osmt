@@ -10,7 +10,7 @@ import { MetadataType } from "../../rsd-metadata.enum"
 import { JobCodeService } from "../../job-codes/service/job-code.service"
 import { ToastService } from "../../../toast/toast.service"
 import { AbstractListComponent } from "../../../table/abstract-list.component"
-import {NamedReferenceService} from "../../named-references/service/named-reference.service";
+import { NamedReferenceService } from "../../named-references/service/named-reference.service"
 
 @Component({
   selector: "app-metadata-list",
@@ -24,7 +24,6 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
 
   showSearchEmptyMessage = false
   canDeleteMetadata = this.authService.isEnabledByRoles(ButtonAction.MetadataAdmin)
-
 
   clearSelectedItemsFromTable = new Subject<void>()
   constructor(
@@ -40,7 +39,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
     this.typeControl.valueChanges.subscribe(
       value => {
         this.selectedMetadataType = value
-        this.loadNextPage()
+        this.handleDefaultSubmit()
       })
     this.loadNextPage()
     }
@@ -64,21 +63,14 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
       this.resultsLoaded.subscribe(jobCodes => this.results = jobCodes)
     } else {
       // this.results = this.sampleNamedReferenceResult
-      this.resultsLoaded = this.namedReferenceService.paginatedNamedReferences(this.size, this.from, this.columnSort, this.selectedMetadataType, this.matchingQuery)
+      const getEnumKey = Object.keys(MetadataType)[Object.values(MetadataType).indexOf(this.selectedMetadataType)];
+      this.resultsLoaded = this.namedReferenceService.paginatedNamedReferences(this.size, this.from, this.columnSort, getEnumKey, this.matchingQuery)
       this.resultsLoaded.subscribe(namedReferences => this.results = namedReferences)
     }
   }
 
   get metadataCountLabel(): string {
-      if (this.selectedMetadataType !== MetadataType.Category) {
-        return `${this.totalCount} ${this.selectedMetadataType}${this.totalCount != 1 ? "s" : ""}`
-      }
-      else if (this.totalCount != 1) {
-        return `${this.totalCount} categories`
-      }
-      else {
-        return `${this.totalCount} category`
-      }
+    return `${this.totalCount} ${this.selectedMetadataType}`
   }
 
   get isJobCodeDataSelected(): boolean {
@@ -170,8 +162,8 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | INam
 
   private handleDeleteMultipleNamedReferences(namedReferences: INamedReference[], index: number, notDeleted = 0): void {
     if (index < namedReferences.length) {
-      this.namedReferenceService.deleteNamedReference(namedReferences[index].id ?? 0).subscribe(data => {
-        if (data) {
+      this.namedReferenceService.deleteNamedReferenceWithResult(namedReferences[index].id ?? 0).subscribe(data => {
+        if (data && data.success) {
           this.handleDeleteMultipleNamedReferences(namedReferences, index + 1, notDeleted)
         } else {
           this.handleDeleteMultipleNamedReferences(namedReferences, index + 1, notDeleted + 1)

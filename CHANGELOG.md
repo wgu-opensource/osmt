@@ -1,5 +1,6 @@
 # Announcing the release of OSMT 3.0.0
 June 20, 2023
+
 ## Enhancements
 OSMT 3.0.0 brings these new feature enhancements
 - Versioned API routes with backward compatibility for integrations using the pre-OSMT 3.0 (legacy) API
@@ -22,7 +23,7 @@ OSMT 3.0.0 brings these new feature enhancements
 - New API test suite
 - Full support for loading and reindexing a static development dataset via `osmt_cli.sh`
 
-## Model Changes:
+## Model Changes
 - RSD 'category' -> 'categories'
 - RSD 'author' -> 'authors'
 

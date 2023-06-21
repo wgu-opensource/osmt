@@ -3,7 +3,7 @@
 2. [ ] Public Access to Skills Collections is Accessible (check more than 1)
 3. [ ] Public Collection Download CSV Functions
 4. [ ] Public Collection Copy URL Functions
-5. [ ] Public Collection Copy JSON Funcions
+5. [ ] Public Collection Copy JSON Functions
 6. [ ] Public RSD Card Opens (check more than 1)
 7. [ ] Back button functions to return from RSD view to Public Collection view
 8. [ ] Public RSD Copy URL Functions

@@ -15,14 +15,17 @@
 - [ ] RSD Library Populates (approx # of RSDs appear)
 - [ ] Basic Search Functions
 - [ ] Advanced Search Functions
-- [ ] Export RSD Library
+- [ ] Export RSD Library to CSV
+- [ ] Export RSD Library to Excel workbook (open in Excel)
 
 ## Collections
 - [ ] Collections Present
 - [ ] View Collections in all status via checkbox (draft, published, archived)
 - [ ] Filter RSDs in a Collection via various metadata (Keywords, Categories, Occupations, etc)
+- [ ] View RSDs in a Collection with different page size settings
 - [ ] Add RSDs to Existing Collection
 - [ ] Remove RSDs from a Collection
+  - [ ] Shift-select non-contiguous RSDs in a Collection and remove from Collection
 - [ ] Add a "description" to an existing collection
 - [ ] Edit the Collection Name and description and save changes
 - [ ] View Published Collection Functions
@@ -69,4 +72,4 @@
 - [ ] Search for RSDs to add to a Collection and Check "Select" all
 - [ ] Search for RSDs to add to a Collection and Select only a handful
 - [ ] Archive RSD from the main library page
-- [ ] Search and download/export  RSDs without creating a collection
+- [ ] Search and download/export RSDs without creating a collection

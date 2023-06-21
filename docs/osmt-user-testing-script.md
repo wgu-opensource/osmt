@@ -1,0 +1,72 @@
+# Public Functionality
+- [ ] Public Skills Library Page Functions
+- [ ] Public Access to Skills Collections is Accessible (check more than 1)
+- [ ] Public Collection Download CSV Functions
+- [ ] Public Collection Copy URL Functions
+- [ ] Public Collection Copy JSON Functions
+- [ ] Public RSD Card Opens (check more than 1)
+- [ ] Back button functions to return from RSD view to Public Collection view
+- [ ] Public RSD Copy URL Functions
+- [ ] Public RSD Download CSV Functions
+- [ ] Public RSD Copy JSON Functions
+
+# Admin Functionality
+- [ ] Successful Login to OSMT
+- [ ] RSD Library Populates (approx # of RSDs appear)
+- [ ] Basic Search Functions
+- [ ] Advanced Search Functions
+- [ ] Export RSD Library
+
+## Collections
+- [ ] Collections Present
+- [ ] View Collections in all status via checkbox (draft, published, archived)
+- [ ] Filter RSDs in a Collection via various metadata (Keywords, Categories, Occupations, etc)
+- [ ] Add RSDs to Existing Collection
+- [ ] Remove RSDs from a Collection
+- [ ] Add a "description" to an existing collection
+- [ ] Edit the Collection Name and description and save changes
+- [ ] View Published Collection Functions
+- [ ] Copy URL of Published Collection Functions
+- [ ] Download CSV of Published Collection
+- [ ] Copy JSON of Published Collection
+- [ ] Archive Collection Functions (from within collection)
+- [ ] Archive Collection (from collection list page)
+- [ ] Unarchive Collection (from within collection)
+- [ ] Unarchive Collection (from collection list page)
+- [ ] Search for RSDs within Collection
+- [ ] View RSDs in Draft/Published/Archived status within Collection
+- [ ] RSD Card Opens from Collection
+- [ ] Edit RSD Card from Collection
+- [ ] Make a Copy of RSD from Collection
+- [ ] View Published RSD from Collection
+- [ ] Copy RSD URL
+- [ ] Download CSV of RSD
+- [ ] Copy JSON of RSD
+- [ ] Archive RSD from Collection
+- [ ] Unarchive RSD from Collection
+- [ ] Create a Collection
+- [ ] Publish a Collection
+- [ ] Download Draft Collection
+- [ ] Delete a collection
+- [ ] Access Workspace
+- [ ] Add RSDs to Workspace (from Workspace)
+- [ ] Add RSDs to Workspace (from Main Library)
+- [ ] Add RSDs to Workspace (from search results)
+- [ ] Convert Workspace to a collection
+- [ ] Export Workspace
+- [ ] Reset Workspace
+
+## RSDs
+- [ ] Open RSD Card from Main Library Page
+- [ ] Edit RSD and Save
+- [ ] Make a Copy of the RSD
+- [ ] View Published RSD
+- [ ] Copy URL of the Published RSD
+- [ ] Download CSV of Published RSD
+- [ ] Copy JSON of Published RSD
+- [ ] Create RSD with multiple categories and authors
+- [ ] Batch Import an RSD (from CSV template)
+- [ ] Search for RSDs to add to a Collection and Check "Select" all
+- [ ] Search for RSDs to add to a Collection and Select only a handful
+- [ ] Archive RSD from the main library page
+- [ ] Search and download/export  RSDs without creating a collection

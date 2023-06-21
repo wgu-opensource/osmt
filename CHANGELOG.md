@@ -27,8 +27,8 @@ OSMT 3.0.0 brings these new feature enhancements
 - RSD 'author' -> 'authors'
 
 ## Defect Fixes
-- Remove 1 RSD from a Collection (Bug)
-- Collection RSD Type Malfunction (Bug)
+- Remove 1 RSD from a Collection does not break UI
+- Changing Publish state of RSD in Collection does not break UI
 - Fix wrapping behavior for card heading
 - Removed leading `'-'` character from URLs in export files in `dev` Spring profile
 

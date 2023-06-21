@@ -1,3 +1,80 @@
+# Announcing the release of OSMT 3.0.0
+June 20, 2023
+
+## Enhancements
+OSMT 3.0.0 brings these new feature enhancements
+- Versioned API routes with backward compatibility for integrations using the pre-OSMT 3.0 (legacy) API
+- Skills (RSDs) now support multiple categories
+- Skills (RSDs) now support multiple authors
+- Search result filtering
+- Selectable page size controls
+- Allow shift-selection of contiguous RSDs
+- Allow selecting all RSDs in result set (across multiple pages)
+- Export to Excel workbook (previously only CSV)
+- View Categories in Library
+- Categories in Collection
+
+## Updates
+- Updated UI to Angular v16 (previously v12)
+- Updated other dependencies
+
+## Developer/Integrator Enhancements
+- OpenAPI compliant API specification
+- New API test suite
+- Full support for loading and reindexing a static development dataset via `osmt_cli.sh`
+
+## Model Changes
+- RSD 'category' -> 'categories'
+- RSD 'author' -> 'authors'
+
+## Defect Fixes
+- Remove 1 RSD from a Collection does not break UI
+- Changing Publish state of RSD in Collection does not break UI
+- Fix wrapping behavior for card heading
+- Removed leading `'-'` character from URLs in export files in `dev` Spring profile
+
+## Removed
+- Protractor e2e (end-to-end) testing framework (deprecated & unused by OSMT)
+
+## Configuration Changes
+> **Warning**
+> Starting at 2.5.0 there are database changes that will be applied by Flyway, if that is enabled.
+> We recommend destroying ElasticSearch storage and recreating / reindexing.
+
+**Full Changelog**: https://github.com/wgu-opensource/osmt/compare/2.5.2...3.0.0
+
+------------------------------------------------------------------------
+# Announcing the release of OSMT 2.5.2
+April 28, 2023
+## Enhancements
+OSMT 2.5.2 brings 1 new enchancement
+
+- Automatic timeouts to ElasticSearch connections (default: 60 seconds)
+
+## Configuration Changes
+> **Warning**
+> Starting at 2.5.0 there are database changes that will be applied by Flyway, if that is enabled.
+> We recommend destroying ElasticSearch storage and recreating / reindexing.
+
+**Full Changelog**: https://github.com/wgu-opensource/osmt/compare/2.5.1...2.5.2
+
+------------------------------------------------------------------------
+# Announcing the release of OSMT 2.5.1
+March 27, 2023
+## Defect Fixes
+
+- Fixes to Collection publish statuses
+
+- Fixes to actions when using 'select all' checkboxes
+
+## Configuration Changes
+> **Warning**
+> Starting at 2.5.0 there are database changes that will be applied by Flyway, if that is enabled.
+> We recommend destroying ElasticSearch storage and recreating / reindexing.
+
+**Full Changelog**: https://github.com/wgu-opensource/osmt/compare/2.5.0...2.5.1
+
+------------------------------------------------------------------------
 # Announcing the release of OSMT 2.5.0
 February 28, 2023
 ## Enhancements
@@ -13,6 +90,8 @@ OSMT 2.5.0 brings 2 new feature enhancements
 > **Warning**
 > 2.5.0 has database changes that will be applied by Flyway, if that is enabled.
 > We recommend destroying ElasticSearch storage and recreating / reindexing.
+
+**Full Changelog**: https://github.com/wgu-opensource/osmt/compare/2.4.2...2.5.0
 
 ------------------------------------------------------------------------
 # Announcing the release of OSMT 2.4.2

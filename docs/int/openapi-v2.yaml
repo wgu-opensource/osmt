@@ -3,12 +3,11 @@ openapi: 3.1.0
 info:
   title: OSMT API
   description: API for the Open Skills Management Toolset
-  termsOfService: TODO
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   version: 2.5.0
-#TODO add /api/v2/skills/{uuid}
+
 paths:
 
   /api/v2/collections:

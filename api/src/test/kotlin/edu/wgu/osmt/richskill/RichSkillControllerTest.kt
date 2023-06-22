@@ -186,28 +186,6 @@ internal class RichSkillControllerTest @Autowired constructor(
     }
 
     @Test
-    fun testByUUIDv2(){
-        // Arrange
-        val numOfSkills = 3
-        val richSkillRows = mockData.getRichSkillRows()
-        val listOfRichSkillRows = mutableListOf<RichSkillRow>()
-        val jwt = Jwt.withTokenValue("foo").header("foo", "foo").claim("foo", "foo").build()
-
-        for (i in 1..numOfSkills ) {
-            listOfRichSkillRows.add(richSkillRows[i])
-        }
-
-        batchImportRichSkill.handleRows(listOfRichSkillRows)
-
-        // Act
-        val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
-        val result = richSkillController.byUUIDV2(skillResult.searchHits[0].id.toString(),jwt)
-
-        // Assert
-        assertThat(result?.uuid).isEqualTo(skillResult.searchHits[0].id.toString())
-    }
-
-    @Test
     fun testByUUIDHtmlView(){
         // Arrange
         val numOfSkills = 3

@@ -14,11 +14,11 @@ const END = false;
 
 // Files for read/write
 const dataRoot = path.resolve(`${__dirname}/../api-test`);
-let inputFile = `${__dirname}/osmt.postman_collection.json`;
-let outputFile = `${__dirname}/osmt-testing.postman_collection.json`;
+let inputFile = `${__dirname}/osmt-api-v3.postman_collection.json`;
+let outputFile = `${__dirname}/osmt-testing-api-v3.postman_collection.json`;
 
 // Processing trackers
-let apiVersion = null;
+let apiVersion = "v3";
 let exit = false;
 let availableData = {};
 let failedEndpoints = [];

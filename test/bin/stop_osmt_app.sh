@@ -65,5 +65,3 @@ shutdown_osmt_app
 
 # shutdown API test Docker resources
 "${project_dir}/osmt_cli.sh" -e || exit 135
-
-

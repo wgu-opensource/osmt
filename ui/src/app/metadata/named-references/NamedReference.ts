@@ -1,6 +1,4 @@
 import {MetadataType} from "../rsd-metadata.enum"
-import {Meta} from "@angular/platform-browser"
-import {IJobCode, JobCodeLevel} from "../job-codes/Jobcode";
 
 export interface NamedReferenceInterface {
   id: number

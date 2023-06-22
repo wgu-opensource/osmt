@@ -56,7 +56,8 @@
         [selectAllEnabled]="selectAllEnabled"
         (valueChange)="handleSelectAll($event)"
         [totalCount]="getSelectAllCount()"
-        [totalPageCount]="0">
+        [totalPageCount]="items.length"
+        [checkAll]="isAllPageSelected">
       </app-select-all>
     </td>
 

@@ -72,47 +72,45 @@ error_handler() {
 
 main() {
   local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
-  local log_file; log_file="${project_dir}/api/target/osmt_spring_app.log"
 
-  # Adding docker clean up at the beginning to keep previous test state
-  # in case we need to debug and cleaning up docker could remove logs.
-  if [[ -n $(docker ps -aq --filter=name="osmt_api*") ]]; then
-    "${project_dir}/test/bin/clean_docker_stack.sh"
-  fi
+  "${project_dir}/test/bin/clean_docker_stack.sh"
 
   # Run NPM install
   echo_info "Installing NPM modules..."
   install_npm_modules || exit 135
 
-  # start the API test Docker compose stack and Spring app server, detached. Send log files to 'osmt_spring_app.log'
-  echo_info "Starting OSMT Spring app for ${OSMT_STACK_NAME}. Output is suppressed, because console is detached."
-  echo_info "See 'osmt_spring_app.log' for console output. Proceeding..."
-
-  # create log file
-  touch "$log_file"
-
   # curl the Spring app and retry for 2 minutes
-  "${project_dir}/test/bin/start_osmt_app.sh"
+  echo_info "Starting OSMT API Test stack..."
+  "${project_dir}/test/bin/start_osmt_app.sh" || exit 135
 
+  echo_info "Sleeping for 5 seconds..."
+  sleep 5
+
+  echo_info "Loading Static CI Dataset..."
   if [[ "${LOAD_CI_DATASET}" -eq 0  ]]; then
     # load CI static dataset and reindex ElasticSearch
     "${project_dir}/test/bin/load_and_reindex_ci_data.sh" || exit 135
   fi
 
   # Create postman collection
+  echo_info "Creating Postman Collection for unversioned / v2 API..."
   create_postman_collection "v2"|| exit 135
+
+  echo_info "Creating Postman Collection for unversioned / v2 API..."
   create_postman_collection "v3"|| exit 135
 
   # Insert postman assertion tests
+  echo_info "Injecting Postman tests for unversioned / v2 API..."
   inject_tests \
-  "${project_dir}/test/postman/osmt-api-v2.postman_collection.json" \
-  "${project_dir}/test/postman/osmt-testing-api-v2.postman_collection.json" \
-  "v2"
+    "${project_dir}/test/postman/osmt-api-v2.postman_collection.json" \
+    "${project_dir}/test/postman/osmt-testing-api-v2.postman_collection.json" \
+    "v2"
 
+  echo_info "Injecting Postman tests for unversioned / v2 API..."
   inject_tests \
-  "${project_dir}/test/postman/osmt-api-v3.postman_collection.json" \
-  "${project_dir}/test/postman/osmt-testing-api-v3.postman_collection.json" \
-  "v3"
+    "${project_dir}/test/postman/osmt-api-v3.postman_collection.json" \
+    "${project_dir}/test/postman/osmt-testing-api-v3.postman_collection.json" \
+    "v3"
 }
 
 trap error_handler ERR SIGINT SIGTERM

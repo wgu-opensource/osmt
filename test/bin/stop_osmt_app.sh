@@ -30,7 +30,7 @@ check_pid_status_retry(){
   for retry_limit in {12..0}; do
     if [[ -z "$(get_app_pid)" ]]; then
       echo "INFO: Application ${OSMT_APP_CLASS} successfully stopped. Exiting..."
-      exit 0
+      return 0
     fi
     echo "INFO: Could not stop application ${OSMT_APP_CLASS}. Will retry ${retry_limit} more times. Retrying in 3 seconds..."
     local app_pid; app_pid="$(jps -l | grep ${OSMT_APP_CLASS} | awk '{print $1}')"
@@ -47,14 +47,12 @@ shutdown_osmt_app(){
   local app_pid; app_pid="$(get_app_pid)"
 
   if [[ -z "${app_pid}" ]]; then
-    echo "ERROR: Application ${OSMT_APP_CLASS} not running" 1>&2;
-    exit 135
-  else
-    echo "INFO: Application ${OSMT_APP_CLASS} found PID ${app_pid}."
+    echo "WARNING: Application ${OSMT_APP_CLASS} not running" 1>&2;
+    return 0
   fi
 
+  echo "INFO: Application ${OSMT_APP_CLASS} found PID ${app_pid}."
   kill -TERM "${app_pid}"
-
   check_pid_status_retry
 }
 

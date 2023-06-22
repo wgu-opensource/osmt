@@ -34,7 +34,7 @@ curl_with_retry() {
         return 1
       fi
       if [[ ${rc} -ne 0 ]]; then
-        echo "INFO: Could not load the index page. Will retry ${retry_limit} more times. Retrying in 10 seconds..."
+        echo "INFO: Could not load the index page. Retrying in 10 seconds. Will retry ${retry_limit} more times..."
       fi
       # shell check SC2219
       ((retry_limit--)) || true

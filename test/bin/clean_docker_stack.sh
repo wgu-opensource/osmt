@@ -29,3 +29,10 @@ clean_docker_stack() {
 }
 
 clean_docker_stack
+
+echo "INFO: listing active docker containers"
+docker ps -a
+
+echo "INFO: Listing OSMT-related Docker volumes..."
+docker volume ls -q -f name=osmt
+

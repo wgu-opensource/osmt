@@ -8,11 +8,12 @@ pm.test("Check skills count", function () {
   pm.expect(responseData.length).to.equal(expectedData.length);
 });
 
-for (let skillsIndex = 0; skillsIndex < expectedData.length; skillsIndex++) {
-  let expectedSkill = expectedData[0];
+// FIXME add attributes
+for (let skillsIndex = 0; skillsIndex < responseData.length; skillsIndex++) {
+  let expectedSkill = expectedData[skillsIndex];
   let skillNum = skillsIndex + 1;
 
-  let responseSkill = responseData[0];
+  let responseSkill = responseData[skillsIndex];
   pm.test(`Skill ${skillNum} - Check UUID exists`, function () {
     pm.expect(responseSkill.uuid).exists;
   });

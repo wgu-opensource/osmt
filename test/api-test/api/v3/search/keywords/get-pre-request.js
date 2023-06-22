@@ -11,5 +11,5 @@ if (fromId < 0) {
   pm.request.url.query.add("type=standard");
 }
 else {
-    pm.request.url.query.idx(fromId).value = "standard";
+  pm.request.url.query.idx(fromId).value = "standard";
 }

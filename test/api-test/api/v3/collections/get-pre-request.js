@@ -11,7 +11,7 @@ if (fromId < 0) {
   pm.request.url.query.add("size=0");
 }
 else {
-    pm.request.url.query.idx(fromId).value = "0";
+  pm.request.url.query.idx(fromId).value = "0";
 }
 
 let statusId = pm.request.url.query.indexOf('status');

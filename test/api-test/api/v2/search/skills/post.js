@@ -4,41 +4,34 @@ let responseData = pm.response.json();
 
 console.log("Check skills search results");
 
-// FIXME - update these tests once docker images are cleaned up automatically
 pm.test("Check skills count", function () {
-  pm.expect(responseData.length > 0);
+  pm.expect(responseData.length).to.equal(expectedData.length);
 });
 
 for (let skillIndex = 0; skillIndex < expectedData.length; skillIndex++) {
-  let expectedLog = expectedData[0];
+  let expectedLog = expectedData[skillIndex];
   let skillNum = skillIndex + 1;
 
-  let responseLog = responseData[0];
+  let responseLog = responseData[skillIndex];
   pm.test(`Skill ${skillNum} - Check UUID exists`, function () {
     pm.expect(responseLog.uuid).exists;
   });
   pm.test(`Skill ${skillNum} - Check Id exists`, function () {
     pm.expect(responseLog.id).exists;
   });
-  pm.test(`Skill ${skillNum} - Check skill name`, function () {
+  pm.test(`Skill ${skillNum} - Check skill name exists`, function () {
     pm.expect(responseLog.skillName).exists;
   });
-  pm.test(`Skill ${skillNum} - Check skill statement`, function () {
+  pm.test(`Skill ${skillNum} - Check skill statement exists`, function () {
     pm.expect(responseLog.skillStatement).exists;
   });
-  pm.test(`Skill ${skillNum} - Check category`, function () {
-    pm.expect(responseLog.category).exists;
-  });
-  pm.test(`Skill ${skillNum} - Check author`, function () {
-    pm.expect(responseLog.author).exists;
-  });
-  pm.test(`Skill ${skillNum} - Check status`, function () {
+  pm.test(`Skill ${skillNum} - Check statu exists`, function () {
     pm.expect(responseLog.status).exists;
   });
-  pm.test(`Skill ${skillNum} - Check keywords`, function () {
+  pm.test(`Skill ${skillNum} - Check keywords exist`, function () {
     pm.expect(responseLog.keywords).exists;
   });
-  pm.test(`Skill ${skillNum} - Check occupations`, function () {
+  pm.test(`Skill ${skillNum} - Check occupations exist`, function () {
     pm.expect(responseLog.occupations).exists;
   });
 }

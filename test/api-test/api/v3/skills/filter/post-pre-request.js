@@ -11,7 +11,7 @@ if (fromId < 0) {
   pm.request.url.query.add("size=0");
 }
 else {
-    pm.request.url.query.idx(fromId).value = "0";
+  pm.request.url.query.idx(fromId).value = "0";
 }
 
 let statusId = pm.request.url.query.indexOf('status');
@@ -23,15 +23,15 @@ pm.request.url.query.add("status=Published");
 
 let filter = {
   "filtered": {
-      "keywords": [
-          "Human Resource Management"
-      ],
-      "occupations": [
-          "17-2000"
-      ],
-      "authors": [
-          "Western Governors University"
-      ]
+    "keywords": [
+      "Human Resource Management"
+    ],
+    "occupations": [
+      "17-2000"
+    ],
+    "authors": [
+      "Western Governors University"
+    ]
   }
 };
 

@@ -1,6 +1,9 @@
 #!/bin/bash
 
-set -eu
+# set -eu
+set -eEu
+
+export OSMT_STACK_NAME=osmt_api_test
 
 declare apitest_env_file
 declare bearer_token

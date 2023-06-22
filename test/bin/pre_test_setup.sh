@@ -2,7 +2,8 @@
 # shellcheck disable=SC2181
 
 #set -x
-set -eu
+# set -eu
+set -eEu
 
 export DEBUG=1
 export OSMT_STACK_NAME=osmt_api_test

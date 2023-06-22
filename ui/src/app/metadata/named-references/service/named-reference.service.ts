@@ -4,16 +4,16 @@ import { Router } from "@angular/router"
 import { Location } from "@angular/common"
 import { AuthService } from "../../../auth/auth-service"
 import { AbstractDataService } from "../../../data/abstract-data.service"
-import {ApiSortOrder} from "../../../richskill/ApiSkill";
-import {Observable} from "rxjs";
-import {PaginatedMetadata} from "../../PaginatedMetadata";
-import {map, share} from "rxjs/operators";
-import {ApiNamedReference, ApiNamedReferenceUpdate, NamedReferenceInterface} from "../NamedReference";
-import {PublishStatus} from "../../../PublishStatus";
-import {ApiSearch, PaginatedSkills} from "../../../richskill/service/rich-skill-search.service";
-import {ApiSkillSummary} from "../../../richskill/ApiSkillSummary";
-import {ApiTaskResult, ITaskResult} from "../../../task/ApiTaskResult";
-import {ApiBatchResult} from "../../../richskill/ApiBatchResult";
+import { ApiSortOrder } from "../../../richskill/ApiSkill";
+import { Observable } from "rxjs";
+import { PaginatedMetadata } from "../../PaginatedMetadata";
+import { map, share } from "rxjs/operators";
+import { ApiNamedReference, ApiNamedReferenceUpdate, NamedReferenceInterface } from "../NamedReference";
+import { PublishStatus } from "../../../PublishStatus";
+import { ApiSearch, PaginatedSkills } from "../../../richskill/service/rich-skill-search.service";
+import { ApiSkillSummary } from "../../../richskill/ApiSkillSummary";
+import { ApiTaskResult, ITaskResult } from "../../../task/ApiTaskResult";
+import { ApiBatchResult } from "../../../richskill/ApiBatchResult";
 
 @Injectable({
   providedIn: "root"

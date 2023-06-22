@@ -155,6 +155,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
         }
       })
     } else {
+      this.toastService.hideBlockingLoader()
       if (notDeleted > 0) {
         this.toastService.showToast("Warning", "Some occupations cannot be deleted")
       } else {
@@ -174,6 +175,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
         }
       })
     } else {
+      this.toastService.hideBlockingLoader()
       if (notDeleted > 0) {
         this.toastService.showToast("Warning", "Some Named References could not be deleted")
       } else {

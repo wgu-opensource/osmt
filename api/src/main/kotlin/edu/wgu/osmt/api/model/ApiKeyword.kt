@@ -26,7 +26,7 @@ class ApiKeyword(
     val type: KeywordTypeEnum
         get() = keyword.type
 
-    @get:JsonProperty
+    @get:JsonProperty("url")
     val url: String?
         get() = keyword.uri
 

@@ -11,153 +11,6 @@ info:
 
 paths:
 
-  /api/categories:
-    get:
-      tags:
-        - Categories
-      summary: Get all categories
-      description: Retrieve all the categories
-      parameters:
-        - $ref: '#/components/parameters/PaginationSizeQuery'
-        - $ref: '#/components/parameters/PaginationFromQuery'
-        - name: sort
-          in: query
-          schema:
-            $ref: '#/components/schemas/KeywordSortOrder'
-      responses:
-        '200':
-          description: OK
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-
-  /api/categories/{identifier}:
-    get:
-      tags:
-        - Categories
-      summary: Get category by identifier
-      description: Retrieve category with identifier
-      parameters:
-        - name: identifier
-          in: path
-          required: true
-          description: identifying key for category
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-
-  /api/categories/{identifier}/skills:
-    get:
-      tags:
-        - Categories
-      summary: Get skills with category
-      description: Retrieve skills with category
-      parameters:
-        - name: identifier
-          in: path
-          required: true
-          description: identifying key for category
-          schema:
-            type: string
-        - $ref: '#/components/parameters/PaginationSizeQuery'
-        - $ref: '#/components/parameters/PaginationFromQuery'
-        - $ref: '#/components/parameters/PublishStatusQuery'
-        - name: sort
-          in: query
-          description: order records should be sorted
-          schema:
-            $ref: '#/components/schemas/SortOrder'
-      responses:
-        '200':
-          description: OK
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-    post:
-      tags:
-        - Categories
-      summary: Search skills with category
-      description: Search skills with category
-      parameters:
-        - name: identifier
-          in: path
-          required: true
-          description: identifying key for category
-          schema:
-            type: string
-        - $ref: '#/components/parameters/PaginationSizeQuery'
-        - $ref: '#/components/parameters/PaginationFromQuery'
-        - $ref: '#/components/parameters/PublishStatusQuery'
-        - name: sort
-          in: query
-          description: order records should be sorted
-          schema:
-            $ref: '#/components/schemas/SortOrder'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Search'
-      responses:
-        '200':
-          description: OK
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-
   /api/collections:
     get:
       summary: Get all collections
@@ -619,109 +472,122 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /api/metadata/named-references:
+  /api/metadata/keywords:
     get:
-      summary: Get all Named References of a type
-      description: Returns all Named References of a specific Type
+      summary: "Get all Keywords"
+      description: Returns all Keywords with pagination, also supports search by query.
       tags:
         - Metadata
+      operationId: "allPaginated"
       parameters:
-        - $ref: '#/components/parameters/NameReferenceTypeQueryRequired'
-        - $ref: '#/components/parameters/PaginationSizeQueryRequired'
-        - $ref: '#/components/parameters/PaginationFromQueryRequired'
-        - $ref: '#/components/parameters/SortOrderQuery'
+        - name: "type"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+            default: "Category"
+        - name: "query"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
       responses:
-        '200':
-          description: OK
-          headers:
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
+        "200":
+          description: "OK"
           content:
             application/json:
               schema:
-                type: array
+                type: "array"
                 items:
-                  $ref: '#/components/schemas/NamedReferenceResult'
+                  $ref: "#/components/schemas/ApiKeyword"
     post:
-      summary: Define a Named Reference
-      description: Create a new Named Reference in OSMT
+      summary: "Defina a Keyword"
+      description: Create a new Keyword in OSMT
       tags:
         - Metadata
+      operationId: "createKeyword"
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/NamedReferenceUpdate'
+              $ref: "#/components/schemas/ApiKeywordUpdate"
+        required: true
       responses:
-        '200':
-          description: OK
+        "200":
+          description: "OK"
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/NamedReferenceResult'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-
-  /api/metadata/named-references/{id}:
-    parameters:
-      - $ref: '#/components/parameters/IdPath'
+                $ref: "#/components/schemas/ApiKeyword"
+  /api/metadata/keywords/{id}:
     get:
-      summary: Retrieve a Named Reference
-      description: Retrieve all the information about a Named Reference
+      summary: "Retrieve a Keyword"
+      description: Retrieve all the information about a Keyword
       tags:
         - Metadata
+      operationId: "keywordById"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
       responses:
-        '200':
-          description: OK
+        "200":
+          description: "OK"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NamedReferenceResult'
-
-  /api/metadata/named-references/{id}/remove:
-    parameters:
-      - $ref: '#/components/parameters/IdPath'
+                $ref: "#/components/schemas/ApiKeyword"
+  /api/metadata/keywords/{id}/remove:
     delete:
-      summary: Remove a Named Reference
-      description: Delete a Named Reference from OSMT
+      summary: "Remove a Keyword"
+      description: Delete a Keyword from OSMT
       tags:
         - Metadata
+      operationId: "deleteKeyword"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
       responses:
-        '200':
-          description: OK
+        "200":
+          description: "OK"
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: '#/components/schemas/TaskResult'
-
-  /api/metadata/named-references/{id}/update:
-    parameters:
-      - $ref: '#/components/parameters/IdPath'
+                $ref: "#/components/schemas/TaskResult"
+  /api/metadata/keywords/{id}/update:
     post:
-      summary: Update a Named Reference
-      description: Update an existing Named Reference
+      summary: "Update a Keyword"
+      description: Update an existing Keyword
       tags:
         - Metadata
+      operationId: "updateKeyword"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NamedReferenceUpdate'
+              $ref: "#/components/schemas/ApiKeywordUpdate"
+        required: true
       responses:
-        '200':
-          description: OK
+        "200":
+          description: "OK"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NamedReferenceResult'
-        '400':
-          $ref: '#/components/responses/BadRequest'
+                $ref: "#/components/schemas/ApiKeyword"
 
   /api/results/batch/{uuid}:
     parameters:
@@ -1214,6 +1080,52 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Alignment'
+
+    ApiKeyword:
+      type: "object"
+      properties:
+        id:
+          type: number
+        framework:
+          type: "string"
+        name:
+          type: "string"
+        type:
+          type: "string"
+          enum:
+            - "Companion"
+            - "displayName"
+            - "Category"
+            - "Keyword"
+            - "Standard"
+            - "Certification"
+            - "Alignment"
+            - "Employer"
+            - "Author"
+        url:
+          type: "string"
+
+    ApiKeywordUpdate:
+      type: "object"
+      properties:
+        framework:
+          type: "string"
+        name:
+          type: "string"
+        type:
+          type: "string"
+          enum:
+            - "Companion"
+            - "displayName"
+            - "Category"
+            - "Keyword"
+            - "Standard"
+            - "Certification"
+            - "Alignment"
+            - "Employer"
+            - "Author"
+        url:
+          type: "string"
 
     AuditLog:
       type: object
@@ -2116,8 +2028,6 @@ security:
   - bearerAuth: []
 
 tags:
-  - name: Categories
-    description: RSD Metadata - Categories
   - name: Collections
     description: Collections of RSDs
   - name: Export

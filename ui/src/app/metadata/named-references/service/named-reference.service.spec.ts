@@ -1,5 +1,5 @@
 import {fakeAsync, TestBed, tick} from "@angular/core/testing"
-import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing"
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
 import { NamedReferenceService } from "./named-reference.service"
 import { Location } from "@angular/common"
 import { Router } from "@angular/router"
@@ -7,15 +7,15 @@ import { EnvironmentService } from "../../../core/environment.service"
 import { AppConfig } from "../../../app.config"
 import { AuthService } from "../../../auth/auth-service"
 import {AuthServiceData, AuthServiceStub, RouterData, RouterStub} from "@test/resource/mock-stubs"
-import {PaginatedMetadata} from "../../PaginatedMetadata";
+import { PaginatedMetadata } from "../../PaginatedMetadata";
 import {
   createMockNamedReference2,
   createMockPaginatedMetaDataWithNamedReferences
 } from "@test/resource/mock-data";
-import {ApiSortOrder} from "../../../richskill/ApiSkill";
-import {MetadataType} from "../../rsd-metadata.enum";
-import {ApiNamedReference, ApiNamedReferenceUpdate} from "../NamedReference";
-import {ApiBatchResult} from "../../../richskill/ApiBatchResult";
+import { ApiSortOrder } from "../../../richskill/ApiSkill";
+import { MetadataType } from "../../rsd-metadata.enum";
+import { ApiNamedReference, ApiNamedReferenceUpdate } from "../NamedReference";
+import { ApiBatchResult } from "../../../richskill/ApiBatchResult";
 
 const ASYNC_WAIT_PERIOD = 3000
 

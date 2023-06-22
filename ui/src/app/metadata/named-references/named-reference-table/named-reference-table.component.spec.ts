@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 
 import { NamedReferenceTableComponent } from "./named-reference-table.component"
-import {ApiSortOrder} from "../../../richskill/ApiSkill";
+import { ApiSortOrder } from "../../../richskill/ApiSkill";
 
 describe("NamedReferenceTableComponent", () => {
   let component: NamedReferenceTableComponent

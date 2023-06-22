@@ -114,5 +114,3 @@ data class ApiJobCode(
         }
     }
 }
-
-

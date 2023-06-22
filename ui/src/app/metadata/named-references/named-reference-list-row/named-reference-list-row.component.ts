@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core"
 import { TableActionDefinition } from "../../../table/skills-library-table/has-action-definitions"
 import { SvgHelper, SvgIcon } from "../../../core/SvgHelper"
 import { ApiNamedReference, NamedReferenceInterface } from "../NamedReference"
-import {MetadataType} from "../../rsd-metadata.enum";
+import { MetadataType } from "../../rsd-metadata.enum";
 
 @Component({
   // tslint:disable-next-line:component-selector

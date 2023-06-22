@@ -20,7 +20,7 @@ interface CustomKeywordRepository {
     val elasticSearchTemplate: ElasticsearchRestTemplate
     fun typeAheadSearch(query: String, type: KeywordTypeEnum): SearchHits<Keyword>
 
-    fun typeAheadSearch(query: String, type: KeywordTypeEnum, pageable: OffsetPageable): SearchHits<Keyword>
+    fun searchKeywordsWithPageable(query: String, type: KeywordTypeEnum, pageable: OffsetPageable): SearchHits<Keyword>
 
     fun deleteIndex() {
         elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_KEYWORD_DOC)).delete()
@@ -67,7 +67,7 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
         return elasticSearchTemplate.search(nsq.build(), Keyword::class.java)
     }
 
-    override fun typeAheadSearch(query: String, type: KeywordTypeEnum, pageable: OffsetPageable): SearchHits<Keyword> {
+    override fun searchKeywordsWithPageable(query: String, type: KeywordTypeEnum, pageable: OffsetPageable): SearchHits<Keyword> {
         val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
         val bq = QueryBuilders.boolQuery()
 

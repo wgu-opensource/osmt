@@ -3,7 +3,6 @@ package edu.wgu.osmt.keyword
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiKeywordUpdate
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.richskill.CustomRichSkillQueries
 import edu.wgu.osmt.richskill.RichSkillKeywordRepository
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -12,7 +11,6 @@ import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -55,13 +53,11 @@ interface KeywordRepository {
     fun getDefaultAuthor(): KeywordDao
 }
 
-
 @Repository
 @Transactional
 class KeywordRepositoryImpl @Autowired constructor(
     val appConfig: AppConfig,
     val keywordEsRepo: KeywordEsRepo,
-    private @Qualifier("richSkillEsRepo") val richSkillEsRepo: CustomRichSkillQueries,
     val richSkillKeywordRepository: RichSkillKeywordRepository
 ) : KeywordRepository {
 

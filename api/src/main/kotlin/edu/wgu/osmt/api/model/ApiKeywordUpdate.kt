@@ -8,7 +8,7 @@ data class ApiKeywordUpdate (
     @NotBlank
     @JsonProperty("name")
     val name: String,
-    @JsonProperty("uri")
+    @JsonProperty("url")
     val uri: String? = null,
     @NotBlank
     @JsonProperty("type")

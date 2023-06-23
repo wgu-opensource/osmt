@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core"
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http"
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http"
 import { Router } from "@angular/router"
 import { Location } from "@angular/common"
 import { AuthService } from "../../../auth/auth-service"
@@ -9,9 +9,6 @@ import { Observable } from "rxjs";
 import { PaginatedMetadata } from "../../PaginatedMetadata";
 import { map, share } from "rxjs/operators";
 import { ApiNamedReference, ApiNamedReferenceUpdate, NamedReferenceInterface } from "../NamedReference";
-import { PublishStatus } from "../../../PublishStatus";
-import { ApiSearch, PaginatedSkills } from "../../../richskill/service/rich-skill-search.service";
-import { ApiSkillSummary } from "../../../richskill/ApiSkillSummary";
 import { ApiTaskResult, ITaskResult } from "../../../task/ApiTaskResult";
 import { ApiBatchResult } from "../../../richskill/ApiBatchResult";
 

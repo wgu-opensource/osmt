@@ -21,10 +21,9 @@ internal class ApiKeywordTest {
     fun testApiKeyword() {
         // Arrange
         val kw: Keyword = mockData.getKeywords().first()
-        val skillsCount: Long = 7
 
         // Act
-        val api: ApiKeyword = ApiKeyword(kw)
+        val api: ApiKeyword = ApiKeyword(kw, 7)
 
         // Assert
         Assertions.assertThat(api.id).isEqualTo(kw.id)

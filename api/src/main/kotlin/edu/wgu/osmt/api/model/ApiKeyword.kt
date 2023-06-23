@@ -8,7 +8,8 @@ import edu.wgu.osmt.keyword.KeywordTypeEnum
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 class ApiKeyword(
-    private val keyword: Keyword
+    private val keyword: Keyword,
+    private val totalSkills: Long?
 ) {
     @get:JsonProperty
     val id: Long?
@@ -30,12 +31,26 @@ class ApiKeyword(
     val url: String?
         get() = keyword.uri
 
+    @get:JsonProperty
+    val skillCount: Long?
+        get() = totalSkills
+
     companion object {
         fun fromDao(
             keywordDao: KeywordDao,
         ): ApiKeyword {
             return ApiKeyword(
                 keyword = keywordDao.toModel(),
+                totalSkills = keywordDao.skills.count()
+            )
+        }
+
+        fun fromModel(
+            keyword: Keyword
+        ): ApiKeyword {
+            return ApiKeyword(
+                totalSkills = keyword.id?.let { KeywordDao.findById(it)?.skills?.count() ?: 0 },
+                keyword = keyword
             )
         }
     }

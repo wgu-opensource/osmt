@@ -519,6 +519,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiKeyword"
+
   /api/metadata/keywords/{id}:
     get:
       summary: "Retrieve a Keyword"
@@ -540,6 +541,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiKeyword"
+
   /api/metadata/keywords/{id}/remove:
     delete:
       summary: "Remove a Keyword"
@@ -561,6 +563,7 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/TaskResult"
+
   /api/metadata/keywords/{id}/update:
     post:
       summary: "Update a Keyword"
@@ -1104,6 +1107,8 @@ components:
             - "Author"
         url:
           type: "string"
+        skillCount:
+          type: number
 
     ApiKeywordUpdate:
       type: "object"

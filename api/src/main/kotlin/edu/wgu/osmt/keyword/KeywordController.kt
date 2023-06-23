@@ -8,7 +8,6 @@ import edu.wgu.osmt.api.model.SortOrder
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.richskill.RichSkillEsRepo
-import edu.wgu.osmt.security.OAuthHelper
 import edu.wgu.osmt.task.RemoveItemTask
 import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
@@ -42,7 +41,6 @@ class KeywordController @Autowired constructor(
     val richSkillEsRepo: RichSkillEsRepo,
     val taskMessageService: TaskMessageService,
     val appConfig: AppConfig,
-    val oAuthHelper: OAuthHelper
 ) {
 
     @GetMapping(RoutePaths.KEYWORD_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -64,7 +62,7 @@ class KeywordController @Autowired constructor(
         
         return ResponseEntity.status(200)
             .headers(responseHeaders)
-            .body(searchResults.map { ApiKeyword(it.content) }.toList())
+            .body(searchResults.map { ApiKeyword.fromModel(it.content) }.toList())
     }
 
     @GetMapping(RoutePaths.KEYWORD_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -88,7 +86,7 @@ class KeywordController @Autowired constructor(
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(keywordRepository.createFromApi(apiKeywordUpdate)?.let { ApiKeyword(it.toModel()) })
+            .body(keywordRepository.createFromApi(apiKeywordUpdate)?.let { ApiKeyword(it.toModel(), it.skills.count()) })
     }
 
     @PostMapping(RoutePaths.KEYWORD_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -104,7 +102,7 @@ class KeywordController @Autowired constructor(
             .body(keywordRepository.updateFromApi(
                 id.toLong(),apiKeywordUpdate)
                 ?.let {
-                ApiKeyword(it.toModel())
+                ApiKeyword(it.toModel(), it.skills.count())
                 }
             )
     }
@@ -124,7 +122,7 @@ class KeywordController @Autowired constructor(
     private fun byId(
         id: Long,
     ): ApiKeyword? {
-        val found = keywordRepository.findById(id)?.let { ApiKeyword(it.toModel()) }
+        val found = keywordRepository.findById(id)?.let { ApiKeyword(it.toModel(), it.skills.count()) }
         return found
     }
 

@@ -15,7 +15,7 @@ import { ApiBatchResult } from "../../../richskill/ApiBatchResult";
 @Injectable({
   providedIn: "root"
 })
-export class NamedReferenceService extends AbstractDataService{
+export class NamedReferenceService extends AbstractDataService {
 
   private baseServiceUrl = "api/metadata/keywords"
 

@@ -246,9 +246,9 @@ Usage:
   -v   Validate local environment and dependencies for development.
   -q   Start the Quickstart configuration. Application and services are containerized and
        managed by docker-compose. The docker-compose stack will attach to the console, with containers
-       named "osmt_".
+       named "osmt_quickstart".
   -d   Start the backend Development Docker stack (MySQL, ElasticSearch, Redis). docker-compose stack will
-       be detached, with containers named "osmt_dev_". You can review status with 'docker ps'
+       be detached, with containers named "osmt_dev". You can review status with 'docker ps'.
   -e   Stop the detached backend Development Docker stack (MySQL, ElasticSearch, Redis).
   -s   Start the local Spring app, as built from source code. This also sources the api/osmt-dev-stack.env file
        for OAUTH2-related environment variables.
@@ -257,7 +257,7 @@ Usage:
        application starts. You may need to start the Spring application first, and you will need to reindex
        ElasticSearch to make this DB refresh available to OSMT (see below).
   -r   Start the local Spring app to reindex ElasticSearch.
-  -m   Import default BLS and O*NET metadata into local Development instance
+  -m   Import default BLS and O*NET metadata into local Development instance.
   -c   Surgically clean up OSMT-related Docker images and data volumes. This step will delete data from local OSMT
        Quickstart and Development configurations. It does not remove the mysql/redis/elasticsearch images, as
        those may be available locally for other purposes.

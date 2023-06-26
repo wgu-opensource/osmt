@@ -87,7 +87,7 @@ import_osmt_metadata() {
     return 1
   fi
 
-  source_osmt_env_file "${DEV_ENV_FILE}" || return 1
+  parse_osmt_envs "${DEV_ENV_FILE}" || return 1
   _cd_osmt_project_dir || return 1
   cd api || return 1
 
@@ -123,7 +123,7 @@ start_osmt_spring_app() {
     return 1
   fi
 
-  source_osmt_env_file "${DEV_ENV_FILE}" || return 1
+  parse_osmt_envs "${DEV_ENV_FILE}" || return 1
 
   _cd_osmt_project_dir || return 1
   cd api || return 1
@@ -196,7 +196,7 @@ start_osmt_dev_spring_app_reindex() {
   fi
 
   _cd_osmt_project_dir || return 1
-  source_osmt_env_file "${DEV_ENV_FILE}" || return 1
+  parse_osmt_envs "${DEV_ENV_FILE}" || return 1
   echo
   echo_info "Starting OSMT via Maven Spring Boot plug-in to reindex ElasticSearch..."
   cd api || return 1
@@ -214,7 +214,7 @@ _remove_osmt_docker_artifacts() {
   remove_osmt_docker_artifacts_for_stack "osmt_dev"
   remove_osmt_docker_artifacts_for_stack "osmt_api_test"
   remove_osmt_docker_artifacts_for_stack "osmt_quickstart"
-}
+}remove_osmt_docker_artifacts_for_stack
 
 cleanup_osmt_docker_artifacts() {
   local prompt_msg; prompt_msg="$(cat <<-EOF

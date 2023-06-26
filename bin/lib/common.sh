@@ -34,7 +34,7 @@ source_env_file() {
   set +o allexport
 }
 
-source_osmt_env_file() {
+parse_osmt_envs() {
   local env_file="${1}"
 
  # gracefully bypass sourcing env file if these 4 OAUTH values are provided

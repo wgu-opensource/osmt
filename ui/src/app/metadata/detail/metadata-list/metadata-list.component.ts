@@ -155,13 +155,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
         }
       })
     } else {
-      this.toastService.hideBlockingLoader()
-      if (notDeleted > 0) {
-        this.toastService.showToast("Warning", "Some occupations cannot be deleted")
-      } else {
-        this.toastService.showToast("Success", "All selected occupations have been deleted")
-      }
-      this.loadNextPage()
+      this.displayDeletionResult(notDeleted, this.selectedMetadataType)
     }
   }
 
@@ -175,14 +169,18 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
         }
       })
     } else {
-      this.toastService.hideBlockingLoader()
-      if (notDeleted > 0) {
-        this.toastService.showToast("Warning", "Some Named References could not be deleted")
-      } else {
-        this.toastService.showToast("Success", "All selected Named References have been deleted")
-      }
-      this.loadNextPage()
+      this.displayDeletionResult(notDeleted, this.selectedMetadataType)
     }
+  }
+
+  private displayDeletionResult(notDeleted: number, metadataDeleted: string): void {
+    this.toastService.hideBlockingLoader()
+    if (notDeleted > 0) {
+      this.toastService.showToast("Warning", `Some ${metadataDeleted} could not be deleted`)
+    } else {
+      this.toastService.showToast("Success", `All selected ${metadataDeleted} have been deleted`)
+    }
+    this.loadNextPage()
   }
 
   private handleClickDeleteItem(metadata: IJobCode | NamedReferenceInterface | undefined): void {

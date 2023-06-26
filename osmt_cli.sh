@@ -214,7 +214,7 @@ _remove_osmt_docker_artifacts() {
   remove_osmt_docker_artifacts_for_stack "osmt_dev"
   remove_osmt_docker_artifacts_for_stack "osmt_api_test"
   remove_osmt_docker_artifacts_for_stack "osmt_quickstart"
-}remove_osmt_docker_artifacts_for_stack
+}
 
 cleanup_osmt_docker_artifacts() {
   local prompt_msg; prompt_msg="$(cat <<-EOF

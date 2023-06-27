@@ -1,0 +1,3974 @@
+[
+  {
+    "id": 171,
+    "code": "17-0000",
+    "targetNodeName": "Architecture and Engineering Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 338,
+    "code": "23-0000",
+    "targetNodeName": "Legal Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 353,
+    "code": "25-0000",
+    "targetNodeName": "Educational Instruction and Library Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 453,
+    "code": "27-0000",
+    "targetNodeName": "Arts, Design, Entertainment, Sports, and Media Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 515,
+    "code": "29-0000",
+    "targetNodeName": "Healthcare Practitioners and Technical Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 618,
+    "code": "31-0000",
+    "targetNodeName": "Healthcare Support Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 646,
+    "code": "33-0000",
+    "targetNodeName": "Protective Service Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 689,
+    "code": "35-0000",
+    "targetNodeName": "Food Preparation and Serving Related Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 722,
+    "code": "37-0000",
+    "targetNodeName": "Building and Grounds Cleaning and Maintenance Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 801,
+    "code": "41-0000",
+    "targetNodeName": "Sales and Related Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 844,
+    "code": "43-0000",
+    "targetNodeName": "Office and Administrative Support Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 953,
+    "code": "45-0000",
+    "targetNodeName": "Farming, Fishing, and Forestry Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 1,
+    "code": "11-0000",
+    "targetNodeName": "Management Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 74,
+    "code": "13-0000",
+    "targetNodeName": "Business and Financial Operations Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 135,
+    "code": "15-0000",
+    "targetNodeName": "Computer and Mathematical Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 232,
+    "code": "19-0000",
+    "targetNodeName": "Life, Physical, and Social Science Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 311,
+    "code": "21-0000",
+    "targetNodeName": "Community and Social Service Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 740,
+    "code": "39-0000",
+    "targetNodeName": "Personal Care and Service Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 980,
+    "code": "47-0000",
+    "targetNodeName": "Construction and Extraction Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 1084,
+    "code": "49-0000",
+    "targetNodeName": "Installation, Maintenance, and Repair Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 1159,
+    "code": "51-0000",
+    "targetNodeName": "Production Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 1328,
+    "code": "53-0000",
+    "targetNodeName": "Transportation and Material Moving Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 1422,
+    "code": "55-0000",
+    "targetNodeName": "Military Specific Occupations",
+    "frameworkName": "bls",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 2516,
+    "code": "449919-0000",
+    "level": "Major",
+    "jobCodeLevelAsNumber": 1
+  },
+  {
+    "id": 18,
+    "code": "11-3000",
+    "targetNodeName": "Operations Specialties Managers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 38,
+    "code": "11-9000",
+    "targetNodeName": "Other Management Occupations",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 75,
+    "code": "13-1000",
+    "targetNodeName": "Business Operations Specialists",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 74,
+        "code": "13-0000",
+        "targetNodeName": "Business and Financial Operations Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 110,
+    "code": "13-2000",
+    "targetNodeName": "Financial Specialists",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 74,
+        "code": "13-0000",
+        "targetNodeName": "Business and Financial Operations Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 158,
+    "code": "15-2000",
+    "targetNodeName": "Mathematical Science Occupations",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 135,
+        "code": "15-0000",
+        "targetNodeName": "Computer and Mathematical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 172,
+    "code": "17-1000",
+    "targetNodeName": "Architects, Surveyors, and Cartographers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 171,
+        "code": "17-0000",
+        "targetNodeName": "Architecture and Engineering Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 266,
+    "code": "19-3000",
+    "targetNodeName": "Social Scientists and Related Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 339,
+    "code": "23-1000",
+    "targetNodeName": "Lawyers, Judges, and Related Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 338,
+        "code": "23-0000",
+        "targetNodeName": "Legal Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 347,
+    "code": "23-2000",
+    "targetNodeName": "Legal Support Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 338,
+        "code": "23-0000",
+        "targetNodeName": "Legal Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 403,
+    "code": "25-2000",
+    "targetNodeName": "Preschool, Elementary, Middle, Secondary, and Special Education Teachers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 421,
+    "code": "25-3000",
+    "targetNodeName": "Other Teachers and Instructors",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 454,
+    "code": "27-1000",
+    "targetNodeName": "Art and Design Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 453,
+        "code": "27-0000",
+        "targetNodeName": "Arts, Design, Entertainment, Sports, and Media Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 619,
+    "code": "31-1100",
+    "targetNodeName": "Home Health and Personal Care Aides; and Nursing Assistants, Orderlies, and Psychiatric Aides",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 618,
+        "code": "31-0000",
+        "targetNodeName": "Healthcare Support Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 634,
+    "code": "31-9000",
+    "targetNodeName": "Other Healthcare Support Occupations",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 618,
+        "code": "31-0000",
+        "targetNodeName": "Healthcare Support Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 647,
+    "code": "33-1000",
+    "targetNodeName": "Supervisors of Protective Service Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 646,
+        "code": "33-0000",
+        "targetNodeName": "Protective Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 656,
+    "code": "33-2000",
+    "targetNodeName": "Firefighting and Prevention Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 646,
+        "code": "33-0000",
+        "targetNodeName": "Protective Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 690,
+    "code": "35-1000",
+    "targetNodeName": "Supervisors of Food Preparation and Serving Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 689,
+        "code": "35-0000",
+        "targetNodeName": "Food Preparation and Serving Related Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 694,
+    "code": "35-2000",
+    "targetNodeName": "Cooks and Food Preparation Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 689,
+        "code": "35-0000",
+        "targetNodeName": "Food Preparation and Serving Related Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 723,
+    "code": "37-1000",
+    "targetNodeName": "Supervisors of Building and Grounds Cleaning and Maintenance Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 722,
+        "code": "37-0000",
+        "targetNodeName": "Building and Grounds Cleaning and Maintenance Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 727,
+    "code": "37-2000",
+    "targetNodeName": "Building Cleaning and Pest Control Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 722,
+        "code": "37-0000",
+        "targetNodeName": "Building and Grounds Cleaning and Maintenance Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 752,
+    "code": "39-3000",
+    "targetNodeName": "Entertainment Attendants and Related Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 740,
+        "code": "39-0000",
+        "targetNodeName": "Personal Care and Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 766,
+    "code": "39-4000",
+    "targetNodeName": "Funeral Service Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 740,
+        "code": "39-0000",
+        "targetNodeName": "Personal Care and Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 802,
+    "code": "41-1000",
+    "targetNodeName": "Supervisors of Sales Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 801,
+        "code": "41-0000",
+        "targetNodeName": "Sales and Related Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 806,
+    "code": "41-2000",
+    "targetNodeName": "Retail Sales Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 801,
+        "code": "41-0000",
+        "targetNodeName": "Sales and Related Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 845,
+    "code": "43-1000",
+    "targetNodeName": "Supervisors of Office and Administrative Support Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 844,
+        "code": "43-0000",
+        "targetNodeName": "Office and Administrative Support Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 848,
+    "code": "43-2000",
+    "targetNodeName": "Communications Equipment Operators",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 844,
+        "code": "43-0000",
+        "targetNodeName": "Office and Administrative Support Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 872,
+    "code": "43-4000",
+    "targetNodeName": "Information and Record Clerks",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 844,
+        "code": "43-0000",
+        "targetNodeName": "Office and Administrative Support Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 907,
+    "code": "43-5000",
+    "targetNodeName": "Material Recording, Scheduling, Dispatching, and Distributing Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 844,
+        "code": "43-0000",
+        "targetNodeName": "Office and Administrative Support Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 954,
+    "code": "45-1000",
+    "targetNodeName": "Supervisors of Farming, Fishing, and Forestry Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 953,
+        "code": "45-0000",
+        "targetNodeName": "Farming, Fishing, and Forestry Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 9,
+    "code": "11-2000",
+    "targetNodeName": "Advertising, Marketing, Promotions, Public Relations, and Sales Managers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 2,
+    "code": "11-1000",
+    "targetNodeName": "Top Executives",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 136,
+    "code": "15-1200",
+    "targetNodeName": "Computer Occupations",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 135,
+        "code": "15-0000",
+        "targetNodeName": "Computer and Mathematical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 179,
+    "code": "17-2000",
+    "targetNodeName": "Engineers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 171,
+        "code": "17-0000",
+        "targetNodeName": "Architecture and Engineering Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 214,
+    "code": "17-3000",
+    "targetNodeName": "Drafters, Engineering Technicians, and Mapping Technicians",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 171,
+        "code": "17-0000",
+        "targetNodeName": "Architecture and Engineering Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 233,
+    "code": "19-1000",
+    "targetNodeName": "Life Scientists",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 251,
+    "code": "19-2000",
+    "targetNodeName": "Physical Scientists",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 286,
+    "code": "19-4000",
+    "targetNodeName": "Life, Physical, and Social Science Technicians",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 307,
+    "code": "19-5000",
+    "targetNodeName": "Occupational Health and Safety Specialists and Technicians",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 312,
+    "code": "21-1000",
+    "targetNodeName": "Counselors, Social Workers, and Other Community and Social Service Specialists",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 311,
+        "code": "21-0000",
+        "targetNodeName": "Community and Social Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 331,
+    "code": "21-2000",
+    "targetNodeName": "Religious Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 311,
+        "code": "21-0000",
+        "targetNodeName": "Community and Social Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 354,
+    "code": "25-1000",
+    "targetNodeName": "Postsecondary Teachers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 432,
+    "code": "25-4000",
+    "targetNodeName": "Librarians, Curators, and Archivists",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 441,
+    "code": "25-9000",
+    "targetNodeName": "Other Educational Instruction and Library Occupations",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 470,
+    "code": "27-2000",
+    "targetNodeName": "Entertainers and Performers, Sports and Related Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 453,
+        "code": "27-0000",
+        "targetNodeName": "Arts, Design, Entertainment, Sports, and Media Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 487,
+    "code": "27-3000",
+    "targetNodeName": "Media and Communication Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 453,
+        "code": "27-0000",
+        "targetNodeName": "Arts, Design, Entertainment, Sports, and Media Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 502,
+    "code": "27-4000",
+    "targetNodeName": "Media and Communication Equipment Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 453,
+        "code": "27-0000",
+        "targetNodeName": "Arts, Design, Entertainment, Sports, and Media Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 516,
+    "code": "29-1000",
+    "targetNodeName": "Healthcare Diagnosing or Treating Practitioners",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 515,
+        "code": "29-0000",
+        "targetNodeName": "Healthcare Practitioners and Technical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 579,
+    "code": "29-2000",
+    "targetNodeName": "Health Technologists and Technicians",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 515,
+        "code": "29-0000",
+        "targetNodeName": "Healthcare Practitioners and Technical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 610,
+    "code": "29-9000",
+    "targetNodeName": "Other Healthcare Practitioners and Technical Occupations",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 515,
+        "code": "29-0000",
+        "targetNodeName": "Healthcare Practitioners and Technical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 627,
+    "code": "31-2000",
+    "targetNodeName": "Occupational Therapy and Physical Therapist Assistants and Aides",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 618,
+        "code": "31-0000",
+        "targetNodeName": "Healthcare Support Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 662,
+    "code": "33-3000",
+    "targetNodeName": "Law Enforcement Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 646,
+        "code": "33-0000",
+        "targetNodeName": "Protective Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 675,
+    "code": "33-9000",
+    "targetNodeName": "Other Protective Service Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 646,
+        "code": "33-0000",
+        "targetNodeName": "Protective Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 704,
+    "code": "35-3000",
+    "targetNodeName": "Food and Beverage Serving Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 689,
+        "code": "35-0000",
+        "targetNodeName": "Food Preparation and Serving Related Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 713,
+    "code": "35-9000",
+    "targetNodeName": "Other Food Preparation and Serving Related Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 689,
+        "code": "35-0000",
+        "targetNodeName": "Food Preparation and Serving Related Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 741,
+    "code": "39-1000",
+    "targetNodeName": "Supervisors of Personal Care and Service Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 740,
+        "code": "39-0000",
+        "targetNodeName": "Personal Care and Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 734,
+    "code": "37-3000",
+    "targetNodeName": "Grounds Maintenance Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 722,
+        "code": "37-0000",
+        "targetNodeName": "Building and Grounds Cleaning and Maintenance Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 747,
+    "code": "39-2000",
+    "targetNodeName": "Animal Care and Service Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 740,
+        "code": "39-0000",
+        "targetNodeName": "Personal Care and Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 774,
+    "code": "39-5000",
+    "targetNodeName": "Personal Appearance Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 740,
+        "code": "39-0000",
+        "targetNodeName": "Personal Care and Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 783,
+    "code": "39-6000",
+    "targetNodeName": "Baggage Porters, Bellhops, and Concierges",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 740,
+        "code": "39-0000",
+        "targetNodeName": "Personal Care and Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 791,
+    "code": "39-9000",
+    "targetNodeName": "Other Personal Care and Service Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 740,
+        "code": "39-0000",
+        "targetNodeName": "Personal Care and Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 787,
+    "code": "39-7000",
+    "targetNodeName": "Tour and Travel Guides",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 740,
+        "code": "39-0000",
+        "targetNodeName": "Personal Care and Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 815,
+    "code": "41-3000",
+    "targetNodeName": "Sales Representatives, Services",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 801,
+        "code": "41-0000",
+        "targetNodeName": "Sales and Related Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 826,
+    "code": "41-4000",
+    "targetNodeName": "Sales Representatives, Wholesale and Manufacturing",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 801,
+        "code": "41-0000",
+        "targetNodeName": "Sales and Related Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 830,
+    "code": "41-9000",
+    "targetNodeName": "Other Sales and Related Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 801,
+        "code": "41-0000",
+        "targetNodeName": "Sales and Related Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 855,
+    "code": "43-3000",
+    "targetNodeName": "Financial Clerks",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 844,
+        "code": "43-0000",
+        "targetNodeName": "Office and Administrative Support Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 927,
+    "code": "43-6000",
+    "targetNodeName": "Secretaries and Administrative Assistants",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 844,
+        "code": "43-0000",
+        "targetNodeName": "Office and Administrative Support Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 933,
+    "code": "43-9000",
+    "targetNodeName": "Other Office and Administrative Support Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 844,
+        "code": "43-0000",
+        "targetNodeName": "Office and Administrative Support Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 957,
+    "code": "45-2000",
+    "targetNodeName": "Agricultural Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 953,
+        "code": "45-0000",
+        "targetNodeName": "Farming, Fishing, and Forestry Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 972,
+    "code": "45-4000",
+    "targetNodeName": "Forest, Conservation, and Logging Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 953,
+        "code": "45-0000",
+        "targetNodeName": "Farming, Fishing, and Forestry Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 981,
+    "code": "47-1000",
+    "targetNodeName": "Supervisors of Construction and Extraction Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 980,
+        "code": "47-0000",
+        "targetNodeName": "Construction and Extraction Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 969,
+    "code": "45-3000",
+    "targetNodeName": "Fishing and Hunting Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 953,
+        "code": "45-0000",
+        "targetNodeName": "Farming, Fishing, and Forestry Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 984,
+    "code": "47-2000",
+    "targetNodeName": "Construction Trades Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 980,
+        "code": "47-0000",
+        "targetNodeName": "Construction and Extraction Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1034,
+    "code": "47-3000",
+    "targetNodeName": "Helpers, Construction Trades",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 980,
+        "code": "47-0000",
+        "targetNodeName": "Construction and Extraction Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1043,
+    "code": "47-4000",
+    "targetNodeName": "Other Construction and Related Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 980,
+        "code": "47-0000",
+        "targetNodeName": "Construction and Extraction Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1061,
+    "code": "47-5000",
+    "targetNodeName": "Extraction Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 980,
+        "code": "47-0000",
+        "targetNodeName": "Construction and Extraction Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1088,
+    "code": "49-2000",
+    "targetNodeName": "Electrical and Electronic Equipment Mechanics, Installers, and Repairers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1084,
+        "code": "49-0000",
+        "targetNodeName": "Installation, Maintenance, and Repair Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1085,
+    "code": "49-1000",
+    "targetNodeName": "Supervisors of Installation, Maintenance, and Repair Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1084,
+        "code": "49-0000",
+        "targetNodeName": "Installation, Maintenance, and Repair Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1103,
+    "code": "49-3000",
+    "targetNodeName": "Vehicle and Mobile Equipment Mechanics, Installers, and Repairers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1084,
+        "code": "49-0000",
+        "targetNodeName": "Installation, Maintenance, and Repair Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1124,
+    "code": "49-9000",
+    "targetNodeName": "Other Installation, Maintenance, and Repair Occupations",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1084,
+        "code": "49-0000",
+        "targetNodeName": "Installation, Maintenance, and Repair Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1160,
+    "code": "51-1000",
+    "targetNodeName": "Supervisors of Production Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1159,
+        "code": "51-0000",
+        "targetNodeName": "Production Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1163,
+    "code": "51-2000",
+    "targetNodeName": "Assemblers and Fabricators",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1159,
+        "code": "51-0000",
+        "targetNodeName": "Production Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1181,
+    "code": "51-3000",
+    "targetNodeName": "Food Processing Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1159,
+        "code": "51-0000",
+        "targetNodeName": "Production Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1193,
+    "code": "51-4000",
+    "targetNodeName": "Metal Workers and Plastic Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1159,
+        "code": "51-0000",
+        "targetNodeName": "Production Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1233,
+    "code": "51-6000",
+    "targetNodeName": "Textile, Apparel, and Furnishings Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1159,
+        "code": "51-0000",
+        "targetNodeName": "Production Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1228,
+    "code": "51-5100",
+    "targetNodeName": "Printing Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1159,
+        "code": "51-0000",
+        "targetNodeName": "Production Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1256,
+    "code": "51-7000",
+    "targetNodeName": "Woodworkers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1159,
+        "code": "51-0000",
+        "targetNodeName": "Production Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1269,
+    "code": "51-8000",
+    "targetNodeName": "Plant and System Operators",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1159,
+        "code": "51-0000",
+        "targetNodeName": "Production Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1283,
+    "code": "51-9000",
+    "targetNodeName": "Other Production Occupations",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1159,
+        "code": "51-0000",
+        "targetNodeName": "Production Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1329,
+    "code": "53-1000",
+    "targetNodeName": "Supervisors of Transportation and Material Moving Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1328,
+        "code": "53-0000",
+        "targetNodeName": "Transportation and Material Moving Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1336,
+    "code": "53-2000",
+    "targetNodeName": "Air Transportation Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1328,
+        "code": "53-0000",
+        "targetNodeName": "Transportation and Material Moving Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1345,
+    "code": "53-3000",
+    "targetNodeName": "Motor Vehicle Operators",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1328,
+        "code": "53-0000",
+        "targetNodeName": "Transportation and Material Moving Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1359,
+    "code": "53-4000",
+    "targetNodeName": "Rail Transportation Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1328,
+        "code": "53-0000",
+        "targetNodeName": "Transportation and Material Moving Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1379,
+    "code": "53-6000",
+    "targetNodeName": "Other Transportation Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1328,
+        "code": "53-0000",
+        "targetNodeName": "Transportation and Material Moving Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1371,
+    "code": "53-5000",
+    "targetNodeName": "Water Transportation Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1328,
+        "code": "53-0000",
+        "targetNodeName": "Transportation and Material Moving Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1395,
+    "code": "53-7000",
+    "targetNodeName": "Material Moving Workers",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1328,
+        "code": "53-0000",
+        "targetNodeName": "Transportation and Material Moving Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1423,
+    "code": "55-1000",
+    "targetNodeName": "Military Officer Special and Tactical Operations Leaders",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1422,
+        "code": "55-0000",
+        "targetNodeName": "Military Specific Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1433,
+    "code": "55-2000",
+    "targetNodeName": "First-Line Enlisted Military Supervisors",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1422,
+        "code": "55-0000",
+        "targetNodeName": "Military Specific Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 1438,
+    "code": "55-3000",
+    "targetNodeName": "Military Enlisted Tactical Operations and Air/Weapons Specialists and Crew Members",
+    "frameworkName": "bls",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 1422,
+        "code": "55-0000",
+        "targetNodeName": "Military Specific Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 2471,
+    "code": "15-1000",
+    "level": "Minor",
+    "parents": [
+      {
+        "id": 135,
+        "code": "15-0000",
+        "targetNodeName": "Computer and Mathematical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 2
+  },
+  {
+    "id": 15,
+    "code": "11-2030",
+    "targetNodeName": "Public Relations and Fundraising Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 9,
+        "code": "11-2000",
+        "targetNodeName": "Advertising, Marketing, Promotions, Public Relations, and Sales Managers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 19,
+    "code": "11-3010",
+    "targetNodeName": "Administrative Services and Facilities Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 18,
+        "code": "11-3000",
+        "targetNodeName": "Operations Specialties Managers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 12,
+    "code": "11-2020",
+    "targetNodeName": "Marketing and Sales Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 9,
+        "code": "11-2000",
+        "targetNodeName": "Advertising, Marketing, Promotions, Public Relations, and Sales Managers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 30,
+    "code": "11-3070",
+    "targetNodeName": "Transportation, Storage, and Distribution Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 18,
+        "code": "11-3000",
+        "targetNodeName": "Operations Specialties Managers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 36,
+    "code": "11-3130",
+    "targetNodeName": "Training and Development Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 18,
+        "code": "11-3000",
+        "targetNodeName": "Operations Specialties Managers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 32,
+    "code": "11-3110",
+    "targetNodeName": "Compensation and Benefits Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 18,
+        "code": "11-3000",
+        "targetNodeName": "Operations Specialties Managers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 34,
+    "code": "11-3120",
+    "targetNodeName": "Human Resources Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 18,
+        "code": "11-3000",
+        "targetNodeName": "Operations Specialties Managers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 52,
+    "code": "11-9070",
+    "targetNodeName": "Entertainment and Recreation Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 38,
+        "code": "11-9000",
+        "targetNodeName": "Other Management Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 48,
+    "code": "11-9040",
+    "targetNodeName": "Architectural and Engineering Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 38,
+        "code": "11-9000",
+        "targetNodeName": "Other Management Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 50,
+    "code": "11-9050",
+    "targetNodeName": "Food Service Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 38,
+        "code": "11-9000",
+        "targetNodeName": "Other Management Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 55,
+    "code": "11-9080",
+    "targetNodeName": "Lodging Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 38,
+        "code": "11-9000",
+        "targetNodeName": "Other Management Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 63,
+    "code": "11-9140",
+    "targetNodeName": "Property, Real Estate, and Community Association Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 38,
+        "code": "11-9000",
+        "targetNodeName": "Other Management Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 65,
+    "code": "11-9150",
+    "targetNodeName": "Social and Community Service Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 38,
+        "code": "11-9000",
+        "targetNodeName": "Other Management Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 57,
+    "code": "11-9110",
+    "targetNodeName": "Medical and Health Services Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 38,
+        "code": "11-9000",
+        "targetNodeName": "Other Management Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 61,
+    "code": "11-9130",
+    "targetNodeName": "Postmasters and Mail Superintendents",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 38,
+        "code": "11-9000",
+        "targetNodeName": "Other Management Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 59,
+    "code": "11-9120",
+    "targetNodeName": "Natural Sciences Managers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 38,
+        "code": "11-9000",
+        "targetNodeName": "Other Management Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 1,
+        "code": "11-0000",
+        "targetNodeName": "Management Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 76,
+    "code": "13-1010",
+    "targetNodeName": "Agents and Business Managers of Artists, Performers, and Athletes",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 75,
+        "code": "13-1000",
+        "targetNodeName": "Business Operations Specialists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 74,
+        "code": "13-0000",
+        "targetNodeName": "Business and Financial Operations Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 82,
+    "code": "13-1030",
+    "targetNodeName": "Claims Adjusters, Appraisers, Examiners, and Investigators",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 75,
+        "code": "13-1000",
+        "targetNodeName": "Business Operations Specialists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 74,
+        "code": "13-0000",
+        "targetNodeName": "Business and Financial Operations Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 78,
+    "code": "13-1020",
+    "targetNodeName": "Buyers and Purchasing Agents",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 75,
+        "code": "13-1000",
+        "targetNodeName": "Business Operations Specialists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 74,
+        "code": "13-0000",
+        "targetNodeName": "Business and Financial Operations Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 102,
+    "code": "13-1140",
+    "targetNodeName": "Compensation, Benefits, and Job Analysis Specialists",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 75,
+        "code": "13-1000",
+        "targetNodeName": "Business Operations Specialists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 74,
+        "code": "13-0000",
+        "targetNodeName": "Business and Financial Operations Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 106,
+    "code": "13-1160",
+    "targetNodeName": "Market Research Analysts and Marketing Specialists",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 75,
+        "code": "13-1000",
+        "targetNodeName": "Business Operations Specialists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 74,
+        "code": "13-0000",
+        "targetNodeName": "Business and Financial Operations Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 108,
+    "code": "13-1190",
+    "targetNodeName": "Miscellaneous Business Operations Specialists",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 75,
+        "code": "13-1000",
+        "targetNodeName": "Business Operations Specialists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 74,
+        "code": "13-0000",
+        "targetNodeName": "Business and Financial Operations Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 104,
+    "code": "13-1150",
+    "targetNodeName": "Training and Development Specialists",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 75,
+        "code": "13-1000",
+        "targetNodeName": "Business Operations Specialists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 74,
+        "code": "13-0000",
+        "targetNodeName": "Business and Financial Operations Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 127,
+    "code": "13-2070",
+    "targetNodeName": "Credit Counselors and Loan Officers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 110,
+        "code": "13-2000",
+        "targetNodeName": "Financial Specialists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 74,
+        "code": "13-0000",
+        "targetNodeName": "Business and Financial Operations Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 120,
+    "code": "13-2050",
+    "targetNodeName": "Financial Analysts and Advisors",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 110,
+        "code": "13-2000",
+        "targetNodeName": "Financial Specialists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 74,
+        "code": "13-0000",
+        "targetNodeName": "Business and Financial Operations Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 125,
+    "code": "13-2060",
+    "targetNodeName": "Financial Examiners",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 110,
+        "code": "13-2000",
+        "targetNodeName": "Financial Specialists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 74,
+        "code": "13-0000",
+        "targetNodeName": "Business and Financial Operations Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 145,
+    "code": "15-1240",
+    "targetNodeName": "Database and Network Administrators and Architects",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 136,
+        "code": "15-1200",
+        "targetNodeName": "Computer Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 135,
+        "code": "15-0000",
+        "targetNodeName": "Computer and Mathematical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 140,
+    "code": "15-1220",
+    "targetNodeName": "Computer and Information Research Scientists",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 136,
+        "code": "15-1200",
+        "targetNodeName": "Computer Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 135,
+        "code": "15-0000",
+        "targetNodeName": "Computer and Mathematical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 142,
+    "code": "15-1230",
+    "targetNodeName": "Computer Support Specialists",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 136,
+        "code": "15-1200",
+        "targetNodeName": "Computer Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 135,
+        "code": "15-0000",
+        "targetNodeName": "Computer and Mathematical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 163,
+    "code": "15-2030",
+    "targetNodeName": "Operations Research Analysts",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 158,
+        "code": "15-2000",
+        "targetNodeName": "Mathematical Science Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 135,
+        "code": "15-0000",
+        "targetNodeName": "Computer and Mathematical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 156,
+    "code": "15-1290",
+    "targetNodeName": "Miscellaneous Computer Occupations",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 136,
+        "code": "15-1200",
+        "targetNodeName": "Computer Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 135,
+        "code": "15-0000",
+        "targetNodeName": "Computer and Mathematical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 161,
+    "code": "15-2020",
+    "targetNodeName": "Mathematicians",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 158,
+        "code": "15-2000",
+        "targetNodeName": "Mathematical Science Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 135,
+        "code": "15-0000",
+        "targetNodeName": "Computer and Mathematical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 159,
+    "code": "15-2010",
+    "targetNodeName": "Actuaries",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 158,
+        "code": "15-2000",
+        "targetNodeName": "Mathematical Science Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 135,
+        "code": "15-0000",
+        "targetNodeName": "Computer and Mathematical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 169,
+    "code": "15-2090",
+    "targetNodeName": "Miscellaneous Mathematical Science Occupations",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 158,
+        "code": "15-2000",
+        "targetNodeName": "Mathematical Science Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 135,
+        "code": "15-0000",
+        "targetNodeName": "Computer and Mathematical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 173,
+    "code": "17-1010",
+    "targetNodeName": "Architects, Except Naval",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 172,
+        "code": "17-1000",
+        "targetNodeName": "Architects, Surveyors, and Cartographers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 171,
+        "code": "17-0000",
+        "targetNodeName": "Architecture and Engineering Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 167,
+    "code": "15-2050",
+    "targetNodeName": "Data Scientists",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 158,
+        "code": "15-2000",
+        "targetNodeName": "Mathematical Science Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 135,
+        "code": "15-0000",
+        "targetNodeName": "Computer and Mathematical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 165,
+    "code": "15-2040",
+    "targetNodeName": "Statisticians",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 158,
+        "code": "15-2000",
+        "targetNodeName": "Mathematical Science Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 135,
+        "code": "15-0000",
+        "targetNodeName": "Computer and Mathematical Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 184,
+    "code": "17-2030",
+    "targetNodeName": "Bioengineers and Biomedical Engineers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 179,
+        "code": "17-2000",
+        "targetNodeName": "Engineers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 171,
+        "code": "17-0000",
+        "targetNodeName": "Architecture and Engineering Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 190,
+    "code": "17-2060",
+    "targetNodeName": "Computer Hardware Engineers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 179,
+        "code": "17-2000",
+        "targetNodeName": "Engineers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 171,
+        "code": "17-0000",
+        "targetNodeName": "Architecture and Engineering Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 186,
+    "code": "17-2040",
+    "targetNodeName": "Chemical Engineers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 179,
+        "code": "17-2000",
+        "targetNodeName": "Engineers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 171,
+        "code": "17-0000",
+        "targetNodeName": "Architecture and Engineering Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 188,
+    "code": "17-2050",
+    "targetNodeName": "Civil Engineers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 179,
+        "code": "17-2000",
+        "targetNodeName": "Engineers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 171,
+        "code": "17-0000",
+        "targetNodeName": "Architecture and Engineering Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 206,
+    "code": "17-2150",
+    "targetNodeName": "Mining and Geological Engineers, Including Mining Safety Engineers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 179,
+        "code": "17-2000",
+        "targetNodeName": "Engineers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 171,
+        "code": "17-0000",
+        "targetNodeName": "Architecture and Engineering Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 204,
+    "code": "17-2140",
+    "targetNodeName": "Mechanical Engineers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 179,
+        "code": "17-2000",
+        "targetNodeName": "Engineers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 171,
+        "code": "17-0000",
+        "targetNodeName": "Architecture and Engineering Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 202,
+    "code": "17-2130",
+    "targetNodeName": "Materials Engineers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 179,
+        "code": "17-2000",
+        "targetNodeName": "Engineers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 171,
+        "code": "17-0000",
+        "targetNodeName": "Architecture and Engineering Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 208,
+    "code": "17-2160",
+    "targetNodeName": "Nuclear Engineers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 179,
+        "code": "17-2000",
+        "targetNodeName": "Engineers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 171,
+        "code": "17-0000",
+        "targetNodeName": "Architecture and Engineering Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 220,
+    "code": "17-3020",
+    "targetNodeName": "Engineering Technologists and Technicians, Except Drafters",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 214,
+        "code": "17-3000",
+        "targetNodeName": "Drafters, Engineering Technicians, and Mapping Technicians",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 171,
+        "code": "17-0000",
+        "targetNodeName": "Architecture and Engineering Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 243,
+    "code": "19-1030",
+    "targetNodeName": "Conservation Scientists and Foresters",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 233,
+        "code": "19-1000",
+        "targetNodeName": "Life Scientists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 238,
+    "code": "19-1020",
+    "targetNodeName": "Biological Scientists",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 233,
+        "code": "19-1000",
+        "targetNodeName": "Life Scientists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 264,
+    "code": "19-2090",
+    "targetNodeName": "Miscellaneous Physical Scientists",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 251,
+        "code": "19-2000",
+        "targetNodeName": "Physical Scientists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 269,
+    "code": "19-3020",
+    "targetNodeName": "Survey Researchers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 266,
+        "code": "19-3000",
+        "targetNodeName": "Social Scientists and Related Workers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 271,
+    "code": "19-3030",
+    "targetNodeName": "Psychologists",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 266,
+        "code": "19-3000",
+        "targetNodeName": "Social Scientists and Related Workers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 267,
+    "code": "19-3010",
+    "targetNodeName": "Economists",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 266,
+        "code": "19-3000",
+        "targetNodeName": "Social Scientists and Related Workers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 280,
+    "code": "19-3090",
+    "targetNodeName": "Miscellaneous Social Scientists and Related Workers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 266,
+        "code": "19-3000",
+        "targetNodeName": "Social Scientists and Related Workers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 278,
+    "code": "19-3050",
+    "targetNodeName": "Urban and Regional Planners",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 266,
+        "code": "19-3000",
+        "targetNodeName": "Social Scientists and Related Workers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 276,
+    "code": "19-3040",
+    "targetNodeName": "Sociologists",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 266,
+        "code": "19-3000",
+        "targetNodeName": "Social Scientists and Related Workers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 294,
+    "code": "19-4040",
+    "targetNodeName": "Environmental Science and Geoscience Technicians",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 286,
+        "code": "19-4000",
+        "targetNodeName": "Life, Physical, and Social Science Technicians",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 292,
+    "code": "19-4030",
+    "targetNodeName": "Chemical Technicians",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 286,
+        "code": "19-4000",
+        "targetNodeName": "Life, Physical, and Social Science Technicians",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 298,
+    "code": "19-4050",
+    "targetNodeName": "Nuclear Technicians",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 286,
+        "code": "19-4000",
+        "targetNodeName": "Life, Physical, and Social Science Technicians",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 232,
+        "code": "19-0000",
+        "targetNodeName": "Life, Physical, and Social Science Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 325,
+    "code": "21-1090",
+    "targetNodeName": "Miscellaneous Community and Social Service Specialists",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 312,
+        "code": "21-1000",
+        "targetNodeName": "Counselors, Social Workers, and Other Community and Social Service Specialists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 311,
+        "code": "21-0000",
+        "targetNodeName": "Community and Social Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 320,
+    "code": "21-1020",
+    "targetNodeName": "Social Workers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 312,
+        "code": "21-1000",
+        "targetNodeName": "Counselors, Social Workers, and Other Community and Social Service Specialists",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 311,
+        "code": "21-0000",
+        "targetNodeName": "Community and Social Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 343,
+    "code": "23-1020",
+    "targetNodeName": "Judges, Magistrates, and Other Judicial Workers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 339,
+        "code": "23-1000",
+        "targetNodeName": "Lawyers, Judges, and Related Workers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 338,
+        "code": "23-0000",
+        "targetNodeName": "Legal Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 340,
+    "code": "23-1010",
+    "targetNodeName": "Lawyers and Judicial Law Clerks",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 339,
+        "code": "23-1000",
+        "targetNodeName": "Lawyers, Judges, and Related Workers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 338,
+        "code": "23-0000",
+        "targetNodeName": "Legal Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 336,
+    "code": "21-2090",
+    "targetNodeName": "Miscellaneous Religious Workers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 331,
+        "code": "21-2000",
+        "targetNodeName": "Religious Workers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 311,
+        "code": "21-0000",
+        "targetNodeName": "Community and Social Service Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 350,
+    "code": "23-2090",
+    "targetNodeName": "Miscellaneous Legal Support Workers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 347,
+        "code": "23-2000",
+        "targetNodeName": "Legal Support Workers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 338,
+        "code": "23-0000",
+        "targetNodeName": "Legal Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 348,
+    "code": "23-2010",
+    "targetNodeName": "Paralegals and Legal Assistants",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 347,
+        "code": "23-2000",
+        "targetNodeName": "Legal Support Workers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 338,
+        "code": "23-0000",
+        "targetNodeName": "Legal Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 367,
+    "code": "25-1050",
+    "targetNodeName": "Physical Sciences Teachers, Postsecondary",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 354,
+        "code": "25-1000",
+        "targetNodeName": "Postsecondary Teachers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 363,
+    "code": "25-1040",
+    "targetNodeName": "Life Sciences Teachers, Postsecondary",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 354,
+        "code": "25-1000",
+        "targetNodeName": "Postsecondary Teachers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 387,
+    "code": "25-1110",
+    "targetNodeName": "Law, Criminal Justice, and Social Work Teachers, Postsecondary",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 354,
+        "code": "25-1000",
+        "targetNodeName": "Postsecondary Teachers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 384,
+    "code": "25-1080",
+    "targetNodeName": "Education and Library Science Teachers, Postsecondary",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 354,
+        "code": "25-1000",
+        "targetNodeName": "Postsecondary Teachers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 381,
+    "code": "25-1070",
+    "targetNodeName": "Health Teachers, Postsecondary",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 354,
+        "code": "25-1000",
+        "targetNodeName": "Postsecondary Teachers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 407,
+    "code": "25-2020",
+    "targetNodeName": "Elementary and Middle School Teachers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 403,
+        "code": "25-2000",
+        "targetNodeName": "Preschool, Elementary, Middle, Secondary, and Special Education Teachers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 404,
+    "code": "25-2010",
+    "targetNodeName": "Preschool and Kindergarten Teachers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 403,
+        "code": "25-2000",
+        "targetNodeName": "Preschool, Elementary, Middle, Secondary, and Special Education Teachers",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 422,
+    "code": "25-3010",
+    "targetNodeName": "Adult Basic Education, Adult Secondary Education, and English as a Second Language Instructors",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 421,
+        "code": "25-3000",
+        "targetNodeName": "Other Teachers and Instructors",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 424,
+    "code": "25-3020",
+    "targetNodeName": "Self-Enrichment Teachers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 421,
+        "code": "25-3000",
+        "targetNodeName": "Other Teachers and Instructors",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 451,
+    "code": "25-9090",
+    "targetNodeName": "Miscellaneous Educational Instruction and Library Workers",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 441,
+        "code": "25-9000",
+        "targetNodeName": "Other Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 444,
+    "code": "25-9030",
+    "targetNodeName": "Instructional Coordinators",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 441,
+        "code": "25-9000",
+        "targetNodeName": "Other Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  },
+  {
+    "id": 446,
+    "code": "25-9040",
+    "targetNodeName": "Teaching Assistants",
+    "frameworkName": "bls",
+    "level": "Broad",
+    "parents": [
+      {
+        "id": 441,
+        "code": "25-9000",
+        "targetNodeName": "Other Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Minor",
+        "jobCodeLevelAsNumber": 2
+      },
+      {
+        "id": 353,
+        "code": "25-0000",
+        "targetNodeName": "Educational Instruction and Library Occupations",
+        "frameworkName": "bls",
+        "level": "Major",
+        "jobCodeLevelAsNumber": 1
+      }
+    ],
+    "jobCodeLevelAsNumber": 3
+  }
+]

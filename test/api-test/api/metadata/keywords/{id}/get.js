@@ -2,9 +2,8 @@
 
 let responseData = pm.response.json();
 
-console.log("Check a keyword");
+console.log("Check a keyword retrieval");
 
-// FIXME - update these tests once docker images are cleaned up automatically
 pm.test("Check type", function () {
   pm.expect(responseData.type).to.equal(expectedData.type);
 });

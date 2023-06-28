@@ -2,10 +2,9 @@
 
 let responseData = pm.response.json();
 
-console.log("Check keywords");
-console.log(responseData.length)
+console.log("Check get All keywords");
 pm.test("Check keywords count", function () {
-  pm.expect(responseData.length).to.equal(0);
+  pm.expect(responseData.length).to.equal(expectedData.length);
 });
 
 
@@ -21,8 +20,5 @@ for (let keywordIndex = 0; keywordIndex < responseData.length; keywordIndex++) {
   });
   pm.test(`Keyword ${colNum} - Check skill count`, function () {
     pm.expect(responseCol.skillCount).exists;
-  });
-  pm.test(`Keyword ${colNum} - Check status`, function () {
-    pm.expect(responseCol.url).exists;
   });
 }

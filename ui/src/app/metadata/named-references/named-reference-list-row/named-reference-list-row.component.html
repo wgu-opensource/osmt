@@ -1,13 +1,13 @@
-<ng-template [ngIf]="!!namedReference">
+<ng-template [ngIf]="namedReference">
 
   <th scope="row" id="{{id}}-header">
     <a id="{{id}}-header-name" class="t-focus t-type-bodyLink" routerLink="/named-references/{{namedReference.id}}/manage">{{namedReference.name}}</a>
   </th>
-  <th scope="row" id="{{id}}-header">
+  <th *ngIf="isAlignmentSelected" scope="row" id="{{id}}-header">
     <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{namedReference.framework}}</a>
   </th>
-  <th scope="row" id="{{id}}-header">
-    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{namedReference.value}}</a>
+  <th *ngIf="isAlignmentSelected" scope="row" id="{{id}}-header">
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{namedReference.url}}</a>
   </th>
 
 

@@ -13,8 +13,6 @@ import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.
 import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component"
 import {CollectionFormComponent} from "./collection/create-collection/collection-form.component"
 import {FormDirtyGuard} from "./core/abstract-form.component"
-import {CategoryDetailComponent} from "./category/detail/category-detail.component"
-import {CategoryLibraryComponent} from "./category/library/category-library.component"
 import {CollectionsLibraryComponent} from "./table/collections-library.component"
 import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component"
 import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component"
@@ -82,18 +80,6 @@ const routes: Routes = [
     data: {
       roles: ActionByRoles.get(ButtonAction.SkillCreate)
     },
-  },
-
-  /* CATEGORIES */
-
-  // category detail
-  {path: "categories/:id",
-    component: CategoryDetailComponent,
-    canActivate: [AuthGuard]
-  },
-  {path: "categories",
-    component: CategoryLibraryComponent,
-    canActivate: [AuthGuard]
   },
 
   /* COLLECTIONS */

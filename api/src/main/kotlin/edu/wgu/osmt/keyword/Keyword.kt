@@ -52,6 +52,15 @@ data class Keyword(
     val uri: String? = null,
 
     @Nullable
+    @MultiField(
+        mainField = Field(type = FieldType.Text, analyzer = "english_stemmer"),
+        otherFields = [
+            InnerField(suffix = "", type = FieldType.Search_As_You_Type),
+            InnerField(suffix = "raw", analyzer = "whitespace_exact", type = FieldType.Text),
+            InnerField(suffix = "keyword", type = FieldType.Keyword),
+            InnerField(suffix = "sort_insensitive", type = FieldType.Keyword, normalizer = "lowercase_normalizer")
+        ]
+    )
     val framework: String? = null
 ) : DatabaseData, HasUpdateDate {
 }

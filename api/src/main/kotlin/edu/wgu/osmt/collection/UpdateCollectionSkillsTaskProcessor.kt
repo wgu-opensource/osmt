@@ -2,7 +2,7 @@ package edu.wgu.osmt.collection
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
 import edu.wgu.osmt.richskill.RichSkillRepository
-import edu.wgu.osmt.task.RemoveCollectionSkillsTask
+import edu.wgu.osmt.task.RemoveItemTask
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskStatus
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
@@ -52,10 +52,10 @@ class UpdateCollectionSkillsTaskProcessor {
         deadLetterQueue = TaskMessageService.deadLetters,
         concurrency = "1"
     )
-    fun removeCollectionSkills(task: RemoveCollectionSkillsTask) {
+    fun removeCollectionSkills(task: RemoveItemTask) {
         logger.info("Started processing to remove collection task id: ${task.uuid}")
 
-        val batchResult = collectionRepository.remove(task.collectionUuid)
+        val batchResult = collectionRepository.remove(task.identifier)
 
         taskMessageService.publishResult(
             task.copy(result=batchResult, status= TaskStatus.Ready)

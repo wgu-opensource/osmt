@@ -488,9 +488,30 @@ paths:
             default: "Category"
         - name: "query"
           in: "query"
-          required: true
+          required: false
           schema:
             type: "string"
+            default: ""
+        - name: "size"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: "50"
+        - name: "from"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: "0"
+        - name: "sort"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+            default: "name.asc"
       responses:
         "200":
           description: "OK"

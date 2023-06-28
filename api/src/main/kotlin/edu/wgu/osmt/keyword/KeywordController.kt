@@ -48,10 +48,10 @@ class KeywordController @Autowired constructor(
     fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
         @RequestParam(required = true, defaultValue = "Category") type: String,
-        @RequestParam(required = true) query: String,
-        size: Int,
-        from: Int,
-        sort: String?,
+        @RequestParam(required = true, defaultValue = "") query: String,
+        @RequestParam(required = true, defaultValue = "50") size: Int,
+        @RequestParam(required = true, defaultValue = "0") from: Int,
+        @RequestParam(required = true, defaultValue = "name.asc") sort: String?,
     ): HttpEntity<List<ApiKeyword>> {
         val sortEnum: SortOrder = KeywordSortEnum.forValueOrDefault(sort)
         val pageable = OffsetPageable(from, size, sortEnum.sort)

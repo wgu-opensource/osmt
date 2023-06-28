@@ -88,7 +88,6 @@ import {FieldMappingSelectComponent, FieldMappingTableComponent} from "./richski
 import {
   ImportPreviewTableComponent,
   InlineErrorComponent,
-  InlineHeadingComponent,
   NamedReferenceComponent
 } from "./richskill/import/import-preview-table.component"
 import {AuditLogComponent} from "./richskill/detail/audit-log.component"
@@ -111,6 +110,7 @@ import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collecti
 import { SizePaginationComponent } from "./table/skills-library-table/size-pagination/size-pagination.component"
 import {OsmtTableModule} from "./table/osmt-table.module"
 import { getBaseApi } from "./api-versions"
+import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -219,7 +219,6 @@ export function initializeApp(
     FieldMappingTableComponent,
     FieldMappingSelectComponent,
     ImportPreviewTableComponent,
-    InlineHeadingComponent,
     NamedReferenceComponent,
     InlineErrorComponent,
     AuditLogComponent,
@@ -230,6 +229,7 @@ export function initializeApp(
     CollectionPipe,
     ConvertToCollectionComponent,
     SizePaginationComponent,
+    InlineHeadingComponent,
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

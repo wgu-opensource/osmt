@@ -10,154 +10,7 @@ info:
 
 paths:
 
-  /api/v3/categories:
-    get:
-      tags:
-        - Categories
-      summary: Get all categories
-      description: Retrieve all the categories
-      parameters:
-        - $ref: '#/components/parameters/PaginationSizeQuery'
-        - $ref: '#/components/parameters/PaginationFromQuery'
-        - name: sort
-          in: query
-          schema:
-            $ref: '#/components/schemas/KeywordSortOrder'
-      responses:
-        '200':
-          description: OK
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-
-  /api/v3/categories/{identifier}:
-    get:
-      tags:
-        - Categories
-      summary: Get category by identifier
-      description: Retrieve category with identifier
-      parameters:
-        - name: identifier
-          in: path
-          required: true
-          description: identifying key for category
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-
-  /api/v3/categories/{identifier}/skills:
-    get:
-      tags:
-        - Categories
-      summary: Get skills with category
-      description: Retrieve skills with category
-      parameters:
-        - name: identifier
-          in: path
-          required: true
-          description: identifying key for category
-          schema:
-            type: string
-        - $ref: '#/components/parameters/PaginationSizeQuery'
-        - $ref: '#/components/parameters/PaginationFromQuery'
-        - $ref: '#/components/parameters/PublishStatusQuery'
-        - name: sort
-          in: query
-          description: order records should be sorted
-          schema:
-            $ref: '#/components/schemas/SortOrder'
-      responses:
-        '200':
-          description: OK
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-    post:
-      tags:
-        - Categories
-      summary: Search skills with category
-      description: Search skills with category
-      parameters:
-        - name: identifier
-          in: path
-          required: true
-          description: identifying key for category
-          schema:
-            type: string
-        - $ref: '#/components/parameters/PaginationSizeQuery'
-        - $ref: '#/components/parameters/PaginationFromQuery'
-        - $ref: '#/components/parameters/PublishStatusQuery'
-        - name: sort
-          in: query
-          description: order records should be sorted
-          schema:
-            $ref: '#/components/schemas/SortOrder'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Search'
-      responses:
-        '200':
-          description: OK
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-
-  /api/v3/collections:
+  /api/collections:
     get:
       summary: Get all collections
       description: Returns all collections
@@ -1055,6 +908,54 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Alignment'
+
+    ApiKeyword:
+      type: "object"
+      properties:
+        id:
+          type: number
+        framework:
+          type: "string"
+        name:
+          type: "string"
+        type:
+          type: "string"
+          enum:
+            - "Companion"
+            - "displayName"
+            - "Category"
+            - "Keyword"
+            - "Standard"
+            - "Certification"
+            - "Alignment"
+            - "Employer"
+            - "Author"
+        url:
+          type: "string"
+        skillCount:
+          type: number
+
+    ApiKeywordUpdate:
+      type: "object"
+      properties:
+        framework:
+          type: "string"
+        name:
+          type: "string"
+        type:
+          type: "string"
+          enum:
+            - "Companion"
+            - "displayName"
+            - "Category"
+            - "Keyword"
+            - "Standard"
+            - "Certification"
+            - "Alignment"
+            - "Employer"
+            - "Author"
+        url:
+          type: "string"
 
     AuditLog:
       type: object
@@ -1957,8 +1858,6 @@ security:
   - bearerAuth: []
 
 tags:
-  - name: Categories
-    description: RSD Metadata - Categories
   - name: Collections
     description: Collections of RSDs
   - name: Export

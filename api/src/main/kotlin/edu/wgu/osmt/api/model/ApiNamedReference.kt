@@ -19,7 +19,6 @@ data class ApiNamedReference(
     }
 }
 
-
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class ApiAlignment(
         @get:JsonProperty("id")             // these explicit decorators are needed to help jackson

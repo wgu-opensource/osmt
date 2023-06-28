@@ -5,12 +5,12 @@
     <th class="t-hidden-tabletMin" scope="col" colspan="3"><span class="t-visuallyHidden">Named References</span></th>
     <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Name</span></th>
     <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Framework</span></th>
-    <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Value</span></th>
+    <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">URL</span></th>
   </tr>
   <tr class="m-tableHeader">
     <td class="t-hidden-tabletMin" aria-hidden="true">
       <app-label-with-select
-        label="JobCodes"
+        label="NamedReferences"
         [options]="mobileSortOptions"
         [currentSort]="currentSort"
         (sortChanged)="mobileSortColumn($event)"
@@ -31,15 +31,23 @@
       </ng-template>
     </td>
 
-    <td class="t-hidden-tabletMax" aria-hidden="true">
-        <span class="m-tableLabel">
-          <span class="m-tableLabel-x-text">Framework</span>
-        </span>
+    <td *ngIf="isAlignmentSelected" class="t-hidden-tabletMax" aria-hidden="true">
+      <app-label-with-filter
+        *ngIf="allowSorting; else noSortName"
+        label="Framework"
+        [sortAscending]="getFrameworkSort()"
+        (sortChanged)="sortColumn('framework', $event)"
+      ></app-label-with-filter>
+      <ng-template #noSortName>
+          <span class="m-tableLabel">
+            <span class="m-tableLabel-x-text">Framework</span>
+          </span>
+      </ng-template>
     </td>
 
-    <td class="t-hidden-tabletMax" aria-hidden="true">
+    <td *ngIf="isAlignmentSelected" class="t-hidden-tabletMax" aria-hidden="true">
         <span class="m-tableLabel">
-          <span class="m-tableLabel-x-text">Value</span>
+          <span class="m-tableLabel-x-text">URL</span>
         </span>
     </td>
 
@@ -48,7 +56,8 @@
         [selectAllEnabled]="selectAllEnabled"
         (valueChange)="handleSelectAll($event)"
         [totalCount]="getSelectAllCount()"
-        [totalPageCount]="items.length">
+        [totalPageCount]="items.length"
+        [checkAll]="isAllPageSelected">
       </app-select-all>
     </td>
 
@@ -63,6 +72,7 @@
     [class.m-tableRow-is-selected]="isSelected(namedReference)"
 
     app-named-reference-list-row
+    [metadataSelected]=metadataSelected
     [namedReference]="namedReference"
     [isSelected]="isSelected(namedReference)"
     [rowActions]="rowActions"

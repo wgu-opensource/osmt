@@ -53,12 +53,6 @@ import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-sear
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
 import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
 import {DotsMenuComponent} from "./table/skills-library-table/dots-menu.component"
-import {CategoryDetailComponent} from "./category/detail/category-detail.component"
-import {CategoryDetailCardComponent} from "./category/detail/card/category-detail-card.component"
-import {CategoryLibraryComponent} from "./category/library/category-library.component"
-import {CategoryListComponent} from "./category/list/category-list.component"
-import {CategoryTableComponent} from "./category/table/category-table.component"
-import {CategoryTableRowComponent} from "./category/table/row/category-table-row.component"
 import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component"
 import {CollectionTableComponent} from "./collection/collection-table.component"
 import {CollectionListRowComponent} from "./collection/collection-list-row.component"
@@ -208,12 +202,6 @@ export function initializeApp(
     AbstractAdvancedSearchActionBarComponent,
     DotsMenuComponent,
     AbstractAdvancedSearchActionBarComponent,
-    CategoryDetailComponent,
-    CategoryDetailCardComponent,
-    CategoryLibraryComponent,
-    CategoryListComponent,
-    CategoryTableComponent,
-    CategoryTableRowComponent,
     CollectionFormComponent,
     AbstractCreateCollectionActionbarComponent,
     CreateCollectionActionBarHorizontalComponent,

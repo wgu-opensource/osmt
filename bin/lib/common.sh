@@ -114,15 +114,6 @@ echo_debug() {
   [[ "${DEBUG}" -ne 0 ]] && echo -e "DEBUG: $*"
 }
 
-
-#start_osmt_spring_app_via_maven() {
-#  echo
-#}
-#
-#start_osmt_spring_app_via_java() {
-#  echo
-#}
-
 _validate_env_file() {
   local env_file="${1}"
 

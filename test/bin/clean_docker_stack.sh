@@ -8,6 +8,8 @@ clean_docker_stack() {
   local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
   echo "INFO: Stopping OSMT ${OSMT_STACK_NAME} Docker stack"
   cd "${project_dir}/docker" || return 1
+
+  set +eE
   docker-compose --file dev-stack.yml --project-name "${OSMT_STACK_NAME}" down
   rc=$?
   if [[ $rc -ne 0 ]]; then
@@ -26,6 +28,7 @@ clean_docker_stack() {
   echo
   echo "INFO: Removing OSMT-related Docker volumes..."
   docker volume ls -q -f name=osmt_api | xargs docker volume rm -f {} &> /dev/null
+  set -eE
 }
 
 clean_docker_stack

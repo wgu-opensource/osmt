@@ -4,18 +4,18 @@ let responseData = pm.response.json();
 console.log("Check updated job code");
 
 pm.test("Check id exists", function() {
-    pm.expect(responseData.id).exists;
+    pm.expect(responseData.id).to.equal(expectedData.id);
 });
 pm.test("Check code exists", function() {
-    pm.expect(responseData.code).exists;
+    pm.expect(responseData.code).to.equal(expectedData.code);
 });
 pm.test("Check targetNodeName exists", function() {
-    pm.expect(responseData.targetNodeName).exists;
+    pm.expect(responseData.targetNodeName).to.equal(expectedData.targetNodeName);
 });
 pm.test("Check frameworkName exists", function() {
-    pm.expect(responseData.frameworkName).exists;
+    pm.expect(responseData.frameworkName).to.equal(expectedData.frameworkName);
 });
 /* pm.test("Check jobCodeLevelAsNumber exists", function() {
-    pm.expect(responseData.jobCodeLevelAsNumber).exists;
+    pm.expect(responseData.jobCodeLevelAsNumber).to.equal(expectedData.jobCodeLevelAsNumber);
 }); */
 

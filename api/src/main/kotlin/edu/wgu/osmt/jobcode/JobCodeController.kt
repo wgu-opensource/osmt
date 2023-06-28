@@ -98,7 +98,16 @@ class JobCodeController @Autowired constructor(
         @PathVariable id: Int,
         @RequestBody jobCodeUpdate: JobCodeUpdate
     ): HttpEntity<ApiJobCode> {
-        return ResponseEntity.status(200).body(ApiJobCode(id = 1, code = "1", targetNode = "target", targetNodeName = "targetNodeName", frameworkName = "frameworkName", parents = listOf()))
+        return ResponseEntity.status(200).body(
+            ApiJobCode(
+                id = id.toLong(),
+                code = jobCodeUpdate.code,
+                targetNode = jobCodeUpdate.targetNode,
+                targetNodeName = jobCodeUpdate.targetNodeName,
+                frameworkName = jobCodeUpdate.framework,
+                parents = listOf()
+            )
+        )
     }
 
     @DeleteMapping(RoutePaths.JOB_CODE_REMOVE)

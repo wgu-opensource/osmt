@@ -1,7 +1,7 @@
 let jobCode = {
-    "code": "95-1240",
-    "targetNodeName": "Name 20230622-1519",
-    "frameworkName": "Framework 20230622-1519"
+  "code": "11-3013",
+  "targetNodeName": "Facilities Managers",
+  "frameworkName": "bls"
 };
 
 let body = {

@@ -36,7 +36,9 @@ import java.util.*
     JsonSubTypes.Type(value = RemoveCollectionSkillsTask::class, name = "RemoveCollectionSkillsTask"),
     JsonSubTypes.Type(value = RemoveJobCodeTask::class, name = "RemoveJobCodeTask"),
     JsonSubTypes.Type(value = RemoveCollectionSkillsTask::class, name = "RemoveCollectionSkillsTask"),
-    JsonSubTypes.Type(value = ExportSkillsToCsvTaskV2::class, name = "ExportSkillsToCsvTaskV2")
+    JsonSubTypes.Type(value = ExportSkillsToCsvTaskV2::class, name = "ExportSkillsToCsvTaskV2"),
+    JsonSubTypes.Type(value = RemoveItemTask::class, name = "RemoveCollectionSkillsTask"),
+    JsonSubTypes.Type(value = RemoveJobCodeTask::class, name = "RemoveJobCodeTask")
 )
 
 interface Task {
@@ -212,8 +214,8 @@ data class UpdateCollectionSkillsTask(
 
 }
 
-data class RemoveCollectionSkillsTask(
-    val collectionUuid: String = "",
+data class RemoveItemTask(
+    val identifier: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: ApiBatchResult? = null,

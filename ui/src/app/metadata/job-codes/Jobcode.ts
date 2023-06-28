@@ -68,7 +68,7 @@ export class ApiJobCodeUpdate implements IJobCodeUpdate {
   level?: JobCodeLevel
   parents?: IJobCode[]
 
-  constructor({code, targetNodeName, targetNode, frameworkName, level, parents}: IJobCode) {
+  constructor({code, targetNodeName, targetNode, frameworkName, level, parents}: IJobCodeUpdate) {
     this.code = code
     this.targetNodeName = targetNodeName
     this.targetNode = targetNode

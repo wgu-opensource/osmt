@@ -7,7 +7,7 @@ import { AuthServiceStub } from "@test/resource/mock-stubs";
 import { AuthService } from "../../../auth/auth-service";
 import { JobCodeService } from "../../job-codes/service/job-code.service"
 import { HttpClientTestingModule } from "@angular/common/http/testing"
-import { createMockJobcode } from "@test/resource/mock-data"
+import {createMockJobcode, createMockNamedReference2 } from "@test/resource/mock-data"
 import { of } from "rxjs"
 
 describe("ManageMetadataComponent", () => {
@@ -91,6 +91,30 @@ describe("ManageMetadataComponent", () => {
       return false;
     });
     component["handleDeleteJobCode"](mockJobCode)
+    expect(spyService).not.toHaveBeenCalled()
+  })
+
+  it("handleDeleteNamedReference should call deleteNamedReferenceWithResult", () => {
+    const mockNamedReference = createMockNamedReference2()
+    const spyService = spyOn(component["namedReferenceService"], "deleteNamedReferenceWithResult").and.returnValue(
+      of({success: true})
+    )
+    spyOn(window, 'confirm').and.callFake(function () {
+      return true;
+    });
+    component["handleDeleteNamedReference"](mockNamedReference)
+    expect(spyService).toHaveBeenCalled()
+  })
+
+  it("handleDeleteNamedReference should not call deleteNamedReferenceWithResult", () => {
+    const mockNamedReference = createMockNamedReference2()
+    const spyService = spyOn(component["namedReferenceService"], "deleteNamedReferenceWithResult").and.returnValue(
+      of({success: true})
+    )
+    spyOn(window, 'confirm').and.callFake(function () {
+      return false;
+    });
+    component["handleDeleteNamedReference"](mockNamedReference)
     expect(spyService).not.toHaveBeenCalled()
   })
 })

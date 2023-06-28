@@ -92,7 +92,7 @@ class KeywordController @Autowired constructor(
     @PostMapping(RoutePaths.KEYWORD_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun updateKeyword(
-        @PathVariable id: Int,
+        @PathVariable id: Long,
         @RequestBody apiKeywordUpdate: ApiKeywordUpdate,
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<ApiKeyword> {

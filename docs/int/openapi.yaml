@@ -501,7 +501,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/ApiKeyword"
     post:
-      summary: "Defina a Keyword"
+      summary: "Define a Keyword"
       description: Create a new Keyword in OSMT
       tags:
         - Metadata

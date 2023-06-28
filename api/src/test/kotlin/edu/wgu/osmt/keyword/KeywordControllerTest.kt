@@ -113,7 +113,7 @@ internal class KeywordControllerTest @Autowired constructor(
 
         // act
         Assertions.assertThat(keyword!!.value).isEqualTo("category1")
-        val result = kwController.updateKeyword(keyword!!.id.value.toInt(), ApiKeywordUpdate("updated Name","updated uri",KeywordTypeEnum.Category, "updated framework"), nullJwt)
+        val result = kwController.updateKeyword(keyword!!.id.value, ApiKeywordUpdate("updated Name","updated uri",KeywordTypeEnum.Category, "updated framework"), nullJwt)
 
         // assert
         Assertions.assertThat(result).isNotNull

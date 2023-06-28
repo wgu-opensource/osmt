@@ -1,9 +1,41 @@
 [
     {
         "framework": null,
+        "skillCount": 5,
+        "name": "Access Network",
+        "id": 2998,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 6,
+        "name": "Active Directory",
+        "id": 3007,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 3,
+        "name": "Acute Care",
+        "id": 237,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
         "skillCount": 4,
         "name": "Adaptability",
         "id": 312,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 1,
+        "name": "Advertisement",
+        "id": 3403,
         "type": "Category",
         "url": null
     },
@@ -33,7 +65,7 @@
     },
     {
         "framework": null,
-        "skillCount": 5,
+        "skillCount": 2,
         "name": "Amazon Web Services",
         "id": 3031,
         "type": "Category",
@@ -49,7 +81,7 @@
     },
     {
         "framework": null,
-        "skillCount": 6,
+        "skillCount": 7,
         "name": "Application Programming Interface (API)",
         "id": 3035,
         "type": "Category",
@@ -201,25 +233,9 @@
     },
     {
         "framework": null,
-        "skillCount": 0,
-        "name": "Chafas",
-        "id": 4174,
-        "type": "Category",
-        "url": null
-    },
-    {
-        "framework": null,
         "skillCount": 11,
         "name": "Change Management",
         "id": 468,
-        "type": "Category",
-        "url": null
-    },
-    {
-        "framework": null,
-        "skillCount": 1,
-        "name": "CiverKnight",
-        "id": 4182,
         "type": "Category",
         "url": null
     },
@@ -380,22 +396,6 @@
         "skillCount": 2,
         "name": "Content Marketing",
         "id": 3600,
-        "type": "Category",
-        "url": null
-    },
-    {
-        "framework": null,
-        "skillCount": 1,
-        "name": "Continuous Improvement Process",
-        "id": 1396,
-        "type": "Category",
-        "url": null
-    },
-    {
-        "framework": null,
-        "skillCount": 5,
-        "name": "Continuous Quality Improvement (CQI)",
-        "id": 100,
         "type": "Category",
         "url": null
     }

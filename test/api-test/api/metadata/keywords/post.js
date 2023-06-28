@@ -6,8 +6,6 @@ console.log("Check keyword creation");
 
 let expected = expectedData;
 
-let response = responseData;
-
 pm.test(`Keyword - Check object type`, function () {
     pm.expect(responseData.type).to.equal(expected.type);
 });
@@ -21,5 +19,5 @@ pm.test(`Keyword - Check framework`, function () {
     pm.expect(responseData.framework).to.equal(expected.framework);
 });
 pm.test(`Keyword - Check Url`, function () {
-    pm.expect(responseCol.url).to.equal(expected.url);
+    pm.expect(responseData.url).to.equal(expected.url);
 });

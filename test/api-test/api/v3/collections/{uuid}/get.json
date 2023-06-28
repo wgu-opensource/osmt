@@ -1,0 +1,2249 @@
+{
+    "type": "RichSkillCollection",
+    "name": "IT Network",
+    "id": "http://localhost:8080/api/collections/42d882da-aec3-4e0d-9582-c8559912a9c6",
+    "owner": "",
+    "uuid": "42d882da-aec3-4e0d-9582-c8559912a9c6",
+    "skills": [
+        {
+            "id": "http://localhost:8080/api/skills/f6538cc1-8fdf-4f11-b373-781571b386bf",
+            "uuid": "f6538cc1-8fdf-4f11-b373-781571b386bf",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:07.152054",
+            "archiveDate": null,
+            "skillName": "Validation and Troubleshooting",
+            "skillStatement": "Validate authorization and authentication runbooks and troubleshoots procedures (SOPs), and troubleshoots advanced authentication and authorization issues.",
+            "categories": [
+                "Authentications"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "AZ-304",
+                "AZ-303",
+                "AZ-900",
+                "AZ-204",
+                "AZ DP-203",
+                "AZ-104",
+                "Authentications",
+                "Authentications",
+                "Authentication",
+                "SafeNet",
+                "Authorization (Computing)",
+                "WGUSID: 1619.1",
+                "Authentications"
+            ],
+            "occupations": [
+                {
+                    "code": "11-0000",
+                    "targetNodeName": "Management Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "11-3000",
+                    "targetNodeName": "Operations Specialties Managers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "11-3020",
+                    "targetNodeName": "Computer and Information Systems Managers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "11-3021",
+                    "targetNodeName": "Computer and Information Systems Managers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1210",
+                    "targetNodeName": "Computer and Information Analysts",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1211",
+                    "targetNodeName": "Computer Systems Analysts",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1230",
+                    "targetNodeName": "Computer Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1231",
+                    "targetNodeName": "Computer Network Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1232",
+                    "targetNodeName": "Computer User Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1241",
+                    "targetNodeName": "Computer Network Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1245"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/aabb1eee-48b7-4d46-b4e0-fb584285627d",
+            "uuid": "aabb1eee-48b7-4d46-b4e0-fb584285627d",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:07.221572",
+            "archiveDate": null,
+            "skillName": "Authentication Access Creation",
+            "skillStatement": "Create group and system authentication access.",
+            "categories": [
+                "Authentications"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "AZ-304",
+                "AZ-303",
+                "AZ-900",
+                "AZ-204",
+                "AZ DP-203",
+                "AZ-104",
+                "Authentications",
+                "Authentications",
+                "Authentication",
+                "SafeNet",
+                "Authorization (Computing)",
+                "Authentications",
+                "WGUSID: 1619"
+            ],
+            "occupations": [
+                {
+                    "code": "11-0000",
+                    "targetNodeName": "Management Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "11-3000",
+                    "targetNodeName": "Operations Specialties Managers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "11-3020",
+                    "targetNodeName": "Computer and Information Systems Managers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "11-3021",
+                    "targetNodeName": "Computer and Information Systems Managers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1210",
+                    "targetNodeName": "Computer and Information Analysts",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1211",
+                    "targetNodeName": "Computer Systems Analysts",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1230",
+                    "targetNodeName": "Computer Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1231",
+                    "targetNodeName": "Computer Network Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1232",
+                    "targetNodeName": "Computer User Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1241",
+                    "targetNodeName": "Computer Network Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1245"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/cad699ef-64b9-40ee-81db-b5de69a90558",
+            "uuid": "cad699ef-64b9-40ee-81db-b5de69a90558",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:05.928479",
+            "archiveDate": null,
+            "skillName": "Network Connection Design",
+            "skillStatement": "Design network connections between a core network and an internet service provider.",
+            "categories": [
+                "Access Network"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "design",
+                "300-420_ENSLD",
+                "Access Network",
+                "Access Network",
+                "WGUSID: 10407",
+                "Access Network",
+                "OSMT Developer"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1230",
+                    "targetNodeName": "Computer Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1231",
+                    "targetNodeName": "Computer Network Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1241",
+                    "targetNodeName": "Computer Network Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/3ceba681-28fd-468f-91f1-223aa7a0a96a",
+            "uuid": "3ceba681-28fd-468f-91f1-223aa7a0a96a",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.083817",
+            "archiveDate": null,
+            "skillName": "Network Router Performance Monitoring",
+            "skillStatement": "Monitor network routers for performance issues.",
+            "categories": [
+                "Access Network"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "CompTIA_ITF+",
+                "Performance",
+                "monitor",
+                "Access Network",
+                "Access Network",
+                "Access Network",
+                "WGUSID: 10411"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1230",
+                    "targetNodeName": "Computer Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1231",
+                    "targetNodeName": "Computer Network Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1241",
+                    "targetNodeName": "Computer Network Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/d53bdeb9-f7fc-449a-baaf-b5e284e29c58",
+            "uuid": "d53bdeb9-f7fc-449a-baaf-b5e284e29c58",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.139052",
+            "archiveDate": null,
+            "skillName": "Network Router Security Monitoring",
+            "skillStatement": "Monitor network routers for security issues.",
+            "categories": [
+                "Access Network"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "CompTIA_ITF+",
+                "350-201_CBRCOR",
+                "Access Network",
+                "Access Network",
+                "Access Network",
+                "Routers",
+                "WGUSID: 10410"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1230",
+                    "targetNodeName": "Computer Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1231",
+                    "targetNodeName": "Computer Network Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1241",
+                    "targetNodeName": "Computer Network Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/398f0acd-d6a9-49af-9b7f-48a2f9b1e800",
+            "uuid": "398f0acd-d6a9-49af-9b7f-48a2f9b1e800",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.197601",
+            "archiveDate": null,
+            "skillName": "Router Network Traffic Configuration",
+            "skillStatement": "Configure network routers for traffic between a core network and an internet service provider.",
+            "categories": [
+                "Access Network"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "300-410_ENARSI",
+                "350-401_ENCOR",
+                "Access Network",
+                "Access Network",
+                "Access Network",
+                "WGUSID: 10408"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1230",
+                    "targetNodeName": "Computer Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1231",
+                    "targetNodeName": "Computer Network Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1241",
+                    "targetNodeName": "Computer Network Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/6198382a-9b80-4cb9-ad06-777b2c7a22e4",
+            "uuid": "6198382a-9b80-4cb9-ad06-777b2c7a22e4",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.268258",
+            "archiveDate": null,
+            "skillName": "Active Directory Replication Configuration",
+            "skillStatement": "Implement schema extensions for Active Directory.",
+            "categories": [
+                "Active Directory"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "Active Directory",
+                "Active Directory",
+                "Active Directory",
+                "Site Links",
+                "WGUSID: 10418"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1241",
+                    "targetNodeName": "Computer Network Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/c0544c43-1b6a-4593-aa85-9b31db2dd2bf",
+            "uuid": "c0544c43-1b6a-4593-aa85-9b31db2dd2bf",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.316262",
+            "archiveDate": null,
+            "skillName": "Active Directory Schema Extensions Implementation",
+            "skillStatement": "Configure forest and domain trusts for Active Directory.",
+            "categories": [
+                "Active Directory"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "Active Directory",
+                "Active Directory",
+                "Active Directory",
+                "Schema",
+                "WGUSID: 10416"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1241",
+                    "targetNodeName": "Computer Network Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/3449eae9-f52f-47cc-9ece-a16035659680",
+            "uuid": "3449eae9-f52f-47cc-9ece-a16035659680",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:08.094886",
+            "archiveDate": null,
+            "skillName": "Agile Kanban Board Management",
+            "skillStatement": "Manage project feature progress with agile Kanban boards.",
+            "categories": [
+                "Agile Methodology"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "Agile Methodology",
+                "Agile Methodology",
+                "Kanban Board",
+                "WGUSID: 10428",
+                "Agile Methodology"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1245"
+                },
+                {
+                    "code": "15-1250",
+                    "targetNodeName": "Software and Web Developers, Programmers, and Testers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1251",
+                    "targetNodeName": "Computer Programmers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1256"
+                },
+                {
+                    "code": "15-1257"
+                },
+                {
+                    "code": "15-1259"
+                },
+                {
+                    "code": "15-1290",
+                    "targetNodeName": "Miscellaneous Computer Occupations",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/5069cebe-102e-40ca-a2a8-7e06cfd0214b",
+            "uuid": "5069cebe-102e-40ca-a2a8-7e06cfd0214b",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.365596",
+            "archiveDate": null,
+            "skillName": "Agile Scrum Board Management",
+            "skillStatement": "Manage project feature progress with agile scrum boards.",
+            "categories": [
+                "Agile Methodology"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "CompTIA_ITF+",
+                "Agile Methodology",
+                "Agile Methodology",
+                "Agile Methodology",
+                "SCRUM",
+                "Features",
+                "WGUSID: 10427"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1245"
+                },
+                {
+                    "code": "15-1250",
+                    "targetNodeName": "Software and Web Developers, Programmers, and Testers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1256"
+                },
+                {
+                    "code": "15-1257"
+                },
+                {
+                    "code": "15-1259"
+                },
+                {
+                    "code": "15-1290",
+                    "targetNodeName": "Miscellaneous Computer Occupations",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/2355dad8-d1ef-47f8-a663-899473ad2ce2",
+            "uuid": "2355dad8-d1ef-47f8-a663-899473ad2ce2",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.415145",
+            "archiveDate": null,
+            "skillName": "Agile Solutions Development",
+            "skillStatement": "Communicate blocking issues during the development cycle.",
+            "categories": [
+                "Agile Methodology"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "specifications",
+                "Agile Methodology",
+                "Agile Methodology",
+                "Agile Methodology",
+                "WGUSID: 10423"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1210",
+                    "targetNodeName": "Computer and Information Analysts",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1211",
+                    "targetNodeName": "Computer Systems Analysts",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1250",
+                    "targetNodeName": "Software and Web Developers, Programmers, and Testers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1251",
+                    "targetNodeName": "Computer Programmers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1256"
+                },
+                {
+                    "code": "15-1259"
+                },
+                {
+                    "code": "15-1290",
+                    "targetNodeName": "Miscellaneous Computer Occupations",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/c3c19663-2c8c-4183-9120-6f35c25154bf",
+            "uuid": "c3c19663-2c8c-4183-9120-6f35c25154bf",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.471546",
+            "archiveDate": null,
+            "skillName": "Internal Partners Agile Project Goal Accomplishment",
+            "skillStatement": "Accomplish agile project goals through collaboration with internal partners.",
+            "categories": [
+                "Agile Methodology"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "Agile Methodology",
+                "Agile Methodology",
+                "Agile Methodology",
+                "WGUSID: 10425"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1210",
+                    "targetNodeName": "Computer and Information Analysts",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1211",
+                    "targetNodeName": "Computer Systems Analysts",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1245"
+                },
+                {
+                    "code": "15-1250",
+                    "targetNodeName": "Software and Web Developers, Programmers, and Testers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1251",
+                    "targetNodeName": "Computer Programmers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1256"
+                },
+                {
+                    "code": "15-1257"
+                },
+                {
+                    "code": "15-1259"
+                },
+                {
+                    "code": "15-1290",
+                    "targetNodeName": "Miscellaneous Computer Occupations",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/4ec5611d-675a-4c5d-9da7-429efd8d3040",
+            "uuid": "4ec5611d-675a-4c5d-9da7-429efd8d3040",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.525693",
+            "archiveDate": null,
+            "skillName": "Cloud Computing Environment Deployment",
+            "skillStatement": "Deploy a cloud computing environment in Amazon Web Services (AWS).",
+            "categories": [
+                "Amazon Web Services"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "Amazon Web Services",
+                "Cloud Computing",
+                "Amazon_AWS_SysOps_Admin_Associate",
+                "Amazon Web Services",
+                "WGUSID: 10441",
+                "Amazon Web Services"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/a0ae4134-6f69-43cc-b536-7c09ab45fdf5",
+            "uuid": "a0ae4134-6f69-43cc-b536-7c09ab45fdf5",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.575322",
+            "archiveDate": null,
+            "skillName": "Cloud Computing Environment Maintenance",
+            "skillStatement": "Maintain a cloud computing environment in Amazon Web Services (AWS).",
+            "categories": [
+                "Amazon Web Services"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "Amazon Web Services",
+                "Cloud Computing",
+                "Amazon_AWS_SysOps_Admin_Associate",
+                "Amazon Web Services",
+                "Amazon Web Services",
+                "WGUSID: 10442"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/2444c3b2-37b9-4f4d-92a0-6260ad0a33dd",
+            "uuid": "2444c3b2-37b9-4f4d-92a0-6260ad0a33dd",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.634599",
+            "archiveDate": null,
+            "skillName": "Access Application Programming Interface (API) to Change Data",
+            "skillStatement": "Access an application programming interface (API) with a programming language to change data for a task.",
+            "categories": [
+                "Software Development",
+                "Application Programming Interface (API)"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "300-435_ENAUTO",
+                "350-201_CBRCOR",
+                "Software Development",
+                "300-920_DEVWBX",
+                "300-835_CLAUTO",
+                "300-910_DEVOPS",
+                "300-915_DEVIOT",
+                "350-901_DEVCOR",
+                "200-901_DEVASC",
+                "Application Programming Interface (API)",
+                "Application Programming Interface (API)",
+                "WGUSID: 10460",
+                "Application Programming Interface (API)",
+                "OSMT Developer",
+                "Software Developer"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/a23fcc22-12cc-429b-81fc-c4e913d98c9e",
+            "uuid": "a23fcc22-12cc-429b-81fc-c4e913d98c9e",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.691748",
+            "archiveDate": null,
+            "skillName": "Systems Engineering",
+            "skillStatement": "Engineer systems that leverage multi-platform application programming interface (API).",
+            "categories": [
+                "Application Programming Interface (API)"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "Visual Studio",
+                "Application Programming Interface (API)",
+                "Application Programming Interface (API)",
+                "Application Programming Interface (API)",
+                "Eclipse",
+                "Visual Studio Code",
+                "WGUSID: 592"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1220",
+                    "targetNodeName": "Computer and Information Research Scientists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1221",
+                    "targetNodeName": "Computer and Information Research Scientists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1245"
+                },
+                {
+                    "code": "15-1250",
+                    "targetNodeName": "Software and Web Developers, Programmers, and Testers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1251",
+                    "targetNodeName": "Computer Programmers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1256"
+                },
+                {
+                    "code": "15-1257"
+                },
+                {
+                    "code": "15-1259"
+                },
+                {
+                    "code": "15-1290",
+                    "targetNodeName": "Miscellaneous Computer Occupations",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/4c98ac7d-a27b-4c75-aa53-2f273bb2f269",
+            "uuid": "4c98ac7d-a27b-4c75-aa53-2f273bb2f269",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.754817",
+            "archiveDate": null,
+            "skillName": "Backup File Configuration",
+            "skillStatement": "Configure file backups to a cloud solution.",
+            "categories": [
+                "Backup And Restore"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "NICE_SP_DEV",
+                "NICE_SP_ARC",
+                "NICE_SP_SYS",
+                "NICE_AN_LNG",
+                "NICE_PR_CIR",
+                "NICE_PR_INF",
+                "NICE_OM_DTA",
+                "NICE_OM_NET",
+                "NICE_OM_ADM",
+                "NICE_PR_VAM",
+                "Comp_TIA_A+",
+                "Comp_TIA_IT_Operations_Specialist",
+                "Backup And Restore",
+                "Backup And Restore",
+                "Backup And Restore",
+                "WGUSID: 10462"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1241",
+                    "targetNodeName": "Computer Network Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1250",
+                    "targetNodeName": "Software and Web Developers, Programmers, and Testers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1256"
+                },
+                {
+                    "code": "15-1259"
+                },
+                {
+                    "code": "15-1290",
+                    "targetNodeName": "Miscellaneous Computer Occupations",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/9f49f23a-8301-4b61-a0df-cbdec28b6b25",
+            "uuid": "9f49f23a-8301-4b61-a0df-cbdec28b6b25",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.808433",
+            "archiveDate": null,
+            "skillName": "Backup File Restoration Identification",
+            "skillStatement": "Identify which backed-up files must be restored.",
+            "categories": [
+                "Backup And Restore"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "NICE_SP_DEV",
+                "NICE_SP_ARC",
+                "NICE_SP_SYS",
+                "NICE_AN_LNG",
+                "NICE_PR_CIR",
+                "NICE_OM_DTA",
+                "NICE_OM_ADM",
+                "NICE_PR_VAM",
+                "Comp_TIA_A+",
+                "Comp_TIA_IT_Operations_Specialist",
+                "Backup And Restore",
+                "Backup And Restore",
+                "Backup And Restore",
+                "WGUSID: 10461"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1241",
+                    "targetNodeName": "Computer Network Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1245"
+                },
+                {
+                    "code": "15-1250",
+                    "targetNodeName": "Software and Web Developers, Programmers, and Testers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1256"
+                },
+                {
+                    "code": "15-1259"
+                },
+                {
+                    "code": "15-1290",
+                    "targetNodeName": "Miscellaneous Computer Occupations",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/def5e07c-4117-4b47-a720-e428d6020df5",
+            "uuid": "def5e07c-4117-4b47-a720-e428d6020df5",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.870168",
+            "archiveDate": null,
+            "skillName": "Identify Disaster Recovery Solutions",
+            "skillStatement": "Identify disaster recovery solutions for backing up and restoring  computer systems.",
+            "categories": [
+                "Backup And Restore"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "NICE_SP_DEV",
+                "NICE_SP_ARC",
+                "NICE_SP_SYS",
+                "NICE_AN_TWA",
+                "NICE_AN_EXP",
+                "NICE_AN_ASA",
+                "NICE_AN_TGT",
+                "NICE_AN_LNG",
+                "NICE_CO_CLO",
+                "NICE_CO_OPL",
+                "NICE_CO_OPS",
+                "NICE_PR_CIR",
+                "NICE_PR_INF",
+                "NICE_OM_DTA",
+                "NICE_OM_NET",
+                "NICE_OM_ADM",
+                "NICE_PR_VAM",
+                "Comp_TIA_A+",
+                "Comp_TIA_IT_Operations_Specialist",
+                "Backup And Restore",
+                "Backup And Restore",
+                "Backup And Restore",
+                "WGUSID: 10463"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1210",
+                    "targetNodeName": "Computer and Information Analysts",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1211",
+                    "targetNodeName": "Computer Systems Analysts",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1241",
+                    "targetNodeName": "Computer Network Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1250",
+                    "targetNodeName": "Software and Web Developers, Programmers, and Testers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1256"
+                },
+                {
+                    "code": "15-1259"
+                },
+                {
+                    "code": "15-1290",
+                    "targetNodeName": "Miscellaneous Computer Occupations",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/40bf4278-6ead-48ca-87d6-ac799e43a332",
+            "uuid": "40bf4278-6ead-48ca-87d6-ac799e43a332",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.931658",
+            "archiveDate": null,
+            "skillName": "Backup Hardware Determination",
+            "skillStatement": "Determine the hardware needed for the backup of a device's data.",
+            "categories": [
+                "Backup Devices"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "NICE_AN_LNG",
+                "NICE_OM_ANA",
+                "NICE_PR_CIR",
+                "NICE_OM_DTA",
+                "NICE_OM_NET",
+                "NICE_OM_ADM",
+                "NICE_PR_VAM",
+                "Comp_TIA_A+",
+                "Comp_TIA_IT_Operations_Specialist",
+                "Backup Devices",
+                "Backup Devices",
+                "WGUSID: 10468",
+                "Backup Devices"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1245"
+                },
+                {
+                    "code": "15-1250",
+                    "targetNodeName": "Software and Web Developers, Programmers, and Testers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1259"
+                },
+                {
+                    "code": "15-1290",
+                    "targetNodeName": "Miscellaneous Computer Occupations",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/e42429fb-edc8-4ff5-ab5a-583ab05effac",
+            "uuid": "e42429fb-edc8-4ff5-ab5a-583ab05effac",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:06.985954",
+            "archiveDate": null,
+            "skillName": "Determine Files Needing Backup",
+            "skillStatement": "Determine which files must be backed up from one device to another.",
+            "categories": [
+                "Backup Devices"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "NICE_AN_LNG",
+                "NICE_PR_CIR",
+                "NICE_OM_DTA",
+                "NICE_PR_VAM",
+                "Comp_TIA_A+",
+                "Comp_TIA_IT_Operations_Specialist",
+                "Backup Devices",
+                "Backup Devices",
+                "Backup Devices",
+                "WGUSID: 10466"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1245"
+                },
+                {
+                    "code": "15-1250",
+                    "targetNodeName": "Software and Web Developers, Programmers, and Testers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1259"
+                },
+                {
+                    "code": "15-1290",
+                    "targetNodeName": "Miscellaneous Computer Occupations",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/8501c68e-3615-420f-8735-35e3d33ad7fe",
+            "uuid": "8501c68e-3615-420f-8735-35e3d33ad7fe",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:07.045357",
+            "archiveDate": null,
+            "skillName": "Perform Manual Backup",
+            "skillStatement": "Perform manual backups of data from a device.",
+            "categories": [
+                "Backup Devices"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "NICE_AN_LNG",
+                "NICE_OM_ANA",
+                "NICE_PR_CIR",
+                "NICE_OM_DTA",
+                "NICE_OM_ADM",
+                "NICE_PR_VAM",
+                "Comp_TIA_A+",
+                "Comp_TIA_IT_Operations_Specialist",
+                "Backup Devices",
+                "Backup Devices",
+                "Backup Devices",
+                "WGUSID: 10470"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1250",
+                    "targetNodeName": "Software and Web Developers, Programmers, and Testers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1259"
+                },
+                {
+                    "code": "15-1290",
+                    "targetNodeName": "Miscellaneous Computer Occupations",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/957a2791-5eaf-4005-9fee-46d1c7c4727e",
+            "uuid": "957a2791-5eaf-4005-9fee-46d1c7c4727e",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:07.095854",
+            "archiveDate": null,
+            "skillName": "Border Gateway Protocol Solution Implementation",
+            "skillStatement": "Implement Border Gateway Protocol solutions.",
+            "categories": [
+                "Border Gateway Protocol"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "NICE_AN_LNG",
+                "NICE_PR_INF",
+                "NICE_OM_NET",
+                "CompTia_Network+",
+                "300-415_ENSDWI",
+                "300-410_ENARSI",
+                "350-401_ENCOR",
+                "Comp_TIA_IT_Operations_Specialist",
+                "Comp_TIA_Secure_Infrastructure_Specialist",
+                "Comp_TIA_Security_+",
+                "Border Gateway Protocol",
+                "Border Gateway Protocol",
+                "Border Gateway Protocol",
+                "WGUSID: 10488"
+            ],
+            "occupations": [
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1241",
+                    "targetNodeName": "Computer Network Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                }
+            ]
+        },
+        {
+            "id": "http://localhost:8080/api/skills/611e3797-3597-4dde-afc9-0f1e7d575baa",
+            "uuid": "611e3797-3597-4dde-afc9-0f1e7d575baa",
+            "status": "published",
+            "publishDate": "2023-03-30T13:02:08.201086",
+            "archiveDate": null,
+            "skillName": "Implementation",
+            "skillStatement": "Implement continuity plans during the time of a disaster.",
+            "categories": [
+                "Business Continuity Planning"
+            ],
+            "keywords": [
+                "Western Governors University",
+                "AZ-304",
+                "AZ-303",
+                "AZ-900",
+                "AZ-204",
+                "AZ DP-203",
+                "AZ-104",
+                "Business Continuity Planning",
+                "Business Continuity Planning",
+                "Business Continuity Planning",
+                "WGUSID: 4367"
+            ],
+            "occupations": [
+                {
+                    "code": "11-0000",
+                    "targetNodeName": "Management Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "11-3000",
+                    "targetNodeName": "Operations Specialties Managers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "11-3020",
+                    "targetNodeName": "Computer and Information Systems Managers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "11-3021",
+                    "targetNodeName": "Computer and Information Systems Managers",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-0000",
+                    "targetNodeName": "Computer and Mathematical Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1200",
+                    "targetNodeName": "Computer Occupations",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1210",
+                    "targetNodeName": "Computer and Information Analysts",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1211",
+                    "targetNodeName": "Computer Systems Analysts",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1230",
+                    "targetNodeName": "Computer Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1231",
+                    "targetNodeName": "Computer Network Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1232",
+                    "targetNodeName": "Computer User Support Specialists",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1240",
+                    "targetNodeName": "Database and Network Administrators and Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1241",
+                    "targetNodeName": "Computer Network Architects",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1244",
+                    "targetNodeName": "Network and Computer Systems Administrators",
+                    "frameworkName": "bls"
+                },
+                {
+                    "code": "15-1245"
+                }
+            ]
+        }
+    ],
+    "author": "OSMT Developer",
+    "status": "published",
+    "creationDate": "2023-02-28T00:03:27.027403Z",
+    "updateDate": "2023-03-30T13:03:47.376743Z",
+    "archiveDate": null,
+    "publishDate": "2023-03-30T13:00:49.220887Z",
+    "description": "Computer Networking in IT",
+    "skillKeywords": {
+        "Alignment": [
+            {
+                "keyword": {
+                    "id": "https://skills.emsidata.com/skills/KS1203M5X6LQVSRTW88J",
+                    "skillName": "Access Network"
+                },
+                "count": 4
+            },
+            {
+                "keyword": {
+                    "id": "https://skills.emsidata.com/skills/KS1205G5ZKS8ZZWVPM9Y",
+                    "skillName": "Active Directory"
+                },
+                "count": 2
+            },
+            {
+                "keyword": {
+                    "id": "https://skills.emsidata.com/skills/KS1208P6ZMZ4N872Y7X5",
+                    "skillName": "Application Programming Interface (API)"
+                },
+                "count": 2
+            },
+            {
+                "keyword": {
+                    "id": "https://skills.emsidata.com/skills/KS120B874P2P6BK1MQ0T",
+                    "skillName": "Agile Methodology"
+                },
+                "count": 4
+            },
+            {
+                "keyword": {
+                    "id": "https://skills.emsidata.com/skills/KS120FG6YP8PQYYNQY9B",
+                    "skillName": "Amazon Web Services"
+                },
+                "count": 2
+            },
+            {
+                "keyword": {
+                    "id": "https://skills.emsidata.com/skills/KS120S165SXK6CKVK77P",
+                    "skillName": "Authentications"
+                },
+                "count": 2
+            },
+            {
+                "keyword": {
+                    "id": "https://skills.emsidata.com/skills/KS120VW6JMZHZXZGD72C",
+                    "skillName": "Backup Devices"
+                },
+                "count": 3
+            },
+            {
+                "keyword": {
+                    "id": "https://skills.emsidata.com/skills/KS120ZX6H5TZTL8P9N3F",
+                    "skillName": "Border Gateway Protocol"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "id": "https://skills.emsidata.com/skills/KS1218H6QYLZC35BYH32",
+                    "skillName": "Business Continuity Planning"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "id": "https://skills.emsidata.com/skills/KS442325XYQ2CZR1VB7N",
+                    "skillName": "Backup And Restore"
+                },
+                "count": 3
+            }
+        ],
+        "Author": [
+            {
+                "keyword": "OSMT Developer",
+                "count": 2
+            },
+            {
+                "keyword": "Software Developer",
+                "count": 1
+            },
+            {
+                "keyword": "Western Governors University",
+                "count": 24
+            }
+        ],
+        "Category": [
+            {
+                "keyword": "Access Network",
+                "count": 4
+            },
+            {
+                "keyword": "Active Directory",
+                "count": 2
+            },
+            {
+                "keyword": "Agile Methodology",
+                "count": 4
+            },
+            {
+                "keyword": "Amazon Web Services",
+                "count": 2
+            },
+            {
+                "keyword": "Application Programming Interface (API)",
+                "count": 2
+            },
+            {
+                "keyword": "Authentications",
+                "count": 2
+            },
+            {
+                "keyword": "Backup And Restore",
+                "count": 3
+            },
+            {
+                "keyword": "Backup Devices",
+                "count": 3
+            },
+            {
+                "keyword": "Border Gateway Protocol",
+                "count": 1
+            },
+            {
+                "keyword": "Business Continuity Planning",
+                "count": 1
+            },
+            {
+                "keyword": "Software Development",
+                "count": 1
+            }
+        ],
+        "Certification": [
+            {
+                "keyword": {
+                    "name": "200-901_DEVASC"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "name": "300-410_ENARSI"
+                },
+                "count": 2
+            },
+            {
+                "keyword": {
+                    "name": "300-415_ENSDWI"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "name": "300-420_ENSLD"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "name": "300-435_ENAUTO"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "name": "300-835_CLAUTO"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "name": "300-910_DEVOPS"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "name": "300-915_DEVIOT"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "name": "300-920_DEVWBX"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "name": "350-201_CBRCOR"
+                },
+                "count": 2
+            },
+            {
+                "keyword": {
+                    "name": "350-401_ENCOR"
+                },
+                "count": 2
+            },
+            {
+                "keyword": {
+                    "name": "350-901_DEVCOR"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "name": "AZ DP-203"
+                },
+                "count": 3
+            },
+            {
+                "keyword": {
+                    "name": "AZ-104"
+                },
+                "count": 3
+            },
+            {
+                "keyword": {
+                    "name": "AZ-204"
+                },
+                "count": 3
+            },
+            {
+                "keyword": {
+                    "name": "AZ-303"
+                },
+                "count": 3
+            },
+            {
+                "keyword": {
+                    "name": "AZ-304"
+                },
+                "count": 3
+            },
+            {
+                "keyword": {
+                    "name": "AZ-900"
+                },
+                "count": 3
+            },
+            {
+                "keyword": {
+                    "name": "Amazon_AWS_SysOps_Admin_Associate"
+                },
+                "count": 2
+            },
+            {
+                "keyword": {
+                    "name": "CompTIA_ITF+"
+                },
+                "count": 3
+            },
+            {
+                "keyword": {
+                    "name": "CompTia_Network+"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "name": "Comp_TIA_A+"
+                },
+                "count": 6
+            },
+            {
+                "keyword": {
+                    "name": "Comp_TIA_IT_Operations_Specialist"
+                },
+                "count": 7
+            },
+            {
+                "keyword": {
+                    "name": "Comp_TIA_Secure_Infrastructure_Specialist"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "name": "Comp_TIA_Security_+"
+                },
+                "count": 1
+            }
+        ],
+        "Employer": [],
+        "Keyword": [
+            {
+                "keyword": "Access Network",
+                "count": 4
+            },
+            {
+                "keyword": "Active Directory",
+                "count": 2
+            },
+            {
+                "keyword": "Agile Methodology",
+                "count": 4
+            },
+            {
+                "keyword": "Amazon Web Services",
+                "count": 2
+            },
+            {
+                "keyword": "Application Programming Interface (API)",
+                "count": 2
+            },
+            {
+                "keyword": "Authentication",
+                "count": 2
+            },
+            {
+                "keyword": "Authentications",
+                "count": 2
+            },
+            {
+                "keyword": "Authorization (Computing)",
+                "count": 2
+            },
+            {
+                "keyword": "Backup And Restore",
+                "count": 3
+            },
+            {
+                "keyword": "Backup Devices",
+                "count": 3
+            },
+            {
+                "keyword": "Border Gateway Protocol",
+                "count": 1
+            },
+            {
+                "keyword": "Business Continuity Planning",
+                "count": 1
+            },
+            {
+                "keyword": "Cloud Computing",
+                "count": 2
+            },
+            {
+                "keyword": "Eclipse",
+                "count": 1
+            },
+            {
+                "keyword": "Features",
+                "count": 1
+            },
+            {
+                "keyword": "Kanban Board",
+                "count": 1
+            },
+            {
+                "keyword": "Performance",
+                "count": 1
+            },
+            {
+                "keyword": "Routers",
+                "count": 1
+            },
+            {
+                "keyword": "SCRUM",
+                "count": 1
+            },
+            {
+                "keyword": "SafeNet",
+                "count": 2
+            },
+            {
+                "keyword": "Schema",
+                "count": 1
+            },
+            {
+                "keyword": "Site Links",
+                "count": 1
+            },
+            {
+                "keyword": "Visual Studio",
+                "count": 1
+            },
+            {
+                "keyword": "Visual Studio Code",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10407",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10408",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10410",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10411",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10416",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10418",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10423",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10425",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10427",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10428",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10441",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10442",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10460",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10461",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10462",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10463",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10466",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10468",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10470",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 10488",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 1619",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 1619.1",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 4367",
+                "count": 1
+            },
+            {
+                "keyword": "WGUSID: 592",
+                "count": 1
+            },
+            {
+                "keyword": "design",
+                "count": 1
+            },
+            {
+                "keyword": "monitor",
+                "count": 1
+            },
+            {
+                "keyword": "specifications",
+                "count": 1
+            }
+        ],
+        "Standard": [
+            {
+                "keyword": {
+                    "skillName": "NICE_SP_DEV"
+                },
+                "count": 3
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_SP_ARC"
+                },
+                "count": 3
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_SP_SYS"
+                },
+                "count": 3
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_AN_LNG"
+                },
+                "count": 7
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_PR_CIR"
+                },
+                "count": 6
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_PR_INF"
+                },
+                "count": 3
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_OM_DTA"
+                },
+                "count": 6
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_OM_NET"
+                },
+                "count": 4
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_OM_ADM"
+                },
+                "count": 5
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_PR_VAM"
+                },
+                "count": 6
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_AN_TWA"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_AN_EXP"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_AN_ASA"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_AN_TGT"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_CO_CLO"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_CO_OPL"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_CO_OPS"
+                },
+                "count": 1
+            },
+            {
+                "keyword": {
+                    "skillName": "NICE_OM_ANA"
+                },
+                "count": 2
+            }
+        ]
+    },
+    "creator": "https://credentialengineregistry.org/resources/ce-036d082d-d80e-41a7-99a0-2d63a4ad3a4a",
+    "@context": "https://rsd.openskillsnetwork.org/context-v1.json"
+}

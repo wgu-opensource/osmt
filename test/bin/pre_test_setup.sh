@@ -96,7 +96,7 @@ main() {
   echo_info "Creating Postman Collection for unversioned / v2 API..."
   create_postman_collection "v2"|| exit 135
 
-  echo_info "Creating Postman Collection for unversioned / v3 API..."
+  echo_info "Creating Postman Collection for v3 API..."
   create_postman_collection "v3"|| exit 135
 
   # Insert postman assertion tests
@@ -106,7 +106,7 @@ main() {
     "${project_dir}/test/postman/osmt-testing-api-v2.postman_collection.json" \
     "v2"
 
-  echo_info "Injecting Postman tests for unversioned / v3 API..."
+  echo_info "Injecting Postman tests for v3 API..."
   inject_tests \
     "${project_dir}/test/postman/osmt-api-v3.postman_collection.json" \
     "${project_dir}/test/postman/osmt-testing-api-v3.postman_collection.json" \

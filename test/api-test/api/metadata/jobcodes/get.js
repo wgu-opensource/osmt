@@ -5,14 +5,14 @@ let responseData = pm.response.json();
 console.log("Check job codes");
 
 pm.test("Check job codes count", function () {
-  pm.expect(expectedData.length).to.equal(50);
+  pm.expect(expectedData.length).to.equal(responseData.length);
 });
 
 for (let jobCodeIndex = 0; jobCodeIndex < expectedData.length; jobCodeIndex++) {
   let expectedJobCode = expectedData[0];
   let jobCodeNum = jobCodeIndex + 1;
 
-  let responseJobCode = expectedData[jobCodeIndex];
+  let responseJobCode = responseData[jobCodeIndex];
   pm.test(`JobCode ${jobCodeNum} - Check Id exists`, function () {
     pm.expect(responseJobCode.id).exists;
   });

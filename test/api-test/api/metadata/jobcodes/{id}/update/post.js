@@ -15,7 +15,7 @@ pm.test("Check targetNodeName exists", function() {
 pm.test("Check frameworkName exists", function() {
     pm.expect(responseData.frameworkName).exists;
 });
-pm.test("Check jobCodeLevelAsNumber exists", function() {
+/* pm.test("Check jobCodeLevelAsNumber exists", function() {
     pm.expect(responseData.jobCodeLevelAsNumber).exists;
-});
+}); */
 

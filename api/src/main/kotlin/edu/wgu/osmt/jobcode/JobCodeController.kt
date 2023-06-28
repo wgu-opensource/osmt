@@ -77,7 +77,7 @@ class JobCodeController @Autowired constructor(
     ): HttpEntity<ApiJobCode> {
         val jobCode = jobCodeRepository.findById(id)
         if (jobCode != null) {
-            return ResponseEntity.status(200).body(ApiJobCode.fromJobCode(jobCode.toModel()))
+            return ResponseEntity.status(200).body(ApiJobCode.fromJobCode(jobCode.toModel(),  ApiJobCode.getLevelFromJobCode(jobCode.toModel())))
         } else {
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }

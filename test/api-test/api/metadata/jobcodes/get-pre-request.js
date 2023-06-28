@@ -21,5 +21,3 @@ if (sortId < 0) {
 else {
   pm.request.url.query.idx(sortId).value = "name.asc";
 }
-
-let queryId = pm.request.url.query.indexOf('query')

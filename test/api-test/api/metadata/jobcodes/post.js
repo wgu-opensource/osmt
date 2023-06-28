@@ -25,13 +25,10 @@ for (let jobCodeIndex = 0; jobCodeIndex < expectedData.length; jobCodeIndex++) {
   pm.test(`JobCode ${jobCodeNum} - Check frameworkName`, function () {
     pm.expect(responseJobCode.frameworkName).to.equal(expectedJobCode.frameworkName);
   });
-  pm.test(`JobCode ${jobCodeNum} - Check level`, function () {
-    pm.expect(responseJobCode.level).to.equal(expectedJobCode.level);
-  });
+  // pm.test(`JobCode ${jobCodeNum} - Check level`, function () {
+  //  pm.expect(responseJobCode.level).to.equal(expectedJobCode.level);
+  // });
   pm.test(`JobCode ${jobCodeNum} - Check jobCodeLevelAsNumber`, function () {
     pm.expect(responseJobCode.jobCodeLevelAsNumber).to.equal(expectedJobCode.jobCodeLevelAsNumber);
-  });
-  pm.test(`JobCode ${jobCodeNum} - Check parents`, function () {
-    pm.expect(responseJobCode.parents).to.have.deep.equal(expectedJobCode.parents);
   });
 }

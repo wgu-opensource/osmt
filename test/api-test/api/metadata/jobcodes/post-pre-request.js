@@ -1,9 +1,8 @@
 let jobCodes = [
   {
-    "name": "Manuel Category 20230619-1644",
-    "url": "https://wgu.keywords/20230619-1644",
-    "type": "Category",
-    "framework": "20230619-1644"
+    "code": "95-1240",
+    "targetNodeName": "20230622-1519",
+    "frameworkName": "Framework 20230622-1519"
   }
 ];
 

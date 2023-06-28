@@ -1,15 +1,12 @@
-let jobCodes = [
-  {
+let jobCode = {
     "code": "95-1240",
     "targetNodeName": "Name 20230622-1519",
-    "frameworkName": "Framework 20230622-1519",
-    "jobCodeLevelAsNumber": 3
-  }
-];
+    "frameworkName": "Framework 20230622-1519"
+};
 
 let body = {
   mode: 'raw',
-  raw: JSON.stringify(jobCodes),
+  raw: JSON.stringify(jobCode),
   options: {
     raw: {
       language: 'json'

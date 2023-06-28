@@ -208,6 +208,10 @@ export enum ApiSortOrder {
   CodeDesc = "code.desc",
   JobCodeLevelAsc = "jobCodeLevel.asc",
   JobCodeLevelDesc = "jobCodeLevel.desc",
+  KeywordNameAsc = "name.asc",
+  KeywordNameDesc = "name.desc",
+  KeywordFrameworkAsc = "framework.asc",
+  KeywordFrameworkDesc = "framework.desc"
 }
 
 export enum AuditOperationType {

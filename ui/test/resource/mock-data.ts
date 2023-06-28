@@ -20,6 +20,8 @@ import { PaginatedCollections, PaginatedSkills } from "../../src/app/richskill/s
 import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
 import { IJobCode } from "../../src/app/metadata/job-codes/Jobcode";
 import { PaginatedMetadata } from "../../src/app/metadata/PaginatedMetadata"
+import {NamedReferenceInterface} from "../../src/app/metadata/named-references/NamedReference";
+import {MetadataType} from "../../src/app/metadata/rsd-metadata.enum";
 
 // Add mock data here.
 // For more examples, see https://github.com/WGU-edu/ema-eval-ui/blob/develop/src/app/admin/pages/edit-user/edit-user.component.spec.ts
@@ -50,6 +52,17 @@ export function createMockJobcode(targetNode = 42, targetNodeName = "my jobcode 
     minorCode: "my jobcode minorCode",
     url: "my jobcode url",
     parents: undefined
+  }
+}
+
+export function createMockNamedReference2(
+  id = 33,
+  name = "Name",
+  type = MetadataType.Category,
+  url = "http://url123",
+  framework = "Framework"
+): NamedReferenceInterface {
+  return {id,name,type,url,framework, skillCount: 0
   }
 }
 
@@ -377,6 +390,24 @@ export function createMockPaginatedMetaDataWithJobCodes(jobCodeCount = 1, total 
 
   return new PaginatedMetadata(
     jobCodes,
+    total
+  )
+}
+
+export function createMockPaginatedMetaDataWithNamedReferences(namedReferenceCount = 1, total = 10): PaginatedMetadata {
+  if (namedReferenceCount > total) {
+    throw new RangeError(`'pageCount' must be <= 'total'`)
+  }
+
+  const namedReferences = []
+  for (let c = 1; c <= namedReferenceCount; ++c) {
+    namedReferences.push(
+      createMockNamedReference2()
+    )
+  }
+
+  return new PaginatedMetadata(
+    namedReferences,
     total
   )
 }

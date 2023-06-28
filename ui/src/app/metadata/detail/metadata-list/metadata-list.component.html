@@ -31,7 +31,7 @@
       </form>
     </div>
 
-    <div class="t-margin-medium t-margin-bottom">
+    <div *ngIf="totalPageCount" class="t-margin-medium t-margin-bottom">
       <app-blocking-loader [observables]="[resultsLoaded]">
         <p class="t-visuallyHidden">Select one or more records in the table, or select all in the table heading, then use the action menu to delete the selected ones.</p>
         <app-job-code-table
@@ -51,6 +51,7 @@
 
         <app-named-reference-table
           *ngIf="!isJobCodeDataSelected"
+          [metadataSelected] = selectedMetadataType
           [allowSorting]="true"
           [items]="getNamedReferences()"
           [currentSort]="columnSort"

@@ -87,7 +87,6 @@ import {BatchImportComponent} from "./richskill/import/batch-import.component"
 import {FieldMappingSelectComponent, FieldMappingTableComponent} from "./richskill/import/field-mapping-table.component"
 import {
   ImportPreviewTableComponent,
-  InlineErrorComponent,
   NamedReferenceComponent
 } from "./richskill/import/import-preview-table.component"
 import {AuditLogComponent} from "./richskill/detail/audit-log.component"
@@ -111,6 +110,7 @@ import { SizePaginationComponent } from "./table/skills-library-table/size-pagin
 import {OsmtTableModule} from "./table/osmt-table.module"
 import { getBaseApi } from "./api-versions"
 import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
+import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
 
 export function initializeApp(
   appConfig: AppConfig,

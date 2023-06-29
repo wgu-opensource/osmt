@@ -150,13 +150,6 @@
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-checker
-            neutralMessage=""
-            searchingMessage="Checking for skill statement similarity …"
-            affirmativeMessage="No similar skill statements found in library"
-            [showAccordion]="false"
-            [searching]="searchingSimilarity"
-            [similarSkills]="similarSkills"></app-checker>
 
           <ng-template [ngIf]="similarSkillCount > 0">
             <p class="t-type-small t-margin-small">{{similarSkillCount}} RSDs contain skill statements that are very similar to those already in the library.</p>

@@ -3,7 +3,7 @@ package edu.wgu.osmt.richskill
 import edu.wgu.osmt.BaseDockerizedTest
 import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.HasElasticsearchReset
-import edu.wgu.osmt.RoutePaths.EXPORT_LIBRARY_CSV
+import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiSearch
@@ -23,6 +23,7 @@ import edu.wgu.osmt.task.TaskStatus
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import org.apache.commons.lang3.StringUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
@@ -47,13 +48,13 @@ import java.util.*
 
 @Transactional
 internal class RichSkillControllerTest @Autowired constructor(
-        override val richSkillEsRepo: RichSkillEsRepo,
-        val taskMessageService: TaskMessageService,
-        val oAuthHelper: OAuthHelper,
-        val appConfig: AppConfig,
-        override val collectionEsRepo: CollectionEsRepo,
-        override val keywordEsRepo: KeywordEsRepo,
-        override val jobCodeEsRepo: JobCodeEsRepo
+    override val richSkillEsRepo: RichSkillEsRepo,
+    val taskMessageService: TaskMessageService,
+    val oAuthHelper: OAuthHelper,
+    val appConfig: AppConfig,
+    override val collectionEsRepo: CollectionEsRepo,
+    override val keywordEsRepo: KeywordEsRepo,
+    override val jobCodeEsRepo: JobCodeEsRepo
 ): SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset {
 
     var authentication: Authentication = Mockito.mock(Authentication::class.java)
@@ -82,7 +83,28 @@ internal class RichSkillControllerTest @Autowired constructor(
         richSkillEsRepo.saveAll(listOfSkills)
 
         // Act
-        val result = richSkillController.allPaginated(
+        val result = richSkillController.allPaginatedV2(
+                UriComponentsBuilder.newInstance(),
+                size,
+                0,
+                arrayOf("draft","published"),
+                "",
+                nullJwt
+        )
+
+        // Assert
+        assertThat(result.body?.size).isEqualTo(size)
+    }
+
+    @Test
+    fun testAllPaginatedV2(){
+        // Arrange
+        val size = 50
+        val listOfSkills = mockData.getRichSkillDocs()
+        richSkillEsRepo.saveAll(listOfSkills)
+
+        // Act
+        val result = richSkillController.allPaginatedV2(
                 UriComponentsBuilder.newInstance(),
                 size,
                 0,
@@ -182,7 +204,29 @@ internal class RichSkillControllerTest @Autowired constructor(
         val result = richSkillController.byUUIDHtmlView(skillResult.searchHits[0].id.toString(),jwt)
 
         // Assert
-        assertThat(result).isEqualTo("forward:/skills/"+skillResult.searchHits[0].id.toString())
+        assertThat(result).isEqualTo("forward:/v3/skills/"+skillResult.searchHits[0].id.toString())
+    }
+
+    @Test
+    fun testByUUIDHtmlViewV2(){
+        // Arrange
+        val numOfSkills = 3
+        val richSkillRows = mockData.getRichSkillRows()
+        val listOfRichSkillRows = mutableListOf<RichSkillRow>()
+        val jwt = Jwt.withTokenValue("foo").header("foo", "foo").claim("foo", "foo").build()
+
+        for (i in 1..numOfSkills ) {
+            listOfRichSkillRows.add(richSkillRows[i])
+        }
+
+        batchImportRichSkill.handleRows(listOfRichSkillRows)
+
+        // Act
+        val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
+        val result = richSkillController.byUUIDHtmlViewV2(skillResult.searchHits[0].id.toString(),jwt)
+
+        // Assert
+        assertThat(result).isEqualTo("forward:/v2/skills/"+skillResult.searchHits[0].id.toString())
     }
 
     @Test
@@ -201,7 +245,7 @@ internal class RichSkillControllerTest @Autowired constructor(
 
         // Act
         val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
-        val result = richSkillController.byUUIDCsvView(skillResult.searchHits[0].id.toString(),jwt)
+        val result = richSkillController.byUUIDCsvView(StringUtils.EMPTY, skillResult.searchHits[0].id.toString(), jwt)
 
         // Assert
         assertThat(result.body.toString()).contains(skillResult.searchHits[0].id.toString())
@@ -246,14 +290,16 @@ internal class RichSkillControllerTest @Autowired constructor(
         Mockito.`when`(securityContext.authentication).thenReturn(authentication)
         Mockito.`when`(SecurityContextHolder.getContext().authentication.authorities).thenReturn(authorities)
 
-
         val responseHeaders = HttpHeaders()
         responseHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE)
         val headers : MutableMap<String, Any> = HashMap()
         headers["key"] = "value"
         val notNullJwt : Jwt? = Jwt("tokenValue", Instant.MIN, Instant.MAX,headers,headers)
-        val csvTaskResult = TaskResult(UUID.randomUUID().toString(),MediaType.APPLICATION_JSON_VALUE,TaskStatus.Processing, EXPORT_LIBRARY_CSV)
-
+        val csvTaskResult = TaskResult(UUID.randomUUID().toString(),
+                MediaType.APPLICATION_JSON_VALUE,
+                TaskStatus.Processing,
+                "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.EXPORT_LIBRARY_CSV}"
+        )
 
         val service = mockk<TaskMessageService>()
         every { service.enqueueJob(any(), any()) } returns Unit
@@ -264,7 +310,5 @@ internal class RichSkillControllerTest @Autowired constructor(
         val result = richSkillController.exportLibraryCsv(user = notNullJwt)
         assertThat(result.body?.uuid).isNotBlank()
     }
-
-
 
 }

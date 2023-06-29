@@ -43,11 +43,15 @@ class TaskMessageService {
         const val publishSkills = "batch-publish-skills"
         const val updateCollectionSkills = "update-collection-skills"
         const val skillsForCollectionCsv = "collection-skills-csv-process"
+        const val skillsForCollectionCsvV2 = "collection-skills-csv-process-v2"
+        
         const val skillsForCollectionXlsx = "collection-skills-xlsx-process"
         const val removeCollectionSkills = "remove-collection"
         const val skillsForFullLibraryCsv = "full-library-skills-csv-process"
+        const val skillsForFullLibraryCsvV2 = "full-library-skills-csv-process-v2"
         const val skillsForFullLibraryXlsx = "full-library-skills-xlsx-process"
         const val skillsForCustomListExportCsv = "custom-rsd-list-csv-export"
+        const val skillsForCustomListExportCsvV2 = "custom-rsd-list-csv-export-v2"
         const val skillsForCustomListExportXlsx = "custom-rsd-list-xlsx-export"
     }
 }

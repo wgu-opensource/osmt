@@ -11,6 +11,7 @@ import {AuthService} from "../../../auth/auth-service"
 import {AuthServiceStub, CategoryServiceData, CategoryServiceStub} from "../../../../../test/resource/mock-stubs"
 import {CategoryService} from "../../service/category.service"
 import {CategoryDetailCardComponent} from "./category-detail-card.component"
+import { getBaseApi } from "../../../api-versions"
 
 @Component({
   template: ""
@@ -55,6 +56,10 @@ describe("CategoryDetailCardComponent", () => {
         { provide: AuthService, useClass: AuthServiceStub },
         { provide: CategoryService, useClass: CategoryServiceStub },
         { provide: Router, useValue: routerSpy },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
       ]
     }).compileComponents()
 

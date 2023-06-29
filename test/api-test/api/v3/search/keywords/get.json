@@ -1,0 +1,23 @@
+[
+  {
+      "name": "NICE_SP_ARC"
+  },
+  {
+      "name": "NICE_SP_DEV"
+  },
+  {
+      "name": "NICE_SP_RSK"
+  },
+  {
+      "name": "NICE_SP_SRP"
+  },
+  {
+      "name": "NICE_SP_SYS"
+  },
+  {
+      "name": "NICE_SP_TRD"
+  },
+  {
+      "name": "NICE_SP_TST"
+  }
+]

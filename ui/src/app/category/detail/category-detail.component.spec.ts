@@ -15,6 +15,7 @@ import {FilterDropdown} from "../../models/filter-dropdown.model"
 import {AuthService} from "../../auth/auth-service"
 import {AuthServiceStub, CategoryServiceData,CategoryServiceStub} from "../../../../test/resource/mock-stubs"
 import {CategoryService} from "../service/category.service"
+import { getBaseApi } from "../../api-versions"
 
 @Component({
   template: ""
@@ -68,6 +69,10 @@ describe("CategoryDetailComponent", () => {
         { provide: AuthService, useClass: AuthServiceStub },
         { provide: CategoryService, useClass: CategoryServiceStub },
         { provide: Router, useValue: routerSpy },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        }
       ]
     }).compileComponents()
 

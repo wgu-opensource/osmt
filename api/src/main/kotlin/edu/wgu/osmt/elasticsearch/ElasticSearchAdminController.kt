@@ -1,7 +1,6 @@
 package edu.wgu.osmt.elasticsearch
 
-import edu.wgu.osmt.RoutePaths.ES_ADMIN_DELETE_INDICES
-import edu.wgu.osmt.RoutePaths.ES_ADMIN_REINDEX
+import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.security.OAuthHelper
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,8 +21,10 @@ class ElasticSearchAdminController @Autowired constructor(
     val esReindexer: ElasticSearchReindexer
 ) {
 
-    @RequestMapping(ES_ADMIN_DELETE_INDICES)
-    @PostMapping
+    @RequestMapping(path = [
+        "${RoutePaths.API}${RoutePaths.ES_ADMIN_DELETE_INDICES}"]
+    )
+        @PostMapping
     fun deleteElasticSearchIndices(): ResponseEntity<String> {
 
         if (!oAuthHelper.hasRole(appConfig.roleAdmin)) {
@@ -37,7 +38,9 @@ class ElasticSearchAdminController @Autowired constructor(
         )
     }
 
-    @RequestMapping(ES_ADMIN_REINDEX)
+    @RequestMapping(path = [
+        "${RoutePaths.API}${RoutePaths.ES_ADMIN_REINDEX}"]
+    )
     @PostMapping
     fun reindexElasticSearch(): ResponseEntity<String> {
 

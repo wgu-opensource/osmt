@@ -1,6 +1,6 @@
 import {Location} from "@angular/common"
 import {HttpClient, HttpHeaders} from "@angular/common/http"
-import {Injectable} from "@angular/core"
+import { Inject, Injectable } from "@angular/core"
 import {Router} from "@angular/router"
 import {Observable} from "rxjs"
 import {map, share} from "rxjs/operators"
@@ -17,11 +17,17 @@ import {ApiCategory, IKeyword, KeywordSortOrder, PaginatedCategories} from "../A
 })
 export class CategoryService extends AbstractService implements IRelatedSkillsService<number> {
 
-  constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
-    super(httpClient, authService, router, location)
+  constructor(
+    httpClient: HttpClient,
+    authService: AuthService,
+    router: Router,
+    location: Location,
+    @Inject("BASE_API") baseApi: string
+  ) {
+    super(httpClient, authService, router, location, baseApi)
   }
 
-  private serviceUrl = "api/categories"
+  private serviceUrl = "categories"
 
   getAllPaginated(
     size: number = 50,

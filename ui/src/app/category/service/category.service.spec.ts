@@ -15,6 +15,7 @@ import {AuthService} from "../../auth/auth-service"
 import {EnvironmentService} from "../../core/environment.service"
 import {CategoryService} from "./category.service"
 import {ApiCategory, IKeyword, KeywordSortOrder, PaginatedCategories} from "../ApiCategory"
+import { getBaseApi } from "../../api-versions"
 
 describe("CategoryService", () => {
   let httpClient: HttpClient
@@ -35,7 +36,11 @@ describe("CategoryService", () => {
         CategoryService,
         Location,
         { provide: AuthService, useClass: AuthServiceStub },
-        { provide: Router, useClass: RouterStub }
+        { provide: Router, useClass: RouterStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
       ]
     })
       .compileComponents()
@@ -65,13 +70,13 @@ describe("CategoryService", () => {
     const sort = KeywordSortOrder.SkillCountDesc
     const size = 10
     const from = 20
-    const path = `api/categories?sort=${sort}&size=${size}&from=${from}`
+    const path = `${getBaseApi()}/categories?sort=${sort}&size=${size}&from=${from}`
 
     // Act
     const result = testService.getAllPaginated(size, from, sort)
 
     // Assert
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
     expect(req.request.method).toEqual("GET")
     req.flush(CategoryServiceData.paginatedCategories, {
       headers: { "x-total-count": "" + CategoryServiceData.paginatedCategories.totalCount}
@@ -82,7 +87,7 @@ describe("CategoryService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const path = `api/categories/${CategoryServiceData.category.id}`
+    const path = `${getBaseApi()}/categories/${CategoryServiceData.category.id}`
 
     // Act
     const result$ = testService.getById(CategoryServiceData.category.id.toString())
@@ -94,7 +99,7 @@ describe("CategoryService", () => {
       expect(AuthServiceData.isDown).toEqual(false)
     })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl  + path)
     expect(req.request.method).toEqual("GET")
     req.flush(CategoryServiceData.categoryKeyword)
   })

@@ -1,6 +1,9 @@
 #!/bin/bash
 
-set -eu
+# set -eu
+set -eEu
+
+export OSMT_STACK_NAME=osmt_api_test
 
 declare apitest_env_file
 declare bearer_token
@@ -48,9 +51,10 @@ function get_bearer_token() {
 }
 
 run_api_tests() {
+  local apiVersion; apiVersion=${1}
   echo "Running postman collection ..."
   npx "$test_dir/node_modules/.bin/newman" \
-    run "$test_dir/postman/osmt-testing.postman_collection.json" \
+    run "$test_dir/postman/osmt-testing-api-${apiVersion}.postman_collection.json" \
       --env-var baseUrl="$BASE_URL" \
       --env-var bearerToken="$bearer_token"
 }
@@ -58,14 +62,14 @@ run_api_tests() {
 run_shutdown_script() {
   printf "\n"
   echo "Running Shutdown script..."
-  "${test_dir}/bin/stop_api_test_server.sh"
+  "${test_dir}/bin/stop_osmt_app.sh"
 }
 
 error_handler() {
   printf "\n"
   echo "Trapping at error_handler. Exiting"
   # clean up API test Docker resources
-  "${test_dir}/bin/stop_api_test_server.sh"
+  "${test_dir}/bin/stop_osmt_app.sh"
   printf "\n"
 }
 
@@ -76,5 +80,13 @@ trap error_handler ERR SIGINT SIGTERM
 
 source_osmt_apitest_env_file
 get_bearer_token
-run_api_tests
+run_api_tests "v3"
+run_shutdown_script
+
+# Need to refresh CI data between versioned tests
+"${test_dir}/bin/clean_docker_stack.sh"
+"${test_dir}/bin/start_osmt_app.sh"
+"${test_dir}/bin/load_and_reindex_ci_data.sh"
+
+run_api_tests "v2"
 run_shutdown_script

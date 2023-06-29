@@ -4,11 +4,9 @@ import com.github.sonus21.rqueue.annotation.RqueueListener
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.io.common.TabularTask
 import edu.wgu.osmt.richskill.RichSkillAndCollections
-import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import edu.wgu.osmt.task.CsvTask
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskStatus
-import org.jetbrains.exposed.dao.with
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile

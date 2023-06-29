@@ -1,7 +1,6 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from "@angular/core/testing"
 import {HeaderComponent} from "./header.component"
 import {AuthService} from "../auth/auth-service"
-import {AuthServiceStub} from "../../../test/resource/mock-stubs"
 import {RouterTestingModule} from "@angular/router/testing"
 import {AppConfig} from "../app.config"
 import {EnvironmentService} from "../core/environment.service"
@@ -13,6 +12,8 @@ import {MyWorkspaceComponent} from "../my-workspace/my-workspace.component"
 import {RichSkillsLibraryComponent} from "../richskill/library/rich-skills-library.component"
 import {ButtonAction} from "../auth/auth-roles"
 import {By} from "@angular/platform-browser"
+import { Idle, IdleExpiry } from "@ng-idle/core"
+import { Keepalive } from "@ng-idle/keepalive"
 
 describe("HeaderComponent", () => {
 
@@ -30,7 +31,10 @@ describe("HeaderComponent", () => {
         AppConfig,
         ConcreteService,
         Location,
-        {provide: AuthService, useClass: AuthServiceStub},
+        AuthService,
+        Idle,
+        IdleExpiry,
+        Keepalive
       ],
       imports: [
         HttpClientModule,
@@ -77,12 +81,26 @@ describe("HeaderComponent", () => {
     expect(component.canHaveWorkspace).toBeFalse()
   })
 
-  xit("my workspace is visible when user has role admin or curator", (done) => {
+  it("canHaveWorkspace should be false", () => {
+    const authService = TestBed.inject(AuthService)
+    spyOn(authService, "getRole").and.returnValue("ROLE_Osmt_Viewer")
+    component.canHaveWorkspace = component["authService"].isEnabledByRoles(ButtonAction.MyWorkspace)
+    expect(component.canHaveWorkspace).toBeFalse()
+  })
+
+  it("canHaveWorkspace should be true", () => {
+    const authService = TestBed.inject(AuthService)
+    spyOn(authService, "getRole").and.returnValue("ROLE_Osmt_Admin")
+    component.canHaveWorkspace = component["authService"].isEnabledByRoles(ButtonAction.MyWorkspace)
+    expect(component.canHaveWorkspace).toBeTrue()
+  })
+
+  it("my workspace is visible when user has role admin or curator", (done) => {
     component.canHaveWorkspace = true
+    spyOn(component, "showPublicNavbar").and.returnValue(false)
     fixture.whenStable().then(
       () => {
         fixture.detectChanges()
-
         const myWorkspace = fixture.debugElement.query(By.css("#li-my-workspace"))
         expect(myWorkspace).toBeTruthy()
         expect(component.canHaveWorkspace).toBeTrue()

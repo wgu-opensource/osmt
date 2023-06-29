@@ -341,15 +341,14 @@ class SearchController @Autowired constructor(
     ],
         produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun similarSkillWarnings(
-        @RequestBody(required = true) similarities: Array<ApiSimilaritySearch>
-    ): HttpEntity<List<Boolean>> {
+    fun similarSkillWarnings(@RequestBody(required = true) similarities: Array<ApiSimilaritySearch>): HttpEntity<List<List<ApiSkillSummary>>> {
         val arrayLimit = 100
-        if (similarities.count() > arrayLimit) {
+        if (similarities.count() > arrayLimit){
             throw GeneralApiException("Request contained more than $arrayLimit objects", HttpStatus.BAD_REQUEST)
         }
-        val hits = similarities.map { richSkillEsRepo.findSimilar(it).count() > 0 }
-        
+        val hits = similarities.map{
+            richSkillEsRepo.findSimilar(it).map { summary -> ApiSkillSummary.fromDoc(summary.content) }.toList()
+        }
         return ResponseEntity.status(200).body(hits)
     }
 }

@@ -460,7 +460,7 @@ describe("RichSkillService", () => {
     AuthServiceData.isDown = false
     const statements = ["my statement"]
     const path = getBaseApi() + "/search/skills/similarities"
-    const testData: boolean[] = [true]
+    const testData:  Array<ApiSkillSummary[]> = [[createMockSkillSummary()]]
 
     // Act
     // noinspection LocalVariableNamingConventionJS
@@ -468,7 +468,7 @@ describe("RichSkillService", () => {
 
     // Assert
     result$
-      .subscribe((data: boolean[]) => {
+      .subscribe((data: Array<ApiSkillSummary[]>) => {
         expect(data).toEqual(testData)
         expect(RouterData.commands).toEqual([ ])  // No errors
         expect(AuthServiceData.isDown).toEqual(false)

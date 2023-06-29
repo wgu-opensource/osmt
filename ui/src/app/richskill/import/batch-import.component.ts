@@ -507,12 +507,11 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     this.batchSimilarity(statements).subscribe(results => {
       this.searchingSimilarity = false
       this.similarSkills = results
-
       this.auditedSkills = this.previewSkills?.map((skill, idx) => {
         const required = ["skillName", "skillStatement"]
         // @ts-ignore
         const missing = required.filter(it => skill[it] === undefined)
-        const similar = results[idx].length > 0
+        const similar = (results[idx]?.length ?? 0) > 0
         return new AuditedImportSkill(skill, missing, similar, results[idx])
       })
     })

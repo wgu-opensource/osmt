@@ -6,16 +6,23 @@ import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.ApiSimilaritySearch
+import edu.wgu.osmt.api.model.ApiSkillUpdate
 import edu.wgu.osmt.collection.CollectionEsRepo
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.keyword.KeywordEsRepo
 import edu.wgu.osmt.mockdata.MockData
 import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
+import edu.wgu.osmt.richskill.RichSkillRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
@@ -25,7 +32,8 @@ internal class SearchControllerTest @Autowired constructor(
         override val richSkillEsRepo: RichSkillEsRepo,
         override val collectionEsRepo: CollectionEsRepo,
         override val keywordEsRepo: KeywordEsRepo,
-        override val jobCodeEsRepo: JobCodeEsRepo
+        override val jobCodeEsRepo: JobCodeEsRepo,
+        val richSkillRepository: RichSkillRepository
 ): SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset {
 
     @Autowired
@@ -112,5 +120,34 @@ internal class SearchControllerTest @Autowired constructor(
 
         // Assert
         assertThat(result.body?.map { it.name }).contains(listOfKeywords[0].value)
+    }
+
+    @Test
+    fun similarSkillWarningsShouldFindSimilarities() {
+        richSkillRepository.createFromApi(
+            listOf(ApiSkillUpdate(
+                    "Access and Security Levels Standardization",
+                    "Standardize levels of access and security to maintain information security.",
+                    PublishStatus.Draft
+                )),
+            "admin",
+            "admin@wgu.edu"
+        )
+        val response = searchController.similarSkillWarnings(
+            arrayOf(ApiSimilaritySearch("Standardize levels of access and security to maintain information security."))
+        )
+        assertThat((response as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(response.body?.size).isEqualTo(1)
+        assertThat(response.body?.first()?.size).isEqualTo(1)
+    }
+
+    @Test
+    fun similarSkillWarningsShouldNotFindSimilarities() {
+        val response = searchController.similarSkillWarnings(
+            arrayOf(ApiSimilaritySearch("Access an application programming interface (API) with a programming language to change data for a task."))
+        )
+        assertThat((response as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(response.body?.size).isEqualTo(1)
+        assertThat(response.body?.first()?.size).isEqualTo(0)
     }
 }

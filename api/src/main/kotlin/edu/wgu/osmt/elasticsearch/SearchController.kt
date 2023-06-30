@@ -333,12 +333,26 @@ class SearchController @Autowired constructor(
                 searchSimilarSkills(apiSimilaritySearch).body?.map { ApiSkillSummaryV2.fromLatest(it) }
             )
     }
-    
+
     @PostMapping(path = [
         "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_SIMILARITIES}",
-        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_SIMILARITIES}",
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_SIMILARITIES}"
     ],
+        produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun similarSkillWarningsV2(@RequestBody(required = true) similarities: Array<ApiSimilaritySearch>): HttpEntity<List<Boolean>> {
+        val arrayLimit = 100
+        if (similarities.count() > arrayLimit) {
+            throw GeneralApiException("Request contained more than $arrayLimit objects", HttpStatus.BAD_REQUEST)
+        }
+        val hits = similarities.map { richSkillEsRepo.findSimilar(it).count() > 0 }
+
+        return ResponseEntity.status(200).body(hits)
+    }
+    
+    @PostMapping(
+        path = [
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_SIMILARITIES}",
+        ],
         produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun similarSkillWarnings(@RequestBody(required = true) similarities: Array<ApiSimilaritySearch>): HttpEntity<List<List<ApiSkillSummary>>> {

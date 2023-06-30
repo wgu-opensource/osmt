@@ -728,7 +728,9 @@ paths:
               schema:
                 type: array
                 items:
-                  type: boolean
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/SkillSummary'
 
   /api/v3/search/skills/similarity:
     post:

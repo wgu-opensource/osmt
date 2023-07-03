@@ -9,6 +9,7 @@ import {AuditedImportSkill} from "./batch-import.component";
 })
 export class ImportPreviewTableComponent {
   @Input() skills?: AuditedImportSkill[] = []
+  showExtraInformation = true
 }
 
 @Component({

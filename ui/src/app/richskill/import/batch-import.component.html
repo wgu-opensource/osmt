@@ -158,7 +158,7 @@
 
         </div>
 
-        <app-import-preview-table [skills]="auditedSkills"></app-import-preview-table>
+        <app-import-preview-table [skills]="auditedSkills" [showChecker]="true"></app-import-preview-table>
       </div>
     </ng-template>
 
@@ -177,7 +177,8 @@
         </div>
       </div>
 
-      <app-import-preview-table [skills]="importedSkills"></app-import-preview-table>
+      <app-import-preview-table [skills]="importedSkills" [showChecker]="false">
+      </app-import-preview-table>
     </ng-template>
   </div>
   </app-blocking-loader>

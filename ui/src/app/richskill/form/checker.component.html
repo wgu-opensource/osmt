@@ -63,10 +63,10 @@
 <ng-template #extraInformation let-skill="skill">
   <div class="extra-info" *ngIf="showExtraInformation">
     <p>
-      <span class="m-interactiveText-x-text m-interactiveText-small">{{skill.skillStatement}}</span>
+      <span class="m-interactiveText-x-text text-small"><strong>Statement: </strong>{{skill.skillStatement}}</span>
     </p>
     <p>
-      <span class="m-interactiveText-x-text m-interactiveText-small">{{skill.categories.join(",")}}</span>
+      <span class="m-interactiveText-x-text text-small"><strong>Categories: </strong>{{skill.categories.join(",")}}</span>
     </p>
   </div>
 </ng-template>

@@ -70,11 +70,14 @@
         <app-inline-heading *ngIf="review.skill.keywords" heading="Keywords:">
           {{review.skill.keywords.add?.join("; ")}}
         </app-inline-heading>
-
-        <app-checker
-          [similarSkills]="review.similarities"
-          [showExtraInformation]="showExtraInformation">
-        </app-checker>
+        <div *ngIf="showChecker">
+          <hr>
+          <app-checker
+            *ngIf="showChecker"
+            [similarSkills]="review.similarities"
+            [showExtraInformation]="showExtraInformation">
+          </app-checker>
+        </div>
       </td>
 
     </tr>

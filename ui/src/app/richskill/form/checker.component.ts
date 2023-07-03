@@ -3,7 +3,8 @@ import {ApiSkillSummary} from "../ApiSkillSummary";
 
 @Component({
   selector: "app-checker",
-  templateUrl: "./checker.component.html"
+  templateUrl: "./checker.component.html",
+  styleUrls: ["./checker.scss"]
 })
 export class CheckerComponent implements OnInit {
 

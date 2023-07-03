@@ -76,7 +76,6 @@ export class AuditedImportSkill {
     this.missing = missing
     this.similar = similar
     this.similarities = similarities;
-    console.log({similarities: similarities})
   }
 
   get nameMissing(): boolean {

@@ -5,8 +5,7 @@ import {AuditedImportSkill} from "./batch-import.component";
 
 @Component({
   selector: "app-import-preview-table",
-  templateUrl: "./import-preview-table.component.html",
-  styleUrls: ["./import-preview-table.component.scss"]
+  templateUrl: "./import-preview-table.component.html"
 })
 export class ImportPreviewTableComponent {
   @Input() skills?: AuditedImportSkill[] = []

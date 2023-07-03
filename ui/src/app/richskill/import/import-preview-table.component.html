@@ -54,8 +54,8 @@
         <ng-template #nameMissing><app-inline-error message="RSD name required">
         </app-inline-error></ng-template>
 
-        <app-inline-error *ngIf="review.isWarning" message="Skill statement is very similar to one already in the library.">
-        </app-inline-error>
+        <!--app-inline-error *ngIf="review.isWarning" message="Skill statement is very similar to one already in the library.">
+        </app-inline-error-->
 
         <p *ngIf="!review.statementMissing; else statementMissing" class="t-margin-small t-margin-bottom t-type-text3">
           {{review.skill.skillStatement}}
@@ -70,14 +70,13 @@
         <app-inline-heading *ngIf="review.skill.keywords" heading="Keywords:">
           {{review.skill.keywords.add?.join("; ")}}
         </app-inline-heading>
-        <div *ngIf="showChecker">
-          <hr>
-          <app-checker
-            *ngIf="showChecker"
-            [similarSkills]="review.similarities"
-            [showExtraInformation]="showExtraInformation">
-          </app-checker>
-        </div>
+
+        <app-checker
+          *ngIf="showChecker"
+          showInTable="true"
+          [similarSkills]="review.similarities"
+          [showExtraInformation]="showExtraInformation">
+        </app-checker>
       </td>
 
     </tr>

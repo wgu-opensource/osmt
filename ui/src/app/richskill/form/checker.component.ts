@@ -18,6 +18,7 @@ export class CheckerComponent implements OnInit {
 
   @Input() showAccordion = true
   @Input() showExtraInformation = false
+  @Input() showInTable = false
 
 
 

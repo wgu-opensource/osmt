@@ -22,7 +22,10 @@
   <ng-template #similarMatchesTmpl>
 
     <ng-template [ngIf]="hasSingleMatch" [ngIfElse]="multipleMatchesTmpl">
-      <p class="t-type-small">{{similarSingleMessage}}</p>
+      <p class="t-type-small" *ngIf="!showInTable">{{similarSingleMessage}}</p>
+
+      <app-inline-error [message]="similarSingleMessage" *ngIf="showInTable">
+      </app-inline-error>
 
       <div class="t-margin-extraSmall t-margin-top" *ngFor="let skill of similarSkills.slice(0,1)">
         <!--{{render '@m-interactivetext&#45;&#45;small-with-iconleft'}}-->

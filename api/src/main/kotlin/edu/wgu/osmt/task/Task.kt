@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiSearch
+import edu.wgu.osmt.api.model.ApiSearchV2
 import edu.wgu.osmt.api.model.ApiSkillListUpdate
 import edu.wgu.osmt.api.model.ApiSkillUpdate
+import edu.wgu.osmt.api.model.ApiSkillUpdateV2
 import edu.wgu.osmt.db.PublishStatus
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -204,6 +206,18 @@ data class UpdateCollectionSkillsTask(
     val skillListUpdate: ApiSkillListUpdate = ApiSkillListUpdate(),
     val publishStatuses: Set<PublishStatus> = setOf(PublishStatus.Draft),
     val userString: String = "",
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: ApiBatchResult? = null,
+    override val status: TaskStatus = TaskStatus.Processing,
+    override val apiResultPath: String = ""
+) : Task {
+    override val contentType = MediaType.APPLICATION_JSON_VALUE
+
+}
+
+data class RemoveCollectionSkillsTask(
+    val collectionUuid: String = "",
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: ApiBatchResult? = null,

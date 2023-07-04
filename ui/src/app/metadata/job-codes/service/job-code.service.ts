@@ -1,16 +1,16 @@
 import { Location } from "@angular/common"
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http"
-import { Injectable } from "@angular/core"
+import { Inject, Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { Observable } from "rxjs"
 import { map, share } from "rxjs/operators"
 import { ApiJobCode, IJobCode, IJobCodeUpdate } from "../Jobcode"
 import { AuthService } from "../../../auth/auth-service"
-import { AbstractDataService } from "../../abstract-data.service"
 import { ApiSortOrder } from "../../../richskill/ApiSkill"
 import { ApiBatchResult } from "../../../richskill/ApiBatchResult"
 import { ApiTaskResult, ITaskResult } from "../../../task/ApiTaskResult"
 import { PaginatedMetadata } from "../../PaginatedMetadata"
+import { AbstractDataService } from "../../../data/abstract-data.service"
 
 @Injectable({
   providedIn: "root"
@@ -23,9 +23,10 @@ export class JobCodeService extends AbstractDataService {
     protected httpClient: HttpClient,
     protected authService: AuthService,
     protected router: Router,
-    protected location: Location
+    protected location: Location,
+    @Inject("BASE_API") baseApi: string
   ) {
-    super(httpClient, authService, router, location)
+    super(httpClient, authService, router, location, baseApi)
   }
 
   paginatedJobCodes(

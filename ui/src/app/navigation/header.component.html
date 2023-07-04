@@ -25,7 +25,9 @@
           <mat-menu #menu="matMenu">
             <button mat-menu-item routerLink="/skills">RSD Library</button>
             <button mat-menu-item routerLink="/collections">Collections</button>
-            <button mat-menu-item routerLink="/my-workspace">My Workspace</button>
+            <button *ngIf="canHaveWorkspace" mat-menu-item routerLink="/my-workspace">
+              My Workspace
+            </button>
             <button mat-menu-item routerLink="/metadata">RSD Metadata</button>
           </mat-menu>
         </li>

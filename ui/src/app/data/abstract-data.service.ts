@@ -1,6 +1,6 @@
 import { Location } from "@angular/common"
 import { HttpClient, HttpResponse } from "@angular/common/http"
-import { Injectable } from "@angular/core"
+import { Inject, Injectable } from "@angular/core"
 import { Router } from "@angular/router"
 import { Observable } from "rxjs"
 import { share } from "rxjs/operators"
@@ -10,8 +10,14 @@ import { AuthService } from "../auth/auth-service"
 @Injectable({ providedIn: "root" })
 export abstract class AbstractDataService extends AbstractService {
 
-  protected constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
-    super(httpClient, authService, router, location)
+  protected constructor(
+    httpClient: HttpClient,
+    authService: AuthService,
+    router: Router,
+    location: Location,
+    @Inject("BASE_API") baseApi: string
+  ) {
+    super(httpClient, authService, router, location, baseApi)
   }
 
   /**

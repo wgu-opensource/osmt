@@ -16,6 +16,7 @@ import { ApiSortOrder } from "../../../richskill/ApiSkill";
 import { MetadataType } from "../../rsd-metadata.enum";
 import { ApiNamedReference, ApiNamedReferenceUpdate } from "../NamedReference";
 import { ApiBatchResult } from "../../../richskill/ApiBatchResult";
+import { getBaseApi } from "../../../api-versions"
 
 const ASYNC_WAIT_PERIOD = 3000
 
@@ -31,7 +32,11 @@ describe("NamedReferenceService", () => {
         NamedReferenceService,
         Location,
         { provide: AuthService, useClass: AuthServiceStub },
-        { provide: Router, useClass: RouterStub }
+        { provide: Router, useClass: RouterStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        }
       ]})
     testService = TestBed.inject(NamedReferenceService)
     let httpTestingController = TestBed.inject(HttpTestingController)

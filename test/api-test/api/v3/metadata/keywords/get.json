@@ -1,0 +1,402 @@
+[
+    {
+        "framework": null,
+        "skillCount": 5,
+        "name": "Access Network",
+        "id": 2998,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 6,
+        "name": "Active Directory",
+        "id": 3007,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 3,
+        "name": "Acute Care",
+        "id": 237,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 4,
+        "name": "Adaptability",
+        "id": 312,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 1,
+        "name": "Advertisement",
+        "id": 3403,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 1,
+        "name": "Advertising Campaigns",
+        "id": 3489,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 1,
+        "name": "Agency",
+        "id": 306,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 6,
+        "name": "Agile Methodology",
+        "id": 3018,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 2,
+        "name": "Amazon Web Services",
+        "id": 3031,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 1,
+        "name": "Analytical Techniques",
+        "id": 427,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 7,
+        "name": "Application Programming Interface (API)",
+        "id": 3035,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 2,
+        "name": "Assess Patient Needs",
+        "id": 1241,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 2,
+        "name": "Authentications",
+        "id": 2626,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 8,
+        "name": "Backup And Restore",
+        "id": 3047,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 5,
+        "name": "Backup Devices",
+        "id": 3060,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 2,
+        "name": "Basic Math",
+        "id": 3068,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 4,
+        "name": "Border Gateway Protocol",
+        "id": 3074,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 2,
+        "name": "Brand Strategy",
+        "id": 3493,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 5,
+        "name": "Business Continuity Planning",
+        "id": 2594,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 4,
+        "name": "Business Ethics",
+        "id": 2324,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 3,
+        "name": "Business Requirements",
+        "id": 2352,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 1,
+        "name": "Business Strategies",
+        "id": 3469,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 4,
+        "name": "Capacity Planning",
+        "id": 1246,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 6,
+        "name": "Care Coordination",
+        "id": 1251,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 1,
+        "name": "Care Delivery Models",
+        "id": 208,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 4,
+        "name": "Care Delivery Process",
+        "id": 437,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 3,
+        "name": "Care Planning",
+        "id": 449,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 1,
+        "name": "Caring and Consideration",
+        "id": 1295,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 8,
+        "name": "Case Management",
+        "id": 463,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 11,
+        "name": "Change Management",
+        "id": 468,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 4,
+        "name": "Civic Identity",
+        "id": 1316,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 1,
+        "name": "Client Rapport",
+        "id": 497,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 5,
+        "name": "Clinical Evaluation",
+        "id": 1334,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 3,
+        "name": "Clinical Leadership",
+        "id": 1339,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 4,
+        "name": "Clinical Reasoning",
+        "id": 1347,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 6,
+        "name": "Cloud Computing",
+        "id": 2731,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 2,
+        "name": "Cloud Computing Architecture",
+        "id": 2572,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 3,
+        "name": "Cloud Computing Security",
+        "id": 2682,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 4,
+        "name": "Code Review",
+        "id": 3362,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 4,
+        "name": "Collaboration",
+        "id": 27,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 5,
+        "name": "Communications",
+        "id": 506,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 1,
+        "name": "Community Management",
+        "id": 1359,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 3,
+        "name": "Computer Literacy",
+        "id": 1364,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 1,
+        "name": "Computer Programming",
+        "id": 2564,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 3,
+        "name": "Computer Systems",
+        "id": 2747,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 6,
+        "name": "Configuration Management",
+        "id": 2721,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 2,
+        "name": "Conflict Resolution",
+        "id": 1382,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 6,
+        "name": "Consulting",
+        "id": 3099,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 1,
+        "name": "Content Management",
+        "id": 3596,
+        "type": "Category",
+        "url": null
+    },
+    {
+        "framework": null,
+        "skillCount": 2,
+        "name": "Content Marketing",
+        "id": 3600,
+        "type": "Category",
+        "url": null
+    }
+]

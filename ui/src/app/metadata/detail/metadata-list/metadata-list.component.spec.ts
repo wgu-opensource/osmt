@@ -9,6 +9,7 @@ import { JobCodeService } from "../../job-codes/service/job-code.service"
 import { HttpClientTestingModule } from "@angular/common/http/testing"
 import {createMockJobcode, createMockNamedReference2 } from "@test/resource/mock-data"
 import { of } from "rxjs"
+import { getBaseApi } from "../../../api-versions"
 
 describe("ManageMetadataComponent", () => {
   let component: MetadataListComponent
@@ -19,6 +20,10 @@ describe("ManageMetadataComponent", () => {
       declarations: [ MetadataListComponent ],
       providers: [
         { provide: AuthService, useClass: AuthServiceStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
         JobCodeService
       ],
       imports: [

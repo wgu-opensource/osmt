@@ -16,6 +16,7 @@ import { ApiSortOrder } from "../../../richskill/ApiSkill"
 import { ApiJobCode, ApiJobCodeUpdate } from "../Jobcode"
 import { ApiBatchResult } from "../../../richskill/ApiBatchResult"
 import { PaginatedMetadata } from "../../PaginatedMetadata"
+import { getBaseApi } from "../../../api-versions"
 
 const ASYNC_WAIT_PERIOD = 3000
 
@@ -33,7 +34,11 @@ describe("JobCodeService", () => {
         JobCodeService,
         Location,
         { provide: AuthService, useClass: AuthServiceStub },
-        { provide: Router, useClass: RouterStub }
+        { provide: Router, useClass: RouterStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        }
       ]}).compileComponents()
     testService = TestBed.inject(JobCodeService)
     httpTestingController = TestBed.inject(HttpTestingController)

@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core"
+import { Inject, Injectable } from "@angular/core"
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http"
 import { Router } from "@angular/router"
 import { Location } from "@angular/common"
@@ -19,9 +19,14 @@ export class NamedReferenceService extends AbstractDataService {
 
   private baseServiceUrl = "api/metadata/keywords"
 
-  constructor(protected httpClient: HttpClient, protected authService: AuthService,
-              protected router: Router, protected location: Location) {
-    super(httpClient, authService, router, location)
+  constructor(
+    protected httpClient: HttpClient,
+    protected authService: AuthService,
+    protected router: Router,
+    protected location: Location,
+    @Inject("BASE_API") baseApi: string
+  ) {
+    super(httpClient, authService, router, location, baseApi)
   }
 
   paginatedNamedReferences(

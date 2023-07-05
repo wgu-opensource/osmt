@@ -22,7 +22,7 @@ export BASE_URL="http://${BASE_DOMAIN}"
 export OSMT_FRONT_END_PORT="${APP_PORT}"
 
 declare -ri LOAD_CI_DATASET="${LOAD_CI_DATASET:-0}"
-declare -i APP_START_CHECK_RETRY_LIMIT="${APP_START_CHECK_RETRY_LIMIT:-12}"
+
 
 _get_osmt_project_dir() {
   local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
@@ -56,69 +56,6 @@ inject_tests() {
   node "${project_dir}/test/postman/test-injector.js" "${inputFile}" "${outputFile}" "${apiVersion}"
 }
 
-curl_with_retry() {
-  local log_file; log_file="${project_dir}/test/target/osmt_spring_app.log"
-  local -i rc=-1
-  local -i retry_limit=${APP_START_CHECK_RETRY_LIMIT}
-  until [ ${rc} -eq 0 ] && [ ${retry_limit} -eq 0 ]; do
-      echo_info "Attempting to request the index page of the OSMT Spring app with curl..."
-      echo_info "${BASE_URL}"
-      curl -s "${BASE_URL}" 1>/dev/null 2>/dev/null
-      rc=$?
-      if [[ ${rc} -eq 0 ]]; then
-        echo_info "Index page loaded. Proceeding..."
-        return 0
-      fi
-      if [[ ${retry_limit} -eq 0 ]]; then
-        echo
-        echo_info "osmt_spring_app log file below..."
-        echo
-        echo_err "Could not load the index page."
-        cat "${log_file}"
-        return 1
-      fi
-      if [[ ${rc} -ne 0 ]]; then
-        echo_info "Could not load the index page. Will retry ${retry_limit} more times. Retrying in 10 seconds..."
-      fi
-      # shell check SC2219
-      ((retry_limit--)) || true
-      sleep 10
-  done
-}
-
-clean_docker_stack() {
-  local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
-  echo_info "Stopping OSMT ${OSMT_STACK_NAME} Docker stack"
-  cd "${project_dir}/docker" || return 1
-  docker-compose --file dev-stack.yml --project-name "${OSMT_STACK_NAME}" down
-  rc=$?
-  if [[ $rc -ne 0 ]]; then
-    echo_err "Stopping OSMT ${OSMT_STACK_NAME} Docker stack failed. Exiting..."
-    return 1
-  fi
-
-  echo
-  echo_info "Removing OSMT-related Docker containers..."
-  docker ps -aq --filter=name='osmt_api*' | xargs docker rm
-
-  echo
-  echo_info "Removing OSMT-related Docker images..."
-  docker images -q --filter=reference='osmt_api*' | xargs docker rmi
-
-  echo
-  echo_info "Removing OSMT-related Docker volumes..."
-  docker volume ls -q -f name=osmt_api | xargs docker volume rm -f {} &> /dev/null
-}
-
-
-echo_info() {
-  echo "INFO: $*"
-}
-
-echo_err() {
-  echo "ERROR: $*" 1>&2;
-}
-
 error_handler() {
   local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
   echo_err "Trapping at error_handler. Exiting"
@@ -130,24 +67,14 @@ main() {
   local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
   local log_file; log_file="${project_dir}/test/target/osmt_spring_app.log"
 
-  "${project_dir}/test/bin/clean_docker_stack.sh"
+  # Sourcing the common lib file
+  source "${project_dir}/bin/lib/common.sh"
+  # Sourcing API test env file
+  source_env_file "${project_dir}/test/osmt-apitest.env"
 
   # Run NPM install
   echo_info "Installing NPM modules..."
   install_npm_modules || exit 135
-
-  # curl the Spring app and retry for 2 minutes
-  echo_info "Starting OSMT API Test stack..."
-  "${project_dir}/test/bin/start_osmt_app.sh" || exit 135
-
-  echo_info "Sleeping for 5 seconds..."
-  sleep 5
-
-  echo_info "Loading Static CI Dataset..."
-  if [[ "${LOAD_CI_DATASET}" -eq 0  ]]; then
-    # load CI static dataset and reindex ElasticSearch
-    "${project_dir}/test/bin/load_and_reindex_ci_data.sh" || exit 135
-  fi
 
   # Create postman collection
   echo_info "Creating Postman Collection for unversioned / v2 API..."

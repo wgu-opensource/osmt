@@ -21,8 +21,6 @@ export BASE_DOMAIN="localhost:${APP_PORT}"
 export BASE_URL="http://${BASE_DOMAIN}"
 export OSMT_FRONT_END_PORT="${APP_PORT}"
 
-declare -ri LOAD_CI_DATASET="${LOAD_CI_DATASET:-0}"
-
 
 _get_osmt_project_dir() {
   local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"

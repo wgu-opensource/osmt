@@ -2,11 +2,10 @@
 
 set -eu
 
-export OSMT_STACK_NAME=osmt_api_test
 declare -i APP_START_CHECK_RETRY_LIMIT="${APP_START_CHECK_RETRY_LIMIT:-12}"
+declare OSMT_STACK_NAME="${1}"
 
 launch_osmt() {
-  local osmt_stack_name; osmt_stack_name="${1}"
   local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
   local log_file; log_file="${project_dir}/api/target/osmt_spring_app.log"
 
@@ -14,7 +13,7 @@ launch_osmt() {
   echo "INFO: Starting OSMT Spring app for ${OSMT_STACK_NAME}. Output is suppressed, because console is detached."
   echo "INFO: See 'osmt_spring_app.log' for console output. Proceeding..."
 
-  "${project_dir}/osmt_cli.sh" -s  1>"$log_file" 2>"$log_file" & disown  || exit 135
+  "${project_dir}/osmt_cli.sh" -s 1>"$log_file" 2>"$log_file" & disown  || exit 135
 
   # curl the Spring app and retry for 2 minutes
   curl_with_retry || exit 135
@@ -49,4 +48,4 @@ curl_with_retry() {
   done
 }
 
-launch_osmt "${1}"
+launch_osmt

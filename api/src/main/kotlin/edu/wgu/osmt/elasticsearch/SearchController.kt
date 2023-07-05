@@ -360,10 +360,9 @@ class SearchController @Autowired constructor(
         if (similarities.count() > arrayLimit){
             throw GeneralApiException("Request contained more than $arrayLimit objects", HttpStatus.BAD_REQUEST)
         }
-        val hits = similarities.map{
-            richSkillEsRepo.findSimilar(it).map { summary -> ApiSkillSummary.fromDoc(summary.content) }.toList()
-        }
-        return ResponseEntity.status(200).body(hits)
+        return ResponseEntity.status(200).body(
+            similarities.map{ richSkillEsRepo.findSimilar(it).map { summary -> ApiSkillSummary.fromDoc(summary.content) }.toList()  }
+        )
     }
 }
 

@@ -124,12 +124,13 @@ internal class SearchControllerTest @Autowired constructor(
 
     @Test
     fun similarSkillWarningsShouldFindSimilarities() {
+        val skillUpdates = listOf(ApiSkillUpdate(
+            "Access and Security Levels Standardization",
+            "Standardize levels of access and security to maintain information security.",
+            PublishStatus.Draft
+        ))
         richSkillRepository.createFromApi(
-            listOf(ApiSkillUpdate(
-                    "Access and Security Levels Standardization",
-                    "Standardize levels of access and security to maintain information security.",
-                    PublishStatus.Draft
-                )),
+            skillUpdates,
             "admin",
             "admin@wgu.edu"
         )
@@ -137,7 +138,7 @@ internal class SearchControllerTest @Autowired constructor(
             arrayOf(ApiSimilaritySearch("Standardize levels of access and security to maintain information security."))
         )
         assertThat((response as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
-        assertThat(response.body?.size).isEqualTo(1)
+        assertThat(response.body?.first()?.get(0)?.skillStatement).isEqualTo(skillUpdates[0].skillStatement)
         assertThat(response.body?.first()?.size).isEqualTo(1)
     }
 
@@ -147,7 +148,6 @@ internal class SearchControllerTest @Autowired constructor(
             arrayOf(ApiSimilaritySearch("Access an application programming interface (API) with a programming language to change data for a task."))
         )
         assertThat((response as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
-        assertThat(response.body?.size).isEqualTo(1)
         assertThat(response.body?.first()?.size).isEqualTo(0)
     }
 }

@@ -74,7 +74,7 @@ trap error_handler ERR SIGINT SIGTERM
 source "$(_get_osmt_project_dir)/bin/lib/common.sh"
 
 # Sourcing API test env file
-source_env_file "${apitest_env_file}"
+parse_osmt_envs "${apitest_env_file}"
 
 # Clean up, stop docker-compose stack and prune API-test related images and volumes
 remove_osmt_docker_artifacts_for_stack "${OSMT_STACK_NAME}"

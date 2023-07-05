@@ -68,7 +68,7 @@ main() {
   # Sourcing the common lib file
   source "${project_dir}/bin/lib/common.sh"
   # Sourcing API test env file
-  source_env_file "${project_dir}/test/osmt-apitest.env"
+  parse_osmt_envs "${project_dir}/test/osmt-apitest.env"
 
   # Run NPM install
   echo_info "Installing NPM modules..."

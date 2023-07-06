@@ -24,6 +24,10 @@ import { ActionByRoles, ButtonAction } from "./auth/auth-roles"
 import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
 import {ConvertToCollectionComponent} from "./my-workspace/convert-to-collection/convert-to-collection.component"
 import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
+import { DetailCardComponent } from "./detail-card/detail-card.component"
+import { MetadataFormComponent } from "./metadata/form/metadata-form.component"
+import { MetadataManageComponent } from "./metadata/detail/metadata-manage/metadata-manage.component"
+import { MetadataPublicComponent } from "./metadata/detail/metadata-public/metadata-public.component"
 
 
 const routes: Routes = [
@@ -80,6 +84,44 @@ const routes: Routes = [
     data: {
       roles: ActionByRoles.get(ButtonAction.SkillCreate)
     },
+  },
+
+  /* KEYWORDS */
+
+  {path: "metadata",
+    component: MetadataListComponent,
+    canActivate: [AuthGuard],
+  },
+  {path: "named-references/create",
+    component: MetadataFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.MetadataCreate)
+    },
+  },
+  {path: "jobcodes/create",
+    component: MetadataFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.MetadataCreate)
+    },
+  },
+  // detail
+  {path: "named-references/:id",
+    component: MetadataPublicComponent,
+    canActivate: [AuthGuard]
+  },
+  {path: "jobcode/:id",
+    component: MetadataPublicComponent,
+    canActivate: [AuthGuard]
+  },
+  {path: "named-reference/:id/manage",
+    component: MetadataManageComponent,
+    canActivate: [AuthGuard]
+  },
+  {path: "jobcode/:id/manage",
+    component: MetadataManageComponent,
+    canActivate: [AuthGuard]
   },
 
   /* COLLECTIONS */
@@ -168,11 +210,7 @@ const routes: Routes = [
       roles: ActionByRoles.get(ButtonAction.MyWorkspace)
     }
   },
-  {
-    path: "metadata",
-    component: MetadataListComponent,
-    canActivate: [AuthGuard],
-  },
+
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},
   {path: "collections/:uuid", component: CollectionPublicComponent},

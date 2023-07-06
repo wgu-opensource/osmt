@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from "@angular/core"
-import {PublishStatus} from "../../PublishStatus";
+import {Component, Input, OnInit} from "@angular/core";
+
 
 @Component({
   selector: "app-card-detail-title",
@@ -10,11 +10,11 @@ export class CardDetailTitleComponent implements OnInit {
   @Input() cardType = ""
   @Input() title = ""
   @Input() authors = ""
-  @Input() status: PublishStatus = PublishStatus.Draft
+  @Input() status = ""
   @Input() publishDate = ""
   @Input() archiveDate = ""
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
   }

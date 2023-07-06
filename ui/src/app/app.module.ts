@@ -110,7 +110,10 @@ import { JobCodeListRowComponent } from "./metadata/job-codes/job-code-list-row/
 import { JobCodeTableComponent } from "./metadata/job-codes/job-code-table/job-code-table.component"
 import { NamedReferenceListRowComponent } from "./metadata/named-references/named-reference-list-row/named-reference-list-row.component"
 import { NamedReferenceTableComponent } from "./metadata/named-references/named-reference-table/named-reference-table.component"
-import { MetadataSelectorComponent } from "./metadata/detail/metadata-selector/metadata-selector.component"
+import { MetadataSelectorComponent } from "./metadata/detail/metadata-selector/metadata-selector.component";
+import { MetadataFormComponent } from "./metadata/form/metadata-form.component";
+import { MetadataManageComponent } from "./metadata/detail/metadata-manage/metadata-manage.component";
+import { MetadataPublicComponent } from "./metadata/detail/metadata-public/metadata-public.component";
 import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
 import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
 import { JobCodeParentsPipe } from "./pipes"
@@ -232,6 +235,9 @@ export function initializeApp(
     NamedReferenceListRowComponent,
     NamedReferenceTableComponent,
     MetadataSelectorComponent,
+    MetadataFormComponent,
+    MetadataManageComponent,
+    MetadataPublicComponent,
     InlineHeadingComponent,
     JobCodeParentsPipe,
   ],

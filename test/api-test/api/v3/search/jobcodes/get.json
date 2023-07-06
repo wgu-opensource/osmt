@@ -1,32 +1,44 @@
 [
   {
+    "id": 137,
     "code": "15-1210",
     "targetNodeName": "Computer and Information Analysts",
-    "frameworkName": "bls"
+    "frameworkName": "bls",
+    "jobCodeLevelAsNumber": 3
   },
   {
+    "id": 138,
     "code": "15-1211",
     "targetNodeName": "Computer Systems Analysts",
-    "frameworkName": "bls"
+    "frameworkName": "bls",
+    "jobCodeLevelAsNumber": 4
   },
   {
+    "id": 1557,
     "code": "15-1211.00",
     "targetNodeName": "Computer Systems Analysts",
-    "frameworkName": "o*net"
+    "frameworkName": "o*net",
+    "jobCodeLevelAsNumber": 4
   },
   {
+    "id": 1558,
     "code": "15-1211.01",
     "targetNodeName": "Health Informatics Specialists",
-    "frameworkName": "o*net"
+    "frameworkName": "o*net",
+    "jobCodeLevelAsNumber": 4
   },
   {
+    "id": 139,
     "code": "15-1212",
     "targetNodeName": "Information Security Analysts",
-    "frameworkName": "bls"
+    "frameworkName": "bls",
+    "jobCodeLevelAsNumber": 4
   },
   {
+    "id": 1559,
     "code": "15-1212.00",
     "targetNodeName": "Information Security Analysts",
-    "frameworkName": "o*net"
+    "frameworkName": "o*net",
+    "jobCodeLevelAsNumber": 4
   }
 ]

@@ -36,12 +36,8 @@ object RoutePaths {
     const val SKILL_UPDATE = "$SKILL_DETAIL/update"
     const val SKILL_AUDIT_LOG = "$SKILL_DETAIL/log"
 
-    //categories
-    private const val CATEGORY_PATH = "/categories"
-    const val CATEGORY_LIST = CATEGORY_PATH
-    const val CATEGORY_DETAIL = "$CATEGORY_PATH/{identifier}"
-    const val CATEGORY_SKILLS = "$CATEGORY_DETAIL/skills"
-    const val KEYWORD_PATH = "$API/metadata/keywords"
+    const val METADATA_PATH = "/metadata"
+    const val KEYWORD_PATH = "${METADATA_PATH}/keywords"
     const val KEYWORD_LIST = KEYWORD_PATH
     const val KEYWORD_CREATE = KEYWORD_PATH
     const val KEYWORD_DETAIL = "$KEYWORD_PATH/{id}"
@@ -77,7 +73,6 @@ object RoutePaths {
     const val ES_ADMIN_DELETE_INDICES = "$ES_ADMIN/delete-indices"
     const val ES_ADMIN_REINDEX = "$ES_ADMIN/reindex"
 
-    const val METADATA_PATH = "$API/metadata"
     const val JOB_CODE_PATH = "$METADATA_PATH/jobcodes"
     const val JOB_CODE_CREATE = JOB_CODE_PATH
     const val JOB_CODE_LIST = JOB_CODE_PATH

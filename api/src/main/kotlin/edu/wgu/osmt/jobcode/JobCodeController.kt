@@ -35,7 +35,10 @@ class JobCodeController @Autowired constructor(
     val taskMessageService: TaskMessageService,
 ) {
 
-    @GetMapping(RoutePaths.JOB_CODE_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(
+        path = ["${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.JOB_CODE_LIST}"],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     @PreAuthorize("isAuthenticated()")
     fun allPaginated(
         @RequestParam(required = true) size: Int,
@@ -70,7 +73,10 @@ class JobCodeController @Autowired constructor(
         }.toList())
     }
 
-    @GetMapping(RoutePaths.JOB_CODE_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(
+        path = ["${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.JOB_CODE_DETAIL}"],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     @PreAuthorize("isAuthenticated()")
     fun byId(
         @PathVariable id: Long,
@@ -83,7 +89,10 @@ class JobCodeController @Autowired constructor(
         }
     }
 
-    @PostMapping(RoutePaths.JOB_CODE_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(
+        path = ["${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.JOB_CODE_CREATE}"],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun createJobCode(
         @RequestBody jobCodes: List<JobCodeUpdate>
@@ -92,7 +101,10 @@ class JobCodeController @Autowired constructor(
         return ResponseEntity.status(200).body(newJobCodes.map { ApiJobCode.fromJobCode(it.toModel()) }.toList())
     }
 
-    @PostMapping(RoutePaths.JOB_CODE_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(
+        path = ["${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.JOB_CODE_UPDATE}"],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun updateJobCode(
         @PathVariable id: Int,
@@ -110,7 +122,7 @@ class JobCodeController @Autowired constructor(
         )
     }
 
-    @DeleteMapping(RoutePaths.JOB_CODE_REMOVE)
+    @DeleteMapping(path = ["${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.JOB_CODE_REMOVE}"])
     @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun deleteJobCode(
         @PathVariable id: Int,

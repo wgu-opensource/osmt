@@ -44,7 +44,10 @@ ALTER TABLE `JobCode`
 -- Keyword: table
 ALTER TABLE `Keyword`
     DEFAULT CHARSET=utf8mb4,
-    MODIFY `keyword_type_enum` enum('Category','Keyword','Standard','Certification','Alignment','Employer','Author') COLLATE utf8mb4_unicode_ci NOT NULL;
+    MODIFY `value` varchar(767) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    MODIFY `uri` varchar(767) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    MODIFY `keyword_type_enum` enum('Category','Keyword','Standard','Certification','Alignment','Employer','Author') COLLATE utf8mb4_unicode_ci NOT NULL,
+    MODIFY `framework` varchar(767) COLLATE utf8mb4_unicode_ci DEFAULT NULL;
 
 -- RichSkillDescriptor: table
 ALTER TABLE `RichSkillDescriptor`

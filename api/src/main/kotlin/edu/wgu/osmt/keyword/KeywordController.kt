@@ -43,7 +43,10 @@ class KeywordController @Autowired constructor(
     val appConfig: AppConfig,
 ) {
 
-    @GetMapping(RoutePaths.KEYWORD_LIST, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(
+        path = ["${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.KEYWORD_LIST}"],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     @ResponseBody
     fun allPaginated(
         uriComponentsBuilder: UriComponentsBuilder,
@@ -65,7 +68,10 @@ class KeywordController @Autowired constructor(
             .body(searchResults.map { ApiKeyword.fromModel(it.content) }.toList())
     }
 
-    @GetMapping(RoutePaths.KEYWORD_DETAIL, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(
+        path = ["${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.KEYWORD_DETAIL}"],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     @ResponseBody
     fun keywordById(
         @PathVariable id: Long,
@@ -76,7 +82,10 @@ class KeywordController @Autowired constructor(
             .body(this.byId(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND))
     }
 
-    @PostMapping(RoutePaths.KEYWORD_CREATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(
+        path = ["${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.KEYWORD_CREATE}"],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     @ResponseBody
     @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun createKeyword(
@@ -89,7 +98,10 @@ class KeywordController @Autowired constructor(
             .body(keywordRepository.createFromApi(apiKeywordUpdate)?.let { ApiKeyword(it.toModel(), it.skills.count()) })
     }
 
-    @PostMapping(RoutePaths.KEYWORD_UPDATE, produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(
+        path = ["${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.KEYWORD_UPDATE}"],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun updateKeyword(
         @PathVariable id: Long,
@@ -107,7 +119,7 @@ class KeywordController @Autowired constructor(
             )
     }
 
-    @DeleteMapping(RoutePaths.KEYWORD_REMOVE)
+    @DeleteMapping(path = ["${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.KEYWORD_REMOVE}"])
     @PreAuthorize("hasAuthority(@appConfig.roleAdmin)")
     fun deleteKeyword(
         @PathVariable id: Long,

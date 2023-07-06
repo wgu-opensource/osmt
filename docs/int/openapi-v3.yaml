@@ -10,54 +10,6 @@ info:
 
 paths:
 
-  /api/collections:
-    get:
-      summary: Get all collections
-      description: Returns all collections
-      tags:
-        - Collections
-      parameters:
-        - $ref: '#/components/parameters/PaginationSizeQueryRequired'
-        - $ref: '#/components/parameters/PaginationFromQueryRequired'
-        - $ref: '#/components/parameters/PublishStatusQueryRequired'
-        - $ref: '#/components/parameters/SortOrderQuery'
-      responses:
-        '200':
-          description: OK
-          headers:
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CollectionDoc'
-    post:
-      summary: Define a collection
-      description: Create a new collection in OSMT
-      tags:
-        - Collections
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/CollectionUpdate'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Collection'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-
   /api/v3/collections/{uuid}:
     parameters:
       - $ref: '#/components/parameters/UuidPath'

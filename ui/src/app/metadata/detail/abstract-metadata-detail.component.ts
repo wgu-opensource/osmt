@@ -1,42 +1,25 @@
-import { Component, ElementRef, Input, OnInit, ViewChild} from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { Title } from "@angular/platform-browser";
-import { ActivatedRoute, Router } from "@angular/router";
-
-import { SvgHelper, SvgIcon } from "src/app/core/SvgHelper";
-import { AbstractDataService } from "src/app/data/abstract-data.service";
+import { ActivatedRoute, Router } from "@angular/router"
 import { IDetailCardSectionData } from "src/app/detail-card/section/section.component";
-import { FilterDropdown } from "src/app/models";
-import { PublishStatus } from "src/app/PublishStatus";
-import { ApiSortOrder } from "src/app/richskill/ApiSkill";
-import { RichSkillService } from "src/app/richskill/service/rich-skill.service";
-import { RelatedSkillTableControl } from "src/app/table/control/related-skill-table.control";
-import { ISkillTableControl } from "src/app/table/control/table.control";
-import { TableActionDefinition } from "src/app/table/skills-library-table/has-action-definitions";
-import { ToastService } from "src/app/toast/toast.service";
 import { ApiJobCode } from "../job-code/Jobcode";
 import { ApiNamedReference } from "../named-reference/NamedReference";
 import { MetadataType } from "../rsd-metadata.enum";
 import { QuickLinksHelper } from "../../core/quick-links-helper";
-
+import { AbstractDataService } from "../../data/abstract-data.service"
+import { RichSkillService } from "../../richskill/service/rich-skill.service"
+import { ToastService } from "../../toast/toast.service"
 
 @Component({
   template: ``
 })
 export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper implements OnInit {
-  @ViewChild("titleHeading") titleElement!: ElementRef
 
+  @ViewChild("titleHeading") titleElement!: ElementRef
   idParam: string | null;
   metadata?: ApiNamedReference | ApiJobCode;
-  skillTableControl: RelatedSkillTableControl<number>
 
-  searchForm = new FormGroup({
-    search: new FormControl("")
-  })
-
-  readonly searchIcon = SvgHelper.path(SvgIcon.SEARCH)
-
-  constructor(
+  protected constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     protected metadataService: AbstractDataService,
@@ -46,68 +29,10 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
   ) {
     super();
     this.idParam = this.route.snapshot.paramMap.get("id");
-
-    this.skillTableControl = new RelatedSkillTableControl<number>(
-      metadataService,
-      {
-        from: 0,
-        size: 50,
-        sort: ApiSortOrder.NameAsc,
-        statusFilters: new Set([PublishStatus.Draft, PublishStatus.Published])
-      } as ISkillTableControl
-    );
   }
-
-  get showLibraryEmptyMessage(): boolean {
-    return true;
-  }
-
-  get showSkillsEmpty(): boolean {
-    return this.skillTableControl.emptyResults;
-  }
-
-  get showSkillsFilters(): boolean {
-    return true;
-  }
-
-  get showSkillsLoading(): boolean {
-    return false;
-  }
-
-  get showSkillsTable(): boolean {
-    return !this.skillTableControl.emptyResults;
-  }
-
-  // get skillsCountLabel(): string {
-  //     const rsdLabel = (this.metadata?.skillCount == 1) ? "RSD" : "RSDs"
-  //     return `${this.skillTableControl.totalCount} ${rsdLabel} with this category based on`
-  // }
-
-  get skillsViewingLabel(): string {
-    return (this.skillTableControl.currFirstSkillIndex && this.skillTableControl.currLastSkillIndex)
-      ? `Viewing ${this.skillTableControl.currFirstSkillIndex}-${this.skillTableControl.currLastSkillIndex}` : "";
-  }
-
-  get tableActions(): TableActionDefinition[] {
-    return [
-      new TableActionDefinition({
-        label: "Back to Top",
-        icon: "up",
-        offset: true,
-        callback: (action: TableActionDefinition) => this.handleClickBackToTop(action),
-        visible: () => true
-      })
-    ];
-  }
-
-  protected get searchFieldValue(): string | undefined {
-    const value = this.searchForm.get("search")?.value?.trim();
-    return (value && value.length > 0) ? value : undefined;
-  }
-
 
   ngOnInit(): void {
-    this.loadMetadata();
+
   }
 
   protected loadMetadata() {

@@ -227,7 +227,11 @@ const routes: Routes = [
       roles: ActionByRoles.get(ButtonAction.MyWorkspace)
     }
   },
-
+  {
+    path: "metadata",
+    component: MetadataListComponent,
+    canActivate: [AuthGuard],
+  },
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},
   {path: "collections/:uuid", component: CollectionPublicComponent},

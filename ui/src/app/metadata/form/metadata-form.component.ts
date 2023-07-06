@@ -120,7 +120,7 @@ export class MetadataFormComponent {
         }
 
         // this.metadataForm.markAsPristine();
-        
+
         this.router.navigate([`/metadata`]);
       });
     }

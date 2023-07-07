@@ -4,6 +4,7 @@ import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.ApiJobCode
+import edu.wgu.osmt.api.model.ApiJobCodeV2
 import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSearchV2
@@ -271,11 +272,24 @@ class SearchController @Autowired constructor(
         
         return searchSkillsV2(uriComponentsBuilder, size, from, status, sort, uuid, apiSearch, user)
     }
-    
+
     @GetMapping(path = [
         "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_JOBCODES_PATH}",
-        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_JOBCODES_PATH}",
         "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_JOBCODES_PATH}"
+    ],
+        produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun searchJobCodesV2(
+        uriComponentsBuilder: UriComponentsBuilder,
+        @RequestParam(required = true) query: String
+    ): HttpEntity<List<ApiJobCode>> {
+        val searchResults = jobCodeEsRepo.typeAheadSearch(query)
+
+        return ResponseEntity.status(200).body(searchResults.map { ApiJobCodeV2.fromJobCode(it.content) }.toList())
+    }
+    
+    @GetMapping(path = [
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_JOBCODES_PATH}"
     ],
         produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody

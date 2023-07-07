@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.config.SEMICOLON
+import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.richskill.RichSkillDescriptor
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 
@@ -29,6 +30,21 @@ class ApiSkillV2(
     @get:JsonProperty
     val category: String
         get() = rsd.categories.mapNotNull { it.value }.sorted().joinToString(SEMICOLON)
+
+    @get:JsonProperty
+    override val occupations: List<ApiJobCodeV2>
+        get() {
+            return rsd.jobCodes.filter { it.code.isNotBlank() }.map { jobCode ->
+                val parents = listOfNotNull(
+                    jobCode.major.let {jobCode.majorCode?.let { ApiJobCodeV2(code=it, targetNodeName=jobCode.major, level= JobCodeLevel.Major) }},
+                    jobCode.minor.let{jobCode.minorCode?.let { ApiJobCodeV2(code=it, targetNodeName=jobCode.minor, level= JobCodeLevel.Minor) }},
+                    jobCode.broad?.let {jobCode.broadCode?.let { ApiJobCodeV2(code=it, targetNodeName=jobCode.broad, level= JobCodeLevel.Broad) }},
+                    jobCode.detailed?.let {jobCode.detailedCode?.let { ApiJobCodeV2(code=it, targetNodeName=jobCode.detailed, level= JobCodeLevel.Detailed) }}
+                ).distinct()
+
+                ApiJobCodeV2.fromJobCode(jobCode, parents=parents)
+            }
+        }
 
     companion object {
         fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkillV2 {

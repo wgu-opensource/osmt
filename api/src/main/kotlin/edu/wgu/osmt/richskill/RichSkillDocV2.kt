@@ -3,6 +3,7 @@ package edu.wgu.osmt.richskill
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import edu.wgu.osmt.api.model.JobCodeV2
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
@@ -103,7 +104,7 @@ data class RichSkillDocV2(
     
     @Field(type = Nested)
     @get:JsonProperty("occupations")
-    val jobCodes: List<JobCode> = listOf(),
+    val jobCodes: List<JobCodeV2> = listOf(),
     
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
@@ -173,7 +174,7 @@ data class RichSkillDocV2(
                 author = dao.keywords.filter { it.type == KeywordTypeEnum.Author }.mapNotNull { it.value }.sorted().joinToString(SEMICOLON),
                 publishStatus = dao.publishStatus(),
                 searchingKeywords = dao.keywords.filter { it.type == KeywordTypeEnum.Keyword }.mapNotNull { it.value },
-                jobCodes = dao.jobCodes.map { it.toModel() },
+                jobCodes = dao.jobCodes.map {jobCode -> JobCodeV2.fromJobCode(jobCode.toModel())},
                 standards = dao.keywords.filter { it.type == KeywordTypeEnum.Standard }.mapNotNull { it.value },
                 certifications = dao.keywords.filter { it.type == KeywordTypeEnum.Certification }
                     .mapNotNull { it.value },
@@ -196,7 +197,7 @@ data class RichSkillDocV2(
                     author = rsd.authors.sorted().joinToString(SEMICOLON),
                     publishStatus = rsd.publishStatus,
                     searchingKeywords = rsd.searchingKeywords,
-                    jobCodes = rsd.jobCodes,
+                    jobCodes = rsd.jobCodes.map {jobCode -> JobCodeV2.fromJobCode(jobCode)},
                     standards = rsd.standards,
                     certifications = rsd.certifications,
                     employers = rsd.employers,

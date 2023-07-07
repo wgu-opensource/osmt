@@ -36,7 +36,7 @@ class ApiSkillSummaryV2(
                 categories = rsd.categories.mapNotNull { it.value },
                 category = rsd.categories.mapNotNull { it.value }.sorted().joinToString(SEMICOLON),
                 keywords = rsd.keywords.mapNotNull { it.value },
-                occupations = rsd.jobCodes.map { ApiJobCode.fromJobCode(it) }
+                occupations = rsd.jobCodes.map { ApiJobCodeV2.fromJobCode(it) }
             )
         }
         
@@ -52,7 +52,9 @@ class ApiSkillSummaryV2(
                 categories = apiSkillSummary.categories,
                 category = apiSkillSummary.categories.sorted().joinToString(SEMICOLON),
                 keywords = apiSkillSummary.keywords,
-                occupations = apiSkillSummary.occupations
+                occupations = apiSkillSummary.occupations.map {
+                    ApiJobCodeV2.fromApiJobCode(it)
+                }
             )
             
         }

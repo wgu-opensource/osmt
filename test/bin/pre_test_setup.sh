@@ -63,7 +63,6 @@ error_handler() {
 
 main() {
   local project_dir; project_dir="$(_get_osmt_project_dir)" || exit 135
-  local log_file; log_file="${project_dir}/test/target/osmt_spring_app.log"
 
   # Sourcing the common lib file
   source "${project_dir}/bin/lib/common.sh"

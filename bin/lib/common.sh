@@ -6,6 +6,10 @@
 set -eu
 
 declare DEBUG=${DEBUG:-0}
+declare OAUTH_ISSUER="${OAUTH_ISSUER:-}"
+declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
+declare OAUTH_CLIENTSECRET="${OAUTH_CLIENTSECRET:-}"
+declare OAUTH_AUDIENCE="${OAUTH_AUDIENCE:-}"
 declare PROJECT_DIR; PROJECT_DIR="$(git rev-parse --show-toplevel 2> /dev/null)" || \
     (echo_err "$(basename "${0}") commands use git to set directory context. Exiting..." && exit 135)
 if [[ -z "${PROJECT_DIR}" ]]; then

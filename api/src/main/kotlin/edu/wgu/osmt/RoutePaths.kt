@@ -23,6 +23,7 @@ object RoutePaths {
     const val EXPORT_SKILLS_XLSX = "$EXPORT_SKILLS/xlsx"
     const val SEARCH_SIMILAR_SKILLS = "$SEARCH_SKILLS/similarity"
     const val SEARCH_SIMILARITIES = "$SEARCH_SKILLS/similarities"
+    const val SEARCH_SIMILARITIES_RESULTS = "${SEARCH_SIMILARITIES}/results"
     const val SEARCH_COLLECTIONS = "$SEARCH_PATH/collections"
 
     //skills

@@ -134,7 +134,7 @@ internal class SearchControllerTest @Autowired constructor(
             "admin",
             "admin@wgu.edu"
         )
-        val response = searchController.similarSkillWarnings(
+        val response = searchController.similarSkillResults(
             arrayOf(ApiSimilaritySearch("Standardize levels of access and security to maintain information security."))
         )
         assertThat((response as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
@@ -144,7 +144,7 @@ internal class SearchControllerTest @Autowired constructor(
 
     @Test
     fun similarSkillWarningsShouldNotFindSimilarities() {
-        val response = searchController.similarSkillWarnings(
+        val response = searchController.similarSkillResults(
             arrayOf(ApiSimilaritySearch("Access an application programming interface (API) with a programming language to change data for a task."))
         )
         assertThat((response as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)

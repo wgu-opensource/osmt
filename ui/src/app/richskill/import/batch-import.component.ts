@@ -488,7 +488,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     }
 
     const chunks: string[][] = chunk(statements, 100)
-    const observables: Observable<Array<ApiSkillSummary[]>>[] = chunks.map(it => this.richSkillService.similaritiesCheck(it))
+    const observables: Observable<Array<ApiSkillSummary[]>>[] = chunks.map(it => this.richSkillService.similaritiesResults(it))
     return new Observable(observer => {
       forkJoin(observables).subscribe(it => {
         const allResponses: Array<ApiSkillSummary[]> = it.flat()

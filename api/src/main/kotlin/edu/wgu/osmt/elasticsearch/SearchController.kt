@@ -4,7 +4,6 @@ import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.ApiJobCode
-import edu.wgu.osmt.api.model.ApiJobCodeV2
 import edu.wgu.osmt.api.model.ApiNamedReference
 import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.ApiSearchV2
@@ -285,7 +284,7 @@ class SearchController @Autowired constructor(
     ): HttpEntity<List<ApiJobCode>> {
         val searchResults = jobCodeEsRepo.typeAheadSearch(query)
 
-        return ResponseEntity.status(200).body(searchResults.map { ApiJobCodeV2.fromJobCode(it.content) }.toList())
+        return ResponseEntity.status(200).body(searchResults.map { ApiJobCode.fromJobCodeV2(it.content) }.toList())
     }
     
     @GetMapping(path = [

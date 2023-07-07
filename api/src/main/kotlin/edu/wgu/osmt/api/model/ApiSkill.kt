@@ -88,7 +88,7 @@ open class ApiSkill(@JsonIgnore open val rsd: RichSkillDescriptor, @JsonIgnore o
         get() = rsd.alignments.map { ApiAlignment.fromKeyword(it) }
 
     @get:JsonProperty
-    val occupations: List<ApiJobCode>
+    open val occupations: List<ApiJobCode>
         get() {
             return rsd.jobCodes.filter { it.code.isNotBlank() }.map { jobCode ->
                 val parents = listOfNotNull(
@@ -97,7 +97,6 @@ open class ApiSkill(@JsonIgnore open val rsd: RichSkillDescriptor, @JsonIgnore o
                     jobCode.broad?.let {jobCode.broadCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.broad, level=JobCodeLevel.Broad) }},
                     jobCode.detailed?.let {jobCode.detailedCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.detailed, level=JobCodeLevel.Detailed) }}
                 ).distinct()
-
                 ApiJobCode.fromJobCode(jobCode, parents=parents)
             }
         }

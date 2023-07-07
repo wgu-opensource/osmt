@@ -71,16 +71,91 @@ data class ApiStringListUpdate(
     val remove: List<String>? = null
 )
 
+data class JobCodeV2(
+    val major: String?,
+    val minor: String?,
+    val broad: String?,
+    val detailed: String?,
+    val code: String?,
+    val name: String?,
+    val description: String?,
+    val framework: String?,
+    val url: String?,
+    val majorCode: String?,
+    val minorCode: String?,
+    val broadCode: String?,
+    val detailedCode: String?,
+    val jobRoleCode: String?
+) {
+
+    companion object factory {
+        fun fromJobCode(jobCode: JobCode): JobCodeV2 {
+            return  JobCodeV2(
+                major = jobCode.major,
+                minor = jobCode.minor,
+                broad = jobCode.broad,
+                detailed = jobCode.detailed,
+                code = jobCode.code,
+                name = jobCode.name,
+                description = jobCode.description,
+                framework = jobCode.framework,
+                url = jobCode.url,
+                majorCode = jobCode.majorCode,
+                minorCode = jobCode.minorCode,
+                broadCode = jobCode.broadCode,
+                detailedCode = jobCode.detailedCode,
+                jobRoleCode = jobCode.jobRoleCode
+            )
+        }
+    }
+}
+
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-data class ApiJobCode(
-    val id: Long? = null,
-    val code: String,
-    val targetNode: String? = null,
-    val targetNodeName: String? = null,
-    val frameworkName: String? = null,
-    val level: JobCodeLevel? = null,
-    val parents: List<ApiJobCode>? = null,
-    val jobCodeLevelAsNumber: Int? = null
+data class ApiJobCodeV2(
+    override val id: Long? = null,
+    override val code: String,
+    override val targetNode: String? = null,
+    override val targetNodeName: String? = null,
+    override val frameworkName: String? = null,
+    override val level: JobCodeLevel? = null,
+    override val parents: List<ApiJobCodeV2>? = null
+): ApiJobCode(id, code, targetNode, targetNodeName, frameworkName, level, parents) {
+    companion object factory {
+
+        fun fromApiJobCode(apiJobCode: ApiJobCode): ApiJobCodeV2 {
+            return ApiJobCodeV2(
+                code = apiJobCode.code,
+                targetNode = apiJobCode.targetNode,
+                targetNodeName = apiJobCode.targetNodeName,
+                frameworkName = apiJobCode.frameworkName,
+                level = apiJobCode.level,
+                parents = apiJobCode.parents?.map { fromApiJobCode(it) }
+            )
+        }
+
+        fun fromJobCode(jobCode: JobCode, level: JobCodeLevel? = null, parents: List<ApiJobCodeV2>? = null): ApiJobCodeV2 {
+            return ApiJobCodeV2(
+                code = jobCode.code,
+                targetNodeName = jobCode.name,
+                targetNode = jobCode.url,
+                frameworkName = jobCode.framework,
+                level = level,
+                parents = parents
+            )
+        }
+    }
+}
+
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+open class ApiJobCode(
+    open val id: Long? = null,
+    open val code: String,
+    open val targetNode: String? = null,
+    open val targetNodeName: String? = null,
+    open val frameworkName: String? = null,
+    open val level: JobCodeLevel? = null,
+    open val parents: List<ApiJobCode>? = null,
+    val jobCodeLevelAsNumber: Int? = null,
 ) {
     companion object factory {
         fun fromJobCode(jobCode: JobCode, level: JobCodeLevel? = null, parents: List<ApiJobCode>? = null): ApiJobCode {

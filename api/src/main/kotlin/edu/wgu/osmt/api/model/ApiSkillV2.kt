@@ -32,17 +32,17 @@ class ApiSkillV2(
         get() = rsd.categories.mapNotNull { it.value }.sorted().joinToString(SEMICOLON)
 
     @get:JsonProperty
-    override val occupations: List<ApiJobCodeV2>
+    override val occupations: List<ApiJobCode>
         get() {
             return rsd.jobCodes.filter { it.code.isNotBlank() }.map { jobCode ->
                 val parents = listOfNotNull(
-                    jobCode.major.let {jobCode.majorCode?.let { ApiJobCodeV2(code=it, targetNodeName=jobCode.major, level= JobCodeLevel.Major) }},
-                    jobCode.minor.let{jobCode.minorCode?.let { ApiJobCodeV2(code=it, targetNodeName=jobCode.minor, level= JobCodeLevel.Minor) }},
-                    jobCode.broad?.let {jobCode.broadCode?.let { ApiJobCodeV2(code=it, targetNodeName=jobCode.broad, level= JobCodeLevel.Broad) }},
-                    jobCode.detailed?.let {jobCode.detailedCode?.let { ApiJobCodeV2(code=it, targetNodeName=jobCode.detailed, level= JobCodeLevel.Detailed) }}
+                    jobCode.major.let {jobCode.majorCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.major, level= JobCodeLevel.Major) }},
+                    jobCode.minor.let{jobCode.minorCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.minor, level= JobCodeLevel.Minor) }},
+                    jobCode.broad?.let {jobCode.broadCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.broad, level= JobCodeLevel.Broad) }},
+                    jobCode.detailed?.let {jobCode.detailedCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.detailed, level= JobCodeLevel.Detailed) }}
                 ).distinct()
 
-                ApiJobCodeV2.fromJobCode(jobCode, parents=parents)
+                ApiJobCode.fromJobCodeV2(jobCode, parents=parents)
             }
         }
 

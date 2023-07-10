@@ -7,12 +7,13 @@ import { ActivatedRoute, Router } from "@angular/router"
 import { Papa, ParseResult } from "ngx-papaparse"
 import { ActivatedRouteStubSpec } from "test/util/activated-route-stub.spec"
 import { TestPage } from "test/util/test-page.spec"
-import { EnvironmentServiceStub, RichSkillServiceStub } from "../../../../test/resource/mock-stubs"
+import {CollectionServiceStub, EnvironmentServiceStub, RichSkillServiceStub} from "../../../../test/resource/mock-stubs"
 import { AppConfig } from "../../app.config"
 import { EnvironmentService } from "../../core/environment.service"
 import { ToastService } from "../../toast/toast.service"
 import { RichSkillService } from "../service/rich-skill.service"
 import { BatchImportComponent, ImportStep } from "./batch-import.component"
+import {CollectionService} from "../../collection/service/collection.service";
 
 
 class Page extends TestPage<BatchImportComponent> {
@@ -75,6 +76,7 @@ describe("BatchImportComponent", () => {
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
         { provide: RichSkillService, useClass: RichSkillServiceStub },
+        { provide: CollectionService, useClass: CollectionServiceStub }
       ]
     })
     .compileComponents()

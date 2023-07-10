@@ -1,18 +1,26 @@
 import { Component } from '@angular/core';
 import {ButtonAction} from "../../auth/auth-roles";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../auth/auth-service";
 import {CollectionService} from "../../collection/service/collection.service";
 import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
+import {BatchImportOptionsEnum} from "../../richskill/import/BatchImportOptionsEnum";
 
 @Component({
   selector: 'app-skill-import',
   templateUrl: './skill-import.component.html',
-  styleUrls: ['./skill-import.component.scss']
+  styleUrls: [
+    '../../table/skills-library-table/action-bar-item.components.scss',
+    './skill-import.component.scss'
+  ]
 })
 export class SkillImportComponent {
 
-  constructor(protected collectionService: CollectionService, protected route: ActivatedRoute, protected  authService: AuthService) {
+  constructor(protected collectionService: CollectionService,
+              protected route: ActivatedRoute,
+              protected  authService: AuthService,
+              protected router: Router
+  ) {
     this.setEnableFlags()
   }
 
@@ -40,18 +48,31 @@ export class SkillImportComponent {
     return new TableActionDefinition({
       menu: [
         {
-          label: "Download as CSV",
+          label: "Import to Existing Collection",
           visible: () => true,
-          callback: () => this.exporter.exportLibraryCsv(),
+          callback: () => {this.router.navigate(["/skills/import"],
+            {queryParams:{to:BatchImportOptionsEnum.existing}})
+          },
         },
         {
-          label: "Download as Excel Workbook",
+          label: "Import to Workspace",
           visible: () => true,
-          callback: () => this.exporter.exportLibraryXlsx(),
+          callback: () => {
+            this.router.navigate(["/skills/import"],
+              {queryParams: {to: BatchImportOptionsEnum.workspace}})
+          },
+        },
+        {
+          label: "Import to New Collection",
+          visible: () => true,
+          callback: () => {this.router.navigate(["/skills/import"],
+            {queryParams: {to: BatchImportOptionsEnum.new}})
+          },
         }
       ],
       visible: () => true
     })
   }
+
 
 }

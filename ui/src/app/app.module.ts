@@ -110,7 +110,6 @@ import { SizePaginationComponent } from "./table/skills-library-table/size-pagin
 import {OsmtTableModule} from "./table/osmt-table.module"
 import { getBaseApi } from "./api-versions";
 import { SkillImportComponent } from './navigation/skill-import/skill-import.component';
-import { ImportRsdComponent } from './import/import-rsd/import-rsd.component'
 import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
 import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
 
@@ -233,7 +232,6 @@ export function initializeApp(
     ConvertToCollectionComponent,
     SizePaginationComponent,
     SkillImportComponent,
-    ImportRsdComponent,
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

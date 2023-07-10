@@ -198,6 +198,9 @@
       <button class="m-button" (click)="resetState()">
         <span class="m-button-x-text">Import More RSD<span class="t-type-lowercase">s</span></span>
       </button>
+      <button class="m-button" (click)="getBatchImportAction()">
+        <span class="m-button-x-text">{{getImportOptionButtonLabel()}} </span>
+      </button>
       <button class="m-button" routerLink="/skills">
         <span class="m-button-x-text">View RSD Library</span>
       </button>

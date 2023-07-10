@@ -17,6 +17,9 @@ import {forkJoin, Observable} from "rxjs"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {Title} from "@angular/platform-browser";
 import {AppConfig} from "../../app.config"
+import {BatchImportOptionsEnum} from "./BatchImportOptionsEnum";
+import {ApiSearch, ApiSkillListUpdate} from "../service/rich-skill-search.service";
+import {CollectionService} from "../../collection/service/collection.service";
 import { ApiSkillSummary } from "../ApiSkillSummary"
 
 
@@ -127,6 +130,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   previewSkills?: ApiSkillUpdate[]
   auditedSkills?: AuditedImportSkill[]
   importedSkills?: AuditedImportSkill[]
+  skillsToBeImported?: ApiSkill[]
 
   alignmentCount: number = 3
 
@@ -136,6 +140,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   docIcon = SvgHelper.path(SvgIcon.DOC)
   isHover: boolean = false
+  to: string = ""
 
   get similarSkillCount(): number {
     return (this.similarSkills?.filter(it => it).length ?? 0)
@@ -147,10 +152,12 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
               protected route: ActivatedRoute,
               protected location: Location,
               protected papa: Papa,
-              protected titleService: Title
+              protected titleService: Title,
+              protected collectionService: CollectionService
   ) {
     super()
     this.resetState()
+    this.route.queryParams.subscribe(params => this.to = params.to)
   }
 
   ngOnInit(): void {
@@ -531,6 +538,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     ).subscribe(results => {
       if (results) {
         this.hideStepLoader()
+        this.skillsToBeImported = results
       }
     })
 
@@ -538,6 +546,71 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   handleSimilarityOk(importSimilar: boolean): void {
     this.importSimilarSkills = importSimilar
+  }
+
+  protected handleClickAddToWorkspace(): void {
+    let skillListUpdate = new ApiSkillListUpdate({
+      add: new ApiSearch(
+        {uuids:this.skillsToBeImported?.map(skill => skill.uuid)}
+      )
+    })
+    this.toastService.showBlockingLoader()
+    this.collectionService.getWorkspace().subscribe(workspace => {
+      this.collectionService.updateSkillsWithResult(workspace.uuid, skillListUpdate, undefined).subscribe(result => {
+        if (result) {
+          const message = `You added ${result.modifiedCount} RSDs to the workspace.`
+          this.toastService.showToast("Success!", message)
+          this.toastService.hideBlockingLoader()
+        }
+      })
+    })
+  }
+
+  protected handleAddToExistingCollection() {
+    this.router.navigate(["/collections/add-skills"],
+      {state:{selectedSkills: this.skillsToBeImported, totalCount:this.skillsToBeImported?.length}}
+    )
+  }
+
+  protected handleAddToANewCollection() {
+    this.router.navigate(["collections/create"])
+  }
+
+  protected getBatchImportAction() {
+    switch (this.to) {
+      case BatchImportOptionsEnum.existing: {
+        this.handleAddToExistingCollection()
+        break
+      }
+      case BatchImportOptionsEnum.new: {
+        this.handleAddToANewCollection()
+        break
+      }
+      case BatchImportOptionsEnum.workspace: {
+        this.handleClickAddToWorkspace()
+        break
+      }
+      default: {
+        break
+      }
+    }
+  }
+
+  protected getImportOptionButtonLabel(): string {
+    switch (this.to) {
+      case BatchImportOptionsEnum.existing: {
+        return "Add to existing Collection"
+      }
+      case BatchImportOptionsEnum.new: {
+        return "Add to a new Collection"
+      }
+      case BatchImportOptionsEnum.workspace: {
+        return "Add to Workspace"
+      }
+      default: {
+        return ""
+      }
+    }
   }
 }
 

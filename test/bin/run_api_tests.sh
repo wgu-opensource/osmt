@@ -105,7 +105,13 @@ function remove_api_test_docker_resources() {
 function init_osmt_and_run_api_tests() {
   local apiVersion; apiVersion="${1}"
 
-  # Start OSMT app
+  echo_info "Stopping and removing docker stack..."
+  # Stop and cleanup docker-compose stack
+  remove_api_test_docker_resources
+
+  # Start the API test Docker compose stack and Spring app server, detached. Send log files to 'osmt_spring_app.log'
+  echo "INFO: Starting OSMT Spring app for ${OSMT_STACK_NAME}. Output is suppressed, because console is detached."
+  echo "INFO: See 'osmt_spring_app.log' for console output. Proceeding..."
   "$(_get_osmt_project_dir)/osmt_cli.sh" -s 1>"$log_file" 2>"$log_file" & disown  || exit 135
 
   # Check to see if app is up and running
@@ -117,31 +123,28 @@ function init_osmt_and_run_api_tests() {
   # Reindex Elasticsearch
   "$(_get_osmt_project_dir)/osmt_cli.sh" -r
 
-   # Get auth token
-    get_bearer_token
+  # Get auth token
+  echo_info "Getting authentication token"
+  get_bearer_token
 
-    # Run V3 API tests
-    echo_info "Running API ${apiVersion} tests..."
-    run_api_tests "${apiVersion}"
+  # Run V3 API tests
+  echo_info "Running API ${apiVersion} tests..."
+  run_api_tests "${apiVersion}"
 
-    # Shut down OSMT app
-    run_shutdown_script
+  # Shut down OSMT app
+  run_shutdown_script
 }
 
 function main() {
 
-  remove_api_test_docker_resources
-
   # Calling API V3 version tests
   init_osmt_and_run_api_tests "v3"
-
-  remove_api_test_docker_resources
 
   # Calling API V2 version tests
   init_osmt_and_run_api_tests "v2"
 
+  echo_info "Final cleanup of docker stack..."
   remove_api_test_docker_resources
-
 }
 
 test_dir="$(_get_osmt_project_dir)/test" || exit 135

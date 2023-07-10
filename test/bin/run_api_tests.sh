@@ -14,7 +14,6 @@ declare OKTA_URL
 declare OKTA_USERNAME
 declare OKTA_PASSWORD
 declare -i APP_START_CHECK_RETRY_LIMIT="${APP_START_CHECK_RETRY_LIMIT:-12}"
-declare -ri LOAD_CI_DATASET="${LOAD_CI_DATASET:-0}"
 
 function _get_osmt_project_dir() {
   local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
@@ -94,6 +93,21 @@ function error_handler() {
   "${test_dir}/bin/stop_osmt_app.sh"
   printf "\n"
 }
+
+function remove_api_test_docker_resources() {
+  # Clean up, stop docker-compose stack and prune API-test related images and volumes
+  # Disable error handling around docker cleanup.
+  set +eE
+  remove_osmt_docker_artifacts_for_stack "${OSMT_STACK_NAME}"
+  # Re-enable error trapping
+  set -eE
+}
+
+fucntion init_osmt_and_run_api_tests() {
+  local version="{$1}"
+
+}
+
 function main() {
   # Sourcing common lib file
   source "$(_get_osmt_project_dir)/bin/lib/common.sh"
@@ -101,11 +115,7 @@ function main() {
   # Sourcing API test env file
   parse_osmt_envs "${apitest_env_file}"
 
-  # Clean up, stop docker-compose stack and prune API-test related images and volumes
-  # Disable error handling around docker cleanup.
-  set +eE
-  remove_osmt_docker_artifacts_for_stack "${OSMT_STACK_NAME}"
-  set -eE
+  remove_api_test_docker_rources
 
   # Start OSMT app
   "$(_get_osmt_project_dir)/osmt_cli.sh" -s 1>"$log_file" 2>"$log_file" & disown  || exit 135
@@ -113,13 +123,11 @@ function main() {
   # Check to see if app is up and running
   curl_with_retry || exit 135
 
-  if [[ "${LOAD_CI_DATASET}" -eq 0  ]]; then
-    echo_info "Loading Static CI Dataset And Reindexing..."
-    # load CI static dataset
-    "$(_get_osmt_project_dir)/osmt_cli.sh" -l
-    # Reindex Elasticsearch
-    "$(_get_osmt_project_dir)/osmt_cli.sh" -r
-  fi
+  echo_info "Loading Static CI Dataset And Reindexing..."
+  # load CI static dataset
+  "$(_get_osmt_project_dir)/osmt_cli.sh" -l
+  # Reindex Elasticsearch
+  "$(_get_osmt_project_dir)/osmt_cli.sh" -r
 
   # Get auth token
   get_bearer_token
@@ -132,29 +140,29 @@ function main() {
   run_shutdown_script
 
   # Need to refresh CI data between versioned tests
-  remove_osmt_docker_artifacts_for_stack "${OSMT_STACK_NAME}"
+  remove_api_test_docker_resources
 
   # Start OSMT app
   "${test_dir}/bin/start_osmt_app.sh" "${OSMT_STACK_NAME}"
 
-  if [[ "${LOAD_CI_DATASET}" -eq 0  ]]; then
-    echo_info "Loading Static CI Dataset And Reindexing..."
-    # load CI static dataset
-    "$(_get_osmt_project_dir)/osmt_cli.sh" -l
-    # Reindex Elasticsearch
-    "$(_get_osmt_project_dir)/osmt_cli.sh" -r
-  fi
+  echo_info "Loading Static CI Dataset And Reindexing..."
+  # load CI static dataset
+  "$(_get_osmt_project_dir)/osmt_cli.sh" -l
+  # Reindex Elasticsearch
+  "$(_get_osmt_project_dir)/osmt_cli.sh" -r
 
   # Run V2 API tests
   echo_info "Running API V2 tests..."
   run_api_tests "v2"
   run_shutdown_script
-  remove_osmt_docker_artifacts_for_stack "${OSMT_STACK_NAME}"
+  remove_api_test_docker_resources
+
 }
 
 test_dir="$(_get_osmt_project_dir)/test" || exit 135
 apitest_env_file="$test_dir/osmt-apitest.env"
 log_file="${test_dir}/target/osmt_spring_app.log"
+
 
 trap error_handler ERR SIGINT SIGTERM
 main

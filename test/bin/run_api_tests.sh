@@ -5,7 +5,6 @@ set -eEu
 
 export OSMT_STACK_NAME=osmt_api_test
 
-declare apitest_env_file
 declare test_dir
 declare bearer_token
 declare log_file
@@ -103,19 +102,8 @@ function remove_api_test_docker_resources() {
   set -eE
 }
 
-fucntion init_osmt_and_run_api_tests() {
-  local version="{$1}"
-
-}
-
-function main() {
-  # Sourcing common lib file
-  source "$(_get_osmt_project_dir)/bin/lib/common.sh"
-
-  # Sourcing API test env file
-  parse_osmt_envs "${apitest_env_file}"
-
-  remove_api_test_docker_rources
+function init_osmt_and_run_api_tests() {
+  local apiVersion; apiVersion="${1}"
 
   # Start OSMT app
   "$(_get_osmt_project_dir)/osmt_cli.sh" -s 1>"$log_file" 2>"$log_file" & disown  || exit 135
@@ -129,32 +117,29 @@ function main() {
   # Reindex Elasticsearch
   "$(_get_osmt_project_dir)/osmt_cli.sh" -r
 
-  # Get auth token
-  get_bearer_token
+   # Get auth token
+    get_bearer_token
 
-  # Run V3 API tests
-  echo_info "Running API V3 tests..."
-  run_api_tests "v3"
+    # Run V3 API tests
+    echo_info "Running API ${apiVersion} tests..."
+    run_api_tests "${apiVersion}"
 
-  # Shut down OSMT app
-  run_shutdown_script
+    # Shut down OSMT app
+    run_shutdown_script
+}
 
-  # Need to refresh CI data between versioned tests
+function main() {
+
   remove_api_test_docker_resources
 
-  # Start OSMT app
-  "${test_dir}/bin/start_osmt_app.sh" "${OSMT_STACK_NAME}"
+  # Calling API V3 version tests
+  init_osmt_and_run_api_tests "v3"
 
-  echo_info "Loading Static CI Dataset And Reindexing..."
-  # load CI static dataset
-  "$(_get_osmt_project_dir)/osmt_cli.sh" -l
-  # Reindex Elasticsearch
-  "$(_get_osmt_project_dir)/osmt_cli.sh" -r
+  remove_api_test_docker_resources
 
-  # Run V2 API tests
-  echo_info "Running API V2 tests..."
-  run_api_tests "v2"
-  run_shutdown_script
+  # Calling API V2 version tests
+  init_osmt_and_run_api_tests "v2"
+
   remove_api_test_docker_resources
 
 }
@@ -163,6 +148,11 @@ test_dir="$(_get_osmt_project_dir)/test" || exit 135
 apitest_env_file="$test_dir/osmt-apitest.env"
 log_file="${test_dir}/target/osmt_spring_app.log"
 
+# Sourcing common lib file
+source "$(_get_osmt_project_dir)/bin/lib/common.sh"
+
+# Sourcing API test env file
+parse_osmt_envs "${apitest_env_file}"
 
 trap error_handler ERR SIGINT SIGTERM
 main

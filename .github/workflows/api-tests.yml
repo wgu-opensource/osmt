@@ -1,6 +1,6 @@
 # This workflow will Run API tests using Newman
 
-name: Java CI with Maven
+name: API Tests with Maven
 
 on:
   push:

@@ -316,8 +316,7 @@ _init_osmt_env_file() {
   echo
   echo_info "Initializing ${env_name} env file..."
   if [[ -f "${env_file}" ]]; then
-    echo_err "Env file ${env_file} already exists.${NL}Please remove if you want to retry. Make a note of any OAUTH2 values before deleting the file."
-    return 1
+    echo_warn "Env file ${env_file} already exists.${NL}Please remove if you want to recreate it. Make a note of any OAUTH2 values before deleting the file."
   else
     cp "${env_file}.example" "${env_file}"
     echo_info "Created ${env_file}.${NL}This file is ignored by git, and will not be added to git commits. Replace the 'xxxxxx' values in ${NL}${env_file} with your OAUTH2/OIDC values, shown below.${NL}Follow guidance in the 'OAuth2 and Okta Configuration' section of the project README.md."

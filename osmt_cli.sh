@@ -6,6 +6,7 @@ set -u
 
 declare QUICKSTART_ENV_FILE
 declare DEV_ENV_FILE
+declare APITEST_ENV_FILE
 
 # These values are also in application.properties. Providing these env vars to this script will
 # override these local dev defaults. These are in no way suitable for any level of actual deployment
@@ -24,6 +25,7 @@ declare -r OSMT_SECURITY_PROFILE="${OSMT_SECURITY_PROFILE:-}"
 init_osmt_env_files() {
   _init_osmt_env_file "Quickstart" "${QUICKSTART_ENV_FILE}" || return 1
   _init_osmt_env_file "Development" "${DEV_ENV_FILE}" || return 1
+  _init_osmt_env_file "API Tests" "${APITEST_ENV_FILE}" || return 1
 }
 
 validate_osmt_dev_environment() {
@@ -40,6 +42,7 @@ validate_osmt_dev_environment() {
   echo_info "Checking environment files used in local OSMT instances..."
   _validate_env_file "${QUICKSTART_ENV_FILE}" || is_environment_valid+=1
   _validate_env_file "${DEV_ENV_FILE}" || is_environment_valid+=1
+  _validate_env_file "${APITEST_ENV_FILE}" || is_environment_valid+=1
 
   if [[ "${is_environment_valid}" -ne 0 ]]; then
     echo
@@ -281,6 +284,7 @@ source "${script_dir}/bin/lib/common.sh" || exit 135
 
 QUICKSTART_ENV_FILE="${PROJECT_DIR}/osmt-quickstart.env"
 DEV_ENV_FILE="${PROJECT_DIR}/api/osmt-dev-stack.env"
+APITEST_ENV_FILE="${PROJECT_DIR}/test/osmt-apitest.env"
 
 cat <<-EOF
    ___  ___ __  __ _____   ___ _    ___

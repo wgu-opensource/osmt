@@ -1,20 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SkillImportComponent } from './skill-import.component';
-import {AppConfig} from "../../app.config";
-import {Location} from "@angular/common";
-import {ToastService} from "../../toast/toast.service";
-import {Papa} from "ngx-papaparse";
-import {Title} from "@angular/platform-browser";
-import {EnvironmentService} from "../../core/environment.service";
 import {
   AuthServiceStub,
   CollectionServiceStub,
-  EnvironmentServiceStub,
-  RichSkillServiceStub
 } from "@test/resource/mock-stubs";
-import {ActivatedRoute, Router} from "@angular/router";
-import {RichSkillService} from "../../richskill/service/rich-skill.service";
+import {ActivatedRoute} from "@angular/router";
 import {CollectionService} from "../../collection/service/collection.service";
 import {ActivatedRouteStubSpec} from "@test/util/activated-route-stub.spec";
 import {AuthService} from "../../auth/auth-service";

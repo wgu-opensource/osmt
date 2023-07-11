@@ -50,7 +50,8 @@ export class SkillImportComponent {
         {
           label: "Import to Existing Collection",
           visible: () => true,
-          callback: () => {this.router.navigate(["/skills/import"],
+          callback: () => {
+            this.router.navigate(["/skills/import"],
             {queryParams:{to:BatchImportOptionsEnum.existing}})
           },
         },
@@ -65,7 +66,8 @@ export class SkillImportComponent {
         {
           label: "Import to New Collection",
           visible: () => true,
-          callback: () => {this.router.navigate(["/skills/import"],
+          callback: () => {
+            this.router.navigate(["/skills/import"],
             {queryParams: {to: BatchImportOptionsEnum.new}})
           },
         }

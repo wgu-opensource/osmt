@@ -112,6 +112,7 @@ import { getBaseApi } from "./api-versions";
 import { SkillImportComponent } from './navigation/skill-import/skill-import.component';
 import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
 import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
+import { BatchImportCollectionComponent } from './collection/create-collection/batch-import-collection/batch-import-collection.component';
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -232,6 +233,7 @@ export function initializeApp(
     ConvertToCollectionComponent,
     SizePaginationComponent,
     SkillImportComponent,
+    BatchImportCollectionComponent,
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

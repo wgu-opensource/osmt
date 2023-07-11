@@ -573,7 +573,11 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   }
 
   protected handleAddToANewCollection() {
-    this.router.navigate(["collections/create"])
+    this.router.navigate(["/collections/create/batch-import"],
+      {state: {selectedSkills: this.skillsToBeImported, totalCount: this.skillsToBeImported?.length}}
+
+      )
+    console.log(this.skillsToBeImported?.length)
   }
 
   protected getBatchImportAction() {

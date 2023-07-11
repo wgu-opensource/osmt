@@ -216,6 +216,20 @@ start_osmt_dev_spring_app_reindex() {
   cd "${PROJECT_DIR}" || return 1
 }
 
+start_osmt_api_tests() {
+  local osmt_jar_file; osmt_jar_file="${PROJECT_DIR}/api/target/osmt-api-*.jar"
+
+  if [[ -n "$(find . -maxdepth 1 -name "${osmt_jar_file}" -print -quit)" ]]; then
+    echo_err "Can not access ${osmt_jar_file}. Try running 'mvn clean install' first. Exiting..."
+    echo
+    return 1
+  fi
+
+  echo
+  echo_info "Starting OSMT API Tests..."
+  mvn verify -pl test -P run-api-tests
+}
+
 _remove_osmt_docker_artifacts() {
   remove_osmt_docker_artifacts_for_stack "osmt_dev"
   remove_osmt_docker_artifacts_for_stack "osmt_api_test"
@@ -267,6 +281,7 @@ Usage:
        application starts. You may need to start the Spring application first, and you will need to reindex
        ElasticSearch to make this DB refresh available to OSMT (see below).
   -r   Start the local Spring app to reindex ElasticSearch.
+  -a   Start the local API tests for OSMT. This requires a valid OSMT jar file (from a 'mvn package')
   -m   Import default BLS and O*NET metadata into local Development instance.
   -c   Surgically clean up OSMT-related Docker images and data volumes. This step will delete data from local OSMT
        Quickstart and Development configurations. It does not remove the mysql/redis/elasticsearch images, as
@@ -302,7 +317,7 @@ if [[ $# == 0 ]]; then
   exit 135
 fi
 
-while getopts "ivqdelrsmch" flag; do
+while getopts "ivqdelrasmch" flag; do
   case "${flag}" in
     i)
       init_osmt_env_files || exit 135
@@ -334,6 +349,10 @@ while getopts "ivqdelrsmch" flag; do
       ;;
     r)
       start_osmt_dev_spring_app_reindex "${OSMT_STACK_NAME}" || exit 135
+      exit 0
+      ;;
+    a)
+      start_osmt_api_tests || exit 135
       exit 0
       ;;
     m)

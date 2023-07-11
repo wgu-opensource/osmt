@@ -1,28 +1,28 @@
 #!/bin/bash
 
-# set -eu
 set -eEu
 
-export OSMT_STACK_NAME=osmt_api_test
+# shellcheck source-path=SCRIPTDIR/../../bin/lib/common.sh
+# Sourcing common lib file
+source "$(git rev-parse --show-toplevel 2> /dev/null)/bin/lib/common.sh" || exit 135
 
-declare test_dir
-declare bearer_token
-declare log_file
+declare OSMT_STACK_NAME="${OSMT_STACK_NAME:-}"
+declare BASE_URL="${BASE_URL:-}"
 
+declare TEST_DIR
+declare APITEST_ENV_FILE
+declare OKTA_ENV_FILE
+declare LOG_FILE
+
+declare BEARER_TOKEN
 declare OKTA_URL
 declare OKTA_USERNAME
 declare OKTA_PASSWORD
 declare -i APP_START_CHECK_RETRY_LIMIT="${APP_START_CHECK_RETRY_LIMIT:-12}"
 
-function _get_osmt_project_dir() {
-  local project_dir; project_dir="$(git rev-parse --show-toplevel 2> /dev/null)"
-  echo "$project_dir"
-}
-
 function curl_with_retry() {
-  local log_file; log_file="${test_dir}/target/osmt_spring_app.log"
   local -i rc=-1
-  local -i retry_limit=${APP_START_CHECK_RETRY_LIMIT}
+  local -i retry_limit="${APP_START_CHECK_RETRY_LIMIT}"
   until [ ${rc} -eq 0 ] && [ ${retry_limit} -eq 0 ]; do
       echo_info "Attempting to request the index page of the OSMT Spring app with curl..."
       curl -s "${BASE_URL}" 1>/dev/null 2>/dev/null
@@ -36,7 +36,7 @@ function curl_with_retry() {
         echo_info "Printing osmt_spring_app log file below..."
         echo
         echo_err "Could not load the index page."
-        cat "${log_file}"
+        cat "${LOG_FILE}"
         return 1
       fi
       if [[ ${rc} -ne 0 ]]; then
@@ -49,12 +49,12 @@ function curl_with_retry() {
 }
 
 function get_bearer_token() {
-  declare auth_env; auth_env="$test_dir/postman/osmt-auth.environment.json"
+  declare auth_env; auth_env="${TEST_DIR}/postman/osmt-auth.environment.json"
 
 	# Running postman collections
 	echo_info "Getting access token from OKTA ..."
-  npx "$test_dir/node_modules/.bin/newman" \
-    run "$test_dir/postman/osmt-auth.postman_collection.json" \
+  npx "${TEST_DIR}/node_modules/.bin/newman" \
+    run "${TEST_DIR}/postman/osmt-auth.postman_collection.json" \
       --env-var oktaUsername="$OKTA_USERNAME" \
       --env-var oktaPassword="$OKTA_PASSWORD" \
       --env-var oktaUrl="$OKTA_URL" \
@@ -62,42 +62,46 @@ function get_bearer_token() {
       --ignore-redirects \
       --export-environment "$auth_env"
 
-  bearer_token="$( node "$test_dir/postman/getToken.js")"
-  echo_info "Retrieved token:"
-  echo "$bearer_token"
+  BEARER_TOKEN="$(node "${TEST_DIR}/postman/getToken.js")"
+  echo_info "Bearer token retrieved."
+  echo_debug "${BEARER_TOKEN}"
 
-  echo_info "bearerToken=$bearer_token" > "$test_dir/postman/token.env"
-  echo
+  echo "bearerToken=${BEARER_TOKEN}" > "${TEST_DIR}/postman/token.env"
 }
 
 function run_api_tests() {
   local apiVersion; apiVersion=${1}
   echo_info "Running postman collection ..."
-  npx "$test_dir/node_modules/.bin/newman" \
-    run "$test_dir/postman/osmt-testing-api-${apiVersion}.postman_collection.json" \
-      --env-var baseUrl="$BASE_URL" \
-      --env-var bearerToken="$bearer_token"
+  npx "${TEST_DIR}/node_modules/.bin/newman" \
+    run "${TEST_DIR}/postman/osmt-testing-api-${apiVersion}.postman_collection.json" \
+      --env-var baseUrl="${BASE_URL}" \
+      --env-var bearerToken="${BEARER_TOKEN}"
 }
 
- function run_shutdown_script() {
-  printf "\n"
+function run_shutdown_script() {
+  echo
   echo_info "Running Shutdown script..."
-  "${test_dir}/bin/stop_osmt_app.sh"
+  "${TEST_DIR}/bin/stop_osmt_app.sh"
 }
 
 function error_handler() {
-  printf "\n"
-  echo_warn "Trapping at error_handler. Exiting"
-  # clean up API test Docker resources
-  "${test_dir}/bin/stop_osmt_app.sh"
-  printf "\n"
+  echo
+  echo_warn "Trapping at error_handler. Cleaning up and then Exiting..."
+
+  run_shutdown_script
+  remove_api_test_docker_resources "${OSMT_STACK_NAME}"
+
+  echo
 }
 
 function remove_api_test_docker_resources() {
+  local stack_name; stack_name="${1}"
   # Clean up, stop docker-compose stack and prune API-test related images and volumes
+  echo_info "Stopping and removing docker stack..."
+
   # Disable error handling around docker cleanup.
   set +eE
-  remove_osmt_docker_artifacts_for_stack "${OSMT_STACK_NAME}"
+  remove_osmt_docker_artifacts_for_stack "${stack_name}"
   # Re-enable error trapping
   set -eE
 }
@@ -105,23 +109,25 @@ function remove_api_test_docker_resources() {
 function init_osmt_and_run_api_tests() {
   local apiVersion; apiVersion="${1}"
 
-  echo_info "Stopping and removing docker stack..."
-  # Stop and cleanup docker-compose stack
-  remove_api_test_docker_resources
+  run_shutdown_script
+
+  remove_api_test_docker_resources "${OSMT_STACK_NAME}"
 
   # Start the API test Docker compose stack and Spring app server, detached. Send log files to 'osmt_spring_app.log'
-  echo "INFO: Starting OSMT Spring app for ${OSMT_STACK_NAME}. Output is suppressed, because console is detached."
-  echo "INFO: See 'osmt_spring_app.log' for console output. Proceeding..."
-  "$(_get_osmt_project_dir)/osmt_cli.sh" -s 1>"$log_file" 2>"$log_file" & disown  || exit 135
+  echo
+  echo_info "Starting OSMT Docker stack and Spring app for ${OSMT_STACK_NAME}."
+  echo_info "Application console is detached, See 'osmt_spring_app.log' for console output. Proceeding..."
+  echo
+  "${PROJECT_DIR}/osmt_cli.sh" -s 1>"${LOG_FILE}" 2>"${LOG_FILE}" & disown  || exit 135
 
   # Check to see if app is up and running
   curl_with_retry || exit 135
 
   echo_info "Loading Static CI Dataset And Reindexing..."
   # load CI static dataset
-  "$(_get_osmt_project_dir)/osmt_cli.sh" -l
+  "${PROJECT_DIR}/osmt_cli.sh" -l
   # Reindex Elasticsearch
-  "$(_get_osmt_project_dir)/osmt_cli.sh" -r
+  "${PROJECT_DIR}/osmt_cli.sh" -r
 
   # Get auth token
   echo_info "Getting authentication token"
@@ -136,6 +142,12 @@ function init_osmt_and_run_api_tests() {
 }
 
 function main() {
+  TEST_DIR="${PROJECT_DIR}/test" || exit 135
+  LOG_FILE="${TEST_DIR}/target/osmt_spring_app.log"
+
+  # Sourcing API test env files
+  source_osmt_envs "${TEST_DIR}/osmt-apitest.env"
+  source_osmt_envs "${TEST_DIR}/bin/osmt-apitest.rc"
 
   # Calling API V3 version tests
   init_osmt_and_run_api_tests "v3"
@@ -144,18 +156,10 @@ function main() {
   init_osmt_and_run_api_tests "v2"
 
   echo_info "Final cleanup of docker stack..."
-  remove_api_test_docker_resources
+  remove_api_test_docker_resources "${OSMT_STACK_NAME}"
 }
 
-test_dir="$(_get_osmt_project_dir)/test" || exit 135
-apitest_env_file="$test_dir/osmt-apitest.env"
-log_file="${test_dir}/target/osmt_spring_app.log"
-
-# Sourcing common lib file
-source "$(_get_osmt_project_dir)/bin/lib/common.sh"
-
-# Sourcing API test env file
-parse_osmt_envs "${apitest_env_file}"
 
 trap error_handler ERR SIGINT SIGTERM
+
 main

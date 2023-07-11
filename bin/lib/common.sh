@@ -5,7 +5,7 @@
 
 set -eu
 
-declare DEBUG=${DEBUG:-0}
+declare -i DEBUG=${DEBUG:-0}
 declare OAUTH_ISSUER="${OAUTH_ISSUER:-}"
 declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
 declare OAUTH_CLIENTSECRET="${OAUTH_CLIENTSECRET:-}"
@@ -18,8 +18,8 @@ if [[ -z "${PROJECT_DIR}" ]]; then
 fi
 
 # new line formatted to indent with echo_err / echo_info etc
-declare -r INDENT="       "
-declare -r NL="\n${INDENT}"
+declare INDENT="       "
+declare NL="\n${INDENT}"
 
 source_env_file() {
   local env_file="${1}"
@@ -36,9 +36,11 @@ source_env_file() {
   # shellcheck source=/dev/null
   source "${env_file}"
   set +o allexport
+
+  echo_debug_env
 }
 
-parse_osmt_envs() {
+source_osmt_envs() {
   local env_file="${1}"
 
  # gracefully bypass sourcing env file if these 4 OAUTH values are provided
@@ -68,6 +70,8 @@ start_osmt_docker_stack() {
     echo_err "Starting OSMT ${stack_name} Docker stack failed. Exiting..."
     return 1
   fi
+
+  docker ps
 }
 
 stop_osmt_docker_stack() {
@@ -115,7 +119,18 @@ echo_err() {
 }
 
 echo_debug() {
-  [[ "${DEBUG}" -ne 0 ]] && echo -e "DEBUG: $*"
+  if [[ 0 -ne "${DEBUG}" ]]; then
+    echo -e "DEBUG: $*"
+  fi
+}
+
+echo_debug_env() {
+  echo
+  echo_debug "################################################################################################################################"
+  echo_debug "Current shell environment variables:"
+  echo_debug "$(env | sort)"
+  echo_debug "################################################################################################################################"
+  echo
 }
 
 _validate_env_file() {

@@ -83,7 +83,7 @@ import_osmt_metadata() {
     return 1
   fi
 
-  parse_osmt_envs "${DEV_ENV_FILE}" || return 1
+  source_osmt_envs "${DEV_ENV_FILE}" || return 1
   _cd_osmt_project_dir || return 1
   cd api || return 1
 
@@ -119,7 +119,7 @@ start_osmt_spring_app() {
     return 1
   fi
 
-  parse_osmt_envs "${DEV_ENV_FILE}" || return 1
+  source_osmt_envs "${DEV_ENV_FILE}" || return 1
 
   _cd_osmt_project_dir || return 1
   cd api || return 1
@@ -147,6 +147,11 @@ load_static_ci_dataset(){
 
   local -i db_container_count=0;
   # some installations of Docker delimit container names with hyphens. Others use underscores.
+#
+  echo
+  docker ps --filter name="${stack_name}"
+  echo
+#
   db_container_count+="$(docker ps -q --filter name="${stack_name}"_db_1 | wc -l)"
   db_container_count+="$(docker ps -q --filter name="${stack_name}"-db-1 | wc -l)"
   echo_debug "MySQL container count: ${db_container_count}"
@@ -158,6 +163,8 @@ load_static_ci_dataset(){
   fi
 
   local sql_file="${PROJECT_DIR}/test/sql/fixed_ci_dataset.sql"
+
+  echo_debug_env
 
   mysql \
     --host="${MYSQL_HOST}" \
@@ -192,7 +199,7 @@ start_osmt_dev_spring_app_reindex() {
   fi
 
   _cd_osmt_project_dir || return 1
-  parse_osmt_envs "${DEV_ENV_FILE}" || return 1
+  source_osmt_envs "${DEV_ENV_FILE}" || return 1
   echo
   echo_info "Starting OSMT via Maven Spring Boot plug-in to reindex ElasticSearch..."
   cd api || return 1

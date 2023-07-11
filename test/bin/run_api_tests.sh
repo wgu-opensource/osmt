@@ -20,7 +20,7 @@ declare OKTA_USERNAME
 declare OKTA_PASSWORD
 declare -i APP_START_CHECK_RETRY_LIMIT="${APP_START_CHECK_RETRY_LIMIT:-12}"
 
-function curl_with_retry() {
+curl_with_retry() {
   local -i rc=-1
   local -i retry_limit="${APP_START_CHECK_RETRY_LIMIT}"
   until [ ${rc} -eq 0 ] && [ ${retry_limit} -eq 0 ]; do
@@ -48,7 +48,7 @@ function curl_with_retry() {
   done
 }
 
-function get_bearer_token() {
+get_bearer_token() {
   declare auth_env; auth_env="${TEST_DIR}/postman/osmt-auth.environment.json"
 
 	# Running postman collections
@@ -69,7 +69,7 @@ function get_bearer_token() {
   echo "bearerToken=${BEARER_TOKEN}" > "${TEST_DIR}/postman/token.env"
 }
 
-function run_api_tests() {
+run_api_tests() {
   local apiVersion; apiVersion=${1}
   echo_info "Running postman collection ..."
   npx "${TEST_DIR}/node_modules/.bin/newman" \
@@ -78,13 +78,13 @@ function run_api_tests() {
       --env-var bearerToken="${BEARER_TOKEN}"
 }
 
-function run_shutdown_script() {
+run_shutdown_script() {
   echo
   echo_info "Running Shutdown script..."
   "${TEST_DIR}/bin/stop_osmt_app.sh"
 }
 
-function error_handler() {
+error_handler() {
   echo
   echo_warn "Trapping at error_handler. Cleaning up and then Exiting..."
 
@@ -94,7 +94,7 @@ function error_handler() {
   echo
 }
 
-function remove_api_test_docker_resources() {
+remove_api_test_docker_resources() {
   local stack_name; stack_name="${1}"
   # Clean up, stop docker-compose stack and prune API-test related images and volumes
   echo_info "Stopping and removing docker stack..."
@@ -106,7 +106,7 @@ function remove_api_test_docker_resources() {
   set -eE
 }
 
-function init_osmt_and_run_api_tests() {
+init_osmt_and_run_api_tests() {
   local apiVersion; apiVersion="${1}"
 
   run_shutdown_script
@@ -141,7 +141,7 @@ function init_osmt_and_run_api_tests() {
   run_shutdown_script
 }
 
-function main() {
+main() {
   TEST_DIR="${PROJECT_DIR}/test" || exit 135
   LOG_FILE="${TEST_DIR}/target/osmt_spring_app.log"
 

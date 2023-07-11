@@ -23,7 +23,7 @@ jobs:
       - name: Maven version
         run: mvn -version
       - name: Run API tests
-        run: mvn clean install -DskipTests && mvn verify -Prun-api-tests
+        run: mvn clean install -DskipTests && mvn verify -pl test -Prun-api-tests
         env:
           OAUTH_CLIENTID: "${{secrets.OAUTH_CLIENTID}}"
           OAUTH_CLIENTSECRET: "${{secrets.OAUTH_CLIENTSECRET}}"

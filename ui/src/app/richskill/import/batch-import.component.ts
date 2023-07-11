@@ -17,6 +17,7 @@ import {forkJoin, Observable} from "rxjs"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {Title} from "@angular/platform-browser";
 import {AppConfig} from "../../app.config"
+import { ApiSkillSummary } from "../ApiSkillSummary"
 
 
 export enum ImportStep {
@@ -68,11 +69,13 @@ export class AuditedImportSkill {
   skill: ApiSkillUpdate
   missing: string[]
   similar: boolean
+  similarities: any[] = []
 
-  constructor(skill: ApiSkillUpdate, missing: string[], similar: boolean = false) {
+  constructor(skill: ApiSkillUpdate, missing: string[], similar: boolean = false, similarities: any[]) {
     this.skill = skill
     this.missing = missing
     this.similar = similar
+    this.similarities = similarities;
   }
 
   get nameMissing(): boolean {
@@ -128,7 +131,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   alignmentCount: number = 3
 
   searchingSimilarity?: boolean
-  similarSkills?: boolean[]
+  similarSkills?: any[]
   importSimilarSkills = false
 
   docIcon = SvgHelper.path(SvgIcon.DOC)
@@ -477,7 +480,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     this.handleMappingChanged(mappings)
   }
 
-  private batchSimilarity(statements: string[]): Observable<boolean[]> {
+  private batchSimilarity(statements: string[]): Observable<Array<ApiSkillSummary[]>> {
     const chunk = (arr: string[], size: number) => {
       return Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
         arr.slice(i * size, i * size + size)
@@ -485,10 +488,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     }
 
     const chunks: string[][] = chunk(statements, 100)
-    const observables: Observable<boolean[]>[] = chunks.map(it => this.richSkillService.similaritiesCheck(it))
+    const observables: Observable<Array<ApiSkillSummary[]>>[] = chunks.map(it => this.richSkillService.similaritiesResults(it))
     return new Observable(observer => {
       forkJoin(observables).subscribe(it => {
-        const allResponses: boolean[] = it.flat()
+        const allResponses: Array<ApiSkillSummary[]> = it.flat()
         observer.next(allResponses)
         observer.complete()
       }, err => observer.error(err))
@@ -503,13 +506,12 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     this.batchSimilarity(statements).subscribe(results => {
       this.searchingSimilarity = false
       this.similarSkills = results
-
       this.auditedSkills = this.previewSkills?.map((skill, idx) => {
         const required = ["skillName", "skillStatement"]
         // @ts-ignore
         const missing = required.filter(it => skill[it] === undefined)
-        const similar = results[idx] ?? false
-        return new AuditedImportSkill(skill, missing, similar)
+        const similar = (results[idx]?.length ?? 0) > 0
+        return new AuditedImportSkill(skill, missing, similar, results[idx])
       })
     })
   }

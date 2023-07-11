@@ -730,6 +730,32 @@ paths:
                 items:
                   type: boolean
 
+  /api/v3/search/skills/similarities/results:
+    post:
+      summary: Check skill multiple statements for similar statements on existing skills returning similarities.
+      description: Returns an array of all similar skills for each sent statement.
+      tags:
+        - Search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Similarity'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/SkillSummary'
+
   /api/v3/search/skills/similarity:
     post:
       summary: Check a skills statement for similar statements on existing skills

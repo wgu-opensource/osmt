@@ -22,7 +22,10 @@
   <ng-template #similarMatchesTmpl>
 
     <ng-template [ngIf]="hasSingleMatch" [ngIfElse]="multipleMatchesTmpl">
-      <p class="t-type-small">{{similarSingleMessage}}</p>
+      <p class="t-type-small" *ngIf="!showInTable">{{similarSingleMessage}}</p>
+
+      <app-inline-error [message]="similarSingleMessage" *ngIf="showInTable">
+      </app-inline-error>
 
       <div class="t-margin-extraSmall t-margin-top" *ngFor="let skill of similarSkills.slice(0,1)">
         <!--{{render '@m-interactivetext&#45;&#45;small-with-iconleft'}}-->
@@ -32,6 +35,8 @@
           </span>
           <span class="m-interactiveText-x-text">{{skill.skillName}}</span>
         </a>
+        <ng-container *ngTemplateOutlet="extraInformation; context: {skill: skill}">
+        </ng-container>
       </div>
     </ng-template>
 
@@ -46,6 +51,8 @@
               </span>
               <span class="m-interactiveText-x-text">{{skill.skillName}}</span>
             </a>
+            <ng-container *ngTemplateOutlet="extraInformation; context: {skill: skill}">
+            </ng-container>
           </div>
 
         </div>
@@ -56,3 +63,13 @@
   </ng-template>
 </div>
 
+<ng-template #extraInformation let-skill="skill">
+  <div class="extra-info" *ngIf="showExtraInformation">
+    <p>
+      <span class="m-interactiveText-x-text text-small"><strong>Statement: </strong>{{skill.skillStatement}}</span>
+    </p>
+    <p>
+      <span class="m-interactiveText-x-text text-small"><strong>Categories: </strong>{{skill.categories.join(",")}}</span>
+    </p>
+  </div>
+</ng-template>

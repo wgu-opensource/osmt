@@ -459,16 +459,41 @@ describe("RichSkillService", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const statements = ["my statement"]
-    const path = getBaseApi() + "/search/skills/similarities"
-    const testData: boolean[] = [true]
+    const path = getBaseApi() + "/search/skills/similarities/results"
+    const testData:  Array<ApiSkillSummary[]> = [[createMockSkillSummary()]]
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.similaritiesCheck(statements)
+    const result$ = testService.similaritiesResults(statements)
 
     // Assert
     result$
-      .subscribe((data: boolean[]) => {
+      .subscribe((data: Array<ApiSkillSummary[]>) => {
+        expect(data).toEqual(testData)
+        expect(RouterData.commands).toEqual([ ])  // No errors
+        expect(AuthServiceData.isDown).toEqual(false)
+      })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
+    expect(req.request.method).toEqual("POST")
+    req.flush(testData)
+  })
+
+  it("similaritiesResults should return", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const statements = ["my statement"]
+    const path = getBaseApi() + "/search/skills/similarities/results"
+    const testData:  Array<ApiSkillSummary[]> = [[createMockSkillSummary()]]
+
+    // Act
+    // noinspection LocalVariableNamingConventionJS
+    const result$ = testService.similaritiesResults(statements)
+
+    // Assert
+    result$
+      .subscribe((data: Array<ApiSkillSummary[]>) => {
         expect(data).toEqual(testData)
         expect(RouterData.commands).toEqual([ ])  // No errors
         expect(AuthServiceData.isDown).toEqual(false)

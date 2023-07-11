@@ -430,6 +430,10 @@ export class RichSkillServiceStub {
     return of(new ApiSkill(createMockSkill(now, now, PublishStatus.Draft)))
   }
 
+  similaritiesResults(statements: string[]): Observable<Array<ApiSkillSummary[]>> {
+    return of([[]]);
+  }
+
   // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
   similarityCheck(statement: string): Observable<ApiSkillSummary[]> {
     const isoDate = new Date().toISOString()

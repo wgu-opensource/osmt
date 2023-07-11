@@ -146,7 +146,7 @@ main() {
   LOG_FILE="${TEST_DIR}/target/osmt_spring_app.log"
 
   # Sourcing API test env files
-  source_env_file "${TEST_DIR}/osmt-apitest.env"
+  source_env_file_unless_provided_okta "${TEST_DIR}/osmt-apitest.env"
   source_env_file "${TEST_DIR}/bin/osmt-apitest.rc"
 
   # Calling API V3 version tests

@@ -6,10 +6,12 @@
 set -eu
 
 declare -i DEBUG=${DEBUG:-0}
+
 declare OAUTH_ISSUER="${OAUTH_ISSUER:-}"
 declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
 declare OAUTH_CLIENTSECRET="${OAUTH_CLIENTSECRET:-}"
 declare OAUTH_AUDIENCE="${OAUTH_AUDIENCE:-}"
+
 declare PROJECT_DIR; PROJECT_DIR="$(git rev-parse --show-toplevel 2> /dev/null)" || \
     (echo_err "$(basename "${0}") commands use git to set directory context. Exiting..." && exit 135)
 if [[ -z "${PROJECT_DIR}" ]]; then
@@ -25,7 +27,7 @@ source_env_file() {
   local env_file="${1}"
 
   if [[ ! -f "${env_file}" ||  ! -r "${env_file}" ]]; then
-    echo_err "Can not access ${env_file}. You can initialize the environment files by running $(basename "${0}") -i$"
+    echo_err "Can not access ${env_file}. You can initialize the environment files by running './osmt_cli.sh -i'"
     return 1
   fi
 
@@ -40,7 +42,7 @@ source_env_file() {
   echo_debug_env
 }
 
-source_osmt_envs() {
+source_env_file_unless_provided_oauth() {
   local env_file="${1}"
 
  # gracefully bypass sourcing env file if these 4 OAUTH values are provided

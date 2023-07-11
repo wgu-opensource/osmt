@@ -37,8 +37,8 @@ error_handler() {
 
 main() {
   # Sourcing API test env file
-  source_osmt_envs "${PROJECT_DIR}/test/osmt-apitest.env"
-  source_osmt_envs "${PROJECT_DIR}/test/bin/osmt-apitest.rc"
+  source_env_file "${PROJECT_DIR}/test/osmt-apitest.env"
+  source_env_file "${PROJECT_DIR}/test/bin/osmt-apitest.rc"
 
   # Run NPM install
   echo_info "Installing NPM modules..."

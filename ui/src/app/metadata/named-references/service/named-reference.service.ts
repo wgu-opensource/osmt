@@ -17,7 +17,7 @@ import { ApiBatchResult } from "../../../richskill/ApiBatchResult";
 })
 export class NamedReferenceService extends AbstractDataService {
 
-  private baseServiceUrl = "api/metadata/keywords"
+  private baseServiceUrl = "metadata/keywords"
 
   constructor(
     protected httpClient: HttpClient,

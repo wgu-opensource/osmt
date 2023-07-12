@@ -12,6 +12,10 @@ declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
 declare OAUTH_CLIENTSECRET="${OAUTH_CLIENTSECRET:-}"
 declare OAUTH_AUDIENCE="${OAUTH_AUDIENCE:-}"
 
+declare OKTA_URL="${OAUTH_AUDIENCE:-}"
+declare OKTA_USERNAME="${OAUTH_AUDIENCE:-}"
+declare OKTA_PASSWORD="${OAUTH_AUDIENCE:-}"
+
 declare PROJECT_DIR; PROJECT_DIR="$(git rev-parse --show-toplevel 2> /dev/null)" || \
     (echo_err "$(basename "${0}") commands use git to set directory context. Exiting..." && exit 135)
 if [[ -z "${PROJECT_DIR}" ]]; then
@@ -108,6 +112,7 @@ stop_osmt_docker_stack() {
 
 remove_osmt_docker_artifacts_for_stack() {
   local stack_name="${1}"
+  local resource
 
   stop_osmt_docker_stack "${stack_name}"
 
@@ -121,7 +126,10 @@ remove_osmt_docker_artifacts_for_stack() {
   docker volume ls -q -f name="${stack_name}" | xargs docker volume rm -f {} &> /dev/null
 
   echo_info "Removing Docker networks for ${stack_name}..."
-  docker network ls -q -f name="${stack_name}" | xargs docker network rm -f {} &> /dev/null
+  resource="$(docker network ls | grep "${stack_name}" | awk '{print $1}')"
+  if [[ ! -z "${resource}" ]]; then
+    docker network rm -f "${resource}" &> /dev/null
+  fi
 }
 
 echo_info() {

@@ -52,7 +52,7 @@ describe("NamedReferenceService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const path = "api/metadata/keywords?size=3&from=0&sort=name.asc&query=&type=categories"
+    const path = getBaseApi() + "/metadata/keywords?size=3&from=0&sort=name.asc&query=&type=categories"
     const testData: PaginatedMetadata = createMockPaginatedMetaDataWithNamedReferences(3, 10)
     let httpTestingController = TestBed.inject(HttpTestingController)
 
@@ -68,7 +68,7 @@ describe("NamedReferenceService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
     expect(req.request.method).toEqual("GET")
     req.flush(testData.data, {
       headers: { "x-total-count": "" + testData.totalCount}
@@ -80,7 +80,7 @@ describe("NamedReferenceService", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const id = "12345"
-    const path = "api/metadata/keywords/" + id
+    const path = getBaseApi() + "/metadata/keywords/" + id
     const testData: ApiNamedReference = new ApiNamedReference(createMockNamedReference2())
     let httpTestingController = TestBed.inject(HttpTestingController)
 
@@ -96,7 +96,7 @@ describe("NamedReferenceService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
     expect(req.request.method).toEqual("GET")
     req.flush(testData)
   })
@@ -105,7 +105,7 @@ describe("NamedReferenceService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const path = "api/metadata/keywords"
+    const path = getBaseApi() + "/metadata/keywords"
     const testData = [
       new ApiNamedReference(createMockNamedReference2())
     ]
@@ -129,7 +129,7 @@ describe("NamedReferenceService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
     expect(req.request.method).toEqual("POST")
     req.flush(testData)
   })
@@ -141,7 +141,7 @@ describe("NamedReferenceService", () => {
     const testData = new ApiNamedReference(createMockNamedReference2())
     const expected = testData
     const id = expected.id
-    const path = "api/metadata/keywords/" + id
+    const path = getBaseApi() + "/metadata/keywords/" + id
     const input = new ApiNamedReferenceUpdate({
       framework : expected.framework,
       name : expected.name,
@@ -161,7 +161,7 @@ describe("NamedReferenceService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path + "/update")
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path + "/update")
     expect(req.request.method).toEqual("POST")
     req.flush(testData)
   })

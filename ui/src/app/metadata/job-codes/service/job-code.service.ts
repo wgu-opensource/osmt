@@ -17,7 +17,7 @@ import { AbstractDataService } from "../../../data/abstract-data.service"
 })
 export class JobCodeService extends AbstractDataService {
 
-  private baseServiceUrl = "api/metadata/jobcodes"
+  private baseServiceUrl = "metadata/jobcodes"
 
   constructor(
     protected httpClient: HttpClient,

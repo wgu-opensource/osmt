@@ -49,18 +49,18 @@ curl_with_retry() {
 }
 
 get_bearer_token() {
-  declare auth_env; auth_env="${TEST_DIR}/postman/osmt-auth.environment.json"
+  local auth_env; auth_env="${TEST_DIR}/postman/osmt-auth.environment.json"
 
 	# Running postman collections
-	echo_info "Getting access token from OKTA ..."
+	echo_info "Getting bearer token from Okta..."
   npx "${TEST_DIR}/node_modules/.bin/newman" \
     run "${TEST_DIR}/postman/osmt-auth.postman_collection.json" \
-      --env-var oktaUsername="$OKTA_USERNAME" \
-      --env-var oktaPassword="$OKTA_PASSWORD" \
-      --env-var oktaUrl="$OKTA_URL" \
-      --env-var baseUrl="$BASE_URL" \
+      --env-var oktaUsername="${OKTA_USERNAME}" \
+      --env-var oktaPassword="${OKTA_PASSWORD}" \
+      --env-var oktaUrl="${OKTA_URL}" \
+      --env-var baseUrl="${BASE_URL}" \
       --ignore-redirects \
-      --export-environment "$auth_env"
+      --export-environment "${auth_env}"
 
   BEARER_TOKEN="$(node "${TEST_DIR}/postman/getToken.js")"
   echo_info "Bearer token retrieved."

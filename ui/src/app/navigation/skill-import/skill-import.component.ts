@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import {ButtonAction} from "../../auth/auth-roles";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AuthService} from "../../auth/auth-service";
-import {CollectionService} from "../../collection/service/collection.service";
-import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
-import {BatchImportOptionsEnum} from "../../richskill/import/BatchImportOptionsEnum";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ButtonAction } from "../../auth/auth-roles";
+import { AuthService } from "../../auth/auth-service";
+import { CollectionService } from "../../collection/service/collection.service";
+import { TableActionDefinition } from "../../table/skills-library-table/has-action-definitions";
+import { BatchImportOptionsEnum } from "../../richskill/import/BatchImportOptionsEnum";
 
 @Component({
   selector: 'app-skill-import',
@@ -31,7 +31,6 @@ export class SkillImportComponent {
   canCollectionCreate: boolean = false
   canCollectionPublish: boolean = false
   canCollectionSkillsUpdate: boolean = false
-  canExportLibrary: boolean = false
 
   setEnableFlags(): void {
     this.canSkillUpdate = this.authService.isEnabledByRoles(ButtonAction.SkillUpdate);
@@ -41,7 +40,6 @@ export class SkillImportComponent {
     this.canCollectionCreate = this.authService.isEnabledByRoles(ButtonAction.CollectionCreate);
     this.canCollectionPublish = this.authService.isEnabledByRoles(ButtonAction.CollectionPublish);
     this.canCollectionSkillsUpdate = this.authService.isEnabledByRoles(ButtonAction.CollectionSkillsUpdate);
-    this.canExportLibrary = this.authService.isEnabledByRoles(ButtonAction.LibraryExport);
   }
 
   get action(): TableActionDefinition {
@@ -75,6 +73,4 @@ export class SkillImportComponent {
       visible: () => true
     })
   }
-
-
 }

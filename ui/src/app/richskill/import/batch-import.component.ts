@@ -600,7 +600,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     }
   }
 
-  protected getImportOptionButtonLabel(): string {
+  getImportOptionButtonLabel(): string {
     switch (this.to) {
       case BatchImportOptionsEnum.existing: {
         return "Add to existing Collection"

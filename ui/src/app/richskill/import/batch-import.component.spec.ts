@@ -13,7 +13,8 @@ import { EnvironmentService } from "../../core/environment.service"
 import { ToastService } from "../../toast/toast.service"
 import { RichSkillService } from "../service/rich-skill.service"
 import { BatchImportComponent, ImportStep } from "./batch-import.component"
-import {CollectionService} from "../../collection/service/collection.service";
+import { CollectionService } from "../../collection/service/collection.service";
+import { BatchImportOptionsEnum } from "./BatchImportOptionsEnum";
 
 
 class Page extends TestPage<BatchImportComponent> {
@@ -44,12 +45,10 @@ export function createComponent(T: Type<BatchImportComponent>): Promise<void> {
   })
 }
 
-
 let activatedRoute: ActivatedRouteStubSpec
 let component: BatchImportComponent
 let fixture: ComponentFixture<BatchImportComponent>
 let page: Page
-
 
 describe("BatchImportComponent", () => {
   beforeEach(() => {
@@ -319,6 +318,15 @@ describe("BatchImportComponent", () => {
     component.handleSimilarityOk(false)
     // Assert
     expect(component.importSimilarSkills).toBeFalse()
+  })
+
+  it("getImportOptionButtonLabel() should return correct values", () => {
+    component.to = BatchImportOptionsEnum.new
+    expect(component.getImportOptionButtonLabel()).toEqual("Add to a new Collection")
+    component.to = BatchImportOptionsEnum.workspace
+    expect(component.getImportOptionButtonLabel()).toEqual("Add to Workspace")
+    component.to = BatchImportOptionsEnum.existing
+    expect(component.getImportOptionButtonLabel()).toEqual("Add to existing Collection")
   })
 })
 

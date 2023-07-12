@@ -86,7 +86,9 @@ run_shutdown_script() {
 
 error_handler() {
   echo
-  echo_warn "Trapping at error_handler. Cleaning up and then Exiting..."
+  echo_err "################################################################################################################################"
+  echo_err "Trapping at error_handler. Cleaning up and then Exiting..."
+  echo_err "################################################################################################################################"
 
   run_shutdown_script
   remove_api_test_docker_resources "${OSMT_STACK_NAME}"

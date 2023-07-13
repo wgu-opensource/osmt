@@ -223,7 +223,6 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   handleClickNext(): boolean {
     this.focusAndScrollIntoView(this.stepHeadingRef.nativeElement)
     this.showStepLoader()
-    // this.to =
 
     this.currentStep += 1
     switch (this.currentStep) {

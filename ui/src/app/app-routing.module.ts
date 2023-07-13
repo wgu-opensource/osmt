@@ -159,7 +159,6 @@ const routes: Routes = [
       roles: ActionByRoles.get(ButtonAction.CollectionSkillsUpdate)
     },
   },
-
   // collections library
   {path: "collections",
     component: CollectionsLibraryComponent,

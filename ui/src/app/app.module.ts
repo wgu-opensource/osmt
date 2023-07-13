@@ -108,10 +108,10 @@ import { OsmtFormModule } from "./form/osmt-form.module"
 import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collection/convert-to-collection.component"
 import { SizePaginationComponent } from "./table/skills-library-table/size-pagination/size-pagination.component"
 import {OsmtTableModule} from "./table/osmt-table.module"
-import { getBaseApi } from "./api-versions";
+import { getBaseApi } from "./api-versions"
 import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
 import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
-import { BatchImportCollectionComponent } from './collection/create-collection/batch-import-collection/batch-import-collection.component';
+import { BatchImportCollectionComponent } from './collection/create-collection/batch-import-collection/batch-import-collection.component'
 
 export function initializeApp(
   appConfig: AppConfig,

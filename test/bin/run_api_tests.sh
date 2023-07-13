@@ -10,8 +10,6 @@ declare OSMT_STACK_NAME="${OSMT_STACK_NAME:-}"
 declare BASE_URL="${BASE_URL:-}"
 
 declare TEST_DIR
-declare APITEST_ENV_FILE
-declare OKTA_ENV_FILE
 declare LOG_FILE
 
 declare BEARER_TOKEN
@@ -51,8 +49,13 @@ curl_with_retry() {
 get_bearer_token() {
   local auth_env; auth_env="${TEST_DIR}/postman/osmt-auth.environment.json"
 
+  echo_debug "Curling ${BASE_URL}..."
+  echo_debug "$(curl http://localhost:8080)"
+
 	# Running postman collections
 	echo_info "Getting bearer token from Okta..."
+	echo_debug_env
+
   npx "${TEST_DIR}/node_modules/.bin/newman" \
     run "${TEST_DIR}/postman/osmt-auth.postman_collection.json" \
       --env-var oktaUsername="${OKTA_USERNAME}" \

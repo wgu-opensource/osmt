@@ -36,7 +36,8 @@
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.coroutines.version>1.5.1</kotlin.coroutines.version>
         <exposed.version>0.24.1</exposed.version>
-        <flywaydb.version>7.15.0</flywaydb.version>
+        <flywaydb.version>8.5.13</flywaydb.version>
+        <flyway-mysql>8.5.13</flyway-mysql>
         <okta.version>2.1.5</okta.version>
 <!--        TODO - is this needed?-->
         <kotest.version>4.1.3</kotest.version>
@@ -231,6 +232,12 @@
             <artifactId>flyway-core</artifactId>
             <version>${flywaydb.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+            <version>${flyway-mysql}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>

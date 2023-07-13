@@ -321,11 +321,11 @@ describe("BatchImportComponent", () => {
   })
 
   it("getImportOptionButtonLabel() should return correct values", () => {
-    component.to = BatchImportOptionsEnum.new
+    component.target = BatchImportOptionsEnum.new
     expect(component.getImportOptionButtonLabel()).toEqual("Add to a new Collection")
-    component.to = BatchImportOptionsEnum.workspace
+    component.target = BatchImportOptionsEnum.workspace
     expect(component.getImportOptionButtonLabel()).toEqual("Add to Workspace")
-    component.to = BatchImportOptionsEnum.existing
+    component.target = BatchImportOptionsEnum.existing
     expect(component.getImportOptionButtonLabel()).toEqual("Add to existing Collection")
   })
 })

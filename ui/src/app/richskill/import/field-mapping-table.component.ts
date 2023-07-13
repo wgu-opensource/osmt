@@ -1,5 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {allMappingHeaderOrder, importSkillHeaderOrder, importSkillHeaders} from "./batch-import.component";
+import {
+  allMappingHeaderOrder,
+  importSkillTargetOptions,
+  importSkillHeaderOrder,
+  importSkillHeaders
+} from "./batch-import.component";
 
 
 interface MappingChanged {
@@ -69,5 +74,42 @@ export class FieldMappingSelectComponent {
       uploadedHeader: this.data,
       property: value
     })
+  }
+}
+
+@Component({
+  selector: "app-batch-import-destination-select",
+  template: `
+    <div class="m-select m-select-fieldMap">
+      <select class="m-select-x-select" (change)="handleChange($event)">
+        <option value="">Select Import Target</option>
+        <option *ngFor="let item of headers" [value]="item.target"
+                [attr.selected]="value === item.target ? '' : null">{{item.label}}</option>
+        <option value="">No target</option>
+      </select>
+      <div class="m-select-x-icon">
+        <svg class="t-icon" aria-hidden="true">
+          <use xlink:href="/assets/images/svg-defs.svg#icon-chevron"></use>
+        </svg>
+      </div>
+    </div>
+  `
+})
+export class BatchImportDestinationSelectComponent {
+
+  @Input() data: string = ""
+  @Input() value: string = ""
+  @Output() mappingChanged = new EventEmitter<string>()
+
+  get headers(): {target: string, label: string}[] {
+    return importSkillTargetOptions
+  }
+
+  handleChange($event: Event): void {
+    const target = $event.target as HTMLSelectElement
+    const value = target.value
+    this.mappingChanged.emit(
+      value
+    )
   }
 }

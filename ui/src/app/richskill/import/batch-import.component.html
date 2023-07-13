@@ -139,6 +139,9 @@
           (fieldMappingChanged)="handleMappingChanged($event)"
         ></app-field-mapping-table>
       </div>
+      <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
+        <app-batch-import-destination-select (mappingChanged)="updateTo($event)"></app-batch-import-destination-select>
+      </div>
     </ng-template>
 
     <!-- STEP 3: Review -->
@@ -198,7 +201,7 @@
       <button class="m-button" (click)="resetState()">
         <span class="m-button-x-text">Import More RSD<span class="t-type-lowercase">s</span></span>
       </button>
-      <button class="m-button" (click)="getBatchImportAction()">
+      <button class="m-button" (click)="getBatchImportAction()"  *ngIf="target">
         <span class="m-button-x-text">{{getImportOptionButtonLabel()}} </span>
       </button>
       <button class="m-button" routerLink="/skills">

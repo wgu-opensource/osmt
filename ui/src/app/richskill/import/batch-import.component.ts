@@ -42,6 +42,12 @@ export const importSkillHeaderOrder = [
   {field: "occupations", label: "Occupations"},
   {field: "employers", label: "Employers"},
 ]
+
+export const importSkillTargetOptions = [
+  {target: "existing", label: "Existing Collection"},
+  {target: "new", label: "New Collection"},
+  {target: "workspace", label: "User Workspace"},
+]
 export const allMappingHeaderOrder = (alignmentCount: number = 3): {field: string, label: string}[] => {
   const alignmentHeaders = [...Array(alignmentCount).keys()].map(i => {
     const label = (i > 0) ? ` ${i+1}` : ""
@@ -140,7 +146,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   docIcon = SvgHelper.path(SvgIcon.DOC)
   isHover: boolean = false
-  to: string = ""
+  target: string = ""
 
   get similarSkillCount(): number {
     return (this.similarSkills?.filter(it => it).length ?? 0)
@@ -157,7 +163,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   ) {
     super()
     this.resetState()
-    this.route.queryParams.subscribe(params => this.to = params.to)
+    this.route.queryParams.subscribe(params => this.target = params.to)
   }
 
   ngOnInit(): void {
@@ -214,10 +220,11 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     this.stepLoaded = undefined
   }
 
-
   handleClickNext(): boolean {
     this.focusAndScrollIntoView(this.stepHeadingRef.nativeElement)
     this.showStepLoader()
+    // this.to =
+
     this.currentStep += 1
     switch (this.currentStep) {
       case ImportStep.FieldMapping:
@@ -581,7 +588,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   }
 
   protected getBatchImportAction() {
-    switch (this.to) {
+    switch (this.target) {
       case BatchImportOptionsEnum.existing: {
         this.handleAddToExistingCollection()
         break
@@ -601,7 +608,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   }
 
   getImportOptionButtonLabel(): string {
-    switch (this.to) {
+    switch (this.target) {
       case BatchImportOptionsEnum.existing: {
         return "Add to existing Collection"
       }
@@ -615,6 +622,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         return ""
       }
     }
+  }
+
+  protected updateTo(destination: string) {
+    this.target = destination
   }
 }
 

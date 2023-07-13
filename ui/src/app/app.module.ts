@@ -84,7 +84,7 @@ import {PublishCollectionComponent} from "./collection/detail/publish-collection
 import {BlockingLoaderComponent} from "./core/blocking-loader.component"
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component"
 import {BatchImportComponent} from "./richskill/import/batch-import.component"
-import {FieldMappingSelectComponent, FieldMappingTableComponent} from "./richskill/import/field-mapping-table.component"
+import {FieldMappingSelectComponent, FieldMappingTableComponent, BatchImportDestinationSelectComponent} from "./richskill/import/field-mapping-table.component"
 import {
   ImportPreviewTableComponent,
   NamedReferenceComponent
@@ -109,7 +109,6 @@ import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collecti
 import { SizePaginationComponent } from "./table/skills-library-table/size-pagination/size-pagination.component"
 import {OsmtTableModule} from "./table/osmt-table.module"
 import { getBaseApi } from "./api-versions";
-import { SkillImportComponent } from './navigation/skill-import/skill-import.component';
 import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
 import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
 import { BatchImportCollectionComponent } from './collection/create-collection/batch-import-collection/batch-import-collection.component';
@@ -219,6 +218,7 @@ export function initializeApp(
     CollectionSkillSearchComponent,
     BatchImportComponent,
     FieldMappingTableComponent,
+    BatchImportDestinationSelectComponent,
     FieldMappingSelectComponent,
     ImportPreviewTableComponent,
     InlineHeadingComponent,
@@ -232,7 +232,6 @@ export function initializeApp(
     CollectionPipe,
     ConvertToCollectionComponent,
     SizePaginationComponent,
-    SkillImportComponent,
     BatchImportCollectionComponent,
   ],
   imports: [

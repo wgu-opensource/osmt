@@ -17,9 +17,9 @@ import {forkJoin, Observable} from "rxjs"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {Title} from "@angular/platform-browser";
 import {AppConfig} from "../../app.config"
-import {BatchImportOptionsEnum} from "./BatchImportOptionsEnum";
-import {ApiSearch, ApiSkillListUpdate} from "../service/rich-skill-search.service";
-import {CollectionService} from "../../collection/service/collection.service";
+import { BatchImportOptionsEnum } from "./BatchImportOptionsEnum";
+import { ApiSearch, ApiSkillListUpdate } from "../service/rich-skill-search.service";
+import { CollectionService } from "../../collection/service/collection.service";
 import { ApiSkillSummary } from "../ApiSkillSummary"
 
 
@@ -565,7 +565,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     this.collectionService.getWorkspace().subscribe(workspace => {
       this.collectionService.updateSkillsWithResult(workspace.uuid, skillListUpdate, undefined).subscribe(result => {
         if (result) {
-          const message = `You added ${result.modifiedCount} RSDs to the workspace.`
+          const message = `You added ${result.modifiedCount} RSDs to your workspace.`
           this.toastService.showToast("Success!", message)
           this.toastService.hideBlockingLoader()
         }
@@ -581,10 +581,8 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   protected handleAddToANewCollection() {
     this.router.navigate(["/collections/create/batch-import"],
-      {state: {selectedSkills: this.skillsToBeImported, totalCount: this.skillsToBeImported?.length}}
-
-      )
-    console.log(this.skillsToBeImported?.length)
+      {state: {selectedSkills: this.skillsToBeImported, totalCount:this.skillsToBeImported?.length}}
+    )
   }
 
   protected getBatchImportAction() {
@@ -624,7 +622,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     }
   }
 
-  protected updateTo(destination: string) {
+  protected updateTarget(destination: string) {
     this.target = destination
   }
 }

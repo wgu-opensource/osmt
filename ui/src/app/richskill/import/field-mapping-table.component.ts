@@ -3,7 +3,6 @@ import {
   allMappingHeaderOrder,
   importSkillTargetOptions,
   importSkillHeaderOrder,
-  importSkillHeaders
 } from "./batch-import.component";
 
 
@@ -82,10 +81,10 @@ export class FieldMappingSelectComponent {
   template: `
     <div class="m-select m-select-fieldMap">
       <select class="m-select-x-select" (change)="handleChange($event)">
-        <option value="">Select Import Target</option>
-        <option *ngFor="let item of headers" [value]="item.target"
+        <option value="">Select Import Destination</option>
+        <option *ngFor="let item of optionElements" [value]="item.target"
                 [attr.selected]="value === item.target ? '' : null">{{item.label}}</option>
-        <option value="">No target</option>
+        <option value="">RSD Library</option>
       </select>
       <div class="m-select-x-icon">
         <svg class="t-icon" aria-hidden="true">
@@ -101,7 +100,7 @@ export class BatchImportDestinationSelectComponent {
   @Input() value: string = ""
   @Output() mappingChanged = new EventEmitter<string>()
 
-  get headers(): {target: string, label: string}[] {
+  get optionElements(): {target: string, label: string}[] {
     return importSkillTargetOptions
   }
 

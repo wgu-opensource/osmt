@@ -479,6 +479,7 @@
                         <configuration>
                             <excludes>
                                 <!-- for Kotlin files, don't include the extension - https://stackoverflow.com/questions/39723763/kotlin-maven-not-executing-tests#39735811 -->
+                                <exclude>ApiSkillUpdateMapperTest</exclude>
                                 <exclude>AuditLogRepositoryTest</exclude>
                                 <exclude>BatchImportRichSkillTest</exclude>
                                 <exclude>BlsImportTest</exclude>

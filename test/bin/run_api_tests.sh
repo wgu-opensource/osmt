@@ -53,14 +53,12 @@ get_bearer_token() {
   echo_debug "$(curl http://localhost:8080)"
 
   echo_debug "Curling ${OKTA_URL}..."
-  echo_debug "$(curl {OKTA_URL})"
+  echo_debug "$(curl "${OKTA_URL}")"
 
-  echo_debug "OKTA_URL: ${OKTA_URL}"
-  echo_debug "OKTA_USERNAME: ${OKTA_USERNAME}"
+	echo_debug_env
 
 	# Running postman collections
 	echo_info "Getting bearer token from Okta..."
-	echo_debug_env
 
   npx "${TEST_DIR}/node_modules/.bin/newman" \
     run "${TEST_DIR}/postman/osmt-auth.postman_collection.json" \
@@ -75,6 +73,8 @@ get_bearer_token() {
   echo_info "Bearer token retrieved."
   echo_debug "${BEARER_TOKEN}"
 
+  # bearer token is written to a file for easy access with local curls / Postman
+  # this automated test suite only uses the BEARER_TOKEN variable
   echo "bearerToken=${BEARER_TOKEN}" > "${TEST_DIR}/postman/token.env"
 }
 
@@ -120,13 +120,14 @@ remove_api_test_docker_resources() {
 init_osmt_and_run_api_tests() {
   local apiVersion; apiVersion="${1}"
 
+  echo_info "Testing OSMT API version ${apiVersion}."
   run_shutdown_script
 
   remove_api_test_docker_resources "${OSMT_STACK_NAME}"
 
   # Start the API test Docker compose stack and Spring app server, detached. Send log files to 'osmt_spring_app.log'
   echo
-  echo_info "Starting OSMT Docker stack and Spring app for ${OSMT_STACK_NAME}."
+  echo_info "Starting OSMT Docker stack and Spring app for ${OSMT_STACK_NAME}. Testing API version ${apiVersion}."
   echo_info "Application console is detached, See 'osmt_spring_app.log' for console output. Proceeding..."
   echo
   "${PROJECT_DIR}/osmt_cli.sh" -s 1>"${LOG_FILE}" 2>"${LOG_FILE}" & disown  || exit 135
@@ -141,7 +142,7 @@ init_osmt_and_run_api_tests() {
   "${PROJECT_DIR}/osmt_cli.sh" -r
 
   # Get auth token
-  echo_info "Getting authentication token"
+  echo_info "Getting authentication token. Testing API version ${apiVersion}."
   get_bearer_token
 
   # Run V3 API tests
@@ -149,6 +150,7 @@ init_osmt_and_run_api_tests() {
   run_api_tests "${apiVersion}"
 
   # Shut down OSMT app
+  echo_info "Shutting down OSMT app. Testing API version ${apiVersion}."
   run_shutdown_script
 }
 

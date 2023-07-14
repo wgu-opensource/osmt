@@ -167,8 +167,6 @@ load_static_ci_dataset(){
 
   local sql_file="${PROJECT_DIR}/test/sql/fixed_ci_dataset.sql"
 
-  echo_debug_env
-
   mysql \
     --host="${MYSQL_HOST}" \
     --port="${MYSQL_PORT}" \

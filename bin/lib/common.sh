@@ -7,6 +7,9 @@ set -eu
 
 declare -i DEBUG=${DEBUG:-0}
 
+# These variables are used in GitHub Runners to provide environment variable secrets.
+# For local builds, these would be in .env files, but .env files are gitignored.
+# For an automated build, these values must be in the environment, as secrets.
 declare OAUTH_ISSUER="${OAUTH_ISSUER:-}"
 declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
 declare OAUTH_CLIENTSECRET="${OAUTH_CLIENTSECRET:-}"

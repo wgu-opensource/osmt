@@ -17,7 +17,7 @@ import { AbstractDataService } from "../../../data/abstract-data.service"
 })
 export class JobCodeService extends AbstractDataService {
 
-  private baseServiceUrl = "metadata/jobcodes"
+  protected baseServiceUrl = "metadata/jobcodes"
 
   constructor(
     protected httpClient: HttpClient,
@@ -26,7 +26,14 @@ export class JobCodeService extends AbstractDataService {
     protected location: Location,
     @Inject("BASE_API") baseApi: string
   ) {
-    super(httpClient, authService, router, location, baseApi)
+    super(
+      "metadata/jobcodes",
+      httpClient,
+      authService,
+      router,
+      location,
+      baseApi
+    );
   }
 
   paginatedJobCodes(

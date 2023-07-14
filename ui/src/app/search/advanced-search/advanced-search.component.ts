@@ -8,7 +8,7 @@ import {ApiAdvancedSearch} from "../../richskill/service/rich-skill-search.servi
 import {ApiNamedReference, IAlignment, INamedReference, KeywordType} from "../../richskill/ApiSkill"
 import {Title} from "@angular/platform-browser";
 import {Whitelabelled} from "../../../whitelabel";
-import { IJobCode } from "../../metadata/job-codes/Jobcode";
+import { IJobCode } from "../../metadata/job-code/Jobcode";
 
 @Component({
   selector: "app-advanced-search",

@@ -26,7 +26,14 @@ export class NamedReferenceService extends AbstractDataService {
     protected location: Location,
     @Inject("BASE_API") baseApi: string
   ) {
-    super(httpClient, authService, router, location, baseApi)
+    super(
+      "metadata/keywords",
+      httpClient,
+      authService,
+      router,
+      location,
+      baseApi
+    );
   }
 
   paginatedNamedReferences(

@@ -18,9 +18,9 @@ import { ApiCollectionSummary, ICollectionSummary, ISkillSummary } from "../../s
 import { ApiReferenceListUpdate, IRichSkillUpdate, IStringListUpdate } from "../../src/app/richskill/ApiSkillUpdate"
 import { PaginatedCollections, PaginatedSkills } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
-import { IJobCode } from "../../src/app/metadata/job-codes/Jobcode";
+import { IJobCode } from "../../src/app/metadata/job-code/Jobcode";
 import { PaginatedMetadata } from "../../src/app/metadata/PaginatedMetadata"
-import {NamedReferenceInterface} from "../../src/app/metadata/named-references/NamedReference";
+import {NamedReferenceInterface} from "../../src/app/metadata/named-reference/NamedReference";
 import {MetadataType} from "../../src/app/metadata/rsd-metadata.enum";
 
 // Add mock data here.

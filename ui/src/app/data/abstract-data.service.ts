@@ -12,16 +12,14 @@ import { PublishStatus } from "../PublishStatus"
 import { ApiSortOrder } from "../richskill/ApiSkill"
 import { ApiSearch, PaginatedSkills } from "../richskill/service/rich-skill-search.service"
 import { ApiSkillSummary } from "../richskill/ApiSkillSummary"
-import { MetadataType } from "./rsd-metadata.enum"
 
 @Injectable({ providedIn: "root" })
 export abstract class AbstractDataService extends AbstractService 
     implements IRelatedSkillsService<number> {
 
-  protected serviceUrl: string;
+  protected abstract serviceUrl: string;
 
   protected constructor(
-    serviceUrl: string,
     httpClient: HttpClient,
     authService: AuthService,
     router: Router,
@@ -29,7 +27,6 @@ export abstract class AbstractDataService extends AbstractService
     @Inject("BASE_API") baseApi: string
   ) {
     super(httpClient, authService, router, location, baseApi);
-    this.serviceUrl = serviceUrl;
   }
 
   /**
@@ -50,6 +47,10 @@ export abstract class AbstractDataService extends AbstractService
     observable
       .subscribe(() => {}, (err) => { this.redirectToLogin(err) });
     return observable;
+  }
+
+  getDataById(id: number): Observable<any> {
+    return new Observable<any>;
   }
 
   getRelatedSkills(
@@ -82,7 +83,7 @@ export abstract class AbstractDataService extends AbstractService
     sort?: ApiSortOrder,
     apiSearch?: ApiSearch
   ): Observable<PaginatedSkills> {
-    const errorMsg = `Could not find skills in category [${entityId}]`;
+    const errorMsg = `Could not find skills for metadata [${entityId}]`;
 
     return this.post<ApiSkillSummary[]>({
       path: `${this.serviceUrl}/${entityId}/skills`,

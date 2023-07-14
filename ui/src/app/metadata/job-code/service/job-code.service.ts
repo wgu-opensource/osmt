@@ -17,7 +17,7 @@ import { AbstractDataService } from "../../../data/abstract-data.service"
 })
 export class JobCodeService extends AbstractDataService {
 
-  protected baseServiceUrl = "metadata/jobcodes"
+  protected serviceUrl = "metadata/jobcodes"
 
   constructor(
     protected httpClient: HttpClient,
@@ -27,7 +27,6 @@ export class JobCodeService extends AbstractDataService {
     @Inject("BASE_API") baseApi: string
   ) {
     super(
-      "metadata/jobcodes",
       httpClient,
       authService,
       router,
@@ -46,7 +45,7 @@ export class JobCodeService extends AbstractDataService {
       fromObject: {size, from, sort: sort ?? "", query: query ?? ""}
     })
     return this.get<ApiJobCode[]>({
-      path: `${this.baseServiceUrl}`,
+      path: `${this.serviceUrl}`,
       params,
     }).pipe(share())
       .pipe(map(({body, headers}) => {
@@ -60,7 +59,7 @@ export class JobCodeService extends AbstractDataService {
   getJobCodeById(id: string): Observable<ApiJobCode> {
     const errorMsg = `Could not find JobCode with id [${id}]`
     return this.get<ApiJobCode>({
-      path: `${this.baseServiceUrl}/${id}`
+      path: `${this.serviceUrl}/${id}`
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiJobCode(this.safeUnwrapBody(body, errorMsg))))
@@ -69,7 +68,7 @@ export class JobCodeService extends AbstractDataService {
   createJobCode(newObject: IJobCode): Observable<ApiJobCode> {
     const errorMsg = `Error creating JobCode`
     return this.post<ApiJobCode[]>({
-      path: this.baseServiceUrl,
+      path: this.serviceUrl,
       body: [newObject]
     })
       .pipe(share())
@@ -79,7 +78,7 @@ export class JobCodeService extends AbstractDataService {
   updateJobCode(id: string, updateObject: IJobCodeUpdate): Observable<ApiJobCode> {
     const errorMsg = `Could not find JobCode with id: [${id}]`
     return this.post<IJobCode>({
-      path: `${this.baseServiceUrl}/${id}/update`,
+      path: `${this.serviceUrl}/${id}/update`,
       body: updateObject
     })
       .pipe(share())

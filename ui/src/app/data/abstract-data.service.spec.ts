@@ -9,7 +9,7 @@ import { AuthService } from "../auth/auth-service"
 import { AuthServiceStub, RouterStub } from "@test/resource/mock-stubs"
 import { getBaseApi } from "../api-versions"
 
-describe("AbstractAdminService", () => {
+describe("AbstractDataService", () => {
   let testService: AbstractDataService
 
   beforeEach(() => {

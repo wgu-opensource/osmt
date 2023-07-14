@@ -51,8 +51,12 @@ get_bearer_token() {
 
   echo_debug "Curling ${BASE_URL}..."
   echo_debug "$(curl http://localhost:8080)"
-  echo_debug "${OKTA_URL}"
-  echo_debug "${OKTA_USERNAME}"
+
+  echo_debug "Curling ${OKTA_URL}..."
+  echo_debug "$(curl {OKTA_URL})"
+
+  echo_debug "OKTA_URL: ${OKTA_URL}"
+  echo_debug "OKTA_USERNAME: ${OKTA_USERNAME}"
 
 	# Running postman collections
 	echo_info "Getting bearer token from Okta..."

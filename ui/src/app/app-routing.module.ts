@@ -106,6 +106,20 @@ const routes: Routes = [
       roles: ActionByRoles.get(ButtonAction.MetadataCreate)
     },
   },
+  {path: "named-references/:id/edit",
+    component: MetadataFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
+    },
+  },
+  {path: "jobcodes/:id/edit",
+    component: MetadataFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
+    },
+  },
   // detail
   {path: "named-references/:id",
     component: MetadataPublicComponent,

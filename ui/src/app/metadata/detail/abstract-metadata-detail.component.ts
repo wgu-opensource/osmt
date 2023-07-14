@@ -1,10 +1,21 @@
-import { Component, Input, OnInit} from "@angular/core";
+import { Component, ElementRef, Input, OnInit, ViewChild} from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
 import { Title } from "@angular/platform-browser";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
+import { SvgHelper, SvgIcon } from "src/app/core/SvgHelper";
+import { AbstractDataService } from "src/app/data/abstract-data.service";
 import { IDetailCardSectionData } from "src/app/detail-card/section/section.component";
-import { ApiJobCode } from "../job-codes/Jobcode";
-import { ApiNamedReference } from "../named-references/NamedReference";
+import { FilterDropdown } from "src/app/models";
+import { PublishStatus } from "src/app/PublishStatus";
+import { ApiSortOrder } from "src/app/richskill/ApiSkill";
+import { RichSkillService } from "src/app/richskill/service/rich-skill.service";
+import { RelatedSkillTableControl } from "src/app/table/control/related-skill-table.control";
+import { ISkillTableControl } from "src/app/table/control/table.control";
+import { TableActionDefinition } from "src/app/table/skills-library-table/has-action-definitions";
+import { ToastService } from "src/app/toast/toast.service";
+import { ApiJobCode } from "../job-code/Jobcode";
+import { ApiNamedReference } from "../named-reference/NamedReference";
 import { MetadataType } from "../rsd-metadata.enum";
 import { QuickLinksHelper } from "../../core/quick-links-helper";
 
@@ -12,20 +23,90 @@ import { QuickLinksHelper } from "../../core/quick-links-helper";
   template: ``
 })
 export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper implements OnInit {
+  @ViewChild("titleHeading") titleElement!: ElementRef
 
   idParam: string | null;
   metadata?: ApiNamedReference | ApiJobCode;
+  skillTableControl: RelatedSkillTableControl<number>
+
+  searchForm = new FormGroup({
+    search: new FormControl("")
+  })
+
+  readonly searchIcon = SvgHelper.path(SvgIcon.SEARCH)
 
   constructor(
+    protected router: Router,
     protected route: ActivatedRoute,
-    protected titleService: Title
+    protected metadataService: AbstractDataService,
+    protected skillService: RichSkillService,
+    protected titleService: Title,
+    protected toastService: ToastService
   ) {
     super();
     this.idParam = this.route.snapshot.paramMap.get("id");
+
+    this.skillTableControl = new RelatedSkillTableControl<number>(
+      metadataService,
+      {
+        from: 0,
+        size: 50,
+        sort: ApiSortOrder.NameAsc,
+        statusFilters: new Set([PublishStatus.Draft, PublishStatus.Published])
+      } as ISkillTableControl
+    );
   }
 
-  ngOnInit(): void {
+  get showLibraryEmptyMessage(): boolean {
+    return true;
+  }
 
+  get showSkillsEmpty(): boolean {
+    return this.skillTableControl.emptyResults;
+  }
+
+  get showSkillsFilters(): boolean {
+    return true;
+  }
+
+  get showSkillsLoading(): boolean {
+    return false;
+  }
+
+  get showSkillsTable(): boolean {
+    return !this.skillTableControl.emptyResults;
+  }
+
+  // get skillsCountLabel(): string {
+  //     const rsdLabel = (this.metadata?.skillCount == 1) ? "RSD" : "RSDs"
+  //     return `${this.skillTableControl.totalCount} ${rsdLabel} with this category based on`
+  // }
+
+  get skillsViewingLabel(): string {
+    return (this.skillTableControl.currFirstSkillIndex && this.skillTableControl.currLastSkillIndex)
+      ? `Viewing ${this.skillTableControl.currFirstSkillIndex}-${this.skillTableControl.currLastSkillIndex}` : "";
+  }
+
+  get tableActions(): TableActionDefinition[] {
+    return [
+      new TableActionDefinition({
+        label: "Back to Top",
+        icon: "up",
+        offset: true,
+        callback: (action: TableActionDefinition) => this.handleClickBackToTop(action),
+        visible: () => true
+      })
+    ];
+  }
+
+  protected get searchFieldValue(): string | undefined {
+    const value = this.searchForm.get("search")?.value?.trim();
+    return (value && value.length > 0) ? value : undefined;
+  }
+
+
+  ngOnInit(): void {
+    this.loadMetadata();
   }
 
   protected loadMetadata() {
@@ -35,6 +116,10 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
     } else {
       this.clearMetadata();
     }
+  }
+
+  protected getMetadata() {
+    return this.metadata;
   }
 
   protected setMetadata(metadata: ApiNamedReference | ApiJobCode) {
@@ -87,15 +172,55 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
     }
   }
 
-  getPublishStatus(): string {
-    return "";
+  getMobileSkillSortOptions(): {[s: string]: string} {
+    return {
+      "skill.asc": "RSD Name (ascending)",
+      "skill.desc": "RSD Name (descending)",
+    };
   }
 
-  getArchivedDate(): string {
-    return "";
+  navigateToPage(newPageNo: number) {
+    this.skillTableControl.from = (newPageNo - 1) * this.skillTableControl.size;
+    this.loadSkills();
   }
 
-  getPublishedDate(): string {
-    return "";
+  clearSearch(): boolean {
+    this.searchForm.reset();
+    this.skillTableControl.query = undefined;
+    this.skillTableControl.from = 0;
+    this.loadSkills();
+    return false;
+  }
+
+  handleClickBackToTop(action: TableActionDefinition): boolean {
+    this.focusAndScrollIntoView(this.titleElement.nativeElement);
+    return false;
+  }
+
+  handleHeaderColumnSort(sort: ApiSortOrder) {
+    this.skillTableControl.sort = sort;
+    this.skillTableControl.from = 0;
+    this.loadSkills();
+  }
+
+  handlePageClicked(newPageNo: number) {
+    this.navigateToPage(newPageNo);
+  }
+
+  handleStatusFilterChange(filters: Set<PublishStatus>) {
+    this.skillTableControl.statusFilters = filters;
+    this.loadSkills();
+  }
+
+  handleKeywordFilterChange(filters: FilterDropdown) {
+    this.skillTableControl.keywordFilters = filters;
+    this.loadSkills();
+  }
+
+  handleSearchSubmit(): boolean {
+    this.skillTableControl.query = this.searchFieldValue;
+    this.skillTableControl.from = 0;
+    this.loadSkills();
+    return false;
   }
 }

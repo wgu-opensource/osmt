@@ -118,6 +118,8 @@ import { InlineHeadingComponent } from './richskill/import/inline-heading/inline
 import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
 import { JobCodeParentsPipe } from "./pipes"
 import { MetadataCardComponent } from "./metadata/detail/metadata-card/metadata-card.component"
+import { ManageMetadataActionBarVerticalComponent } from "./metadata/detail/metadata-manage/action-bar-vertical/metadata-manage-action-bar-vertical.component"
+import { PublicMetadataActionBarVerticalComponent } from "./metadata/detail/metadata-public/action-bar-vertical/metadata-public-action-bar-vertical.component"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -240,6 +242,8 @@ export function initializeApp(
     MetadataFormComponent,
     MetadataManageComponent,
     MetadataPublicComponent,
+    ManageMetadataActionBarVerticalComponent,
+    PublicMetadataActionBarVerticalComponent,
     InlineHeadingComponent,
     JobCodeParentsPipe,
     InlineHeadingComponent

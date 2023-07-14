@@ -19,6 +19,7 @@ import { ApiNamedReference } from "../named-reference/NamedReference";
 import { MetadataType } from "../rsd-metadata.enum";
 import { QuickLinksHelper } from "../../core/quick-links-helper";
 
+
 @Component({
   template: ``
 })

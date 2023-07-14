@@ -1,6 +1,6 @@
 <div class="l-stickyBar">
   <div class="l-stickySidebar l-container t-margin-medium t-margin-bottom">
-    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
+    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top" #detailCard>
       <app-metadata-card
         [metadata]="getMetadata()"
         [indexOfFirstSkill]="skillTableControl.currFirstSkillIndex"
@@ -8,7 +8,24 @@
         [showSkillCount]="false"
       ></app-metadata-card>
     </div>
+
+    <div class="l-stickySidebar-x-sidebar">
+      <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
+        <app-manage-metadata-action-bar-vertical
+          [id]="getId()"
+          [metadataName]="getMetadataName()"
+          [metadataPublicUrl]="getId()"
+          (reloadMetadata)="loadMetadata()"
+        ></app-manage-metadata-action-bar-vertical>
+  
+        <nav class="m-quickLinks" aria-labelledby="save-quicklinks">
+          <h3 class="t-visuallyHidden" id="save-quicklinks">Quick Links</h3>
+          <a (click)="focusAndScrollIntoView(detailCard, 'h2')">Back to top</a>
+        </nav>
+      </div>
+    </div>
   </div>
+
   <div #titleHeading class="l-container">
     <div class="t-margin-medium t-margin-bottom">
       <form [formGroup]="searchForm" (ngSubmit)="handleSearchSubmit()">

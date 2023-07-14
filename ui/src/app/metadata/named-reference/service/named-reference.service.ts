@@ -17,7 +17,7 @@ import { ApiBatchResult } from "../../../richskill/ApiBatchResult";
 })
 export class NamedReferenceService extends AbstractDataService {
 
-  private baseServiceUrl = "metadata/keywords"
+  protected serviceUrl = "metadata/keywords"
 
   constructor(
     protected httpClient: HttpClient,
@@ -27,7 +27,6 @@ export class NamedReferenceService extends AbstractDataService {
     @Inject("BASE_API") baseApi: string
   ) {
     super(
-      "metadata/keywords",
       httpClient,
       authService,
       router,
@@ -47,7 +46,7 @@ export class NamedReferenceService extends AbstractDataService {
       fromObject: {size, from, sort: sort ?? "", query: query ?? "", type: type}
     })
     return this.get<ApiNamedReference[]>({
-      path: `${this.baseServiceUrl}`,
+      path: `${this.serviceUrl}`,
       params,
     }).pipe(share())
       .pipe(map(({body, headers}) => {
@@ -61,7 +60,7 @@ export class NamedReferenceService extends AbstractDataService {
   getNamedReferenceById(id: string): Observable<ApiNamedReference> {
     const errorMsg = `Could not find NamedReference with id [${id}]`
     return this.get<ApiNamedReference>({
-      path: `${this.baseServiceUrl}/${id}`
+      path: `${this.serviceUrl}/${id}`
     })
       .pipe(share())
       .pipe(map(({body}) => new ApiNamedReference(this.safeUnwrapBody(body, errorMsg))))
@@ -70,7 +69,7 @@ export class NamedReferenceService extends AbstractDataService {
   createNamedReference(newObject: ApiNamedReferenceUpdate): Observable<ApiNamedReference> {
     const errorMsg = `Error creating NamedReference`
     return this.post<NamedReferenceInterface[]>({
-      path: this.baseServiceUrl,
+      path: this.serviceUrl,
       body: [newObject]
     })
       .pipe(share())
@@ -80,7 +79,7 @@ export class NamedReferenceService extends AbstractDataService {
   updateNamedReference(id: number, updateObject: ApiNamedReferenceUpdate): Observable<ApiNamedReference> {
     const errorMsg = `Could not find NamedReference with id: [${id}]`
     return this.post<NamedReferenceInterface>({
-      path: `${this.baseServiceUrl}/${id}/update`,
+      path: `${this.serviceUrl}/${id}/update`,
       body: updateObject
     })
       .pipe(share())

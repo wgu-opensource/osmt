@@ -92,6 +92,7 @@ const routes: Routes = [
     component: MetadataListComponent,
     canActivate: [AuthGuard],
   },
+  // create metadata
   {path: "named-references/create",
     component: MetadataFormComponent,
     canActivate: [AuthGuard],
@@ -99,13 +100,14 @@ const routes: Routes = [
       roles: ActionByRoles.get(ButtonAction.MetadataCreate)
     },
   },
-  {path: "jobcodes/create",
+  {path: "job-codes/create",
     component: MetadataFormComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataCreate)
     },
   },
+  // edit metadata
   {path: "named-references/:id/edit",
     component: MetadataFormComponent,
     canActivate: [AuthGuard],
@@ -113,27 +115,28 @@ const routes: Routes = [
       roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
     },
   },
-  {path: "jobcodes/:id/edit",
+  {path: "job-codes/:id/edit",
     component: MetadataFormComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
     },
   },
-  // detail
+  // public metadata detail
   {path: "named-references/:id",
     component: MetadataPublicComponent,
     canActivate: [AuthGuard]
   },
-  {path: "jobcode/:id",
+  {path: "job-codes/:id",
     component: MetadataPublicComponent,
     canActivate: [AuthGuard]
   },
-  {path: "named-reference/:id/manage",
+  // admin metadata detail
+  {path: "named-references/:id/manage",
     component: MetadataManageComponent,
     canActivate: [AuthGuard]
   },
-  {path: "jobcode/:id/manage",
+  {path: "job-codes/:id/manage",
     component: MetadataManageComponent,
     canActivate: [AuthGuard]
   },

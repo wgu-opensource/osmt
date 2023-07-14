@@ -106,10 +106,10 @@ import { getBaseApi } from "./api-versions"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { MatMenuModule } from "@angular/material/menu"
 import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
-import { JobCodeListRowComponent } from "./metadata/job-codes/job-code-list-row/job-code-list-row.component"
-import { JobCodeTableComponent } from "./metadata/job-codes/job-code-table/job-code-table.component"
-import { NamedReferenceListRowComponent } from "./metadata/named-references/named-reference-list-row/named-reference-list-row.component"
-import { NamedReferenceTableComponent } from "./metadata/named-references/named-reference-table/named-reference-table.component"
+import { JobCodeListRowComponent } from "./metadata/job-code/job-code-list-row/job-code-list-row.component"
+import { JobCodeTableComponent } from "./metadata/job-code/job-code-table/job-code-table.component"
+import { NamedReferenceListRowComponent } from "./metadata/named-reference/named-reference-list-row/named-reference-list-row.component"
+import { NamedReferenceTableComponent } from "./metadata/named-reference/named-reference-table/named-reference-table.component"
 import { MetadataSelectorComponent } from "./metadata/detail/metadata-selector/metadata-selector.component";
 import { MetadataFormComponent } from "./metadata/form/metadata-form.component";
 import { MetadataManageComponent } from "./metadata/detail/metadata-manage/metadata-manage.component";

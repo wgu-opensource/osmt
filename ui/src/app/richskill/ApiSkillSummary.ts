@@ -1,5 +1,5 @@
 import {PublishStatus} from "../PublishStatus"
-import { IJobCode } from "../metadata/job-codes/Jobcode"
+import { IJobCode } from "../metadata/job-code/Jobcode"
 
 export interface ISkillSummary {
   id: string

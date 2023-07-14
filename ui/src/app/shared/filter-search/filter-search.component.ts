@@ -1,4 +1,4 @@
-import { ApiJobCode } from "../../metadata/job-codes/Jobcode"
+import { ApiJobCode } from "../../metadata/job-code/Jobcode"
 import {ApiNamedReference} from "../../richskill/ApiSkill"
 
 

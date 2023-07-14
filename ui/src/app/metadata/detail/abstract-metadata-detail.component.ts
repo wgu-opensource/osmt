@@ -10,6 +10,7 @@ import { AbstractDataService } from "../../data/abstract-data.service"
 import { RichSkillService } from "../../richskill/service/rich-skill.service"
 import { ToastService } from "../../toast/toast.service"
 
+
 @Component({
   template: ``
 })

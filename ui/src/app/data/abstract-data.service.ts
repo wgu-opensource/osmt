@@ -47,6 +47,10 @@ export abstract class AbstractDataService extends AbstractService
     return observable;
   }
 
+  getDataById(id: number): Observable<any> {
+    return new Observable<any>;
+  }
+
   getRelatedSkills(
     entityId: number,
     size: number,
@@ -77,7 +81,7 @@ export abstract class AbstractDataService extends AbstractService
     sort?: ApiSortOrder,
     apiSearch?: ApiSearch
   ): Observable<PaginatedSkills> {
-    const errorMsg = `Could not find skills in category [${entityId}]`;
+    const errorMsg = `Could not find skills for metadata [${entityId}]`;
 
     return this.post<ApiSkillSummary[]>({
       path: `${this.serviceUrl}/${entityId}/skills`,

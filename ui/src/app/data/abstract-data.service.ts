@@ -2,10 +2,8 @@ import { Location } from "@angular/common"
 import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http"
 import { Inject, Injectable } from "@angular/core"
 import { Router } from "@angular/router"
-
 import { Observable } from "rxjs"
 import { map, share } from "rxjs/operators"
-
 import { AbstractService, ApiGetParams, IRelatedSkillsService } from "../abstract.service"
 import { AuthService } from "../auth/auth-service"
 import { PublishStatus } from "../PublishStatus"
@@ -14,7 +12,7 @@ import { ApiSearch, PaginatedSkills } from "../richskill/service/rich-skill-sear
 import { ApiSkillSummary } from "../richskill/ApiSkillSummary"
 
 @Injectable({ providedIn: "root" })
-export abstract class AbstractDataService extends AbstractService 
+export abstract class AbstractDataService extends AbstractService
     implements IRelatedSkillsService<number> {
 
   protected abstract serviceUrl: string;
@@ -49,10 +47,6 @@ export abstract class AbstractDataService extends AbstractService
     return observable;
   }
 
-  getDataById(id: number): Observable<any> {
-    return new Observable<any>;
-  }
-
   getRelatedSkills(
     entityId: number,
     size: number,
@@ -83,7 +77,7 @@ export abstract class AbstractDataService extends AbstractService
     sort?: ApiSortOrder,
     apiSearch?: ApiSearch
   ): Observable<PaginatedSkills> {
-    const errorMsg = `Could not find skills for metadata [${entityId}]`;
+    const errorMsg = `Could not find skills in category [${entityId}]`;
 
     return this.post<ApiSkillSummary[]>({
       path: `${this.serviceUrl}/${entityId}/skills`,

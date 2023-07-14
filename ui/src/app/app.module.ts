@@ -117,6 +117,7 @@ import { MetadataPublicComponent } from "./metadata/detail/metadata-public/metad
 import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
 import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
 import { JobCodeParentsPipe } from "./pipes"
+import { MetadataCardComponent } from "./metadata/detail/metadata-card/metadata-card.component"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -235,6 +236,7 @@ export function initializeApp(
     NamedReferenceListRowComponent,
     NamedReferenceTableComponent,
     MetadataSelectorComponent,
+    MetadataCardComponent,
     MetadataFormComponent,
     MetadataManageComponent,
     MetadataPublicComponent,

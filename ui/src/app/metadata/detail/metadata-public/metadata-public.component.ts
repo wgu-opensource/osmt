@@ -1,12 +1,11 @@
 import { Component, Input } from "@angular/core";
 import { Title } from "@angular/platform-browser";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
-import { IDetailCardSectionData } from "src/app/detail-card/section/section.component";
+import { AbstractDataService } from "src/app/data/abstract-data.service";
+import { RichSkillService } from "src/app/richskill/service/rich-skill.service";
+import { ToastService } from "src/app/toast/toast.service";
 import { AbstractMetadataDetailComponent } from "../abstract-metadata-detail.component";
-import { ApiJobCode } from "../../job-codes/Jobcode";
-import { ApiNamedReference } from "../../named-references/NamedReference";
-import { MetadataType } from "../../rsd-metadata.enum";
 
 
 @Component({
@@ -16,12 +15,20 @@ import { MetadataType } from "../../rsd-metadata.enum";
 export class MetadataPublicComponent extends AbstractMetadataDetailComponent {
 
   constructor(
+    protected router: Router,
     protected route: ActivatedRoute,
-    protected titleService: Title
+    protected metadataService: AbstractDataService,
+    protected skillService: RichSkillService,
+    protected titleService: Title,
+    protected toastService: ToastService
   ) {
     super(
+      router,
       route,
-      titleService
+      metadataService,
+      skillService,
+      titleService,
+      toastService
     );
   }
 

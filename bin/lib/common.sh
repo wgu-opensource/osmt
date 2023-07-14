@@ -12,9 +12,9 @@ declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
 declare OAUTH_CLIENTSECRET="${OAUTH_CLIENTSECRET:-}"
 declare OAUTH_AUDIENCE="${OAUTH_AUDIENCE:-}"
 
-declare OKTA_URL="${OAUTH_AUDIENCE:-}"
-declare OKTA_USERNAME="${OAUTH_AUDIENCE:-}"
-declare OKTA_PASSWORD="${OAUTH_AUDIENCE:-}"
+declare OKTA_URL="${OKTA_URL:-}"
+declare OKTA_USERNAME="${OKTA_USERNAME:-}"
+declare OKTA_PASSWORD="${OKTA_PASSWORD:-}"
 
 declare PROJECT_DIR; PROJECT_DIR="$(git rev-parse --show-toplevel 2> /dev/null)" || \
     (echo_err "$(basename "${0}") commands use git to set directory context. Exiting..." && exit 135)

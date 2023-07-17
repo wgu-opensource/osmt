@@ -25,18 +25,20 @@
             <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
           </svg>
           <input type="text" placeholder="Search Metadata" [formControl]="searchForm.controls.search">
-          <app-metadata-selector [isVisible]="getSelectAllEnabled" [control]="typeControl" [currentSelection]="selectedMetadataType">
-          </app-metadata-selector>
+          <div class="metadata-type-container">
+            <app-metadata-selector [isVisible]="getSelectAllEnabled" [control]="typeControl" [currentSelection]="selectedMetadataType">
+            </app-metadata-selector>
+            <div class="create-metadata-container">
+              <a class="m-button" routerLink="/named-references/create" [state]="{metadataType: typeControl.value}">
+                <svg class="m-button-x-icon t-icon">
+                  <use xlink:href="/assets/images/svg-defs.svg#icon-collection"></use>
+                </svg>
+                <span class="m-button-x-text">Create Metadata</span>
+              </a>
+            </div>
+          </div>
         </div>
       </form>
-      <div>
-        <a class="m-button" routerLink="/named-references/create" [state]="{metadataType: typeControl.value}">
-          <svg class="m-button-x-icon t-icon">
-            <use xlink:href="/assets/images/svg-defs.svg#icon-collection"></use>
-          </svg>
-          <span class="m-button-x-text">Create Metadata</span>
-        </a>
-      </div>
     </div>
 
     <div *ngIf="totalPageCount" class="t-margin-medium t-margin-bottom">

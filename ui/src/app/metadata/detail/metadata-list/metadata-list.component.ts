@@ -14,7 +14,8 @@ import { NamedReferenceService } from "../../named-reference/service/named-refer
 
 @Component({
   selector: "app-metadata-list",
-  templateUrl: "./metadata-list.component.html"
+  templateUrl: "./metadata-list.component.html",
+  styleUrls: ["./metadata-list.component.scss"]
 })
 export class MetadataListComponent extends AbstractListComponent<IJobCode | NamedReferenceInterface> implements OnInit {
 

@@ -51,29 +51,6 @@ validate_osmt_dev_environment() {
   fi
 }
 
-start_osmt_quickstart() {
-  local -i rc
-  _validate_git || return 1
-  _validate_docker_version
-  rc=$?
-  if [[ $rc -ne 0 ]]; then
-    echo_err "Aborting OSMT Quickstart. Exiting..."
-    return 1
-  fi
-
-  _cd_osmt_project_dir || return 1
-  _validate_env_file "${QUICKSTART_ENV_FILE}"
-  rc=$?
-  if [[ $rc -ne 0 ]]; then
-    echo_err "Aborting OSMT Quickstart. Exiting..."
-    return 1
-  fi
-
-  echo
-  echo_info "Starting OSMT Quickstart with docker-compose using osmt-quickstart.env"
-  docker-compose --file docker-compose.quickstart.yml --env-file "${QUICKSTART_ENV_FILE}" --project-name osmt_quickstart up
-}
-
 import_osmt_metadata() {
   local stack_name="${1}"
   echo
@@ -323,10 +300,6 @@ while getopts "ivqdelrasmch" flag; do
       ;;
     v)
       validate_osmt_dev_environment || exit 135
-      exit 0
-      ;;
-    q)
-      start_osmt_quickstart || exit 135
       exit 0
       ;;
     d)

@@ -26,7 +26,7 @@ import { QuickLinksHelper } from "../../core/quick-links-helper";
 export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper implements OnInit {
   @ViewChild("titleHeading") titleElement!: ElementRef
 
-  idParam: string | null;
+  idParam: number | null;
   metadata?: ApiNamedReference | ApiJobCode;
   skillTableControl: RelatedSkillTableControl<number>
 
@@ -36,7 +36,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
 
   readonly searchIcon = SvgHelper.path(SvgIcon.SEARCH)
 
-  constructor(
+  protected constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     protected metadataService: AbstractDataService,
@@ -45,7 +45,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
     protected toastService: ToastService
   ) {
     super();
-    this.idParam = this.route.snapshot.paramMap.get("id");
+    this.idParam = parseInt(this.route.snapshot.paramMap.get("id") ?? "-1")
 
     this.skillTableControl = new RelatedSkillTableControl<number>(
       metadataService,
@@ -112,8 +112,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
 
   protected loadMetadata() {
     if (this.idParam) {
-      // this.categoryService.getById(this.idParam).subscribe(
-      //   (m: ApiNamedReference | ApiJobCode) => this.setMetadata(m));
+      this.metadataService.getById(this.idParam).subscribe((m: ApiNamedReference | ApiJobCode) => this.setMetadata(m));
     } else {
       this.clearMetadata();
     }
@@ -132,7 +131,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
 
   protected loadSkills(): void {
     if (this.metadata) {
-      // this.skillTableControl.loadSkills(this.metadata.id);
+      this.metadataService.getRelatedSkills(this.metadata?.id ?? 0, 0, 50, new Set([PublishStatus.Draft, PublishStatus.Published]), ApiSortOrder.NameAsc)
     } else {
       this.clearSkills();
     }

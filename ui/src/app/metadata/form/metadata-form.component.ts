@@ -9,8 +9,6 @@ import { ApiJobCode } from "../job-code/Jobcode";
 import { ApiNamedReference } from "../named-reference/NamedReference";
 import { MetadataType } from "../rsd-metadata.enum";
 import { AbstractDataService } from "../../data/abstract-data.service"
-import { ExtrasSelectedSkillsState } from "../../collection/add-skills-collection.component"
-
 
 @Component({
   selector: "app-metadata-form",
@@ -35,7 +33,9 @@ export abstract class MetadataFormComponent implements OnInit {
     protected metadataService: AbstractDataService
   ) {
     const state: any = this.router.getCurrentNavigation()?.extras.state
-    this.metadataType = Object.keys(MetadataType)[Object.values(MetadataType).indexOf(state.metadataType)];
+    if (state) {
+      this.metadataType = Object.keys(MetadataType)[Object.values(MetadataType).indexOf(state.metadataType)];
+    }
     console.log(this.metadataType)
     this.metadataForm = this.getFormDefinitions()
     this.id = parseInt(this.route.snapshot.paramMap.get("id") ?? "-1");
@@ -62,7 +62,10 @@ export abstract class MetadataFormComponent implements OnInit {
   ngOnInit(): void {
     if (this.id > 0) {
       this.metadataLoaded = this.metadataService.getById(this.id);
-      this.metadataLoaded.subscribe(metadata => { this.setMetadata(metadata) });
+      this.metadataLoaded.subscribe(metadata => {
+        this.setMetadata(metadata)
+        this.metadataForm.patchValue(metadata)
+      });
     }
   }
 

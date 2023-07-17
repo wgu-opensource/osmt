@@ -109,13 +109,13 @@ const routes: Routes = [
     },
   },*/
   // edit metadata
-  /*{path: "named-references/:id/edit",
-    component: MetadataFormComponent,
+  {path: "named-references/:id/edit",
+    component: CreateNamedReferenceComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
     },
-  },*/
+  },
   /*{path: "job-codes/:id/edit",
     component: MetadataFormComponent,
     canActivate: [AuthGuard],

@@ -30,7 +30,7 @@ export class MetadataCardComponent {
   }
 
   get metadataName(): string {
-    return "Fine Arts";
+    return (this.metadata as ApiNamedReference)?.name ?? "";
   }
 
   get metadataSkillsLabel(): string {

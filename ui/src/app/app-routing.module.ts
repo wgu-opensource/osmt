@@ -28,6 +28,7 @@ import { DetailCardComponent } from "./detail-card/detail-card.component"
 import { MetadataFormComponent } from "./metadata/form/metadata-form.component"
 import { MetadataManageComponent } from "./metadata/detail/metadata-manage/metadata-manage.component"
 import { MetadataPublicComponent } from "./metadata/detail/metadata-public/metadata-public.component"
+import { CreateNamedReferenceComponent } from "./metadata/named-reference/create/create-named-reference.component"
 
 
 const routes: Routes = [
@@ -94,34 +95,34 @@ const routes: Routes = [
   },
   // create metadata
   {path: "named-references/create",
-    component: MetadataFormComponent,
+    component: CreateNamedReferenceComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataCreate)
     },
   },
-  {path: "job-codes/create",
+  /*{path: "job-codes/create",
     component: MetadataFormComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataCreate)
     },
-  },
+  },*/
   // edit metadata
-  {path: "named-references/:id/edit",
+  /*{path: "named-references/:id/edit",
     component: MetadataFormComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
     },
-  },
-  {path: "job-codes/:id/edit",
+  },*/
+  /*{path: "job-codes/:id/edit",
     component: MetadataFormComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
     },
-  },
+  },*/
   // public metadata detail
   {path: "named-references/:id",
     component: MetadataPublicComponent,

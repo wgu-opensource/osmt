@@ -1,37 +1,44 @@
 import { Location } from "@angular/common"
-import { Component, Input } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { Component, OnInit } from "@angular/core"
+import { FormBuilder, FormGroup } from "@angular/forms"
 import { ActivatedRoute, Router } from "@angular/router";
 
 import { Observable } from "rxjs";
 
-import { AbstractDataService } from "src/app/data/abstract-data.service";
 import { ApiJobCode } from "../job-code/Jobcode";
 import { ApiNamedReference } from "../named-reference/NamedReference";
 import { MetadataType } from "../rsd-metadata.enum";
+import { AbstractDataService } from "../../data/abstract-data.service"
+import { ExtrasSelectedSkillsState } from "../../collection/add-skills-collection.component"
 
 
 @Component({
   selector: "app-metadata-form",
-  templateUrl: "./metadata-form.component.html"
+  template: ""
 })
-export class MetadataFormComponent {
-  metadataForm = new FormGroup(this.getFormDefinitions());
+export abstract class MetadataFormComponent implements OnInit {
+
+  metadataForm!: FormGroup
   alignmentForms: FormGroup[] = [];
   id: number;
   metadata?: ApiNamedReference | ApiJobCode;
+  metadataType?: string
 
   metadataLoaded: Observable<any> | null = null
   metadataSaved: Observable<any> | null = null
 
-  constructor(
+  protected constructor(
     protected route: ActivatedRoute,
-    private router: Router,
-    private location: Location,
+    protected router: Router,
+    protected location: Location,
+    protected formBuilder: FormBuilder,
     protected metadataService: AbstractDataService
   ) {
-    // this.id = parseInt(this.route.snapshot.paramMap.get("id") ?? "-1");
-    this.id = 2998
+    const state: any = this.router.getCurrentNavigation()?.extras.state
+    this.metadataType = Object.keys(MetadataType)[Object.values(MetadataType).indexOf(state.metadataType)];
+    console.log(this.metadataType)
+    this.metadataForm = this.getFormDefinitions()
+    this.id = parseInt(this.route.snapshot.paramMap.get("id") ?? "-1");
   }
 
   get nameErrorMessage(): string {
@@ -53,8 +60,8 @@ export class MetadataFormComponent {
   }
 
   ngOnInit(): void {
-    if (this.id) {
-      this.metadataLoaded = this.metadataService.getDataById(this.id);
+    if (this.id > 0) {
+      this.metadataLoaded = this.metadataService.getById(this.id);
       this.metadataLoaded.subscribe(metadata => { this.setMetadata(metadata) });
     }
   }
@@ -79,14 +86,7 @@ export class MetadataFormComponent {
     }
   }
 
-  getFormDefinitions() {
-    const fields = {
-      metadataName: new FormControl(null),
-      metadataValue: new FormControl(null)
-    }
-
-    return fields;
-  }
+  abstract getFormDefinitions(): FormGroup
 
   handleFormErrors(errors: unknown): void {
   }
@@ -103,15 +103,15 @@ export class MetadataFormComponent {
   onSubmit(): void {
     const updateObject = this.updateObject();
 
-    if (Object.keys(updateObject).length < 1) {
-      return;
-    }
-
-    // if (this.id) {
-    //   this.metadataSaved = this.metadataService.updateMetadata(this.id, updateObject);
-    // } else {
-    //   this.metadataSaved = this.metadataService.createMetadata(updateObject);
+    // if (Object.keys(updateObject).length < 1) {
+    //  return;
     // }
+
+    if (this.id > 0) {
+      this.metadataSaved = this.metadataService.update(this.id, this.metadataForm.value as any);
+    } else {
+      this.metadataSaved = this.metadataService.create(this.metadataForm.value as any);
+    }
 
     if (this.metadataSaved) {
       this.metadataSaved.subscribe((result) => {

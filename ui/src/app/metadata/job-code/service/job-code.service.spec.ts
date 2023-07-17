@@ -59,7 +59,7 @@ describe("JobCodeService", () => {
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.paginatedJobCodes(testData.data.length, 0, ApiSortOrder.NameAsc, undefined)
+    const result$ = testService.paginated(testData.data.length, 0, ApiSortOrder.NameAsc, undefined)
 
     // Assert
     result$
@@ -86,7 +86,7 @@ describe("JobCodeService", () => {
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.getJobCodeById(id)
+    const result$ = testService.getById(id)
 
     // Assert
     result$
@@ -120,7 +120,7 @@ describe("JobCodeService", () => {
     })
 
     // Act
-    const result$ = testService.createJobCode(input)
+    const result$ = testService.create(input)
 
     // Assert
     result$
@@ -153,7 +153,7 @@ describe("JobCodeService", () => {
     })
 
     // Act
-    const result$ = testService.updateJobCode(id, input)
+    const result$ = testService.update(id, input)
 
     // Assert
     result$

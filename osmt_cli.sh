@@ -6,6 +6,7 @@ set -u
 
 declare QUICKSTART_ENV_FILE
 declare DEV_ENV_FILE
+declare APITEST_ENV_FILE
 
 # These values are also in application.properties. Providing these env vars to this script will
 # override these local dev defaults. These are in no way suitable for any level of actual deployment
@@ -17,10 +18,6 @@ declare -r MYSQL_USER="${MYSQL_USER:-osmt_db_user}"
 declare -r MYSQL_PASSWORD="${MYSQL_PASSWORD:-password}"
 declare -r ELASTICSEARCH_HTTP_PORT="${ELASTICSEARCH_HTTP_PORT:-9200}"
 declare -r ELASTICSEARCH_TRANSPORT_PORT="${ELASTICSEARCH_TRANSPORT_PORT:-9300}"
-declare OAUTH_ISSUER="${OAUTH_ISSUER:-}"
-declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
-declare OAUTH_CLIENTSECRET="${OAUTH_CLIENTSECRET:-}"
-declare OAUTH_AUDIENCE="${OAUTH_AUDIENCE:-}"
 declare -r OSMT_SECURITY_PROFILE="${OSMT_SECURITY_PROFILE:-}"
 
 
@@ -28,6 +25,7 @@ declare -r OSMT_SECURITY_PROFILE="${OSMT_SECURITY_PROFILE:-}"
 init_osmt_env_files() {
   _init_osmt_env_file "Quickstart" "${QUICKSTART_ENV_FILE}" || return 1
   _init_osmt_env_file "Development" "${DEV_ENV_FILE}" || return 1
+  _init_osmt_env_file "API Tests" "${APITEST_ENV_FILE}" || return 1
 }
 
 validate_osmt_dev_environment() {
@@ -44,6 +42,7 @@ validate_osmt_dev_environment() {
   echo_info "Checking environment files used in local OSMT instances..."
   _validate_env_file "${QUICKSTART_ENV_FILE}" || is_environment_valid+=1
   _validate_env_file "${DEV_ENV_FILE}" || is_environment_valid+=1
+  _validate_env_file "${APITEST_ENV_FILE}" || is_environment_valid+=1
 
   if [[ "${is_environment_valid}" -ne 0 ]]; then
     echo
@@ -87,7 +86,7 @@ import_osmt_metadata() {
     return 1
   fi
 
-  parse_osmt_envs "${DEV_ENV_FILE}" || return 1
+  source_env_file_unless_provided_oauth "${DEV_ENV_FILE}" || return 1
   _cd_osmt_project_dir || return 1
   cd api || return 1
 
@@ -123,7 +122,7 @@ start_osmt_spring_app() {
     return 1
   fi
 
-  parse_osmt_envs "${DEV_ENV_FILE}" || return 1
+  source_env_file_unless_provided_oauth "${DEV_ENV_FILE}" || return 1
 
   _cd_osmt_project_dir || return 1
   cd api || return 1
@@ -151,6 +150,11 @@ load_static_ci_dataset(){
 
   local -i db_container_count=0;
   # some installations of Docker delimit container names with hyphens. Others use underscores.
+#
+  echo
+  docker ps --filter name="${stack_name}"
+  echo
+#
   db_container_count+="$(docker ps -q --filter name="${stack_name}"_db_1 | wc -l)"
   db_container_count+="$(docker ps -q --filter name="${stack_name}"-db-1 | wc -l)"
   echo_debug "MySQL container count: ${db_container_count}"
@@ -196,7 +200,7 @@ start_osmt_dev_spring_app_reindex() {
   fi
 
   _cd_osmt_project_dir || return 1
-  parse_osmt_envs "${DEV_ENV_FILE}" || return 1
+  source_env_file_unless_provided_oauth "${DEV_ENV_FILE}" || return 1
   echo
   echo_info "Starting OSMT via Maven Spring Boot plug-in to reindex ElasticSearch..."
   cd api || return 1
@@ -208,6 +212,20 @@ start_osmt_dev_spring_app_reindex() {
   fi
   echo_info "Exited OSMT Spring app with Maven. Returning to project root (${PROJECT_DIR})"
   cd "${PROJECT_DIR}" || return 1
+}
+
+start_osmt_api_tests() {
+  local osmt_jar_file; osmt_jar_file="${PROJECT_DIR}/api/target/osmt-api-*.jar"
+
+  if [[ -n "$(find . -maxdepth 1 -name "${osmt_jar_file}" -print -quit)" ]]; then
+    echo_err "Can not access ${osmt_jar_file}. Try running 'mvn clean install' first. Exiting..."
+    echo
+    return 1
+  fi
+
+  echo
+  echo_info "Starting OSMT API Tests..."
+  mvn verify -pl test -P run-api-tests
 }
 
 _remove_osmt_docker_artifacts() {
@@ -261,6 +279,7 @@ Usage:
        application starts. You may need to start the Spring application first, and you will need to reindex
        ElasticSearch to make this DB refresh available to OSMT (see below).
   -r   Start the local Spring app to reindex ElasticSearch.
+  -a   Start the local API tests for OSMT. This requires a valid OSMT jar file (from a 'mvn package')
   -m   Import default BLS and O*NET metadata into local Development instance.
   -c   Surgically clean up OSMT-related Docker images and data volumes. This step will delete data from local OSMT
        Quickstart and Development configurations. It does not remove the mysql/redis/elasticsearch images, as
@@ -278,6 +297,7 @@ source "${script_dir}/bin/lib/common.sh" || exit 135
 
 QUICKSTART_ENV_FILE="${PROJECT_DIR}/osmt-quickstart.env"
 DEV_ENV_FILE="${PROJECT_DIR}/api/osmt-dev-stack.env"
+APITEST_ENV_FILE="${PROJECT_DIR}/test/osmt-apitest.env"
 
 cat <<-EOF
    ___  ___ __  __ _____   ___ _    ___
@@ -295,7 +315,7 @@ if [[ $# == 0 ]]; then
   exit 135
 fi
 
-while getopts "ivqdelrsmch" flag; do
+while getopts "ivqdelrasmch" flag; do
   case "${flag}" in
     i)
       init_osmt_env_files || exit 135
@@ -327,6 +347,10 @@ while getopts "ivqdelrsmch" flag; do
       ;;
     r)
       start_osmt_dev_spring_app_reindex "${OSMT_STACK_NAME}" || exit 135
+      exit 0
+      ;;
+    a)
+      start_osmt_api_tests || exit 135
       exit 0
       ;;
     m)

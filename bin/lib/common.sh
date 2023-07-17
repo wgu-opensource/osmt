@@ -5,7 +5,20 @@
 
 set -eu
 
-declare DEBUG=${DEBUG:-0}
+declare -i DEBUG=${DEBUG:-0}
+
+# These variables are used in GitHub Runners to provide environment variable secrets.
+# For local builds, these would be in .env files, but .env files are gitignored.
+# For an automated build, these values must be in the environment, as secrets.
+declare OAUTH_ISSUER="${OAUTH_ISSUER:-}"
+declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
+declare OAUTH_CLIENTSECRET="${OAUTH_CLIENTSECRET:-}"
+declare OAUTH_AUDIENCE="${OAUTH_AUDIENCE:-}"
+
+declare OKTA_URL="${OKTA_URL:-}"
+declare OKTA_USERNAME="${OKTA_USERNAME:-}"
+declare OKTA_PASSWORD="${OKTA_PASSWORD:-}"
+
 declare PROJECT_DIR; PROJECT_DIR="$(git rev-parse --show-toplevel 2> /dev/null)" || \
     (echo_err "$(basename "${0}") commands use git to set directory context. Exiting..." && exit 135)
 if [[ -z "${PROJECT_DIR}" ]]; then
@@ -14,14 +27,14 @@ if [[ -z "${PROJECT_DIR}" ]]; then
 fi
 
 # new line formatted to indent with echo_err / echo_info etc
-declare -r INDENT="       "
-declare -r NL="\n${INDENT}"
+declare INDENT="       "
+declare NL="\n${INDENT}"
 
 source_env_file() {
   local env_file="${1}"
 
   if [[ ! -f "${env_file}" ||  ! -r "${env_file}" ]]; then
-    echo_err "Can not access ${env_file}. You can initialize the environment files by running $(basename "${0}") -i$"
+    echo_err "Can not access ${env_file}. You can initialize the environment files by running './osmt_cli.sh -i'"
     return 1
   fi
 
@@ -32,19 +45,37 @@ source_env_file() {
   # shellcheck source=/dev/null
   source "${env_file}"
   set +o allexport
+
+  echo_debug_env
 }
 
-parse_osmt_envs() {
+source_env_file_unless_provided_oauth() {
   local env_file="${1}"
 
  # gracefully bypass sourcing env file if these 4 OAUTH values are provided
   if [[ \
       -n "${OAUTH_ISSUER}" && \
-      -n "${OAUTH_CLIENTID}" &&\
+      -n "${OAUTH_CLIENTID}" && \
       -n "${OAUTH_CLIENTSECRET}" && \
       -n "${OAUTH_AUDIENCE}" \
     ]]; then
       echo_info "OAUTH values are provided by environment variables. Not sourcing ${env_file} env file."
+      return 0
+    fi
+
+  source_env_file "${env_file}"
+}
+
+source_env_file_unless_provided_okta() {
+  local env_file="${1}"
+
+ # gracefully bypass sourcing env file if these 4 OAUTH values are provided
+  if [[ \
+      -n "${OKTA_URL}" && \
+      -n "${OKTA_USERNAME}" && \
+      -n "${OKTA_PASSWORD}" \
+    ]]; then
+      echo_info "Okta values are provided by environment variables. Not sourcing ${env_file} env file."
       return 0
     fi
 
@@ -64,6 +95,8 @@ start_osmt_docker_stack() {
     echo_err "Starting OSMT ${stack_name} Docker stack failed. Exiting..."
     return 1
   fi
+
+  docker ps
 }
 
 stop_osmt_docker_stack() {
@@ -82,6 +115,7 @@ stop_osmt_docker_stack() {
 
 remove_osmt_docker_artifacts_for_stack() {
   local stack_name="${1}"
+  local resource
 
   stop_osmt_docker_stack "${stack_name}"
 
@@ -95,7 +129,10 @@ remove_osmt_docker_artifacts_for_stack() {
   docker volume ls -q -f name="${stack_name}" | xargs docker volume rm -f {} &> /dev/null
 
   echo_info "Removing Docker networks for ${stack_name}..."
-  docker network ls -q -f name="${stack_name}" | xargs docker network rm -f {} &> /dev/null
+  resource="$(docker network ls | grep "${stack_name}" | awk '{print $1}')"
+  if [[ ! -z "${resource}" ]]; then
+    docker network rm -f "${resource}" &> /dev/null
+  fi
 }
 
 echo_info() {
@@ -111,7 +148,18 @@ echo_err() {
 }
 
 echo_debug() {
-  [[ "${DEBUG}" -ne 0 ]] && echo -e "DEBUG: $*"
+  if [[ 0 -ne "${DEBUG}" ]]; then
+    echo -e "DEBUG: $*"
+  fi
+}
+
+echo_debug_env() {
+  echo
+  echo_debug "################################################################################################################################"
+  echo_debug "Current shell environment variables:"
+  echo_debug "$(env | sort)"
+  echo_debug "################################################################################################################################"
+  echo
 }
 
 _validate_env_file() {
@@ -297,8 +345,7 @@ _init_osmt_env_file() {
   echo
   echo_info "Initializing ${env_name} env file..."
   if [[ -f "${env_file}" ]]; then
-    echo_err "Env file ${env_file} already exists.${NL}Please remove if you want to retry. Make a note of any OAUTH2 values before deleting the file."
-    return 1
+    echo_warn "Env file ${env_file} already exists.${NL}Please remove if you want to recreate it. Make a note of any OAUTH2 values before deleting the file."
   else
     cp "${env_file}.example" "${env_file}"
     echo_info "Created ${env_file}.${NL}This file is ignored by git, and will not be added to git commits. Replace the 'xxxxxx' values in ${NL}${env_file} with your OAUTH2/OIDC values, shown below.${NL}Follow guidance in the 'OAuth2 and Okta Configuration' section of the project README.md."

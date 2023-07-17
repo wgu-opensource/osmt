@@ -84,7 +84,11 @@ import {PublishCollectionComponent} from "./collection/detail/publish-collection
 import {BlockingLoaderComponent} from "./core/blocking-loader.component"
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component"
 import {BatchImportComponent} from "./richskill/import/batch-import.component"
-import {FieldMappingSelectComponent, FieldMappingTableComponent, BatchImportDestinationSelectComponent} from "./richskill/import/field-mapping-table.component"
+import {
+  FieldMappingSelectComponent,
+  FieldMappingTableComponent,
+  BatchImportDestinationSelectComponent
+} from "./richskill/import/field-mapping-table.component"
 import {
   ImportPreviewTableComponent,
   NamedReferenceComponent

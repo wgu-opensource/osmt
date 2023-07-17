@@ -27,7 +27,7 @@ import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
 import {ConvertToCollectionComponent} from "./my-workspace/convert-to-collection/convert-to-collection.component"
 import {
   BatchImportCollectionComponent
-} from "./collection/create-collection/batch-import-collection/batch-import-collection.component";
+} from "./collection/create-collection/batch-import-collection/batch-import-collection.component"
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },

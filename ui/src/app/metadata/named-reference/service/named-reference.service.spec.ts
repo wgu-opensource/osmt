@@ -168,7 +168,7 @@ describe("NamedReferenceService", () => {
 
   it("deleteNamedReferenceWithResult() should work", fakeAsync(() => {
     const namedReferenceId = 2
-    const result$ = testService.deleteNamedReferenceWithResult(namedReferenceId)
+    const result$ = testService.deleteWithResult(namedReferenceId)
     tick(ASYNC_WAIT_PERIOD)
     let httpTestingController = TestBed.inject(HttpTestingController)
 

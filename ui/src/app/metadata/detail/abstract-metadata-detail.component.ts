@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild} from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild} from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -157,7 +157,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
   }
 
   getMetadataName(): string {
-    return "Fine Arts";
+    return( this.metadata as ApiNamedReference)?.name ?? ""
   }
 
   getMetadataType(): string {

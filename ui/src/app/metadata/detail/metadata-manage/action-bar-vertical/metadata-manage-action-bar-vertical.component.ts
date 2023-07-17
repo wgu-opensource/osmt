@@ -72,7 +72,9 @@ export class ManageMetadataActionBarVerticalComponent implements OnInit {
     if (confirm("Confirm that you want to delete the Named Reference with name " + this.metadataName)) {
       this.metadataService.deleteWithResult(this.id).subscribe(data => {
         if (data && data.success) {
-          this.toastService.showToast("Successfully Deleted", "" + this.metadataName)
+          this.router.navigate(["/metadata"]).then(
+            () => this.toastService.showToast("Successfully Deleted", "" + this.metadataName)
+          )
         } else if (data && !data.success) {
           this.toastService.showToast("Warning", data.message ?? "You cannot delete this one")
         }

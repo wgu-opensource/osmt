@@ -85,7 +85,7 @@ export abstract class MetadataFormComponent implements OnInit {
       return MetadataType.JobCode;
     }
     else {
-      return "";
+      return this.metadataType ?? "";
     }
   }
 

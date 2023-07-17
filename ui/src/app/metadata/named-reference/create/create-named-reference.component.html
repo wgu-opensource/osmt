@@ -34,16 +34,27 @@
           </div>
 
           <div class="t-margin-medium t-margin-bottom">
-            <app-formfield-textarea
+            <app-formfield-text
               [control]="metadataForm.controls.framework"
-              required="true"
               name="metadataValue"
-              label="Metadata value"
+              label="Metadata Framework"
               placeholder="Disseminate items"
               [includePlaceholder]="!this.id"
-              helpMessage='Provide metadata information'
+              helpMessage="Provide framework information"
               [errorMessage]="metadataErrorMessage"
-            ></app-formfield-textarea>
+            ></app-formfield-text>
+          </div>
+
+          <div class="t-margin-medium t-margin-bottom">
+            <app-formfield-text
+              [control]="metadataForm.controls.uri"
+              name="metadataValue"
+              label="Metadata URI"
+              placeholder="Disseminate items"
+              [includePlaceholder]="!this.id"
+              helpMessage="Provide metadata information"
+              [errorMessage]="metadataErrorMessage"
+            ></app-formfield-text>
           </div>
         </div>
       </div>

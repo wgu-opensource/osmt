@@ -35,7 +35,7 @@ export class NamedReferenceService extends AbstractDataService {
     );
   }
 
-  paginatedNamedReferences(
+  paginated(
     size = 50,
     from = 0,
     sort: ApiSortOrder | undefined,
@@ -57,7 +57,7 @@ export class NamedReferenceService extends AbstractDataService {
       }))
   }
 
-  getNamedReferenceById(id: string): Observable<ApiNamedReference> {
+  getById(id: number): Observable<ApiNamedReference> {
     const errorMsg = `Could not find NamedReference with id [${id}]`
     return this.get<ApiNamedReference>({
       path: `${this.serviceUrl}/${id}`
@@ -66,17 +66,19 @@ export class NamedReferenceService extends AbstractDataService {
       .pipe(map(({body}) => new ApiNamedReference(this.safeUnwrapBody(body, errorMsg))))
   }
 
-  createNamedReference(newObject: ApiNamedReferenceUpdate): Observable<ApiNamedReference> {
+  create(newObject: ApiNamedReferenceUpdate): Observable<ApiNamedReference> {
     const errorMsg = `Error creating NamedReference`
-    return this.post<NamedReferenceInterface[]>({
+    return this.post<NamedReferenceInterface>({
       path: this.serviceUrl,
-      body: [newObject]
+      body: newObject
     })
       .pipe(share())
-      .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiNamedReference(s))[0]))
+      .pipe(map(({body}) =>
+        new ApiNamedReference(this.safeUnwrapBody<ApiNamedReference>(body, errorMsg)))
+      )
   }
 
-  updateNamedReference(id: number, updateObject: ApiNamedReferenceUpdate): Observable<ApiNamedReference> {
+  update(id: number, updateObject: ApiNamedReferenceUpdate): Observable<ApiNamedReference> {
     const errorMsg = `Could not find NamedReference with id: [${id}]`
     return this.post<NamedReferenceInterface>({
       path: `${this.serviceUrl}/${id}/update`,
@@ -87,10 +89,10 @@ export class NamedReferenceService extends AbstractDataService {
   }
 
   deleteNamedReferenceWithResult(id: number): Observable<ApiBatchResult> {
-    return this.pollForTaskResult<ApiBatchResult>(this.deleteNamedReference(id))
+    return this.pollForTaskResult<ApiBatchResult>(this.delete(id))
   }
 
-  deleteNamedReference(id: number): Observable<ApiTaskResult> {
+  delete(id: number): Observable<ApiTaskResult> {
     return this.httpClient.delete<ITaskResult>(this.buildUrl("api/metadata/keywords/" + id + "/remove"), {
       headers: this.wrapHeaders(new HttpHeaders({
           Accept: "application/json"

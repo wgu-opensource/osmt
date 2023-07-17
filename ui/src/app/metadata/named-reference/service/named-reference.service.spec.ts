@@ -58,7 +58,7 @@ describe("NamedReferenceService", () => {
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.paginatedNamedReferences(testData.data.length, 0, ApiSortOrder.KeywordNameAsc,MetadataType.Category,  undefined)
+    const result$ = testService.paginated(testData.data.length, 0, ApiSortOrder.KeywordNameAsc,MetadataType.Category,  undefined)
 
     // Assert
     result$
@@ -86,7 +86,7 @@ describe("NamedReferenceService", () => {
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.getNamedReferenceById(id)
+    const result$ = testService.getById(id)
 
     // Assert
     result$
@@ -119,7 +119,7 @@ describe("NamedReferenceService", () => {
     let httpTestingController = TestBed.inject(HttpTestingController)
 
     // Act
-    const result$ = testService.createNamedReference(input)
+    const result$ = testService.create(input)
 
     // Assert
     result$
@@ -151,7 +151,7 @@ describe("NamedReferenceService", () => {
     let httpTestingController = TestBed.inject(HttpTestingController)
 
     // Act
-    const result$ = testService.updateNamedReference(id, input)
+    const result$ = testService.update(id, input)
 
     // Assert
     result$

@@ -35,7 +35,7 @@ export class JobCodeService extends AbstractDataService {
     );
   }
 
-  paginatedJobCodes(
+  paginated(
     size = 50,
     from = 0,
     sort: ApiSortOrder | undefined,
@@ -56,7 +56,7 @@ export class JobCodeService extends AbstractDataService {
       }))
   }
 
-  getJobCodeById(id: string): Observable<ApiJobCode> {
+  getById(id: number): Observable<ApiJobCode> {
     const errorMsg = `Could not find JobCode with id [${id}]`
     return this.get<ApiJobCode>({
       path: `${this.serviceUrl}/${id}`
@@ -65,7 +65,7 @@ export class JobCodeService extends AbstractDataService {
       .pipe(map(({body}) => new ApiJobCode(this.safeUnwrapBody(body, errorMsg))))
   }
 
-  createJobCode(newObject: IJobCode): Observable<ApiJobCode> {
+  create(newObject: IJobCode): Observable<ApiJobCode> {
     const errorMsg = `Error creating JobCode`
     return this.post<ApiJobCode[]>({
       path: this.serviceUrl,
@@ -75,7 +75,7 @@ export class JobCodeService extends AbstractDataService {
       .pipe(map(({body}) => this.safeUnwrapBody(body, errorMsg).map(s => new ApiJobCode(s))[0]))
   }
 
-  updateJobCode(id: string, updateObject: IJobCodeUpdate): Observable<ApiJobCode> {
+  update(id: number, updateObject: IJobCodeUpdate): Observable<ApiJobCode> {
     const errorMsg = `Could not find JobCode with id: [${id}]`
     return this.post<IJobCode>({
       path: `${this.serviceUrl}/${id}/update`,
@@ -86,10 +86,10 @@ export class JobCodeService extends AbstractDataService {
   }
 
   deleteJobCodeWithResult(id: number): Observable<ApiBatchResult> {
-    return this.pollForTaskResult<ApiBatchResult>(this.deleteJobCode(id))
+    return this.pollForTaskResult<ApiBatchResult>(this.delete(id))
   }
 
-  deleteJobCode(id: number): Observable<ApiTaskResult> {
+  delete(id: number): Observable<ApiTaskResult> {
     return this.httpClient.delete<ITaskResult>(this.buildUrl("api/metadata/jobcodes/" + id + "/remove"), {
       headers: this.wrapHeaders(new HttpHeaders({
           Accept: "application/json"

@@ -111,7 +111,6 @@ import { JobCodeTableComponent } from "./metadata/job-code/job-code-table/job-co
 import { NamedReferenceListRowComponent } from "./metadata/named-reference/named-reference-list-row/named-reference-list-row.component"
 import { NamedReferenceTableComponent } from "./metadata/named-reference/named-reference-table/named-reference-table.component"
 import { MetadataSelectorComponent } from "./metadata/detail/metadata-selector/metadata-selector.component";
-import { MetadataFormComponent } from "./metadata/form/metadata-form.component";
 import { MetadataManageComponent } from "./metadata/detail/metadata-manage/metadata-manage.component";
 import { MetadataPublicComponent } from "./metadata/detail/metadata-public/metadata-public.component";
 import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
@@ -119,7 +118,8 @@ import { InlineErrorComponent } from "./richskill/import/inline-error/inline-err
 import { JobCodeParentsPipe } from "./pipes"
 import { MetadataCardComponent } from "./metadata/detail/metadata-card/metadata-card.component"
 import { ManageMetadataActionBarVerticalComponent } from "./metadata/detail/metadata-manage/action-bar-vertical/metadata-manage-action-bar-vertical.component"
-import { PublicMetadataActionBarVerticalComponent } from "./metadata/detail/metadata-public/action-bar-vertical/metadata-public-action-bar-vertical.component"
+import { PublicMetadataActionBarVerticalComponent } from "./metadata/detail/metadata-public/action-bar-vertical/metadata-public-action-bar-vertical.component";
+import { CreateNamedReferenceComponent } from './metadata/named-reference/create/create-named-reference.component'
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -239,14 +239,14 @@ export function initializeApp(
     NamedReferenceTableComponent,
     MetadataSelectorComponent,
     MetadataCardComponent,
-    MetadataFormComponent,
     MetadataManageComponent,
     MetadataPublicComponent,
     ManageMetadataActionBarVerticalComponent,
     PublicMetadataActionBarVerticalComponent,
     InlineHeadingComponent,
     JobCodeParentsPipe,
-    InlineHeadingComponent
+    InlineHeadingComponent,
+    CreateNamedReferenceComponent
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

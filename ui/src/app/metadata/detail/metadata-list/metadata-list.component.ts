@@ -59,11 +59,11 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
   loadNextPage(): void {
     this.selectedData = []
     if (this.isJobCodeDataSelected) {
-      this.resultsLoaded = this.jobCodeService.paginatedJobCodes(this.size, this.from, this.columnSort, this.matchingQuery)
+      this.resultsLoaded = this.jobCodeService.paginated(this.size, this.from, this.columnSort, this.matchingQuery)
       this.resultsLoaded.subscribe(jobCodes => this.results = jobCodes)
     } else {
       const getEnumKey = Object.keys(MetadataType)[Object.values(MetadataType).indexOf(this.selectedMetadataType)];
-      this.resultsLoaded = this.namedReferenceService.paginatedNamedReferences(this.size, this.from, this.columnSort, getEnumKey, this.matchingQuery)
+      this.resultsLoaded = this.namedReferenceService.paginated(this.size, this.from, this.columnSort, getEnumKey, this.matchingQuery)
       this.resultsLoaded.subscribe(namedReferences => this.results = namedReferences)
     }
   }

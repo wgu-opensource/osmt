@@ -170,7 +170,7 @@ describe("JobCodeService", () => {
 
   it("deleteJobCodeWithResult() should works", fakeAsync(() => {
     const jobCodeId = 2
-    const result$ = testService.deleteJobCodeWithResult(jobCodeId)
+    const result$ = testService.deleteWithResult(jobCodeId)
     tick(ASYNC_WAIT_PERIOD)
     // Assert
     result$.subscribe((data: ApiBatchResult) => {

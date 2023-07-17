@@ -85,7 +85,7 @@ export class JobCodeService extends AbstractDataService {
       .pipe(map(({body}) => new ApiJobCode(this.safeUnwrapBody(body, errorMsg))))
   }
 
-  deleteJobCodeWithResult(id: number): Observable<ApiBatchResult> {
+  deleteWithResult(id: number): Observable<ApiBatchResult> {
     return this.pollForTaskResult<ApiBatchResult>(this.delete(id))
   }
 

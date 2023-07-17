@@ -88,12 +88,12 @@ export class NamedReferenceService extends AbstractDataService {
       .pipe(map(({body}) => new ApiNamedReference(this.safeUnwrapBody(body, errorMsg))))
   }
 
-  deleteNamedReferenceWithResult(id: number): Observable<ApiBatchResult> {
+  deleteWithResult(id: number): Observable<ApiBatchResult> {
     return this.pollForTaskResult<ApiBatchResult>(this.delete(id))
   }
 
   delete(id: number): Observable<ApiTaskResult> {
-    return this.httpClient.delete<ITaskResult>(this.buildUrl("api/metadata/keywords/" + id + "/remove"), {
+    return this.httpClient.delete<ITaskResult>(this.buildUrl("api/v3/metadata/keywords/" + id + "/remove"), {
       headers: this.wrapHeaders(new HttpHeaders({
           Accept: "application/json"
         }

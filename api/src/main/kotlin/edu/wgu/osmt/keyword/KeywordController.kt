@@ -8,7 +8,7 @@ import edu.wgu.osmt.api.model.SortOrder
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.richskill.RichSkillEsRepo
-import edu.wgu.osmt.task.RemoveItemTask
+import edu.wgu.osmt.task.RemoveKeywordTask
 import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskResult
@@ -126,7 +126,7 @@ class KeywordController @Autowired constructor(
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
 
-        val task = RemoveItemTask(identifier = id.toString())
+        val task = RemoveKeywordTask(keywordId = id)
         taskMessageService.enqueueJob(TaskMessageService.removeKeyword, task)
         return Task.processingResponse(task)
     }

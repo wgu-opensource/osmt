@@ -60,7 +60,7 @@ export abstract class AbstractDataService extends AbstractService
   ): Observable<PaginatedSkills> {
     const errorMsg = `Could not find skills for metadata [${entityId}]`;
 
-    return this.get<ApiSkillSummary[]>({
+    return this.post<ApiSkillSummary[]>({
       path: `${this.serviceUrl}/${entityId}/skills`,
       headers: new HttpHeaders({
         Accept: "application/json"

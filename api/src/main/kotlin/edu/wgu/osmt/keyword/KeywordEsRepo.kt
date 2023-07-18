@@ -22,6 +22,8 @@ interface CustomKeywordRepository {
 
     fun searchKeywordsWithPageable(query: String, type: KeywordTypeEnum, pageable: OffsetPageable): SearchHits<Keyword>
 
+    fun findAllByKeywordWithPageable(query: String, type: KeywordTypeEnum, pageable: OffsetPageable): SearchHits<Keyword>
+
     fun deleteIndex() {
         elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_KEYWORD_DOC)).delete()
     }
@@ -68,6 +70,24 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
     }
 
     override fun searchKeywordsWithPageable(query: String, type: KeywordTypeEnum, pageable: OffsetPageable): SearchHits<Keyword> {
+        val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
+        val bq = QueryBuilders.boolQuery()
+
+        bq.should(QueryBuilders.matchBoolPrefixQuery(Keyword::value.name, query))
+        if(query.isEmpty()){
+            bq.should(QueryBuilders.matchAllQuery())
+        } else {
+            bq.minimumShouldMatch(1)
+        }
+        nsq.withQuery(bq)
+        nsq.withFilter(
+            BoolQueryBuilder().must(
+                QueryBuilders.termQuery(Keyword::type.name, type.name))
+        )
+        return elasticSearchTemplate.search(nsq.build(), Keyword::class.java)
+    }
+
+    override fun findAllByKeywordWithPageable(query: String, type: KeywordTypeEnum, pageable: OffsetPageable): SearchHits<Keyword> {
         val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
         val bq = QueryBuilders.boolQuery()
 

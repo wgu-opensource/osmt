@@ -43,6 +43,7 @@ object RoutePaths {
     const val KEYWORD_DETAIL = "$KEYWORD_PATH/{id}"
     const val KEYWORD_UPDATE = "$KEYWORD_DETAIL/update"
     const val KEYWORD_REMOVE = "$KEYWORD_DETAIL/remove"
+    const val KEYWORD_SKILLS = "${KEYWORD_DETAIL}/skills"
 
     //collections
     private const val COLLECTIONS_PATH = "/collections"

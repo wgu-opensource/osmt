@@ -237,7 +237,7 @@ A command line utility to simplify onboarding with OSMT development instances. T
 Usage:
   osmt_cli.sh [accepts a single option]
 
-  -i   Initialize environment files for Development configurations.
+  -i   Initialize environment files for Development and API Test configurations.
   -v   Validate local environment and dependencies for development.
   -d   Start the backend Development Docker stack (MySQL, ElasticSearch, Redis). docker-compose stack will
        be detached, with containers named "osmt_dev". You can review status with 'docker ps'.
@@ -251,7 +251,7 @@ Usage:
   -r   Start the local Spring app to reindex ElasticSearch.
   -a   Start the local API tests for OSMT. This requires a valid OSMT jar file (from a 'mvn package')
   -m   Import default BLS and O*NET metadata into local Development instance.
-  -c   Surgically clean up OSMT-related Docker images and data volumes. This step will delete data from Development configurations. It does not remove the mysql/redis/elasticsearch images, as
+  -c   Surgically clean up OSMT-related Docker images and data volumes. This step will delete data from Development and API Test configurations. It does not remove the mysql/redis/elasticsearch images, as
        those may be available locally for other purposes.
   -h   Show this help message.
 

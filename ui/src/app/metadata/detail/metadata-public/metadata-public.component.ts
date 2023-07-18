@@ -1,23 +1,23 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core"
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { AbstractDataService } from "src/app/data/abstract-data.service";
 import { RichSkillService } from "src/app/richskill/service/rich-skill.service";
 import { ToastService } from "src/app/toast/toast.service";
 import { AbstractMetadataDetailComponent } from "../abstract-metadata-detail.component";
+import { NamedReferenceService } from "../../named-reference/service/named-reference.service"
 
 
 @Component({
   selector: "app-metadata-public",
   templateUrl: "./metadata-public.component.html"
 })
-export class MetadataPublicComponent extends AbstractMetadataDetailComponent {
+export class MetadataPublicComponent extends AbstractMetadataDetailComponent implements OnInit {
 
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
-    protected metadataService: AbstractDataService,
+    protected metadataService: NamedReferenceService,
     protected skillService: RichSkillService,
     protected titleService: Title,
     protected toastService: ToastService

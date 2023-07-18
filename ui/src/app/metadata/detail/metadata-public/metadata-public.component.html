@@ -17,7 +17,7 @@
           [metadataPublicUrl]="getId()"
           (reloadMetadata)="loadMetadata()"
         ></app-public-metadata-action-bar-vertical>
-  
+
         <nav class="m-quickLinks" aria-labelledby="save-quicklinks">
           <h3 class="t-visuallyHidden" id="save-quicklinks">Quick Links</h3>
           <a (click)="focusAndScrollIntoView(detailCard, 'h2')">Back to top</a>
@@ -60,7 +60,7 @@
       <div class="t-margin-medium t-margin-bottom">
         <app-skill-table
           *ngIf="showSkillsTable"
-          [items]="skillTableControl.skills"
+          [items]="skills"
           [showRowActions]="false"
           [currentSort]="skillTableControl.sort"
           [mobileSortOptions]="getMobileSkillSortOptions()"

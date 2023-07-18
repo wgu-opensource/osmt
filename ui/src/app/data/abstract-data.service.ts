@@ -57,6 +57,7 @@ export abstract class AbstractDataService extends AbstractService
     from: number,
     statusFilters: Set<PublishStatus>,
     sort?: ApiSortOrder,
+    query?: string,
   ): Observable<PaginatedSkills> {
     const errorMsg = `Could not find skills for metadata [${entityId}]`;
 
@@ -66,6 +67,7 @@ export abstract class AbstractDataService extends AbstractService
         Accept: "application/json"
       }),
       params: this.buildTableParams(size, from, statusFilters, sort),
+      body: new ApiSearch({query})
     })
       .pipe(share())
       .pipe(map(({body, headers}) =>

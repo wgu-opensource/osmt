@@ -18,6 +18,7 @@ import { ApiJobCode } from "../job-code/Jobcode";
 import { ApiNamedReference } from "../named-reference/NamedReference";
 import { MetadataType } from "../rsd-metadata.enum";
 import { QuickLinksHelper } from "../../core/quick-links-helper";
+import { ApiSkillSummary } from "../../richskill/ApiSkillSummary"
 
 
 @Component({
@@ -33,6 +34,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
   searchForm = new FormGroup({
     search: new FormControl("")
   })
+  skills: ApiSkillSummary[] = []
 
   readonly searchIcon = SvgHelper.path(SvgIcon.SEARCH)
 
@@ -63,7 +65,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
   }
 
   get showSkillsEmpty(): boolean {
-    return this.skillTableControl.emptyResults;
+    return !this.showSkillsTable;
   }
 
   get showSkillsFilters(): boolean {
@@ -75,7 +77,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
   }
 
   get showSkillsTable(): boolean {
-    return !this.skillTableControl.emptyResults;
+    return this.skills.length > 0;
   }
 
   // get skillsCountLabel(): string {
@@ -131,7 +133,9 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
 
   protected loadSkills(): void {
     if (this.metadata) {
-      this.metadataService.getRelatedSkills(this.metadata?.id ?? 0, 0, 50, new Set([PublishStatus.Draft, PublishStatus.Published]), ApiSortOrder.NameAsc)
+      this.metadataService.getRelatedSkills(
+        this.metadata?.id ?? 0, 50, 0, new Set([PublishStatus.Draft, PublishStatus.Published]), ApiSortOrder.NameAsc
+      ).subscribe(skills => this.skills = skills.skills)
     } else {
       this.clearSkills();
     }

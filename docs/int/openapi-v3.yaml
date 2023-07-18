@@ -367,202 +367,249 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-    /api/v3/metadata/jobcodes/{id}:
-      parameters:
-        - $ref: '#/components/parameters/IdPath'
-      get:
-        summary: Retrieve a Job Code
-        description: Retrieve all the information about a Job Code
-        tags:
-          - Metadata
-        responses:
-          '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/JobCode'
-
-    /api/v3/metadata/jobcodes/{id}/remove:
-      parameters:
-        - $ref: '#/components/parameters/IdPath'
-      delete:
-        summary: Remove a Job Code
-        description: Delete a Job Code from OSMT
-        tags:
-          - Metadata
-        responses:
-          '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/TaskResult'
-
-    /api/v3/metadata/jobcodes/{id}/update:
-      parameters:
-        - $ref: '#/components/parameters/IdPath'
-      post:
-        summary: Update a Job Code
-        description: Update an existing Job Code
-        tags:
-          - Metadata
-        requestBody:
-          required: true
+  /api/v3/metadata/jobcodes/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
+    get:
+      summary: Retrieve a Job Code
+      description: Retrieve all the information about a Job Code
+      tags:
+        - Metadata
+      responses:
+        '200':
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JobCodeUpdate'
-        responses:
-          '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/JobCode'
-          '400':
-            $ref: '#/components/responses/BadRequest'
+                $ref: '#/components/schemas/JobCode'
 
-    /api/v3/metadata/keywords:
-      get:
-        summary: "Get all Keywords"
-        description: Returns all Keywords with pagination, also supports search by query.
-        tags:
-          - Metadata
-        operationId: "allPaginated"
-        parameters:
-          - name: "type"
-            in: "query"
-            required: false
-            schema:
-              type: "string"
-              default: "Category"
-          - name: "query"
-            in: "query"
-            required: false
-            schema:
-              type: "string"
-              default: ""
-          - name: "size"
-            in: "query"
-            required: false
-            schema:
-              type: "integer"
-              format: "int32"
-              default: "50"
-          - name: "from"
-            in: "query"
-            required: false
-            schema:
-              type: "integer"
-              format: "int32"
-              default: "0"
-          - name: "sort"
-            in: "query"
-            required: false
-            schema:
-              type: "string"
-              default: "name.asc"
-        responses:
-          "200":
-            description: "OK"
-            content:
-              application/json:
-                schema:
-                  type: "array"
-                  items:
-                    $ref: "#/components/schemas/ApiKeyword"
-      post:
-        summary: "Define a Keyword"
-        description: Create a new Keyword in OSMT
-        tags:
-          - Metadata
-        operationId: "createKeyword"
-        requestBody:
+  /api/v3/metadata/jobcodes/{id}/remove:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
+    delete:
+      summary: Remove a Job Code
+      description: Delete a Job Code from OSMT
+      tags:
+        - Metadata
+      responses:
+        '200':
+          description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ApiKeywordUpdate"
-          required: true
-        responses:
-          "200":
-            description: "OK"
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/ApiKeyword"
+                $ref: '#/components/schemas/TaskResult'
 
-    /api/v3/metadata/keywords/{id}:
-      get:
-        summary: "Retrieve a Keyword"
-        description: Retrieve all the information about a Keyword
-        tags:
-          - Metadata
-        operationId: "keywordById"
-        parameters:
-          - name: "id"
-            in: "path"
-            required: true
+  /api/v3/metadata/jobcodes/{id}/update:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
+    post:
+      summary: Update a Job Code
+      description: Update an existing Job Code
+      tags:
+        - Metadata
+      requestBody:
+        required: true
+        content:
+          application/json:
             schema:
-              type: "integer"
-              format: "int64"
-        responses:
-          "200":
-            description: "OK"
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/ApiKeyword"
-
-    /api/v3/metadata/keywords/{id}/remove:
-      delete:
-        summary: "Remove a Keyword"
-        description: Delete a Keyword from OSMT
-        tags:
-          - Metadata
-        operationId: "deleteKeyword"
-        parameters:
-          - name: "id"
-            in: "path"
-            required: true
-            schema:
-              type: "integer"
-              format: "int64"
-        responses:
-          "200":
-            description: "OK"
-            content:
-              '*/*':
-                schema:
-                  $ref: "#/components/schemas/TaskResult"
-
-    /api/v3/metadata/keywords/{id}/update:
-      post:
-        summary: "Update a Keyword"
-        description: Update an existing Keyword
-        tags:
-          - Metadata
-        operationId: "updateKeyword"
-        parameters:
-          - name: "id"
-            in: "path"
-            required: true
-            schema:
-              type: "integer"
-              format: "int32"
-        requestBody:
+              $ref: '#/components/schemas/JobCodeUpdate'
+      responses:
+        '200':
+          description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ApiKeywordUpdate"
-          required: true
-        responses:
-          "200":
-            description: "OK"
-            content:
-              application/json:
-                schema:
+                $ref: '#/components/schemas/JobCode'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/v3/metadata/keywords:
+    get:
+      summary: "Get all Keywords"
+      description: Returns all Keywords with pagination, also supports search by query.
+      tags:
+        - Metadata
+      operationId: "allPaginated"
+      parameters:
+        - name: "type"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+            default: "Category"
+        - name: "query"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+            default: ""
+        - name: "size"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: "50"
+        - name: "from"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: "0"
+        - name: "sort"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+            default: "name.asc"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
                   $ref: "#/components/schemas/ApiKeyword"
+    post:
+      summary: "Define a Keyword"
+      description: Create a new Keyword in OSMT
+      tags:
+        - Metadata
+      operationId: "createKeyword"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiKeywordUpdate"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKeyword"
+
+  /api/v3/metadata/keywords/{id}:
+    get:
+      summary: "Retrieve a Keyword"
+      description: Retrieve all the information about a Keyword
+      tags:
+        - Metadata
+      operationId: "keywordById"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKeyword"
+
+  /api/v3/metadata/keywords/{id}/skills:
+    post:
+      summary: "Get all related skills"
+      description: Returns all related skills with pagination, also supports search by query.
+      tags:
+        - Metadata
+      operationId: "relatedSkills"
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+        - name: "size"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: "50"
+        - name: "from"
+          in: "query"
+          required: false
+          schema:
+            type: "integer"
+            format: "int32"
+            default: "0"
+        - name: "sort"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+            default: "name.asc"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Search'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/SkillSummary"
+
+  /api/v3/metadata/keywords/{id}/remove:
+    delete:
+      summary: "Remove a Keyword"
+      description: Delete a Keyword from OSMT
+      tags:
+        - Metadata
+      operationId: "deleteKeyword"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TaskResult"
+
+  /api/v3/metadata/keywords/{id}/update:
+    post:
+      summary: "Update a Keyword"
+      description: Update an existing Keyword
+      tags:
+        - Metadata
+      operationId: "updateKeyword"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiKeywordUpdate"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKeyword"
 
   /api/v3/results/batch/{uuid}:
     parameters:

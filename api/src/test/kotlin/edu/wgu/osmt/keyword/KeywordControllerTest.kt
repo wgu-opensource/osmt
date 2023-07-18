@@ -7,11 +7,15 @@ import edu.wgu.osmt.SpringTest
 import edu.wgu.osmt.api.model.ApiKeyword
 import edu.wgu.osmt.api.model.ApiKeywordUpdate
 import edu.wgu.osmt.api.model.KeywordSortEnum
+import edu.wgu.osmt.api.model.SkillSortEnum
 import edu.wgu.osmt.collection.CollectionEsRepo
+import edu.wgu.osmt.db.ListFieldUpdate
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.mockdata.MockData
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillRepository
+import edu.wgu.osmt.richskill.RsdUpdateObject
 import io.mockk.spyk
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeAll
@@ -122,5 +126,44 @@ internal class KeywordControllerTest @Autowired constructor(
         Assertions.assertThat(result.body!!.name).isEqualTo("updated Name")
         Assertions.assertThat(result.body!!.framework).isEqualTo("updated framework")
         Assertions.assertThat((result as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
+    }
+
+    @Test
+    fun `searchRelatedSkills() should retrieve an existing RSD`() {
+        // arrange
+        val category1 = keywordRepository.create(KeywordTypeEnum.Category, "category1")
+        val category2 = keywordRepository.create(KeywordTypeEnum.Category, "category2")
+
+        richSkillRepository.create(
+            user = "user1",
+            updateObject = RsdUpdateObject(
+                name = "skill-1",
+                statement = "Skill 1",
+                keywords = ListFieldUpdate(add = listOf(category1!!, category2!!)),
+            ),
+        )
+
+        richSkillRepository.create(
+            user = "user1",
+            updateObject = RsdUpdateObject(
+                name = "skill-2",
+                statement = "Skill 2",
+                keywords = ListFieldUpdate(add = listOf(category1!!)),
+            ),
+        )
+
+        // act
+        val result = kwController.searchCategorySkills(
+            uriComponentsBuilder = UriComponentsBuilder.newInstance(),
+            id = category2.id.value,
+            size = 10,
+            from = 0,
+            sort = SkillSortEnum.defaultSort.toString(),
+            status = arrayOf(PublishStatus.Published.toString()),
+        )
+
+        // assert
+        Assertions.assertThat(result).isNotNull
+        Assertions.assertThat(result.body?.size == 1)
     }
 }

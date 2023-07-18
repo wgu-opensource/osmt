@@ -210,7 +210,7 @@ _remove_osmt_docker_artifacts() {
 cleanup_osmt_docker_artifacts() {
   local prompt_msg; prompt_msg="$(cat <<-EOF
 ${INDENT}Do you want to clean up OSMT-related Docker images and volumes?
-${INDENT}This step will delete data from local OSMT and Development configurations.
+${INDENT}This step will delete data from Development and API Test configurations.
 
 ${INDENT}Please answer 'y' to proceed?
 EOF

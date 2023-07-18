@@ -134,7 +134,12 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
   protected loadSkills(): void {
     if (this.metadata) {
       this.metadataService.getRelatedSkills(
-        this.metadata?.id ?? 0, 50, 0, new Set([PublishStatus.Draft, PublishStatus.Published]), ApiSortOrder.NameAsc
+        this.metadata?.id ?? 0,
+        this.skillTableControl.size,
+        this.skillTableControl.from,
+        this.skillTableControl.statusFilters,
+        this.skillTableControl.sort,
+        this.skillTableControl.query
       ).subscribe(skills => this.skills = skills.skills)
     } else {
       this.clearSkills();

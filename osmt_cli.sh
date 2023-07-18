@@ -4,7 +4,6 @@
 
 set -u
 
-declare QUICKSTART_ENV_FILE
 declare DEV_ENV_FILE
 declare APITEST_ENV_FILE
 
@@ -23,7 +22,6 @@ declare -r OSMT_SECURITY_PROFILE="${OSMT_SECURITY_PROFILE:-}"
 
 
 init_osmt_env_files() {
-  _init_osmt_env_file "Quickstart" "${QUICKSTART_ENV_FILE}" || return 1
   _init_osmt_env_file "Development" "${DEV_ENV_FILE}" || return 1
   _init_osmt_env_file "API Tests" "${APITEST_ENV_FILE}" || return 1
 }
@@ -40,7 +38,6 @@ validate_osmt_dev_environment() {
 
   echo
   echo_info "Checking environment files used in local OSMT instances..."
-  _validate_env_file "${QUICKSTART_ENV_FILE}" || is_environment_valid+=1
   _validate_env_file "${DEV_ENV_FILE}" || is_environment_valid+=1
   _validate_env_file "${APITEST_ENV_FILE}" || is_environment_valid+=1
 
@@ -208,13 +205,12 @@ start_osmt_api_tests() {
 _remove_osmt_docker_artifacts() {
   remove_osmt_docker_artifacts_for_stack "osmt_dev"
   remove_osmt_docker_artifacts_for_stack "osmt_api_test"
-  remove_osmt_docker_artifacts_for_stack "osmt_quickstart"
 }
 
 cleanup_osmt_docker_artifacts() {
   local prompt_msg; prompt_msg="$(cat <<-EOF
 ${INDENT}Do you want to clean up OSMT-related Docker images and volumes?
-${INDENT}This step will delete data from local OSMT Quickstart and Development configurations.
+${INDENT}This step will delete data from local OSMT and Development configurations.
 
 ${INDENT}Please answer 'y' to proceed?
 EOF
@@ -241,7 +237,7 @@ A command line utility to simplify onboarding with OSMT development instances. T
 Usage:
   osmt_cli.sh [accepts a single option]
 
-  -i   Initialize environment files for Quickstart and Development configurations.
+  -i   Initialize environment files for Development configurations.
   -v   Validate local environment and dependencies for development.
   -d   Start the backend Development Docker stack (MySQL, ElasticSearch, Redis). docker-compose stack will
        be detached, with containers named "osmt_dev". You can review status with 'docker ps'.
@@ -255,8 +251,7 @@ Usage:
   -r   Start the local Spring app to reindex ElasticSearch.
   -a   Start the local API tests for OSMT. This requires a valid OSMT jar file (from a 'mvn package')
   -m   Import default BLS and O*NET metadata into local Development instance.
-  -c   Surgically clean up OSMT-related Docker images and data volumes. This step will delete data from local OSMT
-       Quickstart and Development configurations. It does not remove the mysql/redis/elasticsearch images, as
+  -c   Surgically clean up OSMT-related Docker images and data volumes. This step will delete data from Development configurations. It does not remove the mysql/redis/elasticsearch images, as
        those may be available locally for other purposes.
   -h   Show this help message.
 
@@ -269,7 +264,6 @@ EOF
 declare script_dir; script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 source "${script_dir}/bin/lib/common.sh" || exit 135
 
-QUICKSTART_ENV_FILE="${PROJECT_DIR}/osmt-quickstart.env"
 DEV_ENV_FILE="${PROJECT_DIR}/api/osmt-dev-stack.env"
 APITEST_ENV_FILE="${PROJECT_DIR}/test/osmt-apitest.env"
 

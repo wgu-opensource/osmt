@@ -45,4 +45,5 @@ osmt*.env
 /test/postman/osmt-auth.environment.json
 /test/postman/token.env
 /test/node_modules
+test/postman/node_modules/
 **/target/

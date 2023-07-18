@@ -80,9 +80,10 @@ describe("JobCodeService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const id = "12345"
+    const id = 12345
+    const code = "12345"
     const path = getBaseApi() + "/metadata/jobcodes/" + id
-    const testData: ApiJobCode = new ApiJobCode(createMockJobcode(42, "my jobcode name", id))
+    const testData: ApiJobCode = new ApiJobCode(createMockJobcode(42, "my jobcode name", code))
 
     // Act
     // noinspection LocalVariableNamingConventionJS
@@ -141,7 +142,7 @@ describe("JobCodeService", () => {
     AuthServiceData.isDown = false
     const testData = new ApiJobCode(createMockJobcode())
     const expected = testData
-    const id = expected.code
+    const id = expected.id ?? 0
     const path = getBaseApi() + "/metadata/jobcodes/" + id
     const input = new ApiJobCodeUpdate({
       code: expected.code,

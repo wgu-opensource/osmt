@@ -79,7 +79,7 @@ describe("NamedReferenceService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const id = "12345"
+    const id = 12345
     const path = getBaseApi() + "/metadata/keywords/" + id
     const testData: ApiNamedReference = new ApiNamedReference(createMockNamedReference2())
     let httpTestingController = TestBed.inject(HttpTestingController)
@@ -106,10 +106,9 @@ describe("NamedReferenceService", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const path = getBaseApi() + "/metadata/keywords"
-    const testData = [
-      new ApiNamedReference(createMockNamedReference2())
-    ]
-    const expected = testData[0]
+    const testData = new ApiNamedReference(createMockNamedReference2())
+
+    const expected = testData
     const input = new ApiNamedReferenceUpdate({
       name : expected.name,
       type : expected.type,
@@ -176,7 +175,7 @@ describe("NamedReferenceService", () => {
     result$.subscribe((data: ApiBatchResult) => {
       expect(RouterData.commands).toEqual([]) // No Errors
     })
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + `/api/metadata/keywords/${namedReferenceId}/remove`)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + `${getBaseApi()}/metadata/keywords/${namedReferenceId}/remove`)
     expect(req.request.method).toEqual("DELETE")
     expect(req.request.headers.get("Accept")).toEqual("application/json")
   }))

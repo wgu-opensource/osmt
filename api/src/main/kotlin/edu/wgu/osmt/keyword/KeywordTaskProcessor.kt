@@ -33,7 +33,7 @@ class KeywordTaskProcessor {
     fun removeKeyword(task: RemoveKeywordTask) {
         logger.info("Started processing to remove keyword task id: ${task.keywordId}")
 
-        val batchResult = keywordRepository.remove(task.keywordId.toLong())
+        val batchResult = keywordRepository.remove(task.keywordId)
 
         taskMessageService.publishResult(
             task.copy(result=batchResult, status= TaskStatus.Ready)

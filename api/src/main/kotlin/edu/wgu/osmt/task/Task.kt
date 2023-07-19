@@ -37,11 +37,9 @@ import java.util.*
     JsonSubTypes.Type(value = ExportSkillsToXlsxTask::class, name = "ExportSkillsToXlsxTask"),
     JsonSubTypes.Type(value = RemoveCollectionSkillsTask::class, name = "RemoveCollectionSkillsTask"),
     JsonSubTypes.Type(value = RemoveJobCodeTask::class, name = "RemoveJobCodeTask"),
-    JsonSubTypes.Type(value = RemoveCollectionSkillsTask::class, name = "RemoveCollectionSkillsTask"),
     JsonSubTypes.Type(value = ExportSkillsToCsvTaskV2::class, name = "ExportSkillsToCsvTaskV2"),
-    JsonSubTypes.Type(value = RemoveItemTask::class, name = "RemoveCollectionSkillsTask"),
-    JsonSubTypes.Type(value = RemoveJobCodeTask::class, name = "RemoveJobCodeTask"),
-    JsonSubTypes.Type(value = RemoveKeywordTask::class, name = "RemoveKeywordTask")
+    JsonSubTypes.Type(value = RemoveItemTask::class, name = "RemoveItemTask"),
+    JsonSubTypes.Type(value = RemoveJobCodeTask::class, name = "RemoveJobCodeTask")
 )
 
 interface Task {
@@ -251,17 +249,6 @@ data class RemoveJobCodeTask(
 ): Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
     override val apiResultPath = RoutePaths.TASK_DETAIL_BATCH
-}
-
-data class RemoveKeywordTask(
-    val keywordId: Long = 0,
-    override val uuid: String = UUID.randomUUID().toString(),
-    override val start: Date = Date(),
-    override val result: ApiBatchResult? = null,
-    override val status: TaskStatus = TaskStatus.Processing,
-): Task {
-    override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}"
 }
 
 enum class TaskStatus {

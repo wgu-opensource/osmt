@@ -16,6 +16,7 @@ import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.elasticsearch.PaginatedLinks
 import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
+import edu.wgu.osmt.security.OAuthHelper
 import edu.wgu.osmt.task.RemoveKeywordTask
 import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
@@ -49,6 +50,7 @@ class KeywordController @Autowired constructor(
     val richSkillEsRepo: RichSkillEsRepo,
     val taskMessageService: TaskMessageService,
     val appConfig: AppConfig,
+    val oAuthHelper: OAuthHelper,
 ) {
 
     @GetMapping(
@@ -120,7 +122,7 @@ class KeywordController @Autowired constructor(
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(keywordRepository.updateFromApi(
-                id,apiKeywordUpdate)
+                id,apiKeywordUpdate, oAuthHelper.readableUserName(user))
                 ?.let {
                     ApiKeyword(it.toModel(), it.skills.count())
                 }

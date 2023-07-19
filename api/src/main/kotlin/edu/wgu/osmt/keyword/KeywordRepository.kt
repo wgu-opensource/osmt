@@ -4,6 +4,9 @@ import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiKeywordUpdate
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.richskill.RichSkillKeywordRepository
+import edu.wgu.osmt.richskill.RichSkillKeywords
+import edu.wgu.osmt.richskill.RichSkillRepository
+import edu.wgu.osmt.richskill.RsdUpdateObject
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
@@ -17,8 +20,11 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 interface KeywordRepository {
+
     val table: KeywordTable
+    val richSkillKeywords: RichSkillKeywords
     val dao: KeywordDao.Companion
+    val richSkillRepository: RichSkillRepository
 
     fun findAll(): SizedIterable<KeywordDao>
     fun findById(id: Long): KeywordDao?
@@ -44,7 +50,7 @@ interface KeywordRepository {
         framework: String? = null
     ): KeywordDao?
 
-    fun updateFromApi(existingKeywordId: Long, apiKeywordUpdate: ApiKeywordUpdate): KeywordDao?
+    fun updateFromApi(existingKeywordId: Long, apiKeywordUpdate: ApiKeywordUpdate, username: String): KeywordDao?
 
     fun createFromApi(apiKeywordUpdate: ApiKeywordUpdate): KeywordDao?
 
@@ -58,11 +64,13 @@ interface KeywordRepository {
 class KeywordRepositoryImpl @Autowired constructor(
     val appConfig: AppConfig,
     val keywordEsRepo: KeywordEsRepo,
-    val richSkillKeywordRepository: RichSkillKeywordRepository
+    val richSkillKeywordRepository: RichSkillKeywordRepository,
+    override val richSkillRepository: RichSkillRepository
 ) : KeywordRepository {
 
     override val dao = KeywordDao.Companion
     override val table = KeywordTable
+    override val richSkillKeywords = RichSkillKeywords
 
     override fun findAll() = dao.all()
 
@@ -101,7 +109,7 @@ class KeywordRepositoryImpl @Autowired constructor(
         }.also { keywordEsRepo.save(it.toModel()) } else null
     }
 
-    override fun updateFromApi(existingKeywordId: Long, apiKeywordUpdate: ApiKeywordUpdate): KeywordDao? {
+    override fun updateFromApi(existingKeywordId: Long, apiKeywordUpdate: ApiKeywordUpdate, username: String): KeywordDao? {
         val found = dao.findById(existingKeywordId)
         if (found!=null) {
             transaction {
@@ -111,10 +119,21 @@ class KeywordRepositoryImpl @Autowired constructor(
                 found.framework = apiKeywordUpdate.framework
                 found.type = apiKeywordUpdate.type
                 keywordEsRepo.save(found.toModel())
-            }.also { return found }
-        } else {
-          return null
+
+                // update rich skill after values changes in keyword and reindex
+                richSkillKeywords.select { richSkillKeywords.keywordId eq found.id }.forEach { it ->
+                    val richSkillId = it[richSkillKeywords.richSkillId]
+                    // richSkillRepository.findById(richSkillId.value)?.keywords?.forEach { it2 -> println(it2.value) }
+                    richSkillRepository.update(
+                        RsdUpdateObject(
+                            id = richSkillId.value
+                        ),
+                        username
+                    )
+                }
+            }
         }
+        return found
     }
 
     override fun createFromApi(apiKeywordUpdate: ApiKeywordUpdate): KeywordDao? {

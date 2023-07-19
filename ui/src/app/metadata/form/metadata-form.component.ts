@@ -36,7 +36,6 @@ export abstract class MetadataFormComponent implements OnInit {
     if (state) {
       this.metadataType = Object.keys(MetadataType)[Object.values(MetadataType).indexOf(state.metadataType)];
     }
-    console.log(this.metadataType)
     this.metadataForm = this.getFormDefinitions()
     this.id = parseInt(this.route.snapshot.paramMap.get("id") ?? "-1");
   }

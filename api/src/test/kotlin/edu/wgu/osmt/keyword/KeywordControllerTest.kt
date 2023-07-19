@@ -153,7 +153,7 @@ internal class KeywordControllerTest @Autowired constructor(
         )
 
         // act
-        val result = kwController.searchCategorySkills(
+        val result = kwController.searchKeywordSkills(
             uriComponentsBuilder = UriComponentsBuilder.newInstance(),
             id = category2.id.value,
             size = 10,

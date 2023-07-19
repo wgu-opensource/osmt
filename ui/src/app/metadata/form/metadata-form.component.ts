@@ -2,9 +2,7 @@ import { Location } from "@angular/common"
 import { Component, OnInit } from "@angular/core"
 import { FormBuilder, FormGroup } from "@angular/forms"
 import { ActivatedRoute, Router } from "@angular/router";
-
 import { Observable } from "rxjs";
-
 import { ApiJobCode } from "../job-code/Jobcode";
 import { ApiNamedReference } from "../named-reference/NamedReference";
 import { MetadataType } from "../rsd-metadata.enum";

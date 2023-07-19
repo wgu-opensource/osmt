@@ -1,7 +1,7 @@
 package edu.wgu.osmt.keyword
 
 import com.github.sonus21.rqueue.annotation.RqueueListener
-import edu.wgu.osmt.task.RemoveKeywordTask
+import edu.wgu.osmt.task.RemoveItemTask
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskStatus
 import org.slf4j.Logger
@@ -30,10 +30,10 @@ class KeywordTaskProcessor {
         deadLetterQueue = TaskMessageService.deadLetters,
         concurrency = "1"
     )
-    fun removeKeyword(task: RemoveKeywordTask) {
-        logger.info("Started processing to remove keyword task id: ${task.keywordId}")
+    fun removeKeyword(task: RemoveItemTask) {
+        logger.info("Started processing to remove keyword task id: ${task.identifier}")
 
-        val batchResult = keywordRepository.remove(task.keywordId)
+        val batchResult = keywordRepository.remove(task.identifier.toLong())
 
         taskMessageService.publishResult(
             task.copy(result=batchResult, status= TaskStatus.Ready)

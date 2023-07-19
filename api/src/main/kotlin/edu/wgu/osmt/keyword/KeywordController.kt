@@ -2,7 +2,6 @@ package edu.wgu.osmt.keyword
 
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.RoutePaths
-import edu.wgu.osmt.api.GeneralApiException
 import edu.wgu.osmt.api.model.ApiFilteredSearch
 import edu.wgu.osmt.api.model.ApiKeyword
 import edu.wgu.osmt.api.model.ApiKeywordUpdate
@@ -17,7 +16,7 @@ import edu.wgu.osmt.elasticsearch.PaginatedLinks
 import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.task.RemoveKeywordTask
+import edu.wgu.osmt.task.RemoveItemTask
 import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskResult
@@ -136,7 +135,10 @@ class KeywordController @Autowired constructor(
         @AuthenticationPrincipal user: Jwt?
     ): HttpEntity<TaskResult> {
 
-        val task = RemoveKeywordTask(keywordId = id)
+        val task = RemoveItemTask(
+            identifier = id.toString(),
+            apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}"
+        )
         taskMessageService.enqueueJob(TaskMessageService.removeKeyword, task)
         return Task.processingResponse(task)
     }
@@ -154,7 +156,7 @@ class KeywordController @Autowired constructor(
     )
     @ResponseBody
     @PreAuthorize("isAuthenticated()")
-    fun searchCategorySkills (
+    fun searchKeywordSkills (
         uriComponentsBuilder: UriComponentsBuilder,
         @PathVariable id: Long,
         @RequestParam(required = false, defaultValue = PaginationDefaults.size.toString()) size: Int,

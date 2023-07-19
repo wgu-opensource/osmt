@@ -24,11 +24,9 @@ import { ActionByRoles, ButtonAction } from "./auth/auth-roles"
 import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
 import {ConvertToCollectionComponent} from "./my-workspace/convert-to-collection/convert-to-collection.component"
 import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
-import { DetailCardComponent } from "./detail-card/detail-card.component"
-import { MetadataFormComponent } from "./metadata/form/metadata-form.component"
 import { MetadataManageComponent } from "./metadata/detail/metadata-manage/metadata-manage.component"
 import { MetadataPublicComponent } from "./metadata/detail/metadata-public/metadata-public.component"
-import { CreateNamedReferenceComponent } from "./metadata/named-reference/create/create-named-reference.component"
+import { CreateNamedReferenceComponent } from "./metadata/named-reference/create-named-reference/create-named-reference.component"
 
 
 const routes: Routes = [

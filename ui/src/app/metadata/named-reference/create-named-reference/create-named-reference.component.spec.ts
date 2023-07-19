@@ -10,11 +10,14 @@ import { NamedReferenceService } from "../service/named-reference.service"
 import { AuthService } from "../../../auth/auth-service"
 import { AuthServiceStub, RouterStub } from "@test/resource/mock-stubs"
 import { getBaseApi } from "../../../api-versions"
+import { FormsModule, ReactiveFormsModule } from "@angular/forms"
+import { AbstractDataService } from "../../../data/abstract-data.service"
 
-describe('CreateComponent', () => {
+describe('CreateNamedReferenceComponent', () => {
   let component: CreateNamedReferenceComponent;
   let fixture: ComponentFixture<CreateNamedReferenceComponent>;
   let activatedRoute: ActivatedRouteStubSpec
+  let service: AbstractDataService
 
   beforeEach(() => {
     activatedRoute = new ActivatedRouteStubSpec()
@@ -26,7 +29,9 @@ describe('CreateComponent', () => {
       imports: [
         BrowserModule,
         RouterTestingModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        ReactiveFormsModule,
+        FormsModule
       ],
       providers: [
         NamedReferenceService,
@@ -42,9 +47,33 @@ describe('CreateComponent', () => {
     fixture = TestBed.createComponent(CreateNamedReferenceComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    service = TestBed.inject(NamedReferenceService)
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it("form definitions should be correct", () => {
+    const formDefinition = component.getFormDefinitions()
+    expect(formDefinition).toBeTruthy()
+    expect(formDefinition.get('name')).toBeTruthy()
+    expect(formDefinition.get('type')).toBeTruthy()
+    expect(formDefinition.get('url')).toBeTruthy()
+    expect(formDefinition.get('framework')).toBeTruthy()
+  })
+
+  it("submit should create", () => {
+    const spyService = spyOn(service, "create")
+    component.id = -1
+    component.onSubmit()
+    expect(spyService).toHaveBeenCalled()
+  })
+
+  it("submit should update", () => {
+    const spyService = spyOn(service, "update")
+    component.id = 1
+    component.onSubmit()
+    expect(spyService).toHaveBeenCalled()
+  })
 });

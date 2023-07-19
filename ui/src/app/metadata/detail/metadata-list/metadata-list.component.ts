@@ -213,6 +213,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
           this.loadNextPage()
         } else if (data && !data.success) {
           this.toastService.showToast("Warning", data.message ?? `You cannot delete this ${getEnumKey}`)
+
         }
       })
     }

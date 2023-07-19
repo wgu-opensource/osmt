@@ -112,7 +112,7 @@ class KeywordController @Autowired constructor(
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(keywordRepository.updateFromApi(
-                id, apiKeywordUpdate)
+                id.toLong(),apiKeywordUpdate)
                 ?.let {
                     ApiKeyword(it.toModel(), it.skills.count())
                 }

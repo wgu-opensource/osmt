@@ -310,20 +310,27 @@ class CollectionController @Autowired constructor(
     }
 
     @DeleteMapping(path = [
-        "${RoutePaths.API}/{apiVersion}${RoutePaths.COLLECTION_REMOVE}"
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_REMOVE}",
     ],
         produces = [MediaType.APPLICATION_JSON_VALUE])
     fun removeCollection(
-        @PathVariable(name = "apiVersion", required = false) apiVersion: String?,
         @PathVariable uuid: String
     ): HttpEntity<TaskResult> {
-        val task = if (RoutePaths.API_V3 == "/${apiVersion}") {
-            RemoveCollectionSkillsTask(collectionUuid = uuid, apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}")
-        } else if (RoutePaths.API_V2 == "/${apiVersion}" || RoutePaths.UNVERSIONED == apiVersion) {
-            RemoveCollectionSkillsTask(collectionUuid = uuid, apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}")
-        } else {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
+        val task = RemoveCollectionSkillsTask(collectionUuid = uuid, apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}")
+        taskMessageService.enqueueJob(TaskMessageService.removeCollectionSkills, task)
+
+        return Task.processingResponse(task)
+    }
+
+    @DeleteMapping(path = [
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_REMOVE}",
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_REMOVE}"
+    ],
+        produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun removeCollectionV2(
+        @PathVariable uuid: String
+    ): HttpEntity<TaskResult> {
+        val task = RemoveCollectionSkillsTask(collectionUuid = uuid, apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}")
         taskMessageService.enqueueJob(TaskMessageService.removeCollectionSkills, task)
 
         return Task.processingResponse(task)

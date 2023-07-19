@@ -136,7 +136,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
       }
     }
     else {
-      if (confirm("Confirm that you want to delete multiple Named References..")) {
+      if (confirm(`Do you confirm that you want to delete multiple ${this.selectedMetadataType}?`)) {
         this.toastService.showBlockingLoader()
         this.handleDeleteMultipleNamedReferences(this.selectedData as NamedReferenceInterface[], 0)
 
@@ -183,11 +183,11 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
   }
 
   private handleClickDeleteItem(metadata: IJobCode | NamedReferenceInterface | undefined): void {
+    console.log("handleClickDeleteItem")
     if (this.isJobCodeDataSelected) {
       this.handleDeleteJobCode(metadata as IJobCode)
     } else {
       this.handleDeleteNamedReference(metadata as NamedReferenceInterface)
-
     }
   }
 
@@ -205,13 +205,14 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
   }
 
   private handleDeleteNamedReference(namedReference: NamedReferenceInterface): void {
-    if (confirm("Confirm that you want to delete the Named Reference with name " + (namedReference as ApiNamedReference)?.name)) {
+    const getEnumKey = Object.keys(MetadataType)[Object.values(MetadataType).indexOf(this.selectedMetadataType)];
+    if (confirm(`Do you Confirm that you want to delete the ${getEnumKey} with name ` + (namedReference as ApiNamedReference)?.name)) {
       this.namedReferenceService.deleteNamedReferenceWithResult((namedReference as ApiNamedReference)?.id ?? 0).subscribe(data => {
         if (data && data.success) {
           this.toastService.showToast("Successfully Deleted", "" + (namedReference as ApiNamedReference)?.name)
           this.loadNextPage()
         } else if (data && !data.success) {
-          this.toastService.showToast("Warning", data.message ?? "You cannot delete this Named Reference")
+          this.toastService.showToast("Warning", data.message ?? `You cannot delete this ${getEnumKey}`)
         }
       })
     }

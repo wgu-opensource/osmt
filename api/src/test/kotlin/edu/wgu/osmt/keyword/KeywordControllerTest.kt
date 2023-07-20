@@ -193,7 +193,7 @@ internal class KeywordControllerTest @Autowired constructor(
             updateObject = RsdUpdateObject(
                 name = "skill-4",
                 statement = "Skill 4",
-                keywords = ListFieldUpdate(add = listOf(category1, category2)),
+                keywords = ListFieldUpdate(add = listOf(category1!!, category2!!)),
                 publishStatus = PublishStatus.Published
             ),
         )
@@ -206,11 +206,12 @@ internal class KeywordControllerTest @Autowired constructor(
             from = 0,
             sort = SkillSortEnum.defaultSort.toString(),
             status = arrayOf(PublishStatus.Published.toString()),
-            apiSearch = ApiSearch(query = "Skill-4")
+            apiSearch = ApiSearch(query = "skill")
         )
+
 
         // assert
         Assertions.assertThat(result).isNotNull
-        Assertions.assertThat(result.body?.size).isEqualTo(1)
+        Assertions.assertThat(result.body?.size).isEqualTo(2)
     }
 }

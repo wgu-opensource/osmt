@@ -1,15 +1,11 @@
 import { Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output } from "@angular/core"
 import { Router } from "@angular/router"
-
-import { AbstractDataService } from "src/app/data/abstract-data.service"
 import { AppConfig } from "../../../../app.config"
 import { ButtonAction } from "../../../../auth/auth-roles"
 import { AuthService } from "../../../../auth/auth-service"
 import { SvgHelper, SvgIcon } from "../../../../core/SvgHelper"
 import { ToastService } from "../../../../toast/toast.service"
 import { NamedReferenceService } from "../../../named-reference/service/named-reference.service"
-import { ApiNamedReference } from "../../../named-reference/NamedReference"
-
 
 @Component({
   selector: "app-manage-metadata-action-bar-vertical",

@@ -7,7 +7,6 @@ import {
   OnInit,
   Output } from "@angular/core";
 import { Router} from "@angular/router";
-
 import { AbstractDataService } from "src/app/data/abstract-data.service";
 import { AppConfig } from "../../../../app.config";
 import { AuthService } from "../../../../auth/auth-service";

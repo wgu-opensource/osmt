@@ -24,8 +24,8 @@ import { ApiSkillSummary } from "../../richskill/ApiSkillSummary"
   template: ``
 })
 export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper implements OnInit {
-  @ViewChild("titleHeading") titleElement!: ElementRef
 
+  @ViewChild("titleHeading") titleElement!: ElementRef
   idParam: number | null;
   metadata?: ApiNamedReference | ApiJobCode;
   skillTableControl: RelatedSkillTableControl<number>
@@ -76,13 +76,13 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
   }
 
   get showSkillsTable(): boolean {
-    return this.skills.length > 0;
+    return this.skillTableControl.skills.length > 0
   }
 
-  // get skillsCountLabel(): string {
-  //     const rsdLabel = (this.metadata?.skillCount == 1) ? "RSD" : "RSDs"
-  //     return `${this.skillTableControl.totalCount} ${rsdLabel} with this category based on`
-  // }
+  get skillsCountLabel(): string {
+    const rsdLabel = (this.skillTableControl.size == 1) ? "RSD" : "RSDs"
+    return `${this.skillTableControl.totalCount} ${rsdLabel} with this category based on`
+  }
 
   get skillsViewingLabel(): string {
     return (this.skillTableControl.currFirstSkillIndex && this.skillTableControl.currLastSkillIndex)
@@ -132,14 +132,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
 
   protected loadSkills(): void {
     if (this.metadata) {
-      this.metadataService.getRelatedSkills(
-        this.metadata?.id ?? 0,
-        this.skillTableControl.size,
-        this.skillTableControl.from,
-        this.skillTableControl.statusFilters,
-        this.skillTableControl.sort,
-        this.skillTableControl.query
-      ).subscribe(skills => this.skills = skills.skills)
+      this.skillTableControl.loadSkills(this.getId())
     } else {
       this.clearSkills();
     }

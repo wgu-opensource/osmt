@@ -12,6 +12,8 @@ import { AuthServiceStub, RouterStub } from "@test/resource/mock-stubs"
 import { getBaseApi } from "../../../api-versions"
 import { FormsModule, ReactiveFormsModule } from "@angular/forms"
 import { AbstractDataService } from "../../../data/abstract-data.service"
+import { createMockNamedReference2 } from "@test/resource/mock-data"
+import { AppConfig } from "../../../app.config"
 
 describe('CreateNamedReferenceComponent', () => {
   let component: CreateNamedReferenceComponent;
@@ -34,6 +36,7 @@ describe('CreateNamedReferenceComponent', () => {
         FormsModule
       ],
       providers: [
+        AppConfig,
         NamedReferenceService,
         { provide: AuthService, useClass: AuthServiceStub },
         {
@@ -48,6 +51,9 @@ describe('CreateNamedReferenceComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     service = TestBed.inject(NamedReferenceService)
+
+    const appConfig = TestBed.inject(AppConfig)
+    AppConfig.settings = appConfig.defaultConfig()
   });
 
   it('should create', () => {
@@ -71,6 +77,30 @@ describe('CreateNamedReferenceComponent', () => {
   })
 
   it("submit should update", () => {
+    const spyService = spyOn(service, "update")
+    component.id = 1
+    component.onSubmit()
+    expect(spyService).toHaveBeenCalled()
+  })
+
+  it("title should be create", () => {
+    component.metadata = undefined
+    expect(component.pageTitle()).toContain("Create")
+  })
+
+  it("title should be edit", () => {
+    component.metadata = createMockNamedReference2()
+    expect(component.pageTitle()).toContain("Edit")
+  })
+
+  it("on submit should call create", () => {
+    const spyService = spyOn(service, "create")
+    component.id = -1
+    component.onSubmit()
+    expect(spyService).toHaveBeenCalled()
+  })
+
+  it("on submit should call update", () => {
     const spyService = spyOn(service, "update")
     component.id = 1
     component.onSubmit()

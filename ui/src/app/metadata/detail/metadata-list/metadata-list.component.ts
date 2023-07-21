@@ -183,7 +183,6 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
   }
 
   private handleClickDeleteItem(metadata: IJobCode | NamedReferenceInterface | undefined): void {
-    console.log("handleClickDeleteItem")
     if (this.isJobCodeDataSelected) {
       this.handleDeleteJobCode(metadata as IJobCode)
     } else {

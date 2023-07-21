@@ -24,8 +24,35 @@
 
   </div>
 
+  <div class="l-container l-container-mobile">
+    <!--{{render '@l-submit&#45;&#45;with-twomain'}}-->
+    <div *ngIf="!isSuccessStep()" class="l-submit">
+      <button class="m-button" [attr.disabled]="!isStepValid() ? '' : null" (click)="handleClickNext()">
+        <span class="m-button-x-text">{{nextButtonLabel}}</span>
+      </button>
+      <button class="m-button m-button-tertiary" (click)="handleClickCancel()">
+        <span class="m-button-x-text">{{cancelButtonLabel}}</span>
+      </button>
+    </div>
+
+    <div *ngIf="isSuccessStep()" class="l-submit">
+      <button class="m-button" (click)="resetState()">
+        <span class="m-button-x-text">Import More RSD<span class="t-type-lowercase">s</span></span>
+      </button>
+      <button class="m-button" (click)="getBatchImportAction()"  *ngIf="target && isSuccessStep()">
+        <span class="m-button-x-text">{{getImportOptionButtonLabel()}} </span>
+      </button>
+      <button class="m-button" routerLink="/skills">
+        <span class="m-button-x-text">View RSD Library</span>
+      </button>
+    </div>
+    <div *ngIf="isMappingStep()" class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
+      <app-batch-import-destination-select (mappingChanged)="updateTarget($event)"></app-batch-import-destination-select>
+    </div>
+  </div>
+
   <app-blocking-loader [observables]="[stepLoaded]">
-  <div class="t-margin-medium t-margin-bottom">
+  <div class="t-margin-medium t-import-margin-bottom">
     <div *ngIf="!(isUploadStep() || isSuccessStep())" class="l-container l-container-mobile t-margin-medium t-margin-bottom">
       <!--{{render '@m-fileupload'}}-->
       <div class="m-fileUpload">
@@ -138,9 +165,6 @@
           [uploadedHeaders]="uploadedHeaders()"
           (fieldMappingChanged)="handleMappingChanged($event)"
         ></app-field-mapping-table>
-      </div>
-      <div class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
-        <app-batch-import-destination-select (mappingChanged)="updateTarget($event)"></app-batch-import-destination-select>
       </div>
     </ng-template>
 

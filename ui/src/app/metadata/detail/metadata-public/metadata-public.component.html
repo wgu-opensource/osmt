@@ -1,0 +1,88 @@
+<div class="l-stickyBar">
+  <div class="l-stickySidebar l-container t-margin-medium t-margin-bottom">
+    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top" #detailCard>
+      <app-metadata-card
+        [metadata]="getMetadata()"
+        [indexOfFirstSkill]="skillTableControl.currFirstSkillIndex"
+        [currentOnPage]="skillTableControl.size"
+        [showSkillCount]="false"
+      ></app-metadata-card>
+    </div>
+
+    <div class="l-stickySidebar-x-sidebar">
+      <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
+        <app-public-metadata-action-bar-vertical
+          [id]="getId()"
+          [metadataName]="getMetadataName()"
+          [metadataPublicUrl]="getId()"
+          (reloadMetadata)="loadMetadata()"
+        ></app-public-metadata-action-bar-vertical>
+  
+        <nav class="m-quickLinks" aria-labelledby="save-quicklinks">
+          <h3 class="t-visuallyHidden" id="save-quicklinks">Quick Links</h3>
+          <a (click)="focusAndScrollIntoView(detailCard, 'h2')">Back to top</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <div #titleHeading class="l-container">
+    <div class="t-margin-medium t-margin-bottom">
+      <form [formGroup]="searchForm" (ngSubmit)="handleSearchSubmit()">
+        <div class="m-text">
+          <svg aria-hidden="true" class="m-text-x-icon t-icon" (click)="clearSearch()"><use [attr.xlink:href]="searchIcon"></use></svg>
+          <input type="text" placeholder="Search RSDs with this metadata" [formControl]="searchForm.controls.search">
+        </div>
+      </form>
+      <p *ngIf="skillTableControl.totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
+        {{skillsCountLabel}}
+        <ng-template [ngIf]="skillTableControl.query">
+          <span class="t-type-bodyLargeBold t-type-text1">{{skillTableControl.query}}</span> and
+        </ng-template>
+        your filters.
+        <ng-template [ngIf]="skillTableControl.totalCount > 0">
+        {{skillsViewingLabel}}
+        </ng-template>
+      </p>
+    </div>
+    <app-filter-controls
+      *ngIf="showSkillsFilters"
+      [showAdvancedFilteredSearch]="true"
+      [currentSize]="skillTableControl.size"
+      [keywords]="skillTableControl.keywordFilters"
+      [selectedFilters]="skillTableControl.statusFilters"
+      (filtersChanged)="handleStatusFilterChange($event)"
+      (keywordsChanged)="handleKeywordFilterChange($event)"
+    ></app-filter-controls>
+  </div>
+  <div class="l-container">
+    <ng-template [appLoadingObservables]="[skillTableControl.resultsLoaded]">
+      <div class="t-margin-medium t-margin-bottom">
+        <app-skill-table
+          *ngIf="showSkillsTable"
+          [items]="skillTableControl.skills"
+          [showRowActions]="false"
+          [currentSort]="skillTableControl.sort"
+          [mobileSortOptions]="getMobileSkillSortOptions()"
+          (columnSorted)="handleHeaderColumnSort($event)"
+        ></app-skill-table>
+      </div>
+      <app-empty-message *ngIf="showSkillsLoading">
+        <p class="m-emptyMessage-x-message">Loading information...</p>
+      </app-empty-message>
+      <app-empty-message *ngIf="showSkillsEmpty">
+        <p class="m-emptyMessage-x-message">0 RSDs associated with this metadata</p>
+      </app-empty-message>
+      <app-pagination
+        [currentPage]="skillTableControl.currPageNumber"
+        [totalPages]="skillTableControl.totalPageCount"
+        (pageClicked)="handlePageClicked($event)"
+      ></app-pagination>
+    </ng-template>
+  </div>
+  <div class="l-stickyBar-x-bar t-padding-medium t-padding-top">
+    <div class="l-container l-container-tablet">
+      <app-table-action-bar [actions]="tableActions"></app-table-action-bar>
+    </div>
+  </div>
+</div>

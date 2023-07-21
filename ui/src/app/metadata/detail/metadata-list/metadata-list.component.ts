@@ -1,16 +1,16 @@
 import { Component, OnInit } from "@angular/core"
 import { FormControl } from "@angular/forms"
 import { Subject } from "rxjs"
-import { ApiJobCode, IJobCode } from "../../job-codes/Jobcode"
-import { ApiNamedReference, NamedReferenceInterface } from "../../named-references/NamedReference"
+import { ApiJobCode, IJobCode } from "../../job-code/Jobcode"
+import { ApiNamedReference, NamedReferenceInterface } from "../../named-reference/NamedReference"
 import { TableActionDefinition } from "../../../table/skills-library-table/has-action-definitions"
 import { ButtonAction } from "../../../auth/auth-roles"
 import { AuthService } from "../../../auth/auth-service"
 import { MetadataType } from "../../rsd-metadata.enum"
-import { JobCodeService } from "../../job-codes/service/job-code.service"
+import { JobCodeService } from "../../job-code/service/job-code.service"
 import { ToastService } from "../../../toast/toast.service"
 import { AbstractListComponent } from "../../../table/abstract-list.component"
-import { NamedReferenceService } from "../../named-references/service/named-reference.service"
+import { NamedReferenceService } from "../../named-reference/service/named-reference.service"
 
 @Component({
   selector: "app-metadata-list",

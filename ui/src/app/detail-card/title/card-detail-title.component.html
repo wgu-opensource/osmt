@@ -2,7 +2,7 @@
   <div class="m-sectionLabel">{{cardType}}</div>
 </div>
 <h2 class="t-type-heading1 t-margin-extraSmall t-margin-bottom" tabindex="0">{{title}}</h2>
-<div class="t-margin-medium t-margin-bottom">
+<div class="t-margin-medium t-margin-bottom" *ngIf="authors">
   <p class="t-type-body">Authors: {{authors}}</p>
 </div>
 

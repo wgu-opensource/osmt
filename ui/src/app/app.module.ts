@@ -110,15 +110,21 @@ import { getBaseApi } from "./api-versions"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { MatMenuModule } from "@angular/material/menu"
 import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
-import { JobCodeListRowComponent } from "./metadata/job-codes/job-code-list-row/job-code-list-row.component"
-import { JobCodeTableComponent } from "./metadata/job-codes/job-code-table/job-code-table.component"
-import { NamedReferenceListRowComponent } from "./metadata/named-references/named-reference-list-row/named-reference-list-row.component"
-import { NamedReferenceTableComponent } from "./metadata/named-references/named-reference-table/named-reference-table.component"
-import { MetadataSelectorComponent } from "./metadata/detail/metadata-selector/metadata-selector.component"
+import { JobCodeListRowComponent } from "./metadata/job-code/job-code-list-row/job-code-list-row.component"
+import { JobCodeTableComponent } from "./metadata/job-code/job-code-table/job-code-table.component"
+import { NamedReferenceListRowComponent } from "./metadata/named-reference/named-reference-list-row/named-reference-list-row.component"
+import { NamedReferenceTableComponent } from "./metadata/named-reference/named-reference-table/named-reference-table.component"
+import { MetadataSelectorComponent } from "./metadata/detail/metadata-selector/metadata-selector.component";
+import { MetadataFormComponent } from "./metadata/form/metadata-form.component";
+import { MetadataManageComponent } from "./metadata/detail/metadata-manage/metadata-manage.component";
+import { MetadataPublicComponent } from "./metadata/detail/metadata-public/metadata-public.component";
 import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
 import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
 import { BatchImportCollectionComponent } from './collection/create-collection/batch-import-collection/batch-import-collection.component'
 import { JobCodeParentsPipe } from "./pipes"
+import { MetadataCardComponent } from "./metadata/detail/metadata-card/metadata-card.component"
+import { ManageMetadataActionBarVerticalComponent } from "./metadata/detail/metadata-manage/action-bar-vertical/metadata-manage-action-bar-vertical.component"
+import { PublicMetadataActionBarVerticalComponent } from "./metadata/detail/metadata-public/action-bar-vertical/metadata-public-action-bar-vertical.component"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -240,8 +246,15 @@ export function initializeApp(
     NamedReferenceListRowComponent,
     NamedReferenceTableComponent,
     MetadataSelectorComponent,
+    MetadataCardComponent,
+    MetadataFormComponent,
+    MetadataManageComponent,
+    MetadataPublicComponent,
+    ManageMetadataActionBarVerticalComponent,
+    PublicMetadataActionBarVerticalComponent,
     InlineHeadingComponent,
     JobCodeParentsPipe,
+    InlineHeadingComponent
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

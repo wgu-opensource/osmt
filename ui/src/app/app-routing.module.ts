@@ -27,6 +27,10 @@ import {
   BatchImportCollectionComponent
 } from "./collection/create-collection/batch-import-collection/batch-import-collection.component"
 import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
+import { DetailCardComponent } from "./detail-card/detail-card.component"
+import { MetadataFormComponent } from "./metadata/form/metadata-form.component"
+import { MetadataManageComponent } from "./metadata/detail/metadata-manage/metadata-manage.component"
+import { MetadataPublicComponent } from "./metadata/detail/metadata-public/metadata-public.component"
 
 
 const routes: Routes = [
@@ -83,6 +87,61 @@ const routes: Routes = [
     data: {
       roles: ActionByRoles.get(ButtonAction.SkillCreate)
     },
+  },
+
+  /* KEYWORDS */
+
+  {path: "metadata",
+    component: MetadataListComponent,
+    canActivate: [AuthGuard],
+  },
+  // create metadata
+  {path: "named-references/create",
+    component: MetadataFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.MetadataCreate)
+    },
+  },
+  {path: "job-codes/create",
+    component: MetadataFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.MetadataCreate)
+    },
+  },
+  // edit metadata
+  {path: "named-references/:id/edit",
+    component: MetadataFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
+    },
+  },
+  {path: "job-codes/:id/edit",
+    component: MetadataFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
+    },
+  },
+  // public metadata detail
+  {path: "named-references/:id",
+    component: MetadataPublicComponent,
+    canActivate: [AuthGuard]
+  },
+  {path: "job-codes/:id",
+    component: MetadataPublicComponent,
+    canActivate: [AuthGuard]
+  },
+  // admin metadata detail
+  {path: "named-references/:id/manage",
+    component: MetadataManageComponent,
+    canActivate: [AuthGuard]
+  },
+  {path: "job-codes/:id/manage",
+    component: MetadataManageComponent,
+    canActivate: [AuthGuard]
   },
 
   /* COLLECTIONS */
@@ -179,11 +238,7 @@ const routes: Routes = [
       roles: ActionByRoles.get(ButtonAction.MyWorkspace)
     }
   },
-  {
-    path: "metadata",
-    component: MetadataListComponent,
-    canActivate: [AuthGuard],
-  },
+
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},
   {path: "collections/:uuid", component: CollectionPublicComponent},

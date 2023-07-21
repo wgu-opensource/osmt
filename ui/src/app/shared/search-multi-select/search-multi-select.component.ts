@@ -3,7 +3,7 @@ import {KeywordSearchService} from "../../richskill/service/keyword-search.servi
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {FormControl} from "@angular/forms"
 import {ApiNamedReference, KeywordType} from "../../richskill/ApiSkill"
-import {ApiJobCode} from "../../metadata/job-codes/Jobcode"
+import {ApiJobCode} from "../../metadata/job-code/Jobcode"
 import {FilterSearchComponent} from "@shared/filter-search/filter-search.component"
 
 @Component({

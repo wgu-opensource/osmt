@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { IJobCode } from "../metadata/job-codes/Jobcode"
+import { IJobCode } from "../metadata/job-code/Jobcode"
 
 @Pipe({
   name: 'jobCodeParents'

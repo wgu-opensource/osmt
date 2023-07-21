@@ -26,6 +26,7 @@ import edu.wgu.osmt.task.CsvTaskV2
 import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.PublishTaskV2
 import edu.wgu.osmt.task.RemoveCollectionSkillsTask
+import edu.wgu.osmt.task.RemoveItemTask
 import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
 import edu.wgu.osmt.task.TaskResult

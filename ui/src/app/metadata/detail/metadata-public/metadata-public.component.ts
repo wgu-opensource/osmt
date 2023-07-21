@@ -1,11 +1,10 @@
-import { Component, Input, OnInit } from "@angular/core"
+import { Component, OnInit } from "@angular/core"
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RichSkillService } from "src/app/richskill/service/rich-skill.service";
 import { ToastService } from "src/app/toast/toast.service";
 import { AbstractMetadataDetailComponent } from "../abstract-metadata-detail.component";
 import { NamedReferenceService } from "../../named-reference/service/named-reference.service"
-
 
 @Component({
   selector: "app-metadata-public",

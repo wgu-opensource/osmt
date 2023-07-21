@@ -10,10 +10,13 @@ import { PublishStatus } from "../PublishStatus"
 import { ApiSortOrder } from "../richskill/ApiSkill"
 import { ApiSearch, PaginatedSkills } from "../richskill/service/rich-skill-search.service"
 import { ApiSkillSummary } from "../richskill/ApiSkillSummary"
+import { ApiJobCode, IJobCode, IJobCodeUpdate } from "../metadata/job-code/Jobcode"
+import { ApiNamedReference, ApiNamedReferenceUpdate } from "../metadata/named-reference/NamedReference"
+import { ApiTaskResult } from "../task/ApiTaskResult"
+import { ApiBatchResult } from "../richskill/ApiBatchResult"
 
 @Injectable({ providedIn: "root" })
-export abstract class AbstractDataService extends AbstractService
-    implements IRelatedSkillsService<number> {
+export abstract class AbstractDataService extends AbstractService implements IRelatedSkillsService<number> {
 
   protected abstract serviceUrl: string;
 
@@ -47,9 +50,15 @@ export abstract class AbstractDataService extends AbstractService
     return observable;
   }
 
-  getDataById(id: number): Observable<any> {
-    return new Observable<any>;
-  }
+  abstract getById(id: number): Observable<ApiJobCode | ApiNamedReference>
+
+  abstract create(newObject: ApiNamedReferenceUpdate | IJobCode): Observable<ApiJobCode | ApiNamedReference>
+
+  abstract update(id: number, updateObject: ApiNamedReferenceUpdate | IJobCodeUpdate): Observable<ApiJobCode | ApiNamedReference>
+
+  abstract delete(id: number): Observable<ApiTaskResult>
+
+  abstract deleteWithResult(id: number): Observable<ApiBatchResult>
 
   getRelatedSkills(
     entityId: number,

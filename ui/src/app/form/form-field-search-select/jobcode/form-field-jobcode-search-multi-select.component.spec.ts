@@ -10,7 +10,7 @@ import {EnvironmentService} from "src/app/core/environment.service"
 import {ActivatedRouteStubSpec} from "test/util/activated-route-stub.spec"
 import {KeywordSearchService} from "../../../richskill/service/keyword-search.service"
 import {KeywordSearchServiceStub} from "../../../../../test/resource/mock-stubs"
-import { ApiJobCode, IJobCode } from "../../../metadata/job-codes/Jobcode"
+import { ApiJobCode, IJobCode } from "../../../metadata/job-code/Jobcode"
 import {FormFieldJobCodeSearchMultiSelect} from "./form-field-jobcode-search-multi-select.component"
 
 @Component({

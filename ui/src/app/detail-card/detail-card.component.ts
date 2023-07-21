@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from "@angular/core"
-import { IDetailCardSectionData } from "./section/section.component"
-import {PublishStatus} from "../PublishStatus";
+import { Component, Input, OnInit } from "@angular/core";
+
+import { IDetailCardSectionData } from "./section/section.component";
 
 @Component({
   selector: "app-detail-card",
@@ -14,12 +14,11 @@ export class DetailCardComponent implements OnInit {
   @Input() authors = ""
   @Input() publishDate = ""
   @Input() archiveDate = ""
-  @Input() status = PublishStatus.Draft
+  @Input() status = ""
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   cardTypeLabel(): string {
     return "RichSkillDescriptor"

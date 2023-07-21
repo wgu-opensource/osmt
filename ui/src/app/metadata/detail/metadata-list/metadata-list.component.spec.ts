@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { MetadataListComponent } from "./metadata-list.component"
 import { MetadataType } from "../../rsd-metadata.enum"
 import { PaginatedMetadata } from "../../PaginatedMetadata"
-import { ApiJobCode } from "../../job-codes/Jobcode"
+import { ApiJobCode } from "../../job-code/Jobcode"
 import { AuthServiceStub } from "@test/resource/mock-stubs";
 import { AuthService } from "../../../auth/auth-service";
-import { JobCodeService } from "../../job-codes/service/job-code.service"
+import { JobCodeService } from "../../job-code/service/job-code.service"
 import { HttpClientTestingModule } from "@angular/common/http/testing"
 import {createMockJobcode, createMockNamedReference2 } from "@test/resource/mock-data"
 import { of } from "rxjs"

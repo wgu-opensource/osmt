@@ -39,7 +39,7 @@
       <button class="m-button" (click)="resetState()">
         <span class="m-button-x-text">Import More RSD<span class="t-type-lowercase">s</span></span>
       </button>
-      <button class="m-button" (click)="getBatchImportAction()"  *ngIf="target && isSuccessStep()">
+      <button class="m-button" (click)="getBatchImportAction()"  *ngIf="target && validImportSkillsCount">
         <span class="m-button-x-text">{{getImportOptionButtonLabel()}} </span>
       </button>
       <button class="m-button" routerLink="/skills">
@@ -225,7 +225,7 @@
       <button class="m-button" (click)="resetState()">
         <span class="m-button-x-text">Import More RSD<span class="t-type-lowercase">s</span></span>
       </button>
-      <button class="m-button" (click)="getBatchImportAction()"  *ngIf="target && skillsToBeImported">
+      <button class="m-button" (click)="getBatchImportAction()"  *ngIf="target && validImportSkillsCount">
         <span class="m-button-x-text">{{getImportOptionButtonLabel()}} </span>
       </button>
       <button class="m-button" routerLink="/skills">

@@ -554,6 +554,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     this.importSimilarSkills = importSimilar
   }
 
+  get validImportSkillsCount(): boolean {
+    return this.skillsToBeImported ? this.skillsToBeImported?.length > 0 : false
+  }
+
   protected handleClickAddToWorkspace(): void {
     let skillListUpdate = new ApiSkillListUpdate({
       add: new ApiSearch(

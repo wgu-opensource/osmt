@@ -84,7 +84,11 @@ import {PublishCollectionComponent} from "./collection/detail/publish-collection
 import {BlockingLoaderComponent} from "./core/blocking-loader.component"
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component"
 import {BatchImportComponent} from "./richskill/import/batch-import.component"
-import {FieldMappingSelectComponent, FieldMappingTableComponent} from "./richskill/import/field-mapping-table.component"
+import {
+  FieldMappingSelectComponent,
+  FieldMappingTableComponent,
+  BatchImportDestinationSelectComponent
+} from "./richskill/import/field-mapping-table.component"
 import {
   ImportPreviewTableComponent,
   NamedReferenceComponent
@@ -111,6 +115,7 @@ import {OsmtTableModule} from "./table/osmt-table.module"
 import { getBaseApi } from "./api-versions"
 import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
 import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
+import { BatchImportCollectionComponent } from './collection/create-collection/batch-import-collection/batch-import-collection.component'
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -217,8 +222,10 @@ export function initializeApp(
     CollectionSkillSearchComponent,
     BatchImportComponent,
     FieldMappingTableComponent,
+    BatchImportDestinationSelectComponent,
     FieldMappingSelectComponent,
     ImportPreviewTableComponent,
+    InlineHeadingComponent,
     NamedReferenceComponent,
     InlineErrorComponent,
     AuditLogComponent,
@@ -229,7 +236,7 @@ export function initializeApp(
     CollectionPipe,
     ConvertToCollectionComponent,
     SizePaginationComponent,
-    InlineHeadingComponent,
+    BatchImportCollectionComponent,
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

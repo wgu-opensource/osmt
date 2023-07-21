@@ -7,12 +7,14 @@ import { ActivatedRoute, Router } from "@angular/router"
 import { Papa, ParseResult } from "ngx-papaparse"
 import { ActivatedRouteStubSpec } from "test/util/activated-route-stub.spec"
 import { TestPage } from "test/util/test-page.spec"
-import { EnvironmentServiceStub, RichSkillServiceStub } from "../../../../test/resource/mock-stubs"
+import {CollectionServiceStub, EnvironmentServiceStub, RichSkillServiceStub} from "../../../../test/resource/mock-stubs"
 import { AppConfig } from "../../app.config"
 import { EnvironmentService } from "../../core/environment.service"
 import { ToastService } from "../../toast/toast.service"
 import { RichSkillService } from "../service/rich-skill.service"
 import { BatchImportComponent, ImportStep } from "./batch-import.component"
+import { CollectionService } from "../../collection/service/collection.service";
+import { BatchImportOptionsEnum } from "./BatchImportOptionsEnum";
 
 
 class Page extends TestPage<BatchImportComponent> {
@@ -43,12 +45,10 @@ export function createComponent(T: Type<BatchImportComponent>): Promise<void> {
   })
 }
 
-
 let activatedRoute: ActivatedRouteStubSpec
 let component: BatchImportComponent
 let fixture: ComponentFixture<BatchImportComponent>
 let page: Page
-
 
 describe("BatchImportComponent", () => {
   beforeEach(() => {
@@ -75,6 +75,7 @@ describe("BatchImportComponent", () => {
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
         { provide: RichSkillService, useClass: RichSkillServiceStub },
+        { provide: CollectionService, useClass: CollectionServiceStub }
       ]
     })
     .compileComponents()
@@ -317,6 +318,15 @@ describe("BatchImportComponent", () => {
     component.handleSimilarityOk(false)
     // Assert
     expect(component.importSimilarSkills).toBeFalse()
+  })
+
+  it("getImportOptionButtonLabel() should return correct values", () => {
+    component.target = BatchImportOptionsEnum.new
+    expect(component.getImportOptionButtonLabel()).toEqual("Add to a new Collection")
+    component.target = BatchImportOptionsEnum.workspace
+    expect(component.getImportOptionButtonLabel()).toEqual("Add to Workspace")
+    component.target = BatchImportOptionsEnum.existing
+    expect(component.getImportOptionButtonLabel()).toEqual("Add to existing Collection")
   })
 })
 

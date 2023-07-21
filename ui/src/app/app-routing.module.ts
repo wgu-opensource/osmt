@@ -25,7 +25,9 @@ import {BatchImportComponent} from "./richskill/import/batch-import.component"
 import { ActionByRoles, ButtonAction } from "./auth/auth-roles"
 import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
 import {ConvertToCollectionComponent} from "./my-workspace/convert-to-collection/convert-to-collection.component"
-
+import {
+  BatchImportCollectionComponent
+} from "./collection/create-collection/batch-import-collection/batch-import-collection.component"
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -100,6 +102,14 @@ const routes: Routes = [
   // create collection
   {path: "collections/create",
     component: CollectionFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.CollectionCreate)
+    },
+    canDeactivate: [FormDirtyGuard]
+  },
+  {path: "collections/create/batch-import",
+    component: BatchImportCollectionComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.CollectionCreate)

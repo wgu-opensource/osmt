@@ -79,19 +79,24 @@ export class FieldMappingSelectComponent {
 @Component({
   selector: "app-batch-import-destination-select",
   template: `
-    <div class="m-select m-select-fieldMap">
-      <select class="m-select-x-select" (change)="handleChange($event)">
-        <option value="">Select Import Destination</option>
-        <option *ngFor="let item of optionElements" [value]="item.target"
-                [attr.selected]="value === item.target ? '' : null">{{item.label}}</option>
-        <option value="">RSD Library</option>
-      </select>
-      <div class="m-select-x-icon">
-        <svg class="t-icon" aria-hidden="true">
-          <use xlink:href="/assets/images/svg-defs.svg#icon-chevron"></use>
-        </svg>
-      </div>
-    </div>
+    <tr class="m-tableRow m-tableRow-fieldMap">
+      <th scope="row">
+        <div class="m-fieldMapText">Select Import Destination</div>
+      </th>
+      <td>
+        <div class="m-select m-select-fieldMap">
+            <select class="m-select-x-select" (change)="handleChange($event)">
+                <option *ngFor="let item of optionElements" [value]="item.target"
+                    [attr.selected]="value === item.target ? '' : null">{{item.label}}</option>
+                <option selected="selected" value="">RSD Library</option>
+            </select>
+            <div class="m-select-x-icon">
+                <svg class="t-icon" aria-hidden="true">
+                    <use xlink:href="/assets/images/svg-defs.svg#icon-chevron"></use>
+                </svg>
+            </div>
+        </div>
+      </td>
   `
 })
 export class BatchImportDestinationSelectComponent {

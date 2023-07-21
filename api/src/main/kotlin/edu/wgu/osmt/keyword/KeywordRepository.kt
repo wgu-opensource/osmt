@@ -171,8 +171,8 @@ class KeywordRepositoryImpl @Autowired constructor(
 }
 
 private enum class ErrorMessages(val apiValue: String) {
-    DoesNotExist("You cannot delete this Keyword because it does not exist"),
-    HasRSDRelated("You cannot delete this Keyword because it is used in one or more RSDs");
+    DoesNotExist("You cannot delete this item because it does not exist"),
+    HasRSDRelated("You cannot delete this item because it is used in one or more RSDs");
 
     companion object {
         fun forDeleteError(hasRSDsRelated: Boolean): String {

@@ -119,7 +119,7 @@ import { JobCodeParentsPipe } from "./pipes"
 import { MetadataCardComponent } from "./metadata/detail/metadata-card/metadata-card.component"
 import { ManageMetadataActionBarVerticalComponent } from "./metadata/detail/metadata-manage/action-bar-vertical/metadata-manage-action-bar-vertical.component"
 import { PublicMetadataActionBarVerticalComponent } from "./metadata/detail/metadata-public/action-bar-vertical/metadata-public-action-bar-vertical.component";
-import { CreateNamedReferenceComponent } from './metadata/named-reference/create-named-reference/create-named-reference.component'
+import { NamedReferenceFormComponent } from "./metadata/named-reference/named-reference-form/named-reference-form.component"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -246,7 +246,7 @@ export function initializeApp(
     InlineHeadingComponent,
     JobCodeParentsPipe,
     InlineHeadingComponent,
-    CreateNamedReferenceComponent
+    NamedReferenceFormComponent
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

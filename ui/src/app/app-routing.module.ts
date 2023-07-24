@@ -26,8 +26,7 @@ import {ConvertToCollectionComponent} from "./my-workspace/convert-to-collection
 import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
 import { MetadataManageComponent } from "./metadata/detail/metadata-manage/metadata-manage.component"
 import { MetadataPublicComponent } from "./metadata/detail/metadata-public/metadata-public.component"
-import { CreateNamedReferenceComponent } from "./metadata/named-reference/create-named-reference/create-named-reference.component"
-
+import { NamedReferenceFormComponent } from "./metadata/named-reference/named-reference-form/named-reference-form.component"
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -93,7 +92,7 @@ const routes: Routes = [
   },
   // create metadata
   {path: "named-references/create",
-    component: CreateNamedReferenceComponent,
+    component: NamedReferenceFormComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataCreate)
@@ -108,7 +107,7 @@ const routes: Routes = [
   },*/
   // edit metadata
   {path: "named-references/:id/edit",
-    component: CreateNamedReferenceComponent,
+    component: NamedReferenceFormComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataUpdate)

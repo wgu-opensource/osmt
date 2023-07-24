@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreateNamedReferenceComponent } from './create-named-reference.component';
+import { NamedReferenceFormComponent } from './named-reference-form.component';
 import { ActivatedRoute, Router } from "@angular/router"
 import { ActivatedRouteStubSpec } from "@test/util/activated-route-stub.spec"
 import { BrowserModule } from "@angular/platform-browser"
@@ -16,8 +16,8 @@ import { createMockNamedReference2 } from "@test/resource/mock-data"
 import { AppConfig } from "../../../app.config"
 
 describe('CreateNamedReferenceComponent', () => {
-  let component: CreateNamedReferenceComponent;
-  let fixture: ComponentFixture<CreateNamedReferenceComponent>;
+  let component: NamedReferenceFormComponent;
+  let fixture: ComponentFixture<NamedReferenceFormComponent>;
   let activatedRoute: ActivatedRouteStubSpec
   let service: AbstractDataService
 
@@ -27,7 +27,7 @@ describe('CreateNamedReferenceComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CreateNamedReferenceComponent],
+      declarations: [NamedReferenceFormComponent],
       imports: [
         BrowserModule,
         RouterTestingModule,
@@ -47,7 +47,7 @@ describe('CreateNamedReferenceComponent', () => {
         { provide: Router, useClass: RouterStub },
       ]
     });
-    fixture = TestBed.createComponent(CreateNamedReferenceComponent);
+    fixture = TestBed.createComponent(NamedReferenceFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     service = TestBed.inject(NamedReferenceService)

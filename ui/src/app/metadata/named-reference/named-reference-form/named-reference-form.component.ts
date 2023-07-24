@@ -7,10 +7,10 @@ import { NamedReferenceService } from "../service/named-reference.service"
 
 @Component({
   selector: 'app-create',
-  templateUrl: './create-named-reference.component.html',
-  styleUrls: ['./create-named-reference.component.scss']
+  templateUrl: './named-reference-form.component.html',
+  styleUrls: ['./named-reference-form.component.scss']
 })
-export class CreateNamedReferenceComponent extends MetadataFormComponent {
+export class NamedReferenceFormComponent extends MetadataFormComponent {
 
   constructor(
     protected route: ActivatedRoute,

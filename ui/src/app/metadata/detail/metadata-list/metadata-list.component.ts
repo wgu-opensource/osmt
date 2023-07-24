@@ -85,6 +85,10 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
     return (this.results?.data) as NamedReferenceInterface[]
   }
 
+  get metadataTypeSelected(): string {
+    return Object.keys(MetadataType)[Object.values(MetadataType).indexOf(this.selectedMetadataType)];
+  }
+
   rowActions(): TableActionDefinition[] {
     const tableActions = []
     if (this.canDeleteMetadata && !this.selectAllChecked) {
@@ -137,7 +141,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
       }
     }
     else {
-      if (confirm("Confirm that you want to delete multiple Named References..")) {
+      if (confirm(`Confirm deletion of multiple ${this.selectedMetadataType}?`)) {
         this.toastService.showBlockingLoader()
         this.handleDeleteMultipleNamedReferences(this.selectedData as NamedReferenceInterface[], 0)
 
@@ -207,7 +211,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
 
   private handleDeleteNamedReference(namedReference: NamedReferenceInterface): void {
     const getEnumKey = Object.keys(MetadataType)[Object.values(MetadataType).indexOf(this.selectedMetadataType)];
-    if (confirm("Confirm that you want to delete the Named Reference with name " + (namedReference as ApiNamedReference)?.name)) {
+    if (confirm(`Confirm that you want to delete the ${this.selectedMetadataType} with name ` + (namedReference as ApiNamedReference)?.name)) {
       this.namedReferenceService.deleteWithResult((namedReference as ApiNamedReference)?.id ?? 0).subscribe(data => {
         if (data && data.success) {
           this.toastService.showToast("Successfully Deleted", "" + (namedReference as ApiNamedReference)?.name)

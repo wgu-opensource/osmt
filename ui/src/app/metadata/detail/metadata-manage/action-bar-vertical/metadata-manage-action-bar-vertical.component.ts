@@ -72,7 +72,7 @@ export class ManageMetadataActionBarVerticalComponent implements OnInit {
             () => this.toastService.showToast("Successfully Deleted", "" + this.metadataName)
           )
         } else if (data && !data.success) {
-          this.toastService.showToast("Warning", data.message ?? "You cannot delete this one")
+          this.toastService.showToast("Warning", data.message ?? "Unable to delete metadata - verify this data is not currently associated with a skill")
         }
       })
     }

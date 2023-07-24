@@ -81,7 +81,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
 
   get skillsCountLabel(): string {
     const rsdLabel = (this.skillTableControl.size == 1) ? "RSD" : "RSDs"
-    return `${this.skillTableControl.totalCount} ${rsdLabel} with this category based on`
+    return `${this.skillTableControl.totalCount} ${rsdLabel} with this ${this.getMetadataType()} based on`
   }
 
   get skillsViewingLabel(): string {

@@ -101,12 +101,6 @@ export abstract class MetadataFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    const updateObject = this.updateObject();
-
-    // if (Object.keys(updateObject).length < 1) {
-    //  return;
-    // }
-
     if (this.id > 0) {
       this.metadataSaved = this.metadataService.update(this.id, this.metadataForm.value as any);
     } else {
@@ -118,9 +112,6 @@ export abstract class MetadataFormComponent implements OnInit {
         if (!result) {
           return;
         }
-
-        // this.metadataForm.markAsPristine();
-
         this.router.navigate([`/metadata`]);
       });
     }

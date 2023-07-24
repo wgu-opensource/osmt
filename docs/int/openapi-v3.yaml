@@ -437,32 +437,10 @@ paths:
           schema:
             type: "string"
             default: "Category"
-        - name: "query"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
-            default: ""
-        - name: "size"
-          in: "query"
-          required: false
-          schema:
-            type: "integer"
-            format: "int32"
-            default: "50"
-        - name: "from"
-          in: "query"
-          required: false
-          schema:
-            type: "integer"
-            format: "int32"
-            default: "0"
-        - name: "sort"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
-            default: "name.asc"
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/PaginationSizeQuery'
+        - $ref: '#/components/parameters/PaginationFromQuery'
+        - $ref: '#/components/parameters/SortOrderQuery'
       responses:
         "200":
           description: "OK"
@@ -500,12 +478,7 @@ paths:
         - Metadata
       operationId: "keywordById"
       parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
+        - $ref: '#/components/parameters/IdPath'
       responses:
         "200":
           description: "OK"
@@ -523,26 +496,9 @@ paths:
       operationId: "relatedSkills"
       parameters:
         - $ref: '#/components/parameters/IdPath'
-        - name: "size"
-          in: "query"
-          required: false
-          schema:
-            type: "integer"
-            format: "int32"
-            default: "50"
-        - name: "from"
-          in: "query"
-          required: false
-          schema:
-            type: "integer"
-            format: "int32"
-            default: "0"
-        - name: "sort"
-          in: "query"
-          required: false
-          schema:
-            type: "string"
-            default: "name.asc"
+        - $ref: '#/components/parameters/PaginationSizeQuery'
+        - $ref: '#/components/parameters/PaginationFromQuery'
+        - $ref: '#/components/parameters/PublishStatusQuery'
       requestBody:
         required: true
         content:
@@ -569,12 +525,7 @@ paths:
         - Metadata
       operationId: "deleteKeyword"
       parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int64"
+        - $ref: '#/components/parameters/IdPath'
       responses:
         "200":
           description: "OK"
@@ -591,12 +542,7 @@ paths:
         - Metadata
       operationId: "updateKeyword"
       parameters:
-        - name: "id"
-          in: "path"
-          required: true
-          schema:
-            type: "integer"
-            format: "int32"
+        - $ref: '#/components/parameters/IdPath'
       requestBody:
         content:
           application/json:

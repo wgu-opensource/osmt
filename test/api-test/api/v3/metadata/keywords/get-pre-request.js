@@ -23,3 +23,6 @@ else {
 }
 
 let queryId = pm.request.url.query.indexOf('query')
+if (queryId > 0) {
+  pm.request.url.removeQueryParams('query');
+}

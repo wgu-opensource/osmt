@@ -27,11 +27,9 @@ import {
   BatchImportCollectionComponent
 } from "./collection/create-collection/batch-import-collection/batch-import-collection.component"
 import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
-import { DetailCardComponent } from "./detail-card/detail-card.component"
-import { MetadataFormComponent } from "./metadata/form/metadata-form.component"
 import { MetadataManageComponent } from "./metadata/detail/metadata-manage/metadata-manage.component"
 import { MetadataPublicComponent } from "./metadata/detail/metadata-public/metadata-public.component"
-
+import { NamedReferenceFormComponent } from "./metadata/named-reference/named-reference-form/named-reference-form.component"
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -97,34 +95,34 @@ const routes: Routes = [
   },
   // create metadata
   {path: "named-references/create",
-    component: MetadataFormComponent,
+    component: NamedReferenceFormComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataCreate)
     },
   },
-  {path: "job-codes/create",
+  /*{path: "job-codes/create",
     component: MetadataFormComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataCreate)
     },
-  },
+  },*/
   // edit metadata
   {path: "named-references/:id/edit",
-    component: MetadataFormComponent,
+    component: NamedReferenceFormComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
     },
   },
-  {path: "job-codes/:id/edit",
+  /*{path: "job-codes/:id/edit",
     component: MetadataFormComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
     },
-  },
+  },*/
   // public metadata detail
   {path: "named-references/:id",
     component: MetadataPublicComponent,
@@ -238,7 +236,11 @@ const routes: Routes = [
       roles: ActionByRoles.get(ButtonAction.MyWorkspace)
     }
   },
-
+  {
+    path: "metadata",
+    component: MetadataListComponent,
+    canActivate: [AuthGuard],
+  },
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},
   {path: "collections/:uuid", component: CollectionPublicComponent},

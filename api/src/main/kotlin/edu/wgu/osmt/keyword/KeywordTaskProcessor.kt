@@ -30,7 +30,7 @@ class KeywordTaskProcessor {
         deadLetterQueue = TaskMessageService.deadLetters,
         concurrency = "1"
     )
-    fun removeJobCode(task: RemoveItemTask) {
+    fun removeKeyword(task: RemoveItemTask) {
         logger.info("Started processing to remove keyword task id: ${task.identifier}")
 
         val batchResult = keywordRepository.remove(task.identifier.toLong())

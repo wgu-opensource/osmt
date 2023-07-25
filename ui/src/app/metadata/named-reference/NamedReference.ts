@@ -36,12 +36,14 @@ export class ApiNamedReferenceUpdate implements INamedReferenceUpdate {
   name?: string = ""
   type?: MetadataType = MetadataType.Category
   url = ""
+  skillCount = 0
 
   constructor({framework, name, type, url}: INamedReferenceUpdate) {
     this.framework = framework
     this.name = name
     this.type = type
     this.url = url
+    this.skillCount = 0
     }
 }
 

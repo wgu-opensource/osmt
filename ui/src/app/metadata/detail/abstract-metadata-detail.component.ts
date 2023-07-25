@@ -1,8 +1,7 @@
-import { Component, ElementRef, Input, OnInit, ViewChild} from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild} from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { Title } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
-
 import { SvgHelper, SvgIcon } from "src/app/core/SvgHelper";
 import { AbstractDataService } from "src/app/data/abstract-data.service";
 import { IDetailCardSectionData } from "src/app/detail-card/section/section.component";
@@ -18,25 +17,27 @@ import { ApiJobCode } from "../job-code/Jobcode";
 import { ApiNamedReference } from "../named-reference/NamedReference";
 import { MetadataType } from "../rsd-metadata.enum";
 import { QuickLinksHelper } from "../../core/quick-links-helper";
+import { ApiSkillSummary } from "../../richskill/ApiSkillSummary"
 
 
 @Component({
   template: ``
 })
 export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper implements OnInit {
-  @ViewChild("titleHeading") titleElement!: ElementRef
 
-  idParam: string | null;
+  @ViewChild("titleHeading") titleElement!: ElementRef
+  idParam: number | null;
   metadata?: ApiNamedReference | ApiJobCode;
   skillTableControl: RelatedSkillTableControl<number>
 
   searchForm = new FormGroup({
     search: new FormControl("")
   })
+  skills: ApiSkillSummary[] = []
 
   readonly searchIcon = SvgHelper.path(SvgIcon.SEARCH)
 
-  constructor(
+  protected constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     protected metadataService: AbstractDataService,
@@ -45,7 +46,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
     protected toastService: ToastService
   ) {
     super();
-    this.idParam = this.route.snapshot.paramMap.get("id");
+    this.idParam = parseInt(this.route.snapshot.paramMap.get("id") ?? "-1")
 
     this.skillTableControl = new RelatedSkillTableControl<number>(
       metadataService,
@@ -63,7 +64,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
   }
 
   get showSkillsEmpty(): boolean {
-    return this.skillTableControl.emptyResults;
+    return !this.showSkillsTable;
   }
 
   get showSkillsFilters(): boolean {
@@ -75,13 +76,13 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
   }
 
   get showSkillsTable(): boolean {
-    return !this.skillTableControl.emptyResults;
+    return this.skillTableControl.skills.length > 0
   }
 
-  // get skillsCountLabel(): string {
-  //     const rsdLabel = (this.metadata?.skillCount == 1) ? "RSD" : "RSDs"
-  //     return `${this.skillTableControl.totalCount} ${rsdLabel} with this category based on`
-  // }
+  get skillsCountLabel(): string {
+    const rsdLabel = (this.skillTableControl.size == 1) ? "RSD" : "RSDs"
+    return `${this.skillTableControl.totalCount} ${rsdLabel} with this ${this.getMetadataType()} based on`
+  }
 
   get skillsViewingLabel(): string {
     return (this.skillTableControl.currFirstSkillIndex && this.skillTableControl.currLastSkillIndex)
@@ -112,8 +113,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
 
   protected loadMetadata() {
     if (this.idParam) {
-      // this.categoryService.getById(this.idParam).subscribe(
-      //   (m: ApiNamedReference | ApiJobCode) => this.setMetadata(m));
+      this.metadataService.getById(this.idParam).subscribe((m: ApiNamedReference | ApiJobCode) => this.setMetadata(m));
     } else {
       this.clearMetadata();
     }
@@ -132,7 +132,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
 
   protected loadSkills(): void {
     if (this.metadata) {
-      // this.skillTableControl.loadSkills(this.metadata.id);
+      this.skillTableControl.loadSkills(this.getId())
     } else {
       this.clearSkills();
     }
@@ -158,7 +158,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
   }
 
   getMetadataName(): string {
-    return "Fine Arts";
+    return( this.metadata as ApiNamedReference)?.name ?? ""
   }
 
   getMetadataType(): string {
@@ -224,4 +224,5 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
     this.loadSkills();
     return false;
   }
+
 }

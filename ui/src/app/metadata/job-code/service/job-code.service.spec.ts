@@ -59,7 +59,7 @@ describe("JobCodeService", () => {
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.paginatedJobCodes(testData.data.length, 0, ApiSortOrder.NameAsc, undefined)
+    const result$ = testService.paginated(testData.data.length, 0, ApiSortOrder.NameAsc, undefined)
 
     // Assert
     result$
@@ -80,13 +80,14 @@ describe("JobCodeService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const id = "12345"
+    const id = 12345
+    const code = "12345"
     const path = getBaseApi() + "/metadata/jobcodes/" + id
-    const testData: ApiJobCode = new ApiJobCode(createMockJobcode(42, "my jobcode name", id))
+    const testData: ApiJobCode = new ApiJobCode(createMockJobcode(42, "my jobcode name", code))
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.getJobCodeById(id)
+    const result$ = testService.getById(id)
 
     // Assert
     result$
@@ -120,7 +121,7 @@ describe("JobCodeService", () => {
     })
 
     // Act
-    const result$ = testService.createJobCode(input)
+    const result$ = testService.create(input)
 
     // Assert
     result$
@@ -141,7 +142,7 @@ describe("JobCodeService", () => {
     AuthServiceData.isDown = false
     const testData = new ApiJobCode(createMockJobcode())
     const expected = testData
-    const id = expected.code
+    const id = expected.id ?? 0
     const path = getBaseApi() + "/metadata/jobcodes/" + id
     const input = new ApiJobCodeUpdate({
       code: expected.code,
@@ -153,7 +154,7 @@ describe("JobCodeService", () => {
     })
 
     // Act
-    const result$ = testService.updateJobCode(id, input)
+    const result$ = testService.update(id, input)
 
     // Assert
     result$
@@ -170,7 +171,7 @@ describe("JobCodeService", () => {
 
   it("deleteJobCodeWithResult() should works", fakeAsync(() => {
     const jobCodeId = 2
-    const result$ = testService.deleteJobCodeWithResult(jobCodeId)
+    const result$ = testService.deleteWithResult(jobCodeId)
     tick(ASYNC_WAIT_PERIOD)
     // Assert
     result$.subscribe((data: ApiBatchResult) => {

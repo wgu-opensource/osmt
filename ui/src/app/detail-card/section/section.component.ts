@@ -22,6 +22,4 @@ export class DetailCardSectionComponent {
 
   constructor() {}
 
-  ngOnInit(): void {
-  }
 }

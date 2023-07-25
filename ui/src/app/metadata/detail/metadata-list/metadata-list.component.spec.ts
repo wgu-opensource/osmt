@@ -77,7 +77,7 @@ describe("ManageMetadataComponent", () => {
 
   it("handleDeleteJobCode should call deleteJobCodeWithResult", () => {
     const mockJobCode = createMockJobcode()
-    const spyService = spyOn(component["jobCodeService"], "deleteJobCodeWithResult").and.returnValue(
+    const spyService = spyOn(component["jobCodeService"], "deleteWithResult").and.returnValue(
       of({success: true})
     )
     spyOn(window, 'confirm').and.callFake(function () {
@@ -89,7 +89,7 @@ describe("ManageMetadataComponent", () => {
 
   it("handleDeleteJobCode should not call deleteJobCodeWithResult", () => {
     const mockJobCode = createMockJobcode()
-    const spyService = spyOn(component["jobCodeService"], "deleteJobCodeWithResult").and.returnValue(
+    const spyService = spyOn(component["jobCodeService"], "deleteWithResult").and.returnValue(
       of({success: true})
     )
     spyOn(window, 'confirm').and.callFake(function () {
@@ -101,7 +101,7 @@ describe("ManageMetadataComponent", () => {
 
   it("handleDeleteNamedReference should call deleteNamedReferenceWithResult", () => {
     const mockNamedReference = createMockNamedReference2()
-    const spyService = spyOn(component["namedReferenceService"], "deleteNamedReferenceWithResult").and.returnValue(
+    const spyService = spyOn(component["namedReferenceService"], "deleteWithResult").and.returnValue(
       of({success: true})
     )
     spyOn(window, 'confirm').and.callFake(function () {
@@ -113,7 +113,7 @@ describe("ManageMetadataComponent", () => {
 
   it("handleDeleteNamedReference should not call deleteNamedReferenceWithResult", () => {
     const mockNamedReference = createMockNamedReference2()
-    const spyService = spyOn(component["namedReferenceService"], "deleteNamedReferenceWithResult").and.returnValue(
+    const spyService = spyOn(component["namedReferenceService"], "deleteWithResult").and.returnValue(
       of({success: true})
     )
     spyOn(window, 'confirm').and.callFake(function () {

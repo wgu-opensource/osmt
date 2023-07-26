@@ -62,7 +62,7 @@ export function createMockNamedReference2(
   url = "http://url123",
   framework = "Framework"
 ): NamedReferenceInterface {
-  return {id,name,type,url,framework, skillCount: 0
+  return {id,name,type,url,framework, skillCount: 0, publicUrl: url
   }
 }
 

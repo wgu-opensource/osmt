@@ -33,7 +33,7 @@
             </app-formfield-text>
           </div>
 
-          <div class="t-margin-medium t-margin-bottom">
+          <div class="t-margin-medium t-margin-bottom" *ngIf="isAlignment()">
             <app-formfield-text
               [control]="metadataForm.controls.framework"
               name="metadataValue"
@@ -45,7 +45,7 @@
             ></app-formfield-text>
           </div>
 
-          <div class="t-margin-medium t-margin-bottom">
+          <div class="t-margin-medium t-margin-bottom" *ngIf="isAlignment()">
             <app-formfield-text
               [control]="metadataForm.controls.uri"
               name="metadataValue"

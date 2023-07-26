@@ -14,9 +14,13 @@ export class MetadataSelectorComponent {
   @Input()
   currentSelection?: string
 
-  protected readonly MetadataType = MetadataType
+  types: string[] = []
   @Input()
   isVisible: () => boolean = () => false
+
+  constructor() {
+    this.types = Object.values(MetadataType).sort()
+  }
 
   onValueChange(value: string): void {
     this.control?.patchValue(value)

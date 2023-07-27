@@ -19,7 +19,11 @@ export class MetadataSelectorComponent {
   isVisible: () => boolean = () => false
 
   constructor() {
-    this.types = Object.values(MetadataType).sort()
+    this.types = Object.values(MetadataType).sort((a, b) => {
+      if(a < b) { return -1; }
+      if(a > b) { return 1; }
+      return 0;
+    })
   }
 
   onValueChange(value: string): void {

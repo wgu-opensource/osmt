@@ -29,7 +29,7 @@
             <app-metadata-selector [isVisible]="getSelectAllEnabled" [control]="typeControl" [currentSelection]="selectedMetadataType">
             </app-metadata-selector>
             <div class="create-metadata-container">
-              <a class="m-button" routerLink="/named-references/create" [state]="{metadataType: typeControl.value}">
+              <a class="m-button" routerLink="{{createRoute}}" [state]="{metadataType: typeControl.value}">
                 <svg class="m-button-x-icon t-icon">
                   <use xlink:href="/assets/images/svg-defs.svg#icon-collection"></use>
                 </svg>

@@ -30,6 +30,7 @@ import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-
 import { MetadataManageComponent } from "./metadata/detail/metadata-manage/metadata-manage.component"
 import { MetadataPublicComponent } from "./metadata/detail/metadata-public/metadata-public.component"
 import { NamedReferenceFormComponent } from "./metadata/named-reference/named-reference-form/named-reference-form.component"
+import { JobCodeFormComponent } from "./metadata/job-code/job-code-form/job-code-form.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -103,13 +104,13 @@ const routes: Routes = [
       roles: ActionByRoles.get(ButtonAction.MetadataCreate)
     },
   },
-  /*{path: "job-codes/create",
-    component: MetadataFormComponent,
+  {path: "job-codes/create",
+    component: JobCodeFormComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataCreate)
     },
-  },*/
+  },
   // edit metadata
   {
     path: "named-references/:id/edit",
@@ -119,13 +120,13 @@ const routes: Routes = [
       roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
     },
   },
-  /*{path: "job-codes/:id/edit",
-    component: MetadataFormComponent,
+  {path: "job-codes/:id/edit",
+    component: JobCodeFormComponent,
     canActivate: [AuthGuard],
     data: {
       roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
     },
-  },*/
+  },
   // public metadata detail
   {
     path: "job-codes/:id",

@@ -89,12 +89,14 @@ const routes: Routes = [
 
   /* KEYWORDS */
 
-  {path: "metadata",
+  {
+    path: "metadata",
     component: MetadataListComponent,
     canActivate: [AuthGuard],
   },
   // create metadata
-  {path: "named-references/create",
+  {
+    path: "named-references/create",
     component: NamedReferenceFormComponent,
     canActivate: [AuthGuard],
     data: {
@@ -109,7 +111,8 @@ const routes: Routes = [
     },
   },*/
   // edit metadata
-  {path: "named-references/:id/edit",
+  {
+    path: "named-references/:id/edit",
     component: NamedReferenceFormComponent,
     canActivate: [AuthGuard],
     data: {
@@ -124,20 +127,19 @@ const routes: Routes = [
     },
   },*/
   // public metadata detail
-  {path: "named-references/:id",
-    component: MetadataPublicComponent,
-    canActivate: [AuthGuard]
-  },
-  {path: "job-codes/:id",
+  {
+    path: "job-codes/:id",
     component: MetadataPublicComponent,
     canActivate: [AuthGuard]
   },
   // admin metadata detail
-  {path: "named-references/:id/manage",
+  {
+    path: "named-references/:id/manage",
     component: MetadataManageComponent,
     canActivate: [AuthGuard]
   },
-  {path: "job-codes/:id/manage",
+  {
+    path: "job-codes/:id/manage",
     component: MetadataManageComponent,
     canActivate: [AuthGuard]
   },
@@ -246,6 +248,10 @@ const routes: Routes = [
   {path: "collections/:uuid", component: CollectionPublicComponent},
   {path: "api/skills/:uuid", component: RichSkillPublicComponent},
   {path: "api/collections/:uuid", component: CollectionPublicComponent},
+  {
+    path: "api/metadata/keywords/:id",
+    component: MetadataPublicComponent
+  },
 
   /* AUTHENTICATION REDIRECTS */
   {path: "login", component: LoginComponent},  // redirect to oauth login

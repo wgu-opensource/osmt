@@ -85,6 +85,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_DETAIL}",
                     "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_DETAIL}",
                     "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_DETAIL}").permitAll()
+            .mvcMatchers(GET,"${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.KEYWORD_DETAIL}").permitAll()
             .mvcMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_DETAIL}",
                     "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_DETAIL}",
                     "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_DETAIL}").permitAll()

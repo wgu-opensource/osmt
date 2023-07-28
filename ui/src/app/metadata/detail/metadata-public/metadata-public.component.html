@@ -14,7 +14,7 @@
         <app-public-metadata-action-bar-vertical
           [id]="getId()"
           [metadataName]="getMetadataName()"
-          [metadataPublicUrl]="getId()"
+          [metadataPublicUrl]="getPublicUrl()"
           (reloadMetadata)="loadMetadata()"
         ></app-public-metadata-action-bar-vertical>
 
@@ -60,7 +60,7 @@
       <div class="t-margin-medium t-margin-bottom">
         <app-skill-table
           *ngIf="showSkillsTable"
-          [items]="skills"
+          [items]="skillTableControl.skills"
           [showRowActions]="false"
           [currentSort]="skillTableControl.sort"
           [mobileSortOptions]="getMobileSkillSortOptions()"

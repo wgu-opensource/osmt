@@ -19,7 +19,7 @@ import { NamedReferenceService } from "../../named-reference/service/named-refer
 })
 export class MetadataListComponent extends AbstractListComponent<IJobCode | NamedReferenceInterface> implements OnInit {
 
-  selectedMetadataType = MetadataType.Category
+  selectedMetadataType = Object.values(MetadataType)[0];
 
   typeControl: FormControl = new FormControl(this.selectedMetadataType)
 

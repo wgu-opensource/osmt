@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms"
 import { ActivatedRoute, Router } from "@angular/router"
 import { Location } from "@angular/common"
 import { NamedReferenceService } from "../service/named-reference.service"
+import { MetadataType } from "../../rsd-metadata.enum"
 
 @Component({
   selector: 'app-create',
@@ -20,6 +21,10 @@ export class NamedReferenceFormComponent extends MetadataFormComponent {
     protected namedReferenceService: NamedReferenceService
   ) {
     super(route, router, location, formBuilder, namedReferenceService)
+  }
+
+  isAlignment(): boolean {
+    return this.metadataType == Object.keys(MetadataType)[Object.values(MetadataType).indexOf(MetadataType.Alignment)];
   }
 
   getFormDefinitions(): FormGroup {

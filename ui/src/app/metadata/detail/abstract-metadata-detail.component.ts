@@ -125,6 +125,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
 
   protected setMetadata(metadata: ApiNamedReference | ApiJobCode) {
     this.metadata = metadata;
+    console.log(this.metadata)
 
     // this.titleService.setTitle(`${category.name} | Category | ${this.whitelabel.toolName}`)
     this.loadSkills();
@@ -132,7 +133,7 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
 
   protected loadSkills(): void {
     if (this.metadata) {
-      this.skillTableControl.loadSkills(this.getId())
+      this.skillTableControl.loadSkills(this.idParam ?? -1)
     } else {
       this.clearSkills();
     }
@@ -151,6 +152,10 @@ export abstract class AbstractMetadataDetailComponent extends QuickLinksHelper i
 
   getId(): number {
     return this.metadata?.id ?? -1;
+  }
+
+  getPublicUrl(): string {
+    return (this.metadata as any)?.publicUrl ?? "";
   }
 
   getCardFormat(): IDetailCardSectionData[] {

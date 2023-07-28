@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.server.ResponseStatusException
@@ -74,7 +75,16 @@ class KeywordController @Autowired constructor(
 
         return ResponseEntity.status(200)
             .headers(responseHeaders)
-            .body(searchResults.map { ApiKeyword.fromModel(it.content) }.toList())
+            .body(searchResults.map { ApiKeyword.fromModel(it.content, appConfig) }.toList())
+    }
+
+    @RequestMapping(path = [
+        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.KEYWORD_DETAIL}"
+    ],
+        produces = [MediaType.TEXT_HTML_VALUE])
+    fun byUUIDHtmlView(@PathVariable id: String): String {
+        System.out.println("here by uuid html view keyword")
+        return "forward:${RoutePaths.UNVERSIONED}/metadata/keywords/$id"
     }
 
     @GetMapping(
@@ -104,7 +114,7 @@ class KeywordController @Autowired constructor(
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(keywordRepository.createFromApi(apiKeywordUpdate)?.let { ApiKeyword(it.toModel(), it.skills.count()) })
+            .body(keywordRepository.createFromApi(apiKeywordUpdate)?.let { ApiKeyword(it.toModel(), it.skills.count(), appConfig) })
     }
 
     @PostMapping(
@@ -126,7 +136,7 @@ class KeywordController @Autowired constructor(
                 oAuthHelper.readableUserName(user)
             )
                 ?.let {
-                    ApiKeyword(it.toModel(), it.skills.count())
+                    ApiKeyword(it.toModel(), it.skills.count(), appConfig)
                 }
             )
     }
@@ -149,7 +159,7 @@ class KeywordController @Autowired constructor(
     private fun byId(
         id: Long,
     ): ApiKeyword? {
-        val found = keywordRepository.findById(id)?.let { ApiKeyword(it.toModel(), it.skills.count()) }
+        val found = keywordRepository.findById(id)?.let { ApiKeyword(it.toModel(), it.skills.count(), appConfig) }
         return found
     }
 

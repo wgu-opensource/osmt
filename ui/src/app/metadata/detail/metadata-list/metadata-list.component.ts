@@ -20,6 +20,7 @@ import { NamedReferenceService } from "../../named-reference/service/named-refer
 export class MetadataListComponent extends AbstractListComponent<IJobCode | NamedReferenceInterface> implements OnInit {
 
   selectedMetadataType = Object.values(MetadataType)[0];
+  createRoute = "";
 
   typeControl: FormControl = new FormControl(this.selectedMetadataType)
 
@@ -27,6 +28,7 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
   canDeleteMetadata = this.authService.isEnabledByRoles(ButtonAction.MetadataAdmin)
 
   clearSelectedItemsFromTable = new Subject<void>()
+
   constructor(
     protected authService: AuthService,
     protected jobCodeService: JobCodeService,
@@ -60,21 +62,38 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
   loadNextPage(): void {
     this.selectedData = []
     if (this.isJobCodeDataSelected) {
+      this.createRoute = "/job-codes/create"
       this.resultsLoaded = this.jobCodeService.paginated(this.size, this.from, this.columnSort, this.matchingQuery)
       this.resultsLoaded.subscribe(jobCodes => this.results = jobCodes)
     } else {
+      this.createRoute = "/named-references/create"
       const getEnumKey = Object.keys(MetadataType)[Object.values(MetadataType).indexOf(this.selectedMetadataType)];
       this.resultsLoaded = this.namedReferenceService.paginated(this.size, this.from, this.columnSort, getEnumKey, this.matchingQuery)
       this.resultsLoaded.subscribe(namedReferences => this.results = namedReferences)
     }
   }
 
+  get isJobCodeDataSelected(): boolean {
+    return this.selectedMetadataType === MetadataType.JobCode
+  }
+
   get metadataCountLabel(): string {
     return `${this.totalCount} ${this.selectedMetadataType}`
   }
 
-  get isJobCodeDataSelected(): boolean {
-    return this.selectedMetadataType === MetadataType.JobCode
+  get metadataTypeSelected(): string {
+    return Object.keys(MetadataType)[Object.values(MetadataType).indexOf(this.selectedMetadataType)];
+  }
+
+  get selectedJobCodesOrderedByLevel(): IJobCode[] {
+    return (this.selectedData as IJobCode[]).sort((a, b) => {
+      if ((a.jobCodeLevelAsNumber ?? 0) > (b.jobCodeLevelAsNumber ?? 0)) {
+        return -1
+      } else if ((a.jobCodeLevelAsNumber) ?? 0 < (b.jobCodeLevelAsNumber ?? 0)) {
+        return 1
+      }
+      return 0
+    })
   }
 
   getJobCodes(): IJobCode[] {
@@ -83,10 +102,6 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
 
   getNamedReferences(): NamedReferenceInterface[] {
     return (this.results?.data) as NamedReferenceInterface[]
-  }
-
-  get metadataTypeSelected(): string {
-    return Object.keys(MetadataType)[Object.values(MetadataType).indexOf(this.selectedMetadataType)];
   }
 
   rowActions(): TableActionDefinition[] {
@@ -119,17 +134,6 @@ export class MetadataListComponent extends AbstractListComponent<IJobCode | Name
       })
     )
     return tableActions
-  }
-
-  get selectedJobCodesOrderedByLevel(): IJobCode[] {
-    return (this.selectedData as IJobCode[]).sort((a, b) => {
-      if ((a.jobCodeLevelAsNumber ?? 0) > (b.jobCodeLevelAsNumber ?? 0)) {
-        return -1
-      } else if ((a.jobCodeLevelAsNumber) ?? 0 < (b.jobCodeLevelAsNumber ?? 0)) {
-        return 1
-      }
-      return 0
-    })
   }
 
   private handleDeleteMultipleMetadata(): void {

@@ -28,11 +28,12 @@ export class JobCodeFormComponent extends MetadataFormComponent {
 
   getFormDefinitions(): FormGroup {
     return this.formBuilder.group({
+      code: [undefined, [Validators.required]],
       name: [undefined, [Validators.required]],
+      framework: [undefined],
+      description: [undefined, [Validators.required]],
       url: [undefined],
       type: [this.metadataType],
-      framework: [undefined]
-      //TODO
     });
   }
 

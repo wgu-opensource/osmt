@@ -3,8 +3,9 @@ package edu.wgu.osmt.jobcode
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.JobCodeUpdate
 import edu.wgu.osmt.db.JobCodeLevel
-import edu.wgu.osmt.richskill.RichSkillJobCodeRepository
+import edu.wgu.osmt.richskill.*
 import org.jetbrains.exposed.sql.SizedIterable
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
@@ -19,6 +20,9 @@ import java.time.ZoneOffset
 
 interface JobCodeRepository {
     val table: Table
+    val richSkillJobCodes: RichSkillJobCodes
+    val richSkillRepository: RichSkillRepository
+
     fun findAll(): SizedIterable<JobCodeDao>
     fun findById(id: Long): JobCodeDao?
     fun findByCode(code: String): JobCodeDao?
@@ -27,6 +31,7 @@ interface JobCodeRepository {
     fun findBlsCode(code: String): JobCodeDao?
     fun create(code: String, framework: String? = null): JobCodeDao
     fun createFromApi(jobCodes: List<JobCodeUpdate>): List<JobCodeDao>
+    fun updateFromApi(existingJobCodeId: Long, apiJobCodeUpdate: JobCodeUpdate, username: String): JobCodeDao?
     fun onetsByDetailCode(detailedCode: String): SizedIterable<JobCodeDao>
     fun remove(jobCodeId: Long): ApiBatchResult
 
@@ -48,8 +53,13 @@ class JobCodeRepositoryImpl: JobCodeRepository {
     @Lazy
     lateinit var richSkillJobCodeRepository: RichSkillJobCodeRepository
 
+    @Autowired
+    @Lazy
+    override lateinit var richSkillRepository: RichSkillRepository
+
     val dao = JobCodeDao.Companion
     override val table = JobCodeTable
+    override val richSkillJobCodes = RichSkillJobCodes
 
     override fun findAll() = dao.all()
 
@@ -75,6 +85,31 @@ class JobCodeRepositoryImpl: JobCodeRepository {
                 this.major = "my major"
             }.also { jobCodeEsRepo.save(it.toModel()) }
         }
+    }
+
+    override fun updateFromApi(existingJobCodeId: Long, apiJobCodeUpdate: JobCodeUpdate, username: String): JobCodeDao? {
+        val found = dao.findById(existingJobCodeId)
+        if (found!=null) {
+            transaction {
+                found.code = apiJobCodeUpdate.code
+                found.name = apiJobCodeUpdate.targetNodeName
+                found.framework = apiJobCodeUpdate.framework
+                jobCodeEsRepo.save(found.toModel())
+
+                // update rich skill after values changes in keyword and reindex
+                richSkillJobCodes.select { richSkillJobCodes.jobCodeId eq found.id }.forEach { it ->
+                    val richSkillId = it[richSkillJobCodes.richSkillId]
+                    // richSkillRepository.findById(richSkillId.value)?.keywords?.forEach { it2 -> println(it2.value) }
+                    richSkillRepository.update(
+                        RsdUpdateObject(
+                            id = richSkillId.value
+                        ),
+                        username
+                    )
+                }
+            }
+        }
+        return found
     }
 
     override fun findByCodeOrCreate(code: String, framework: String?): JobCodeDao {

@@ -37,6 +37,7 @@ object RoutePaths {
     const val SKILL_AUDIT_LOG = "$SKILL_DETAIL/log"
 
     const val METADATA_PATH = "/metadata"
+
     const val KEYWORD_PATH = "${METADATA_PATH}/keywords"
     const val KEYWORD_LIST = KEYWORD_PATH
     const val KEYWORD_CREATE = KEYWORD_PATH
@@ -44,6 +45,14 @@ object RoutePaths {
     const val KEYWORD_UPDATE = "$KEYWORD_DETAIL/update"
     const val KEYWORD_REMOVE = "$KEYWORD_DETAIL/remove"
     const val KEYWORD_SKILLS = "${KEYWORD_DETAIL}/skills"
+
+    const val JOB_CODE_PATH = "$METADATA_PATH/jobcodes"
+    const val JOB_CODE_CREATE = JOB_CODE_PATH
+    const val JOB_CODE_LIST = JOB_CODE_PATH
+    const val JOB_CODE_DETAIL = "$JOB_CODE_PATH/{id}"
+    const val JOB_CODE_UPDATE = "$JOB_CODE_DETAIL/update"
+    const val JOB_CODE_REMOVE = "$JOB_CODE_DETAIL/remove"
+    const val JOB_CODE_SKILLS = "${JOB_CODE_DETAIL}/skills"
 
     //collections
     private const val COLLECTIONS_PATH = "/collections"
@@ -73,13 +82,6 @@ object RoutePaths {
     private const val ES_ADMIN = "/es-admin"
     const val ES_ADMIN_DELETE_INDICES = "$ES_ADMIN/delete-indices"
     const val ES_ADMIN_REINDEX = "$ES_ADMIN/reindex"
-
-    const val JOB_CODE_PATH = "$METADATA_PATH/jobcodes"
-    const val JOB_CODE_CREATE = JOB_CODE_PATH
-    const val JOB_CODE_LIST = JOB_CODE_PATH
-    const val JOB_CODE_DETAIL = "$JOB_CODE_PATH/{id}"
-    const val JOB_CODE_UPDATE = "$JOB_CODE_DETAIL/update"
-    const val JOB_CODE_REMOVE = "$JOB_CODE_DETAIL/remove"
 
     object QueryParams {
         const val FROM = "from"

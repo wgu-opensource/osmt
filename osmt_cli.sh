@@ -251,7 +251,8 @@ Usage:
   -r   Start the local Spring app to reindex ElasticSearch.
   -a   Start the local API tests for OSMT. This requires a valid OSMT jar file (from a 'mvn package')
   -m   Import default BLS and O*NET metadata into local Development instance.
-  -c   Surgically clean up OSMT-related Docker images and data volumes. This step will delete data from Development and API Test configurations. It does not remove the mysql/redis/elasticsearch images, as
+  -c   Surgically clean up OSMT-related Docker images and data volumes. This step will delete data from 
+       Development and API Test configurations. It does not remove the mysql/redis/elasticsearch images, as
        those may be available locally for other purposes.
   -h   Show this help message.
 

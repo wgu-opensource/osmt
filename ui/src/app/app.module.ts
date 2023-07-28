@@ -125,6 +125,7 @@ import { MetadataCardComponent } from "./metadata/detail/metadata-card/metadata-
 import { ManageMetadataActionBarVerticalComponent } from "./metadata/detail/metadata-manage/action-bar-vertical/metadata-manage-action-bar-vertical.component"
 import { PublicMetadataActionBarVerticalComponent } from "./metadata/detail/metadata-public/action-bar-vertical/metadata-public-action-bar-vertical.component";
 import { NamedReferenceFormComponent } from "./metadata/named-reference/named-reference-form/named-reference-form.component"
+import { JobCodeFormComponent } from "./metadata/job-code/job-code-form/job-code-form.component";
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -254,7 +255,8 @@ export function initializeApp(
     InlineHeadingComponent,
     JobCodeParentsPipe,
     InlineHeadingComponent,
-    NamedReferenceFormComponent
+    NamedReferenceFormComponent,
+    JobCodeFormComponent
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),

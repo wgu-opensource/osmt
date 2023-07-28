@@ -67,6 +67,7 @@ export class ApiJobCodeUpdate implements IJobCodeUpdate {
   frameworkName?: string
   level?: JobCodeLevel
   parents?: IJobCode[]
+  skillCount = 0
 
   constructor({code, targetNodeName, targetNode, frameworkName, level, parents}: IJobCodeUpdate) {
     this.code = code
@@ -75,5 +76,6 @@ export class ApiJobCodeUpdate implements IJobCodeUpdate {
     this.frameworkName = frameworkName
     this.level = level
     this.parents = parents
+    this.skillCount = 0
   }
 }

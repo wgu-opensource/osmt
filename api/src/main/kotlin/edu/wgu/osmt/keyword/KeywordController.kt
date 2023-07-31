@@ -49,7 +49,6 @@ class KeywordController @Autowired constructor(
     val keywordEsRepo: KeywordEsRepo,
     val richSkillEsRepo: RichSkillEsRepo,
     val taskMessageService: TaskMessageService,
-    val appConfig: AppConfig,
     val oAuthHelper: OAuthHelper,
 ) {
 
@@ -75,16 +74,7 @@ class KeywordController @Autowired constructor(
 
         return ResponseEntity.status(200)
             .headers(responseHeaders)
-            .body(searchResults.map { ApiKeyword.fromModel(it.content, appConfig) }.toList())
-    }
-
-    @RequestMapping(path = [
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.KEYWORD_DETAIL}"
-    ],
-        produces = [MediaType.TEXT_HTML_VALUE])
-    fun byUUIDHtmlView(@PathVariable id: String): String {
-        System.out.println("here by uuid html view keyword")
-        return "forward:${RoutePaths.UNVERSIONED}/metadata/keywords/$id"
+            .body(searchResults.map { ApiKeyword.fromModel(it.content) }.toList())
     }
 
     @GetMapping(
@@ -114,7 +104,7 @@ class KeywordController @Autowired constructor(
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(keywordRepository.createFromApi(apiKeywordUpdate)?.let { ApiKeyword(it.toModel(), it.skills.count(), appConfig) })
+            .body(keywordRepository.createFromApi(apiKeywordUpdate)?.let { ApiKeyword(it.toModel(), it.skills.count()) })
     }
 
     @PostMapping(
@@ -136,7 +126,7 @@ class KeywordController @Autowired constructor(
                 oAuthHelper.readableUserName(user)
             )
                 ?.let {
-                    ApiKeyword(it.toModel(), it.skills.count(), appConfig)
+                    ApiKeyword(it.toModel(), it.skills.count())
                 }
             )
     }
@@ -159,7 +149,7 @@ class KeywordController @Autowired constructor(
     private fun byId(
         id: Long,
     ): ApiKeyword? {
-        val found = keywordRepository.findById(id)?.let { ApiKeyword(it.toModel(), it.skills.count(), appConfig) }
+        val found = keywordRepository.findById(id)?.let { ApiKeyword(it.toModel(), it.skills.count()) }
         return found
     }
 

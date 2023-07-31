@@ -62,8 +62,7 @@ export function createMockNamedReference2(
   url = "http://url123",
   framework = "Framework"
 ): NamedReferenceInterface {
-  return {id,name,type,url,framework, skillCount: 0, publicUrl: url
-  }
+  return {id,name,type,url,framework, skillCount: 0}
 }
 
 export const mockJobCodesParents: IJobCode[] = [

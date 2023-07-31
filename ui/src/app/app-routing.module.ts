@@ -132,6 +132,11 @@ const routes: Routes = [
     component: MetadataPublicComponent,
     canActivate: [AuthGuard]
   },
+  {
+    path: "named-references/:id",
+    component: MetadataPublicComponent,
+    canActivate: [AuthGuard]
+  },
   // admin metadata detail
   {
     path: "named-references/:id/manage",
@@ -248,10 +253,6 @@ const routes: Routes = [
   {path: "collections/:uuid", component: CollectionPublicComponent},
   {path: "api/skills/:uuid", component: RichSkillPublicComponent},
   {path: "api/collections/:uuid", component: CollectionPublicComponent},
-  {
-    path: "api/metadata/keywords/:id",
-    component: MetadataPublicComponent
-  },
 
   /* AUTHENTICATION REDIRECTS */
   {path: "login", component: LoginComponent},  // redirect to oauth login

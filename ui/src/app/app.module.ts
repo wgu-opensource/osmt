@@ -108,7 +108,6 @@ import { SizePaginationComponent } from "./table/skills-library-table/size-pagin
 import {OsmtTableModule} from "./table/osmt-table.module"
 import { getBaseApi } from "./api-versions"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
-import { MatMenuModule } from "@angular/material/menu"
 import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
 import { JobCodeListRowComponent } from "./metadata/job-code/job-code-list-row/job-code-list-row.component"
 import { JobCodeTableComponent } from "./metadata/job-code/job-code-table/job-code-table.component"
@@ -268,8 +267,7 @@ export function initializeApp(
     OsmtFormModule,
     FormsModule,
     OsmtTableModule,
-    NoopAnimationsModule,
-    MatMenuModule
+    NoopAnimationsModule
   ],
   providers: [
     EnvironmentService,

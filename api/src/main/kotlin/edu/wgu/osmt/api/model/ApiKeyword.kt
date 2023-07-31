@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 @JsonInclude(JsonInclude.Include.ALWAYS)
 class ApiKeyword(
     private val keyword: Keyword,
-    private val totalSkills: Long?,
-    private val appConfig: AppConfig
+    private val totalSkills: Long?
 ) {
     @get:JsonProperty
     val id: Long?
@@ -38,30 +37,22 @@ class ApiKeyword(
     val skillCount: Long?
         get() = totalSkills
 
-    @get:JsonProperty
-    val publicUrl: String
-        get() = "${appConfig.baseUrl}/api/metadata/keywords/${id}"
-
     companion object {
         fun fromDao(
-            keywordDao: KeywordDao,
-            appConfig: AppConfig
+            keywordDao: KeywordDao
         ): ApiKeyword {
             return ApiKeyword(
                 keyword = keywordDao.toModel(),
-                totalSkills = keywordDao.skills.count(),
-                appConfig = appConfig
+                totalSkills = keywordDao.skills.count()
             )
         }
 
         fun fromModel(
-            keyword: Keyword,
-            appConfig: AppConfig
+            keyword: Keyword
         ): ApiKeyword {
             return ApiKeyword(
                 totalSkills = keyword.id?.let { KeywordDao.findById(it)?.skills?.count() ?: 0 },
-                keyword = keyword,
-                appConfig = appConfig
+                keyword = keyword
             )
         }
     }

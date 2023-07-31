@@ -49,16 +49,6 @@ export class ManageMetadataActionBarVerticalComponent implements OnInit {
     this.setEnableFlags();
   }
 
-  handleCopyPublicURL(): void {
-    navigator.clipboard.writeText(this.metadataPublicUrl)
-      .then(
-        () => this.toastService.showToast("Success!", "URL copied to clipboard")
-      )
-      .catch(
-        () => this.toastService.showToast("Error", "Could not copy to clipboard")
-      );
-  }
-
   setEnableFlags(): void {
     this.canMetadataUpdate = this.authService.isEnabledByRoles(ButtonAction.MetadataUpdate);
     this.canMetadataCreate = this.authService.isEnabledByRoles(ButtonAction.MetadataCreate);

@@ -7,7 +7,6 @@ export interface NamedReferenceInterface {
   url: string
   framework: string
   skillCount: number
-  publicUrl: string
 }
 
 export class ApiNamedReference implements NamedReferenceInterface {
@@ -17,7 +16,6 @@ export class ApiNamedReference implements NamedReferenceInterface {
   type?: MetadataType = MetadataType.Category
   url = ""
   skillCount: number = 0
-  publicUrl = ""
 
   constructor(o?: NamedReferenceInterface) {
     if (o !== undefined) {

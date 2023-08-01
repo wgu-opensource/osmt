@@ -17,6 +17,8 @@
 - [ ] Advanced Search Functions
 - [ ] Export RSD Library to CSV
 - [ ] Export RSD Library to Excel workbook (open in Excel)
+- [ ] View RSD Metadata Screen
+- [ ] Select and edit Metadata options from Menu
 
 ## Collections
 - [ ] Collections Present

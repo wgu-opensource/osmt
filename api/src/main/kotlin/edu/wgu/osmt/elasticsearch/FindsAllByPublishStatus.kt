@@ -4,7 +4,7 @@ import edu.wgu.osmt.db.PublishStatus
 import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.QueryBuilders
 import org.springframework.data.domain.Pageable
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
+import org.springframework.data.elasticsearch.client.erhlc.ElasticsearchRestTemplate
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
 

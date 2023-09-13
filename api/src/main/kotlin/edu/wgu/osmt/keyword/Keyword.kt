@@ -6,7 +6,7 @@ import edu.wgu.osmt.db.HasUpdateDate
 import edu.wgu.osmt.db.NullableFieldUpdate
 import edu.wgu.osmt.db.TableWithUpdate
 import edu.wgu.osmt.db.UpdateObject
-import org.elasticsearch.core.Nullable
+import javax.annotation.Nullable
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.`java-time`.datetime

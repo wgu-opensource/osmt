@@ -6,7 +6,7 @@ import org.elasticsearch.index.query.QueryBuilders
 import org.springframework.data.domain.Pageable
 import org.springframework.data.elasticsearch.client.erhlc.ElasticsearchRestTemplate
 import org.springframework.data.elasticsearch.core.SearchHits
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
+import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 
 
 interface FindsAllByPublishStatus<T> {

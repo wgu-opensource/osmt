@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
-import org.springframework.data.elasticsearch.client.erhlc.ElasticsearchRestTemplate
+//import org.springframework.data.elasticsearch.client.erhlc.ElasticsearchRestTemplate
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 import java.time.LocalDateTime

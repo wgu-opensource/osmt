@@ -8,7 +8,7 @@ import org.elasticsearch.search.sort.SortBuilders
 import org.elasticsearch.search.sort.SortOrder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.elasticsearch.client.erhlc.ElasticsearchRestTemplate
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
@@ -16,7 +16,7 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
 interface CustomKeywordRepository {
-    val elasticSearchTemplate: ElasticsearchRestTemplate
+    val elasticSearchTemplate: ElasticsearchTemplate
     fun typeAheadSearch(query: String, type: KeywordTypeEnum): SearchHits<Keyword>
 
     fun deleteIndex() {
@@ -24,7 +24,7 @@ interface CustomKeywordRepository {
     }
 }
 
-class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :
+class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchTemplate) :
     CustomKeywordRepository {
     override fun typeAheadSearch(query: String, type: KeywordTypeEnum): SearchHits<Keyword> {
         val limitedPageable: OffsetPageable

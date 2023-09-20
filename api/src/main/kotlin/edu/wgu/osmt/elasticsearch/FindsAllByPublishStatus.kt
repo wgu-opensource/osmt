@@ -4,13 +4,13 @@ import edu.wgu.osmt.db.PublishStatus
 import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.QueryBuilders
 import org.springframework.data.domain.Pageable
-import org.springframework.data.elasticsearch.client.erhlc.ElasticsearchRestTemplate
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 
 
 interface FindsAllByPublishStatus<T> {
-    val elasticSearchTemplate: ElasticsearchRestTemplate
+    val elasticSearchTemplate: ElasticsearchTemplate
     val javaClass: Class<T>
 
     fun findAllFilteredByPublishStatus(publishStatus: Set<PublishStatus>, pageable: Pageable): SearchHits<T> {

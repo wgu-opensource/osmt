@@ -44,27 +44,27 @@ fun SchemaUtils.addMissingColumnsStatementsPublic(vararg tables: Table): List<St
             }
         }
 
-        if (db.supportsAlterTableWithAddColumn) {
-            val existingColumnConstraint = db.dialect.columnConstraints(*tables)
-
-            for (table in tables) {
-                for (column in table.columns) {
-                    val foreignKey = column.foreignKey
-                    if (foreignKey != null) {
-                        val existingConstraint = existingColumnConstraint[table to column]?.firstOrNull()
-                        if (existingConstraint == null) {
-                            statements.addAll(createFKey(column))
-                        } else if (existingConstraint.target.table != foreignKey.target.table
-                            || foreignKey.deleteRule != existingConstraint.deleteRule
-                            || foreignKey.updateRule != existingConstraint.updateRule
-                        ) {
-                            statements.addAll(existingConstraint.dropStatement())
-                            statements.addAll(createFKey(column))
-                        }
-                    }
-                }
-            }
-        }
+//        if (db.supportsAlterTableWithAddColumn) {
+//            val existingColumnConstraint = db.dialect.columnConstraints(*tables)
+//
+//            for (table in tables) {
+//                for (column in table.columns) {
+//                    val foreignKey = column.foreignKey
+//                    if (foreignKey != null) {
+//                        val existingConstraint = existingColumnConstraint[table to column]?.firstOrNull()
+//                        if (existingConstraint == null) {
+//                            statements.addAll(createFKey(column))
+//                        } else if (existingConstraint.target.table != foreignKey.target.table
+//                            || foreignKey.deleteRule != existingConstraint.deleteRule
+//                            || foreignKey.updateRule != existingConstraint.updateRule
+//                        ) {
+//                            statements.addAll(existingConstraint.dropStatement())
+//                            statements.addAll(createFKey(column))
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
         return statements
     }

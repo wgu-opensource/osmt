@@ -1,7 +1,7 @@
 package edu.wgu.osmt.auditlog
 
-import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import edu.wgu.osmt.db.OutputsModel
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass

@@ -1,15 +1,19 @@
 package edu.wgu.osmt.elasticsearch
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient
+import co.elastic.clients.json.jackson.JacksonJsonpMapper
+import co.elastic.clients.transport.ElasticsearchTransport
+import co.elastic.clients.transport.rest_client.RestClientTransport
 import org.apache.http.HttpHost
 import org.elasticsearch.client.RestClient
-import org.elasticsearch.client.RestHighLevelClient
+import org.elasticsearch.client.RestClientBuilder.HttpClientConfigCallback
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.convert.converter.Converter
 import org.springframework.data.convert.ReadingConverter
 import org.springframework.data.convert.WritingConverter
-//import org.springframework.data.elasticsearch.client.erhlc.ElasticsearchRestTemplate
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 import java.time.LocalDateTime
@@ -25,13 +29,18 @@ class ElasticsearchClientManager {
 
     @Override
     @Bean
-    fun elasticSearchClient(): RestHighLevelClient {
-        return RestHighLevelClient(RestClient.builder(HttpHost.create(esConfig.uri)))
+    fun elasticSearchClient(): ElasticsearchClient {
+        val builder = RestClient.builder(HttpHost("localhost", 9200, "http"))
+        //val httpClientConfigCallback: HttpClientConfigCallback = HttpClientConfigCallbackImpl()
+        //builder.setHttpClientConfigCallback(httpClientConfigCallback)
+        val restClient = builder.build()
+        val transport: ElasticsearchTransport = RestClientTransport(restClient, JacksonJsonpMapper())
+        return ElasticsearchClient(transport)
     }
 
     @Bean
-    fun elasticsearchTemplate(): ElasticsearchRestTemplate {
-        return ElasticsearchRestTemplate(elasticSearchClient())
+    fun elasticsearchTemplate(): ElasticsearchTemplate {
+        return ElasticsearchTemplate(elasticSearchClient())
     }
 
     @Bean

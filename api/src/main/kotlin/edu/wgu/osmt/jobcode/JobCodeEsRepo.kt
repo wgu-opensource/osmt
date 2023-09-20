@@ -1,23 +1,33 @@
 package edu.wgu.osmt.jobcode
 
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery
+import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery
+import co.elastic.clients.elasticsearch._types.query_dsl.Query
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.match
 import edu.wgu.osmt.config.INDEX_JOBCODE_DOC
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.Operator
 import org.elasticsearch.index.query.QueryBuilders.*
+import org.elasticsearch.search.builder.SearchSourceBuilder
 import org.elasticsearch.search.sort.SortBuilders
 import org.elasticsearch.search.sort.SortOrder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.elasticsearch.client.erhlc.ElasticsearchRestTemplate
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
+import org.springframework.data.elasticsearch.client.elc.NativeQuery
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder
+import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
+import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
-import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
+
 interface CustomJobCodeRepository {
-    val elasticSearchTemplate: ElasticsearchRestTemplate
+    val elasticSearchTemplate: ElasticsearchTemplate
     fun typeAheadSearch(query: String): SearchHits<JobCode>
 
     fun deleteIndex() {
@@ -25,7 +35,7 @@ interface CustomJobCodeRepository {
     }
 }
 
-class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :
+class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchTemplate) :
     CustomJobCodeRepository {
 
     override fun typeAheadSearch(query: String): SearchHits<JobCode> {

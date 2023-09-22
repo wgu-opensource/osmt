@@ -24,9 +24,12 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
+import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQuery
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
+import org.springframework.data.elasticsearch.core.query.Query
+import org.springframework.data.elasticsearch.core.query.StringQuery
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 import org.springframework.security.oauth2.jwt.Jwt
@@ -327,9 +330,9 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         pageable: Pageable,
         collectionId: String?
     ): SearchHits<RichSkillDoc> {
-        val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
-
-        return elasticSearchTemplate.search(nsq.build(), RichSkillDoc::class.java)
+        val nsqb: NativeSearchQuery = buildQuery(pageable, publishStatus, apiSearch, collectionId).build()
+        val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
+        return elasticSearchTemplate.search(searchQuery, RichSkillDoc::class.java)
     }
 
     override fun countByApiSearch(
@@ -338,9 +341,9 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         pageable: Pageable,
         collectionId: String?
     ): Long {
-        val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
-
-        return elasticSearchTemplate.count(nsq.build(), RichSkillDoc::class.java)
+        val nsqb: NativeSearchQuery = buildQuery(pageable, publishStatus, apiSearch, collectionId).build()
+        val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
+        return elasticSearchTemplate.count(searchQuery, RichSkillDoc::class.java)
     }
 
     fun buildQuery(

@@ -9,9 +9,12 @@ import org.elasticsearch.search.sort.SortOrder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
+import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQuery
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
+import org.springframework.data.elasticsearch.core.query.Query
+import org.springframework.data.elasticsearch.core.query.StringQuery
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
@@ -61,7 +64,10 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
                 ).minimumShouldMatch(1)
         }
 
-        return elasticSearchTemplate.search(nsq.build(), Keyword::class.java)
+        val nsqb: NativeSearchQuery = nsq.build()
+        val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
+
+        return elasticSearchTemplate.search(searchQuery, Keyword::class.java)
     }
 }
 

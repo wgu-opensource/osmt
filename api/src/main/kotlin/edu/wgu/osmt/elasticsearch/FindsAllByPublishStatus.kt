@@ -5,8 +5,11 @@ import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.QueryBuilders
 import org.springframework.data.domain.Pageable
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
+import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQuery
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
+import org.springframework.data.elasticsearch.core.query.Query
+import org.springframework.data.elasticsearch.core.query.StringQuery
 
 
 interface FindsAllByPublishStatus<T> {
@@ -14,13 +17,15 @@ interface FindsAllByPublishStatus<T> {
     val javaClass: Class<T>
 
     fun findAllFilteredByPublishStatus(publishStatus: Set<PublishStatus>, pageable: Pageable): SearchHits<T> {
-        val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus)
-        return elasticSearchTemplate.search(nsq.build(), javaClass)
+        val nsqb: NativeSearchQuery = buildQuery(pageable, publishStatus).build()
+        val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
+        return elasticSearchTemplate.search(searchQuery, javaClass)
     }
 
     fun countAllFilteredByPublishStatus(publishStatus: Set<PublishStatus>, pageable: Pageable): Long {
-        val nsq: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus)
-        return elasticSearchTemplate.count(nsq.build(), javaClass)
+        val nsqb: NativeSearchQuery = buildQuery(pageable, publishStatus).build()
+        val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
+        return elasticSearchTemplate.count(searchQuery, javaClass)
     }
 
     fun buildQuery(

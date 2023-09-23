@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQuery
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
@@ -330,9 +331,13 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         pageable: Pageable,
         collectionId: String?
     ): SearchHits<RichSkillDoc> {
-        val nsqb: NativeSearchQuery = buildQuery(pageable, publishStatus, apiSearch, collectionId).build()
-        val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
-        return elasticSearchTemplate.search(searchQuery, RichSkillDoc::class.java)
+
+//        val nsqb: NativeSearchQuery = buildQuery(pageable, publishStatus, apiSearch, collectionId).build()
+//        val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
+//        return elasticSearchTemplate.search(searchQuery, RichSkillDoc::class.java)
+
+        val nsq: NativeQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
+        return elasticSearchTemplate.search(nsq.build(), RichSkillDoc::class.java)
     }
 
     override fun countByApiSearch(
@@ -341,9 +346,12 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         pageable: Pageable,
         collectionId: String?
     ): Long {
-        val nsqb: NativeSearchQuery = buildQuery(pageable, publishStatus, apiSearch, collectionId).build()
-        val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
-        return elasticSearchTemplate.count(searchQuery, RichSkillDoc::class.java)
+//        val nsqb: NativeSearchQuery = buildQuery(pageable, publishStatus, apiSearch, collectionId).build()
+//        val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
+//        return elasticSearchTemplate.count(searchQuery, RichSkillDoc::class.java)
+
+        val nsq: NativeQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
+        return elasticSearchTemplate.count(nsq.build(), RichSkillDoc::class.java)
     }
 
     fun buildQuery(
@@ -351,19 +359,19 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         publishStatus: Set<PublishStatus>,
         apiSearch: ApiSearch,
         collectionId: String?
-    ): NativeSearchQueryBuilder {
-        val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
+    ): NativeQueryBuilder {
+        val nsq: NativeQueryBuilder = NativeQueryBuilder().withPageable(pageable)
         val bq = boolQuery()
 
-        nsq.withQuery(bq)
-        nsq.withFilter(
-            BoolQueryBuilder().must(
-                termsQuery(
-                    RichSkillDoc::publishStatus.name,
-                    publishStatus.map { ps -> ps.toString() }
-                )
-            )
-        )
+//        nsq.withQuery(bq)
+//        nsq.withFilter(
+//            BoolQueryBuilder().must(
+//                termsQuery(
+//                    RichSkillDoc::publishStatus.name,
+//                    publishStatus.map { ps -> ps.toString() }
+//                )
+//            )
+//        )
 
         apiSearch.filtered?.let { generateBoolQueriesFromApiSearchWithFilters(bq, it, publishStatus) }
 
@@ -439,14 +447,14 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             var apiSearchUuids = apiSearch.uuids?.filterNotNull()?.filter { x: String? -> x != "" }
 
             if (!apiSearchUuids.isNullOrEmpty()) {
-                nsq.withFilter(
-                    BoolQueryBuilder().must(
-                        termsQuery(
-                            RichSkillDoc::uuid.name,
-                            apiSearchUuids
-                        )
-                    )
-                )
+//                nsq.withFilter(
+//                    BoolQueryBuilder().must(
+//                        termsQuery(
+//                            RichSkillDoc::uuid.name,
+//                            apiSearchUuids
+//                        )
+//                    )
+//                )
             }
             if (!collectionId.isNullOrBlank()) {
                 bq.must(

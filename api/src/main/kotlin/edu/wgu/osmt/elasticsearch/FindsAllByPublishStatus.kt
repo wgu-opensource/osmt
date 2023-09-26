@@ -10,6 +10,7 @@ import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQuery
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
+import org.springframework.data.elasticsearch.core.query.Query
 import org.springframework.data.elasticsearch.core.query.StringQuery
 
 /** TODO: Upgrade to ElasticSearch 8.x apis
@@ -25,8 +26,8 @@ interface FindsAllByPublishStatus<T> {
     val javaClass: Class<T>
 
     fun findAllFilteredByPublishStatus(publishStatus: Set<PublishStatus>, pageable: Pageable): SearchHits<T> {
-        val nsqb: NativeSearchQuery = buildQuery(pageable, publishStatus).build()
-        val query = createStringQuery("FindsAllByPublishStatus.findAllFilteredByPublishStatus()", nsqb, LoggerFactory.getLogger(FindsAllByPublishStatus::class.java))
+        val nsq: NativeSearchQuery = buildQuery(pageable, publishStatus).build()
+        val query = createStringQuery("FindsAllByPublishStatus.findAllFilteredByPublishStatus()", nsq, LoggerFactory.getLogger(FindsAllByPublishStatus::class.java))
         return elasticSearchTemplate.search(query, javaClass)
 
         /* TODO: Upgrade to ElasticSearch 8.x apis
@@ -36,8 +37,8 @@ interface FindsAllByPublishStatus<T> {
     }
 
     fun countAllFilteredByPublishStatus(publishStatus: Set<PublishStatus>, pageable: Pageable): Long {
-        val nsqb: NativeSearchQuery = buildQuery(pageable, publishStatus).build()
-        val query = createStringQuery("FindsAllByPublishStatus.countAllFilteredByPublishStatus()", nsqb, LoggerFactory.getLogger(FindsAllByPublishStatus::class.java))
+        val nsq: NativeSearchQuery = buildQuery(pageable, publishStatus).build()
+        val query = createStringQuery("FindsAllByPublishStatus.countAllFilteredByPublishStatus()", nsq, LoggerFactory.getLogger(FindsAllByPublishStatus::class.java))
         return elasticSearchTemplate.count(query, javaClass)
 
         /* TODO: Upgrade to ElasticSearch 8.x apis
@@ -50,9 +51,9 @@ interface FindsAllByPublishStatus<T> {
         pageable: Pageable,
         publishStatus: Set<PublishStatus>
     ): NativeSearchQueryBuilder {
-        val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
-        nsq.withQuery(QueryBuilders.matchAllQuery())
-        nsq.withFilter(
+        val nsqb = NativeSearchQueryBuilder().withPageable(pageable)
+        nsqb.withQuery(QueryBuilders.matchAllQuery())
+        nsqb.withFilter(
             BoolQueryBuilder().should(
                 QueryBuilders.termsQuery(
                     "publishStatus",
@@ -60,10 +61,10 @@ interface FindsAllByPublishStatus<T> {
                 )
             )
         )
-        return nsq
+        return nsqb
     }
 
-    fun createStringQuery (msgPrefix: String, nsq: NativeSearchQuery, log: Logger): StringQuery {
+    fun createStringQuery (msgPrefix: String, nsq: NativeSearchQuery, log: Logger): Query {
         val queryStr = nsq.query.toString()
         log.info(String.Companion.format("%s:\n%s", msgPrefix, queryStr))
         return StringQuery(queryStr)

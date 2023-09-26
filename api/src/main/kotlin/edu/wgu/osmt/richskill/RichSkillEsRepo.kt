@@ -353,7 +353,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         apiSearch: ApiSearch,
         collectionId: String?
     ): NativeSearchQueryBuilder {
-        val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
+        val nsq = NativeSearchQueryBuilder().withPageable(pageable)
         val bq = boolQuery()
 
         nsq.withQuery(bq)
@@ -467,10 +467,11 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
     override fun findSimilar(apiSimilaritySearch: ApiSimilaritySearch): SearchHits<RichSkillDoc> {
         val limitedPageable = OffsetPageable(0, 10, null)
-        val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(
-            MatchPhraseQueryBuilder(RichSkillDoc::statement.name, apiSimilaritySearch.statement).slop(4)
-        )
-        val query = createStringQuery("CustomRichSkillQueriesImpl.findSimilar()", nsq.build(), log)
+        val nsq = NativeSearchQueryBuilder()
+                    .withPageable(limitedPageable)
+                    .withQuery( MatchPhraseQueryBuilder(RichSkillDoc::statement.name, apiSimilaritySearch.statement).slop(4))
+                    .build()
+        val query = createStringQuery("CustomRichSkillQueriesImpl.findSimilar()", nsq, log)
         return elasticSearchTemplate.search(query, RichSkillDoc::class.java)
     }
 }

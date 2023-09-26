@@ -10,10 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQuery
+import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
-import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
-import org.springframework.data.elasticsearch.core.query.Query
 import org.springframework.data.elasticsearch.core.query.StringQuery
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
@@ -32,41 +31,36 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
     override fun typeAheadSearch(query: String, type: KeywordTypeEnum): SearchHits<Keyword> {
         val limitedPageable: OffsetPageable
         val bq = QueryBuilders.boolQuery()
-        val nsq: NativeSearchQueryBuilder
+        val nsq: NativeSearchQuery
 
         if(query.isEmpty()){ //retrieve all
             limitedPageable = OffsetPageable(0, 10000, null)
-            nsq = NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(bq)
-                .withSort(SortBuilders.fieldSort("${Keyword::value.name}$SORT_INSENSITIVE").order(SortOrder.ASC))
+            nsq = NativeSearchQueryBuilder()
+                    .withPageable(limitedPageable)
+                    .withQuery(bq)
+                    .withSort(SortBuilders.fieldSort("${Keyword::value.name}$SORT_INSENSITIVE").order(SortOrder.ASC))
+                    .build()
             bq
                 .must(QueryBuilders.termQuery(Keyword::type.name, type.name))
-                .should(
-                    QueryBuilders.matchAllQuery()
-                )
+                .should( QueryBuilders.matchAllQuery() )
         }
         else {
             limitedPageable  = OffsetPageable(0, 20, null)
-            nsq = NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(bq)
-                .withSort(SortBuilders.fieldSort("${Keyword::value.name}$SORT_INSENSITIVE").order(SortOrder.ASC))
+            nsq = NativeSearchQueryBuilder()
+                    .withPageable(limitedPageable)
+                    .withQuery(bq)
+                    .withSort(SortBuilders.fieldSort("${Keyword::value.name}$SORT_INSENSITIVE").order(SortOrder.ASC))
+                    .build()
             bq
                 .must(QueryBuilders.termQuery(Keyword::type.name, type.name))
                 .should(
-                    QueryBuilders.matchBoolPrefixQuery(
-                        Keyword::value.name,
-                        query
-                    )
+                    QueryBuilders.matchBoolPrefixQuery( Keyword::value.name, query )
                 )
                 .should(
-                    QueryBuilders.matchPhraseQuery(
-                        Keyword::value.name,
-                        query
-                    ).boost(5f)
+                    QueryBuilders.matchPhraseQuery( Keyword::value.name, query ).boost(5f)
                 ).minimumShouldMatch(1)
         }
-
-        val nsqb: NativeSearchQuery = nsq.build()
-        val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
-
+        val searchQuery = StringQuery(nsq.getQuery().toString())
         return elasticSearchTemplate.search(searchQuery, Keyword::class.java)
     }
 }

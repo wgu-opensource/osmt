@@ -9,6 +9,8 @@ import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.apache.lucene.search.join.ScoreMode
 import org.elasticsearch.index.query.*
+import org.elasticsearch.index.query.QueryBuilders.matchPhrasePrefixQuery
+import org.elasticsearch.index.query.QueryBuilders.simpleQueryStringQuery
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -114,39 +116,46 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             )
             bq.should(richSkillEsRepo.occupationQueries(apiSearch.query))
 
-            val nsqb: NativeSearchQuery = NativeSearchQueryBuilder().withQuery(
-                collectionPropertiesMultiMatch(apiSearch.query)
-            ).withPageable(Pageable.unpaged()).withFilter(filter).build()
-
+            val nsq = NativeSearchQueryBuilder()
+                        .withQuery( collectionPropertiesMultiMatch(apiSearch.query) )
+                        .withPageable(Pageable.unpaged())
+                        .withFilter(filter)
+                        .build()
             // search on collection specific properties
-            val query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()1", nsqb, log)
-            collectionMultiPropertyResults = elasticSearchTemplate.search(query, CollectionDoc::class.java).searchHits.map { it.content.uuid }
+            val query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()1", nsq, log)
+            collectionMultiPropertyResults = elasticSearchTemplate
+                                                .search(query, CollectionDoc::class.java)
+                                                .searchHits
+                                                .map { it.content.uuid }
 
         } else if (apiSearch.advanced != null) {
             richSkillEsRepo.generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)
 
             if (!apiSearch.advanced.collectionName.isNullOrBlank()) {
                 if (apiSearch.advanced.collectionName.contains("\"")) {
-                    val searchQuery: NativeSearchQuery = NativeSearchQueryBuilder().withQuery(
-                        QueryBuilders.simpleQueryStringQuery(apiSearch.advanced.collectionName).field("${CollectionDoc::name.name}.raw").defaultOperator(Operator.AND)
-                    ).withPageable(Pageable.unpaged()).withFilter(filter).build()
-
-                    val query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()2", searchQuery, log)
-                    collectionMultiPropertyResults = elasticSearchTemplate.search(
-                        query, CollectionDoc::class.java
-                    ).searchHits.map { it.content.uuid }
+                    val nsq = NativeSearchQueryBuilder()
+                                .withQuery(
+                                    simpleQueryStringQuery(apiSearch.advanced.collectionName).field("${CollectionDoc::name.name}.raw").defaultOperator(Operator.AND) )
+                                .withPageable(Pageable.unpaged())
+                                .withFilter(filter)
+                                .build()
+                    val query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()2", nsq, log)
+                    collectionMultiPropertyResults = elasticSearchTemplate
+                                                        .search( query, CollectionDoc::class.java )
+                                                        .searchHits
+                                                        .map { it.content.uuid }
                 } else {
-                    val nsqb: NativeSearchQuery = NativeSearchQueryBuilder().withQuery(
-                        QueryBuilders.matchPhrasePrefixQuery(
-                            CollectionDoc::name.name,
-                            apiSearch.advanced.collectionName
-                        )
-                    ).withPageable(Pageable.unpaged()).withFilter(filter).build()
-
-                    val query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()3", nsqb, log)
-                    collectionMultiPropertyResults = elasticSearchTemplate.search(
-                        query, CollectionDoc::class.java
-                    ).searchHits.map { it.content.uuid }
+                    val nsq = NativeSearchQueryBuilder()
+                                .withQuery(
+                                    matchPhrasePrefixQuery( CollectionDoc::name.name, apiSearch.advanced.collectionName ) )
+                                .withPageable(Pageable.unpaged())
+                                .withFilter(filter)
+                                .build()
+                    val query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()3", nsq, log)
+                    collectionMultiPropertyResults = elasticSearchTemplate
+                                                        .search( query, CollectionDoc::class.java )
+                                                        .searchHits
+                                                        .map { it.content.uuid }
                 }
             } else {
                 bq.must(
@@ -174,13 +183,13 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             results.searchHits.mapNotNull { it.getInnerHits("collections")?.searchHits?.mapNotNull { it.content as CollectionDoc } }
                 .flatten().map { it.uuid }.distinct()
 
-        val nsqb2: NativeSearchQuery = NativeSearchQueryBuilder().withQuery(
+        val nsq2: NativeSearchQuery = NativeSearchQueryBuilder().withQuery(
             QueryBuilders.termsQuery(
                 "_id",
                 (innerHitCollectionUuids + collectionMultiPropertyResults).distinct()
             )
         ).withFilter(filter).withPageable(pageable).build()
-        query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()4", nsqb2, log)
+        query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()4", nsq2, log)
         return elasticSearchTemplate.search(query, CollectionDoc::class.java)
     }
 }

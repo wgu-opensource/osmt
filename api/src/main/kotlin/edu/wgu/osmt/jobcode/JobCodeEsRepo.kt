@@ -16,6 +16,7 @@ import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQuery
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
+import org.springframework.data.elasticsearch.core.query.Query
 import org.springframework.data.elasticsearch.core.query.StringQuery
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
@@ -55,7 +56,7 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
         return limitedPageable
     }
 
-    private fun createStringQuery (msgPrefix: String, nsq: NativeSearchQuery): StringQuery {
+    private fun createStringQuery (msgPrefix: String, nsq: NativeSearchQuery): Query {
         val queryStr = nsq.query.toString()
         log.info(String.Companion.format("%s:\n%s", msgPrefix, queryStr))
         return StringQuery(queryStr)

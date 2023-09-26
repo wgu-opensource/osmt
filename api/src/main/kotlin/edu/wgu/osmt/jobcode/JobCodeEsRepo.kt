@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder
-import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQuery
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
@@ -39,28 +38,26 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
     @Deprecated("Upgrade to ES v8.x queries", ReplaceWith(""), DeprecationLevel.WARNING )
     override fun typeAheadSearch(query: String): SearchHits<JobCode> {
         val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
-        val nsq = NativeSearchQueryBuilder()
+        val nqb = NativeSearchQueryBuilder()
                 .withPageable(createOffsetPageable(query))
                 .withQuery(disjunctionQuery)
                 .withSort(SortBuilders.fieldSort("${JobCode::code.name}.keyword").order(SortOrder.ASC))
-                .build()
-        val query = createStringQuery("CustomJobCodeRepositoryImpl.typeAheadSearch()", nsq)
+        val query = createStringQuery("CustomJobCodeRepositoryImpl.typeAheadSearch()", nqb)
         return elasticSearchTemplate.search(query, JobCode::class.java)
     }
 
     private fun createOffsetPageable(query: String): OffsetPageable {
-        val limitedPageable: OffsetPageable = if (query.isEmpty()) {
+        val limitedPageable = if (query.isEmpty()) {
             OffsetPageable(0, 10000, null)
         } else {
             OffsetPageable(0, 20, null)
-
         }
         return limitedPageable
     }
 
     @Deprecated("Upgrade to ES v8.x queries", ReplaceWith("createQuery"), DeprecationLevel.WARNING )
-    private fun createStringQuery (msgPrefix: String, nsq: NativeSearchQuery): Query {
-        val queryStr = nsq.query.toString()
+    fun createStringQuery(msgPrefix: String, nqb: NativeSearchQueryBuilder): Query {
+        val queryStr = nqb.build().query.toString()
         log.debug(String.Companion.format("%s:\n%s", msgPrefix, queryStr))
         return StringQuery(queryStr)
     }

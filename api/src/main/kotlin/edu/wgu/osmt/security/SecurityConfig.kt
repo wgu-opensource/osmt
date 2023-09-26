@@ -51,6 +51,7 @@ class SecurityConfig {
             .cors().and()
             .csrf().disable()
             .httpBasic().disable()
+//TODO DMND-1780
 //            .authorizeHttpRequests { auth -> auth.requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_AUDIT_LOG}",
 //                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_AUDIT_LOG}",
 //                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_AUDIT_LOG}").authenticated()
@@ -115,6 +116,7 @@ class SecurityConfig {
         return http.build();
     }
 
+    //TODO DMND-1780
     fun configureForRoles(http: HttpSecurity) {
         val ADMIN = appConfig.roleAdmin
         val CURATOR = appConfig.roleCurator
@@ -172,6 +174,7 @@ class SecurityConfig {
             .authorizeHttpRequests { auth -> auth.requestMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ) }
     }
 
+    //TODO DMND-1780
     fun configureForNoRoles(http: HttpSecurity) {
         http
             .authorizeHttpRequests { auth -> auth.requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",

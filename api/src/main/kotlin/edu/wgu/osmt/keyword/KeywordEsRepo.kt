@@ -37,26 +37,24 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
     override fun typeAheadSearch(query: String, type: KeywordTypeEnum): SearchHits<Keyword> {
         val limitedPageable: OffsetPageable
         val bq = QueryBuilders.boolQuery()
-        val nsq: NativeSearchQuery
+        val nqb: NativeSearchQueryBuilder
 
         if(query.isEmpty()){ //retrieve all
             limitedPageable = OffsetPageable(0, 10000, null)
-            nsq = NativeSearchQueryBuilder()
+            nqb = NativeSearchQueryBuilder()
                     .withPageable(limitedPageable)
                     .withQuery(bq)
                     .withSort(SortBuilders.fieldSort("${Keyword::value.name}$SORT_INSENSITIVE").order(SortOrder.ASC))
-                    .build()
             bq
                 .must(QueryBuilders.termQuery(Keyword::type.name, type.name))
                 .should( QueryBuilders.matchAllQuery() )
         }
         else {
             limitedPageable  = OffsetPageable(0, 20, null)
-            nsq = NativeSearchQueryBuilder()
+            nqb = NativeSearchQueryBuilder()
                     .withPageable(limitedPageable)
                     .withQuery(bq)
                     .withSort(SortBuilders.fieldSort("${Keyword::value.name}$SORT_INSENSITIVE").order(SortOrder.ASC))
-                    .build()
             bq
                 .must(QueryBuilders.termQuery(Keyword::type.name, type.name))
                 .should(
@@ -66,13 +64,13 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
                     QueryBuilders.matchPhraseQuery( Keyword::value.name, query ).boost(5f)
                 ).minimumShouldMatch(1)
         }
-        val query = createStringQuery("CustomKeywordRepositoryImpl.typeAheadSearch()", nsq)
+        val query = createStringQuery("CustomKeywordRepositoryImpl.typeAheadSearch()", nqb)
         return elasticSearchTemplate.search(query, Keyword::class.java)
     }
 
     @Deprecated("Upgrade to ES v8.x queries", ReplaceWith("createQuery"), DeprecationLevel.WARNING )
-    private fun createStringQuery (msgPrefix: String, nsq: NativeSearchQuery): Query {
-        val queryStr = nsq.query.toString()
+    fun createStringQuery(msgPrefix: String, nqb: NativeSearchQueryBuilder): Query {
+        val queryStr = nqb.build().query.toString()
         log.debug(String.Companion.format("%s:\n%s", msgPrefix, queryStr))
         return StringQuery(queryStr)
     }

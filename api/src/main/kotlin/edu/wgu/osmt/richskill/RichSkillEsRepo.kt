@@ -330,7 +330,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         pageable: Pageable,
         collectionId: String?
     ): SearchHits<RichSkillDoc> {
-        val nqb: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
+        val nqb = buildQuery(pageable, publishStatus, apiSearch, collectionId)
         val query = createStringQuery("CustomRichSkillQueriesImpl.byApiSearch()", nqb, log)
         return elasticSearchTemplate.search(query, RichSkillDoc::class.java)
     }
@@ -341,7 +341,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         pageable: Pageable,
         collectionId: String?
     ): Long {
-        val nqb: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
+        val nqb = buildQuery(pageable, publishStatus, apiSearch, collectionId)
         val query = createStringQuery("CustomRichSkillQueriesImpl.countByApiSearch()", nqb, log)
         return elasticSearchTemplate.count(query, RichSkillDoc::class.java)
     }
@@ -352,7 +352,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         apiSearch: ApiSearch,
         collectionId: String?
     ): NativeSearchQueryBuilder {
-        val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
+        val nsq = NativeSearchQueryBuilder().withPageable(pageable)
         val bq = boolQuery()
 
         nsq.withQuery(bq)

@@ -26,7 +26,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
-import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQuery
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
@@ -331,8 +330,8 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         pageable: Pageable,
         collectionId: String?
     ): SearchHits<RichSkillDoc> {
-        val nsq: NativeSearchQuery = buildQuery(pageable, publishStatus, apiSearch, collectionId).build()
-        val query = createStringQuery("CustomRichSkillQueriesImpl.byApiSearch()", nsq, log)
+        val nqb: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
+        val query = createStringQuery("CustomRichSkillQueriesImpl.byApiSearch()", nqb, log)
         return elasticSearchTemplate.search(query, RichSkillDoc::class.java)
     }
 
@@ -342,8 +341,8 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         pageable: Pageable,
         collectionId: String?
     ): Long {
-        val nsq: NativeSearchQuery = buildQuery(pageable, publishStatus, apiSearch, collectionId).build()
-        val query = createStringQuery("CustomRichSkillQueriesImpl.countByApiSearch()", nsq, log)
+        val nqb: NativeSearchQueryBuilder = buildQuery(pageable, publishStatus, apiSearch, collectionId)
+        val query = createStringQuery("CustomRichSkillQueriesImpl.countByApiSearch()", nqb, log)
         return elasticSearchTemplate.count(query, RichSkillDoc::class.java)
     }
 
@@ -353,7 +352,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         apiSearch: ApiSearch,
         collectionId: String?
     ): NativeSearchQueryBuilder {
-        val nsq = NativeSearchQueryBuilder().withPageable(pageable)
+        val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
         val bq = boolQuery()
 
         nsq.withQuery(bq)
@@ -467,11 +466,10 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
     override fun findSimilar(apiSimilaritySearch: ApiSimilaritySearch): SearchHits<RichSkillDoc> {
         val limitedPageable = OffsetPageable(0, 10, null)
-        val nsq = NativeSearchQueryBuilder()
+        val nqb = NativeSearchQueryBuilder()
                     .withPageable(limitedPageable)
                     .withQuery( MatchPhraseQueryBuilder(RichSkillDoc::statement.name, apiSimilaritySearch.statement).slop(4))
-                    .build()
-        val query = createStringQuery("CustomRichSkillQueriesImpl.findSimilar()", nsq, log)
+        val query = createStringQuery("CustomRichSkillQueriesImpl.findSimilar()", nqb, log)
         return elasticSearchTemplate.search(query, RichSkillDoc::class.java)
     }
 }

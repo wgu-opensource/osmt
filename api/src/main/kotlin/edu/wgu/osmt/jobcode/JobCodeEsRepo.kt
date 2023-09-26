@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQuery
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
@@ -35,6 +36,7 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
     CustomJobCodeRepository {
     val log: Logger = LoggerFactory.getLogger(CustomJobCodeRepositoryImpl::class.java)
 
+    @Deprecated("Upgrade to ES v8.x queries", ReplaceWith(""), DeprecationLevel.WARNING )
     override fun typeAheadSearch(query: String): SearchHits<JobCode> {
         val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
         val nsq = NativeSearchQueryBuilder()
@@ -56,10 +58,17 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
         return limitedPageable
     }
 
+    @Deprecated("Upgrade to ES v8.x queries", ReplaceWith("createQuery"), DeprecationLevel.WARNING )
     private fun createStringQuery (msgPrefix: String, nsq: NativeSearchQuery): Query {
         val queryStr = nsq.query.toString()
-        log.info(String.Companion.format("%s:\n%s", msgPrefix, queryStr))
+        log.debug(String.Companion.format("%s:\n%s", msgPrefix, queryStr))
         return StringQuery(queryStr)
+    }
+
+    private fun createQuery(msgPrefix: String, nqb: NativeQueryBuilder): Query {
+        val nq = nqb.build()
+        log.debug(String.Companion.format("%s:\n%s", msgPrefix, nq.query.toString()))
+        return nq;
     }
 }
 

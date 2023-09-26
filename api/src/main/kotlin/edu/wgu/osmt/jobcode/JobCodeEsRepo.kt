@@ -7,6 +7,8 @@ import org.elasticsearch.index.query.Operator
 import org.elasticsearch.index.query.QueryBuilders.*
 import org.elasticsearch.search.sort.SortBuilders
 import org.elasticsearch.search.sort.SortOrder
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
@@ -14,7 +16,6 @@ import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQuery
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
-import org.springframework.data.elasticsearch.core.query.Query
 import org.springframework.data.elasticsearch.core.query.StringQuery
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
@@ -31,24 +32,33 @@ interface CustomJobCodeRepository {
 
 class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchTemplate) :
     CustomJobCodeRepository {
+    val log: Logger = LoggerFactory.getLogger(CustomJobCodeRepositoryImpl::class.java)
 
     override fun typeAheadSearch(query: String): SearchHits<JobCode> {
-        val nsq: NativeSearchQueryBuilder
+        val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
+        val nsq = NativeSearchQueryBuilder()
+                .withPageable(createOffsetPageable(query))
+                .withQuery(disjunctionQuery)
+                .withSort(SortBuilders.fieldSort("${JobCode::code.name}.keyword").order(SortOrder.ASC))
+                .build()
+        val query = createStringQuery("CustomJobCodeRepositoryImpl.typeAheadSearch()", nsq)
+        return elasticSearchTemplate.search(query, JobCode::class.java)
+    }
 
+    private fun createOffsetPageable(query: String): OffsetPageable {
         val limitedPageable: OffsetPageable = if (query.isEmpty()) {
             OffsetPageable(0, 10000, null)
         } else {
             OffsetPageable(0, 20, null)
 
         }
-        val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
-        nsq =
-            NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(disjunctionQuery)
-                .withSort(SortBuilders.fieldSort("${JobCode::code.name}.keyword").order(SortOrder.ASC))
-        val nsqb: NativeSearchQuery = nsq.build()
-        val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
+        return limitedPageable
+    }
 
-        return elasticSearchTemplate.search(searchQuery, JobCode::class.java)
+    private fun createStringQuery (msgPrefix: String, nsq: NativeSearchQuery): StringQuery {
+        val queryStr = nsq.query.toString()
+        log.info(String.Companion.format("%s:\n%s", msgPrefix, queryStr))
+        return StringQuery(queryStr)
     }
 }
 

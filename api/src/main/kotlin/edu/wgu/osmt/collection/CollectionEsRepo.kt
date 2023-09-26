@@ -9,6 +9,8 @@ import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.apache.lucene.search.join.ScoreMode
 import org.elasticsearch.index.query.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.Page
@@ -20,8 +22,6 @@ import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQuery
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
-import org.springframework.data.elasticsearch.core.query.Query
-import org.springframework.data.elasticsearch.core.query.StringQuery
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
@@ -50,7 +50,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
     override val richSkillEsRepo: RichSkillEsRepo
 ) :
     CustomCollectionQueries {
-
+    val log: Logger = LoggerFactory.getLogger(CustomCollectionQueriesImpl::class.java)
     override val javaClass = CollectionDoc::class.java
 
     override fun collectionPropertiesMultiMatch(query: String): AbstractQueryBuilder<*> {
@@ -117,23 +117,23 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             val nsqb: NativeSearchQuery = NativeSearchQueryBuilder().withQuery(
                 collectionPropertiesMultiMatch(apiSearch.query)
             ).withPageable(Pageable.unpaged()).withFilter(filter).build()
-            val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
 
             // search on collection specific properties
-            collectionMultiPropertyResults = elasticSearchTemplate.search(searchQuery, CollectionDoc::class.java).searchHits.map { it.content.uuid }
+            val query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()1", nsqb, log)
+            collectionMultiPropertyResults = elasticSearchTemplate.search(query, CollectionDoc::class.java).searchHits.map { it.content.uuid }
 
         } else if (apiSearch.advanced != null) {
             richSkillEsRepo.generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)
 
             if (!apiSearch.advanced.collectionName.isNullOrBlank()) {
                 if (apiSearch.advanced.collectionName.contains("\"")) {
-                    val nsqb: NativeSearchQuery = NativeSearchQueryBuilder().withQuery(
+                    val searchQuery: NativeSearchQuery = NativeSearchQueryBuilder().withQuery(
                         QueryBuilders.simpleQueryStringQuery(apiSearch.advanced.collectionName).field("${CollectionDoc::name.name}.raw").defaultOperator(Operator.AND)
                     ).withPageable(Pageable.unpaged()).withFilter(filter).build()
-                    val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
 
+                    val query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()2", searchQuery, log)
                     collectionMultiPropertyResults = elasticSearchTemplate.search(
-                        searchQuery, CollectionDoc::class.java
+                        query, CollectionDoc::class.java
                     ).searchHits.map { it.content.uuid }
                 } else {
                     val nsqb: NativeSearchQuery = NativeSearchQueryBuilder().withQuery(
@@ -142,10 +142,10 @@ class CustomCollectionQueriesImpl @Autowired constructor(
                             apiSearch.advanced.collectionName
                         )
                     ).withPageable(Pageable.unpaged()).withFilter(filter).build()
-                    val searchQuery: Query = StringQuery(nsqb.getQuery().toString())
 
+                    val query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()3", nsqb, log)
                     collectionMultiPropertyResults = elasticSearchTemplate.search(
-                        searchQuery, CollectionDoc::class.java
+                        query, CollectionDoc::class.java
                     ).searchHits.map { it.content.uuid }
                 }
             } else {
@@ -167,9 +167,8 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             )
         }
 
-        val nsqb1: NativeSearchQuery = nsq.build()
-        val searchQuery1: Query = StringQuery(nsqb1.getQuery().toString())
-        val results = elasticSearchTemplate.search(searchQuery1, RichSkillDoc::class.java)
+        var query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch().innerHitCollectionUuids", nsq.build(), log)
+        val results = elasticSearchTemplate.search(query, RichSkillDoc::class.java)
 
         val innerHitCollectionUuids =
             results.searchHits.mapNotNull { it.getInnerHits("collections")?.searchHits?.mapNotNull { it.content as CollectionDoc } }
@@ -181,11 +180,8 @@ class CustomCollectionQueriesImpl @Autowired constructor(
                 (innerHitCollectionUuids + collectionMultiPropertyResults).distinct()
             )
         ).withFilter(filter).withPageable(pageable).build()
-        val searchQuery2: Query = StringQuery(nsqb2.getQuery().toString())
-
-        return elasticSearchTemplate.search(
-            searchQuery2, CollectionDoc::class.java
-        )
+        query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()4", nsqb2, log)
+        return elasticSearchTemplate.search(query, CollectionDoc::class.java)
     }
 }
 

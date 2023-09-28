@@ -3,7 +3,7 @@ package edu.wgu.osmt.jobcode
 import com.fasterxml.jackson.annotation.JsonIgnore
 import edu.wgu.osmt.config.INDEX_JOBCODE_DOC
 import edu.wgu.osmt.db.DatabaseData
-import org.elasticsearch.core.Nullable
+import javax.annotation.Nullable
 import org.springframework.data.elasticsearch.annotations.*
 import java.time.LocalDateTime
 import java.time.ZoneOffset

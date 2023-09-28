@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.config.INDEX_COLLECTION_DOC
 import edu.wgu.osmt.db.PublishStatus
-import org.elasticsearch.core.Nullable
+import javax.annotation.Nullable
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.*
 import org.springframework.data.elasticsearch.annotations.FieldType.*

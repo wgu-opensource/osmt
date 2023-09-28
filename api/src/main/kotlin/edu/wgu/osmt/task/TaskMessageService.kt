@@ -1,6 +1,6 @@
 package edu.wgu.osmt.task
 
-import com.github.sonus21.rqueue.core.RqueueMessageSender
+import com.github.sonus21.rqueue.core.RqueueMessageEnqueuer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 class TaskMessageService {
 
     @Autowired
-    lateinit var rqueueMessageSender: RqueueMessageSender
+    lateinit var rqueueMessageSender: RqueueMessageEnqueuer
 
     @Autowired
     lateinit var redisTaskTemplate: RedisTemplate<String, Task>

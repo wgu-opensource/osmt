@@ -7,17 +7,23 @@ import org.elasticsearch.index.query.Operator
 import org.elasticsearch.index.query.QueryBuilders.*
 import org.elasticsearch.search.sort.SortBuilders
 import org.elasticsearch.search.sort.SortOrder
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder
+import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
+import org.springframework.data.elasticsearch.core.query.Query
+import org.springframework.data.elasticsearch.core.query.StringQuery
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
+
 interface CustomJobCodeRepository {
-    val elasticSearchTemplate: ElasticsearchRestTemplate
+    val elasticSearchTemplate: ElasticsearchTemplate
     fun typeAheadSearch(query: String): SearchHits<JobCode>
 
     fun deleteIndex() {
@@ -25,23 +31,41 @@ interface CustomJobCodeRepository {
     }
 }
 
-class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :
+class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchTemplate) :
     CustomJobCodeRepository {
+    val log: Logger = LoggerFactory.getLogger(CustomJobCodeRepositoryImpl::class.java)
 
+    @Deprecated("Upgrade to ES v8.x queries", ReplaceWith(""), DeprecationLevel.WARNING )
     override fun typeAheadSearch(query: String): SearchHits<JobCode> {
-        val nsq: NativeSearchQueryBuilder
+        val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
+        val nqb = NativeSearchQueryBuilder()
+                .withPageable(createOffsetPageable(query))
+                .withQuery(disjunctionQuery)
+                .withSort(SortBuilders.fieldSort("${JobCode::code.name}.keyword").order(SortOrder.ASC))
+        val query = createStringQuery("CustomJobCodeRepositoryImpl.typeAheadSearch()", nqb)
+        return elasticSearchTemplate.search(query, JobCode::class.java)
+    }
 
-        val limitedPageable: OffsetPageable = if (query.isEmpty()) {
+    private fun createOffsetPageable(query: String): OffsetPageable {
+        val limitedPageable = if (query.isEmpty()) {
             OffsetPageable(0, 10000, null)
         } else {
             OffsetPageable(0, 20, null)
-
         }
-        val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
-        nsq =
-            NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(disjunctionQuery)
-                .withSort(SortBuilders.fieldSort("${JobCode::code.name}.keyword").order(SortOrder.ASC))
-        return elasticSearchTemplate.search(nsq.build(), JobCode::class.java)
+        return limitedPageable
+    }
+
+    @Deprecated("Upgrade to ES v8.x queries", ReplaceWith("createQuery"), DeprecationLevel.WARNING )
+    fun createStringQuery(msgPrefix: String, nqb: NativeSearchQueryBuilder): Query {
+        val queryStr = nqb.build().query.toString()
+        log.debug(String.Companion.format("%s:\n%s", msgPrefix, queryStr))
+        return StringQuery(queryStr)
+    }
+
+    private fun createQuery(msgPrefix: String, nqb: NativeQueryBuilder): Query {
+        val nq = nqb.build()
+        log.debug(String.Companion.format("%s:\n%s", msgPrefix, nq.query.toString()))
+        return nq;
     }
 }
 

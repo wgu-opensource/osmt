@@ -43,7 +43,7 @@ fun SchemaUtils.addMissingColumnsStatementsPublic(vararg tables: Table): List<St
                 incorrectNullabilityColumns.flatMapTo(statements) { it.modifyStatement() }
             }
         }
-
+//TODO DMND-1782
 //        if (db.supportsAlterTableWithAddColumn) {
 //            val existingColumnConstraint = db.dialect.columnConstraints(*tables)
 //

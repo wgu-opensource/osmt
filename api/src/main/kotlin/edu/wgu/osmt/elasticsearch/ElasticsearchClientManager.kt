@@ -30,6 +30,7 @@ class ElasticsearchClientManager {
     @Override
     @Bean
     fun elasticSearchClient(): ElasticsearchClient {
+        //TODO DMND-1779
         val builder = RestClient.builder(HttpHost("localhost", 9200, "http"))
         //val httpClientConfigCallback: HttpClientConfigCallback = HttpClientConfigCallbackImpl()
         //builder.setHttpClientConfigCallback(httpClientConfigCallback)

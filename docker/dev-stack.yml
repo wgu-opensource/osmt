@@ -25,6 +25,7 @@ services:
       - "discovery.type=single-node"
       - "net=host"
       - "xpack.security.enabled=false"
+      - "ingest.geoip.downloader.enabled=false"
     ports:
       - "${ELASTICSEARCH_HTTP_PORT:-9200}:9200"
       - "${ELASTICSEARCH_TRANSPORT_PORT:-9300}:9300"

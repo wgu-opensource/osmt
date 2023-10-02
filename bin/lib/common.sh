@@ -79,6 +79,7 @@ source_env_file_unless_provided_okta() {
       return 0
     fi
 
+  echo_info "Okta values are not provided by environment variables. Sourcing ${env_file} env file."
   source_env_file "${env_file}"
 }
 

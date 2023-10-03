@@ -88,6 +88,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
     ): SearchHits<CollectionDoc> {
         val nqb = NativeSearchQueryBuilder().withPageable(Pageable.unpaged())
         val bq = QueryBuilders.boolQuery()
+        //TODO Replace with FindsAllByPublishStatus.createTermsQuery(publishStatus.name, publishStatus.map { ps -> ps.toString() })
         val filter = BoolQueryBuilder().must(
             QueryBuilders.termsQuery(
                 RichSkillDoc::publishStatus.name,

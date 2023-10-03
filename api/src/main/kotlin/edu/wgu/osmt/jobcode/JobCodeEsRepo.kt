@@ -60,6 +60,7 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
         val query = nqb.build()
         log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, query.query.toString()))
         log.debug(String.Companion.format("\n%s filter:\n\t\t%s", msgPrefix, query.filter.toString()))
+        //NOTE: this is causing us to lose the filter query
         return StringQuery(query.query.toString())
     }
 

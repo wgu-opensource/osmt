@@ -46,10 +46,10 @@ interface FindsAllByPublishStatus<T> {
     }
 
     fun createQuery(msgPrefix: String, nqb: NativeQueryBuilder, log: Logger): Query {
-        val nq = nqb.build()
-        log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, nq.query.toString()))
-        log.debug(String.Companion.format("\n%s filter:\n\t\t%s", msgPrefix, nq.filter.toString()))
-        return nq;
+        val query = nqb.build()
+        log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, query.query.toString()))
+        log.debug(String.Companion.format("\n%s filter:\n\t\t%s", msgPrefix, query.filter.toString()))
+        return query;
     }
 
     /**
@@ -84,6 +84,7 @@ interface FindsAllByPublishStatus<T> {
         val query = nqb.build()
         log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, query.query.toString()))
         log.debug(String.Companion.format("\n%s filter:\n\t\t%s", msgPrefix, query.filter.toString()))
+        //NOTE: this is causing us to lose the filter query
         return StringQuery(query.query.toString())
     }
 }

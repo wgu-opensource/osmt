@@ -52,7 +52,7 @@ source_env_file() {
 source_env_file_unless_provided_oauth() {
   local env_file="${1}"
 
- # gracefully bypass sourcing env file if these 4 OAUTH values are provided
+ # gracefully bypass sourcing env file if these 4 OAUTH_ values are provided
   if [[ \
       -n "${OAUTH_ISSUER}" && \
       -n "${OAUTH_CLIENTID}" && \
@@ -63,19 +63,20 @@ source_env_file_unless_provided_oauth() {
       return 0
     fi
 
+  echo_info "OAUTH_ values are not provided by environment variables. Sourcing ${env_file} env file."
   source_env_file "${env_file}"
 }
 
 source_env_file_unless_provided_okta() {
   local env_file="${1}"
 
- # gracefully bypass sourcing env file if these 4 OAUTH values are provided
+ # gracefully bypass sourcing env file if these 3 OKTA_ values are provided
   if [[ \
       -n "${OKTA_URL}" && \
       -n "${OKTA_USERNAME}" && \
       -n "${OKTA_PASSWORD}" \
     ]]; then
-      echo_info "Okta values are provided by environment variables. Not sourcing ${env_file} env file."
+      echo_info "OKTA_ values are provided by environment variables. Not sourcing ${env_file} env file."
       return 0
     fi
 

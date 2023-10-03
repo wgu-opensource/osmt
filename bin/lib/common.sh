@@ -52,7 +52,8 @@ source_env_file() {
 source_env_file_unless_provided_oauth() {
   local env_file="${1}"
 
- # gracefully bypass sourcing env file if these 4 OAUTH_ values are provided
+ # gracefully bypass sourcing env file if these 4 OAUTH_ values are provided, i.e. as secrets
+ # via build automation
   if [[ \
       -n "${OAUTH_ISSUER}" && \
       -n "${OAUTH_CLIENTID}" && \
@@ -70,7 +71,8 @@ source_env_file_unless_provided_oauth() {
 source_env_file_unless_provided_okta() {
   local env_file="${1}"
 
- # gracefully bypass sourcing env file if these 3 OKTA_ values are provided
+ # gracefully bypass sourcing env file if these 3 OKTA_ values are provided, i.e. as secrets
+ # via build automation
   if [[ \
       -n "${OKTA_URL}" && \
       -n "${OKTA_USERNAME}" && \

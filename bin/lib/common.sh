@@ -247,8 +247,6 @@ _validate_docker_version() {
     echo_debug "3 - ${tmp_minor}"
   det_docker_minor="${tmp_minor%.*}"
     echo_debug "4 - ${det_docker_minor}"
-  det_docker_patch="${det_docker_version##*.}"
-    echo_debug "5 - ${det_docker_patch}"
 
   if [[ "${det_docker_major}" -gt "${req_docker_major}" || \
       ("${det_docker_major}" -eq "${req_docker_major}" && "${det_docker_minor}" -ge "${req_docker_minor}") || \

@@ -37,6 +37,7 @@ error_handler() {
 
 main() {
   # Sourcing API test env file
+  #echo OKTA variables are: ${OKTA_URL} ${OKTA_USERNAME} ${OKTA_PASSWORD}
   source_env_file_unless_provided_okta "${PROJECT_DIR}/test/osmt-apitest.env"
   source_env_file "${PROJECT_DIR}/test/bin/osmt-apitest.rc"
 

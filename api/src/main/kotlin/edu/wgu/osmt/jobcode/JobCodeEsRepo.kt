@@ -57,15 +57,17 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
 
     @Deprecated("Upgrade to ES v8.x queries", ReplaceWith("createQuery"), DeprecationLevel.WARNING )
     fun createStringQuery(msgPrefix: String, nqb: NativeSearchQueryBuilder): Query {
-        val queryStr = nqb.build().query.toString()
-        log.debug(String.Companion.format("%s:\n%s", msgPrefix, queryStr))
-        return StringQuery(queryStr)
+        val query = nqb.build()
+        log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, query.query.toString()))
+        log.debug(String.Companion.format("\n%s filter:\n\t\t%s", msgPrefix, query.filter.toString()))
+        return StringQuery(query.query.toString())
     }
 
     private fun createQuery(msgPrefix: String, nqb: NativeQueryBuilder): Query {
-        val nq = nqb.build()
-        log.debug(String.Companion.format("%s:\n%s", msgPrefix, nq.query.toString()))
-        return nq;
+        val query = nqb.build()
+        log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, query.query.toString()))
+        log.debug(String.Companion.format("\n%s filter:\n\t\t%s", msgPrefix, query.filter.toString()))
+        return query;
     }
 }
 

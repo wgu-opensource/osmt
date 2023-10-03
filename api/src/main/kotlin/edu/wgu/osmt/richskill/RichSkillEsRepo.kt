@@ -231,6 +231,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     }
 
     override fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiFilteredSearch, publishStatus: Set<PublishStatus>) {
+        //TODO Replace with FindsAllByPublishStatus.createTermsQuery(publishStatus.name, publishStatus.map { ps -> ps.toString() })
         bq.must(
             termsQuery(
                 RichSkillDoc::publishStatus.name,
@@ -346,7 +347,10 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         return elasticSearchTemplate.count(query, RichSkillDoc::class.java)
     }
 
-    fun buildQuery(
+    /**
+     * TODO upgrade to ElasticSearch v8.x api style; see FindsAllByPublishStatus.kt
+     */
+    private fun buildQuery(
         pageable: Pageable,
         publishStatus: Set<PublishStatus>,
         apiSearch: ApiSearch,
@@ -357,6 +361,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
         nsq.withQuery(bq)
         nsq.withFilter(
+            //TODO Replace with FindsAllByPublishStatus.createTermsQuery(publishStatus.name, publishStatus.map { ps -> ps.toString() })
             BoolQueryBuilder().must(
                 termsQuery(
                     RichSkillDoc::publishStatus.name,
@@ -440,6 +445,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
             if (!apiSearchUuids.isNullOrEmpty()) {
                 nsq.withFilter(
+                    //TODO Replace with FindsAllByPublishStatus.createTermsQuery(uuid.name, apiSearchUuids)
                     BoolQueryBuilder().must(
                         termsQuery(
                             RichSkillDoc::uuid.name,

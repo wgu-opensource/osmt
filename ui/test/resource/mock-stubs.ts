@@ -2,7 +2,7 @@ import { EventEmitter } from "@angular/core"
 import { Navigation } from "@angular/router"
 import { Observable, of, Subject } from "rxjs"
 import { ApiCollection, ICollectionUpdate } from "../../src/app/collection/ApiCollection"
-import { ApiJobCode } from "../../src/app/job-codes/Jobcode"
+import { ApiJobCode } from "../../src/app/metadata/job-code/Jobcode"
 import { PublishStatus } from "../../src/app/PublishStatus"
 import { ApiBatchResult } from "../../src/app/richskill/ApiBatchResult"
 import { ApiNamedReference, ApiSkill, ApiSortOrder, KeywordType } from "../../src/app/richskill/ApiSkill"
@@ -29,7 +29,6 @@ import {
   createMockTaskResult,
   mockTaskResultForExportSearch
 } from "./mock-data"
-import {ApiCategory, CategoryService, IKeyword, KeywordSortOrder, PaginatedCategories} from "../../src/app/category";
 import {IRelatedSkillsService} from "../../src/app/abstract.service";
 
 
@@ -161,46 +160,6 @@ const testCategoryKeyword= {
   id: 1,
   value: "category-1",
   skillCount: 20
-}
-export let CategoryServiceData = {
-  category: new ApiCategory(testCategoryKeyword),
-  categoryKeyword: testCategoryKeyword,
-  paginatedCategories: new PaginatedCategories([testCategoryKeyword], 1),
-  paginatedSkills: createMockPaginatedSkills()
-}
-export class CategoryServiceStub {
-  getAllPaginated(
-    size: number = 50,
-    from: number = 0,
-    sort: KeywordSortOrder | undefined,
-  ): Observable<PaginatedCategories> {
-    return of(CategoryServiceData.paginatedCategories)
-  }
-
-  getById(identifier: string): Observable<ApiCategory> {
-    return of(CategoryServiceData.category)
-  }
-
-  getRelatedSkills(
-    entityId: number,
-    size: number,
-    from: number,
-    statusFilters: Set<PublishStatus>,
-    sort?: ApiSortOrder,
-  ): Observable<PaginatedSkills> {
-    return of(CategoryServiceData.paginatedSkills)
-  }
-
-  searchRelatedSkills(
-    entityId: number,
-    size: number,
-    from: number,
-    statusFilters: Set<PublishStatus>,
-    sort?: ApiSortOrder,
-    apiSearch?: ApiSearch
-  ): Observable<PaginatedSkills> {
-    return of(CategoryServiceData.paginatedSkills)
-  }
 }
 
 export let CollectionServiceData = {

@@ -25,6 +25,8 @@ export class SelectAllComponent {
   @Input()
   totalPageCount = 0
   @Output() valueChange: EventEmitter<SelectAllEvent> = new EventEmitter<SelectAllEvent>()
+  @Input()
+  checkAll = false
 
   onClickCheckbox(selected: boolean): void {
     this.valueChange.emit({value: +this.select?.nativeElement.value, selected})

@@ -10,201 +10,6 @@ info:
 
 paths:
 
-  /api/v3/categories:
-    get:
-      tags:
-        - Categories
-      summary: Get all categories
-      description: Retrieve all the categories
-      parameters:
-        - $ref: '#/components/parameters/PaginationSizeQuery'
-        - $ref: '#/components/parameters/PaginationFromQuery'
-        - name: sort
-          in: query
-          schema:
-            $ref: '#/components/schemas/KeywordSortOrder'
-      responses:
-        '200':
-          description: OK
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-
-  /api/v3/categories/{identifier}:
-    get:
-      tags:
-        - Categories
-      summary: Get category by identifier
-      description: Retrieve category with identifier
-      parameters:
-        - name: identifier
-          in: path
-          required: true
-          description: identifying key for category
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-
-  /api/v3/categories/{identifier}/skills:
-    get:
-      tags:
-        - Categories
-      summary: Get skills with category
-      description: Retrieve skills with category
-      parameters:
-        - name: identifier
-          in: path
-          required: true
-          description: identifying key for category
-          schema:
-            type: string
-        - $ref: '#/components/parameters/PaginationSizeQuery'
-        - $ref: '#/components/parameters/PaginationFromQuery'
-        - $ref: '#/components/parameters/PublishStatusQuery'
-        - name: sort
-          in: query
-          description: order records should be sorted
-          schema:
-            $ref: '#/components/schemas/SortOrder'
-      responses:
-        '200':
-          description: OK
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-    post:
-      tags:
-        - Categories
-      summary: Search skills with category
-      description: Search skills with category
-      parameters:
-        - name: identifier
-          in: path
-          required: true
-          description: identifying key for category
-          schema:
-            type: string
-        - $ref: '#/components/parameters/PaginationSizeQuery'
-        - $ref: '#/components/parameters/PaginationFromQuery'
-        - $ref: '#/components/parameters/PublishStatusQuery'
-        - name: sort
-          in: query
-          description: order records should be sorted
-          schema:
-            $ref: '#/components/schemas/SortOrder'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Search'
-      responses:
-        '200':
-          description: OK
-          headers:
-            Link:
-              $ref: '#/components/headers/Link'
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-            X-RateLimit-Limit:
-              $ref: '#/components/headers/XRateLimit'
-            X-RateLimit-Remaining:
-              $ref: '#/components/headers/XRateRemaining'
-            X-RateLimit-Reset:
-              $ref: '#/components/headers/XRateReset'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Keyword'
-
-  /api/v3/collections:
-    get:
-      summary: Get all collections
-      description: Returns all collections
-      tags:
-        - Collections
-      parameters:
-        - $ref: '#/components/parameters/PaginationSizeQueryRequired'
-        - $ref: '#/components/parameters/PaginationFromQueryRequired'
-        - $ref: '#/components/parameters/PublishStatusQueryRequired'
-        - $ref: '#/components/parameters/SortOrderQuery'
-      responses:
-        '200':
-          description: OK
-          headers:
-            X-Total-Count:
-              $ref: '#/components/headers/XTotalCount'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CollectionDoc'
-    post:
-      summary: Define a collection
-      description: Create a new collection in OSMT
-      tags:
-        - Collections
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/CollectionUpdate'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Collection'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-
   /api/v3/collections/{uuid}:
     parameters:
       - $ref: '#/components/parameters/UuidPath'
@@ -513,6 +318,244 @@ paths:
               operationRef: '/api/v3/results/media/{uuid}'
               parameters:
                 uuid: '$response.body#/uuid'
+
+  /api/v3/metadata/jobcodes:
+    get:
+      summary: Get all Job Codes
+      description: Returns all Job Codes with pagination, also supports search by query.
+      tags:
+        - Metadata
+      parameters:
+        - $ref: '#/components/parameters/PaginationSizeQueryRequired'
+        - $ref: '#/components/parameters/PaginationFromQueryRequired'
+        - $ref: '#/components/parameters/SortOrderQuery'
+        - $ref: '#/components/parameters/Query'
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Total-Count:
+              $ref: '#/components/headers/XTotalCount'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JobCode'
+    post:
+      summary: Define a Job Code
+      description: Create a new Job Code in OSMT
+      tags:
+        - Metadata
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/JobCodeUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JobCode'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/v3/metadata/jobcodes/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
+    get:
+      summary: Retrieve a Job Code
+      description: Retrieve all the information about a Job Code
+      tags:
+        - Metadata
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCode'
+
+  /api/v3/metadata/jobcodes/{id}/remove:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
+    delete:
+      summary: Remove a Job Code
+      description: Delete a Job Code from OSMT
+      tags:
+        - Metadata
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResult'
+
+  /api/v3/metadata/jobcodes/{id}/update:
+    parameters:
+      - $ref: '#/components/parameters/IdPath'
+    post:
+      summary: Update a Job Code
+      description: Update an existing Job Code
+      tags:
+        - Metadata
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobCodeUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCode'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/v3/metadata/keywords:
+    get:
+      summary: "Get all Keywords"
+      description: Returns all Keywords with pagination, also supports search by query.
+      tags:
+        - Metadata
+      operationId: "allPaginated"
+      parameters:
+        - name: "type"
+          in: "query"
+          required: false
+          schema:
+            type: "string"
+            default: "Category"
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/PaginationSizeQuery'
+        - $ref: '#/components/parameters/PaginationFromQuery'
+        - $ref: '#/components/parameters/SortOrderQuery'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/ApiKeyword"
+    post:
+      summary: "Define a Keyword"
+      description: Create a new Keyword in OSMT
+      tags:
+        - Metadata
+      operationId: "createKeyword"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiKeywordUpdate"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKeyword"
+
+  /api/v3/metadata/keywords/{id}:
+    get:
+      summary: "Retrieve a Keyword"
+      description: Retrieve all the information about a Keyword
+      tags:
+        - Metadata
+      operationId: "keywordById"
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKeyword"
+
+  /api/v3/metadata/keywords/{id}/skills:
+    post:
+      summary: "Get all related skills"
+      description: Returns all related skills with pagination, also supports search by query.
+      tags:
+        - Metadata
+      operationId: "relatedSkills"
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+        - $ref: '#/components/parameters/PaginationSizeQuery'
+        - $ref: '#/components/parameters/PaginationFromQuery'
+        - $ref: '#/components/parameters/PublishStatusQuery'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Search'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/SkillSummary"
+
+  /api/v3/metadata/keywords/{id}/remove:
+    delete:
+      summary: "Remove a Keyword"
+      description: Delete a Keyword from OSMT
+      tags:
+        - Metadata
+      operationId: "deleteKeyword"
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TaskResult"
+
+  /api/v3/metadata/keywords/{id}/update:
+    post:
+      summary: "Update a Keyword"
+      description: Update an existing Keyword
+      tags:
+        - Metadata
+      operationId: "updateKeyword"
+      parameters:
+        - $ref: '#/components/parameters/IdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiKeywordUpdate"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKeyword"
 
   /api/v3/results/batch/{uuid}:
     parameters:
@@ -953,7 +996,7 @@ paths:
               - Published
             items:
               $ref: '#/components/schemas/PublishStatus'
-        - $ref: 'components/parameters/UuidReference'
+        - $ref: '#/components/schemas/UuidReference'
       requestBody:
         required: true
         content:
@@ -1055,6 +1098,54 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Alignment'
+
+    ApiKeyword:
+      type: "object"
+      properties:
+        id:
+          type: number
+        framework:
+          type: "string"
+        name:
+          type: "string"
+        type:
+          type: "string"
+          enum:
+            - "Companion"
+            - "displayName"
+            - "Category"
+            - "Keyword"
+            - "Standard"
+            - "Certification"
+            - "Alignment"
+            - "Employer"
+            - "Author"
+        url:
+          type: "string"
+        skillCount:
+          type: number
+
+    ApiKeywordUpdate:
+      type: "object"
+      properties:
+        framework:
+          type: "string"
+        name:
+          type: "string"
+        type:
+          type: "string"
+          enum:
+            - "Companion"
+            - "displayName"
+            - "Category"
+            - "Keyword"
+            - "Standard"
+            - "Certification"
+            - "Alignment"
+            - "Employer"
+            - "Author"
+        url:
+          type: "string"
 
     AuditLog:
       type: object
@@ -1280,7 +1371,7 @@ components:
           items:
             type: string
 
-    JobCode:
+    JobCodeUpdate:
       type: object
       required:
         - code
@@ -1298,7 +1389,16 @@ components:
         parents:
           type: array
           items:
-            $ref: '#/components/schemas/JobCode'
+            $ref: '#/components/schemas/JobCodeUpdate'
+
+    JobCode:
+      allOf:
+        - $ref: '#/components/schemas/JobCodeUpdate'
+        - properties:
+            id:
+              type: number
+            jobCodeLevelAsNumber:
+              type: number
 
     JobCodeLevel:
       type: string
@@ -1359,6 +1459,33 @@ components:
           type: string
           format: uri
         name:
+          type: string
+
+    NamedReferenceResult:
+      type: object
+      properties:
+        id:
+          type: number
+          format: uri
+        name:
+          type: string
+        uri:
+          type: string
+        type:
+          $ref: '#/components/schemas/KeywordType'
+        framework:
+          type: string
+
+    NamedReferenceUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        type:
+          $ref: '#/components/schemas/KeywordType'
+        framework:
           type: string
 
     PublishStatus:
@@ -1555,7 +1682,7 @@ components:
           - code: '15-1231'
             targetNodeName: Computer Network Support Specialists
             frameworkName: bls
-            parents: 
+            parents:
               - code: '15-0000'
                 targetNodeName: Computer and Mathematical Occupations
                 level: Major
@@ -1749,7 +1876,7 @@ components:
           type: string
         status:
           type: string
-          enum: 
+          enum:
             - Processing
             - Ready
         apiResultPath:
@@ -1782,6 +1909,23 @@ components:
             $ref: '#/components/schemas/ErrorResult'
 
   parameters:
+    IdPath:
+      name: id
+      in: path
+      description: id of a resource
+      required: true
+      schema:
+        type: string
+        format: id
+
+    NameReferenceTypeQueryRequired:
+      name: type
+      in: query
+      description: Type of the Named Reference
+      required: true
+      schema:
+        type: string
+
     PaginationFromQuery:
       name: from
       in: query
@@ -1836,6 +1980,14 @@ components:
         type: array
         items:
           $ref: '#/components/schemas/PublishStatus'
+
+    Query:
+      name: query
+      in: query
+      description: Matching query to search
+      required: false
+      schema:
+        type: string
 
     SortOrderQuery:
       name: sort
@@ -1896,12 +2048,12 @@ security:
   - bearerAuth: []
 
 tags:
-  - name: Categories
-    description: RSD Metadata - Categories
   - name: Collections
     description: Collections of RSDs
   - name: Export
     description: Export OSMT data
+  - name: Metadata
+    description: Skills Metadata
   - name: Search
     description: Search for OSMT resources
   - name: Skills

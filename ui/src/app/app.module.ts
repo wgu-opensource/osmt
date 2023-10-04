@@ -16,8 +16,8 @@ import {HeaderComponent} from "./navigation/header.component"
 import {FooterComponent} from "./navigation/footer.component"
 import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component"
 import {ToastComponent} from "./toast/toast.component"
-import {PillComponent} from "./core/pill/pill.component";
-import {PillGroupComponent} from "./core/pill/group/pill-group.component";
+import {PillComponent} from "./core/pill/pill.component"
+import {PillGroupComponent} from "./core/pill/group/pill-group.component"
 import {AuthService} from "./auth/auth-service"
 import {AuthGuard} from "./auth/auth.guard"
 import {CommoncontrolsComponent} from "./navigation/commoncontrols.component"
@@ -53,12 +53,6 @@ import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-sear
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
 import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
 import {DotsMenuComponent} from "./table/skills-library-table/dots-menu.component"
-import {CategoryDetailComponent} from "./category/detail/category-detail.component"
-import {CategoryDetailCardComponent} from "./category/detail/card/category-detail-card.component"
-import {CategoryLibraryComponent} from "./category/library/category-library.component"
-import {CategoryListComponent} from "./category/list/category-list.component"
-import {CategoryTableComponent} from "./category/table/category-table.component"
-import {CategoryTableRowComponent} from "./category/table/row/category-table-row.component"
 import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component"
 import {CollectionTableComponent} from "./collection/collection-table.component"
 import {CollectionListRowComponent} from "./collection/collection-list-row.component"
@@ -113,9 +107,24 @@ import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collecti
 import { SizePaginationComponent } from "./table/skills-library-table/size-pagination/size-pagination.component"
 import {OsmtTableModule} from "./table/osmt-table.module"
 import { getBaseApi } from "./api-versions"
+import { NoopAnimationsModule } from "@angular/platform-browser/animations"
+import { MatMenuModule } from "@angular/material/menu"
+import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
+import { JobCodeListRowComponent } from "./metadata/job-code/job-code-list-row/job-code-list-row.component"
+import { JobCodeTableComponent } from "./metadata/job-code/job-code-table/job-code-table.component"
+import { NamedReferenceListRowComponent } from "./metadata/named-reference/named-reference-list-row/named-reference-list-row.component"
+import { NamedReferenceTableComponent } from "./metadata/named-reference/named-reference-table/named-reference-table.component"
+import { MetadataSelectorComponent } from "./metadata/detail/metadata-selector/metadata-selector.component";
+import { MetadataManageComponent } from "./metadata/detail/metadata-manage/metadata-manage.component";
+import { MetadataPublicComponent } from "./metadata/detail/metadata-public/metadata-public.component";
 import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
 import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
 import { BatchImportCollectionComponent } from './collection/create-collection/batch-import-collection/batch-import-collection.component'
+import { JobCodeParentsPipe } from "./pipes"
+import { MetadataCardComponent } from "./metadata/detail/metadata-card/metadata-card.component"
+import { ManageMetadataActionBarVerticalComponent } from "./metadata/detail/metadata-manage/action-bar-vertical/metadata-manage-action-bar-vertical.component"
+import { PublicMetadataActionBarVerticalComponent } from "./metadata/detail/metadata-public/action-bar-vertical/metadata-public-action-bar-vertical.component";
+import { NamedReferenceFormComponent } from "./metadata/named-reference/named-reference-form/named-reference-form.component"
 
 export function initializeApp(
   appConfig: AppConfig,
@@ -199,12 +208,6 @@ export function initializeApp(
     AbstractAdvancedSearchActionBarComponent,
     DotsMenuComponent,
     AbstractAdvancedSearchActionBarComponent,
-    CategoryDetailComponent,
-    CategoryDetailCardComponent,
-    CategoryLibraryComponent,
-    CategoryListComponent,
-    CategoryTableComponent,
-    CategoryTableRowComponent,
     CollectionFormComponent,
     AbstractCreateCollectionActionbarComponent,
     CreateCollectionActionBarHorizontalComponent,
@@ -237,6 +240,21 @@ export function initializeApp(
     ConvertToCollectionComponent,
     SizePaginationComponent,
     BatchImportCollectionComponent,
+    MetadataListComponent,
+    JobCodeListRowComponent,
+    JobCodeTableComponent,
+    NamedReferenceListRowComponent,
+    NamedReferenceTableComponent,
+    MetadataSelectorComponent,
+    MetadataCardComponent,
+    MetadataManageComponent,
+    MetadataPublicComponent,
+    ManageMetadataActionBarVerticalComponent,
+    PublicMetadataActionBarVerticalComponent,
+    InlineHeadingComponent,
+    JobCodeParentsPipe,
+    InlineHeadingComponent,
+    NamedReferenceFormComponent
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),
@@ -249,7 +267,9 @@ export function initializeApp(
     OsmtCoreModule,
     OsmtFormModule,
     FormsModule,
-    OsmtTableModule
+    OsmtTableModule,
+    NoopAnimationsModule,
+    MatMenuModule
   ],
   providers: [
     EnvironmentService,

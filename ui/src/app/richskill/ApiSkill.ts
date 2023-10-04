@@ -1,4 +1,4 @@
-import {ApiJobCode, IJobCode} from "../job-codes/Jobcode"
+import {ApiJobCode, IJobCode} from "../metadata/job-code/Jobcode"
 import {PublishStatus} from "../PublishStatus"
 
 
@@ -203,9 +203,16 @@ export enum ApiSortOrder {
   SkillAsc = "skill.asc",
   SkillDesc = "skill.desc",
   NameAsc = "name.asc",
-  NameDesc = "name.desc"
+  NameDesc = "name.desc",
+  CodeAsc = "code.asc",
+  CodeDesc = "code.desc",
+  JobCodeLevelAsc = "jobCodeLevel.asc",
+  JobCodeLevelDesc = "jobCodeLevel.desc",
+  KeywordNameAsc = "name.asc",
+  KeywordNameDesc = "name.desc",
+  KeywordFrameworkAsc = "framework.asc",
+  KeywordFrameworkDesc = "framework.desc"
 }
-
 
 export enum AuditOperationType {
   Insert = "Insert",

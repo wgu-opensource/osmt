@@ -1,0 +1,90 @@
+<table class="l-table">
+  <caption> </caption>
+  <thead>
+  <tr class="m-tableHeader m-tableHeader-bare">
+    <th class="t-hidden-tabletMin" scope="col" colspan="3"><span class="t-visuallyHidden">Named References</span></th>
+    <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Name</span></th>
+    <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Framework</span></th>
+    <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">URL</span></th>
+    <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Skills</span></th>
+  </tr>
+  <tr class="m-tableHeader">
+    <td class="t-hidden-tabletMin" aria-hidden="true">
+      <app-label-with-select
+        label="NamedReferences"
+        [options]="mobileSortOptions"
+        [currentSort]="currentSort"
+        (sortChanged)="mobileSortColumn($event)"
+      ></app-label-with-select>
+    </td>
+
+    <td class="t-hidden-tabletMax"  aria-hidden="true">
+      <app-label-with-filter
+        *ngIf="allowSorting; else noSortName"
+        label="Name"
+        [sortAscending]="getNameSort()"
+        (sortChanged)="sortColumn('name', $event)"
+      ></app-label-with-filter>
+      <ng-template #noSortName>
+          <span class="m-tableLabel">
+            <span class="m-tableLabel-x-text">Name</span>
+          </span>
+      </ng-template>
+    </td>
+
+    <td *ngIf="isAlignmentSelected" class="t-hidden-tabletMax" aria-hidden="true">
+      <app-label-with-filter
+        *ngIf="allowSorting; else noSortName"
+        label="Framework"
+        [sortAscending]="getFrameworkSort()"
+        (sortChanged)="sortColumn('framework', $event)"
+      ></app-label-with-filter>
+      <ng-template #noSortName>
+          <span class="m-tableLabel">
+            <span class="m-tableLabel-x-text">Framework</span>
+          </span>
+      </ng-template>
+    </td>
+
+    <td *ngIf="isAlignmentSelected" class="t-hidden-tabletMax" aria-hidden="true">
+        <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">URL</span>
+        </span>
+    </td>
+
+    <td class="t-hidden-tabletMax" aria-hidden="true">
+        <span class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Skills</span>
+        </span>
+    </td>
+
+    <td class="m-tableHeader-x-actions" aria-hidden="true">
+      <app-select-all
+        [selectAllEnabled]="selectAllEnabled"
+        (valueChange)="handleSelectAll($event)"
+        [totalCount]="getSelectAllCount()"
+        [totalPageCount]="items.length"
+        [checkAll]="isAllPageSelected">
+      </app-select-all>
+    </td>
+
+  </tr>
+  </thead>
+
+  <tbody>
+  <tr
+    *ngFor="let namedReference of items; let i=index"
+    id="table-row-{{i}}"
+    class="m-tableRow"
+    [class.m-tableRow-is-selected]="isSelected(namedReference)"
+
+    app-named-reference-list-row
+    [metadataSelected]=metadataSelected
+    [namedReference]="namedReference"
+    [isSelected]="isSelected(namedReference)"
+    [rowActions]="rowActions"
+    (rowSelected)="onRowToggle($event)"
+    (focusActionBar)="focusActionBar.emit()"
+  ></tr>
+  </tbody>
+</table>

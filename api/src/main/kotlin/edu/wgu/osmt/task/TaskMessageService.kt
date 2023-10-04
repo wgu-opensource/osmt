@@ -53,5 +53,7 @@ class TaskMessageService {
         const val skillsForCustomListExportCsv = "custom-rsd-list-csv-export"
         const val skillsForCustomListExportCsvV2 = "custom-rsd-list-csv-export-v2"
         const val skillsForCustomListExportXlsx = "custom-rsd-list-xlsx-export"
+        const val removeJobCode = "remove-job-code"
+        const val removeKeyword = "remove-keyword"
     }
 }

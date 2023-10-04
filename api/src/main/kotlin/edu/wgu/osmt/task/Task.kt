@@ -36,7 +36,10 @@ import java.util.*
     JsonSubTypes.Type(value = ExportSkillsToCsvTask::class, name = "ExportSkillsToCsvTask"),
     JsonSubTypes.Type(value = ExportSkillsToXlsxTask::class, name = "ExportSkillsToXlsxTask"),
     JsonSubTypes.Type(value = RemoveCollectionSkillsTask::class, name = "RemoveCollectionSkillsTask"),
-    JsonSubTypes.Type(value = ExportSkillsToCsvTaskV2::class, name = "ExportSkillsToCsvTaskV2")
+    JsonSubTypes.Type(value = RemoveJobCodeTask::class, name = "RemoveJobCodeTask"),
+    JsonSubTypes.Type(value = ExportSkillsToCsvTaskV2::class, name = "ExportSkillsToCsvTaskV2"),
+    JsonSubTypes.Type(value = RemoveItemTask::class, name = "RemoveItemTask"),
+    JsonSubTypes.Type(value = RemoveJobCodeTask::class, name = "RemoveJobCodeTask")
 )
 
 interface Task {
@@ -209,7 +212,7 @@ data class UpdateCollectionSkillsTask(
     override val apiResultPath: String = ""
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    
+
 }
 
 data class RemoveCollectionSkillsTask(
@@ -224,6 +227,29 @@ data class RemoveCollectionSkillsTask(
 
 }
 
+data class RemoveItemTask(
+    val identifier: String = "",
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: ApiBatchResult? = null,
+    override val status: TaskStatus = TaskStatus.Processing,
+    override val apiResultPath: String = ""
+) : Task {
+    override val contentType = MediaType.APPLICATION_JSON_VALUE
+
+}
+
+
+data class RemoveJobCodeTask(
+    val jobCodeId: Long = 0,
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: ApiBatchResult? = null,
+    override val status: TaskStatus = TaskStatus.Processing,
+): Task {
+    override val contentType = MediaType.APPLICATION_JSON_VALUE
+    override val apiResultPath = RoutePaths.TASK_DETAIL_BATCH
+}
 
 enum class TaskStatus {
     Processing,

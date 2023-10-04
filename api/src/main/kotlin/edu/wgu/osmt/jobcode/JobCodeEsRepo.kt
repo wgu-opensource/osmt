@@ -20,6 +20,8 @@ interface CustomJobCodeRepository {
     val elasticSearchTemplate: ElasticsearchRestTemplate
     fun typeAheadSearch(query: String): SearchHits<JobCode>
 
+    fun typeAheadSearch(query: String?, pageable: OffsetPageable): SearchHits<JobCode>
+
     fun deleteIndex() {
         elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_JOBCODE_DOC)).delete()
     }
@@ -27,6 +29,15 @@ interface CustomJobCodeRepository {
 
 class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :
     CustomJobCodeRepository {
+
+    override fun typeAheadSearch(query: String?, pageable: OffsetPageable): SearchHits<JobCode> {
+        val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
+            if (!query.isNullOrEmpty()) {
+                val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
+                nsq.withQuery(disjunctionQuery)
+            }
+        return elasticSearchTemplate.search(nsq.build(), JobCode::class.java)
+    }
 
     override fun typeAheadSearch(query: String): SearchHits<JobCode> {
         val nsq: NativeSearchQueryBuilder

@@ -1,0 +1,38 @@
+<ng-template [ngIf]="namedReference">
+
+  <th scope="row" id="{{id}}-header">
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink" routerLink="/named-references/{{namedReference.id}}/manage">{{namedReference.name}}</a>
+  </th>
+  <th *ngIf="isAlignmentSelected" scope="row" id="{{id}}-header">
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{namedReference.framework}}</a>
+  </th>
+  <th *ngIf="isAlignmentSelected" scope="row" id="{{id}}-header">
+    <a id="{{id}}-header-name" class="t-focus t-type-bodyLink">{{namedReference.url}}</a>
+  </th>
+  <th scope="row" id="{{id}}-header">
+    <a id="{{id}}-header-name" class="m-inlineHeading-x-text">{{namedReference.skillCount}}</a>
+  </th>
+
+
+  <td class="m-tableRow-x-actions">
+    <div>
+      <div class="m-checkbox">
+        <label class="t-visuallyHidden" for="{{id}}-toggle" aria-labelledby="{{id}}-header">Select this Metadata.</label>
+        <input type="checkbox" id="{{id}}-toggle" name="{{id}}-toggle" data-table-row="{{id}}" [checked]="isSelected" (click)="selected()">
+        <div class="m-checkbox-x-icon">
+          <svg class="t-icon" aria-hidden="true">
+            <use [attr.xlink:href]="checkIcon"></use>
+          </svg>
+        </div>
+      </div>
+      <div class="m-quickLinks">
+        <a (click)="focusActionBar.emit()">Actions menu.</a>
+      </div>
+    </div>
+
+    <app-dots-menu [actions]="rowActions" [data]="namedReference"></app-dots-menu>
+
+
+  </td>
+
+</ng-template>

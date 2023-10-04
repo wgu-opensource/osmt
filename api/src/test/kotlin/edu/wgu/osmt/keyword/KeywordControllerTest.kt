@@ -4,31 +4,27 @@ import edu.wgu.osmt.BaseDockerizedTest
 import edu.wgu.osmt.HasDatabaseReset
 import edu.wgu.osmt.HasElasticsearchReset
 import edu.wgu.osmt.SpringTest
+import edu.wgu.osmt.api.model.ApiKeyword
+import edu.wgu.osmt.api.model.ApiKeywordUpdate
+import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.api.model.KeywordSortEnum
 import edu.wgu.osmt.api.model.SkillSortEnum
-import edu.wgu.osmt.api.model.SortOrder
 import edu.wgu.osmt.collection.CollectionEsRepo
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeEsRepo
 import edu.wgu.osmt.mockdata.MockData
-import edu.wgu.osmt.richskill.RichSkillDescriptor
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.richskill.RsdUpdateObject
-import io.mockk.InternalPlatformDsl.toArray
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.spyk
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.context.SecurityContext
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.oauth2.core.user.OAuth2UserAuthority
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.jwt.Jwt
-import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -47,50 +43,96 @@ internal class KeywordControllerTest @Autowired constructor(
 
     private lateinit var mockData : MockData
 
+    private lateinit var mockKeywordRepository: KeywordRepository
+
+    val nullJwt : Jwt? = null
+
 
     @BeforeAll
     fun setup() {
         mockData = MockData()
+        mockKeywordRepository = spyk()
     }
 
     @Test
-    fun `allCategoriesPaginated() should retrieve an existing category`() {
+    fun `allPaginated() should retrieve an existing keyword`() {
         // arrange
         val size: Int = 2
         val from: Int = 2
-        val sort: KeywordSortEnum = KeywordSortEnum.SkillCountDesc
+        val sort: KeywordSortEnum = KeywordSortEnum.KeywordNameAsc
 
         mockData.getKeywords().map {
             keywordRepository.create(it.type, it.value, it.uri, it.framework)
         }
 
         // act
-        val result = kwController.allCategoriesPaginated(
+        val result = kwController.allPaginated(
             uriComponentsBuilder = UriComponentsBuilder.newInstance(),
+            type = KeywordTypeEnum.Category.toString(),
+            org.apache.commons.lang3.StringUtils.EMPTY,
             size = size,
             from = from,
             sort = sort.toString(),
         )
 
+        println(result.body)
+
         // assert
-        Assertions.assertThat(result).isNotNull
+        Assertions.assertThat(result!!).isNotNull
         Assertions.assertThat(result.body?.size).isEqualTo(size)
+        Assertions.assertThat(result).isExactlyInstanceOf(ResponseEntity::class.java)
+        Assertions.assertThat((result as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
     }
 
     @Test
-    fun `categoryById() should retrieve an existing category`() {
+    fun `keywordById() should retrieve an existing keyword`() {
         // arrange
         val keyword = keywordRepository.create(KeywordTypeEnum.Category, "category1")
 
         // act
-        val result = kwController.categoryById(keyword?.id?.value.toString())
+        val result = keyword?.id?.let { kwController.keywordById(it.value) }
 
         // assert
         Assertions.assertThat(result).isNotNull
+        Assertions.assertThat(result).isExactlyInstanceOf(ResponseEntity::class.java)
+        Assertions.assertThat(result!!.body).isExactlyInstanceOf(ApiKeyword::class.java)
+        Assertions.assertThat((result as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
     }
 
     @Test
-    fun `getCategorySkills() should retrieve an existing category`() {
+    fun `createKeyword() should create a new keyword`() {
+        // act
+        val result = kwController.createKeyword(ApiKeywordUpdate("name","uri",KeywordTypeEnum.Category, "framework"), nullJwt)
+
+        // assert
+        Assertions.assertThat(result).isNotNull
+        Assertions.assertThat(result).isExactlyInstanceOf(ResponseEntity::class.java)
+        Assertions.assertThat(result.body).isExactlyInstanceOf(ApiKeyword::class.java)
+        Assertions.assertThat(result.body!!.name).isEqualTo("name")
+        Assertions.assertThat(result.body!!.framework).isEqualTo("framework")
+        Assertions.assertThat((result as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
+    }
+
+    @Test
+    fun `updateKeyword() should update an existing keyword`() {
+        //arrange
+        val keyword = keywordRepository.create(KeywordTypeEnum.Category, "category1")
+
+        // act
+        Assertions.assertThat(keyword!!.value).isEqualTo("category1")
+        val result = kwController.updateKeyword(keyword!!.id.value, ApiKeywordUpdate("updated Name","updated uri",KeywordTypeEnum.Category, "updated framework"), nullJwt)
+
+        // assert
+        Assertions.assertThat(result).isNotNull
+        Assertions.assertThat(result).isExactlyInstanceOf(ResponseEntity::class.java)
+        Assertions.assertThat(result.body).isExactlyInstanceOf(ApiKeyword::class.java)
+        Assertions.assertThat(result.body!!.name).isEqualTo("updated Name")
+        Assertions.assertThat(result.body!!.framework).isEqualTo("updated framework")
+        Assertions.assertThat((result as ResponseEntity).statusCode).isEqualTo(HttpStatus.OK)
+    }
+
+    @Test
+    fun `searchRelatedSkills() should retrieve an existing RSD`() {
         // arrange
         val category1 = keywordRepository.create(KeywordTypeEnum.Category, "category1")
         val category2 = keywordRepository.create(KeywordTypeEnum.Category, "category2")
@@ -101,6 +143,7 @@ internal class KeywordControllerTest @Autowired constructor(
                 name = "skill-1",
                 statement = "Skill 1",
                 keywords = ListFieldUpdate(add = listOf(category1!!, category2!!)),
+                publishStatus = PublishStatus.Published
             ),
         )
 
@@ -110,13 +153,14 @@ internal class KeywordControllerTest @Autowired constructor(
                 name = "skill-2",
                 statement = "Skill 2",
                 keywords = ListFieldUpdate(add = listOf(category1!!)),
+                publishStatus = PublishStatus.Published
             ),
         )
 
         // act
-        val result = kwController.getCategorySkills(
+        val result = kwController.searchKeywordSkills(
             uriComponentsBuilder = UriComponentsBuilder.newInstance(),
-            identifier = category2.id.toString(),
+            id = category2.id.value,
             size = 10,
             from = 0,
             sort = SkillSortEnum.defaultSort.toString(),
@@ -125,45 +169,49 @@ internal class KeywordControllerTest @Autowired constructor(
 
         // assert
         Assertions.assertThat(result).isNotNull
-        Assertions.assertThat(result.body?.size == 1)
+        Assertions.assertThat(result.body?.size).isEqualTo(1)
     }
 
     @Test
-    fun `searchCategorySkills() should retrieve an existing category`() {
+    fun `searchRelatedSkills() should retrieve matched RSDs with a query`() {
         // arrange
-        val category1 = keywordRepository.create(KeywordTypeEnum.Category, "category1")
-        val category2 = keywordRepository.create(KeywordTypeEnum.Category, "category2")
+        val category1 = keywordRepository.create(KeywordTypeEnum.Category, "category3")
+        val category2 = keywordRepository.create(KeywordTypeEnum.Category, "category4")
 
         richSkillRepository.create(
-            user = "user1",
+            user = "user3",
             updateObject = RsdUpdateObject(
-                name = "skill-1",
-                statement = "Skill 1",
+                name = "skill-3",
+                statement = "Skill 3",
                 keywords = ListFieldUpdate(add = listOf(category1!!, category2!!)),
+                publishStatus = PublishStatus.Published
             ),
         )
 
         richSkillRepository.create(
-            user = "user1",
+            user = "user4",
             updateObject = RsdUpdateObject(
-                name = "skill-2",
-                statement = "Skill 2",
-                keywords = ListFieldUpdate(add = listOf(category1!!)),
+                name = "skill-4",
+                statement = "Skill 4",
+                keywords = ListFieldUpdate(add = listOf(category1!!, category2!!)),
+                publishStatus = PublishStatus.Published
             ),
         )
 
         // act
-        val result = kwController.searchCategorySkills(
+        val result = kwController.searchKeywordSkills(
             uriComponentsBuilder = UriComponentsBuilder.newInstance(),
-            identifier = category2.id.toString(),
+            id = category2.id.value,
             size = 10,
             from = 0,
             sort = SkillSortEnum.defaultSort.toString(),
             status = arrayOf(PublishStatus.Published.toString()),
+            apiSearch = ApiSearch(query = "skill")
         )
+
 
         // assert
         Assertions.assertThat(result).isNotNull
-        Assertions.assertThat(result.body?.size == 1)
+        Assertions.assertThat(result.body?.size).isEqualTo(2)
     }
 }

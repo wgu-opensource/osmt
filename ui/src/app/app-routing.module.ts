@@ -13,8 +13,6 @@ import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.
 import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component"
 import {CollectionFormComponent} from "./collection/create-collection/collection-form.component"
 import {FormDirtyGuard} from "./core/abstract-form.component"
-import {CategoryDetailComponent} from "./category/detail/category-detail.component"
-import {CategoryLibraryComponent} from "./category/library/category-library.component"
 import {CollectionsLibraryComponent} from "./table/collections-library.component"
 import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component"
 import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component"
@@ -28,6 +26,10 @@ import {ConvertToCollectionComponent} from "./my-workspace/convert-to-collection
 import {
   BatchImportCollectionComponent
 } from "./collection/create-collection/batch-import-collection/batch-import-collection.component"
+import { MetadataListComponent } from "./metadata/detail/metadata-list/metadata-list.component"
+import { MetadataManageComponent } from "./metadata/detail/metadata-manage/metadata-manage.component"
+import { MetadataPublicComponent } from "./metadata/detail/metadata-public/metadata-public.component"
+import { NamedReferenceFormComponent } from "./metadata/named-reference/named-reference-form/named-reference-form.component"
 
 const routes: Routes = [
   { path: "", redirectTo: "/skills", pathMatch: "full" },
@@ -85,15 +87,60 @@ const routes: Routes = [
     },
   },
 
-  /* CATEGORIES */
+  /* KEYWORDS */
 
-  // category detail
-  {path: "categories/:id",
-    component: CategoryDetailComponent,
+  {
+    path: "metadata",
+    component: MetadataListComponent,
+    canActivate: [AuthGuard],
+  },
+  // create metadata
+  {
+    path: "named-references/create",
+    component: NamedReferenceFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.MetadataCreate)
+    },
+  },
+  /*{path: "job-codes/create",
+    component: MetadataFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.MetadataCreate)
+    },
+  },*/
+  // edit metadata
+  {
+    path: "named-references/:id/edit",
+    component: NamedReferenceFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
+    },
+  },
+  /*{path: "job-codes/:id/edit",
+    component: MetadataFormComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.MetadataUpdate)
+    },
+  },*/
+  // public metadata detail
+  {
+    path: "job-codes/:id",
+    component: MetadataPublicComponent,
     canActivate: [AuthGuard]
   },
-  {path: "categories",
-    component: CategoryLibraryComponent,
+  // admin metadata detail
+  {
+    path: "named-references/:id/manage",
+    component: MetadataManageComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: "job-codes/:id/manage",
+    component: MetadataManageComponent,
     canActivate: [AuthGuard]
   },
 
@@ -191,11 +238,20 @@ const routes: Routes = [
       roles: ActionByRoles.get(ButtonAction.MyWorkspace)
     }
   },
+  {
+    path: "metadata",
+    component: MetadataListComponent,
+    canActivate: [AuthGuard],
+  },
   /* PUBLIC VIEWS */
   {path: "skills/:uuid", component: RichSkillPublicComponent},
   {path: "collections/:uuid", component: CollectionPublicComponent},
   {path: "api/skills/:uuid", component: RichSkillPublicComponent},
   {path: "api/collections/:uuid", component: CollectionPublicComponent},
+  {
+    path: "api/metadata/keywords/:id",
+    component: MetadataPublicComponent
+  },
 
   /* AUTHENTICATION REDIRECTS */
   {path: "login", component: LoginComponent},  // redirect to oauth login

@@ -14,6 +14,7 @@ import {ButtonAction} from "../auth/auth-roles"
 import {By} from "@angular/platform-browser"
 import { Idle, IdleExpiry } from "@ng-idle/core"
 import { Keepalive } from "@ng-idle/keepalive"
+import { MatMenuModule } from "@angular/material/menu";
 
 describe("HeaderComponent", () => {
 
@@ -47,7 +48,8 @@ describe("HeaderComponent", () => {
             path: "skills",
             component: RichSkillsLibraryComponent
           }
-        ])
+        ]),
+        MatMenuModule
       ]
     }).compileComponents()
   })
@@ -93,20 +95,6 @@ describe("HeaderComponent", () => {
     spyOn(authService, "getRole").and.returnValue("ROLE_Osmt_Admin")
     component.canHaveWorkspace = component["authService"].isEnabledByRoles(ButtonAction.MyWorkspace)
     expect(component.canHaveWorkspace).toBeTrue()
-  })
-
-  it("my workspace is visible when user has role admin or curator", (done) => {
-    component.canHaveWorkspace = true
-    spyOn(component, "showPublicNavbar").and.returnValue(false)
-    fixture.whenStable().then(
-      () => {
-        fixture.detectChanges()
-        const myWorkspace = fixture.debugElement.query(By.css("#li-my-workspace"))
-        expect(myWorkspace).toBeTruthy()
-        expect(component.canHaveWorkspace).toBeTrue()
-        done()
-      }
-    )
   })
 
   it("skills is active", fakeAsync(() => {

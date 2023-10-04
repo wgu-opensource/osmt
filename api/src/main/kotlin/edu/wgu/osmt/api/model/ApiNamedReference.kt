@@ -7,7 +7,6 @@ import edu.wgu.osmt.db.JobCodeLevel
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
 
-
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class ApiNamedReference(
     val id: String? = null,
@@ -19,7 +18,6 @@ data class ApiNamedReference(
         }
     }
 }
-
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class ApiAlignment(
@@ -73,18 +71,96 @@ data class ApiStringListUpdate(
     val remove: List<String>? = null
 )
 
+data class JobCodeV2(
+    val major: String?,
+    val minor: String?,
+    val broad: String?,
+    val detailed: String?,
+    val code: String?,
+    val name: String?,
+    val description: String?,
+    val framework: String?,
+    val url: String?,
+    val majorCode: String?,
+    val minorCode: String?,
+    val broadCode: String?,
+    val detailedCode: String?,
+    val jobRoleCode: String?
+) {
+
+    companion object factory {
+        fun fromJobCode(jobCode: JobCode): JobCodeV2 {
+            return  JobCodeV2(
+                major = jobCode.major,
+                minor = jobCode.minor,
+                broad = jobCode.broad,
+                detailed = jobCode.detailed,
+                code = jobCode.code,
+                name = jobCode.name,
+                description = jobCode.description,
+                framework = jobCode.framework,
+                url = jobCode.url,
+                majorCode = jobCode.majorCode,
+                minorCode = jobCode.minorCode,
+                broadCode = jobCode.broadCode,
+                detailedCode = jobCode.detailedCode,
+                jobRoleCode = jobCode.jobRoleCode
+            )
+        }
+    }
+}
+
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-data class ApiJobCode(
+class ApiJobCode(
+    var id: Long? = null,
     val code: String,
     val targetNode: String? = null,
     val targetNodeName: String? = null,
     val frameworkName: String? = null,
     val level: JobCodeLevel? = null,
-    val parents: List<ApiJobCode>? = null
+    val parents: List<ApiJobCode>? = null,
+    var jobCodeLevelAsNumber: Int? = null,
 ) {
     companion object factory {
         fun fromJobCode(jobCode: JobCode, level: JobCodeLevel? = null, parents: List<ApiJobCode>? = null): ApiJobCode {
-            return ApiJobCode(code=jobCode.code, targetNodeName=jobCode.name, targetNode=jobCode.url, frameworkName=jobCode.framework, level=level, parents=parents)
+            return ApiJobCode(
+                id = jobCode.id,
+                code = jobCode.code,
+                targetNodeName = jobCode.name,
+                targetNode = jobCode.url,
+                frameworkName = jobCode.framework,
+                level = level,
+                parents = parents,
+                jobCodeLevelAsNumber = jobCode.jobCodeLevelAsNumber
+            )
+        }
+
+        fun fromJobCodeV2(jobCode: JobCode, level: JobCodeLevel? = null, parents: List<ApiJobCode>? = null): ApiJobCode {
+            return ApiJobCode(
+                code = jobCode.code,
+                targetNodeName = jobCode.name,
+                targetNode = jobCode.url,
+                frameworkName = jobCode.framework,
+                level = level,
+                parents = parents
+            )
+        }
+
+        fun getLevelFromJobCode(jobCode: JobCode): JobCodeLevel {
+            return when (jobCode.code) {
+                jobCode.majorCode -> {
+                    JobCodeLevel.Major
+                }
+                jobCode.minorCode -> {
+                    JobCodeLevel.Minor
+                }
+                jobCode.broadCode -> {
+                    JobCodeLevel.Broad
+                }
+                else -> {
+                    JobCodeLevel.Detailed
+                }
+            }
         }
     }
 }

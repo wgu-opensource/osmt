@@ -1,7 +1,6 @@
 // noinspection OverlyComplexFunctionJS,MagicNumberJS
 
 import { ICollection, ICollectionUpdate } from "../../src/app/collection/ApiCollection"
-import { IJobCode } from "../../src/app/job-codes/Jobcode"
 import { PublishStatus } from "../../src/app/PublishStatus"
 import { IBatchResult } from "../../src/app/richskill/ApiBatchResult"
 import {
@@ -19,6 +18,10 @@ import { ApiCollectionSummary, ICollectionSummary, ISkillSummary } from "../../s
 import { ApiReferenceListUpdate, IRichSkillUpdate, IStringListUpdate } from "../../src/app/richskill/ApiSkillUpdate"
 import { PaginatedCollections, PaginatedSkills } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
+import { IJobCode } from "../../src/app/metadata/job-code/Jobcode";
+import { PaginatedMetadata } from "../../src/app/metadata/PaginatedMetadata"
+import {NamedReferenceInterface} from "../../src/app/metadata/named-reference/NamedReference";
+import {MetadataType} from "../../src/app/metadata/rsd-metadata.enum";
 
 // Add mock data here.
 // For more examples, see https://github.com/WGU-edu/ema-eval-ui/blob/develop/src/app/admin/pages/edit-user/edit-user.component.spec.ts
@@ -50,6 +53,58 @@ export function createMockJobcode(targetNode = 42, targetNodeName = "my jobcode 
     url: "my jobcode url",
     parents: undefined
   }
+}
+
+export function createMockNamedReference2(
+  id = 33,
+  name = "Name",
+  type = MetadataType.Category,
+  url = "http://url123",
+  framework = "Framework"
+): NamedReferenceInterface {
+  return {id,name,type,url,framework, skillCount: 0, publicUrl: url
+  }
+}
+
+export const mockJobCodesParents: IJobCode[] = [
+  {
+    id: 111,
+    code: "13-2010",
+    targetNodeName: "Accountants and Auditors",
+    frameworkName: "bls",
+    level: "Broad",
+  },
+  {
+    id: 110,
+    code: "13-2000",
+    targetNodeName: "Financial Specialists",
+    frameworkName: "bls",
+    level: "Minor"
+  },
+  {
+    id: 74,
+    code: "13-0000",
+    targetNodeName: "Business and Financial Operations Occupations",
+    frameworkName: "bls",
+    level: "Major"
+  }
+]
+
+export const mockJobCodeWithParents: IJobCode = {
+  targetNode: 2,
+  targetNodeName: "Mocked Job Code",
+  code: "95-000",
+  broad: "my jobcode broad",
+  broadCode: "my jobcode broadCode",
+  detailed: "my jobcode detailed",
+  level: "Broad",
+  major: "my jobcode major",
+  majorCode: "my jobcode majorCode",
+  frameworkName: "my jobcode framework",
+  minor: "my jobcode minor",
+  minorCode: "my jobcode minorCode",
+  url: "my jobcode url",
+  parents: mockJobCodesParents
 }
 
 export function createMockUuidReference(uuid = "my uuidReference id", name = "my uuidReference name"): IUuidReference {
@@ -314,3 +369,45 @@ export const mockTaskResultForExportSearch: ApiTaskResult = {
 
 export const csvContent = {body: "value1,value2,value3"}
 
+export const apiTaskResultForDeleteJobCode: ApiTaskResult = {
+  uuid: "5ca6ea7f-e008-44fc-9108-eda19b01fa6b",
+  status: "Processing",
+  contentType: "application/json",
+  id: "/api/results/batch/5ca6ea7f-e008-44fc-9108-eda19b01fa6b"
+}
+
+export function createMockPaginatedMetaDataWithJobCodes(jobCodeCount = 1, total = 10): PaginatedMetadata {
+  if (jobCodeCount > total) {
+    throw new RangeError(`'pageCount' must be <= 'total'`)
+  }
+
+  const jobCodes = []
+  for (let c = 1; c <= jobCodeCount; ++c) {
+    jobCodes.push(
+      createMockJobcode()
+    )
+  }
+
+  return new PaginatedMetadata(
+    jobCodes,
+    total
+  )
+}
+
+export function createMockPaginatedMetaDataWithNamedReferences(namedReferenceCount = 1, total = 10): PaginatedMetadata {
+  if (namedReferenceCount > total) {
+    throw new RangeError(`'pageCount' must be <= 'total'`)
+  }
+
+  const namedReferences = []
+  for (let c = 1; c <= namedReferenceCount; ++c) {
+    namedReferences.push(
+      createMockNamedReference2()
+    )
+  }
+
+  return new PaginatedMetadata(
+    namedReferences,
+    total
+  )
+}

@@ -8,7 +8,7 @@ import {
 } from "../../../test/resource/mock-data"
 import { deepEqualSkipOuterType, mismatched } from "../../../test/util/deep-equals"
 import { PublishStatus } from "../PublishStatus"
-import { ApiJobCode } from "../job-codes/Jobcode"
+import { ApiJobCode } from "../metadata/job-code/Jobcode"
 import {
   ApiAlignment,
   ApiAuditLog,

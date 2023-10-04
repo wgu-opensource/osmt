@@ -3,6 +3,7 @@ package edu.wgu.osmt.keyword
 import edu.wgu.osmt.config.INDEX_KEYWORD_DOC
 import edu.wgu.osmt.config.SORT_INSENSITIVE
 import edu.wgu.osmt.elasticsearch.OffsetPageable
+import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.sort.SortBuilders
 import org.elasticsearch.search.sort.SortOrder
@@ -18,6 +19,8 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 interface CustomKeywordRepository {
     val elasticSearchTemplate: ElasticsearchRestTemplate
     fun typeAheadSearch(query: String, type: KeywordTypeEnum): SearchHits<Keyword>
+
+    fun searchKeywordsWithPageable(query: String, type: KeywordTypeEnum, pageable: OffsetPageable): SearchHits<Keyword>
 
     fun deleteIndex() {
         elasticSearchTemplate.indexOps(IndexCoordinates.of(INDEX_KEYWORD_DOC)).delete()
@@ -61,6 +64,24 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
                 ).minimumShouldMatch(1)
         }
 
+        return elasticSearchTemplate.search(nsq.build(), Keyword::class.java)
+    }
+
+    override fun searchKeywordsWithPageable(query: String, type: KeywordTypeEnum, pageable: OffsetPageable): SearchHits<Keyword> {
+        val nsq: NativeSearchQueryBuilder = NativeSearchQueryBuilder().withPageable(pageable)
+        val bq = QueryBuilders.boolQuery()
+
+        bq.should(QueryBuilders.matchBoolPrefixQuery(Keyword::value.name, query))
+        if(query.isEmpty()){
+            bq.should(QueryBuilders.matchAllQuery())
+        } else {
+            bq.minimumShouldMatch(1)
+        }
+        nsq.withQuery(bq)
+        nsq.withFilter(
+            BoolQueryBuilder().must(
+                QueryBuilders.termQuery(Keyword::type.name, type.name))
+        )
         return elasticSearchTemplate.search(nsq.build(), Keyword::class.java)
     }
 }

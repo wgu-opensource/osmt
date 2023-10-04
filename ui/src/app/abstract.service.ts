@@ -11,7 +11,7 @@ import {Router} from "@angular/router"
 import {Location} from "@angular/common"
 import { Inject } from "@angular/core"
 
-interface ApiGetParams {
+export interface ApiGetParams {
   path: string,
   headers?: HttpHeaders,
   params?: HttpParams | {
@@ -39,6 +39,9 @@ export interface IRelatedSkillsService<TEntityId> {
   ): Observable<PaginatedSkills>
 }
 
+/**
+ * @deprecated
+ */
 export abstract class AbstractService {
 
   protected baseApi = ""

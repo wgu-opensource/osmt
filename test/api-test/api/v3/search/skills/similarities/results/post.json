@@ -20,77 +20,107 @@
       ],
       "occupations": [
         {
+          "id": 1,
           "code": "11-0000",
           "targetNodeName": "Management Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 18,
           "code": "11-3000",
           "targetNodeName": "Operations Specialties Managers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 22,
           "code": "11-3020",
           "targetNodeName": "Computer and Information Systems Managers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 23,
           "code": "11-3021",
           "targetNodeName": "Computer and Information Systems Managers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 137,
           "code": "15-1210",
           "targetNodeName": "Computer and Information Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 138,
           "code": "15-1211",
           "targetNodeName": "Computer Systems Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 142,
           "code": "15-1230",
           "targetNodeName": "Computer Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 143,
           "code": "15-1231",
           "targetNodeName": "Computer Network Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 144,
           "code": "15-1232",
           "targetNodeName": "Computer User Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1245"
+          "id": 2498,
+          "code": "15-1245",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -116,77 +146,107 @@
       ],
       "occupations": [
         {
+          "id": 1,
           "code": "11-0000",
           "targetNodeName": "Management Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 18,
           "code": "11-3000",
           "targetNodeName": "Operations Specialties Managers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 22,
           "code": "11-3020",
           "targetNodeName": "Computer and Information Systems Managers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 23,
           "code": "11-3021",
           "targetNodeName": "Computer and Information Systems Managers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 137,
           "code": "15-1210",
           "targetNodeName": "Computer and Information Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 138,
           "code": "15-1211",
           "targetNodeName": "Computer Systems Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 142,
           "code": "15-1230",
           "targetNodeName": "Computer Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 143,
           "code": "15-1231",
           "targetNodeName": "Computer Network Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 144,
           "code": "15-1232",
           "targetNodeName": "Computer User Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1245"
+          "id": 2498,
+          "code": "15-1245",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -210,39 +270,53 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 142,
           "code": "15-1230",
           "targetNodeName": "Computer Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 143,
           "code": "15-1231",
           "targetNodeName": "Computer Network Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -267,39 +341,53 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 142,
           "code": "15-1230",
           "targetNodeName": "Computer Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 143,
           "code": "15-1231",
           "targetNodeName": "Computer Network Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -323,39 +411,53 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 142,
           "code": "15-1230",
           "targetNodeName": "Computer Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 143,
           "code": "15-1231",
           "targetNodeName": "Computer Network Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -378,39 +480,53 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 142,
           "code": "15-1230",
           "targetNodeName": "Computer Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 143,
           "code": "15-1231",
           "targetNodeName": "Computer Network Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     },
@@ -432,39 +548,53 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 142,
           "code": "15-1230",
           "targetNodeName": "Computer Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 143,
           "code": "15-1231",
           "targetNodeName": "Computer Network Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -489,29 +619,39 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -535,51 +675,73 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 150,
           "code": "15-1250",
           "targetNodeName": "Software and Web Developers, Programmers, and Testers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 151,
           "code": "15-1251",
           "targetNodeName": "Computer Programmers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 156,
           "code": "15-1290",
           "targetNodeName": "Miscellaneous Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1256"
+          "id": 2465,
+          "code": "15-1256",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1257"
+          "id": 2466,
+          "code": "15-1257",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1245"
+          "id": 2498,
+          "code": "15-1245",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1259"
+          "id": 2499,
+          "code": "15-1259",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -604,46 +766,66 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 150,
           "code": "15-1250",
           "targetNodeName": "Software and Web Developers, Programmers, and Testers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 156,
           "code": "15-1290",
           "targetNodeName": "Miscellaneous Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1256"
+          "id": 2465,
+          "code": "15-1256",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1257"
+          "id": 2466,
+          "code": "15-1257",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1245"
+          "id": 2498,
+          "code": "15-1245",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1259"
+          "id": 2499,
+          "code": "15-1259",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -667,55 +849,77 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 137,
           "code": "15-1210",
           "targetNodeName": "Computer and Information Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 138,
           "code": "15-1211",
           "targetNodeName": "Computer Systems Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 150,
           "code": "15-1250",
           "targetNodeName": "Software and Web Developers, Programmers, and Testers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 151,
           "code": "15-1251",
           "targetNodeName": "Computer Programmers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 156,
           "code": "15-1290",
           "targetNodeName": "Miscellaneous Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1256"
+          "id": 2465,
+          "code": "15-1256",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1259"
+          "id": 2499,
+          "code": "15-1259",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -738,61 +942,87 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 137,
           "code": "15-1210",
           "targetNodeName": "Computer and Information Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 138,
           "code": "15-1211",
           "targetNodeName": "Computer Systems Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 150,
           "code": "15-1250",
           "targetNodeName": "Software and Web Developers, Programmers, and Testers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 151,
           "code": "15-1251",
           "targetNodeName": "Computer Programmers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 156,
           "code": "15-1290",
           "targetNodeName": "Miscellaneous Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1256"
+          "id": 2465,
+          "code": "15-1256",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1257"
+          "id": 2466,
+          "code": "15-1257",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1245"
+          "id": 2498,
+          "code": "15-1245",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1259"
+          "id": 2499,
+          "code": "15-1259",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -817,24 +1047,32 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -858,24 +1096,32 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -901,61 +1147,87 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 140,
           "code": "15-1220",
           "targetNodeName": "Computer and Information Research Scientists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 141,
           "code": "15-1221",
           "targetNodeName": "Computer and Information Research Scientists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 150,
           "code": "15-1250",
           "targetNodeName": "Software and Web Developers, Programmers, and Testers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 151,
           "code": "15-1251",
           "targetNodeName": "Computer Programmers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 156,
           "code": "15-1290",
           "targetNodeName": "Miscellaneous Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1256"
+          "id": 2465,
+          "code": "15-1256",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1257"
+          "id": 2466,
+          "code": "15-1257",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1245"
+          "id": 2498,
+          "code": "15-1245",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1259"
+          "id": 2499,
+          "code": "15-1259",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -978,45 +1250,63 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 150,
           "code": "15-1250",
           "targetNodeName": "Software and Web Developers, Programmers, and Testers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 156,
           "code": "15-1290",
           "targetNodeName": "Miscellaneous Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1256"
+          "id": 2465,
+          "code": "15-1256",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1259"
+          "id": 2499,
+          "code": "15-1259",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -1039,48 +1329,68 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 150,
           "code": "15-1250",
           "targetNodeName": "Software and Web Developers, Programmers, and Testers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 156,
           "code": "15-1290",
           "targetNodeName": "Miscellaneous Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1256"
+          "id": 2465,
+          "code": "15-1256",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1245"
+          "id": 2498,
+          "code": "15-1245",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1259"
+          "id": 2499,
+          "code": "15-1259",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -1103,55 +1413,77 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 137,
           "code": "15-1210",
           "targetNodeName": "Computer and Information Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 138,
           "code": "15-1211",
           "targetNodeName": "Computer Systems Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 150,
           "code": "15-1250",
           "targetNodeName": "Software and Web Developers, Programmers, and Testers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 156,
           "code": "15-1290",
           "targetNodeName": "Miscellaneous Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1256"
+          "id": 2465,
+          "code": "15-1256",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1259"
+          "id": 2499,
+          "code": "15-1259",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -1174,40 +1506,56 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 150,
           "code": "15-1250",
           "targetNodeName": "Software and Web Developers, Programmers, and Testers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 156,
           "code": "15-1290",
           "targetNodeName": "Miscellaneous Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1245"
+          "id": 2498,
+          "code": "15-1245",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1259"
+          "id": 2499,
+          "code": "15-1259",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -1230,40 +1578,56 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 150,
           "code": "15-1250",
           "targetNodeName": "Software and Web Developers, Programmers, and Testers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 156,
           "code": "15-1290",
           "targetNodeName": "Miscellaneous Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1245"
+          "id": 2498,
+          "code": "15-1245",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1259"
+          "id": 2499,
+          "code": "15-1259",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -1286,37 +1650,51 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 150,
           "code": "15-1250",
           "targetNodeName": "Software and Web Developers, Programmers, and Testers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 156,
           "code": "15-1290",
           "targetNodeName": "Miscellaneous Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1259"
+          "id": 2499,
+          "code": "15-1259",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -1339,29 +1717,39 @@
       ],
       "occupations": [
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }
@@ -1384,77 +1772,107 @@
       ],
       "occupations": [
         {
+          "id": 1,
           "code": "11-0000",
           "targetNodeName": "Management Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 18,
           "code": "11-3000",
           "targetNodeName": "Operations Specialties Managers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 22,
           "code": "11-3020",
           "targetNodeName": "Computer and Information Systems Managers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 23,
           "code": "11-3021",
           "targetNodeName": "Computer and Information Systems Managers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 137,
           "code": "15-1210",
           "targetNodeName": "Computer and Information Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 138,
           "code": "15-1211",
           "targetNodeName": "Computer Systems Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 142,
           "code": "15-1230",
           "targetNodeName": "Computer Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 143,
           "code": "15-1231",
           "targetNodeName": "Computer Network Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 144,
           "code": "15-1232",
           "targetNodeName": "Computer User Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1245"
+          "id": 2498,
+          "code": "15-1245",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     },
@@ -1474,136 +1892,204 @@
       ],
       "occupations": [
         {
+          "id": 1,
           "code": "11-0000",
           "targetNodeName": "Management Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 18,
           "code": "11-3000",
           "targetNodeName": "Operations Specialties Managers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 22,
           "code": "11-3020",
           "targetNodeName": "Computer and Information Systems Managers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 23,
           "code": "11-3021",
           "targetNodeName": "Computer and Information Systems Managers",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 135,
           "code": "15-0000",
           "targetNodeName": "Computer and Mathematical Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 1
         },
         {
+          "id": 136,
           "code": "15-1200",
           "targetNodeName": "Computer Occupations",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 2
         },
         {
+          "id": 137,
           "code": "15-1210",
           "targetNodeName": "Computer and Information Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 138,
           "code": "15-1211",
           "targetNodeName": "Computer Systems Analysts",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 142,
           "code": "15-1230",
           "targetNodeName": "Computer Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 143,
           "code": "15-1231",
           "targetNodeName": "Computer Network Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 144,
           "code": "15-1232",
           "targetNodeName": "Computer User Support Specialists",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 145,
           "code": "15-1240",
           "targetNodeName": "Database and Network Administrators and Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 3
         },
         {
+          "id": 146,
           "code": "15-1241",
           "targetNodeName": "Computer Network Architects",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 149,
           "code": "15-1244",
           "targetNodeName": "Network and Computer Systems Administrators",
-          "frameworkName": "bls"
+          "frameworkName": "bls",
+          "jobCodeLevelAsNumber": 4
         },
         {
+          "id": 1460,
           "code": "11-3021.00",
           "targetNodeName": "Computer and Information Systems Managers",
-          "frameworkName": "o*net"
+          "frameworkName": "o*net",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1000"
+          "id": 2471,
+          "code": "15-1000",
+          "jobCodeLevelAsNumber": 2
         },
         {
-          "code": "15-1120"
+          "id": 2472,
+          "code": "15-1120",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1245"
+          "id": 2498,
+          "code": "15-1245",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1140"
+          "id": 2500,
+          "code": "15-1140",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1150"
+          "id": 2501,
+          "code": "15-1150",
+          "jobCodeLevelAsNumber": 3
         },
         {
-          "code": "15-1121"
+          "id": 2502,
+          "code": "15-1121",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1141"
+          "id": 2503,
+          "code": "15-1141",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1142"
+          "id": 2504,
+          "code": "15-1142",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1143"
+          "id": 2505,
+          "code": "15-1143",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1151"
+          "id": 2506,
+          "code": "15-1151",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1152"
+          "id": 2507,
+          "code": "15-1152",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1121.00"
+          "id": 2508,
+          "code": "15-1121.00",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1121.01"
+          "id": 2509,
+          "code": "15-1121.01",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1141.00"
+          "id": 2510,
+          "code": "15-1141.00",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1142.00"
+          "id": 2511,
+          "code": "15-1142.00",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1143.00"
+          "id": 2512,
+          "code": "15-1143.00",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1143.01"
+          "id": 2513,
+          "code": "15-1143.01",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1151.00"
+          "id": 2514,
+          "code": "15-1151.00",
+          "jobCodeLevelAsNumber": 4
         },
         {
-          "code": "15-1152.00"
+          "id": 2515,
+          "code": "15-1152.00",
+          "jobCodeLevelAsNumber": 4
         }
       ]
     }

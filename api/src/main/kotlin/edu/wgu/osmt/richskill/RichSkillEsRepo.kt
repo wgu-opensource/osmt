@@ -26,17 +26,19 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
-import org.springframework.data.elasticsearch.client.elc.NativeQuery
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
-import org.springframework.data.elasticsearch.core.query.StringQuery
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 import org.springframework.security.oauth2.jwt.Jwt
 
 const val collectionsUuid = "collections.uuid"
 
+/**
+ * This have been partially converted to use the ElasticSearch 8.x apis. Need to do full conversion to use
+ * the v8.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
+ */
 interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun getUuidsFromApiSearch(
         apiSearch: ApiSearch,
@@ -233,7 +235,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     }
 
     override fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiFilteredSearch, publishStatus: Set<PublishStatus>) {
-        //TODO Replace with FindsAllByPublishStatus.createTermsQuery(publishStatus.name, publishStatus.map { ps -> ps.toString() })
+        //TODO Replace with FindsAllByPublishStatus.createTermsDslQuery(publishStatus.name, publishStatus.map { ps -> ps.toString() })
         bq.must(
             termsQuery(
                 RichSkillDoc::publishStatus.name,
@@ -336,10 +338,10 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         val query = convertToNativeQuery(
                             pageable,
                             createTermsDslQuery(RichSkillDoc::publishStatus.name, publishStatus.map { ps -> ps.toString() }),
-                            buildQuery(publishStatus, apiSearch, collectionId)
-                    )
-        log.debug(String.Companion.format("\n%s queryNu springDataQuery:\n\t\t%s", "CustomRichSkillQueriesImpl.byApiSearch()", ((query as NativeQuery).springDataQuery as StringQuery).source))
-        log.debug(String.Companion.format("\n%s queryNu filter:\n\t\t%s", "CustomRichSkillQueriesImpl.byApiSearch()", query.filter.toString()))
+                            buildQuery(publishStatus, apiSearch, collectionId),
+                            "CustomRichSkillQueriesImpl.byApiSearch()",
+                            log
+        )
         return elasticSearchTemplate.search(query, RichSkillDoc::class.java)
     }
 
@@ -352,10 +354,10 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         val query = convertToNativeQuery(
                             pageable,
                             createTermsDslQuery(RichSkillDoc::publishStatus.name, publishStatus.map { ps -> ps.toString() }),
-                            buildQuery(publishStatus, apiSearch, collectionId)
+                            buildQuery(publishStatus, apiSearch, collectionId),
+                            "CustomRichSkillQueriesImpl.countByApiSearch()",
+                            log
                     )
-        log.debug(String.Companion.format("\n%s queryNu springDataQuery:\n\t\t%s", "CustomRichSkillQueriesImpl.countByApiSearch()", ((query as NativeQuery).springDataQuery as StringQuery).source))
-        log.debug(String.Companion.format("\n%s queryNu filter:\n\t\t%s", "CustomRichSkillQueriesImpl.countByApiSearch()", query.filter.toString()))
         return elasticSearchTemplate.count(query, RichSkillDoc::class.java)
     }
 
@@ -367,10 +369,10 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         apiSearch: ApiSearch,
         collectionId: String?
     ): NativeSearchQueryBuilder {
-        val nsq = NativeSearchQueryBuilder()
+        val nsqb = NativeSearchQueryBuilder()
         val bq = boolQuery()
 
-        nsq.withQuery(bq)
+        nsqb.withQuery(bq)
         apiSearch.filtered?.let { generateBoolQueriesFromApiSearchWithFilters(bq, it, publishStatus) }
 
         // treat the presence of query property to mean multi field search with that term
@@ -445,8 +447,8 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             var apiSearchUuids = apiSearch.uuids?.filterNotNull()?.filter { x: String? -> x != "" }
 
             if (!apiSearchUuids.isNullOrEmpty()) {
-                nsq.withFilter(
-                    //TODO Replace with FindsAllByPublishStatus.createTermsQuery(uuid.name, apiSearchUuids)
+                nsqb.withFilter(
+                    //TODO Replace with FindsAllByPublishStatus.createTermsDslQuery(uuid.name, apiSearchUuids)
                     BoolQueryBuilder().must(
                         termsQuery(
                             RichSkillDoc::uuid.name,
@@ -459,8 +461,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 bq.must(
                     nestedQuery(
                         RichSkillDoc::collections.name,
-                        boolQuery()
-                            .must(matchQuery(collectionsUuid, collectionId)),
+                        boolQuery().must(matchQuery(collectionsUuid, collectionId)),
                         ScoreMode.Avg
                     )
                 )
@@ -468,15 +469,17 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             }
         }
 
-        return nsq
+        return nsqb
     }
 
     override fun findSimilar(apiSimilaritySearch: ApiSimilaritySearch): SearchHits<RichSkillDoc> {
         val query = convertToNativeQuery(
                             OffsetPageable(0, 10, null),
                             null,
-                            NativeSearchQueryBuilder().withQuery( MatchPhraseQueryBuilder(RichSkillDoc::statement.name, apiSimilaritySearch.statement).slop(4)))
-        log.debug(String.Companion.format("\n%s queryNu springDataQuery:\n\t\t%s", "CustomRichSkillQueriesImpl.findSimilar()", ((query as NativeQuery).springDataQuery as StringQuery).source))
+                            NativeSearchQueryBuilder().withQuery( MatchPhraseQueryBuilder(RichSkillDoc::statement.name, apiSimilaritySearch.statement).slop(4)),
+                            "CustomRichSkillQueriesImpl.findSimilar()",
+                            log
+        )
         return elasticSearchTemplate.search(query, RichSkillDoc::class.java)
     }
 }

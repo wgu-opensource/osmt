@@ -18,7 +18,8 @@ import org.springframework.data.elasticsearch.core.query.StringQuery
 import java.util.stream.Collectors
 
 /**
- * These methods have been converted to use the ElasticSearch 8.x apis
+ * This have been partially converted to use the ElasticSearch 8.x apis. Need to do full conversion to use
+ * the v8.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
  */
 interface FindsAllByPublishStatus<T> {
     val elasticSearchTemplate: ElasticsearchTemplate
@@ -92,13 +93,18 @@ interface FindsAllByPublishStatus<T> {
         return StringQuery(query.query.toString())
     }
 
-    fun convertToNativeQuery(pageable: Pageable, filter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, nsqb: NativeSearchQueryBuilder): Query {
+    /**
+     * Stepping stone to 100% migration to ES v8.x apis
+     */
+    fun convertToNativeQuery(pageable: Pageable, filter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, nsqb: NativeSearchQueryBuilder, msgPrefix: String, log: Logger): Query {
         val oldQuery = nsqb.build()
         val nuQuery = NativeQuery.builder()
             .withFilter(filter)
             .withQuery(StringQuery(oldQuery.query.toString()))
             .withPageable(pageable)
             .build()
+        log.debug(String.Companion.format("\n%s springDataQuery:\n\t\t%s", msgPrefix, (nuQuery.springDataQuery as StringQuery).source))
+        log.debug(String.Companion.format("\n%s filter:\n\t\t%s", msgPrefix, nuQuery.filter.toString()))
         return nuQuery
     }
 }

@@ -27,6 +27,10 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
 
+/**
+ * This have been partially converted to use the ElasticSearch 8.x apis. Need to do full conversion to use
+ * the v8.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
+ */
 interface CustomCollectionQueries : FindsAllByPublishStatus<CollectionDoc> {
     val richSkillEsRepo: RichSkillEsRepo
 
@@ -88,7 +92,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
     ): SearchHits<CollectionDoc> {
         val nqb = NativeSearchQueryBuilder().withPageable(Pageable.unpaged())
         val bq = QueryBuilders.boolQuery()
-        //TODO Replace with FindsAllByPublishStatus.createTermsQuery(publishStatus.name, publishStatus.map { ps -> ps.toString() })
+        //TODO Replace with FindsAllByPublishStatus.createTermsDslQuery(publishStatus.name, publishStatus.map { ps -> ps.toString() })
         val filter = BoolQueryBuilder().must(
             QueryBuilders.termsQuery(
                 RichSkillDoc::publishStatus.name,

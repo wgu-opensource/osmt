@@ -22,6 +22,10 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
 
+/**
+ * This have been partially converted to use the ElasticSearch 8.x apis. Need to do full conversion to use
+ * the v8.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
+ */
 interface CustomJobCodeRepository {
     val elasticSearchTemplate: ElasticsearchTemplate
     fun typeAheadSearch(query: String): SearchHits<JobCode>
@@ -72,7 +76,9 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
     }
 }
 
+@Deprecated("Upgrade to ES v8.x queries", ReplaceWith("Replacement method"), DeprecationLevel.WARNING )
 object JobCodeQueries {
+    //TODO Convert to ES v8.x apis and return the newer BoolQuery.Builder instance.
     fun multiPropertySearch(query: String, parentDocPath: String? = null): BoolQueryBuilder {
         val disjunctionQuery = disMaxQuery()
         val path = parentDocPath?.let { "${it}." } ?: ""

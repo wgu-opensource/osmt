@@ -125,7 +125,7 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
       if (result) {
         this.toastService.hideBlockingLoader()
         const isWorkspace = this.collection?.status === PublishStatus.Workspace
-        const baseMessage = `You added ${selectedCount} RSD${selectedCount ? "s" : ""} to the`
+        const baseMessage = `You added ${this.selectAllChecked ? this.totalCount : this.size} RSD${selectedCount ? "s" : ""} to the`
         const message = ` ${baseMessage} ${this.collectionOrWorkspace(false)} ${ isWorkspace ? "" : this.collection?.name}.`
         this.toastService.showToast("Success!", message)
       }
@@ -135,10 +135,7 @@ export class CollectionSkillSearchComponent extends SkillsListComponent implemen
   }
 
   getApiSearch(skill?: ApiSkillSummary): ApiSearch | undefined {
-    return (this.multiplePagesSelected) ? new ApiSearch({query: this.searchQuery}) : super.getApiSearch(skill)
+    return this.selectAllChecked ? new ApiSearch({query: this.searchQuery}) : new ApiSearch({uuids: this.selectedUuids()})
   }
 
-  handleSelectAll(selectAllChecked: boolean): void {
-    this.multiplePagesSelected = this.totalPageCount > 1
-  }
 }

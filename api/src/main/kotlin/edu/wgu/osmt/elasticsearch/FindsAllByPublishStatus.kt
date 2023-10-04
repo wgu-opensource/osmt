@@ -9,6 +9,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
+import org.springframework.data.elasticsearch.client.elc.NativeQuery
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
@@ -16,6 +17,9 @@ import org.springframework.data.elasticsearch.core.query.Query
 import org.springframework.data.elasticsearch.core.query.StringQuery
 import java.util.stream.Collectors
 
+/**
+ * These methods have been converted to use the ElasticSearch 8.x apis
+ */
 interface FindsAllByPublishStatus<T> {
     val elasticSearchTemplate: ElasticsearchTemplate
     val javaClass: Class<T>
@@ -38,7 +42,7 @@ interface FindsAllByPublishStatus<T> {
                             .stream()
                             .map { ps -> ps.name}
                             .collect(Collectors.toList())
-        var filter = createTermsQuery(false, RichSkillDoc::publishStatus.name, filterValues)
+        var filter = createTermsDslQuery(false, RichSkillDoc::publishStatus.name, filterValues)
         return NativeQueryBuilder()
                     .withPageable(pageable)
                     .withQuery(MATCH_ALL)
@@ -53,9 +57,9 @@ interface FindsAllByPublishStatus<T> {
     }
 
     /**
-     * Useful utility method to creat TermsQuery
+     * Create a query_dsl.Query instance that ElasticSearchTemplate v8.x mandates for filtering.
      */
-    fun createTermsQuery(andFlag: Boolean, fieldName: String, filterValues: List<String>): co.elastic.clients.elasticsearch._types.query_dsl.Query? {
+    fun createTermsDslQuery(andFlag: Boolean, fieldName: String, filterValues: List<String>): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         val values = filterValues
                         .stream()
                         .map { FieldValue.of(it) }
@@ -64,7 +68,7 @@ interface FindsAllByPublishStatus<T> {
                         .value(values)
                         .build()
         val terms = terms()
-                        .field(RichSkillDoc::publishStatus.name)
+                        .field(fieldName)
                         .terms(tqf)
                         .build()
                         ._toQuery()
@@ -75,16 +79,26 @@ interface FindsAllByPublishStatus<T> {
                 ._toQuery()
     }
 
-    fun createTermsQuery(fieldName: String, filterValues: List<String>): co.elastic.clients.elasticsearch._types.query_dsl.Query? {
-        return createTermsQuery(true, fieldName, filterValues)
+    fun createTermsDslQuery(fieldName: String, filterValues: List<String>): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+        return createTermsDslQuery(true, fieldName, filterValues)
     }
 
     @Deprecated("", ReplaceWith("createQuery"), DeprecationLevel.WARNING)
-    fun createStringQuery(msgPrefix: String, nqb: NativeSearchQueryBuilder, log: Logger): Query {
+    fun convertToStringQuery(msgPrefix: String, nqb: NativeSearchQueryBuilder, log: Logger): Query {
         val query = nqb.build()
         log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, query.query.toString()))
         log.debug(String.Companion.format("\n%s filter:\n\t\t%s", msgPrefix, query.filter.toString()))
-        //NOTE: this is causing us to lose the filter query
+        //NOTE: this causes us to lose the filter query
         return StringQuery(query.query.toString())
+    }
+
+    fun convertToNativeQuery(pageable: Pageable, filter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, nsqb: NativeSearchQueryBuilder): Query {
+        val oldQuery = nsqb.build()
+        val nuQuery = NativeQuery.builder()
+            .withFilter(filter)
+            .withQuery(StringQuery(oldQuery.query.toString()))
+            .withPageable(pageable)
+            .build()
+        return nuQuery
     }
 }

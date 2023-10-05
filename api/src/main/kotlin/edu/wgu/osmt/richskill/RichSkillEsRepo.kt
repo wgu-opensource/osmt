@@ -36,8 +36,8 @@ import org.springframework.security.oauth2.jwt.Jwt
 const val collectionsUuid = "collections.uuid"
 
 /**
- * This have been partially converted to use the ElasticSearch 8.x apis. Need to do full conversion to use
- * the v8.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
+ * This have been partially converted to use the ElasticSearch 8.7.X apis. Need to do full conversion to use
+ * the v8.7.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
  */
 interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun getUuidsFromApiSearch(
@@ -235,7 +235,6 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     }
 
     override fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiFilteredSearch, publishStatus: Set<PublishStatus>) {
-        //TODO Replace with FindsAllByPublishStatus.createTermsDslQuery(publishStatus.name, publishStatus.map { ps -> ps.toString() })
         bq.must(
             termsQuery(
                 RichSkillDoc::publishStatus.name,
@@ -362,7 +361,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     }
 
     /**
-     * TODO upgrade to ElasticSearch v8.x api style; see FindsAllByPublishStatus.kt
+     * TODO upgrade to ElasticSearch v8.7.x api style; see KeywordEsRepo.kt & FindsAllByPublishStatus.kt
      */
     private fun buildQuery(
         publishStatus: Set<PublishStatus>,

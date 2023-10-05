@@ -18,8 +18,8 @@ import org.springframework.data.elasticsearch.core.query.StringQuery
 import java.util.stream.Collectors
 
 /**
- * This have been partially converted to use the ElasticSearch 8.x apis. Need to do full conversion to use
- * the v8.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
+ * This have been partially converted to use the ElasticSearch 8.7.X apis. Need to do full conversion to use
+ * the v8.7.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
  */
 interface FindsAllByPublishStatus<T> {
     val elasticSearchTemplate: ElasticsearchTemplate
@@ -94,7 +94,7 @@ interface FindsAllByPublishStatus<T> {
     }
 
     /**
-     * Stepping stone to 100% migration to ES v8.x apis
+     * Stepping stone to 100% migration to ES v8.7.x apis; see KeywordEsRepo.kt
      */
     fun convertToNativeQuery(pageable: Pageable, filter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, nsqb: NativeSearchQueryBuilder, msgPrefix: String, log: Logger): Query {
         val oldQuery = nsqb.build()

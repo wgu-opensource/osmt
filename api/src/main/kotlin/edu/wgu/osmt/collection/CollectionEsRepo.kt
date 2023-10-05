@@ -28,8 +28,8 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 
 
 /**
- * This have been partially converted to use the ElasticSearch 8.x apis. Need to do full conversion to use
- * the v8.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
+ * This have been partially converted to use the ElasticSearch 8.7.X apis. Need to do full conversion to use
+ * the v8.7.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
  */
 interface CustomCollectionQueries : FindsAllByPublishStatus<CollectionDoc> {
     val richSkillEsRepo: RichSkillEsRepo
@@ -85,6 +85,9 @@ class CustomCollectionQueriesImpl @Autowired constructor(
         }
     }
 
+    /**
+     * TODO upgrade to ElasticSearch v8.7.x api style; see KeywordEsRepo.kt & FindsAllByPublishStatus.kt
+     */
     override fun byApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus>,

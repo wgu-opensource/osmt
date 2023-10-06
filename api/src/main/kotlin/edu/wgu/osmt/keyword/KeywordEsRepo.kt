@@ -75,16 +75,19 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
         return elasticSearchTemplate.search(query, Keyword::class.java)
     }
 
+    /**
+     * Uses the latest ES 8.7.x Java Client API
+     */
     fun typeAheadSearchNu(searchStr: String, type: KeywordTypeEnum): SearchHits<Keyword> {
         val pageable: OffsetPageable
         val criteria: co.elastic.clients.elasticsearch._types.query_dsl.Query
 
         if (searchStr.isEmpty()) {
             pageable = OffsetPageable(0, 10000, null)
-            criteria = search(type)
+            criteria = searchAll(type)
         } else {
             pageable = OffsetPageable(0, 20, null)
-            criteria = search(searchStr, type)
+            criteria = searchSpecific(searchStr, type)
         }
         log.debug(String.Companion.format("\ntypeAheadSearchNu query:\n\t\t%s", criteria.bool().toString()))
         return elasticSearchTemplate.search( NativeQuery.builder()
@@ -92,14 +95,14 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
                                                         .withQuery(criteria).build(), Keyword::class.java )
     }
 
-    fun search(type: KeywordTypeEnum): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+    fun searchAll(type: KeywordTypeEnum): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         return co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool { builder: BoolQuery.Builder ->
                         builder
                             .must(co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.term {   qt: TermQuery.Builder -> qt.field(Keyword::type.name).value(type.name) } )
                             .should(co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.matchAll { q : MatchAllQuery.Builder -> q } ) }
     }
 
-    fun search(searchStr: String, type: KeywordTypeEnum): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+    fun searchSpecific(searchStr: String, type: KeywordTypeEnum): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         return co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool { builder: BoolQuery.Builder ->
                         builder
                             .must(co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.term {   qt: TermQuery.Builder -> qt.field(Keyword::type.name).value(type.name) } )
@@ -108,7 +111,6 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
                             .minimumShouldMatch("1") }
     }
 
-    @Deprecated("Upgrade to ES v8.x queries", ReplaceWith(""), DeprecationLevel.WARNING )
     fun createStringQuery(msgPrefix: String, nqb: NativeSearchQueryBuilder): Query {
         val query = nqb.build()
         log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, query.query.toString()))

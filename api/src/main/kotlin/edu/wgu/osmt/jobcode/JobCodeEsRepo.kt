@@ -62,7 +62,6 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
         return limitedPageable
     }
 
-    @Deprecated("Upgrade to ES v8.x queries", ReplaceWith(""), DeprecationLevel.WARNING )
     fun createStringQuery(msgPrefix: String, nqb: NativeSearchQueryBuilder): Query {
         val query = nqb.build()
         log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, query.query.toString()))

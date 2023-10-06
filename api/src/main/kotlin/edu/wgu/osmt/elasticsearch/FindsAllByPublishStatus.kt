@@ -1,6 +1,7 @@
 package edu.wgu.osmt.elasticsearch
 
 import co.elastic.clients.elasticsearch._types.FieldValue
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.*
 import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField
 import edu.wgu.osmt.db.PublishStatus
@@ -62,29 +63,37 @@ interface FindsAllByPublishStatus<T> {
      */
     fun createTermsDslQuery(andFlag: Boolean, fieldName: String, filterValues: List<String>): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         val values = filterValues
-                        .stream()
-                        .map { FieldValue.of(it) }
-                        .collect(Collectors.toList())
+            .stream()
+            .map { FieldValue.of(it) }
+            .collect(Collectors.toList())
         val tqf = TermsQueryField.Builder()
-                        .value(values)
-                        .build()
+            .value(values)
+            .build()
         val terms = terms()
-                        .field(fieldName)
-                        .terms(tqf)
-                        .build()
-                        ._toQuery()
+            .field(fieldName)
+            .terms(tqf)
+            .build()
+            ._toQuery()
+        /* Short hand version https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
+        val terms2 = terms { qb -> qb.field(fieldName).terms(tqf) }
+        return bool { qb -> if (andFlag)
+                                qb.must(terms)
+                            else
+                                qb.should(terms) }
+        */
+
         return bool()
-                .let { if (andFlag) it.must(terms)
-                       else         it.should(terms) }
-                .build()
-                ._toQuery()
+            .let { if (andFlag) it.must(terms)
+            else         it.should(terms) }
+            .build()
+            ._toQuery()
     }
 
     fun createTermsDslQuery(fieldName: String, filterValues: List<String>): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         return createTermsDslQuery(true, fieldName, filterValues)
     }
 
-    @Deprecated("", ReplaceWith("createQuery"), DeprecationLevel.WARNING)
+    @Deprecated("", ReplaceWith("convertToNativeQuery"), DeprecationLevel.WARNING)
     fun convertToStringQuery(msgPrefix: String, nqb: NativeSearchQueryBuilder, log: Logger): Query {
         val query = nqb.build()
         log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, query.query.toString()))

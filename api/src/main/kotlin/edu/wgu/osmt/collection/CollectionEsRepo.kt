@@ -27,6 +27,10 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
 
+/**
+ * This have been partially converted to use the ElasticSearch 8.7.X apis. Need to do full conversion to use
+ * the v8.7.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
+ */
 interface CustomCollectionQueries : FindsAllByPublishStatus<CollectionDoc> {
     val richSkillEsRepo: RichSkillEsRepo
 
@@ -81,6 +85,9 @@ class CustomCollectionQueriesImpl @Autowired constructor(
         }
     }
 
+    /**
+     * TODO upgrade to ElasticSearch v8.7.x api style; see KeywordEsRepo.kt & FindsAllByPublishStatus.kt
+     */
     override fun byApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus>,
@@ -88,6 +95,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
     ): SearchHits<CollectionDoc> {
         val nqb = NativeSearchQueryBuilder().withPageable(Pageable.unpaged())
         val bq = QueryBuilders.boolQuery()
+        //TODO Replace with FindsAllByPublishStatus.createTermsDslQuery(publishStatus.name, publishStatus.map { ps -> ps.toString() })
         val filter = BoolQueryBuilder().must(
             QueryBuilders.termsQuery(
                 RichSkillDoc::publishStatus.name,
@@ -120,7 +128,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
                 .withPageable(Pageable.unpaged())
                 .withFilter(filter)
             // search on collection specific properties
-            val query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()1", nqb, log)
+            val query = convertToStringQuery("CustomCollectionQueriesImpl.byApiSearch()1", nqb, log)
             collectionMultiPropertyResults = elasticSearchTemplate
                 .search(query, CollectionDoc::class.java)
                 .searchHits
@@ -135,7 +143,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
                         .withQuery( simpleQueryStringQuery(apiSearch.advanced.collectionName).field("${CollectionDoc::name.name}.raw").defaultOperator(Operator.AND) )
                         .withPageable(Pageable.unpaged())
                         .withFilter(filter)
-                    val query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()2", nqb, log)
+                    val query = convertToStringQuery("CustomCollectionQueriesImpl.byApiSearch()2", nqb, log)
                     collectionMultiPropertyResults = elasticSearchTemplate
                         .search( query, CollectionDoc::class.java )
                         .searchHits
@@ -145,7 +153,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
                         .withQuery( matchPhrasePrefixQuery( CollectionDoc::name.name, apiSearch.advanced.collectionName ) )
                         .withPageable(Pageable.unpaged())
                         .withFilter(filter)
-                    val query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()3", nqb, log)
+                    val query = convertToStringQuery("CustomCollectionQueriesImpl.byApiSearch()3", nqb, log)
                     collectionMultiPropertyResults = elasticSearchTemplate
                         .search( query, CollectionDoc::class.java )
                         .searchHits
@@ -170,7 +178,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             )
         }
 
-        var query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch().innerHitCollectionUuids", nqb, log)
+        var query = convertToStringQuery("CustomCollectionQueriesImpl.byApiSearch().innerHitCollectionUuids", nqb, log)
         val results = elasticSearchTemplate.search(query, RichSkillDoc::class.java)
 
         val innerHitCollectionUuids =
@@ -181,7 +189,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             .withQuery( QueryBuilders.termsQuery( "_id", (innerHitCollectionUuids + collectionMultiPropertyResults).distinct() ) )
             .withFilter(filter)
             .withPageable(pageable)
-        query = createStringQuery("CustomCollectionQueriesImpl.byApiSearch()4", nqb2, log)
+        query = convertToStringQuery("CustomCollectionQueriesImpl.byApiSearch()4", nqb2, log)
         return elasticSearchTemplate.search(query, CollectionDoc::class.java)
     }
 }

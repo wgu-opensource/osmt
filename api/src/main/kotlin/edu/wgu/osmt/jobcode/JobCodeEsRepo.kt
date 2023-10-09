@@ -22,6 +22,10 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
 
+/**
+ * This have been partially converted to use the ElasticSearch 8.7.X apis. Need to do full conversion to use
+ * the v8.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
+ */
 interface CustomJobCodeRepository {
     val elasticSearchTemplate: ElasticsearchTemplate
     fun typeAheadSearch(query: String): SearchHits<JobCode>
@@ -35,6 +39,9 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
     CustomJobCodeRepository {
     val log: Logger = LoggerFactory.getLogger(CustomJobCodeRepositoryImpl::class.java)
 
+    /**
+     * TODO upgrade to ElasticSearch v8.7.x api style; see KeywordEsRepo.kt & FindsAllByPublishStatus.kt
+     */
     @Deprecated("Upgrade to ES v8.x queries", ReplaceWith(""), DeprecationLevel.WARNING )
     override fun typeAheadSearch(query: String): SearchHits<JobCode> {
         val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
@@ -55,21 +62,18 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
         return limitedPageable
     }
 
-    @Deprecated("Upgrade to ES v8.x queries", ReplaceWith("createQuery"), DeprecationLevel.WARNING )
     fun createStringQuery(msgPrefix: String, nqb: NativeSearchQueryBuilder): Query {
-        val queryStr = nqb.build().query.toString()
-        log.debug(String.Companion.format("%s:\n%s", msgPrefix, queryStr))
-        return StringQuery(queryStr)
-    }
-
-    private fun createQuery(msgPrefix: String, nqb: NativeQueryBuilder): Query {
-        val nq = nqb.build()
-        log.debug(String.Companion.format("%s:\n%s", msgPrefix, nq.query.toString()))
-        return nq;
+        val query = nqb.build()
+        log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, query.query.toString()))
+        log.debug(String.Companion.format("\n%s filter:\n\t\t%s", msgPrefix, query.filter.toString()))
+        //NOTE: this is causing us to lose the filter query
+        return StringQuery(query.query.toString())
     }
 }
 
+@Deprecated("Upgrade to ES v8.x queries", ReplaceWith("Replacement method"), DeprecationLevel.WARNING )
 object JobCodeQueries {
+    //TODO Convert to ES v8.7.x apis and return the newer BoolQuery.Builder instance; see KeywordEsRep.kt
     fun multiPropertySearch(query: String, parentDocPath: String? = null): BoolQueryBuilder {
         val disjunctionQuery = disMaxQuery()
         val path = parentDocPath?.let { "${it}." } ?: ""

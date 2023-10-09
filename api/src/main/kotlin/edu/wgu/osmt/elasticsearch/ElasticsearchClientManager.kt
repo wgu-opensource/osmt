@@ -2,11 +2,13 @@ package edu.wgu.osmt.elasticsearch
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient
 import co.elastic.clients.json.jackson.JacksonJsonpMapper
-import co.elastic.clients.transport.ElasticsearchTransport
 import co.elastic.clients.transport.rest_client.RestClientTransport
 import org.apache.http.HttpHost
+import org.apache.http.auth.AuthScope
+import org.apache.http.auth.UsernamePasswordCredentials
+import org.apache.http.client.CredentialsProvider
+import org.apache.http.impl.client.BasicCredentialsProvider
 import org.elasticsearch.client.RestClient
-import org.elasticsearch.client.RestClientBuilder.HttpClientConfigCallback
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,6 +18,7 @@ import org.springframework.data.convert.WritingConverter
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
+import org.springframework.util.StringUtils
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -30,12 +33,10 @@ class ElasticsearchClientManager {
     @Override
     @Bean
     fun elasticSearchClient(): ElasticsearchClient {
-        //TODO DMND-1779
-        val builder = RestClient.builder(HttpHost("localhost", 9200, "http"))
-        //val httpClientConfigCallback: HttpClientConfigCallback = HttpClientConfigCallbackImpl()
-        //builder.setHttpClientConfigCallback(httpClientConfigCallback)
-        val restClient = builder.build()
-        val transport: ElasticsearchTransport = RestClientTransport(restClient, JacksonJsonpMapper())
+        val transport = RestClientTransport(
+                            createRestClient(),
+                            JacksonJsonpMapper()
+                        )
         return ElasticsearchClient(transport)
     }
 
@@ -80,5 +81,31 @@ class ElasticsearchClientManager {
         override fun convert(source: String): UUID {
             return UUID.fromString(source)
         }
+    }
+
+    private fun createRestClient(): RestClient {
+        val restClientBuilder = RestClient.builder(createHttpHost())
+        val credentialsProvider = getCredentialsProvider()
+
+        credentialsProvider?.let {
+            restClientBuilder.setHttpClientConfigCallback { b -> b.setDefaultCredentialsProvider(it) }
+        }
+        return restClientBuilder.build()
+    }
+
+    private fun createHttpHost(): HttpHost {
+        val params = StringUtils.split(esConfig.uri, ":")
+        return HttpHost(params!![0], params[1].toInt())
+    }
+
+    private fun getCredentialsProvider(): CredentialsProvider? {
+        if (esConfig.username.isNullOrBlank() || esConfig.password.isNullOrBlank()) {
+            return null
+        }
+
+        val credentialsProvider = BasicCredentialsProvider()
+        val credential = UsernamePasswordCredentials(esConfig.username, esConfig.password)
+        credentialsProvider.setCredentials(AuthScope.ANY, credential)
+        return credentialsProvider
     }
 }

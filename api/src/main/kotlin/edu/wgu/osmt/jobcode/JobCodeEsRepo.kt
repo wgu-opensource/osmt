@@ -71,7 +71,7 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
     }
 }
 
-@Deprecated("Upgrade to ES v8.x queries", ReplaceWith("Replacement method"), DeprecationLevel.WARNING )
+@Deprecated("Upgrade to ES v8.x queries", ReplaceWith("JobCodeQueriesEx"), DeprecationLevel.WARNING )
 object JobCodeQueries {
     //TODO Convert to ES v8.7.x apis and return the newer BoolQuery.Builder instance; see KeywordEsRep.kt
     fun multiPropertySearch(query: String, parentDocPath: String? = null): BoolQueryBuilder {

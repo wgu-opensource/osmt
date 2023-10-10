@@ -1,5 +1,6 @@
 package edu.wgu.osmt.richskill
 
+import co.elastic.clients.elasticsearch._types.query_dsl.Query
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiFilteredSearch
@@ -32,6 +33,7 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 import org.springframework.security.oauth2.jwt.Jwt
+import java.util.function.Consumer
 
 const val collectionsUuid = "collections.uuid"
 
@@ -102,6 +104,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         return uuids
     }
 
+    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("buildNestedQueriesNu"), DeprecationLevel.WARNING)
     override fun occupationQueries(query: String): NestedQueryBuilder {
         val jobCodePath = RichSkillDoc::jobCodes.name
         return QueryBuilders.nestedQuery(
@@ -111,6 +114,21 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         )
     }
 
+    /**
+     * ElasticSearch v8.7.X version
+     */
+    fun occupationQueriesNu(query: String): Query? {
+        /*
+        val multiPropQuery = null
+        return co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.nested {
+                                qb -> qb.path(RichSkillDoc::jobCodes.name)
+                                        .query(JobCodeQueries.multiPropertySearch(query, jobCodePath),)
+                                        .scoreMode( ChildScoreMode.Max)}
+        */
+        return null;
+    }
+
+    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("buildNestedQueriesNu"), DeprecationLevel.WARNING)
     private fun buildNestedQueries(path: String?=null, queryParams: List<String>) : BoolQueryBuilder {
         val disjunctionQuery = disMaxQuery()
         val queries = ArrayList<PrefixQueryBuilder>()
@@ -126,6 +144,21 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         disjunctionQuery.innerQueries().addAll(queries)
 
         return boolQuery().must(existsQuery("$path.keyword")).must(disjunctionQuery)
+    }
+
+    /**
+     * ElasticSearch v8.7.X version
+     */
+    private fun buildNestedQueriesNu(path: String?=null, queryParams: List<String>) : Query {
+        val prefixQueries = ArrayList<Query>()
+        queryParams.forEach(Consumer { s: String? ->
+            val q = co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.prefix { qb -> qb.field( "$path.keyword").value(s) }
+            prefixQueries.add(q)
+        })
+
+        val disMaxQuery = co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.disMax {qb -> qb.queries(prefixQueries)}
+        val existQuery = co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.exists { qb -> qb.field("$path.keyword")}
+        return co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool { qb -> qb.must(disMaxQuery).must(existQuery)}
     }
 
 
@@ -283,8 +316,21 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         }
     }
 
+    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("generateTermsSetQueryBuilderNu"), DeprecationLevel.WARNING)
     private fun generateTermsSetQueryBuilder(fieldName: String, list: List<String>): TermsSetQueryBuilder {
+        val q = generateTermsSetQueryBuilderNu(fieldName, list)
         return TermsSetQueryBuilder("$fieldName.keyword", list).setMinimumShouldMatchScript(Script(list.size.toString()))
+    }
+
+    /**
+     * ElasticSearch v8.7.X version
+     */
+    private fun generateTermsSetQueryBuilderNu(fieldName: String, list: List<String>): Query {
+        val sb = co.elastic.clients.elasticsearch._types.Script.Builder().inline { il -> il.source(list.size.toString())}
+        return co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.termsSet {
+                                            qb -> qb.field("$fieldName.keyword")
+                                                    .terms(list)
+                                                    .minimumShouldMatchScript(sb.build()) }
     }
 
     override fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder {
@@ -481,6 +527,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         )
         return elasticSearchTemplate.search(query, RichSkillDoc::class.java)
     }
+
 }
 
 

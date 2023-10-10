@@ -93,7 +93,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
         publishStatus: Set<PublishStatus>,
         pageable: Pageable
     ): SearchHits<CollectionDoc> {
-        val nqb = NativeSearchQueryBuilder().withPageable(Pageable.unpaged())
+        val nsqb1 = NativeSearchQueryBuilder().withPageable(Pageable.unpaged())
         val bq = QueryBuilders.boolQuery()
         //TODO Replace with FindsAllByPublishStatus.createTermsDslQuery(publishStatus.name, publishStatus.map { ps -> ps.toString() })
         val filter = BoolQueryBuilder().must(
@@ -102,9 +102,10 @@ class CustomCollectionQueriesImpl @Autowired constructor(
                 publishStatus.map { ps -> ps.toString() }
             )
         )
-        nqb.withFilter(filter)
-        nqb.withQuery(bq)
+        nsqb1.withFilter(filter)
+        nsqb1.withQuery(bq)
 
+        val filterDslQuery = createTermsDslQuery(RichSkillDoc::publishStatus.name, publishStatus.map { ps -> ps.toString() })
         var collectionMultiPropertyResults: List<String> = listOf()
 
         // treat the presence of query property to mean multi field search with that term
@@ -123,12 +124,12 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             )
             bq.should(richSkillEsRepo.occupationQueries(apiSearch.query))
 
-            val nqb = NativeSearchQueryBuilder()
+            val nsqb = NativeSearchQueryBuilder()
                 .withQuery( collectionPropertiesMultiMatch(apiSearch.query) )
                 .withPageable(Pageable.unpaged())
                 .withFilter(filter)
             // search on collection specific properties
-            val query = convertToStringQuery("CustomCollectionQueriesImpl.byApiSearch()1", nqb, log)
+            val query = convertToNativeQuery(Pageable.unpaged(), filterDslQuery, nsqb, "CustomCollectionQueriesImpl.byApiSearch()1", log)
             collectionMultiPropertyResults = elasticSearchTemplate
                 .search(query, CollectionDoc::class.java)
                 .searchHits
@@ -139,21 +140,21 @@ class CustomCollectionQueriesImpl @Autowired constructor(
 
             if (!apiSearch.advanced.collectionName.isNullOrBlank()) {
                 if (apiSearch.advanced.collectionName.contains("\"")) {
-                    val nqb = NativeSearchQueryBuilder()
+                    val nsqb = NativeSearchQueryBuilder()
                         .withQuery( simpleQueryStringQuery(apiSearch.advanced.collectionName).field("${CollectionDoc::name.name}.raw").defaultOperator(Operator.AND) )
                         .withPageable(Pageable.unpaged())
                         .withFilter(filter)
-                    val query = convertToStringQuery("CustomCollectionQueriesImpl.byApiSearch()2", nqb, log)
+                    val query = convertToNativeQuery(Pageable.unpaged(), filterDslQuery, nsqb, "CustomCollectionQueriesImpl.byApiSearch()2", log)
                     collectionMultiPropertyResults = elasticSearchTemplate
                         .search( query, CollectionDoc::class.java )
                         .searchHits
                         .map { it.content.uuid }
                 } else {
-                    val nqb = NativeSearchQueryBuilder()
+                    val nsqb = NativeSearchQueryBuilder()
                         .withQuery( matchPhrasePrefixQuery( CollectionDoc::name.name, apiSearch.advanced.collectionName ) )
                         .withPageable(Pageable.unpaged())
                         .withFilter(filter)
-                    val query = convertToStringQuery("CustomCollectionQueriesImpl.byApiSearch()3", nqb, log)
+                    val query = convertToNativeQuery(Pageable.unpaged(), filterDslQuery, nsqb, "CustomCollectionQueriesImpl.byApiSearch()3", log)
                     collectionMultiPropertyResults = elasticSearchTemplate
                         .search( query, CollectionDoc::class.java )
                         .searchHits
@@ -178,18 +179,18 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             )
         }
 
-        var query = convertToStringQuery("CustomCollectionQueriesImpl.byApiSearch().innerHitCollectionUuids", nqb, log)
+        var query = convertToNativeQuery(Pageable.unpaged(), filterDslQuery, nsqb1, "CustomCollectionQueriesImpl.byApiSearch().innerHitCollectionUuids", log)
         val results = elasticSearchTemplate.search(query, RichSkillDoc::class.java)
 
         val innerHitCollectionUuids =
             results.searchHits.mapNotNull { it.getInnerHits("collections")?.searchHits?.mapNotNull { it.content as CollectionDoc } }
                 .flatten().map { it.uuid }.distinct()
 
-        val nqb2 = NativeSearchQueryBuilder()
+        val nsqb2 = NativeSearchQueryBuilder()
             .withQuery( QueryBuilders.termsQuery( "_id", (innerHitCollectionUuids + collectionMultiPropertyResults).distinct() ) )
             .withFilter(filter)
             .withPageable(pageable)
-        query = convertToStringQuery("CustomCollectionQueriesImpl.byApiSearch()4", nqb2, log)
+        query = convertToNativeQuery(Pageable.unpaged(), filterDslQuery, nsqb2, "CustomCollectionQueriesImpl.byApiSearch()4", log)
         return elasticSearchTemplate.search(query, CollectionDoc::class.java)
     }
 }

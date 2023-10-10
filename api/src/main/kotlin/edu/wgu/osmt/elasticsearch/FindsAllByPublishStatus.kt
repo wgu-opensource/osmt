@@ -1,7 +1,6 @@
 package edu.wgu.osmt.elasticsearch
 
 import co.elastic.clients.elasticsearch._types.FieldValue
-import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.*
 import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField
 import edu.wgu.osmt.db.PublishStatus
@@ -93,6 +92,7 @@ interface FindsAllByPublishStatus<T> {
         return createTermsDslQuery(true, fieldName, filterValues)
     }
 
+    /*
     @Deprecated("", ReplaceWith("convertToNativeQuery"), DeprecationLevel.WARNING)
     fun convertToStringQuery(msgPrefix: String, nqb: NativeSearchQueryBuilder, log: Logger): Query {
         val query = nqb.build()
@@ -101,6 +101,7 @@ interface FindsAllByPublishStatus<T> {
         //NOTE: this causes us to lose the filter query
         return StringQuery(query.query.toString())
     }
+    */
 
     /**
      * Stepping stone to 100% migration to ES v8.7.x apis; see KeywordEsRepo.kt

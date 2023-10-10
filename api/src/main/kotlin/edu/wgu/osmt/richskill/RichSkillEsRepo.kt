@@ -1,6 +1,10 @@
 package edu.wgu.osmt.richskill
 
+import co.elastic.clients.elasticsearch._types.FieldValue
 import co.elastic.clients.elasticsearch._types.query_dsl.Query
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.terms
+import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
 import edu.wgu.osmt.api.model.ApiFilteredSearch
@@ -34,6 +38,7 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 import org.springframework.security.oauth2.jwt.Jwt
 import java.util.function.Consumer
+import java.util.stream.Collectors
 
 const val collectionsUuid = "collections.uuid"
 
@@ -267,7 +272,9 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         }
     }
 
+    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("generateBoolQueriesFromApiSearchWithFiltersNu"), DeprecationLevel.WARNING)
     override fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiFilteredSearch, publishStatus: Set<PublishStatus>) {
+
         bq.must(
             termsQuery(
                 RichSkillDoc::publishStatus.name,
@@ -316,6 +323,48 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         }
     }
 
+    /**
+     * TODO Fix the NPE at the return.
+    fun generateBoolQueriesFromApiSearchWithFiltersNu(filteredQuery: ApiFilteredSearch, publishStatus: Set<PublishStatus>) : Query {
+        val values = publishStatus
+            .stream()
+            .map { FieldValue.of(it.toString()) }
+            .collect(Collectors.toList())
+        val tqf = TermsQueryField.Builder()
+            .value(values)
+            .build()
+        val terms2 = terms { qb -> qb.field(RichSkillDoc::publishStatus.name).terms(tqf) }
+        val qb = bool().must(terms2)
+
+        with(filteredQuery) {
+            categories?. let { qb.must(buildNestedQueriesNu(RichSkillDoc::categories.name, it)) }
+            keywords?. let {
+                it.mapNotNull { qb.must(generateTermsSetQueryBuilderNu(RichSkillDoc::searchingKeywords.name, keywords)) }
+            }
+            standards?. let {
+                it.mapNotNull { qb.must(generateTermsSetQueryBuilderNu(RichSkillDoc::standards.name, standards)) }
+            }
+            certifications?. let {
+                it.mapNotNull { qb.must(generateTermsSetQueryBuilderNu(RichSkillDoc::certifications.name, certifications)) }
+            }
+            alignments?. let {
+                it.mapNotNull { qb.must(generateTermsSetQueryBuilderNu(RichSkillDoc::alignments.name, alignments)) }
+            }
+            employers?. let {
+                it.mapNotNull { qb.must(generateTermsSetQueryBuilderNu(RichSkillDoc::employers.name, employers)) }
+            }
+            authors?. let {
+                qb.must(buildNestedQueriesNu(RichSkillDoc::authors.name, it))
+            }
+            occupations?.let {
+                it.mapNotNull { value -> qb.must( occupationQueriesNu(value) ) }
+            }
+        }
+        val s = qb.build()._toQuery()
+        return s
+    }
+    */
+
     @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("generateTermsSetQueryBuilderNu"), DeprecationLevel.WARNING)
     private fun generateTermsSetQueryBuilder(fieldName: String, list: List<String>): TermsSetQueryBuilder {
         val q = generateTermsSetQueryBuilderNu(fieldName, list)
@@ -333,21 +382,17 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                                                     .minimumShouldMatchScript(sb.build()) }
     }
 
+    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("richSkillPropertiesMultiMatchNu"), DeprecationLevel.WARNING)
     override fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder {
         val isComplex = query.contains("\"")
-
         val boolQuery = boolQuery()
-
         val complexQueries = listOf(
-            simpleQueryStringQuery(query).field("${RichSkillDoc::name.name}.raw").boost(2.0f)
-                .defaultOperator(Operator.AND),
+            simpleQueryStringQuery(query).field("${RichSkillDoc::name.name}.raw").boost(2.0f) .defaultOperator(Operator.AND),
             simpleQueryStringQuery(query).field("${RichSkillDoc::statement.name}.raw").defaultOperator(Operator.AND),
             simpleQueryStringQuery(query).field("${RichSkillDoc::categories.name}.raw").defaultOperator(Operator.AND),
-            simpleQueryStringQuery(query).field("${RichSkillDoc::searchingKeywords.name}.raw")
-                .defaultOperator(Operator.AND),
+            simpleQueryStringQuery(query).field("${RichSkillDoc::searchingKeywords.name}.raw") .defaultOperator(Operator.AND),
             simpleQueryStringQuery(query).field("${RichSkillDoc::standards.name}.raw").defaultOperator(Operator.AND),
-            simpleQueryStringQuery(query).field("${RichSkillDoc::certifications.name}.raw")
-                .defaultOperator(Operator.AND),
+            simpleQueryStringQuery(query).field("${RichSkillDoc::certifications.name}.raw") .defaultOperator(Operator.AND),
             simpleQueryStringQuery(query).field("${RichSkillDoc::employers.name}.raw").defaultOperator(Operator.AND),
             simpleQueryStringQuery(query).field("${RichSkillDoc::alignments.name}.raw").defaultOperator(Operator.AND),
             simpleQueryStringQuery(query).field("${RichSkillDoc::authors.name}.raw").defaultOperator(Operator.AND)
@@ -370,8 +415,46 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         } else {
             queries.map { boolQuery.should(it) }
         }
-
         return boolQuery
+    }
+
+    /**
+     * ElasticSearch v8.7.X version
+     */
+    fun richSkillPropertiesMultiMatchNu(searchStr: String): Query {
+        var queries  =  if (searchStr.contains("\""))
+                            createComplexMultiMatchQueries(searchStr)
+                        else
+                            createMultiMatchQueries(searchStr)
+        return bool  {qb -> qb.should(queries) }
+    }
+
+    private fun createComplexMultiMatchQueries(searchStr: String) : List<Query>{
+        return listOf(
+            createSimpleQueryDslQuery("${RichSkillDoc::name.name}.raw", searchStr, 2.0f),
+            createSimpleQueryDslQuery("${RichSkillDoc::statement.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::categories.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::searchingKeywords.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::standards.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::certifications.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::employers.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::alignments.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::authors.name}.raw", searchStr)
+        )
+    }
+
+    private fun createMultiMatchQueries(searchStr: String) : List<Query>{
+        return listOf(
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::name.name, searchStr, 2.0f),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::statement.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::categories.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::searchingKeywords.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::standards.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::certifications.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::employers.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::alignments.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::authors.name, searchStr)
+        )
     }
 
     override fun byApiSearch(

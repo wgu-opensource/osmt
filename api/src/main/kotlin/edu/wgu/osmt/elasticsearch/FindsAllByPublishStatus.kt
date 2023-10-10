@@ -1,6 +1,8 @@
 package edu.wgu.osmt.elasticsearch
 
 import co.elastic.clients.elasticsearch._types.FieldValue
+import co.elastic.clients.elasticsearch._types.query_dsl.ChildScoreMode
+import co.elastic.clients.elasticsearch._types.query_dsl.Operator
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.*
 import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField
 import edu.wgu.osmt.db.PublishStatus
@@ -43,7 +45,7 @@ interface FindsAllByPublishStatus<T> {
                             .stream()
                             .map { ps -> ps.name}
                             .collect(Collectors.toList())
-        var filter = createTermsDslQuery(false, RichSkillDoc::publishStatus.name, filterValues)
+        var filter = createTermsDslQuery( RichSkillDoc::publishStatus.name, filterValues, false)
         return NativeQueryBuilder()
                     .withPageable(pageable)
                     .withQuery(MATCH_ALL)
@@ -58,9 +60,41 @@ interface FindsAllByPublishStatus<T> {
     }
 
     /**
-     * Create a query_dsl.Query instance that ElasticSearchTemplate v8.x mandates for filtering.
+     * Stepping stone to 100% migration to ES v8.7.x apis; see KeywordEsRepo.kt
      */
-    fun createTermsDslQuery(andFlag: Boolean, fieldName: String, filterValues: List<String>): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+    fun convertToNativeQuery(pageable: Pageable, filter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, nsqb: NativeSearchQueryBuilder, msgPrefix: String, log: Logger): Query {
+        val oldQuery = nsqb.build()
+        val nuQuery = NativeQuery.builder()
+            .withFilter(filter)
+            .withQuery(StringQuery(oldQuery.query.toString()))
+            .withPageable(pageable)
+            .build()
+        log.debug(String.Companion.format("\n%s springDataQuery:\n\t\t%s", msgPrefix, (nuQuery.springDataQuery as StringQuery).source))
+        log.debug(String.Companion.format("\n%s filter:\n\t\t%s", msgPrefix, nuQuery.filter.toString()))
+        return nuQuery
+    }
+
+    /**
+     * ElasticSearch v8.7.X version
+     */
+    public fun createMatchPhrasePrefixDslQuery(fieldName: String, searchStr: String): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+        return createMatchPhrasePrefixDslQuery(fieldName, searchStr, null)
+    }
+    public fun createMatchPhrasePrefixDslQuery(fieldName: String, searchStr: String, boostVal : Float?): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+        return matchPhrasePrefix { qb -> qb.field(fieldName).query(searchStr).boost(boostVal) }
+    }
+
+    public fun createSimpleQueryDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+        return simpleQueryString { qb -> qb.fields(fieldName).query(searchStr).boost(boostVal).defaultOperator(Operator.And) }
+    }
+
+    public fun createNestQueryDslQuery(path: String, scoreMode: ChildScoreMode): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+        return nested { qb -> qb.path(path)
+                                .scoreMode(ChildScoreMode.Avg)
+                                .query(matchAll { b-> b }) }
+    }
+
+    fun createTermsDslQuery(fieldName: String, filterValues: List<String>, andFlag: Boolean = true): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         val values = filterValues
             .stream()
             .map { FieldValue.of(it) }
@@ -76,9 +110,9 @@ interface FindsAllByPublishStatus<T> {
         /* Short hand version https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
         val terms2 = terms { qb -> qb.field(fieldName).terms(tqf) }
         return bool { qb -> if (andFlag)
-                                qb.must(terms)
+                                qb.must(terms2)
                             else
-                                qb.should(terms) }
+                                qb.should(terms2) }
         */
 
         return bool()
@@ -86,35 +120,5 @@ interface FindsAllByPublishStatus<T> {
             else         it.should(terms) }
             .build()
             ._toQuery()
-    }
-
-    fun createTermsDslQuery(fieldName: String, filterValues: List<String>): co.elastic.clients.elasticsearch._types.query_dsl.Query {
-        return createTermsDslQuery(true, fieldName, filterValues)
-    }
-
-    /*
-    @Deprecated("", ReplaceWith("convertToNativeQuery"), DeprecationLevel.WARNING)
-    fun convertToStringQuery(msgPrefix: String, nqb: NativeSearchQueryBuilder, log: Logger): Query {
-        val query = nqb.build()
-        log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, query.query.toString()))
-        log.debug(String.Companion.format("\n%s filter:\n\t\t%s", msgPrefix, query.filter.toString()))
-        //NOTE: this causes us to lose the filter query
-        return StringQuery(query.query.toString())
-    }
-    */
-
-    /**
-     * Stepping stone to 100% migration to ES v8.7.x apis; see KeywordEsRepo.kt
-     */
-    fun convertToNativeQuery(pageable: Pageable, filter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, nsqb: NativeSearchQueryBuilder, msgPrefix: String, log: Logger): Query {
-        val oldQuery = nsqb.build()
-        val nuQuery = NativeQuery.builder()
-            .withFilter(filter)
-            .withQuery(StringQuery(oldQuery.query.toString()))
-            .withPageable(pageable)
-            .build()
-        log.debug(String.Companion.format("\n%s springDataQuery:\n\t\t%s", msgPrefix, (nuQuery.springDataQuery as StringQuery).source))
-        log.debug(String.Companion.format("\n%s filter:\n\t\t%s", msgPrefix, nuQuery.filter.toString()))
-        return nuQuery
     }
 }

@@ -2,8 +2,7 @@ package edu.wgu.osmt.richskill
 
 import co.elastic.clients.elasticsearch._types.FieldValue
 import co.elastic.clients.elasticsearch._types.query_dsl.Query
-import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool
-import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.terms
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.*
 import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.ApiAdvancedSearch
@@ -157,13 +156,13 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     private fun buildNestedQueriesNu(path: String?=null, queryParams: List<String>) : Query {
         val prefixQueries = ArrayList<Query>()
         queryParams.forEach(Consumer { s: String? ->
-            val q = co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.prefix { qb -> qb.field( "$path.keyword").value(s) }
+            val q = prefix { qb -> qb.field( "$path.keyword").value(s) }
             prefixQueries.add(q)
         })
 
-        val disMaxQuery = co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.disMax {qb -> qb.queries(prefixQueries)}
-        val existQuery = co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.exists { qb -> qb.field("$path.keyword")}
-        return co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool { qb -> qb.must(disMaxQuery).must(existQuery)}
+        val disMaxQuery = disMax {qb -> qb.queries(prefixQueries)}
+        val existQuery = exists { qb -> qb.field("$path.keyword")}
+        return bool { qb -> qb.must(disMaxQuery).must(existQuery)}
     }
 
 

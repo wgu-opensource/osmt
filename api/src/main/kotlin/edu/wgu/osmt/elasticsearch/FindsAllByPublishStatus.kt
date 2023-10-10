@@ -77,10 +77,7 @@ interface FindsAllByPublishStatus<T> {
     /**
      * ElasticSearch v8.7.X version
      */
-    public fun createMatchPhrasePrefixDslQuery(fieldName: String, searchStr: String): co.elastic.clients.elasticsearch._types.query_dsl.Query {
-        return createMatchPhrasePrefixDslQuery(fieldName, searchStr, null)
-    }
-    public fun createMatchPhrasePrefixDslQuery(fieldName: String, searchStr: String, boostVal : Float?): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+    public fun createMatchPhrasePrefixDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         return matchPhrasePrefix { qb -> qb.field(fieldName).query(searchStr).boost(boostVal) }
     }
 

@@ -94,8 +94,14 @@ class ElasticsearchClientManager {
     }
 
     private fun createHttpHost(): HttpHost {
-        val params = StringUtils.split(esConfig.uri, ":")
-        return HttpHost(params!![0], params[1].toInt())
+        val scheme = StringUtils.split(esConfig.uri, "://")
+        if(scheme.isNullOrEmpty()){
+            val params = StringUtils.split(esConfig.uri, ":")
+            return HttpHost(params!![0], params[1].toInt())
+        } else {
+            val params = StringUtils.split(scheme!![1], ":")
+            return HttpHost(params!![0], params[1].toInt(), scheme!![0])
+        }
     }
 
     private fun getCredentialsProvider(): CredentialsProvider? {

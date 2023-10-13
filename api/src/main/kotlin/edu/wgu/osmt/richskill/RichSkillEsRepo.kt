@@ -403,7 +403,6 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
 
     @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("generateTermsSetQueryBuilderNu"), DeprecationLevel.WARNING)
     private fun generateTermsSetQueryBuilder(fieldName: String, list: List<String>): TermsSetQueryBuilder {
-        val q = generateTermsSetQueryBuilderNu(fieldName, list)
         return TermsSetQueryBuilder("$fieldName.keyword", list).setMinimumShouldMatchScript(Script(list.size.toString()))
     }
 
@@ -412,10 +411,11 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
      */
     private fun generateTermsSetQueryBuilderNu(fieldName: String, list: List<String>): Query {
         val sb = co.elastic.clients.elasticsearch._types.Script.Builder().inline { il -> il.source(list.size.toString())}
-        return co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.termsSet {
-                                            qb -> qb.field("$fieldName.keyword")
-                                                    .terms(list)
-                                                    .minimumShouldMatchScript(sb.build()) }
+        return termsSet {
+                            qb -> qb.field("$fieldName.keyword")
+                                    .terms(list)
+                                    .minimumShouldMatchScript(sb.build())
+                        }
     }
 
     @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("richSkillPropertiesMultiMatchNu"), DeprecationLevel.WARNING)

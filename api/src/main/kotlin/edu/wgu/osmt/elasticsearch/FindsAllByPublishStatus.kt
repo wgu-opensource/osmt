@@ -87,7 +87,7 @@ interface FindsAllByPublishStatus<T> {
         return simpleQueryString { qb -> qb.fields(fieldName).query(searchStr).boost(boostVal).defaultOperator(Operator.And) }
     }
 
-    fun createNestQueryDslQuery(path: String, scoreMode: ChildScoreMode, query: co.elastic.clients.elasticsearch._types.query_dsl.Query? = null, innerHits: InnerHits? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+    fun createNestiedQueryDslQuery(path: String, scoreMode: ChildScoreMode, query: co.elastic.clients.elasticsearch._types.query_dsl.Query? = null, innerHits: InnerHits? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         query ?: matchAll { b-> b }
         innerHits ?: InnerHits.Builder().build()
         return nested { qb -> qb.path(path)

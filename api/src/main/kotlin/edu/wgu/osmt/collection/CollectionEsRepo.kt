@@ -112,13 +112,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             bq.should(
                 BoolQueryBuilder()
                     .must(richSkillEsRepo.richSkillPropertiesMultiMatch(apiSearch.query))
-                    .must(
-                        QueryBuilders.nestedQuery(
-                            RichSkillDoc::collections.name,
-                            QueryBuilders.matchAllQuery(),
-                            ScoreMode.Avg
-                        ).innerHit(InnerHitBuilder())
-                    )
+                    .must(createNestedQueryBuilder())
             )
             bq.should(richSkillEsRepo.occupationQueries(apiSearch.query))
 
@@ -129,9 +123,9 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             // search on collection specific properties
             val query = convertToNativeQuery(Pageable.unpaged(), filterDslQuery, nsqb, "CustomCollectionQueriesImpl.byApiSearch()1", log)
             collectionMultiPropertyResults = elasticSearchTemplate
-                .search(query, CollectionDoc::class.java)
-                .searchHits
-                .map { it.content.uuid }
+                                                .search(query, CollectionDoc::class.java)
+                                                .searchHits
+                                                .map { it.content.uuid }
 
         } else if (apiSearch.advanced != null) {
             richSkillEsRepo.generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)
@@ -139,34 +133,29 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             if (!apiSearch.advanced.collectionName.isNullOrBlank()) {
                 collectionMultiPropertyResults = getCollectionUuids(pageable, filterDslQuery, apiSearch.advanced.collectionName )
             } else {
-                bq.must(
-                    QueryBuilders.nestedQuery(
-                        RichSkillDoc::collections.name,
-                        QueryBuilders.matchAllQuery(),
-                        ScoreMode.Avg
-                    ).innerHit(InnerHitBuilder())
-                )
+                bq.must(createNestedQueryBuilder())
             }
         } else { // query nor advanced search was provided, return all collections
-            bq.must(
-                QueryBuilders.nestedQuery(
-                    RichSkillDoc::collections.name,
-                    QueryBuilders.matchAllQuery(),
-                    ScoreMode.Avg
-                ).innerHit(InnerHitBuilder())
-            )
+            bq.must(createNestedQueryBuilder())
         }
 
         var query = convertToNativeQuery(Pageable.unpaged(), filterDslQuery, nsqb1, "CustomCollectionQueriesImpl.byApiSearch().innerHitCollectionUuids", log)
-        val innerHitCollectionUuids =
-            elasticSearchTemplate
-                .search(query, RichSkillDoc::class.java)
-                .searchHits.mapNotNull { it.getInnerHits("collections")?.searchHits?.mapNotNull { it.content as CollectionDoc } }
-                .flatten()
-                .map { it.uuid }
-                .distinct()
-
+        val innerHitCollectionUuids = elasticSearchTemplate
+                                        .search(query, RichSkillDoc::class.java)
+                                        .searchHits.mapNotNull { it.getInnerHits("collections")?.searchHits?.mapNotNull { it.content as CollectionDoc } }
+                                        .flatten()
+                                        .map { it.uuid }
+                                        .distinct()
         return getCollectionFromUuids(pageable, filterDslQuery, (innerHitCollectionUuids + collectionMultiPropertyResults).distinct())
+    }
+
+    @Deprecated("Upgrade to ES v8.x queries", ReplaceWith("createNestQueryDslQuery"), DeprecationLevel.WARNING )
+    private fun createNestedQueryBuilder(): NestedQueryBuilder {
+        return QueryBuilders.nestedQuery(
+                                            RichSkillDoc::collections.name,
+                                            QueryBuilders.matchAllQuery(),
+                                            ScoreMode.Avg
+                ).innerHit(InnerHitBuilder())
     }
 
     private fun getCollectionUuids(pageable: Pageable, filter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, collectionName: String) : List<String> {

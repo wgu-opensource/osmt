@@ -5,6 +5,8 @@ import co.elastic.clients.elasticsearch._types.query_dsl.ChildScoreMode
 import co.elastic.clients.elasticsearch._types.query_dsl.Operator
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.*
 import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField
+import co.elastic.clients.elasticsearch.core.search.InnerHits
+import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.richskill.RichSkillDoc
 import org.slf4j.Logger
@@ -74,20 +76,23 @@ interface FindsAllByPublishStatus<T> {
         return nuQuery
     }
 
-    /**
-     * ElasticSearch v8.7.X version
+    /*
+     * Below methods are all leveraging the latest ElasticSearch v8.7.X Java API
      */
-    public fun createMatchPhrasePrefixDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+    fun createMatchPhrasePrefixDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         return matchPhrasePrefix { qb -> qb.field(fieldName).query(searchStr).boost(boostVal) }
     }
 
-    public fun createSimpleQueryDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+    fun createSimpleQueryDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         return simpleQueryString { qb -> qb.fields(fieldName).query(searchStr).boost(boostVal).defaultOperator(Operator.And) }
     }
 
-    public fun createNestQueryDslQuery(path: String, scoreMode: ChildScoreMode): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+    fun createNestQueryDslQuery(path: String, scoreMode: ChildScoreMode, query: co.elastic.clients.elasticsearch._types.query_dsl.Query? = null, innerHits: InnerHits? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+        query ?: matchAll { b-> b }
+        innerHits ?: InnerHits.Builder().build()
         return nested { qb -> qb.path(path)
                                 .scoreMode(ChildScoreMode.Avg)
+                                .innerHits(innerHits)
                                 .query(matchAll { b-> b }) }
     }
 
@@ -117,5 +122,41 @@ interface FindsAllByPublishStatus<T> {
             else         it.should(terms) }
             .build()
             ._toQuery()
+    }
+
+    fun getCollectionUuidsFromComplexName(pageable: Pageable, filter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, collectionName: String) : List<String> {
+        val query = NativeQuery
+            .builder()
+            .withFilter(filter)
+            .withQuery(createSimpleQueryDslQuery("${CollectionDoc::name.name}.raw", collectionName))
+            .withPageable(pageable)
+            .build()
+        return elasticSearchTemplate
+            .search( query, CollectionDoc::class.java )
+            .searchHits
+            .map { it.content.uuid }
+    }
+
+    fun getCollectionUuidsFromName(pageable: Pageable, filter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, collectionName: String) : List<String> {
+        val query = NativeQuery
+                            .builder()
+                            .withFilter(filter)
+                            .withQuery(createMatchPhrasePrefixDslQuery(CollectionDoc::name.name, collectionName))
+                            .withPageable(pageable)
+                            .build()
+        return elasticSearchTemplate
+                            .search( query, CollectionDoc::class.java )
+                            .searchHits
+                            .map { it.content.uuid }
+    }
+
+    fun getCollectionFromUuids(pageable: Pageable, filter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, uuids: List<String> ): SearchHits<CollectionDoc> {
+        val query = NativeQuery
+            .builder()
+            .withFilter(filter)
+            .withQuery(createTermsDslQuery("_id", uuids))
+            .withPageable(pageable)
+            .build()
+        return elasticSearchTemplate.search(query, CollectionDoc::class.java)
     }
 }

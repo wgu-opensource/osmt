@@ -9,8 +9,6 @@ import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.apache.lucene.search.join.ScoreMode
 import org.elasticsearch.index.query.*
-import org.elasticsearch.index.query.QueryBuilders.matchPhrasePrefixQuery
-import org.elasticsearch.index.query.QueryBuilders.simpleQueryStringQuery
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -139,27 +137,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             richSkillEsRepo.generateBoolQueriesFromApiSearch(bq, apiSearch.advanced)
 
             if (!apiSearch.advanced.collectionName.isNullOrBlank()) {
-                if (apiSearch.advanced.collectionName.contains("\"")) {
-                    val nsqb = NativeSearchQueryBuilder()
-                        .withQuery( simpleQueryStringQuery(apiSearch.advanced.collectionName).field("${CollectionDoc::name.name}.raw").defaultOperator(Operator.AND) )
-                        .withPageable(Pageable.unpaged())
-                        .withFilter(filter)
-                    val query = convertToNativeQuery(Pageable.unpaged(), filterDslQuery, nsqb, "CustomCollectionQueriesImpl.byApiSearch()2", log)
-                    collectionMultiPropertyResults = elasticSearchTemplate
-                        .search( query, CollectionDoc::class.java )
-                        .searchHits
-                        .map { it.content.uuid }
-                } else {
-                    val nsqb = NativeSearchQueryBuilder()
-                        .withQuery( matchPhrasePrefixQuery( CollectionDoc::name.name, apiSearch.advanced.collectionName ) )
-                        .withPageable(Pageable.unpaged())
-                        .withFilter(filter)
-                    val query = convertToNativeQuery(Pageable.unpaged(), filterDslQuery, nsqb, "CustomCollectionQueriesImpl.byApiSearch()3", log)
-                    collectionMultiPropertyResults = elasticSearchTemplate
-                        .search( query, CollectionDoc::class.java )
-                        .searchHits
-                        .map { it.content.uuid }
-                }
+                collectionMultiPropertyResults = getCollectionUuids(pageable, filterDslQuery, apiSearch.advanced.collectionName )
             } else {
                 bq.must(
                     QueryBuilders.nestedQuery(
@@ -180,18 +158,22 @@ class CustomCollectionQueriesImpl @Autowired constructor(
         }
 
         var query = convertToNativeQuery(Pageable.unpaged(), filterDslQuery, nsqb1, "CustomCollectionQueriesImpl.byApiSearch().innerHitCollectionUuids", log)
-        val results = elasticSearchTemplate.search(query, RichSkillDoc::class.java)
-
         val innerHitCollectionUuids =
-            results.searchHits.mapNotNull { it.getInnerHits("collections")?.searchHits?.mapNotNull { it.content as CollectionDoc } }
-                .flatten().map { it.uuid }.distinct()
+            elasticSearchTemplate
+                .search(query, RichSkillDoc::class.java)
+                .searchHits.mapNotNull { it.getInnerHits("collections")?.searchHits?.mapNotNull { it.content as CollectionDoc } }
+                .flatten()
+                .map { it.uuid }
+                .distinct()
 
-        val nsqb2 = NativeSearchQueryBuilder()
-            .withQuery( QueryBuilders.termsQuery( "_id", (innerHitCollectionUuids + collectionMultiPropertyResults).distinct() ) )
-            .withFilter(filter)
-            .withPageable(pageable)
-        query = convertToNativeQuery(Pageable.unpaged(), filterDslQuery, nsqb2, "CustomCollectionQueriesImpl.byApiSearch()4", log)
-        return elasticSearchTemplate.search(query, CollectionDoc::class.java)
+        return getCollectionFromUuids(pageable, filterDslQuery, (innerHitCollectionUuids + collectionMultiPropertyResults).distinct())
+    }
+
+    private fun getCollectionUuids(pageable: Pageable, filter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, collectionName: String) : List<String> {
+        return  if (collectionName.contains("\""))
+                    getCollectionUuidsFromComplexName(pageable, filter, collectionName)
+                else
+                    getCollectionUuidsFromName(pageable, filter, collectionName)
     }
 }
 

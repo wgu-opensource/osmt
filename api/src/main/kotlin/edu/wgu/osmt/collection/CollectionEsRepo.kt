@@ -93,7 +93,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
     ): SearchHits<CollectionDoc> {
         val nsqb1 = NativeSearchQueryBuilder().withPageable(Pageable.unpaged())
         val bq = QueryBuilders.boolQuery()
-        //TODO Replace with FindsAllByPublishStatus.createTermsDslQuery(publishStatus.name, publishStatus.map { ps -> ps.toString() })
+        val filterDslQuery = createTermsDslQuery(RichSkillDoc::publishStatus.name, publishStatus.map { ps -> ps.toString() })
         val filter = BoolQueryBuilder().must(
             QueryBuilders.termsQuery(
                 RichSkillDoc::publishStatus.name,
@@ -103,7 +103,6 @@ class CustomCollectionQueriesImpl @Autowired constructor(
         nsqb1.withFilter(filter)
         nsqb1.withQuery(bq)
 
-        val filterDslQuery = createTermsDslQuery(RichSkillDoc::publishStatus.name, publishStatus.map { ps -> ps.toString() })
         var collectionMultiPropertyResults: List<String> = listOf()
 
         // treat the presence of query property to mean multi field search with that term

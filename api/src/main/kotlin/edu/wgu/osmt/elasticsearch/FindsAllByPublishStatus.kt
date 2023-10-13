@@ -83,11 +83,15 @@ interface FindsAllByPublishStatus<T> {
         return matchPhrasePrefix { qb -> qb.field(fieldName).query(searchStr).boost(boostVal) }
     }
 
+    fun createMatchBoolPrefixDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+        return matchBoolPrefix { qb -> qb.field(fieldName).query(searchStr).boost(boostVal) }
+    }
+
     fun createSimpleQueryDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         return simpleQueryString { qb -> qb.fields(fieldName).query(searchStr).boost(boostVal).defaultOperator(Operator.And) }
     }
 
-    fun createNestiedQueryDslQuery(path: String, scoreMode: ChildScoreMode, query: co.elastic.clients.elasticsearch._types.query_dsl.Query? = null, innerHits: InnerHits? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+    fun createNestedQueryDslQuery(path: String, scoreMode: ChildScoreMode, query: co.elastic.clients.elasticsearch._types.query_dsl.Query? = null, innerHits: InnerHits? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         query ?: matchAll { b-> b }
         innerHits ?: InnerHits.Builder().build()
         return nested { qb -> qb.path(path)

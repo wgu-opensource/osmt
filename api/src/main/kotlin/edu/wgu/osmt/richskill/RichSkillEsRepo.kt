@@ -5,10 +5,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.Query
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.*
 import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField
 import edu.wgu.osmt.PaginationDefaults
-import edu.wgu.osmt.api.model.ApiAdvancedSearch
-import edu.wgu.osmt.api.model.ApiFilteredSearch
-import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.ApiSimilaritySearch
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
 import edu.wgu.osmt.config.QUOTED_SEARCH_REGEX_PATTERN
 import edu.wgu.osmt.db.PublishStatus
@@ -165,8 +162,8 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         return bool { qb -> qb.must(disMaxQuery).must(existQuery)}
     }
 
-
     // Query clauses for Rich Skill properties
+    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("generateBoolQueriesFromApiSearchNu"), DeprecationLevel.WARNING)
     override fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch) {
         with(advancedQuery) {
             // boolQuery.must for logical AND
@@ -236,8 +233,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 it.mapNotNull { it.name }.map { s ->
                     if (s.contains("\"")) {
                         bq.must(
-                            simpleQueryStringQuery(s).field("${RichSkillDoc::certifications.name}.raw")
-                                .defaultOperator(Operator.AND)
+                            simpleQueryStringQuery(s).field("${RichSkillDoc::certifications.name}.raw").defaultOperator(Operator.AND)
                         )
                     } else {
                         bq.must(matchBoolPrefixQuery(RichSkillDoc::certifications.name, s))
@@ -269,6 +265,47 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
                 }
             }
         }
+    }
+
+    /**
+     * ElasticSearch v8.7.X version
+     */
+    fun generateBoolQueriesFromApiSearchNu(advancedQuery: ApiAdvancedSearch): Query {
+        with(advancedQuery) {
+            return bool { bq ->
+                skillName.nullIfEmpty()?.let { bq.must(createQueryFromString(RichSkillDoc::name.name, it)) }
+                category.nullIfEmpty()?.let { bq.must(createQueryFromString(RichSkillDoc::categories.name, it, QUOTED_SEARCH_REGEX_PATTERN)) }
+                author.nullIfEmpty()?.let { bq.must(createQueryFromString(RichSkillDoc::authors.name, it)) }
+                skillStatement.nullIfEmpty()?.let { bq.must(createQueryFromString(RichSkillDoc::statement.name, it)) }
+                keywords?.let { bq.must(createQueryFromStringList(RichSkillDoc::searchingKeywords.name, it)) }
+//TODO implement this
+//                occupations.nullIfEmpty()?.let { bq.must(createQueryFromString(RichSkillDoc::name.name, it)) }
+
+                standards?.let { bq.must(createQueryFromApiNameList(RichSkillDoc::standards.name, it)) }
+                certifications?.let { bq.must(createQueryFromApiNameList(RichSkillDoc::certifications.name, it)) }
+                employers?.let { bq.must(createQueryFromApiNameList(RichSkillDoc::employers.name, it)) }
+                alignments?.let { bq.must(createQueryFromApiNameList(RichSkillDoc::alignments.name, it)) }
+            }
+        }
+    }
+
+    private fun createQueryFromString(fieldName: String, searchStr: String, regEx: String? = null): Query {
+        val isComplex = searchStr.contains("\"") || (regEx != null  && searchStr.matches(Regex(regEx)))
+        return  if (isComplex)
+            createSimpleQueryDslQuery(String.format("%s.raw", fieldName), searchStr)
+        else
+            createMatchBoolPrefixDslQuery(fieldName, searchStr)
+    }
+
+    private fun createQueryFromStringList(fieldName: String, searchStrList: List<String>): List<Query> {
+        return searchStrList
+            .stream()
+            .map { createQueryFromString(fieldName, it ?: "") }
+            .collect(Collectors.toList())
+    }
+
+    private fun createQueryFromApiNameList(fieldName: String, searchStrList: List<ApiNamedReference>): List<Query> {
+        return createQueryFromStringList(fieldName, searchStrList.map { it.name?: "" })
     }
 
     @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("generateBoolQueriesFromApiSearchWithFiltersNu"), DeprecationLevel.WARNING)

@@ -1,9 +1,7 @@
 package edu.wgu.osmt.richskill
 
-import co.elastic.clients.elasticsearch._types.FieldValue
 import co.elastic.clients.elasticsearch._types.query_dsl.Query
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.*
-import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
@@ -39,8 +37,9 @@ import java.util.stream.Collectors
 const val collectionsUuid = "collections.uuid"
 
 /**
- * This have been partially converted to use the ElasticSearch 8.7.X apis. Need to do full conversion to use
- * the v8.7.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
+ * This have been partially converted to use the ElasticSearch 8.7.X apis.
+ * DMND-1821 Need to do full conversion to use the v8.7.x ES Java API client,
+ * https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
  */
 interface CustomRichSkillQueries : FindsAllByPublishStatus<RichSkillDoc> {
     fun getUuidsFromApiSearch(

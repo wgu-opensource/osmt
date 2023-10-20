@@ -2,6 +2,7 @@ package edu.wgu.osmt.jobcode
 
 import edu.wgu.osmt.config.INDEX_JOBCODE_DOC
 import edu.wgu.osmt.elasticsearch.OffsetPageable
+import edu.wgu.osmt.elasticsearch.WguQueryHelper.createStringQuery
 import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.Operator
 import org.elasticsearch.index.query.QueryBuilders.*
@@ -12,12 +13,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
-import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
-import org.springframework.data.elasticsearch.core.query.Query
-import org.springframework.data.elasticsearch.core.query.StringQuery
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
@@ -49,7 +47,7 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
                 .withPageable(createOffsetPageable(query))
                 .withQuery(disjunctionQuery)
                 .withSort(SortBuilders.fieldSort("${JobCode::code.name}.keyword").order(SortOrder.ASC))
-        val query = createStringQuery("CustomJobCodeRepositoryImpl.typeAheadSearch()", nqb)
+        val query = createStringQuery("CustomJobCodeRepositoryImpl.typeAheadSearch()", nqb, log)
         return elasticSearchTemplate.search(query, JobCode::class.java)
     }
 
@@ -60,14 +58,6 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
             OffsetPageable(0, 20, null)
         }
         return limitedPageable
-    }
-
-    fun createStringQuery(msgPrefix: String, nqb: NativeSearchQueryBuilder): Query {
-        val query = nqb.build()
-        log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, query.query.toString()))
-        log.debug(String.Companion.format("\n%s filter:\n\t\t%s", msgPrefix, query.filter.toString()))
-        //NOTE: this is causing us to lose the filter query
-        return StringQuery(query.query.toString())
     }
 }
 

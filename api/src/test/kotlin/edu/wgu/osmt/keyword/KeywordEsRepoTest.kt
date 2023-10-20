@@ -54,6 +54,8 @@ class KeywordEsRepoTest @Autowired constructor(
         assertThat(result3.searchHits.count()).isEqualTo(2)
         assertThat(result4.searchHits.count()).isEqualTo(1)
         assertThat(result4.searchHits.first().content.value).isEqualTo("Yellow")
-        assertThat(result5.searchHits).hasSize(56)
+
+        // Pagination causes the searchHits.count to be only 10
+        assertThat(result5.totalHits).isEqualTo(56)
     }
 }

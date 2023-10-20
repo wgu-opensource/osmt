@@ -1,9 +1,7 @@
 package edu.wgu.osmt.richskill
 
-import co.elastic.clients.elasticsearch._types.FieldValue
 import co.elastic.clients.elasticsearch._types.query_dsl.Query
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.*
-import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField
 import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
@@ -11,6 +9,11 @@ import edu.wgu.osmt.config.QUOTED_SEARCH_REGEX_PATTERN
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
+import edu.wgu.osmt.elasticsearch.WguQueryHelper.convertToNativeQuery
+import edu.wgu.osmt.elasticsearch.WguQueryHelper.createMatchBoolPrefixDslQuery
+import edu.wgu.osmt.elasticsearch.WguQueryHelper.createMatchPhrasePrefixDslQuery
+import edu.wgu.osmt.elasticsearch.WguQueryHelper.createSimpleQueryDslQuery
+import edu.wgu.osmt.elasticsearch.WguQueryHelper.createTermsDslQuery
 import edu.wgu.osmt.jobcode.JobCodeQueries
 import edu.wgu.osmt.nullIfEmpty
 import org.apache.commons.lang3.StringUtils
@@ -501,7 +504,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     ): SearchHits<RichSkillDoc> {
         val query = convertToNativeQuery(
                             pageable,
-                            createTermsDslQuery(RichSkillDoc::publishStatus.name, publishStatus.map { ps -> ps.toString() }),
+                            createFilter(apiSearch, publishStatus),
                             buildQuery(publishStatus, apiSearch, collectionId),
                             "CustomRichSkillQueriesImpl.byApiSearch()",
                             log
@@ -517,12 +520,23 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     ): Long {
         val query = convertToNativeQuery(
                             pageable,
-                            createTermsDslQuery(RichSkillDoc::publishStatus.name, publishStatus.map { ps -> ps.toString() }),
+                            createFilter(apiSearch, publishStatus),
                             buildQuery(publishStatus, apiSearch, collectionId),
                             "CustomRichSkillQueriesImpl.countByApiSearch()",
                             log
                     )
         return elasticSearchTemplate.count(query, RichSkillDoc::class.java)
+    }
+
+    private fun createFilter( apiSearch: ApiSearch, publishStatus: Set<PublishStatus>) : Query {
+        var fieldName    = RichSkillDoc::publishStatus.name
+        var filterValues = publishStatus.map { ps -> ps.toString() }
+
+        if ( !apiSearch.uuids.isNullOrEmpty() ) {
+            fieldName    = RichSkillDoc::uuid.name
+            filterValues = apiSearch.uuids.filter { x: String? -> x != "" }
+        }
+        return createTermsDslQuery(fieldName, filterValues)
     }
 
     /**
@@ -611,8 +625,8 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             var apiSearchUuids = apiSearch.uuids?.filterNotNull()?.filter { x: String? -> x != "" }
 
             if (!apiSearchUuids.isNullOrEmpty()) {
+                // This is not needed & ignored by WguQueryHelper.convertToNativeQuery()
                 nsqb.withFilter(
-                    //TODO Replace with FindsAllByPublishStatus.createTermsDslQuery(uuid.name, apiSearchUuids)
                     BoolQueryBuilder().must(
                         termsQuery(
                             RichSkillDoc::uuid.name,

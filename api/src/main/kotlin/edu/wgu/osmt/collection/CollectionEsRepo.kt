@@ -147,7 +147,7 @@ class CustomCollectionQueriesImpl @Autowired constructor(
                                         .flatten()
                                         .map { it.uuid }
                                         .distinct()
-        return getCollectionFromUuids(pageable, filterDslQuery, (innerHitCollectionUuids + collectionMultiPropertyResults).distinct())
+        return getCollectionFromUuids(pageable, filterDslQuery, (innerHitCollectionUuids + collectionMultiPropertyResults).distinct(), "CustomCollectionQueriesImpl.byApiSearch()2", log)
     }
 
     @Deprecated("Upgrade to ES v8.x queries", ReplaceWith("createNestQueryDslQuery"), DeprecationLevel.WARNING )
@@ -161,9 +161,9 @@ class CustomCollectionQueriesImpl @Autowired constructor(
 
     private fun getCollectionUuids(pageable: Pageable, filter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, collectionName: String) : List<String> {
         return  if (collectionName.contains("\""))
-                    getCollectionUuidsFromComplexName(pageable, filter, collectionName)
+                    getCollectionUuidsFromComplexName(pageable, filter, collectionName, "getCollectionUuids", log)
                 else
-                    getCollectionUuidsFromName(pageable, filter, collectionName)
+                    getCollectionUuidsFromName(pageable, filter, collectionName, "getCollectionUuids", log)
     }
 }
 

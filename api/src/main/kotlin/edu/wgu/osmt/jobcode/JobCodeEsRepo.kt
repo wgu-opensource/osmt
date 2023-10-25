@@ -2,7 +2,7 @@ package edu.wgu.osmt.jobcode
 
 import edu.wgu.osmt.config.INDEX_JOBCODE_DOC
 import edu.wgu.osmt.elasticsearch.OffsetPageable
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.createStringQuery
+import edu.wgu.osmt.elasticsearch.WguQueryHelper.convertToNativeQuery
 import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.Operator
 import org.elasticsearch.index.query.QueryBuilders.*
@@ -47,7 +47,7 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
                 .withPageable(createOffsetPageable(query))
                 .withQuery(disjunctionQuery)
                 .withSort(SortBuilders.fieldSort("${JobCode::code.name}.keyword").order(SortOrder.ASC))
-        val query = createStringQuery("CustomJobCodeRepositoryImpl.typeAheadSearch()", nqb, log)
+        val query = convertToNativeQuery(createOffsetPageable(query), null, nqb, "CustomJobCodeRepositoryImpl.typeAheadSearch()", log)
         return elasticSearchTemplate.search(query, JobCode::class.java)
     }
 

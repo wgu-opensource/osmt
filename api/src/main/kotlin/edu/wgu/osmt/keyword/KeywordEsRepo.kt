@@ -4,7 +4,8 @@ import co.elastic.clients.elasticsearch._types.query_dsl.*
 import edu.wgu.osmt.config.INDEX_KEYWORD_DOC
 import edu.wgu.osmt.config.SORT_INSENSITIVE
 import edu.wgu.osmt.elasticsearch.OffsetPageable
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.createStringQuery
+import edu.wgu.osmt.elasticsearch.WguQueryHelper
+import edu.wgu.osmt.elasticsearch.WguQueryHelper.convertToNativeQuery
 import edu.wgu.osmt.jobcode.CustomJobCodeRepositoryImpl
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.sort.SortBuilders
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
-import org.springframework.data.elasticsearch.client.elc.NativeQuery
 import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
@@ -70,7 +70,7 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
                 ).minimumShouldMatch(1)
         }
 
-        val query = createStringQuery("CustomKeywordRepositoryImpl.typeAheadSearch()", nqb, log)
+        val query = convertToNativeQuery( limitedPageable, null, nqb, "CustomKeywordRepositoryImpl.typeAheadSearch()", log )
         return elasticSearchTemplate.search(query, Keyword::class.java)
     }
 
@@ -88,10 +88,14 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
             pageable = OffsetPageable(0, 20, null)
             criteria = searchSpecific(searchStr, type)
         }
-        log.debug(String.Companion.format("\ntypeAheadSearchNu query:\n\t\t%s", criteria.bool().toString()))
-        return elasticSearchTemplate.search( NativeQuery.builder()
-                                                        .withPageable(pageable)
-                                                        .withQuery(criteria).build(), Keyword::class.java )
+//        log.debug(String.Companion.format("\ntypeAheadSearchNu query:\n\t\t%s", criteria.bool().toString()))
+//        return elasticSearchTemplate.search( NativeQuery.builder()
+//                                                        .withPageable(pageable)
+//                                                        .withQuery(criteria)
+//                                                        .build(), Keyword::class.java )
+
+        var nativeQuery = WguQueryHelper.createNativeQuery(pageable, null, criteria)
+        return elasticSearchTemplate.search(nativeQuery, Keyword::class.java)
     }
 
     fun searchAll(type: KeywordTypeEnum): Query {

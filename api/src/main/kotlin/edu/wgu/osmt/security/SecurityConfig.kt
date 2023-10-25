@@ -127,22 +127,40 @@ class SecurityConfig {
         if (appConfig.allowPublicLists) {
             http.authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}").permitAll()
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTIONS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTIONS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTIONS_LIST}").permitAll()
+                    .requestMatchers(   POST,
+                        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_FILTER}"
+                                    ).permitAll()
+                    .requestMatchers(   GET,
+                                        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.CATEGORY_LIST}",
+                                        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.WORKSPACE_LIST}",
+
+                                        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",
+                                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_LIST}",
+                                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}",
+
+                                        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTIONS_LIST}",
+                                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTIONS_LIST}",
+                                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTIONS_LIST}")
+                    .permitAll()
             }
         } else {
             http.authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTIONS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTIONS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTIONS_LIST}").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+                    .requestMatchers(   POST,
+                        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_FILTER}")
+                    .hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+                    .requestMatchers(   GET,
+                                        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.CATEGORY_LIST}",
+                                        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.WORKSPACE_LIST}",
+
+                                        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",
+                                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_LIST}",
+                                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}",
+
+                                        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTIONS_LIST}",
+                                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTIONS_LIST}",
+                                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTIONS_LIST}")
+                    .hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
             }
         }
 

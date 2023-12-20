@@ -1,15 +1,19 @@
 package edu.wgu.osmt.richskill
 
+import co.elastic.clients.elasticsearch._types.query_dsl.Query
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.*
 import edu.wgu.osmt.PaginationDefaults
-import edu.wgu.osmt.api.model.ApiAdvancedSearch
-import edu.wgu.osmt.api.model.ApiFilteredSearch
-import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.ApiSimilaritySearch
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
 import edu.wgu.osmt.config.QUOTED_SEARCH_REGEX_PATTERN
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
+import edu.wgu.osmt.elasticsearch.WguQueryHelper.convertToNativeQuery
+import edu.wgu.osmt.elasticsearch.WguQueryHelper.createMatchBoolPrefixDslQuery
+import edu.wgu.osmt.elasticsearch.WguQueryHelper.createMatchPhrasePrefixDslQuery
+import edu.wgu.osmt.elasticsearch.WguQueryHelper.createSimpleQueryDslQuery
+import edu.wgu.osmt.elasticsearch.WguQueryHelper.createTermsDslQuery
 import edu.wgu.osmt.jobcode.JobCodeQueries
 import edu.wgu.osmt.nullIfEmpty
 import org.apache.commons.lang3.StringUtils
@@ -32,6 +36,8 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 import org.springframework.security.oauth2.jwt.Jwt
+import java.util.function.Consumer
+import java.util.stream.Collectors
 
 const val collectionsUuid = "collections.uuid"
 
@@ -102,6 +108,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         return uuids
     }
 
+    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("buildNestedQueriesNu"), DeprecationLevel.WARNING)
     override fun occupationQueries(query: String): NestedQueryBuilder {
         val jobCodePath = RichSkillDoc::jobCodes.name
         return QueryBuilders.nestedQuery(
@@ -111,6 +118,21 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         )
     }
 
+    /**
+     * ElasticSearch v8.7.X version
+     */
+    fun occupationQueriesNu(query: String): Query? {
+        /*
+        val multiPropQuery = null
+        return co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.nested {
+                                qb -> qb.path(RichSkillDoc::jobCodes.name)
+                                        .query(JobCodeQueries.multiPropertySearch(query, jobCodePath),)
+                                        .scoreMode( ChildScoreMode.Max)}
+        */
+        return null;
+    }
+
+    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("buildNestedQueriesNu"), DeprecationLevel.WARNING)
     private fun buildNestedQueries(path: String?=null, queryParams: List<String>) : BoolQueryBuilder {
         val disjunctionQuery = disMaxQuery()
         val queries = ArrayList<PrefixQueryBuilder>()
@@ -128,8 +150,23 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         return boolQuery().must(existsQuery("$path.keyword")).must(disjunctionQuery)
     }
 
+    /**
+     * ElasticSearch v8.7.X version
+     */
+    private fun buildNestedQueriesNu(path: String?=null, queryParams: List<String>) : Query {
+        val prefixQueries = ArrayList<Query>()
+        queryParams.forEach(Consumer { s: String? ->
+            val q = prefix { qb -> qb.field( "$path.keyword").value(s) }
+            prefixQueries.add(q)
+        })
+
+        val disMaxQuery = disMax {qb -> qb.queries(prefixQueries)}
+        val existQuery = exists { qb -> qb.field("$path.keyword")}
+        return bool { qb -> qb.must(disMaxQuery).must(existQuery)}
+    }
 
     // Query clauses for Rich Skill properties
+    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("generateBoolQueriesFromApiSearchNu"), DeprecationLevel.WARNING)
     override fun generateBoolQueriesFromApiSearch(bq: BoolQueryBuilder, advancedQuery: ApiAdvancedSearch) {
         with(advancedQuery) {
             // boolQuery.must for logical AND
@@ -234,6 +271,48 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         }
     }
 
+    /**
+     * ElasticSearch v8.7.X version
+     */
+    fun generateBoolQueriesFromApiSearchNu(advancedQuery: ApiAdvancedSearch): Query {
+        with(advancedQuery) {
+            return bool { bq ->
+                skillName.nullIfEmpty()?.let { bq.must(createQueryFromString(RichSkillDoc::name.name, it)) }
+                category.nullIfEmpty()?.let { bq.must(createQueryFromString(RichSkillDoc::categories.name, it, QUOTED_SEARCH_REGEX_PATTERN)) }
+                author.nullIfEmpty()?.let { bq.must(createQueryFromString(RichSkillDoc::authors.name, it)) }
+                skillStatement.nullIfEmpty()?.let { bq.must(createQueryFromString(RichSkillDoc::statement.name, it)) }
+                keywords?.let { bq.must(createQueryFromStringList(RichSkillDoc::searchingKeywords.name, it)) }
+//TODO implement this
+//                occupations.nullIfEmpty()?.let { bq.must(createQueryFromString(RichSkillDoc::name.name, it)) }
+
+                standards?.let { bq.must(createQueryFromApiNameList(RichSkillDoc::standards.name, it)) }
+                certifications?.let { bq.must(createQueryFromApiNameList(RichSkillDoc::certifications.name, it)) }
+                employers?.let { bq.must(createQueryFromApiNameList(RichSkillDoc::employers.name, it)) }
+                alignments?.let { bq.must(createQueryFromApiNameList(RichSkillDoc::alignments.name, it)) }
+            }
+        }
+    }
+
+    private fun createQueryFromString(fieldName: String, searchStr: String, regEx: String? = null): Query {
+        val isComplex = searchStr.contains("\"") || (regEx != null  && searchStr.matches(Regex(regEx)))
+        return  if (isComplex)
+            createSimpleQueryDslQuery(String.format("%s.raw", fieldName), searchStr)
+        else
+            createMatchBoolPrefixDslQuery(fieldName, searchStr)
+    }
+
+    private fun createQueryFromStringList(fieldName: String, searchStrList: List<String>): List<Query> {
+        return searchStrList
+            .stream()
+            .map { createQueryFromString(fieldName, it ?: "") }
+            .collect(Collectors.toList())
+    }
+
+    private fun createQueryFromApiNameList(fieldName: String, searchStrList: List<ApiNamedReference>): List<Query> {
+        return createQueryFromStringList(fieldName, searchStrList.map { it.name?: "" })
+    }
+
+    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("generateBoolQueriesFromApiSearchWithFiltersNu"), DeprecationLevel.WARNING)
     override fun generateBoolQueriesFromApiSearchWithFilters(bq: BoolQueryBuilder, filteredQuery: ApiFilteredSearch, publishStatus: Set<PublishStatus>) {
         bq.must(
             termsQuery(
@@ -283,10 +362,66 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         }
     }
 
+    /**
+     * TODO Fix the NPE at the return.
+    fun generateBoolQueriesFromApiSearchWithFiltersNu(filteredQuery: ApiFilteredSearch, publishStatus: Set<PublishStatus>) : Query {
+        val values = publishStatus
+            .stream()
+            .map { FieldValue.of(it.toString()) }
+            .collect(Collectors.toList())
+        val tqf = TermsQueryField.Builder()
+            .value(values)
+            .build()
+        val terms2 = terms { qb -> qb.field(RichSkillDoc::publishStatus.name).terms(tqf) }
+        val qb = bool().must(terms2)
+
+        with(filteredQuery) {
+            categories?. let { qb.must(buildNestedQueriesNu(RichSkillDoc::categories.name, it)) }
+            keywords?. let {
+                it.mapNotNull { qb.must(generateTermsSetQueryBuilderNu(RichSkillDoc::searchingKeywords.name, keywords)) }
+            }
+            standards?. let {
+                it.mapNotNull { qb.must(generateTermsSetQueryBuilderNu(RichSkillDoc::standards.name, standards)) }
+            }
+            certifications?. let {
+                it.mapNotNull { qb.must(generateTermsSetQueryBuilderNu(RichSkillDoc::certifications.name, certifications)) }
+            }
+            alignments?. let {
+                it.mapNotNull { qb.must(generateTermsSetQueryBuilderNu(RichSkillDoc::alignments.name, alignments)) }
+            }
+            employers?. let {
+                it.mapNotNull { qb.must(generateTermsSetQueryBuilderNu(RichSkillDoc::employers.name, employers)) }
+            }
+            authors?. let {
+                qb.must(buildNestedQueriesNu(RichSkillDoc::authors.name, it))
+            }
+            occupations?.let {
+                it.mapNotNull { value -> qb.must( occupationQueriesNu(value) ) }
+            }
+        }
+        val s = qb.build()._toQuery()
+        return s
+    }
+    */
+
+    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("generateTermsSetQueryBuilderNu"), DeprecationLevel.WARNING)
     private fun generateTermsSetQueryBuilder(fieldName: String, list: List<String>): TermsSetQueryBuilder {
         return TermsSetQueryBuilder("$fieldName.keyword", list).setMinimumShouldMatchScript(Script(list.size.toString()))
     }
 
+    /**
+     * ElasticSearch v8.7.X version
+     */
+    private fun generateTermsSetQueryBuilderNu(fieldName: String, list: List<String>): Query {
+        val sb = co.elastic.clients.elasticsearch._types.Script.Builder().inline { il -> il.source(list.size.toString())}
+        return termsSet {
+                            qb -> qb.field("$fieldName.keyword")
+                                    .terms(list)
+                                    .minimumShouldMatchScript(sb.build())
+                        }
+    }
+
+    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("richSkillPropertiesMultiMatchNu"), DeprecationLevel.WARNING)
     override fun richSkillPropertiesMultiMatch(query: String): BoolQueryBuilder {
         val isComplex = query.contains("\"")
 
@@ -328,6 +463,45 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         return boolQuery
     }
 
+    /**
+     * ElasticSearch v8.7.X version
+     */
+    fun richSkillPropertiesMultiMatchNu(searchStr: String): Query {
+        var queries  =  if (searchStr.contains("\""))
+                            createComplexMultiMatchQueries(searchStr)
+                        else
+                            createMultiMatchQueries(searchStr)
+        return bool  {qb -> qb.should(queries) }
+    }
+
+    private fun createComplexMultiMatchQueries(searchStr: String) : List<Query>{
+        return listOf(
+            createSimpleQueryDslQuery("${RichSkillDoc::name.name}.raw", searchStr, 2.0f),
+            createSimpleQueryDslQuery("${RichSkillDoc::statement.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::categories.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::searchingKeywords.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::standards.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::certifications.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::employers.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::alignments.name}.raw", searchStr),
+            createSimpleQueryDslQuery("${RichSkillDoc::authors.name}.raw", searchStr)
+        )
+    }
+
+    private fun createMultiMatchQueries(searchStr: String) : List<Query>{
+        return listOf(
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::name.name, searchStr, 2.0f),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::statement.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::categories.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::searchingKeywords.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::standards.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::certifications.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::employers.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::alignments.name, searchStr),
+            createMatchPhrasePrefixDslQuery(RichSkillDoc::authors.name, searchStr)
+        )
+    }
+
     override fun byApiSearch(
         apiSearch: ApiSearch,
         publishStatus: Set<PublishStatus>,
@@ -336,7 +510,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     ): SearchHits<RichSkillDoc> {
         val query = convertToNativeQuery(
                             pageable,
-                            createTermsDslQuery(RichSkillDoc::publishStatus.name, publishStatus.map { ps -> ps.toString() }),
+                            createFilter(apiSearch, publishStatus),
                             buildQuery(publishStatus, apiSearch, collectionId),
                             "CustomRichSkillQueriesImpl.byApiSearch()",
                             log
@@ -352,12 +526,23 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     ): Long {
         val query = convertToNativeQuery(
                             pageable,
-                            createTermsDslQuery(RichSkillDoc::publishStatus.name, publishStatus.map { ps -> ps.toString() }),
+                            createFilter(apiSearch, publishStatus),
                             buildQuery(publishStatus, apiSearch, collectionId),
                             "CustomRichSkillQueriesImpl.countByApiSearch()",
                             log
                     )
         return elasticSearchTemplate.count(query, RichSkillDoc::class.java)
+    }
+
+    private fun createFilter( apiSearch: ApiSearch, publishStatus: Set<PublishStatus>) : Query {
+        var fieldName    = RichSkillDoc::publishStatus.name
+        var filterValues = publishStatus.map { ps -> ps.toString() }
+
+        if ( !apiSearch.uuids.isNullOrEmpty() ) {
+            fieldName    = RichSkillDoc::uuid.name
+            filterValues = apiSearch.uuids.filter { x: String? -> x != "" }
+        }
+        return createTermsDslQuery(fieldName, filterValues)
     }
 
     /**
@@ -446,8 +631,8 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             var apiSearchUuids = apiSearch.uuids?.filterNotNull()?.filter { x: String? -> x != "" }
 
             if (!apiSearchUuids.isNullOrEmpty()) {
+                // This is not needed & ignored by WguQueryHelper.convertToNativeQuery()
                 nsqb.withFilter(
-                    //TODO Replace with FindsAllByPublishStatus.createTermsDslQuery(uuid.name, apiSearchUuids)
                     BoolQueryBuilder().must(
                         termsQuery(
                             RichSkillDoc::uuid.name,

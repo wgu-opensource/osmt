@@ -57,6 +57,7 @@ object RoutePaths {
     const val COLLECTION_REMOVE = "$COLLECTION_DETAIL/remove"
 
     const val WORKSPACE_PATH = "/workspace"
+    const val WORKSPACE_LIST = WORKSPACE_PATH
 
     private const val TASKS_PATH = "/results"
     const val TASK_DETAIL_TEXT = "$TASKS_PATH/text/{uuid}"

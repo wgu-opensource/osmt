@@ -193,8 +193,8 @@ class CollectionRepositoryTest: SpringTest(), BaseDockerizedTest, HasDatabaseRes
         assertThat(batchResult?.modifiedCount).isEqualTo(collectionsCount)
 
     }
-// TODO: fix
-//    @Test
+
+    @Test
     fun testChangeStatusesForTaskWithCollectionId() {
         // Arrange
         val skillCount = 3

@@ -52,7 +52,8 @@ source_env_file() {
 source_env_file_unless_provided_oauth() {
   local env_file="${1}"
 
- # gracefully bypass sourcing env file if these 4 OAUTH values are provided
+ # gracefully bypass sourcing env file if these 4 OAUTH_ values are provided, i.e. as secrets
+ # via build automation
   if [[ \
       -n "${OAUTH_ISSUER}" && \
       -n "${OAUTH_CLIENTID}" && \
@@ -63,22 +64,25 @@ source_env_file_unless_provided_oauth() {
       return 0
     fi
 
+  echo_info "OAUTH_ values are not provided by environment variables. Sourcing ${env_file} env file."
   source_env_file "${env_file}"
 }
 
 source_env_file_unless_provided_okta() {
   local env_file="${1}"
 
- # gracefully bypass sourcing env file if these 4 OAUTH values are provided
+ # gracefully bypass sourcing env file if these 3 OKTA_ values are provided, i.e. as secrets
+ # via build automation
   if [[ \
       -n "${OKTA_URL}" && \
       -n "${OKTA_USERNAME}" && \
       -n "${OKTA_PASSWORD}" \
     ]]; then
-      echo_info "Okta values are provided by environment variables. Not sourcing ${env_file} env file."
+      echo_info "OKTA_ values are provided by environment variables. Not sourcing ${env_file} env file."
       return 0
     fi
 
+  echo_info "Okta values are not provided by environment variables. Sourcing ${env_file} env file."
   source_env_file "${env_file}"
 }
 
@@ -265,7 +269,7 @@ _validate_java_version() {
   echo
   echo_info "Checking Java..."
   # OSMT requires at least Java 11
-  local -i req_java_major=11
+  local -i req_java_major=17
   local det_java_version
   local -i det_java_major
 
@@ -317,10 +321,10 @@ _validate_osmt_dev_dependencies() {
   echo_info "Maven version: $(mvn --version)"
 
   echo
-  echo_info "OSMT development recommends NodeJS version v16.13.0 or greater. Maven uses an embedded copy of NodeJS v16.13.0 via frontend-maven-plugin."
+  echo_info "OSMT development recommends NodeJS version v18.18.2 or greater. Maven uses an embedded copy of NodeJS v16.13.0 via frontend-maven-plugin."
   echo_info "NodeJS version: $(node --version)"
   echo
-  echo_info "OSMT development recommends npm version 8.1.0 or greater. Maven uses an embedded copy of npm 8.1.0 via frontend-maven-plugin."
+  echo_info "OSMT development recommends npm version 9.8.1 or greater. Maven uses an embedded copy of npm 8.1.0 via frontend-maven-plugin."
   echo_info "npm version: $(npm --version)"
   if [[ "${is_dependency_valid}" -ne 0 ]]; then
     echo

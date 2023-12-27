@@ -15,7 +15,7 @@ import java.util.stream.StreamSupport
 
 
 @Component
-@Profile("dev")
+@Profile("debug")
 class PropertyLogger {
     @EventListener
     fun handleContextRefresh(event: ContextRefreshedEvent) {

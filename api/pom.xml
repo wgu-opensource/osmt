@@ -31,7 +31,7 @@
     <description>WGU Open Skills Management Toolset</description>
 
     <properties>
-        <app.version>2.6.1-SNAPSHOT</app.version>
+        <app.version>3.0.0-SNAPSHOT</app.version>
         <kotlin.version>1.7.21</kotlin.version>
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.coroutines.version>1.5.1</kotlin.coroutines.version>

@@ -5,8 +5,8 @@ import edu.wgu.osmt.api.model.ApiSearch
 import edu.wgu.osmt.config.INDEX_COLLECTION_DOC
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.convertToNativeQuery
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.createTermsDslQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.convertToNativeQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.createTermsDslQuery
 import edu.wgu.osmt.richskill.RichSkillDoc
 import edu.wgu.osmt.richskill.RichSkillEsRepo
 import org.apache.lucene.search.join.ScoreMode

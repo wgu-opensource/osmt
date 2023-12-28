@@ -4,8 +4,8 @@ import co.elastic.clients.elasticsearch._types.query_dsl.*
 import edu.wgu.osmt.config.INDEX_KEYWORD_DOC
 import edu.wgu.osmt.config.SORT_INSENSITIVE
 import edu.wgu.osmt.elasticsearch.OffsetPageable
-import edu.wgu.osmt.elasticsearch.WguQueryHelper
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.convertToNativeQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.convertToNativeQuery
 import edu.wgu.osmt.jobcode.CustomJobCodeRepositoryImpl
 import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.sort.SortBuilders
@@ -94,7 +94,7 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
 //                                                        .withQuery(criteria)
 //                                                        .build(), Keyword::class.java )
 
-        var nativeQuery = WguQueryHelper.createNativeQuery(pageable, null, criteria)
+        var nativeQuery = OsmtQueryHelper.createNativeQuery(pageable, null, criteria)
         return elasticSearchTemplate.search(nativeQuery, Keyword::class.java)
     }
 

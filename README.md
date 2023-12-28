@@ -267,5 +267,3 @@ From the Scopes tab, add a scope with name that matches osmt.security.scope.read
 This project includes [./api/HELP.md](api/HELP.md), with links to relevant references and tutorials.
 
 OMST is an open source project, and is supported by its community. Please look to the Discussion boards and Wiki on GitHub. Please see the [CONTRIBUTING.md](CONTRIBUTING.md) document for additional context.
-
-[Local debugging instructions](https://wiki.wgu.edu/pages/viewpage.action?pageId=385877927)

@@ -9,11 +9,11 @@ import edu.wgu.osmt.config.QUOTED_SEARCH_REGEX_PATTERN
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.FindsAllByPublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.convertToNativeQuery
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.createMatchBoolPrefixDslQuery
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.createMatchPhrasePrefixDslQuery
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.createSimpleQueryDslQuery
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.createTermsDslQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.convertToNativeQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.createMatchBoolPrefixDslQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.createMatchPhrasePrefixDslQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.createSimpleQueryDslQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.createTermsDslQuery
 import edu.wgu.osmt.jobcode.JobCodeQueries
 import edu.wgu.osmt.nullIfEmpty
 import org.apache.commons.lang3.StringUtils

@@ -20,7 +20,7 @@ import java.util.stream.Collectors
 /**
  * Utility class for leveraging latest ElasticSearch v8.7.X Java API
  */
-object WguQueryHelper {
+object OsmtQueryHelper {
     @Deprecated("Upgrade to ES v8.x queries", ReplaceWith("createNativeQuery"), DeprecationLevel.WARNING )
     fun convertToNativeQuery(pageable: Pageable, dslFilter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, nsqb: NativeSearchQueryBuilder, msgPrefix: String, log: Logger): Query {
         val springDataQuery = StringQuery(nsqb.build().query.toString())

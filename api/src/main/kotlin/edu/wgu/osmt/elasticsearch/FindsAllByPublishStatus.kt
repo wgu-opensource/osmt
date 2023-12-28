@@ -3,10 +3,10 @@ package edu.wgu.osmt.elasticsearch
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.matchAll
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.db.PublishStatus
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.createMatchPhrasePrefixDslQuery
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.createNativeQuery
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.createSimpleQueryDslQuery
-import edu.wgu.osmt.elasticsearch.WguQueryHelper.createTermsDslQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.createMatchPhrasePrefixDslQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.createNativeQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.createSimpleQueryDslQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.createTermsDslQuery
 import edu.wgu.osmt.richskill.RichSkillDoc
 import org.slf4j.Logger
 import org.springframework.data.domain.Pageable

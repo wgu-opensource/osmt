@@ -117,12 +117,12 @@ class CustomCollectionQueriesImpl @Autowired constructor(
             )
             bq.should(richSkillEsRepo.occupationQueries(apiSearch.query))
 
-            val nsqb = NativeSearchQueryBuilder()
+            val nsqb2 = NativeSearchQueryBuilder()
                 .withQuery( collectionPropertiesMultiMatch(apiSearch.query) )
                 .withPageable(Pageable.unpaged())
                 .withFilter(filter)
             // search on collection specific properties
-            val query = convertToNativeQuery(Pageable.unpaged(), filterDslQuery, nsqb, "CustomCollectionQueriesImpl.byApiSearch()1", log)
+            val query = convertToNativeQuery(Pageable.unpaged(), filterDslQuery, nsqb2, "CustomCollectionQueriesImpl.byApiSearch()1", log)
             collectionMultiPropertyResults = elasticSearchTemplate
                 .search(query, CollectionDoc::class.java)
                 .searchHits

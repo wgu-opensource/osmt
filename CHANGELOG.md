@@ -1,5 +1,5 @@
 # Announcing the release of OSMT 3.0.0
-June 20, 2023
+Jan 10, 2024
 
 ## Enhancements
 OSMT 3.0.0 brings these new feature enhancements
@@ -13,6 +13,9 @@ OSMT 3.0.0 brings these new feature enhancements
 - Export to Excel workbook (previously only CSV)
 - View Categories in Library
 - Categories in Collection
+- Upgrade to JDK 17
+- Upgrade to spring-boot v3.1.2
+- Upgrade to ElasticSearch v8.11.1
 
 ## Updates
 - Updated UI to Angular v16 (previously v12)

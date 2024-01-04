@@ -84,7 +84,6 @@ class ElasticsearchClientManager {
     }
 
     private fun createRestClient(): RestClient {
-//        val restClientBuilder = RestClient.builder(createHttpHost())
         val host = HttpHost.create(esConfig.uri)
         val restClientBuilder = RestClient.builder(host)
         val credentialsProvider = getCredentialsProvider()
@@ -93,17 +92,6 @@ class ElasticsearchClientManager {
             restClientBuilder.setHttpClientConfigCallback { b -> b.setDefaultCredentialsProvider(it) }
         }
         return restClientBuilder.build()
-    }
-
-    private fun createHttpHost(): HttpHost {
-        val scheme = StringUtils.split(esConfig.uri, "://")
-        if(scheme.isNullOrEmpty()){
-            val params = StringUtils.split(esConfig.uri, ":")
-            return HttpHost(params!![0], params[1].toInt())
-        } else {
-            val params = StringUtils.split(scheme!![1], ":")
-            return HttpHost(params!![0], params[1].toInt(), scheme!![0])
-        }
     }
 
     private fun getCredentialsProvider(): CredentialsProvider? {

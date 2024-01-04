@@ -84,7 +84,9 @@ class ElasticsearchClientManager {
     }
 
     private fun createRestClient(): RestClient {
-        val restClientBuilder = RestClient.builder(createHttpHost())
+//        val restClientBuilder = RestClient.builder(createHttpHost())
+        val host = HttpHost.create(esConfig.uri)
+        val restClientBuilder = RestClient.builder(host)
         val credentialsProvider = getCredentialsProvider()
 
         credentialsProvider?.let {

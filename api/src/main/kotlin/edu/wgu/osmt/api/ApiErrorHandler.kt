@@ -33,8 +33,6 @@ class GeneralApiExceptionHandler : ResponseEntityExceptionHandler() {
 @ControllerAdvice
 class ApiErrorHandler : ResponseEntityExceptionHandler() {
 
-// No longer abstract method in spring-webmvc:6.0.11
-//    override fun handleHttpMessageNotReadable(
     fun handleHttpMessageNotReadable(
         ex: HttpMessageNotReadableException,
         headers: HttpHeaders,

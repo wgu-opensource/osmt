@@ -88,11 +88,6 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
             pageable = OffsetPageable(0, 20, null)
             criteria = searchSpecific(searchStr, type)
         }
-//        log.debug(String.Companion.format("\ntypeAheadSearchNu query:\n\t\t%s", criteria.bool().toString()))
-//        return elasticSearchTemplate.search( NativeQuery.builder()
-//                                                        .withPageable(pageable)
-//                                                        .withQuery(criteria)
-//                                                        .build(), Keyword::class.java )
 
         var nativeQuery = OsmtQueryHelper.createNativeQuery(pageable, null, criteria)
         return elasticSearchTemplate.search(nativeQuery, Keyword::class.java)

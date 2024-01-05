@@ -45,7 +45,6 @@ object OsmtQueryHelper {
                             .withFilter(dslFilter)
                             .withQuery(dslQuery)
                             .withPageable(pageable)
-//                            .withSort(createSort("blah"))
                             .build()
         log(query, msgPrefix, log)
         return query;

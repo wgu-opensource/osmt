@@ -15,7 +15,9 @@ OSMT 3.0.0 brings these new feature enhancements
 - Categories in Collection
 - Upgrade to JDK 17
 - Upgrade to spring-boot v3.1.2
-- Upgrade to ElasticSearch v8.11.1
+- Upgrade to elasticsearch-java library v8.7.1
+- Upgrade to ElasticSearch Server v8.11.3
+- Reindexed was done after ElasticSearch Server upgrade
 
 ## Updates
 - Updated UI to Angular v16 (previously v12)

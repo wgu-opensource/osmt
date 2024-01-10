@@ -241,7 +241,7 @@ Usage:
   -v   Validate local environment and dependencies for development.
   -d   Start the backend Development Docker stack (MySQL, ElasticSearch, Redis). docker-compose stack will
        be detached, with containers named "osmt_dev". You can review status with 'docker ps'.
-  -e   Stop the detached backend Development Docker stack (MySQL, ElasticSearch, Redis).
+  -e   Stop & destroys the detached backend Development Docker stack (MySQL, ElasticSearch, Redis).
   -s   Start the local Spring app, as built from source code. This also sources the api/osmt-dev-stack.env file
        for OAUTH2-related environment variables.
   -l   Load the static CI dataset into the local MySQL instance. This will delete all data from the MySQL database.

@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import kotlin.system.exitProcess
 
 @Component
 @Profile("import")
@@ -56,6 +57,7 @@ class ImportCommandRunner : CommandLineRunner {
             LOG.error("Missing --csv=path/to/csv argument")
         }
         (applicationContext as ConfigurableApplicationContext).close()
+        exitProcess(0) // "./osmt_cli.sh -m" blocks without this
     }
 }
 

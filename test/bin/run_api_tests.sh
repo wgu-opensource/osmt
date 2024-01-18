@@ -67,7 +67,8 @@ get_bearer_token() {
       --env-var oktaUrl="${OKTA_URL}" \
       --env-var baseUrl="${BASE_URL}" \
       --ignore-redirects \
-      --export-environment "${auth_env}"
+      --export-environment "${auth_env}" \
+      --verbose
 
   BEARER_TOKEN="$(node "${TEST_DIR}/postman/getToken.js")"
   echo_info "Bearer token retrieved."

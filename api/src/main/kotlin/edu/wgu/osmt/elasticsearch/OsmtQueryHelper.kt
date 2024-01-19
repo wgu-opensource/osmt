@@ -51,9 +51,13 @@ object OsmtQueryHelper {
     }
 
     private fun log(nativeQuery: NativeQuery, msgPrefix: String?, log: Logger?) {
-        if (nativeQuery.springDataQuery == null || msgPrefix == null || log == null) return
-        log.debug(String.Companion.format("\n%s springDataQuery:\n\t\t%s", msgPrefix, (nativeQuery.springDataQuery as StringQuery).source))
-        log.debug(String.Companion.format("\n%s dslFilter:\n\t\t%s", msgPrefix, nativeQuery.filter.toString()))
+        if (nativeQuery.springDataQuery != null && log != null) {
+            log.debug(String.Companion.format("\n%s springDataQuery:\n\t\t%s", msgPrefix, (nativeQuery.springDataQuery as StringQuery).source))
+            log.debug(String.Companion.format("\n%s dslFilter:\n\t\t%s", msgPrefix, nativeQuery.filter.toString()))
+        }
+        if (nativeQuery.query != null && log != null) {
+            log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, nativeQuery.query.toString()))
+        }
     }
 
     fun createMatchPhrasePrefixDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {

@@ -19,3 +19,4 @@ const val INDEX_KEYWORD_DOC = "keyword"
 // ElasticSearch Sort Criteria
 const val SORT_INSENSITIVE = ".sort_insensitive"
 const val NAME_SORT_INSENSITIVE = "name${SORT_INSENSITIVE}"
+const val VALUE_SORT_INSENSITIVE = "value${SORT_INSENSITIVE}"

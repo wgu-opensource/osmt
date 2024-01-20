@@ -2,20 +2,16 @@ package edu.wgu.osmt.keyword
 
 import co.elastic.clients.elasticsearch._types.query_dsl.*
 import edu.wgu.osmt.config.INDEX_KEYWORD_DOC
-import edu.wgu.osmt.config.SORT_INSENSITIVE
+import edu.wgu.osmt.config.VALUE_SORT_INSENSITIVE
 import edu.wgu.osmt.elasticsearch.OffsetPageable
-import edu.wgu.osmt.elasticsearch.OsmtQueryHelper
-import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.convertToNativeQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.createNativeQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.createSort
 import edu.wgu.osmt.jobcode.CustomJobCodeRepositoryImpl
-import org.elasticsearch.index.query.QueryBuilders
-import org.elasticsearch.search.sort.SortBuilders
-import org.elasticsearch.search.sort.SortOrder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
-import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
@@ -38,6 +34,7 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
     CustomKeywordRepository {
     val log: Logger = LoggerFactory.getLogger(CustomJobCodeRepositoryImpl::class.java)
 
+    /*
     @Deprecated("Upgrade to ES v8.x queries", ReplaceWith("typeAheadSearchNu"), DeprecationLevel.WARNING )
     override fun typeAheadSearch(searchStr: String, type: KeywordTypeEnum): SearchHits<Keyword> {
         val limitedPageable: OffsetPageable
@@ -73,11 +70,12 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
         val query = convertToNativeQuery( limitedPageable, null, nqb, "CustomKeywordRepositoryImpl.typeAheadSearch()", log )
         return elasticSearchTemplate.search(query, Keyword::class.java)
     }
+    */
 
     /**
      * Uses the latest ES 8.7.x Java Client API
      */
-    fun typeAheadSearchNu(searchStr: String, type: KeywordTypeEnum): SearchHits<Keyword> {
+    override fun typeAheadSearch(searchStr: String, type: KeywordTypeEnum): SearchHits<Keyword> {
         val pageable: OffsetPageable
         val criteria: Query
 
@@ -89,23 +87,23 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
             criteria = searchSpecific(searchStr, type)
         }
 
-        var nativeQuery = OsmtQueryHelper.createNativeQuery(pageable, null, criteria)
+        var nativeQuery = createNativeQuery(pageable, null, criteria, "CustomKeywordRepositoryImpl.typeAheadSearch()", log, createSort(VALUE_SORT_INSENSITIVE))
         return elasticSearchTemplate.search(nativeQuery, Keyword::class.java)
     }
 
     fun searchAll(type: KeywordTypeEnum): Query {
-        return co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool { builder: BoolQuery.Builder ->
+        return QueryBuilders.bool { builder: BoolQuery.Builder ->
                         builder
-                            .must(co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.term {   qt: TermQuery.Builder -> qt.field(Keyword::type.name).value(type.name) } )
-                            .should(co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.matchAll { q : MatchAllQuery.Builder -> q } ) }
+                            .must(QueryBuilders.term {   qt: TermQuery.Builder -> qt.field(Keyword::type.name).value(type.name) } )
+                            .should(QueryBuilders.matchAll { q : MatchAllQuery.Builder -> q } ) }
     }
 
     fun searchSpecific(searchStr: String, type: KeywordTypeEnum): Query {
-        return co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.bool { builder: BoolQuery.Builder ->
+        return QueryBuilders.bool { builder: BoolQuery.Builder ->
                         builder
-                            .must(co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.term {   qt: TermQuery.Builder -> qt.field(Keyword::type.name).value(type.name) } )
-                            .should(co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.matchBoolPrefix { q : MatchBoolPrefixQuery.Builder -> q.field(Keyword::value.name).query(searchStr)} )
-                            .should(co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.matchPhrase { q : MatchPhraseQuery.Builder -> q.field(Keyword::value.name).query(searchStr)} )
+                            .must(QueryBuilders.term {   qt: TermQuery.Builder -> qt.field(Keyword::type.name).value(type.name) } )
+                            .should(QueryBuilders.matchBoolPrefix { q : MatchBoolPrefixQuery.Builder -> q.field(Keyword::value.name).query(searchStr)} )
+                            .should(QueryBuilders.matchPhrase { q : MatchPhraseQuery.Builder -> q.field(Keyword::value.name).query(searchStr)} )
                             .minimumShouldMatch("1") }
     }
 }

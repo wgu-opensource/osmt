@@ -39,24 +39,30 @@ object OsmtQueryHelper {
         return query;
     }
 
-    fun createNativeQuery(pageable: Pageable, dslFilter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, dslQuery: co.elastic.clients.elasticsearch._types.query_dsl.Query, msgPrefix: String? = null, log: Logger? = null): NativeQuery {
-        val query = NativeQuery
-                            .builder()
-                            .withFilter(dslFilter)
-                            .withQuery(dslQuery)
-                            .withPageable(pageable)
-                            .build()
+    fun createNativeQuery(pageable: Pageable, dslFilter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, dslQuery: co.elastic.clients.elasticsearch._types.query_dsl.Query, msgPrefix: String? = null, log: Logger? = null, sortOptions: SortOptions? = null): NativeQuery {
+        val nqb = NativeQuery.builder()
+
+        nqb.withFilter(dslFilter).withQuery(dslQuery).withPageable(pageable)
+        sortOptions ?.let{ nqb.withSort(sortOptions) }
+
+        val query = nqb.build()
         log(query, msgPrefix, log)
         return query;
     }
 
     private fun log(nativeQuery: NativeQuery, msgPrefix: String?, log: Logger?) {
-        if (nativeQuery.springDataQuery != null && log != null) {
-            log.debug(String.Companion.format("\n%s springDataQuery:\n\t\t%s", msgPrefix, (nativeQuery.springDataQuery as StringQuery).source))
-            log.debug(String.Companion.format("\n%s dslFilter:\n\t\t%s", msgPrefix, nativeQuery.filter.toString()))
+        log?.debug(msgPrefix)
+        if (nativeQuery.springDataQuery != null) {
+            log?.debug(String.Companion.format("\t\t%s", (nativeQuery.springDataQuery as StringQuery).source))
         }
-        if (nativeQuery.query != null && log != null) {
-            log.debug(String.Companion.format("\n%s query:\n\t\t%s", msgPrefix, nativeQuery.query.toString()))
+        if (nativeQuery.filter != null) {
+            log?.debug(String.Companion.format("\t\t%s", nativeQuery.filter.toString()))
+        }
+        if (nativeQuery.query != null) {
+            log?.debug(String.Companion.format("\t\t%s", nativeQuery.query.toString()))
+        }
+        if (nativeQuery.sortOptions != null) {
+            log?.debug(String.Companion.format("\t\t%s", nativeQuery.sortOptions.toString()))
         }
     }
 

@@ -66,7 +66,7 @@ object OsmtQueryHelper {
         }
     }
 
-    fun createMatchPhrasePrefixDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+    fun createMatchPhrasePrefixDslQuery(fieldName: String, searchStr: String, boostVal : Float? = 1.0f): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         return QueryBuilders.matchPhrasePrefix { qb -> qb.field(fieldName).query(searchStr).boost(boostVal) }
     }
 
@@ -74,21 +74,31 @@ object OsmtQueryHelper {
         return QueryBuilders.matchBoolPrefix { qb -> qb.field(fieldName).query(searchStr).boost(boostVal) }
     }
 
-    fun createSimpleQueryDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+    fun createPrefixDslQuery(fieldName: String, searchStr: String, boostVal : Float? = 1.0f): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+        return QueryBuilders.prefix { qb -> qb.field(fieldName).value(searchStr).boost(boostVal) }
+    }
+    fun createSimpleQueryDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null, wildCardFlag: Boolean? = null, operatorVal : Operator? = Operator.And): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         return QueryBuilders.simpleQueryString { qb ->
-            qb.fields(fieldName).query(searchStr).boost(boostVal).defaultOperator(Operator.And)
+                             qb.fields(fieldName)
+                               .query(searchStr)
+                               .boost(boostVal)
+                               .defaultOperator(operatorVal)
+                               .analyzeWildcard(wildCardFlag)
         }
     }
 
+    fun createDisMaxDslQuery(queries: List<co.elastic.clients.elasticsearch._types.query_dsl.Query>, tieBreakerVal : Double? = 0.0, boostVal: Float? = 1.0f ): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+        return QueryBuilders.disMax() { qb -> qb.queries(queries).tieBreaker(tieBreakerVal).boost(boostVal) }
+    }
+
+    //TODO: Finish this in total elasticSearch conversion to 8.X story
     fun createNestedQueryDslQuery(path: String, scoreMode: ChildScoreMode, query: co.elastic.clients.elasticsearch._types.query_dsl.Query? = null, innerHits: InnerHits? = null): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         query ?: QueryBuilders.matchAll { b -> b }
         innerHits ?: InnerHits.Builder().build()
-        return QueryBuilders.nested { qb ->
-            qb.path(path)
-                .scoreMode(ChildScoreMode.Avg)
-                .innerHits(innerHits)
-                .query(QueryBuilders.matchAll { b -> b })
-        }
+        return QueryBuilders.nested { qb ->   qb.path(path)
+                                                .scoreMode(ChildScoreMode.Avg)
+                                                .innerHits(innerHits)
+                                                .query(QueryBuilders.matchAll { b -> b }) }
     }
 
     fun createTermsDslQuery(fieldName: String, filterValues: List<String>, andFlag: Boolean = true): co.elastic.clients.elasticsearch._types.query_dsl.Query {
@@ -120,7 +130,6 @@ object OsmtQueryHelper {
             ._toQuery()
     }
 
-    // TODO handle case sensitivity
     fun createSort(fieldName: String, sortOrder: SortOrder = SortOrder.Asc) : SortOptions {
         return SortOptions.Builder().field{f -> f.field(fieldName).order(sortOrder)}.build()
     }

@@ -1,29 +1,27 @@
 package edu.wgu.osmt.jobcode
 
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery
+import co.elastic.clients.elasticsearch._types.query_dsl.ExistsQuery
+import co.elastic.clients.elasticsearch._types.query_dsl.Query
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders
 import edu.wgu.osmt.config.INDEX_JOBCODE_DOC
+import edu.wgu.osmt.config.NAME_SORT_KEYWORD
 import edu.wgu.osmt.elasticsearch.OffsetPageable
-import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.convertToNativeQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper
 import org.elasticsearch.index.query.BoolQueryBuilder
 import org.elasticsearch.index.query.Operator
 import org.elasticsearch.index.query.QueryBuilders.*
-import org.elasticsearch.search.sort.SortBuilders
-import org.elasticsearch.search.sort.SortOrder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
-import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
 
-/**
- * This have been partially converted to use the ElasticSearch 8.7.X apis. Need to do full conversion to use
- * the v8.x ES Java API client, https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/8.10/searching.html
- */
 interface CustomJobCodeRepository {
     val elasticSearchTemplate: ElasticsearchTemplate
     fun typeAheadSearch(query: String): SearchHits<JobCode>
@@ -37,9 +35,7 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
     CustomJobCodeRepository {
     val log: Logger = LoggerFactory.getLogger(CustomJobCodeRepositoryImpl::class.java)
 
-    /**
-     * TODO upgrade to ElasticSearch v8.7.x api style; see KeywordEsRepo.kt & FindsAllByPublishStatus.kt
-     */
+    /*
     @Deprecated("Upgrade to ES v8.x queries", ReplaceWith(""), DeprecationLevel.WARNING )
     override fun typeAheadSearch(query: String): SearchHits<JobCode> {
         val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
@@ -50,18 +46,71 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
         val query = convertToNativeQuery(createOffsetPageable(query), null, nqb, "CustomJobCodeRepositoryImpl.typeAheadSearch()", log)
         return elasticSearchTemplate.search(query, JobCode::class.java)
     }
+     */
 
-    private fun createOffsetPageable(query: String): OffsetPageable {
-        val limitedPageable = if (query.isEmpty()) {
-            OffsetPageable(0, 10000, null)
+    override fun typeAheadSearch(searchStr: String): SearchHits<JobCode> {
+        var limit = if (searchStr.isEmpty()) 10000 else 20
+        var nativeQuery =
+                    OsmtQueryHelper.createNativeQuery(
+                        OffsetPageable(0, limit, null),
+                        null,
+                        multiPropertySearch(searchStr),
+                        "CustomJobCodeRepository.typeAheadSearch()",
+                        log,
+                        OsmtQueryHelper.createSort(NAME_SORT_KEYWORD) )
+        return elasticSearchTemplate.search(nativeQuery, JobCode::class.java)
+    }
+
+    private fun multiPropertySearch(searchStr: String): Query {
+        val disMaxQuery = createDisMaxQuery(searchStr)
+        val nameMustExistQuery = QueryBuilders.exists { qt: ExistsQuery.Builder -> qt.field(JobCode::name.name).boost(1.0f)}
+        return QueryBuilders.bool { builder: BoolQuery.Builder -> builder.must(disMaxQuery, nameMustExistQuery).boost(1.0f) }
+    }
+
+    private fun createDisMaxQuery(searchStr: String) : Query {
+        val isComplex = searchStr.contains("\"")
+        val queries = mutableListOf<Query>()
+
+        queries.addAll(createPrefixQueries(searchStr))
+        if(isComplex) {
+            queries.addAll(createComplexQueries(searchStr))
         } else {
-            OffsetPageable(0, 20, null)
+            queries.addAll(createSimpleQueries(searchStr))
         }
-        return limitedPageable
+        return OsmtQueryHelper.createDisMaxDslQuery(queries)
+    }
+
+    private fun createPrefixQueries(searchStr: String) : List<Query>{
+        return listOf(
+            OsmtQueryHelper.createPrefixDslQuery("${JobCode::code.name}.keyword", searchStr, 2.0f),
+            OsmtQueryHelper.createPrefixDslQuery("${JobCode::minorCode.name}.keyword", searchStr),
+            OsmtQueryHelper.createPrefixDslQuery("${JobCode::detailedCode.name}.keyword", searchStr),
+            OsmtQueryHelper.createPrefixDslQuery("${JobCode::majorCode.name}.keyword", searchStr),
+            OsmtQueryHelper.createPrefixDslQuery("${JobCode::broadCode.name}.keyword", searchStr)
+        )
+    }
+    private fun createSimpleQueries(searchStr: String) : List<Query>{
+        return listOf(
+            OsmtQueryHelper.createMatchPhrasePrefixDslQuery(JobCode::name.name, searchStr, 2.0f),
+            OsmtQueryHelper.createMatchPhrasePrefixDslQuery(JobCode::minor.name, searchStr),
+            OsmtQueryHelper.createMatchPhrasePrefixDslQuery(JobCode::detailed.name, searchStr),
+            OsmtQueryHelper.createMatchPhrasePrefixDslQuery(JobCode::major.name, searchStr),
+            OsmtQueryHelper.createMatchPhrasePrefixDslQuery(JobCode::broad.name, searchStr)
+        )
+    }
+
+    private fun createComplexQueries(searchStr: String) : List<Query>{
+        return listOf(
+            OsmtQueryHelper.createSimpleQueryDslQuery("${JobCode::name.name}.raw", searchStr, 2.0f),
+            OsmtQueryHelper.createSimpleQueryDslQuery("${JobCode::minor.name}.raw", searchStr, 1.0f, true, co.elastic.clients.elasticsearch._types.query_dsl.Operator.Or),
+            OsmtQueryHelper.createSimpleQueryDslQuery("${JobCode::detailed.name}.raw", searchStr, 1.0f),
+            OsmtQueryHelper.createSimpleQueryDslQuery("${JobCode::major.name}.raw", searchStr, 1.0f),
+            OsmtQueryHelper.createSimpleQueryDslQuery("${JobCode::broad.name}.raw", searchStr, 1.0f)
+        )
     }
 }
 
-@Deprecated("Upgrade to ES v8.x queries", ReplaceWith("JobCodeQueriesEx"), DeprecationLevel.WARNING )
+@Deprecated("Upgrade to ES v8.x queries", ReplaceWith("CustomJobCodeRepository.typeAheadSearch()"), DeprecationLevel.WARNING )
 object JobCodeQueries {
     //TODO Convert to ES v8.7.x apis and return the newer BoolQuery.Builder instance; see KeywordEsRep.kt
     fun multiPropertySearch(query: String, parentDocPath: String? = null): BoolQueryBuilder {
@@ -98,14 +147,9 @@ object JobCodeQueries {
         if (isComplex) {
             disjunctionQuery.innerQueries().addAll(
                 listOf(
-                    simpleQueryStringQuery(
-                        query
-                    ).field("${path}${JobCode::name.name}.raw").boost(2.0f).defaultOperator(Operator.AND),
-                    simpleQueryStringQuery(
-                        query
-                    ).field("${path}${JobCode::minor.name}.raw").analyzeWildcard(true),
-                    simpleQueryStringQuery(query).field("${path}${JobCode::detailed.name}.raw")
-                        .defaultOperator(Operator.AND),
+                    simpleQueryStringQuery(query).field("${path}${JobCode::name.name}.raw").boost(2.0f).defaultOperator(Operator.AND),
+                    simpleQueryStringQuery(query).field("${path}${JobCode::minor.name}.raw").analyzeWildcard(true),
+                    simpleQueryStringQuery(query).field("${path}${JobCode::detailed.name}.raw").defaultOperator(Operator.AND),
                     simpleQueryStringQuery(query).field("${path}${JobCode::major.name}.raw").defaultOperator(Operator.AND),
                     simpleQueryStringQuery(query).field("${path}${JobCode::broad.name}.raw").defaultOperator(Operator.AND)
                 )

@@ -26,10 +26,6 @@ interface CustomKeywordRepository {
     }
 }
 
-/**
- * This have been partially converted to use the ElasticSearch 8.7.X apis. For full conversion
- * replace typeAheadSearch() with TypeAheadSearchNu()
- */
 class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchTemplate) :
     CustomKeywordRepository {
     val log: Logger = LoggerFactory.getLogger(CustomJobCodeRepositoryImpl::class.java)
@@ -72,9 +68,6 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
     }
     */
 
-    /**
-     * Uses the latest ES 8.7.x Java Client API
-     */
     override fun typeAheadSearch(searchStr: String, type: KeywordTypeEnum): SearchHits<Keyword> {
         val pageable: OffsetPageable
         val criteria: Query

@@ -108,7 +108,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
         return uuids
     }
 
-    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("buildNestedQueriesNu"), DeprecationLevel.WARNING)
+    @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("CustomJobCodeRepository.typeAheadSearch()"), DeprecationLevel.WARNING)
     override fun occupationQueries(query: String): NestedQueryBuilder {
         val jobCodePath = RichSkillDoc::jobCodes.name
         return QueryBuilders.nestedQuery(
@@ -116,20 +116,6 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
             JobCodeQueries.multiPropertySearch(query, jobCodePath),
             ScoreMode.Max
         )
-    }
-
-    /**
-     * ElasticSearch v8.7.X version
-     */
-    fun occupationQueriesNu(query: String): Query? {
-        /*
-        val multiPropQuery = null
-        return co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders.nested {
-                                qb -> qb.path(RichSkillDoc::jobCodes.name)
-                                        .query(JobCodeQueries.multiPropertySearch(query, jobCodePath),)
-                                        .scoreMode( ChildScoreMode.Max)}
-        */
-        return null;
     }
 
     @Deprecated("ElasticSearch 7.X has been deprecated", ReplaceWith("buildNestedQueriesNu"), DeprecationLevel.WARNING)
@@ -363,7 +349,7 @@ class CustomRichSkillQueriesImpl @Autowired constructor(override val elasticSear
     }
 
     /**
-     * TODO Fix the NPE at the return.
+     * TODO Fix the NPE at the return. Hint: dump the query json and test it in PostMan.
     fun generateBoolQueriesFromApiSearchWithFiltersNu(filteredQuery: ApiFilteredSearch, publishStatus: Set<PublishStatus>) : Query {
         val values = publishStatus
             .stream()

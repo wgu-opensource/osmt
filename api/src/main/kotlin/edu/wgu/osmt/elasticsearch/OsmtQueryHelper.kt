@@ -77,7 +77,7 @@ object OsmtQueryHelper {
     fun createPrefixDslQuery(fieldName: String, searchStr: String, boostVal : Float? = 1.0f): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         return QueryBuilders.prefix { qb -> qb.field(fieldName).value(searchStr).boost(boostVal) }
     }
-    fun createSimpleQueryDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null, wildCardFlag: Boolean? = null, operatorVal : Operator? = Operator.And): co.elastic.clients.elasticsearch._types.query_dsl.Query {
+    fun createSimpleQueryDslQuery(fieldName: String, searchStr: String, boostVal : Float? = null, wildCardFlag: Boolean? = false, operatorVal : Operator? = Operator.And): co.elastic.clients.elasticsearch._types.query_dsl.Query {
         return QueryBuilders.simpleQueryString { qb ->
                              qb.fields(fieldName)
                                .query(searchStr)

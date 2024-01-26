@@ -302,7 +302,7 @@ class SearchController @Autowired constructor(
     ): HttpEntity<List<ApiNamedReference>> {
         val keywordType = KeywordTypeEnum.forApiValue(type) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         val searchResults = keywordEsRepo.typeAheadSearch(query, keywordType)
-        
+
         return ResponseEntity.status(200).body(searchResults.map { ApiNamedReference.fromKeyword(it.content) }.toList())
     }
     

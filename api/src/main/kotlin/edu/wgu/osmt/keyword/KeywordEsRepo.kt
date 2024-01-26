@@ -1,22 +1,24 @@
 package edu.wgu.osmt.keyword
 
+import co.elastic.clients.elasticsearch._types.query_dsl.*
 import edu.wgu.osmt.config.INDEX_KEYWORD_DOC
-import edu.wgu.osmt.config.SORT_INSENSITIVE
+import edu.wgu.osmt.config.VALUE_SORT_INSENSITIVE
 import edu.wgu.osmt.elasticsearch.OffsetPageable
-import org.elasticsearch.index.query.QueryBuilders
-import org.elasticsearch.search.sort.SortBuilders
-import org.elasticsearch.search.sort.SortOrder
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.createNativeQuery
+import edu.wgu.osmt.elasticsearch.OsmtQueryHelper.createSort
+import edu.wgu.osmt.jobcode.CustomJobCodeRepositoryImpl
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate
 import org.springframework.data.elasticsearch.core.SearchHits
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
 
 interface CustomKeywordRepository {
-    val elasticSearchTemplate: ElasticsearchRestTemplate
+    val elasticSearchTemplate: ElasticsearchTemplate
     fun typeAheadSearch(query: String, type: KeywordTypeEnum): SearchHits<Keyword>
 
     fun deleteIndex() {
@@ -24,44 +26,40 @@ interface CustomKeywordRepository {
     }
 }
 
-class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchRestTemplate) :
+class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSearchTemplate: ElasticsearchTemplate) :
     CustomKeywordRepository {
-    override fun typeAheadSearch(query: String, type: KeywordTypeEnum): SearchHits<Keyword> {
-        val limitedPageable: OffsetPageable
-        val bq = QueryBuilders.boolQuery()
-        val nsq: NativeSearchQueryBuilder
+    val log: Logger = LoggerFactory.getLogger(CustomJobCodeRepositoryImpl::class.java)
 
-        if(query.isEmpty()){ //retrieve all
-            limitedPageable = OffsetPageable(0, 10000, null)
-            nsq = NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(bq)
-                .withSort(SortBuilders.fieldSort("${Keyword::value.name}$SORT_INSENSITIVE").order(SortOrder.ASC))
-            bq
-                .must(QueryBuilders.termQuery(Keyword::type.name, type.name))
-                .should(
-                    QueryBuilders.matchAllQuery()
-                )
-        }
-        else {
-            limitedPageable  = OffsetPageable(0, 20, null)
-            nsq = NativeSearchQueryBuilder().withPageable(limitedPageable).withQuery(bq)
-                .withSort(SortBuilders.fieldSort("${Keyword::value.name}$SORT_INSENSITIVE").order(SortOrder.ASC))
-            bq
-                .must(QueryBuilders.termQuery(Keyword::type.name, type.name))
-                .should(
-                    QueryBuilders.matchBoolPrefixQuery(
-                        Keyword::value.name,
-                        query
-                    )
-                )
-                .should(
-                    QueryBuilders.matchPhraseQuery(
-                        Keyword::value.name,
-                        query
-                    ).boost(5f)
-                ).minimumShouldMatch(1)
+    override fun typeAheadSearch(searchStr: String, type: KeywordTypeEnum): SearchHits<Keyword> {
+        val pageable: OffsetPageable
+        val criteria: Query
+
+        if (searchStr.isEmpty()) {
+            pageable = OffsetPageable(0, 10000, null)
+            criteria = searchAll(type)
+        } else {
+            pageable = OffsetPageable(0, 20, null)
+            criteria = searchSpecific(searchStr, type)
         }
 
-        return elasticSearchTemplate.search(nsq.build(), Keyword::class.java)
+        var nativeQuery = createNativeQuery(pageable, null, criteria, "CustomKeywordRepositoryImpl.typeAheadSearch()", log, createSort(VALUE_SORT_INSENSITIVE))
+        return elasticSearchTemplate.search(nativeQuery, Keyword::class.java)
+    }
+
+    fun searchAll(type: KeywordTypeEnum): Query {
+        return QueryBuilders.bool { builder: BoolQuery.Builder ->
+                        builder
+                            .must(QueryBuilders.term {   qt: TermQuery.Builder -> qt.field(Keyword::type.name).value(type.name) } )
+                            .should(QueryBuilders.matchAll { q : MatchAllQuery.Builder -> q } ) }
+    }
+
+    fun searchSpecific(searchStr: String, type: KeywordTypeEnum): Query {
+        return QueryBuilders.bool { builder: BoolQuery.Builder ->
+                        builder
+                            .must(QueryBuilders.term {   qt: TermQuery.Builder -> qt.field(Keyword::type.name).value(type.name) } )
+                            .should(QueryBuilders.matchBoolPrefix { q : MatchBoolPrefixQuery.Builder -> q.field(Keyword::value.name).query(searchStr)} )
+                            .should(QueryBuilders.matchPhrase { q : MatchPhraseQuery.Builder -> q.field(Keyword::value.name).query(searchStr)} )
+                            .minimumShouldMatch("1") }
     }
 }
 

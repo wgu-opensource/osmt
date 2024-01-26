@@ -3,14 +3,7 @@ package edu.wgu.osmt.collection
 import edu.wgu.osmt.HasAllPaginated
 import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.GeneralApiException
-import edu.wgu.osmt.api.model.ApiCollection
-import edu.wgu.osmt.api.model.ApiCollectionUpdate
-import edu.wgu.osmt.api.model.ApiCollectionV2
-import edu.wgu.osmt.api.model.ApiSearch
-import edu.wgu.osmt.api.model.ApiSearchV2
-import edu.wgu.osmt.api.model.ApiSkillListUpdate
-import edu.wgu.osmt.api.model.ApiStringListUpdate
-import edu.wgu.osmt.api.model.CollectionSortEnum
+import edu.wgu.osmt.api.model.*
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditLogSortEnum
@@ -20,34 +13,18 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.elasticsearch.OffsetPageable
 import edu.wgu.osmt.richskill.RichSkillRepository
 import edu.wgu.osmt.security.OAuthHelper
-import edu.wgu.osmt.task.AppliesToType
-import edu.wgu.osmt.task.CsvTask
-import edu.wgu.osmt.task.CsvTaskV2
-import edu.wgu.osmt.task.PublishTask
-import edu.wgu.osmt.task.PublishTaskV2
-import edu.wgu.osmt.task.RemoveCollectionSkillsTask
-import edu.wgu.osmt.task.Task
-import edu.wgu.osmt.task.TaskMessageService
-import edu.wgu.osmt.task.TaskResult
-import edu.wgu.osmt.task.UpdateCollectionSkillsTask
-import edu.wgu.osmt.task.XlsxTask
+import edu.wgu.osmt.task.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 
@@ -346,7 +323,7 @@ class CollectionController @Autowired constructor(
         @PathVariable uuid: String
     ): HttpEntity<List<AuditLog>> {
         val pageable = OffsetPageable(0, Int.MAX_VALUE, AuditLogSortEnum.forValueOrDefault(AuditLogSortEnum.DateDesc.apiValue).sort)
-        val collection = collectionRepository.findByUUID(uuid)
+        val collection = collectionRepository.findByUUID(uuid) ?: throw ResponseStatusException(NOT_FOUND, "Collection with id $uuid not ready or not found")
         val sizedIterable = auditLogRepository.findByTableAndId(CollectionTable.tableName, entityId = collection!!.id.value, offsetPageable = pageable)
         
         return ResponseEntity.status(200).body(sizedIterable.toList().map { it.toModel() })

@@ -17,8 +17,6 @@
 - [ ] Advanced Search Functions
 - [ ] Export RSD Library to CSV
 - [ ] Export RSD Library to Excel workbook (open in Excel)
-- [ ] View RSD Metadata Screen
-- [ ] Select and edit Metadata options from Menu
 
 ## Collections
 - [ ] Collections Present
@@ -58,7 +56,7 @@
 - [ ] Add RSDs to Workspace (from Main Library)
 - [ ] Add RSDs to Workspace (from search results)
 - [ ] Convert Workspace to a collection
-- [ ] Export Workspace
+- [ ] Download Workspace
 - [ ] Reset Workspace
 
 ## RSDs
@@ -75,3 +73,10 @@
 - [ ] Search for RSDs to add to a Collection and Select only a handful
 - [ ] Archive RSD from the main library page
 - [ ] Search and download/export RSDs without creating a collection
+
+## Advanced Search
+- [ ] RSD search one field ie Keyword: "Analysis" 
+- [ ] RSD search 2 fields ie Keyword: "Analysis", Category: "Business Ethics"
+- [ ] RSD search 3 fields ie Keyword: "Analysis", Category: "Business Ethics", Name: "Business"
+- [ ] Collection search one field ie Keyword: "Access Network"
+- [ ] Collection search 2 field ie Keyword: "Access Network", Name: "Miscellaneous"

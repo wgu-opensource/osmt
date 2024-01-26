@@ -105,9 +105,9 @@ You can follow these steps to apply this dataset:
 OSMT requires certain software and SDKs to build:
 * Docker >=17.06.0
   * Recommended 6 GB memory allocated to the Docker service. On Windows, Docker will possibly need more memory.
-* a Java 11 JDK (OpenJDK works fine)
+* a Java 17 JDK (OpenJDK works fine)
 * Maven 3.8.3 or higher
-* NodeJS v16.13.0 / npm 8.1.0 or higher (the LTS versions at the time of this writing)
+* NodeJS v18.18.2 / npm 9.8.1 or higher
   * NodeJS/npm are used for building client code; there are no runtime NodeJS/npm dependencies.
   * In the `ui` module, `frontend-maven-plugin` uses an embedded copy of Node v16.13.0 and npm 8.1.0.
   * Locally, a developer probably has their own versions of NodeJS and npm installed. They should be >= the versions given above.

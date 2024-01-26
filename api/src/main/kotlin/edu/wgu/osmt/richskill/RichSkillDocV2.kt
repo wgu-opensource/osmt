@@ -10,7 +10,7 @@ import edu.wgu.osmt.config.SEMICOLON
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import org.elasticsearch.core.Nullable
+import javax.annotation.Nullable
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.*
 import org.springframework.data.elasticsearch.annotations.FieldType.*

@@ -17,7 +17,7 @@
                 "elasticsearch": {
                   "cpu": 2048,
                   "desired_count": 1,
-                  "docker_tag": "7.17.4",
+                  "docker_tag": "8.11.3",
                   "docker_image": "docker.elastic.co/elasticsearch/elasticsearch",
                   "memory": 4096
                 }

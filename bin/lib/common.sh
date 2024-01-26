@@ -269,7 +269,7 @@ _validate_java_version() {
   echo
   echo_info "Checking Java..."
   # OSMT requires at least Java 11
-  local -i req_java_major=11
+  local -i req_java_major=17
   local det_java_version
   local -i det_java_major
 
@@ -321,10 +321,10 @@ _validate_osmt_dev_dependencies() {
   echo_info "Maven version: $(mvn --version)"
 
   echo
-  echo_info "OSMT development recommends NodeJS version v16.13.0 or greater. Maven uses an embedded copy of NodeJS v16.13.0 via frontend-maven-plugin."
+  echo_info "OSMT development recommends NodeJS version v18.18.2 or greater. Maven uses an embedded copy of NodeJS v18.18.2 via frontend-maven-plugin."
   echo_info "NodeJS version: $(node --version)"
   echo
-  echo_info "OSMT development recommends npm version 8.1.0 or greater. Maven uses an embedded copy of npm 8.1.0 via frontend-maven-plugin."
+  echo_info "OSMT development recommends npm version 9.8.1 or greater. Maven uses an embedded copy of npm 9.8.1 via frontend-maven-plugin."
   echo_info "npm version: $(npm --version)"
   if [[ "${is_dependency_valid}" -ne 0 ]]; then
     echo

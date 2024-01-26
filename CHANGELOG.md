@@ -1,5 +1,5 @@
 # Announcing the release of OSMT 3.0.0
-June 20, 2023
+Jan 29, 2024
 
 ## Enhancements
 OSMT 3.0.0 brings these new feature enhancements
@@ -16,7 +16,10 @@ OSMT 3.0.0 brings these new feature enhancements
 
 ## Updates
 - Updated UI to Angular v16 (previously v12)
-- Updated other dependencies
+- Upgrade to JDK 17
+- Upgrade to spring-boot v3.1.2
+- Upgrade to elasticsearch-java library v8.7.1
+- Upgrade to ElasticSearch Server v8.11.3
 
 ## Developer/Integrator Enhancements
 - OpenAPI compliant API specification

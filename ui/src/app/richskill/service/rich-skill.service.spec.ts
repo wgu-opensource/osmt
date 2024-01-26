@@ -159,7 +159,7 @@ describe("RichSkillService", () => {
 
     const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
     expect(req.request.method).toEqual("GET")
-    expect(req.request.headers.get("Accept")).toEqual("text/csv")
+    expect(req.request.headers.get("Accept")).toEqual("application/json")
     req.flush(testData)
   })
   it("getSkillCsvByUUID should fail", () => {

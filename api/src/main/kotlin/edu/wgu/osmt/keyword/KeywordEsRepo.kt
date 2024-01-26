@@ -30,44 +30,6 @@ class CustomKeywordRepositoryImpl @Autowired constructor(override val elasticSea
     CustomKeywordRepository {
     val log: Logger = LoggerFactory.getLogger(CustomJobCodeRepositoryImpl::class.java)
 
-    /*
-    @Deprecated("Upgrade to ES v8.x queries", ReplaceWith("typeAheadSearchNu"), DeprecationLevel.WARNING )
-    override fun typeAheadSearch(searchStr: String, type: KeywordTypeEnum): SearchHits<Keyword> {
-        val limitedPageable: OffsetPageable
-        val bq = QueryBuilders.boolQuery()
-        val nqb: NativeSearchQueryBuilder
-
-        if(searchStr.isEmpty()){ //retrieve all
-            limitedPageable = OffsetPageable(0, 10000, null)
-            nqb = NativeSearchQueryBuilder()
-                .withPageable(limitedPageable)
-                .withQuery(bq)
-                .withSort(SortBuilders.fieldSort("${Keyword::value.name}$SORT_INSENSITIVE").order(SortOrder.ASC))
-            bq
-                .must(QueryBuilders.termQuery(Keyword::type.name, type.name))
-                .should( QueryBuilders.matchAllQuery() )
-        }
-        else {
-            limitedPageable  = OffsetPageable(0, 20, null)
-            nqb = NativeSearchQueryBuilder()
-                .withPageable(limitedPageable)
-                .withQuery(bq)
-                .withSort(SortBuilders.fieldSort("${Keyword::value.name}$SORT_INSENSITIVE").order(SortOrder.ASC))
-            bq
-                .must(QueryBuilders.termQuery(Keyword::type.name, type.name))
-                .should(
-                    QueryBuilders.matchBoolPrefixQuery( Keyword::value.name, searchStr )
-                )
-                .should(
-                    QueryBuilders.matchPhraseQuery( Keyword::value.name, searchStr ).boost(5f)
-                ).minimumShouldMatch(1)
-        }
-
-        val query = convertToNativeQuery( limitedPageable, null, nqb, "CustomKeywordRepositoryImpl.typeAheadSearch()", log )
-        return elasticSearchTemplate.search(query, Keyword::class.java)
-    }
-    */
-
     override fun typeAheadSearch(searchStr: String, type: KeywordTypeEnum): SearchHits<Keyword> {
         val pageable: OffsetPageable
         val criteria: Query

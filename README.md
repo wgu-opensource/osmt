@@ -59,8 +59,8 @@ By default, OSMT is wired up for Okta as an OAuth2 provider. While you can chang
    ./osmt_cli.sh -s
    ```
 
-7. Shut down & removes the back-end MySQL/Redis/ElasticSearch dependencies.
-   * This stops & destroys the dev-stack.yml docker-compose stack.
+7. Shut down the back-end MySQL/Redis/ElasticSearch dependencies.
+   * This stops the dev-stack.yml docker-compose stack.
     ```
     ./osmt_cli.sh -e
     ```

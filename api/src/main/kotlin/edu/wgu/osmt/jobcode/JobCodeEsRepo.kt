@@ -35,19 +35,6 @@ class CustomJobCodeRepositoryImpl @Autowired constructor(override val elasticSea
     CustomJobCodeRepository {
     val log: Logger = LoggerFactory.getLogger(CustomJobCodeRepositoryImpl::class.java)
 
-    /*
-    @Deprecated("Upgrade to ES v8.x queries", ReplaceWith(""), DeprecationLevel.WARNING )
-    override fun typeAheadSearch(query: String): SearchHits<JobCode> {
-        val disjunctionQuery = JobCodeQueries.multiPropertySearch(query)
-        val nqb = NativeSearchQueryBuilder()
-                .withPageable(createOffsetPageable(query))
-                .withQuery(disjunctionQuery)
-                .withSort(SortBuilders.fieldSort("${JobCode::code.name}.keyword").order(SortOrder.ASC))
-        val query = convertToNativeQuery(createOffsetPageable(query), null, nqb, "CustomJobCodeRepositoryImpl.typeAheadSearch()", log)
-        return elasticSearchTemplate.search(query, JobCode::class.java)
-    }
-     */
-
     override fun typeAheadSearch(searchStr: String): SearchHits<JobCode> {
         var limit = if (searchStr.isEmpty()) 10000 else 20
         var nativeQuery =

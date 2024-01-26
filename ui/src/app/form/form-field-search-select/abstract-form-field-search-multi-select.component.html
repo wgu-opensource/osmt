@@ -73,6 +73,10 @@
               </span>
                 <span class="m-buttonText-x-text">{{labelFor(r)}}<span class="t-visuallyHidden">, </span></span>
               </button>
+              <!-- Save as new button if not perfect match -->
+              <button class="m-buttonText" type="button" *ngIf="allowSaveNew && !isExactMatchFound()" (click)="selectSearchValue()" [disabled]="false">
+                <span class="m-buttonText-x-icon">Save new: {{ labelFor(searchControlResultValue) }} (Enter)</span>
+              </button>
             </div>
 
             <!-- Empty results -->
@@ -81,6 +85,9 @@
                 <p class="m-selectMenu-x-message">
                   <span class="m-selectMenu-x-messageText">No Results</span>
                 </p>
+                <button class="m-buttonText" type="button" *ngIf="allowSaveNew" (click)="selectSearchValue()" [disabled]="false">
+                  <span class="m-buttonText-x-icon">Save new: {{ labelFor(searchControlResultValue) }} (Enter)</span>
+                </button>
               </div>
             </ng-template>
           </div>

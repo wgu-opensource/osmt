@@ -57,6 +57,9 @@
               <button class="m-buttonText" *ngFor="let r of results" type="button" (click)="onSearchResultClicked(r)">
                 <span class="m-buttonText-x-text">{{labelFor(r)}}</span>
               </button>
+              <button class="m-buttonText" type="button" *ngIf="allowSaveNew && !isExactMatchFound()" (click)="selectSearchValue()" [disabled]="false">
+                <span class="m-buttonText-x-icon">Save new: {{ labelFor(searchControlResultValue) }} (Enter)</span>
+              </button>
             </div>
 
             <!-- Empty results -->
@@ -65,6 +68,9 @@
                 <p class="m-selectMenu-x-message">
                   <span class="m-selectMenu-x-messageText">No Results</span>
                 </p>
+                <button class="m-buttonText" type="button" *ngIf="allowSaveNew" (click)="selectSearchValue()" [disabled]="false">
+                  <span class="m-buttonText-x-icon">Save new: {{ labelFor(searchControlResultValue) }} (Enter)</span>
+                </button>
               </div>
             </ng-template>
           </div>

@@ -1,16 +1,3 @@
-###########################
-## TEMPORARY BUILD IMAGE ##
-###########################
-FROM wguopensource/osmt-build:latest as build
-
-# Copy in source code.
-USER ${USER}
-COPY --chown=${USER}:${USER} ./ ${BASE_DIR}/build/
-WORKDIR ${BASE_DIR}/build
-
-# The dockerfile-build Maven profile excludes certain api integration tests that require access to the Docker service.
-RUN mvn clean install -P dockerfile-build
-
 ######################
 ## SPRING APP IMAGE ##
 ######################
@@ -19,7 +6,9 @@ FROM wguopensource/osmt-base:latest
 ARG MVN_POM_VERSION
 
 COPY --chown=${USER}:${USER} ./import ${BASE_DIR}/import/
-COPY --from=build --chown=${USER}:${USER} ${BASE_DIR}/build/api/target/osmt-api-${MVN_POM_VERSION}.jar ${BASE_DIR}/bin/osmt.jar
+RUN curl --output ${BASE_DIR}/bin/osmt.jar https://repo1.maven.org/maven2/edu/wgu/osmt/osmt-api/${MVN_POM_VERSION}/osmt-api-${MVN_POM_VERSION}.jar
+RUN chown ${USER}:${USER} ${BASE_DIR}/bin/osmt.jar
+
 
 ADD ./docker/ /${BASE_DIR}/
 

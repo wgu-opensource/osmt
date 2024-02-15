@@ -144,3 +144,4 @@ If changes are made to @Document annotated classes, the indexes need to be delet
     ``` 
     Where `host` and `port` represent the Elasticsearch server you are targeting, e.g. `localhost:9200` 
 * Run the reindex command from above to generate the new mappings and documents
+

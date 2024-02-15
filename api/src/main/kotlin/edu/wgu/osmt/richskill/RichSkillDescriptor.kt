@@ -1,6 +1,10 @@
 package edu.wgu.osmt.richskill
 
-import edu.wgu.osmt.auditlog.*
+import edu.wgu.osmt.api.model.ApiAlignment
+import edu.wgu.osmt.api.model.ApiNamedReference
+import edu.wgu.osmt.auditlog.Change
+import edu.wgu.osmt.auditlog.Comparison
+import edu.wgu.osmt.auditlog.DELIMITER
 import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionSkills
@@ -8,34 +12,36 @@ import edu.wgu.osmt.db.*
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.Keyword
+import edu.wgu.osmt.keyword.KeywordCount
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.nullIfEmpty
-import org.valiktor.functions.isEqualTo
-import org.valiktor.functions.validate
-import org.valiktor.validate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
 import kotlin.reflect.KProperty1
 
-data class RichSkillDescriptor(
-    override val id: Long?,
-    override val creationDate: LocalDateTime,
-    override val updateDate: LocalDateTime,
-    val uuid: String,
-    val name: String,
-    val statement: String,
-    val jobCodes: List<JobCode> = listOf(),
-    val keywords: List<Keyword> = listOf(),
-    val category: Keyword? = null,
-    val author: Keyword? = null,
-    override val archiveDate: LocalDateTime? = null,
-    override val publishDate: LocalDateTime? = null,
-    val collections: List<Collection> = listOf()
+open class RichSkillDescriptor(
+        override val id: Long?,
+        override val creationDate: LocalDateTime,
+        override val updateDate: LocalDateTime,
+        open val uuid: String,
+        open val name: String,
+        open val statement: String,
+        open val jobCodes: List<JobCode> = listOf(),
+        open val keywords: List<Keyword> = listOf(),
+        override val archiveDate: LocalDateTime? = null,
+        override val publishDate: LocalDateTime? = null,
+        open val collections: List<Collection> = listOf()
 ) : DatabaseData, HasUpdateDate, PublishStatusDetails {
 
     // Keyword collections
+    val authors: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Author }
+
+    val categories: List<Keyword>
+        get() = this.keywords.filter { it.type == KeywordTypeEnum.Category }
+
     val certifications: List<Keyword>
         get() = this.keywords.filter { it.type == KeywordTypeEnum.Certification }
 
@@ -65,6 +71,53 @@ data class RichSkillDescriptor(
                 updateDate = now
             )
         }
+
+        fun getKeywordsFromSkills(skills: Iterable<RichSkillDescriptor>): Map<KeywordTypeEnum, List<KeywordCount>> {
+            val alignments = skills.flatMap { it.alignments }
+                .map { ApiAlignment.fromKeyword(it) }
+                .sortedBy{ it.id }
+
+            val authors = skills.flatMap { it.authors }
+                .mapNotNull { it.value }
+                .sortedBy{ it }
+
+            val categories = skills.flatMap { it.categories }
+                .mapNotNull { it.value }
+                .sortedBy { it }
+
+            val certifications = skills.flatMap { it.certifications }
+                .map { ApiNamedReference.fromKeyword(it) }
+                .sortedBy { it.name }
+
+            val employers = skills.flatMap { it.employers }
+                .map { ApiNamedReference.fromKeyword(it) }
+                .sortedBy { it.name }
+
+            val keywords = skills.flatMap { it.searchingKeywords }
+                .mapNotNull { it.value }
+                .sortedBy { it }
+
+            val standards = skills.flatMap { it.standards }
+                .map { ApiAlignment.fromKeyword(it) }
+                .sortedBy { it.id }
+
+            return mapOf(
+                KeywordTypeEnum.Alignment to
+                    alignments.distinct().map { k ->  KeywordCount(k, alignments.count { it == k }) },
+                KeywordTypeEnum.Author to
+                    authors.distinct().map { k ->  KeywordCount(k, authors.count { it == k }) },
+                KeywordTypeEnum.Category to
+                    categories.distinct().map { k ->  KeywordCount(k, categories.count { it == k }) },
+                KeywordTypeEnum.Certification to
+                    certifications.distinct().map { k ->  KeywordCount(k, certifications.count { it == k }) },
+                KeywordTypeEnum.Employer to
+                    employers.distinct().map { k ->  KeywordCount(k, employers.count { it == k }) },
+                KeywordTypeEnum.Keyword to
+                    keywords.distinct().map { k ->  KeywordCount(k, keywords.count { it == k }) },
+                KeywordTypeEnum.Standard to
+                    standards.distinct().map { k ->  KeywordCount(k, standards.count { it == k }) },
+            )
+        }
     }
 }
 
@@ -76,8 +129,8 @@ fun RichSkillDescriptor.diff(old: RichSkillDescriptor?): List<Change> {
     val comparisons: List<Comparison<*>> = listOf(
         Comparison(RichSkillDescriptor::name.name, RichSkillDescriptorComparisons::compareName, old, new),
         Comparison(RichSkillDescriptor::statement.name, RichSkillDescriptorComparisons::compareStatement, old, new),
-        Comparison(RichSkillDescriptor::category.name, RichSkillDescriptorComparisons::compareCategory, old, new),
-        Comparison(RichSkillDescriptor::author.name, RichSkillDescriptorComparisons::compareAuthor, old, new),
+        Comparison(RichSkillDescriptor::categories.name, RichSkillDescriptorComparisons::compareCategories, old, new),
+        Comparison(RichSkillDescriptor::authors.name, RichSkillDescriptorComparisons::compareAuthors, old, new),
         Comparison(
             RichSkillDescriptor::publishStatus.name,
             RichSkillDescriptorComparisons::comparePublishStatus,
@@ -110,28 +163,11 @@ data class RsdUpdateObject(
     override val id: Long? = null,
     val name: String? = null,
     val statement: String? = null,
-    val author: NullableFieldUpdate<KeywordDao>? = null,
-    val category: NullableFieldUpdate<KeywordDao>? = null,
     val keywords: ListFieldUpdate<KeywordDao>? = null,
     val jobCodes: ListFieldUpdate<JobCodeDao>? = null,
     val collections: ListFieldUpdate<CollectionDao>? = null,
     override val publishStatus: PublishStatus? = null
 ) : UpdateObject<RichSkillDescriptorDao>, HasPublishStatus<RichSkillDescriptorDao> {
-
-    init {
-        validate(this) {
-            validate(RsdUpdateObject::category).validate {
-                validate(NullableFieldUpdate<KeywordDao>::t).validate {
-                    validate(KeywordDao::type).isEqualTo(KeywordTypeEnum.Category)
-                }
-            }
-            validate(RsdUpdateObject::author).validate {
-                validate(NullableFieldUpdate<KeywordDao>::t).validate {
-                    validate(KeywordDao::type).isEqualTo(KeywordTypeEnum.Author)
-                }
-            }
-        }
-    }
 
     override fun applyToDao(dao: RichSkillDescriptorDao): Unit {
         dao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
@@ -139,20 +175,6 @@ data class RsdUpdateObject(
         applyPublishStatus(dao)
         name?.let { dao.name = it }
         statement?.let { dao.statement = it }
-        category?.let {
-            if (it.t != null) {
-                dao.category = it.t
-            } else {
-                dao.category = null
-            }
-        }
-        author?.let {
-            if (it.t != null) {
-                dao.author = it.t
-            } else {
-                dao.author = null
-            }
-        }
         applyKeywords()
         applyJobCodes()
         applyCollections()
@@ -215,12 +237,12 @@ object RichSkillDescriptorComparisons {
         return r.statement
     }
 
-    fun compareCategory(r: RichSkillDescriptor): String? {
-        return r.category?.value
+    fun compareCategories(receiver: RichSkillDescriptor): String? {
+        return keywordsCompare(receiver, RichSkillDescriptor::categories)
     }
 
-    fun compareAuthor(r: RichSkillDescriptor): String? {
-        return r.author?.value
+    fun compareAuthors(receiver: RichSkillDescriptor): String? {
+        return keywordsCompare(receiver, RichSkillDescriptor::authors)
     }
 
     fun comparePublishStatus(r: RichSkillDescriptor): String {

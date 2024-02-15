@@ -1,0 +1,58 @@
+[
+    {
+        "creationDate": "2023-03-30T13:03:47.552384",
+        "operationType": "Update",
+        "user": "OSMT Developer",
+        "changedFields": [
+            {
+                "fieldName": "name",
+                "old": "I.T Network",
+                "new": "IT Network"
+            },
+            {
+                "fieldName": "description",
+                "old": "Network in I.T",
+                "new": "Computer Networking in IT"
+            }
+        ]
+    },
+    {
+        "creationDate": "2023-03-30T13:00:49.721145",
+        "operationType": "PublishStatusChange",
+        "user": "OSMT Developer",
+        "changedFields": [
+            {
+                "fieldName": "publishStatus",
+                "old": "Draft",
+                "new": "Published"
+            }
+        ]
+    },
+    {
+        "creationDate": "2023-02-28T00:03:27.059205",
+        "operationType": "Insert",
+        "user": "OSMT Developer",
+        "changedFields": [
+            {
+                "fieldName": "name",
+                "old": null,
+                "new": "I.T Network"
+            },
+            {
+                "fieldName": "description",
+                "old": null,
+                "new": "Network in I.T"
+            },
+            {
+                "fieldName": "author",
+                "old": null,
+                "new": "OSMT Developer"
+            },
+            {
+                "fieldName": "publishStatus",
+                "old": null,
+                "new": "Draft"
+            }
+        ]
+    }
+]

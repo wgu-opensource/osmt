@@ -24,8 +24,35 @@
 
   </div>
 
+  <div class="l-container l-container-mobile">
+    <!--{{render '@l-submit&#45;&#45;with-twomain'}}-->
+    <div *ngIf="!isSuccessStep()" class="l-submit">
+      <button class="m-button" [attr.disabled]="!isStepValid() ? '' : null" (click)="handleClickNext()">
+        <span class="m-button-x-text">{{nextButtonLabel}}</span>
+      </button>
+      <button class="m-button m-button-tertiary" (click)="handleClickCancel()">
+        <span class="m-button-x-text">{{cancelButtonLabel}}</span>
+      </button>
+    </div>
+
+    <div *ngIf="isSuccessStep()" class="l-submit">
+      <button class="m-button" (click)="resetState()">
+        <span class="m-button-x-text">Import More RSD<span class="t-type-lowercase">s</span></span>
+      </button>
+      <button class="m-button" (click)="getBatchImportAction()"  *ngIf="target && validImportSkillsCount">
+        <span class="m-button-x-text">{{getImportOptionButtonLabel()}} </span>
+      </button>
+      <button class="m-button" routerLink="/skills">
+        <span class="m-button-x-text">View RSD Library</span>
+      </button>
+    </div>
+    <div *ngIf="isMappingStep()" class="l-container l-container-mobileMedium t-margin-medium t-margin-bottom">
+      <app-batch-import-destination-select (mappingChanged)="updateTarget($event)"></app-batch-import-destination-select>
+    </div>
+  </div>
+
   <app-blocking-loader [observables]="[stepLoaded]">
-  <div class="t-margin-medium t-margin-bottom">
+  <div class="t-margin-medium t-import-margin-bottom">
     <div *ngIf="!(isUploadStep() || isSuccessStep())" class="l-container l-container-mobile t-margin-medium t-margin-bottom">
       <!--{{render '@m-fileupload'}}-->
       <div class="m-fileUpload">
@@ -114,7 +141,7 @@
         <app-accordian closedLabel="Property Definitions" openLabel="Property Definitions">
           <div class="m-skillBackground l-inset t-margin-small t-margin-top">
             <p><strong>RSD Name (required):</strong> The name of the rich skill descriptor — for example, Policies and Procedures.</p>
-            <p><strong>Author:</strong> The individual or organization primarily responsible for the content of this RSD. Note: Author may not appear in the list of mapped fields, depending on your organization's settings.</p>
+            <p><strong>Authors:</strong> The individuals or organizations primarily responsible for the content of this RSD. Note: Authors may not appear in the list of mapped fields, depending on your organization's settings.</p>
             <p><strong>Skill Statement (required):</strong> A description of the applied capabilities and/or behaviors of an individual for a given task, occupation, or need.</p>
             <p><strong>Category:</strong> An industry-recognized, general term that represents a broad group of related RSDs.</p>
             <p><strong>Keywords:</strong> Related terms that help users search for and find an RSD, separated by a semicolon.</p>
@@ -150,13 +177,6 @@
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
-          <app-checker
-            neutralMessage=""
-            searchingMessage="Checking for skill statement similarity …"
-            affirmativeMessage="No similar skill statements found in library"
-            [showAccordion]="false"
-            [searching]="searchingSimilarity"
-            [similarSkills]="similarSkills"></app-checker>
 
           <ng-template [ngIf]="similarSkillCount > 0">
             <p class="t-type-small t-margin-small">{{similarSkillCount}} RSDs contain skill statements that are very similar to those already in the library.</p>
@@ -165,7 +185,7 @@
 
         </div>
 
-        <app-import-preview-table [skills]="auditedSkills"></app-import-preview-table>
+        <app-import-preview-table [skills]="auditedSkills" [showChecker]="true"></app-import-preview-table>
       </div>
     </ng-template>
 
@@ -184,7 +204,8 @@
         </div>
       </div>
 
-      <app-import-preview-table [skills]="importedSkills"></app-import-preview-table>
+      <app-import-preview-table [skills]="importedSkills" [showChecker]="false">
+      </app-import-preview-table>
     </ng-template>
   </div>
   </app-blocking-loader>
@@ -203,6 +224,9 @@
     <div *ngIf="isSuccessStep()" class="l-submit">
       <button class="m-button" (click)="resetState()">
         <span class="m-button-x-text">Import More RSD<span class="t-type-lowercase">s</span></span>
+      </button>
+      <button class="m-button" (click)="getBatchImportAction()"  *ngIf="target && validImportSkillsCount">
+        <span class="m-button-x-text">{{getImportOptionButtonLabel()}} </span>
       </button>
       <button class="m-button" routerLink="/skills">
         <span class="m-button-x-text">View RSD Library</span>

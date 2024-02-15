@@ -1,0 +1,13 @@
+{
+  "name": "osmt-tests",
+  "version": "1.0.0",
+  "description": "OSMT Tests Package",
+  "type": "commonjs",
+  "devDependencies": {
+    "newman": "^6.1.0",
+    "glob": "^10.2.2",
+    "openapi-to-postmanv2": "^4.11.0",
+    "stream-json": "^1.7.5"
+  },
+  "license": "ISC"
+}

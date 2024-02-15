@@ -26,6 +26,12 @@
 
     <app-filter-controls
       [selectedFilters]="selectedFilters"
+      [keywords]="keywords"
+      [currentSize]="size"
+      (changeValue)="sizeChange($event)"
+      [isSizePaginationVisible]="isSizePaginationVisible"
+      (keywordsChanged)="keywordsChange($event)"
+      [showAdvancedFilteredSearch]="showAdvancedFilteredSearch"
       (filtersChanged)="handleFiltersChanged($event)"
     ></app-filter-controls>
 

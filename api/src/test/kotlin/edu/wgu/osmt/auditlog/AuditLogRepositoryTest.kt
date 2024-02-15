@@ -14,7 +14,11 @@ import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCodeRepository
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.richskill.*
+import edu.wgu.osmt.richskill.RichSkillDescriptor
+import edu.wgu.osmt.richskill.RichSkillDescriptorDao
+import edu.wgu.osmt.richskill.RichSkillDescriptorTable
+import edu.wgu.osmt.richskill.RichSkillRepository
+import edu.wgu.osmt.richskill.RsdUpdateObject
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.SizedIterable
 import org.junit.jupiter.api.Test
@@ -57,7 +61,7 @@ class AuditLogRepositoryTest @Autowired constructor(
 
     @Test
     fun `generates an audit log on collection creation`() {
-        val collectionDao = collectionRepository.create("test collection", testUser)
+        val collectionDao = collectionRepository.create("test collection", testUser, testEmail)
         val auditLog = collectionDao?.id?.value?.let {
             auditLogRepository.findByTableAndId(CollectionTable.tableName, it)
         }?.first()
@@ -87,7 +91,7 @@ class AuditLogRepositoryTest @Autowired constructor(
         val initialCollectionUpdate =
             CollectionUpdateObject(name = "test collection", skills = ListFieldUpdate(add = listOf(initialSkill!!)))
 
-        val collectionDao = collectionRepository.create(initialCollectionUpdate, testUser)
+        val collectionDao = collectionRepository.create(initialCollectionUpdate, testUser, testEmail)
         val newAuthorDao = keywordRepository.create(KeywordTypeEnum.Author, updatedAuthorName)
 
         val collectionUpdateObject = CollectionUpdateObject(
@@ -164,13 +168,13 @@ class AuditLogRepositoryTest @Autowired constructor(
         val initialStatement = "test statement"
         val skill =
             richSkillRepository.create(RsdUpdateObject(name = initialSkillName, statement = initialStatement), testUser)
-        val authorDao = keywordRepository.getDefaultAuthor()
-        val categoryDao = keywordRepository.create(KeywordTypeEnum.Category, "Test Category")
-
+        val authorDaos = listOf(keywordRepository.getDefaultAuthor())
+        val categoryDaos = TestObjectHelpers.keywordsGenerator(2, KeywordTypeEnum.Category)
+            .mapNotNull { keywordRepository.create(it.type, it.value) }
         val keywordDaos = TestObjectHelpers.keywordsGenerator(10, KeywordTypeEnum.Keyword)
             .mapNotNull { keywordRepository.create(it.type, it.value) }
         val jobCodeDaos = listOf(jobCodeRepository.create("11-1170"))
-        val collectionDaos = listOf(collectionRepository.create("test collection", testUser)!!)
+        val collectionDaos = listOf(collectionRepository.create("test collection", testUser, testEmail)!!)
 
         val newName = "updated skill"
         val newStatement = "new statement"
@@ -178,9 +182,7 @@ class AuditLogRepositoryTest @Autowired constructor(
             id = skill!!.id.value,
             name = newName,
             statement = newStatement,
-            author = NullableFieldUpdate(authorDao),
-            category = NullableFieldUpdate(categoryDao),
-            keywords = ListFieldUpdate(add = keywordDaos),
+            keywords = ListFieldUpdate(add = (keywordDaos + authorDaos + categoryDaos)),
             jobCodes = ListFieldUpdate(add = jobCodeDaos),
             collections = ListFieldUpdate(add = collectionDaos),
             publishStatus = PublishStatus.Published
@@ -189,9 +191,7 @@ class AuditLogRepositoryTest @Autowired constructor(
 
         val secondUpdate = RsdUpdateObject(
             id = skill.id.value,
-            author = NullableFieldUpdate(null),
-            category = NullableFieldUpdate(null),
-            keywords = ListFieldUpdate(remove = keywordDaos),
+            keywords = ListFieldUpdate(remove = (keywordDaos + authorDaos + categoryDaos)),
             jobCodes = ListFieldUpdate(remove = jobCodeDaos),
             collections = ListFieldUpdate(remove = collectionDaos)
         )
@@ -224,19 +224,19 @@ class AuditLogRepositoryTest @Autowired constructor(
             )
         )
 
-        assertThat(firstUpdateLog.changedFields.findByFieldName(RichSkillDescriptor::author.name)).isEqualTo(
+        assertThat(firstUpdateLog.changedFields.findByFieldName(RichSkillDescriptor::authors.name)).isEqualTo(
             Change(
-                RichSkillDescriptor::author.name,
+                RichSkillDescriptor::authors.name,
                 null,
-                authorDao.value
+                authorDaos.map { it.value }.joinToString(DELIMITER)
             )
         )
 
-        assertThat(firstUpdateLog.changedFields.findByFieldName(RichSkillDescriptor::category.name)).isEqualTo(
+        assertThat(firstUpdateLog.changedFields.findByFieldName(RichSkillDescriptor::categories.name)).isEqualTo(
             Change(
-                RichSkillDescriptor::category.name,
+                RichSkillDescriptor::categories.name,
                 null,
-                categoryDao?.value
+                categoryDaos.map { it.value }.joinToString(DELIMITER)
             )
         )
 
@@ -264,18 +264,18 @@ class AuditLogRepositoryTest @Autowired constructor(
             )
         )
 
-        assertThat(secondUpdateLog.changedFields.findByFieldName(RichSkillDescriptor::author.name)).isEqualTo(
+        assertThat(secondUpdateLog.changedFields.findByFieldName(RichSkillDescriptor::authors.name)).isEqualTo(
             Change(
-                RichSkillDescriptor::author.name,
-                updatedResult?.author?.value,
+                RichSkillDescriptor::authors.name,
+                updatedResult?.authors?.map { it.value }?.joinToString(DELIMITER),
                 null
             )
         )
 
-        assertThat(secondUpdateLog.changedFields.findByFieldName(RichSkillDescriptor::category.name)).isEqualTo(
+        assertThat(secondUpdateLog.changedFields.findByFieldName(RichSkillDescriptor::categories.name)).isEqualTo(
             Change(
-                RichSkillDescriptor::category.name,
-                updatedResult?.category?.value,
+                RichSkillDescriptor::categories.name,
+                updatedResult?.categories?.map { it.value }?.joinToString(DELIMITER),
                 null
             )
         )
@@ -327,7 +327,7 @@ class AuditLogRepositoryTest @Autowired constructor(
             CollectionUpdateObject(name = initialCollectionName, skills = ListFieldUpdate(add = listOf(initialSkill!!)))
 
         // Act
-        val collectionDao = collectionRepository.create(initialCollectionUpdate, testUser)
+        val collectionDao = collectionRepository.create(initialCollectionUpdate, testUser, testEmail)
 
         val collectionUpdate = CollectionUpdateObject(id = collectionDao?.id?.value, name = updatedCollectionName)
         collectionRepository.update(collectionUpdate, testUser)

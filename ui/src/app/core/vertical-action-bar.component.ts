@@ -15,15 +15,11 @@ export class VerticalActionBarComponent {
   ) {
   }
 
-  get visibleActions(): TableActionDefinition[] {
-    return this.actions.filter(it => it.isVisible)
-  }
-
   get primaryActions(): TableActionDefinition[] {
-    return this.visibleActions.filter(it => it.primary)
+    return this.actions.filter(it => it.primary)
   }
 
   get secondaryActions(): TableActionDefinition[] {
-    return this.visibleActions.filter(it => !it.primary)
+    return this.actions.filter(it => !it.primary)
   }
 }

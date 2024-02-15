@@ -1,10 +1,10 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {Observable} from "rxjs";
 import {ApiSkillSummary} from "../ApiSkillSummary";
 
 @Component({
   selector: "app-checker",
-  templateUrl: "./checker.component.html"
+  templateUrl: "./checker.component.html",
+  styleUrls: ["./checker.scss"]
 })
 export class CheckerComponent implements OnInit {
 
@@ -14,9 +14,11 @@ export class CheckerComponent implements OnInit {
   @Input() similarSingleMessage = "Skill statement is very similar to one already in the library."
   @Input() affirmativeMessage = "Skill statement OK."
   @Input() similarSkills?: ApiSkillSummary[]
-  @Input() searching?: boolean
+  @Input() searching?  = false
 
   @Input() showAccordion = true
+  @Input() showExtraInformation = false
+  @Input() showInTable = false
 
 
 
@@ -31,10 +33,10 @@ export class CheckerComponent implements OnInit {
     return this.searching ?? false
   }
   get isAffirmative(): boolean {
-    return this.searching === false && this.similarSkills?.length === 0
+    return !this.searching && this.similarSkills?.length === 0
   }
   get hasMatches(): boolean {
-    return this.searching === false && (this.similarSkills?.length ?? 0) > 0
+    return !this.searching && (this.similarSkills?.length ?? 0) > 0
   }
   get hasSingleMatch(): boolean {
     return this.similarSkills?.length === 1

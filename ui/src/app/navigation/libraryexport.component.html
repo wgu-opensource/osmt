@@ -1,0 +1,13 @@
+<div class="dropup">
+  <button class="m-button" type="button" *ngIf="canExportLibrary">
+    <svg class="m-button-x-icon t-icon">
+      <use xlink:href="/assets/images/svg-defs.svg#icon-download"></use>
+    </svg>
+    <span class="m-button-x-text">Export RSD Library</span>
+  </button>
+  <app-drop-up-menu
+    class="dropup-content"
+    [ngClass]="{'dropup-content-visible': action?.isVisible}"
+    [action]="action">
+  </app-drop-up-menu>
+</div>

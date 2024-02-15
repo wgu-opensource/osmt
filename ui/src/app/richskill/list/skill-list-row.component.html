@@ -1,13 +1,13 @@
 <ng-template [ngIf]="!!skill">
 
   <th scope="row" id="{{id}}-header">
-    <div class="t-hidden-tabletMax">{{skill.category}}</div>
+    <div class="t-hidden-tabletMax">{{getFormattedCategories()}}</div>
 
     <div class="t-hidden-tabletMin">
-      <!--{{render '@m-inlineheading'}}-->
+      <!--{{render '@m-inline-heading'}}-->
       <div class="m-inlineHeading">
-        <h5 class="m-inlineHeading-x-heading">Category:</h5>
-        <p class="m-inlineHeading-x-text">{{skill.category}}</p>
+        <h5 class="m-inlineHeading-x-heading">Categories:</h5>
+        <p class="m-inlineHeading-x-text">{{getFormattedCategories()}}</p>
       </div>
     </div>
   </th>
@@ -45,7 +45,7 @@
 
   </td>
 
-  <td class="m-tableRow-x-actions">
+  <td *ngIf="showActions" class="m-tableRow-x-actions">
 
     <!-- Items must be grouped-->
     <div>

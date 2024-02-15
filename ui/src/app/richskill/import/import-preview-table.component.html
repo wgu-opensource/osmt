@@ -37,28 +37,46 @@
       </th>
 
       <td>
-        <div class="t-hidden-tabletMax">{{review.skill.category}}</div>
+        <div class="t-hidden-tabletMax">{{review.skill.categories?.add?.join("; ") ?? ""}}</div>
         <div class="t-hidden-tabletMin">
-          <!--{{render '@m-inlineheading'}}-->
+          <!--{{render '@m-inline-heading'}}-->
           <div class="m-inlineHeading">
-            <p class="m-inlineHeading-x-heading">Category:</p>
-            <p class="m-inlineHeading-x-text">{{review.skill.category}}</p>
+            <p class="m-inlineHeading-x-heading">Categories:</p>
+            <p class="m-inlineHeading-x-text">{{review.skill.categories?.add?.join("; ") ?? ""}}</p>
           </div>
         </div>
       </td>
 
       <td>
-        <p *ngIf="!review.nameMissing; else nameMissing" class="t-margin-extraSmall t-margin-bottom">{{review.skill.skillName}}</p>
-        <ng-template #nameMissing><app-inline-error message="RSD name required"></app-inline-error></ng-template>
+        <p *ngIf="!review.nameMissing; else nameMissing" class="t-margin-extraSmall t-margin-bottom">
+          {{review.skill.skillName}}
+        </p>
+        <ng-template #nameMissing><app-inline-error message="RSD name required">
+        </app-inline-error></ng-template>
 
-        <app-inline-error *ngIf="review.isWarning" message="Skill statement is very similar to one already in the library."></app-inline-error>
+        <!--app-inline-error *ngIf="review.isWarning" message="Skill statement is very similar to one already in the library.">
+        </app-inline-error-->
 
-        <p *ngIf="!review.statementMissing; else statementMissing" class="t-margin-small t-margin-bottom t-type-text3">{{review.skill.skillStatement}}</p>
-        <ng-template #statementMissing><app-inline-error message="Skill statement required"></app-inline-error></ng-template>
+        <p *ngIf="!review.statementMissing; else statementMissing" class="t-margin-small t-margin-bottom t-type-text3">
+          {{review.skill.skillStatement}}
+        </p>
+        <ng-template #statementMissing><app-inline-error message="Skill statement required">
+        </app-inline-error></ng-template>
 
-        <app-inline-heading *ngIf="review.skill.author" heading="Author:"><app-named-reference [ref]="review.skill.author"></app-named-reference></app-inline-heading>
+        <app-inline-heading *ngIf="review.skill.authors" heading="Authors:">
+          {{review.skill.authors.add?.join("; ")}}
+        </app-inline-heading>
 
-        <app-inline-heading *ngIf="review.skill.keywords" heading="Keywords:">{{review.skill.keywords.add?.join("; ")}}</app-inline-heading>
+        <app-inline-heading *ngIf="review.skill.keywords" heading="Keywords:">
+          {{review.skill.keywords.add?.join("; ")}}
+        </app-inline-heading>
+
+        <app-checker
+          *ngIf="showChecker"
+          showInTable="true"
+          [similarSkills]="review.similarities"
+          [showExtraInformation]="showExtraInformation">
+        </app-checker>
       </td>
 
     </tr>

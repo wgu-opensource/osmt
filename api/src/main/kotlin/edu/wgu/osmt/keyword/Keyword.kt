@@ -1,15 +1,26 @@
 package edu.wgu.osmt.keyword
 
-import edu.wgu.osmt.db.*
-import org.elasticsearch.core.Nullable
+import edu.wgu.osmt.config.INDEX_KEYWORD_DOC
+import edu.wgu.osmt.db.DatabaseData
+import edu.wgu.osmt.db.HasUpdateDate
+import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.db.TableWithUpdate
+import edu.wgu.osmt.db.UpdateObject
+import javax.annotation.Nullable
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.`java-time`.datetime
 import org.springframework.data.annotation.Id
-import org.springframework.data.elasticsearch.annotations.*
+import org.springframework.data.elasticsearch.annotations.DateFormat
+import org.springframework.data.elasticsearch.annotations.Document
+import org.springframework.data.elasticsearch.annotations.Field
+import org.springframework.data.elasticsearch.annotations.FieldType
+import org.springframework.data.elasticsearch.annotations.InnerField
+import org.springframework.data.elasticsearch.annotations.MultiField
+import org.springframework.data.elasticsearch.annotations.Setting
 import java.time.LocalDateTime
 
-@Document(indexName = "keyword", createIndex = true)
+@Document(indexName = INDEX_KEYWORD_DOC, createIndex = true)
 @Setting(settingPath = "/elasticsearch/settings.json")
 data class Keyword(
     @Id
@@ -31,7 +42,8 @@ data class Keyword(
         otherFields = [
             InnerField(suffix = "", type = FieldType.Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = FieldType.Text),
-            InnerField(suffix = "keyword", type = FieldType.Keyword)
+            InnerField(suffix = "keyword", type = FieldType.Keyword),
+            InnerField(suffix = "sort_insensitive", type = FieldType.Keyword, normalizer = "lowercase_normalizer")
         ]
     )
     val value: String? = null,
@@ -57,6 +69,11 @@ data class KeywordUpdateObj(
         framework?.let{dao.framework = it.t}
     }
 }
+
+data class KeywordCount(
+    val keyword: Any,
+    val count: Int
+)
 
 object KeywordTable : LongIdTable("Keyword"), TableWithUpdate<KeywordUpdateObj> {
     override val creationDate = datetime("creationDate")

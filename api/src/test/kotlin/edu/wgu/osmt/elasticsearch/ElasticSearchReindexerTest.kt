@@ -43,7 +43,7 @@ internal class ElasticSearchReindexerTest @Autowired constructor(
         // Arrange
         // This creates 1 skill, 3 collections, 17 keywords and 3 jobCodes
         richSkillRepository.createFromApi(
-            (1..1).toList().map { TestObjectHelpers.apiSkillUpdateGenerator() }, "testReindexAll"
+            (1..1).toList().map { TestObjectHelpers.apiSkillUpdateGenerator() }, "testReindexAll", "testReindexAll"
         )
 
         // Act
@@ -53,7 +53,7 @@ internal class ElasticSearchReindexerTest @Autowired constructor(
         // Each is called twice, one from the createFromApi, another one from the reindexAll.
         Mockito.verify(this.richSkillEsRepo, Mockito.times(2)).save(any())
         Mockito.verify(this.collectionEsRepo, Mockito.times(6)).save(any())
-        Mockito.verify(this.keywordEsRepo, Mockito.times(34)).save(any())
+        Mockito.verify(this.keywordEsRepo, Mockito.times(42)).save(any())
         Mockito.verify(this.jobCodeEsRepo, Mockito.times(6)).save(any())
 
     }

@@ -9,17 +9,15 @@ import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-librar
 import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
 import {AppConfig} from "./app.config"
 import {RichSkillFormComponent} from "./richskill/form/rich-skill-form.component"
-import {ReactiveFormsModule} from "@angular/forms"
-import {FormField} from "./form/form-field.component"
-import {FormFieldText} from "./form/form-field-text.component"
-import {FormFieldTextArea} from "./form/form-field-textarea.component"
+import {FormsModule, ReactiveFormsModule} from "@angular/forms"
 import {LoadingObservablesDirective} from "./loading/loading-observables.directive"
 import {LoadingComponent} from "./loading/loading.component"
-import {FormFieldSubmit} from "./form/form-field-submit.component"
 import {HeaderComponent} from "./navigation/header.component"
 import {FooterComponent} from "./navigation/footer.component"
 import {SkillCollectionsDisplayComponent} from "./richskill/form/skill-collections-display.component"
 import {ToastComponent} from "./toast/toast.component"
+import {PillComponent} from "./core/pill/pill.component";
+import {PillGroupComponent} from "./core/pill/group/pill-group.component";
 import {AuthService} from "./auth/auth-service"
 import {AuthGuard} from "./auth/auth.guard"
 import {CommoncontrolsComponent} from "./navigation/commoncontrols.component"
@@ -39,6 +37,8 @@ import {SkillTableComponent} from "./table/skills-library-table/skill-table.comp
 import {SkillListRowComponent} from "./richskill/list/skill-list-row.component"
 import {TableLabelComponent} from "./table/skills-library-table/table-label.component"
 import {LabelWithFilterComponent} from "./table/skills-library-table/label-with-filter.component"
+import {SelectLabelComponent} from "./table/label/select/select-label.component"
+import {SortLabelComponent} from "./table/label/sort/sort-label.component"
 import {AccordianComponent} from "./core/accordian.component"
 import {FilterControlsComponent} from "./table/filter-controls/filter-controls.component"
 import {FilterChoiceComponent} from "./table/filter-controls/filter-choice.component"
@@ -53,6 +53,12 @@ import {AdvancedSearchHorizontalActionBarComponent} from "./search/advanced-sear
 import {AdvancedSearchVerticalActionBarComponent} from "./search/advanced-search/action-bar/advanced-search-vertical-action-bar.component"
 import {AbstractAdvancedSearchActionBarComponent} from "./search/advanced-search/action-bar/abstract-advanced-search-action-bar.component"
 import {DotsMenuComponent} from "./table/skills-library-table/dots-menu.component"
+import {CategoryDetailComponent} from "./category/detail/category-detail.component"
+import {CategoryDetailCardComponent} from "./category/detail/card/category-detail-card.component"
+import {CategoryLibraryComponent} from "./category/library/category-library.component"
+import {CategoryListComponent} from "./category/list/category-list.component"
+import {CategoryTableComponent} from "./category/table/category-table.component"
+import {CategoryTableRowComponent} from "./category/table/row/category-table-row.component"
 import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component"
 import {CollectionTableComponent} from "./collection/collection-table.component"
 import {CollectionListRowComponent} from "./collection/collection-list-row.component"
@@ -78,25 +84,45 @@ import {PublishCollectionComponent} from "./collection/detail/publish-collection
 import {BlockingLoaderComponent} from "./core/blocking-loader.component"
 import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component"
 import {BatchImportComponent} from "./richskill/import/batch-import.component"
-import {FieldMappingSelectComponent, FieldMappingTableComponent} from "./richskill/import/field-mapping-table.component"
+import {
+  FieldMappingSelectComponent,
+  FieldMappingTableComponent,
+  BatchImportDestinationSelectComponent
+} from "./richskill/import/field-mapping-table.component"
 import {
   ImportPreviewTableComponent,
-  InlineErrorComponent,
-  InlineHeadingComponent,
   NamedReferenceComponent
 } from "./richskill/import/import-preview-table.component"
-import {FormFieldSearchSelectComponent} from "./form/form-field-search-select/single-select/form-field-search-select.component"
-import {FormFieldSearchMultiSelectComponent} from "./form/form-field-search-select/mulit-select/form-field-search-multi-select.component"
-import {FormFieldSearchSelectJobcodeComponent} from "./form/form-field-search-select/jobcode-select/form-field-search-select-jobcode.component"
 import {AuditLogComponent} from "./richskill/detail/audit-log.component"
 import {OccupationsCardSectionComponent} from "./richskill/detail/occupations-card-section/occupations-card-section.component"
 import {CheckerComponent} from "./richskill/form/checker.component"
 import {SystemMessageComponent} from "./core/system-message.component"
+import {LoginComponent} from "./auth/login.component"
 import {LogoutComponent} from "./auth/logout.component"
 import {NgIdleKeepaliveModule} from "@ng-idle/keepalive"
 import {LabelWithSelectComponent} from "./table/skills-library-table/label-with-select.component"
+import {LibraryExportComponent} from "./navigation/libraryexport.component"
+import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
+import {CollectionPipe} from "./pipes"
+import { SharedModule } from "@shared/shared.module"
+import { OsmtCoreModule } from "./core/osmt-core.module"
+import { ExportCollectionComponent } from "./export/export-collection.component"
+import { ExportRsdComponent } from "./export/export-rsd.component"
+import { OsmtFormModule } from "./form/osmt-form.module"
+import { ConvertToCollectionComponent } from "./my-workspace/convert-to-collection/convert-to-collection.component"
+import { SizePaginationComponent } from "./table/skills-library-table/size-pagination/size-pagination.component"
+import {OsmtTableModule} from "./table/osmt-table.module"
+import { getBaseApi } from "./api-versions"
+import { InlineHeadingComponent } from './richskill/import/inline-heading/inline-heading.component'
+import { InlineErrorComponent } from "./richskill/import/inline-error/inline-error.component"
+import { BatchImportCollectionComponent } from './collection/create-collection/batch-import-collection/batch-import-collection.component'
 
-export function initializeApp(appConfig: AppConfig): () => void {
+export function initializeApp(
+  appConfig: AppConfig,
+  authService: AuthService
+): () => void {
+  // AppConfig.settings is initialized lazily (on the next line), but authService must be initialized sooner.
+  authService.init()
   return () => appConfig.load()
 }
 
@@ -114,18 +140,18 @@ export function initializeApp(appConfig: AppConfig): () => void {
     ToastComponent,
     SystemMessageComponent,
     LogoutComponent,
+    LoginComponent,
     LoginSuccessComponent,
+    PillComponent,
+    PillGroupComponent,
 
     // Rich skill form
     RichSkillFormComponent,
-    FormField,
-    FormFieldSubmit,
-    FormFieldText,
-    FormFieldTextArea,
 
     // Rich skills
     RichSkillsLibraryComponent,
     SkillCollectionsDisplayComponent,
+    LibraryExportComponent,
 
     // Rich skill detail
     RichSkillPublicComponent,
@@ -145,6 +171,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CollectionsListComponent,
     CollectionSearchResultsComponent,
     PublishCollectionComponent,
+    ExportCollectionComponent,
+    ExportRsdComponent,
 
     DetailCardComponent,
     DetailCardSectionComponent,
@@ -158,6 +186,8 @@ export function initializeApp(appConfig: AppConfig): () => void {
     TableActionBarComponent,
     ActionBarItemComponent,
     LabelWithFilterComponent,
+    SelectLabelComponent,
+    SortLabelComponent,
     FilterControlsComponent,
     FilterChoiceComponent,
     PaginationComponent,
@@ -169,6 +199,12 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AbstractAdvancedSearchActionBarComponent,
     DotsMenuComponent,
     AbstractAdvancedSearchActionBarComponent,
+    CategoryDetailComponent,
+    CategoryDetailCardComponent,
+    CategoryLibraryComponent,
+    CategoryListComponent,
+    CategoryTableComponent,
+    CategoryTableRowComponent,
     CollectionFormComponent,
     AbstractCreateCollectionActionbarComponent,
     CreateCollectionActionBarHorizontalComponent,
@@ -186,18 +222,21 @@ export function initializeApp(appConfig: AppConfig): () => void {
     CollectionSkillSearchComponent,
     BatchImportComponent,
     FieldMappingTableComponent,
+    BatchImportDestinationSelectComponent,
     FieldMappingSelectComponent,
     ImportPreviewTableComponent,
     InlineHeadingComponent,
     NamedReferenceComponent,
     InlineErrorComponent,
-    FormFieldSearchSelectComponent,
-    FormFieldSearchMultiSelectComponent,
-    FormFieldSearchSelectJobcodeComponent,
     AuditLogComponent,
     OccupationsCardSectionComponent,
     CheckerComponent,
-    LabelWithSelectComponent
+    LabelWithSelectComponent,
+    MyWorkspaceComponent,
+    CollectionPipe,
+    ConvertToCollectionComponent,
+    SizePaginationComponent,
+    BatchImportCollectionComponent,
   ],
   imports: [
     NgIdleKeepaliveModule.forRoot(),
@@ -205,7 +244,12 @@ export function initializeApp(appConfig: AppConfig): () => void {
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    SharedModule,
+    OsmtCoreModule,
+    OsmtFormModule,
+    FormsModule,
+    OsmtTableModule
   ],
   providers: [
     EnvironmentService,
@@ -214,9 +258,16 @@ export function initializeApp(appConfig: AppConfig): () => void {
     FormDirtyGuard,
     AuthService,
     AuthGuard,
-    { provide: APP_INITIALIZER,
+    {
+      provide: APP_INITIALIZER,
       useFactory: initializeApp,
-      deps: [AppConfig], multi: true }
+      deps: [AppConfig, AuthService],
+      multi: true
+    },
+    {
+      provide: "BASE_API",
+      useFactory: () =>  getBaseApi(),
+    }
   ],
   bootstrap: [AppComponent]
 })

@@ -1,135 +1,170 @@
+<ng-container [ngSwitch]="template">
+  <ng-template [ngSwitchCase]="'default'">
 
-<ng-template [ngIf]="!showingMultipleConfirm" [ngIfElse]="multipleConfirm">
+    <div class="l-stickyBar">
 
-<div class="l-stickyBar">
+      <div class="l-stickySidebar l-container t-margin-medium t-margin-bottom">
 
-  <div class="l-stickySidebar l-container t-margin-medium t-margin-bottom">
-
-    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top" tabindex="0">
-      <app-collection-public-detail-card
-        *ngIf="collection"
-        [collection]="collection"
-        [showSkillCount]="false"
-      ></app-collection-public-detail-card>
-    </div>
-
-    <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
-      <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
-        <app-vertical-action-bar
-          [actions]="actionDefinitions()"
-          [data]="this.collection">
-        </app-vertical-action-bar>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="l-container">
-    <!--      {{render '@listheadingsearch'}}-->
-    <div class="t-margin-medium t-margin-bottom" *ngIf="totalCount > 0">
-      <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
-        <div class="m-text">
-          <svg aria-hidden="true" class="m-text-x-icon t-icon" (click)="clearSearch()"><use [attr.xlink:href]="searchIcon"></use></svg>
-          <input type="text" placeholder="Search RSDs in this collection" [formControl]="searchForm.controls.search">
+        <div class="l-stickySidebar-x-content t-padding-medium t-padding-top" tabindex="0">
+          <app-collection-public-detail-card
+            *ngIf="collection"
+            [collection]="collection"
+            [showSkillCount]="false"
+          ></app-collection-public-detail-card>
         </div>
 
-        <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
-          {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">RSDs</ng-template><ng-template #singular>RSD</ng-template> found in this collection based on
-          <ng-template [ngIf]="matchingQuery">
-            <span class="t-type-bodyLargeBold t-type-text1">{{matchingQuery[0]}}</span> and
-          </ng-template>
-          your filters.
-          <ng-template [ngIf]="totalCount > 0">
-            Viewing {{firstRecordNo}}-{{lastRecordNo}}.
-          </ng-template>
-        </p>
-      </form>
-    </div>
-
-    <app-filter-controls
-      *ngIf="totalCount > 0"
-      [selectedFilters]="selectedFilters"
-      (filtersChanged)="handleFiltersChanged($event)"
-    ></app-filter-controls>
-  </div>
-
-
-  <div class="l-container">
-    <ng-template [appLoadingObservables]="[resultsLoaded]">
-
-      <div class="t-margin-medium t-margin-bottom">
-        <p class="t-visuallyHidden">Select one or more RSDs in the table, or select all in the table heading, then use the action menu to publish, archive, unarchive, or add the selected RSDs to a collection. </p>
-        <app-skill-table
-          *ngIf="!emptyResults"
-          [items]="results.skills"
-          (rowSelected)="handleNewSelection($event)"
-          [currentSort]="columnSort"
-          (columnSorted)="handleHeaderColumnSort($event)"
-          [rowActions]="rowActions()"
-          (selectAllSelected)="handleSelectAll($event)"
-          [selectAllCount]="getSelectAllCount()"
-          [selectAllEnabled]="getSelectAllEnabled()"
-          (focusActionBar)="focusActionBar()"
-        ></app-skill-table>
-      </div>
-
-      <app-pagination
-        *ngIf="totalCount > 0"
-        [currentPage]="currentPageNo"
-        [totalPages]="totalPageCount"
-        (pageClicked)="handlePageClicked($event)"
-      ></app-pagination>
-    </ng-template>
-
-    <div *ngIf="collection">
-      <app-audit-log
-        [collectionUuid]="collection.uuid"
-        [collapseListener]="collapseAuditLog.asObservable()"
-        closedLabel="View Audit Log"
-        openLabel="Hide Audit Log"
-      >
-      </app-audit-log>
-    </div>
-  </div>
-
-  <div *ngIf="actionsVisible() && totalCount > 0" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
-    <div class="l-container l-container-tablet">
-      <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
-    </div>
-  </div>
-
-</div>
-</ng-template>
-
-<ng-template #multipleConfirm>
-  <div class="l-container t-padding-large t-padding-top">
-    <div class="t-margin-medium t-margin-bottom">
-      <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
-
-        <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Confirm that you want to remove {{selectedCount}} RSDs from this collection.</h2>
-
-        <app-accordian closedLabel="View RSDs" openLabel="Hide RSDs">
-          <div class="m-skillBackground l-inset t-margin-small t-margin-top">
-            <div class="m-content">
-              <ol>
-                <li *ngFor="let skill of selectedSkills">{{skill.skillName}}</li>
-              </ol>
-              <p *ngIf="selectAllChecked">and {{totalCount - selectedSkills.length}} more...</p>
-            </div>
+        <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
+          <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
+            <app-vertical-action-bar
+              [actions]="actionDefinitions()"
+              [data]="this.collection">
+            </app-vertical-action-bar>
           </div>
-        </app-accordian>
+        </div>
 
       </div>
-    </div>
 
-    <!--    {{render '@l-submit'}}-->
-    <div class="l-submit">
-      <button class="m-button m-button-tertiary" (click)="handleClickCancel()">
-        <span class="m-button-x-text">Cancel</span>
-      </button>
-      <button class="m-button" (click)="handleClickConfirmMulti()">
-        <span class="m-button-x-text">Yes, Remove RSD<span class="t-type-lowercase">s</span> from Collection</span>
-      </button>
+      <div class="l-container">
+        <!--      {{render '@listheadingsearch'}}-->
+        <div class="t-margin-medium t-margin-bottom" *ngIf="totalCount > 0">
+          <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
+            <div class="m-text">
+              <svg aria-hidden="true" class="m-text-x-icon t-icon" (click)="clearSearch()"><use [attr.xlink:href]="searchIcon"></use></svg>
+              <input type="text" placeholder="Search RSDs in this {{collectionOrWorkspace(false)}}" [formControl]="searchForm.controls.search">
+            </div>
+
+            <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
+              {{totalCount}} <ng-template [ngIf]="isPlural" [ngIfElse]="singular">RSDs</ng-template><ng-template #singular>RSD</ng-template> found in this {{collectionOrWorkspace(false)}} based on
+              <ng-template [ngIf]="matchingQuery">
+                <span class="t-type-bodyLargeBold t-type-text1">{{matchingQuery[0]}}</span> and
+              </ng-template>
+              your filters.
+              <ng-template [ngIf]="totalCount > 0">
+                Viewing {{firstRecordNo}}-{{lastRecordNo}}.
+              </ng-template>
+            </p>
+          </form>
+        </div>
+
+        <div class="t-margin-medium" *ngIf="skillCategories.length">
+          <div class="t-margin-small"><b>Categories represented:</b></div>
+          <app-pill-group [pillControls]="skillCategories" (pillClicked)="handleCategoryClicked($event)"></app-pill-group>
+        </div>
+
+        <app-filter-controls
+          (changeValue)="sizeChange($event)"
+          [isSizePaginationVisible]="isSizePaginationVisible"
+          [currentSize]="size"
+          *ngIf="totalCount >= 0"
+          [keywords]="keywords"
+          [showAdvancedFilteredSearch]="showAdvancedFilteredSearch"
+          [selectedFilters]="selectedFilters"
+          (keywordsChanged)="keywordsChange($event)"
+          (filtersChanged)="handleFiltersChanged($event)"
+        ></app-filter-controls>
+      </div>
+
+
+      <div class="l-container">
+        <ng-template [appLoadingObservables]="[resultsLoaded]">
+
+          <div class="t-margin-medium t-margin-bottom">
+            <p class="t-visuallyHidden">Select one or more RSDs in the table, or select all in the table heading, then use the action menu to publish, archive, unarchive, or add the selected RSDs to a collection. </p>
+            <app-skill-table
+              *ngIf="!emptyResults"
+              [items]="results.skills"
+              (rowSelected)="handleNewSelection($event)"
+              [currentSort]="columnSort"
+              (columnSorted)="handleHeaderColumnSort($event)"
+              [rowActions]="rowActions()"
+              (selectAllSelected)="handleSelectAll($event)"
+              [selectAllCount]="getSelectAllCount()"
+              [selectAllEnabled]="getSelectAllEnabled()"
+              (focusActionBar)="focusActionBar()"
+            ></app-skill-table>
+          </div>
+
+          <app-pagination
+            *ngIf="totalCount > 0"
+            [currentPage]="currentPageNo"
+            [totalPages]="totalPageCount"
+            (pageClicked)="handlePageClicked($event)"
+          ></app-pagination>
+        </ng-template>
+
+        <div *ngIf="collection && showLog">
+          <app-audit-log
+            [collectionUuid]="collection.uuid"
+            [collapseListener]="collapseAuditLog.asObservable()"
+            closedLabel="View Audit Log"
+            openLabel="Hide Audit Log"
+          >
+          </app-audit-log>
+        </div>
+      </div>
+
+      <div *ngIf="actionsVisible() && totalCount > 0" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
+        <div class="l-container l-container-tablet">
+          <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
+        </div>
+      </div>
+
     </div>
-  </div>
-</ng-template>
+  </ng-template>
+
+  <ng-template [ngSwitchCase]="'confirm-multiple'">
+    <div class="l-container t-padding-large t-padding-top">
+      <div class="t-margin-medium t-margin-bottom">
+        <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+
+          <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Confirm that you want to remove {{selectedCount}} RSDs from this {{this.collection.status | collection}}.</h2>
+
+          <app-accordian closedLabel="View RSDs" openLabel="Hide RSDs">
+            <div class="m-skillBackground l-inset t-margin-small t-margin-top">
+              <div class="m-content">
+                <ol>
+                  <li *ngFor="let skill of selectedSkills">{{skill.skillName}}</li>
+                </ol>
+                <p *ngIf="selectAllChecked">and {{totalCount - selectedSkills.length}} more...</p>
+              </div>
+            </div>
+          </app-accordian>
+
+        </div>
+      </div>
+
+      <!--    {{render '@l-submit'}}-->
+      <div class="l-submit">
+        <button class="m-button m-button-tertiary" (click)="handleClickCancel()">
+          <span class="m-button-x-text">Cancel</span>
+        </button>
+        <button class="m-button" (click)="handleClickConfirmMulti()">
+          <span class="m-button-x-text">Yes, Remove RSD<span class="t-type-lowercase">s</span> from {{this.collection.status | collection}}</span>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template [ngSwitchCase]="'confirm-delete-collection'">
+    <div class="l-container t-padding-large t-padding-top">
+      <div class="t-margin-medium t-margin-bottom">
+        <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
+          <h2 class="t-type-heading1 t-margin-small t-margin-bottom">
+            Confirm that you want to {{confirmMessageText}}
+          </h2>
+        </div>
+      </div>
+
+      <!--    {{render '@l-submit'}}-->
+      <div class="l-submit">
+        <button class="m-button m-button-tertiary" (click)="handleClickCancel()">
+          <span class="m-button-x-text">Cancel</span>
+        </button>
+        <button class="m-button" (click)="handleConfirmDeleteCollection()">
+          <span class="m-button-x-text">Yes, {{confirmButtonText}}</span>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</ng-container>
+

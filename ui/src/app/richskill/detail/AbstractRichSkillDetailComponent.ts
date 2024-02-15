@@ -44,8 +44,8 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
     })
   }
 
-  getAuthor(): string {
-    return this.richSkill?.author ?? ""
+  getAuthors(): string {
+    return this.joinAuthors()
   }
 
   getSkillUuid(): string {
@@ -55,6 +55,11 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
   getSkillName(): string {
     return this.richSkill?.skillName ?? ""
   }
+
+  getSkillStatus(): PublishStatus | undefined {
+    return this.richSkill?.status
+  }
+
   getPublishStatus(): PublishStatus {
     return this.richSkill?.status ?? PublishStatus.Draft
   }
@@ -75,6 +80,11 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
       : ""
   }
 
+  joinAuthors(): string {
+    const authors = this.richSkill?.authors || []
+    return this.joinList("; ", authors)
+  }
+
   joinKeywords(): string {
     const keywords = this.richSkill?.keywords || []
     return this.joinList("; ", keywords)
@@ -85,17 +95,17 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
     return this.joinGenericKeywords("; ", employers)
   }
 
-  private joinList(delimeter: string, list: string[]): string {
+  private joinList(delimiter: string, list: string[]): string {
     return list
       .filter(item => item)
-      .join(delimeter)
+      .join(delimiter)
   }
 
-  private joinGenericKeywords(delimeter: string, keywords: INamedReference[]): string {
+  private joinGenericKeywords(delimiter: string, keywords: INamedReference[]): string {
     const filteredList: string[] = keywords
       .map(keyword => (keyword.name ? keyword.name : keyword.id) as string)
 
-    return this.joinList(delimeter, filteredList)
+    return this.joinList(delimiter, filteredList)
   }
 
   protected formatAssociatedCollections(isAuthorized: boolean): string {

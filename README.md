@@ -5,38 +5,29 @@ The Open Skills Management Tool (OSMT, pronounced "oz-mit") is a free, open-sour
 
 ## Architecture
 OSMT is written in Kotlin with Spring Boot, and Angular. It uses backend-instances of MySQL, Redis, and Elastisearch.
-![High-level architecture diagram](./ui/src/assets/Architectural-Diagram.png "High-level architecture diagram")
+
+[<img src="./docs/arch/Architectural-Diagram.png" width="800" alt="High-level architecture diagram" />](docs/arch/Architectural-Diagram.png)
 
 ## Dependencies
-OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. Any OSMT instance beyond a local development server also requires an OAuth2 provider. Local / non-production configurations can be stood up using only Docker. See additional notes below for [Configuration](README.md#configuration).
+OSMT uses Elasticsearch, Redis, and MySQL as back-end dependencies. OSMT also requires an OAuth2 provider. Local / non-production configurations can be stood up using only Docker. See additional notes below for [Configuration](README.md#configuration).
 
 ## Getting started
-Follow the steps in the [Pre-requisites](README.md#pre-requisites) and [Running the Quickstart](README.md#running-the-quickstart) sections to bootstrap a local Quickstart OSMT instance (you can see more details in the [Quickstart Configuration](README.md#quickstart-configuration) section).
-* NOTE: A Quickstart OSMT instance should be for demo purposes only. The data is stored on a Docker volume. Unless your organization has taken technical steps to ensure the backing data will remain available, you should consider Quickstart data to be temporary. If you create RSDs or Collections, you should export them before shutting down the Quickstart. See the [How-To](https://osmt.io/docs.html) section of osmt.io for more information on exporting.
+Follow the steps in the [Pre-requisites](README.md#pre-requisites) section.
 * Please have the right technical people in your organization deploy a production OSMT instance before making any real investment in effort for building skills.
+* For latest updates, reach out in the [Discussion](https://github.com/wgu-opensource/osmt/discussions) boards in GitHub.
 
 ### Using the OSMT CLI utility (`osmt_cli.sh`)
-The OSMT source code includes a utility named `osmt_cli.sh`, in the project root directory. `osmt_cli.sh` simplifies setting up an OSMT environment and doing routine tasks. It uses BASH, and works on MacOS and Linux. It may work with a BASH interpreter in Windows, but we have not yet tested this. You can run `./osmt_cli.sh -h` for the help text.
+The OSMT source code includes a utility named `osmt_cli.sh`, in the project root directory. `osmt_cli.sh` simplifies setting up a local OSMT environment and doing routine tasks. It uses BASH, and works on MacOS and Linux. We have had some success with a BASH interpreter in Windows. You can run `./osmt_cli.sh -h` for the help text.
 * `osmt_cli.sh` uses git to help identify directory context. If you downloaded the source code as a ZIP file, you will need to have git installed to use `osmt_cli.sh`.
 
 ### Pre-requisites
-1. Obtain a "free developer" Okta account. This is required to log in to a local OSMT. Please follow the steps in [OAuth2 and Okta Configuration](README.md#oauth2-and-okta-configuration) below, and return here when complete. You can refer to [Environment files for Quickstart and Development Stacks](README.md#environment-files-for-quickstart-and-development-stacks) for more details.
+By default, OSMT is wired up for Okta as an OAuth2 provider. While you can change this, these documents will only address configuring Okta.
+1. Obtain a "free developer" Okta account. This is required to log in to a local OSMT. Please follow the steps in [OAuth2 and Okta Configuration](README.md#oauth2-and-okta-configuration) below, and return here when complete. You can refer to [Environment file for Development and API Tests Stack](README.md#environment-files-for-development-and-api-tests-stacks) for more details.
 
 2. Initialize your environment files. After running this, update the OAUTH2/OIDC values in the env files (replace the `xxxxxx` values with the correct values from your Okta account)
     ```
     ./osmt_cli.sh -i
     ```
-
-### Running the Quickstart
-1. Start the Quickstart configuration. This will take several minutes to download resources and build the software. If you continue to loop on errors that report "Retrying in 10 seconds...", there's something wrong. Search and reach out in the [Discussion](https://github.com/wgu-opensource/osmt/discussions) boards in GitHub.
-    ```
-    ./osmt_cli.sh -q
-    ```
-
-2. Open your browser to `http://localhost:8080`.
-
-3. You can exit the Quickstart configuration by pressing [Ctrl-C].
-    * If you don't clean up the Docker images and volumes, Quickstart should start very quickly when re-running `osmt_cli.sh -q`.
 
 ### Running the Development configuration
 1. Validate your local environment (for Docker, Java, and other SDKs / runtimes). If this command reports error, you will need to resolve them before running the Development configuration. See more in the [Requirements to Build OSMT](README.md#requirements-to-build-osmt) section
@@ -44,12 +35,13 @@ The OSMT source code includes a utility named `osmt_cli.sh`, in the project root
     ./osmt_cli.sh -v
     ```
 
-2. **From the project root**, run a Maven build. The API module currently depends on the UI module, so 'mvn package' will not be sufficient.
+2. **From the project root**, run a Maven build. The API module currently depends on the UI module.
     ```
     mvn clean install
     ```
+   * The Maven build starts its own Docker containers for testing purposes. It may disrupt any existing OSMT-related Docker containers you have running. 
 
-3. Start the back-end MySQL/Redis/ElasticSearch dependencies.
+3. Start (restart) the back-end MySQL/Redis/ElasticSearch dependencies.
     * This starts the dev-stack.yml docker-compose stack. It will run "detached", meaning running in the background. You can use `docker ps` and `docker logs` to see what the services are doing.
     ```
     ./osmt_cli.sh -d
@@ -74,10 +66,38 @@ The OSMT source code includes a utility named `osmt_cli.sh`, in the project root
     ```
 
 ### Housekeeping with `osmt_cli.sh`
-You can surgically clean up OSMT-related Docker images and data volumes. This step **will** delete data from local OSMT Quickstart and Development configurations. It does not remove the mysql/redis/elasticsearch images, as those may be available locally for other purposes.
+You can surgically clean up OSMT-related Docker images and data volumes. This step **will** delete data from Development and API Test configurations. It does not remove the mysql/redis/elasticsearch Docker images, as those may be available locally for other purposes.
+    
 ```
 ./osmt_cli.sh -c
 ```
+
+### Using the CI Static Dataset
+OSMT source code has a [static/fixed dataset](test/sql/fixed_ci_dataset.sql) included in the repo, to be used for automated testing in a CI (continuous integration) environment. This dataset is meant to be in sync with the application as of any given commit (i.e., make a DB change, update the SQL script).
+
+This dataset is meant as an on-ramp for the local developer, and as a fixed quantity for automated testing. It includes about 1200 RSDs and several collections, both in different publish states. As we expand our automated testing around OSMT, we should adapt this dataset to cover test cases as needed.
+
+You can follow these steps to apply this dataset:
+1. Build your OSMT application
+    ```
+    mvn clean install
+    ```
+2. Destroy your local OSMT-related Docker volumes.
+    ```
+    ./osmt_cli.sh -c
+    ```
+3. Start the Spring Boot application with `./osmt_cli.sh -s` (this command also starts the Docker stack). Spring Boot will build the database schema via Flyway. Leave this shell open with the Spring Boot app running.
+    ```
+    ./osmt_cli.sh -s
+   ```
+4. From another shell, load the CI static dataset. This command empties all MySQL tables, and requires the mysql client.
+    ```
+    ./osmt_cli.sh -l
+    ```
+5. From this same shell, reindex OSMT's ElasticSearch. When this is complete, you can close this 2nd shell.
+    ```
+    ./osmt_cli.sh -r
+    ```
 
 ## Building OSMT
 
@@ -85,9 +105,9 @@ You can surgically clean up OSMT-related Docker images and data volumes. This st
 OSMT requires certain software and SDKs to build:
 * Docker >=17.06.0
   * Recommended 6 GB memory allocated to the Docker service. On Windows, Docker will possibly need more memory.
-* a Java 11 JDK (OpenJDK works fine)
+* a Java 17 JDK (OpenJDK works fine)
 * Maven 3.8.3 or higher
-* NodeJS v16.13.0 / npm 8.1.0 or higher (the LTS versions at the time of this writing)
+* NodeJS v18.18.2 / npm 9.8.1 or higher
   * NodeJS/npm are used for building client code; there are no runtime NodeJS/npm dependencies.
   * In the `ui` module, `frontend-maven-plugin` uses an embedded copy of Node v16.13.0 and npm 8.1.0.
   * Locally, a developer probably has their own versions of NodeJS and npm installed. They should be >= the versions given above.
@@ -100,7 +120,7 @@ OSMT is a multi-module Maven project. pom.xml files exist in the project root, `
     -- project root
      |-- api                - Spring Boot, Kotlin-based backend
      |-- docs               - Techincal and OpenAPI documentation
-     |-- import             - Example CSV files for importing
+     |-- import             - CSV files for importing
      |-- docker             - Docker resources for base images and development
      \-- ui                 - Angular frontend
 
@@ -109,20 +129,7 @@ OSMT is a multi-module Maven project. pom.xml files exist in the project root, `
 The [API](api/README.md) and [UI](ui/README.md) modules have their own README.md files with more specific information about those modules.
 
 ### Configuration
-This project makes use of 2 similar local configurations, "Quickstart" and "Development". These both rely on docker-compose and environment files. Follow the steps in [Pre-requisites](README.md#pre-requisites) above. See [Environment files for Quickstart and Development Stacks](README.md#environment-files-for-quickstart-and-development-stacks) for more details.
-
-### Quickstart Configuration
-The Quickstart configuration uses the `docker-compose.quickstart.yml` file in the project root to stand up a non-production OSMT stack. This stack uses containers for the Spring application and the back-end dependencies (MySQL, ElasticSearch, and Redis).
-* The Quickstart configuration is opinionated, in that all services and volumes are stood up on a single machine. That topology may or may not be appropriate for your organization. It could inform how to configure a production OSMT instance, but it is not intended for a production deployment.
-* Quickstart uses the `osmt-quickstart.env` file to provide your OAuth2 secrets, and override default values. If you break your working copy of this env file, you can refer to `osmt-quickstart.env.example` for the default values.
-* By default, the Quickstart configuration automatically imports BLS and O*NET job code metadata, and reindexes ElasticSearch. You can alter this default behavior with the `REINDEX_ELASTICSEARCH` and `SKIP_METADATA_IMPORT` environment variables (export them in your shell, or uncomment them in `osmt-quickstart.env`).
-* By default, Quickstart uses an image named `wguopensource/osmt-app:latest` as the Spring application. It will pull the image tagged `latest` from DockerHub.
-  * You can override the tagged version number with the `OSMT_APP_IMAGE_TAG` environment variable (export it in your shell, or uncomment it in `osmt-quickstart.env`).
-  * You can build a new Docker image for the Spring application, and tag it with `wguopensource/osmt-app:latest`. Quickstart will use it, instead of pulling from DockerHub.
-* You are not required to use `osmt_cli.sh`. You can run this command from the project root to stand up the Quickstart configuration.
-    ```
-    docker-compose --file docker-compose.quickstart.yml --env-file osmt-quickstart.env --project-name osmt_quickstart up 
-    ```
+This project does "Development" configuration. It relies on docker-compose and environment files. Follow the steps in [Pre-requisites](README.md#pre-requisites) above. 
 
 ### Development Configuration
 The Development configuration uses the `dev-stack.yml` docker-compose file in the `docker` directory, for standing up just the back-end dependencies. This facilitates doing active development in the Spring or Angular layers. You can use `osmt_cli.sh` in the steps given in [Running the Development configuration](README.md#running-the-development-configuration) to simplify starting and stopping the Docker services and Spring application.
@@ -147,7 +154,7 @@ Before you start with these steps, you may be required to update your goals on t
 1. If given the option, navigate to the "Admin" section.
 2. Navigate to Applications. Create an Application Integration, select the "OIDC - OpenID Connect" option and "Web Application" option.
 3. Under the "General Settings" area:
-   - Enter an "App integeration name". The intention here is local OSMT development.
+   - Enter an "App integration name". The intention here is local OSMT development.
    - Enter a "Sign-in redirect URIs", use `http://localhost:8080/login/oauth2/code/okta`
    - Enter a "Sign-out redirect URIs", use `http://localhost:8080`
 4. Under the "Assignments" area:
@@ -168,8 +175,9 @@ When using Okta, you will use the `oauth2-okta` profile for Spring Boot, which w
 
 If you want to enable OSMT user permissions by roles, see additional details in [Role-based Access in OSMT](README.md#role-based-access-in-osmt).
 
-### Environment Files for Quickstart and Development Stacks
-There are many ways to provide environment values to a Spring application. That said, you should never push secrets to GitHub, so you should never store secrets in source code. The OSMT project is configured to git ignore files named `osmt*.env`, and we recommend you follow this approach. The OSMT source code includes example environment files for the Quickstart and Development configurations (`osmt-quickstart.env.example` and `api/osmt-dev-stack.env.example`). Running `./osmt_cli.sh -i` will create env files for you, but you will need to replace the 'xxxxxx' values with your OAUTH2/OIDC values, following the guidance in the [OAuth2 and Okta Configuration](README.md#oauth2-and-okta-configuration) section.
+### Environment Files for Development and API Tests Stacks
+There are many ways to provide environment values to a Spring application. That said, you should never push secrets to GitHub, so you should never store secrets in source code. The OSMT project is configured to git ignore files named `osmt*.env`, and we recommend you follow this approach. 
+The OSMT source code includes example environment files for the Development configuration (`api/osmt-dev-stack.env.example`) and API Tests configuration (`test/api/osmt-apitest.env.example`). Running `./osmt_cli.sh -i` will create env files for you, but you will need to replace the 'xxxxxx' values with your OAUTH2/OIDC values, following the guidance in the [OAuth2 and Okta Configuration](README.md#oauth2-and-okta-configuration) section.
 
 #### Alternate approaches for Providing Environment Variables
 * Provide these OAuth2 values as program arguments when starting your Spring Boot app (`-Dokta.oauth2.clientId="123456qwerty"`).
@@ -184,43 +192,76 @@ There are many ways to provide environment values to a Spring application. That 
       ```
 
 ### Post-installation (BLS, O*NET, etc)
-The Quickstart configuration automatically imports the default BLS and O*NET job code metadata. For a Development configuration, you can import the metadata with this command:
+For Development configuration, you can import the metadata with this command:
 ```
 osmt_cli.sh -m
 ```
-Keep in mind that removing Docker volumes will also remove this metadata. For more information, see the section for [Importing Data](api/README.md#importing-data) in the API README file.
+* Keep in mind that removing Docker volumes will also remove this metadata. For more information, see the section for [Importing Data](api/README.md#importing-data) in the API README file.
 
 ### Role-based Access in OSMT
+* Role-based access is **enabled** by default for the Angular UI and Spring REST API.
+
 OSMT optionally supports role-based access, with these roles:
-- Admin: an OSMT user with an admin role can change RSDs and Collections in any way.
-- Curator: an OSMT user with a curator role can update but not create RSDs and collections. This role is for someone who would publish and unpublish RSDs and Collections
-- Viewer: an OSMT user with a viewer role is a logged-in user who can not make modifications to RSDs or Collections.
+- **Admin**: an OSMT user with an admin role can change RSDs and Collections in any way.
+- **Curator**: an OSMT user with a curator role can create RSDs and Collections. This role is for someone who would upload and create RSDs and Collections.
+- **Viewer**: an OSMT user with a viewer role is a logged-in user who can not make modifications to RSDs or Collections.
 
-Role-based access is disabled by default. You can follow these steps to enable it.
+| Behavior                                | Curator Role | Admin Role |
+|-----------------------------------------|:------------:|:----------:|
+| Update Skills                           |              | X          |
+| Archive and Unarchive Skills            | X            | X          |
+| Create Skills                           | X            | X          |
+| Publish Skills                          |              | X          |
+| Update Collection                       |              | X          |
+| Archive and Unarchive Collection        | X            | X          |
+| Create Collection                       | X            | X          |
+| Publish Collection                      |              | X          |
+| Delete Collection                       |              | X          |
+| Add/Remove Skills to/from a Collection  |              | X          |
+| Library Export                          |              | X          |
+| Export Draft Collection                 |              | X          |
+| Workspace Access                        | X            | X          |
 
-In your [`application.properties`](api/src/main/resources/config/application.properties) file, configure these values:
+#### Configuration in OSMT Code
+By default, OSMT is configured with roles enabled. If you want to disable roles in OSMT, apply these changes:
+
+In Angular UI: In [`auth-roles.ts`](ui/src/app/auth/auth-roles.ts) file, configure these values:
+```
+export const ENABLE_ROLES = false
+```
+
+In Spring REST API: In [`application.properties`](api/src/main/resources/config/application.properties) file, configure these values:
 ```
 # Roles settings
-app.enableRoles=true
-osmt.security.role.admin=ROLE_Osmt_Admin
-osmt.security.role.curator=ROLE_Osmt_Curator
-osmt.security.role.view=ROLE_Osmt_View
-osmt.security.scope.read=SCOPE_osmt.read
+app.enableRoles=false
 ```
-* You can use these values, or you can provide your own based on your own authorization tooling. For Okta, you will need to use the uppercase `ROLE_` prefix on your role.
+* NOTE: if app.enableRoles=false, all authenticated endpoints will be accessible by any authenticated user.
+* You can use these role values, or you can provide your own based on your own authorization tooling. For Okta, you will need to use the uppercase `ROLE_` prefix on your role.
 * `read` is a scope, not a role. This is for machine-to-machine access, rather than for authenticated OSMT users.
 
-In Okta, navigate to "Directory" and "Groups". You will need to create 3 groups with names that match your `osmt.security.role` values in `application.properties`.
 
-![pix](./ui/src/assets/OsmtGroups.png)
+#### Configuration in Okta
+In Okta, navigate to "Directory", then "Groups". You will need to create 3 groups with names that match your `osmt.security.role` values in `application.properties`.
 
-You can assign your Okta user accounts to these groups from the Security -> Api -> Default; from the Claims tab, add 2 claims for "roles"
+[<img src="./docs/int/okta/okta_groups_for_osmt_roles.png" width="600" alt="Okta Groups for OSMT Roles" />](docs/int/okta/okta_groups_for_osmt_roles.png)
 
-![pix](./ui/src/assets/okta_claims.png)
+You can assign your Okta user accounts to these groups. In Okta, navigate to "Security", then "API". Open the "default" API, and navigate to the "Claims" tab.
+
+* Add claim for "Access"
+
+  [<img src="./docs/int/okta/okta_claims_access.png" width="600" alt="Claim for 'Access'" />](docs/int/okta/okta_claims_access.png)
+
+* Add a claim for  "ID Token"
+
+  [<img src="./docs/int/okta/okta_claims_id.png" width="600" alt="Claim for 'ID Token'" />](docs/int/okta/okta_claims_id.png)
+
+* Your end result should look like this:
+
+  [<img src="./docs/int/okta/okta_claims.png" width="600" alt="Added Claims" />](docs/int/okta/okta_claims.png)
 
 From the Scopes tab, add a scope with name that matches osmt.security.scope.read in application.properties
 
-![pix](./ui/src/assets/okta_scope.png)
+[<img src="./docs/int/okta/okta_scopes.png" width="600" alt="Scopes" />](docs/int/okta/okta_scopes.png)
 
 ## How to get help
 This project includes [./api/HELP.md](api/HELP.md), with links to relevant references and tutorials.

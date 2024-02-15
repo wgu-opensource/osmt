@@ -21,7 +21,7 @@ export class SearchService {
   }
   advancedSkillSearch(advanced: ApiAdvancedSearch): void {
     this.setLatestSearch(new ApiSearch({advanced}))
-    this.router.navigate(["/skills/search"])
+    this.router.navigate(["/skills/search"], {state: this.latestSearch})
   }
 
   simpleCollectionSearch(query: string): void {

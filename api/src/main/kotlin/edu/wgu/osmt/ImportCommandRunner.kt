@@ -1,8 +1,8 @@
 package edu.wgu.osmt
 
-import edu.wgu.osmt.csv.BatchImportRichSkill
-import edu.wgu.osmt.csv.BlsImport
-import edu.wgu.osmt.csv.OnetImport
+import edu.wgu.osmt.io.csv.BatchImportRichSkill
+import edu.wgu.osmt.io.csv.BlsImport
+import edu.wgu.osmt.io.csv.OnetImport
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import kotlin.system.exitProcess
 
 @Component
 @Profile("import")
@@ -56,6 +57,7 @@ class ImportCommandRunner : CommandLineRunner {
             LOG.error("Missing --csv=path/to/csv argument")
         }
         (applicationContext as ConfigurableApplicationContext).close()
+        exitProcess(0) // "./osmt_cli.sh -m" blocks without this
     }
 }
 

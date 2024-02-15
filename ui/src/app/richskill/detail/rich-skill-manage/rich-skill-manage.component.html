@@ -8,7 +8,7 @@
         [sections]="getCardFormat()"
         [title]="getSkillName()"
         titleLabel="Rich Skill Descriptor"
-        [author]="getAuthor()"
+        [authors]="getAuthors()"
         [status]="getPublishStatus()"
         [archiveDate]="getArchivedDate()"
         [publishDate]="getPublishedDate()"
@@ -29,6 +29,7 @@
         <app-manage-skill-action-bar-vertical
           [skillUuid]="getSkillUuid()"
           [skillName]="getSkillName()"
+          [skillPublicUrl]="getSkillUrl()"
           [archived]="getArchivedDate()"
           [published]="getPublishedDate()"
           (reloadSkill)="loadSkill()"
@@ -47,6 +48,7 @@
     <app-manage-skill-action-bar-horizontal
       [skillUuid]="getSkillUuid()"
       [skillName]="getSkillName()"
+      [skillPublicUrl]="getSkillUrl()"
       [archived]="getArchivedDate()"
       [published]="getPublishedDate()"
       (reloadSkill)="loadSkill()"

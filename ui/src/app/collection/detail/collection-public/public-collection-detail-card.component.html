@@ -1,15 +1,19 @@
 <div class="m-skillBackground m-skillBackground-detail m-skillBackground-collection l-skillBackground">
   <div class="t-margin-extraSmall t-margin-bottom">
-    <div class="m-sectionLabel">Collection</div>
+    <div class="m-sectionLabel" *ngIf="displayLabel">Collection</div>
   </div>
 
   <h2 class="t-type-heading1 t-margin-extraSmall t-margin-bottom" tabindex="0">{{collectionName}}</h2>
+
+  <div *ngIf="collectionDescription" class="t-margin-medium t-margin-bottom">
+    <p class="t-type-body">{{collectionDescription}}</p>
+  </div>
 
   <div class="t-margin-medium t-margin-bottom">
     <p class="t-type-body">Author: {{collectionAuthor}}</p>
   </div>
 
-  <div class="t-margin-extraSmall t-margin-bottom">
+  <div class="t-margin-extraSmall t-margin-bottom" *ngIf="displayStatus">
     <app-status-bar
       [status]="status"
       [archiveDate]="archiveDate | date: 'mediumDate'"

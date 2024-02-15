@@ -1,14 +1,12 @@
 import {AppConfig} from "./app.config"
 import {getTestBed, TestBed} from "@angular/core/testing"
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing"
-import {IAppConfig} from "./models/app-config.model"
 import {environment} from "../environments/environment"
-import {APP_INITIALIZER} from "@angular/core"
-import {initializeApp} from "./app.module"
+import {IAppConfig} from "./models/app-config.model"
 
 describe("AppConfig", () => {
   let injector: TestBed
-  let service: AppConfig
+  let settingsService: AppConfig
   let httpMock: HttpTestingController
 
   beforeEach(() => {
@@ -16,13 +14,12 @@ describe("AppConfig", () => {
       imports: [HttpClientTestingModule],
       providers: [
         AppConfig,
-        { provide: APP_INITIALIZER,
-          useFactory: initializeApp,
-          deps: [AppConfig], multi: true }
       ]
     })
+
     injector = getTestBed()
-    service = TestBed.inject(AppConfig)
+    settingsService = TestBed.inject(AppConfig)
+    AppConfig.settings = settingsService.defaultConfig()
     httpMock = TestBed.inject(HttpTestingController)
   })
 
@@ -54,8 +51,9 @@ describe("AppConfig", () => {
       environment.baseApiUrl = expectedApiUrl
       environment.dynamicWhitelabel = false
 
-      service.load().finally(() => {
+      settingsService.load().finally(() => {
         expect(AppConfig.settings.baseApiUrl).toBe(dummyConfig.baseApiUrl)
+        expect(AppConfig.settings.idleTimeoutInSeconds).toBe(86400)  // loaded from app.config.ts
       })
 
     })

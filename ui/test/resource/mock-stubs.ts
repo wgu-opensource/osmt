@@ -16,7 +16,9 @@ import {
   PaginatedSkills
 } from "../../src/app/richskill/service/rich-skill-search.service"
 import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
+import {ButtonAction, OSMT_ADMIN} from "../../src/app/auth/auth-roles"
 import {
+  apiTaskResultForDeleteCollection,
   createMockBatchResult,
   createMockCollection,
   createMockJobcode,
@@ -24,8 +26,11 @@ import {
   createMockPaginatedSkills,
   createMockSkill,
   createMockSkillSummary,
-  createMockTaskResult
+  createMockTaskResult,
+  mockTaskResultForExportSearch
 } from "./mock-data"
+import {ApiCategory, CategoryService, IKeyword, KeywordSortOrder, PaginatedCategories} from "../../src/app/category";
+import {IRelatedSkillsService} from "../../src/app/abstract.service";
 
 
 // Add service stubs here.
@@ -54,8 +59,18 @@ export class RouterStub {
   }
 }
 
-export let AuthServiceData = { isDown: false }
+export let AuthServiceData = {
+  isDown: false,
+  authenticatedFlag: true,
+  hasRoleFlag: true
+}
 export class AuthServiceStub {  // TODO consider using real class
+  init(): void {
+  }
+  setup(): void {
+  }
+  start(returnPath: string): void {
+  }
   public logout(): void {
   }
   // noinspection JSUnusedGlobalSymbols
@@ -64,6 +79,18 @@ export class AuthServiceStub {  // TODO consider using real class
   }
   public currentAuthToken(): string | null {
     return "fake-token"
+  }
+  public getRole(): string | null {
+    return OSMT_ADMIN
+  }
+  public isAuthenticated(): boolean {
+    return AuthServiceData.authenticatedFlag
+  }
+  hasRole(requiredRoles: string[], userRoles: string[]): boolean {
+    return AuthServiceData.hasRoleFlag
+  }
+  isEnabledByRoles(buttonAction : ButtonAction): boolean {
+    return true
   }
 }
 
@@ -84,8 +111,8 @@ export class SearchServiceStub {
   // tslint:disable-next-line:variable-name
   advancedSkillSearch(_advanced: ApiAdvancedSearch): void {
     const advanced = _advanced as ApiAdvancedSearch
-    SearchServiceData.latestSearch = new ApiSearch({ advanced })
-    this.setLatestSearch(new ApiSearch({advanced}))
+    SearchServiceData.latestSearch = new ApiSearch({ advanced, filtered: {} })
+    this.setLatestSearch(new ApiSearch({advanced, filtered: {}}))
   }
 
   simpleCollectionSearch(query: string): void {
@@ -103,6 +130,76 @@ export class SearchServiceStub {
   public clearSearch(): void {
     SearchServiceData.latestSearch = undefined
     SearchServiceData.searchQuerySource.next(SearchServiceData.latestSearch)
+  }
+}
+
+export class RelatedSkillServiceStub implements IRelatedSkillsService<number> {
+  getRelatedSkills(
+    entityId: number,
+    size: number,
+    from: number,
+    statusFilters: Set<PublishStatus>,
+    sort?: ApiSortOrder
+  ): Observable<PaginatedSkills> {
+    return of(createMockPaginatedSkills())
+  }
+
+  searchRelatedSkills(
+    entityId: number,
+    size: number,
+    from: number,
+    statusFilters: Set<PublishStatus>,
+    sort?: ApiSortOrder,
+    search?: ApiSearch
+  ): Observable<PaginatedSkills>  {
+    return of(createMockPaginatedSkills())
+  }
+}
+
+const testCategoryKeyword= {
+  type: KeywordType.Category,
+  id: 1,
+  value: "category-1",
+  skillCount: 20
+}
+export let CategoryServiceData = {
+  category: new ApiCategory(testCategoryKeyword),
+  categoryKeyword: testCategoryKeyword,
+  paginatedCategories: new PaginatedCategories([testCategoryKeyword], 1),
+  paginatedSkills: createMockPaginatedSkills()
+}
+export class CategoryServiceStub {
+  getAllPaginated(
+    size: number = 50,
+    from: number = 0,
+    sort: KeywordSortOrder | undefined,
+  ): Observable<PaginatedCategories> {
+    return of(CategoryServiceData.paginatedCategories)
+  }
+
+  getById(identifier: string): Observable<ApiCategory> {
+    return of(CategoryServiceData.category)
+  }
+
+  getRelatedSkills(
+    entityId: number,
+    size: number,
+    from: number,
+    statusFilters: Set<PublishStatus>,
+    sort?: ApiSortOrder,
+  ): Observable<PaginatedSkills> {
+    return of(CategoryServiceData.paginatedSkills)
+  }
+
+  searchRelatedSkills(
+    entityId: number,
+    size: number,
+    from: number,
+    statusFilters: Set<PublishStatus>,
+    sort?: ApiSortOrder,
+    apiSearch?: ApiSearch
+  ): Observable<PaginatedSkills> {
+    return of(CategoryServiceData.paginatedSkills)
   }
 }
 
@@ -184,7 +281,18 @@ export class CollectionServiceStub {
     })
   }
 
+  getXlsxTaskResultsIfComplete(uuid: string): Observable<any> {
+    return of({
+      body: createMockTaskResult(uuid),
+      status: 200
+    })
+  }
+
   requestCollectionSkillsCsv(uuid: string): Observable<ITaskResult> {
+    return of(createMockTaskResult())
+  }
+
+  requestCollectionSkillsXlsx(uuid: string): Observable<ITaskResult> {
     return of(createMockTaskResult())
   }
 
@@ -236,6 +344,36 @@ export class CollectionServiceStub {
   ): Observable<PaginatedCollections> {
     return of(createMockPaginatedCollections())
   }
+
+  getWorkspace(): Observable<ApiCollection> {
+    const date = new Date()
+    return of(createMockCollection(
+      date,
+      date,
+      undefined,
+      undefined,
+      PublishStatus.Workspace
+    ))
+  }
+
+  deleteCollectionWithResult(uuid: string): Observable<ApiTaskResult> {
+    return of(apiTaskResultForDeleteCollection)
+  }
+
+  deleteCollection(uuid: string): Observable<ApiTaskResult> {
+    return of(apiTaskResultForDeleteCollection)
+  }
+
+  createCollection(updateObject: ICollectionUpdate): Observable<ApiCollection> {
+    const date = new Date("2020-06-25T14:58:46.313Z")
+    return of(new ApiCollection(createMockCollection(
+      date,
+      date,
+      date,
+      date,
+      PublishStatus.Draft
+    )))
+  }
 }
 
 // noinspection JSUnusedGlobalSymbols
@@ -270,6 +408,11 @@ export class RichSkillServiceStub {
     return of(`x, y, z`)
   }
 
+  getSkillXlsxByUuid(uuid: string): Observable<string> {
+    const date = new Date("2020-06-25T14:58:46.313Z")
+    return of(`x, y, z`)
+  }
+
   // noinspection JSUnusedLocalSymbols
   createSkill(updateObject: ApiSkillUpdate, pollIntervalMs: number = 1000): Observable<ApiSkill> {
     const date = new Date("2020-06-25T14:58:46.313Z")
@@ -285,6 +428,10 @@ export class RichSkillServiceStub {
   updateSkill(uuid: string, updateObject: ApiSkillUpdate): Observable<ApiSkill> {
     const now = new Date()
     return of(new ApiSkill(createMockSkill(now, now, PublishStatus.Draft)))
+  }
+
+  similaritiesResults(statements: string[]): Observable<Array<ApiSkillSummary[]>> {
+    return of([[]]);
   }
 
   // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
@@ -310,6 +457,42 @@ export class RichSkillServiceStub {
     from?: number,
     filterByStatuses?: Set<PublishStatus>,
     sort?: ApiSortOrder,
+  ): Observable<PaginatedSkills> {
+    return of(createMockPaginatedSkills())
+  }
+
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
+  libraryExportCsv(): Observable<string> {
+    return of(`x, y, z`)
+  }
+
+  // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
+  libraryExportXlsx(): Observable<string> {
+    return of(`x, y, z`)
+  }
+
+  exportSearchCsv(): Observable<ApiTaskResult> {
+    return of(mockTaskResultForExportSearch)
+  }
+
+  exportSearchXlsx(): Observable<ApiTaskResult> {
+    return of(mockTaskResultForExportSearch)
+  }
+
+  getResultExportedCsvLibrary(): Observable<any> {
+    return of("")
+  }
+
+  getResultExportedXlsxLibrary(): Observable<any> {
+    return of("")
+  }
+
+  getSkillsFiltered(
+    size: number = 50,
+    from: number = 0,
+    apiSearch: ApiSearch,
+    filterByStatuses: Set<PublishStatus> | undefined,
+    sort: ApiSortOrder | undefined,
   ): Observable<PaginatedSkills> {
     return of(createMockPaginatedSkills())
   }

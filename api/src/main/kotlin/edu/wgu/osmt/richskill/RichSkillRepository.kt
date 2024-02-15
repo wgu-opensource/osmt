@@ -1,7 +1,11 @@
 package edu.wgu.osmt.richskill
 
 import edu.wgu.osmt.api.FormValidationException
-import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.api.model.ApiAlignmentListUpdate
+import edu.wgu.osmt.api.model.ApiBatchResult
+import edu.wgu.osmt.api.model.ApiReferenceListUpdate
+import edu.wgu.osmt.api.model.ApiSkillUpdate
+import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.auditlog.AuditLog
 import edu.wgu.osmt.auditlog.AuditLogRepository
 import edu.wgu.osmt.auditlog.AuditOperationType
@@ -41,9 +45,9 @@ interface RichSkillRepository : PaginationHelpers<RichSkillDescriptorTable> {
     fun findManyByUUIDs(uuids: List<String>): List<RichSkillDescriptorDao>?
     fun create(updateObject: RsdUpdateObject, user: String): RichSkillDescriptorDao?
 
-    fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao>
-    fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String): RichSkillDescriptorDao?
-    fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject
+    fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String, userEmail: String): List<RichSkillDescriptorDao>
+    fun updateFromApi(existingSkillId: Long, skillUpdate: ApiSkillUpdate, user: String, email: String): RichSkillDescriptorDao?
+    fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String, userEmail: String): RsdUpdateObject
 
     fun changeStatusesForTask(task: PublishTask): ApiBatchResult
 
@@ -139,8 +143,6 @@ class RichSkillRepositoryImpl @Autowired constructor(
             this.updateDate = LocalDateTime.now(ZoneOffset.UTC)
             this.creationDate = LocalDateTime.now(ZoneOffset.UTC)
             this.uuid = UUID.randomUUID().toString()
-            this.author = updateObject.author?.t
-            this.category = updateObject.category?.t
         }
 
         updateObject.copy(id = newRsd.id.value).applyToDao(newRsd)
@@ -163,7 +165,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
         return newRsd
     }
 
-    override fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String): List<RichSkillDescriptorDao> {
+    override fun createFromApi(skillUpdates: List<ApiSkillUpdate>, user: String, userEmail: String): List<RichSkillDescriptorDao> {
         // pre validate all rows
         val allErrors = skillUpdates.mapIndexed { i, updateDto ->
             updateDto.validateForCreation(i)
@@ -174,7 +176,7 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         // create records
         val newSkills = skillUpdates.map { update ->
-            val rsdUpdateObject = rsdUpdateFromApi(update, user)
+            val rsdUpdateObject = rsdUpdateFromApi(update, user, userEmail)
             create(rsdUpdateObject, user)
         }
         return newSkills.filterNotNull()
@@ -183,30 +185,22 @@ class RichSkillRepositoryImpl @Autowired constructor(
     override fun updateFromApi(
         existingSkillId: Long,
         skillUpdate: ApiSkillUpdate,
-        user: String
+        user: String,
+        email: String
     ): RichSkillDescriptorDao? {
         val errors = skillUpdate.validate(0)
         if (errors?.isNotEmpty() == true) {
             throw FormValidationException("Invalid SkillUpdateDescriptor", errors)
         }
 
-        val rsdUpdateObject = rsdUpdateFromApi(skillUpdate, user)
+        val rsdUpdateObject = rsdUpdateFromApi(skillUpdate, user, email)
         val updateObjectWithId = rsdUpdateObject.copy(
             id = existingSkillId
         )
         return update(updateObjectWithId, user)
     }
 
-    override fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String): RsdUpdateObject {
-        val authorKeyword = skillUpdate.author?.let {
-            keywordRepository.findOrCreate(KeywordTypeEnum.Author, value = it)
-        }
-
-        val categoryKeyword = skillUpdate.category?.let {
-            keywordRepository.findOrCreate(KeywordTypeEnum.Category, value = it)
-        }
-
-
+    override fun rsdUpdateFromApi(skillUpdate: ApiSkillUpdate, user: String, email: String): RsdUpdateObject {
         val addingCollections = mutableListOf<CollectionDao>()
         val removingCollections = mutableListOf<CollectionDao>()
         val addingKeywords = mutableListOf<KeywordDao>()
@@ -216,13 +210,13 @@ class RichSkillRepositoryImpl @Autowired constructor(
 
         skillUpdate.collections?.let { slu ->
             slu.add?.mapNotNull {
-                collectionRepository.findByName(it) ?: collectionRepository.create(it, user)
+                collectionRepository.findByName(it) ?: collectionRepository.create(it, user, email)
             }?.let {
                 addingCollections.addAll(it)
             }
 
             slu.remove?.mapNotNull {
-                collectionRepository.findByName(it) ?: collectionRepository.create(it, user)
+                collectionRepository.findByName(it) ?: collectionRepository.create(it, user, email)
             }?.let {
                 removingCollections.addAll(it)
             }
@@ -280,6 +274,8 @@ class RichSkillRepositoryImpl @Autowired constructor(
             }?.let { jobsToRemove.addAll(it.filterNotNull()) }
         }
 
+        skillUpdate.authors?.let { lookupKeywords(it, KeywordTypeEnum.Author) }
+        skillUpdate.categories?.let { lookupKeywords(it, KeywordTypeEnum.Category) }
         skillUpdate.keywords?.let { lookupKeywords(it, KeywordTypeEnum.Keyword) }
         skillUpdate.certifications?.let { lookupReferences(it, KeywordTypeEnum.Certification) }
         skillUpdate.standards?.let { lookupAlignments(it, KeywordTypeEnum.Standard) }
@@ -309,10 +305,6 @@ class RichSkillRepositoryImpl @Autowired constructor(
             name = skillUpdate.skillName,
             statement = skillUpdate.skillStatement,
             publishStatus = skillUpdate.publishStatus,
-            author = authorKeyword?.let { NullableFieldUpdate(it) },
-            category = if (skillUpdate.category != null || skillUpdate.category?.isBlank() == true) NullableFieldUpdate(
-                categoryKeyword
-            ) else null,
             keywords = allKeywordsUpdate,
             jobCodes = jobCodesUpdate,
             collections = if (addingCollections.size + removingCollections.size > 0) ListFieldUpdate(

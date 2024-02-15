@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>edu.wgu.osmt</groupId>
+        <artifactId>osmt-parent</artifactId>
+        <version>3.1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>edu.wgu.osmt</groupId>
+    <artifactId>osmt-api-test</artifactId>
+    <version>3.1.0-SNAPSHOT</version>
+    <description>OSMT API Tests</description>
+
+    <profiles>
+        <profile>
+            <id>run-api-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>pre-test-setup</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>./bin/pre_test_setup.sh</executable>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>run-collection-tests</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>./bin/run_api_tests.sh</executable>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

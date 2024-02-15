@@ -1,18 +1,9 @@
 <div class="l-actionBarVertical">
   <div class="l-actionBarVertical-x-items">
-    <button
-      *ngFor="let action of this.secondaryActions"
-      type="button"
-      class="m-actionBarItem"
-      (click)="action.fire(data)"
-    >
-    <span class="m-actionBarItem-x-icon">
-      <svg class="t-icon" aria-hidden="true">
-        <use [attr.xlink:href]="action.icon"></use>
-      </svg>
-    </span>
-      <span class="m-actionBarItem-x-text">{{action.label}}</span>
-    </button>
+    <div *ngFor="let action of this.secondaryActions" class="dropup">
+      <app-vertical-action-bar-item [action]="action" [data]="data">
+      </app-vertical-action-bar-item>
+    </div>
   </div>
 
   <div class="l-actionBarVertical-x-action">
@@ -21,6 +12,7 @@
       type="button"
       class="m-button"
       (click)="action.fire(data)"
+      [disabled]="!action.isVisible"
     >
       <span class="m-button-x-loader">
         <span class="m-loaderGraphic m-loaderGraphic-medium"></span>
@@ -34,4 +26,3 @@
     </button>
   </div>
 </div>
-

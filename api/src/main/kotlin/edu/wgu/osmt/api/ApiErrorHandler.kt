@@ -33,7 +33,7 @@ class GeneralApiExceptionHandler : ResponseEntityExceptionHandler() {
 @ControllerAdvice
 class ApiErrorHandler : ResponseEntityExceptionHandler() {
 
-    override fun handleHttpMessageNotReadable(
+    fun handleHttpMessageNotReadable(
         ex: HttpMessageNotReadableException,
         headers: HttpHeaders,
         status: HttpStatus,
@@ -57,8 +57,8 @@ class ApiErrorHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(ResponseStatusException::class)
     fun handleResponseStatus(ex: ResponseStatusException): ResponseEntity<Any> {
-        val apiError = ApiError(ex.status.toString())
-        return ResponseEntity(apiError, ex.status)
+        val apiError = ApiError(ex.message)
+        return ResponseEntity(apiError, ex.statusCode)
     }
 
 }

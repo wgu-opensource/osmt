@@ -8,7 +8,9 @@ import {
 } from "../../../test/resource/mock-data"
 import { deepEqualSkipOuterType, mismatched } from "../../../test/util/deep-equals"
 import { PublishStatus } from "../PublishStatus"
+import { ApiJobCode } from "../job-codes/Jobcode"
 import {
+  ApiAlignment,
   ApiAuditLog,
   ApiNamedReference,
   ApiSkill,
@@ -177,14 +179,14 @@ describe("ApiSkill", () => {
     expect(apiSkill.type).toEqual(iSkill.type)
     expect(apiSkill.skillName).toEqual(iSkill.skillName)
     expect(apiSkill.skillStatement).toEqual(iSkill.skillStatement)
-    expect(apiSkill.category).toEqual(iSkill.category)
+    expect(apiSkill.categories).toEqual(iSkill.categories)
     expect(apiSkill.collections).toEqual(iSkill.collections)
     expect(apiSkill.keywords).toEqual(iSkill.keywords)
-    expect(apiSkill.alignments).toEqual(iSkill.alignments)
-    expect(apiSkill.standards).toEqual(iSkill.standards)
-    expect(apiSkill.certifications).toEqual(iSkill.certifications)
-    expect(apiSkill.occupations).toEqual(iSkill.occupations)
-    expect(apiSkill.employers).toEqual(iSkill.employers)
-    expect(apiSkill.author).toEqual(iSkill.author)
+    expect(apiSkill.alignments).toEqual(iSkill.alignments.map(v => new ApiAlignment(v)))
+    expect(apiSkill.standards).toEqual(iSkill.standards.map(v => new ApiAlignment(v)))
+    expect(apiSkill.certifications).toEqual(iSkill.certifications.map(v => new ApiNamedReference(v)))
+    expect(apiSkill.occupations).toEqual(iSkill.occupations.map(v => new ApiJobCode(v)))
+    expect(apiSkill.employers).toEqual(iSkill.employers.map(v => new ApiNamedReference(v)))
+    expect(apiSkill.authors).toEqual(iSkill.authors)
   })
 })

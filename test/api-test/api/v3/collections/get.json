@@ -1,0 +1,25 @@
+[
+    {
+        "uuid": "f4e45435-99ef-4432-ad4d-bd7494ca0c83",
+        "name": "Nursing RSDs",
+        "description": "A few skills for nursing",
+        "skillCount": 25,
+        "workspaceOwner": "",
+        "status": "draft"
+    },
+    {
+        "uuid": "60495ba4-c529-4327-8a04-9d282ec2c2c0",
+        "name": "Marketing",
+        "description": "Marketing stuff",
+        "skillCount": 224,
+        "workspaceOwner": "",
+        "status": "draft"
+    },
+    {
+        "uuid": "ce1ccd5d-2ba8-496d-bdb6-87a278752a15",
+        "name": "Bailiffs, Correctional Officers, and Jailers",
+        "skillCount": 132,
+        "workspaceOwner": "",
+        "status": "draft"
+    }
+]

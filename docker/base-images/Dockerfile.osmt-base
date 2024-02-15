@@ -1,4 +1,4 @@
-FROM centos:centos8.3.2011 as osmt-base
+FROM oraclelinux:9 as osmt-base
 
 LABEL Maintainer="WGU / OSN"
 
@@ -10,7 +10,7 @@ ENV BASE_DIR=/opt/${USER}
 RUN /usr/bin/yum install -y epel-release \
     && /usr/bin/yum update -y \
     && /usr/bin/yum remove -y java-1.8.0-openjdk* \
-    && /usr/bin/yum install -y curl java-11-openjdk wget
+    && /usr/bin/yum install -y curl java-17-openjdk wget
 
 # Add in configuration files
 ADD etc /etc

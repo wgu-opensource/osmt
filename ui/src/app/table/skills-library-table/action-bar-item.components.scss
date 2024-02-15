@@ -1,0 +1,52 @@
+.dropbtn {
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+.dropup {
+  position: relative;
+  display: inline-block;
+}
+
+.dropup-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  bottom: 50px;
+  z-index: 1;
+  padding-right: 20px;
+}
+
+.dropup:hover .dropup-content.dropup-content-visible {
+  margin-left: -40px;
+  display: block;
+  margin-bottom: 30px;
+}
+
+.dropup-item {
+  width: 100%;
+  color: black;
+  padding-left: 10%;
+  padding-top: 5%;
+  padding-bottom: 5%;
+}
+
+.dropup-item:hover {
+  text-decoration: underline;
+}
+
+.dropup-item:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  text-decoration: none;
+  cursor:not-allowed
+}
+
+hr {
+  border: 0.5px solid gray;
+  margin: 1px 5px;
+  width: 100%;
+}

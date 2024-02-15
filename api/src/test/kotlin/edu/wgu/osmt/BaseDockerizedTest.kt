@@ -31,10 +31,11 @@ interface BaseDockerizedTest {
 }
 
 object Containers {
-    val elasticContainer = GenericContainer<Nothing>("docker.elastic.co/elasticsearch/elasticsearch:7.17.4").apply{
+    val elasticContainer = GenericContainer<Nothing>("docker.elastic.co/elasticsearch/elasticsearch:8.11.3").apply{
         withExposedPorts(9200, 9300)
         withEnv("discovery.type","single-node")
         withEnv("net","host")
+        withEnv("xpack.security.enabled","false")
         start()
         println("Elasticsearch port: ${getMappedPort(9200)}")
     }

@@ -4,8 +4,13 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing"
 import { Title } from "@angular/platform-browser"
 import { ActivatedRoute, Router } from "@angular/router"
 import { ActivatedRouteStubSpec } from "test/util/activated-route-stub.spec"
-import { createMockPaginatedSkills, createMockSkillSummary } from "../../../test/resource/mock-data"
-import { RichSkillServiceStub, SearchServiceStub } from "../../../test/resource/mock-stubs"
+import { createMockPaginatedSkills, createMockSkillSummary, mockTaskResultForExportSearch } from "../../../test/resource/mock-data"
+import {
+  AuthServiceStub,
+  RichSkillServiceStub,
+  SearchServiceData,
+  SearchServiceStub
+} from "../../../test/resource/mock-stubs"
 import { AppConfig } from "../app.config"
 import { EnvironmentService } from "../core/environment.service"
 import { PublishStatus } from "../PublishStatus"
@@ -16,6 +21,9 @@ import { ToastService } from "../toast/toast.service"
 import { RichSkillSearchResultsComponent } from "./rich-skill-search-results.component"
 import { SearchService } from "./search.service"
 import any = jasmine.any
+import {AuthService} from "../auth/auth-service";
+import { of } from "rxjs"
+import { getBaseApi } from "../api-versions"
 
 
 export function createComponent(T: Type<RichSkillSearchResultsComponent>, f?: () => void): Promise<void> {
@@ -67,6 +75,11 @@ describe("RichSkillSearchResultsComponent", () => {
         { provide: RichSkillService, useClass: RichSkillServiceStub },
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
+        { provide: AuthService, useClass: AuthServiceStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        }
       ]
     })
     .compileComponents()
@@ -81,6 +94,13 @@ describe("RichSkillSearchResultsComponent", () => {
 
   it("should be created", () => {
     expect(component).toBeTruthy()
+  })
+
+  it("table actions should be correct", () => {
+    const tableActions = component.tableActions()
+    const actionExportSelected = tableActions[4]
+    expect(actionExportSelected.label).toEqual("Export Selected")
+    expect(tableActions.length).toEqual(6)
   })
 
   it("should handle empty search query", () => {
@@ -115,7 +135,7 @@ describe("RichSkillSearchResultsComponent", () => {
     const advanced = new ApiAdvancedSearch()
     advanced.skillName = "test skill"
     advanced.author = "test author"
-    const apiSearch = new ApiSearch({ advanced })
+    const apiSearch = new ApiSearch({ advanced, filtered: {} })
     component.matchingQuery = undefined
     const expected = [ "test skill", "test author" ];
 
@@ -161,7 +181,7 @@ describe("RichSkillSearchResultsComponent", () => {
     const apiSearch = new ApiSearch({ query })
     component.apiSearch = apiSearch
     component.results = createMockPaginatedSkills(component.size, component.size * 2)  // Prep for handleSelectAll call: >1 page
-    component.handleSelectAll(false)  // Set component.multiplePagesSelected
+    component.handleSelectAll(true)  // Set component.multiplePagesSelected
 
     // Act
     const result = component.getApiSearch(skill)
@@ -199,6 +219,34 @@ describe("RichSkillSearchResultsComponent", () => {
     expect(result).toBeFalse()
     expect(router.navigate).toHaveBeenCalledWith([ "/collections/add-skills"], any(Object) )
   })
+
+  it("handleClickExportSearchCsv should call subject loader and services methods", () => {
+    const spyExportSearch = spyOn(component["richSkillService"], "exportSearchCsv").and.returnValue(of(mockTaskResultForExportSearch))
+    const spyGetResult = spyOn(component["richSkillService"], "getResultExportedCsvLibrary").and.returnValue(of("csv,csv"))
+    component["getRsdCsv"]()
+    expect(spyExportSearch).toHaveBeenCalled()
+    expect(spyGetResult).toHaveBeenCalled()
+  })
+
+  it("export search should be visible",
+    () => {
+      component.selectedSkills = [createMockSkillSummary()]
+      expect(component["exportSearchVisible"]()).toBeTrue()
+  })
+
+  it("handleClickExportSearchXlsx should call subject loader and services methods", () => {
+    const spyExportSearch = spyOn(component["richSkillService"], "exportSearchXlsx").and.returnValue(of(mockTaskResultForExportSearch))
+    const spyGetResult = spyOn(component["richSkillService"], "getResultExportedXlsxLibrary").and.returnValue(of("csv,csv"))
+    component["getRsdXlsx"]()
+    expect(spyExportSearch).toHaveBeenCalled()
+    expect(spyGetResult).toHaveBeenCalled()
+  })
+
+  it("export search should be visible",
+    () => {
+      component.selectedSkills = [createMockSkillSummary()]
+      expect(component["exportSearchVisible"]()).toBeTrue()
+  })
 })
 
 describe("RichSkillSearchResultsComponent with latestSearch", () => {
@@ -227,6 +275,11 @@ describe("RichSkillSearchResultsComponent with latestSearch", () => {
         { provide: RichSkillService, useClass: RichSkillServiceStub },
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
+        { provide: AuthService, useClass: AuthServiceStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
       ]
     })
     .compileComponents()
@@ -276,6 +329,11 @@ describe("RichSkillSearchResultsComponent with params", () => {
         { provide: RichSkillService, useClass: RichSkillServiceStub },
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
+        { provide: AuthService, useClass: AuthServiceStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
       ]
     })
     .compileComponents()
@@ -295,5 +353,64 @@ describe("RichSkillSearchResultsComponent with params", () => {
   it("ngOnInit should handle latestSearch", () => {
     // Assert
     expect(component.apiSearch).toBeTruthy()
+  })
+})
+
+describe("RichSkillSearchResultsComponent with advance search params in history.state", () => {
+  let searchService: SearchService
+  let advanced: ApiAdvancedSearch
+
+  beforeEach(() => {
+    activatedRoute = new ActivatedRouteStubSpec()
+  })
+
+  beforeEach(async(() => {
+    const routerSpy = ActivatedRouteStubSpec.createRouterSpy()
+
+    TestBed.configureTestingModule({
+      declarations: [
+        RichSkillSearchResultsComponent
+      ],
+      imports: [
+        HttpClientTestingModule,  // Needed to avoid the toolName race condition below
+      ],
+      providers: [
+        EnvironmentService,  // Needed to avoid the toolName race condition below
+        AppConfig,  // Needed to avoid the toolName race condition below
+        Title,
+        ToastService,
+        { provide: SearchService, useClass: SearchServiceStub },
+        { provide: RichSkillService, useClass: RichSkillServiceStub },
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: Router, useValue: routerSpy },
+        { provide: AuthService, useClass: AuthServiceStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
+      ]
+    })
+      .compileComponents()
+
+    const appConfig = TestBed.inject(AppConfig)
+    AppConfig.settings = appConfig.defaultConfig()  // This avoids the race condition on reading the config's whitelabel.toolName
+    searchService = TestBed.inject(SearchService)
+
+    createComponent(RichSkillSearchResultsComponent, () => {
+      // Arrange - Setup for ngOnInit alternate path
+      advanced = new ApiAdvancedSearch()
+      advanced.keywords = ["test keywords"]
+
+      searchService.advancedSkillSearch(advanced)
+      history.pushState(SearchServiceData.latestSearch, "advanced")
+      component.apiSearch = new ApiSearch({advanced})
+    })
+  }))
+
+  it("ngOnInit should handle latestSearch", () => {
+    // Assert
+    expect(component.apiSearch).toBeTruthy()
+    expect(history.state.advanced).toBeTruthy()
+    expect(history.state.advanced).toEqual({keywords: ["test keywords"]})
   })
 })

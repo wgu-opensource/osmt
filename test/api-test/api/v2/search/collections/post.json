@@ -1,0 +1,19 @@
+[
+  {
+      "uuid": "187db436-d3e7-43c7-980c-83e143f3df7f",
+      "name": "Management",
+      "description": "Management skills",
+      "skillCount": 52,
+      "workspaceOwner": "",
+      "status": "published",
+      "publishDate": "2023-03-30T13:00:50"
+  },
+  {
+      "uuid": "60495ba4-c529-4327-8a04-9d282ec2c2c0",
+      "name": "Marketing",
+      "description": "Marketing stuff",
+      "skillCount": 224,
+      "workspaceOwner": "",
+      "status": "draft"
+  }
+]

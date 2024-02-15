@@ -1,0 +1,32 @@
+[
+  {
+    "code": "15-1211",
+    "targetNodeName": "Computer Systems Analysts",
+    "frameworkName": "bls"
+  },
+  {
+    "code": "15-1211.00",
+    "targetNodeName": "Computer Systems Analysts",
+    "frameworkName": "o*net"
+  },
+  {
+    "code": "15-1210",
+    "targetNodeName": "Computer and Information Analysts",
+    "frameworkName": "bls"
+  },
+  {
+    "code": "15-1211.01",
+    "targetNodeName": "Health Informatics Specialists",
+    "frameworkName": "o*net"
+  },
+  {
+    "code": "15-1212",
+    "targetNodeName": "Information Security Analysts",
+    "frameworkName": "bls"
+  },
+  {
+    "code": "15-1212.00",
+    "targetNodeName": "Information Security Analysts",
+    "frameworkName": "o*net"
+  }
+]

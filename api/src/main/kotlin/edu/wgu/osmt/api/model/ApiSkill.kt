@@ -1,5 +1,6 @@
 package edu.wgu.osmt.api.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.collection.Collection
@@ -11,8 +12,9 @@ import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
+
 @JsonInclude(JsonInclude.Include.ALWAYS)
-class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collection>, private val appConfig: AppConfig) {
+open class ApiSkill(@JsonIgnore open val rsd: RichSkillDescriptor, @JsonIgnore open val cs: Set<Collection>, private val appConfig: AppConfig) {
 
     @JsonProperty("@context")
     val context = appConfig.rsdContextUrl
@@ -26,8 +28,8 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
         get() = appConfig.defaultCreatorUri
 
     @get:JsonProperty
-    val author: String?
-        get() = rsd.author?.let { it.value }
+    open val authors: List<String>
+        get() = rsd.authors.mapNotNull { it.value }
 
     @get:JsonProperty
     val status: PublishStatus
@@ -62,8 +64,8 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
         get() = rsd.searchingKeywords.mapNotNull { it.value }
 
     @get:JsonProperty
-    val category: String?
-        get() = rsd.category?.value
+    open val categories: List<String>
+        get() = rsd.categories.mapNotNull { it.value }
 
     @get:JsonProperty
     val id: String
@@ -110,7 +112,7 @@ class ApiSkill(private val rsd: RichSkillDescriptor, private val cs: Set<Collect
 
     companion object {
         fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkill{
-            return ApiSkill(rsdDao.toModel(), rsdDao.collections.map{ it.toModel() }.toSet(), appConfig)
+            return ApiSkill(rsdDao.toModel(), rsdDao.collections.map{ it.toModel() }.filter { !it.isWorkspace() }.toSet(), appConfig)
         }
     }
 }

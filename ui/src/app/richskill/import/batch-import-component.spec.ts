@@ -9,6 +9,7 @@ import { AppConfig } from "../../app.config"
 import { AuthService } from "../../auth/auth-service"
 import { EnvironmentService } from "../../core/environment.service"
 import { BatchImportComponent } from "./batch-import.component"
+import { getBaseApi } from "../../api-versions"
 
 
 export function createComponent(T: Type<BatchImportComponent>): Promise<void> {
@@ -52,7 +53,11 @@ describe("BatchImportComponent", () => {
         EnvironmentService,
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
-        { provide: AuthService, useClass: AuthServiceStub }
+        { provide: AuthService, useClass: AuthServiceStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        }
       ]
     })
       .compileComponents()

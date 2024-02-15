@@ -22,4 +22,7 @@ export class PublicTableComponent extends AbstractTableComponent<ApiSkillSummary
     return false
   }
 
+  getFormattedCategories(skill: ApiSkillSummary): string {
+    return skill?.categories.join("; ") ?? ""
+  }
 }

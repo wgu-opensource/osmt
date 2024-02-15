@@ -3,7 +3,8 @@ import {TableActionDefinition} from "./has-action-definitions";
 
 @Component({
   selector: "app-action-bar-item",
-  templateUrl: "./action-bar-item.component.html"
+  templateUrl: "./action-bar-item.component.html",
+  styleUrls: ["./action-bar-item.components.scss"]
 })
 export class ActionBarItemComponent implements OnInit {
   @Input() action: TableActionDefinition | undefined

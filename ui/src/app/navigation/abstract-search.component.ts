@@ -1,13 +1,24 @@
-import {FormControl, FormGroup} from "@angular/forms";
-import {SearchService} from "../search/search.service";
-import {ActivatedRoute} from "@angular/router";
+import {FormControl, FormGroup} from "@angular/forms"
+import {SearchService} from "../search/search.service"
+import {ActivatedRoute} from "@angular/router"
+import {AuthService} from "../auth/auth-service"
+import {ButtonAction} from "../auth/auth-roles"
 
 export class AbstractSearchComponent {
   searchForm = new FormGroup({
     search: new FormControl("")
   })
 
-  constructor(protected searchService: SearchService, protected route: ActivatedRoute) {
+  canSkillUpdate: boolean = false
+  canSkillCreate: boolean = false
+  canSkillPublish: boolean = false
+  canCollectionUpdate: boolean = false
+  canCollectionCreate: boolean = false
+  canCollectionPublish: boolean = false
+  canCollectionSkillsUpdate: boolean = false
+  canExportLibrary: boolean = false
+
+  constructor(protected searchService: SearchService, protected route: ActivatedRoute, protected  authService: AuthService) {
     this.searchService.searchQuery$.subscribe(apiSearch => {
       if (apiSearch === undefined) {
         this.clearSearch()
@@ -20,6 +31,18 @@ export class AbstractSearchComponent {
         this.searchForm.setValue({search: queryString})
       }
     })
+    this.setEnableFlags()
+  }
+
+  setEnableFlags(): void {
+    this.canSkillUpdate = this.authService.isEnabledByRoles(ButtonAction.SkillUpdate);
+    this.canSkillCreate = this.authService.isEnabledByRoles(ButtonAction.SkillCreate);
+    this.canSkillPublish = this.authService.isEnabledByRoles(ButtonAction.SkillPublish);
+    this.canCollectionUpdate = this.authService.isEnabledByRoles(ButtonAction.CollectionUpdate);
+    this.canCollectionCreate = this.authService.isEnabledByRoles(ButtonAction.CollectionCreate);
+    this.canCollectionPublish = this.authService.isEnabledByRoles(ButtonAction.CollectionPublish);
+    this.canCollectionSkillsUpdate = this.authService.isEnabledByRoles(ButtonAction.CollectionSkillsUpdate);
+    this.canExportLibrary = this.authService.isEnabledByRoles(ButtonAction.LibraryExport);
   }
 
   clearSearch(): boolean {
@@ -48,5 +71,4 @@ export class AbstractSearchComponent {
     }
     return false
   }
-
 }

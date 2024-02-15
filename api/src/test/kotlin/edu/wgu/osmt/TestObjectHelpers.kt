@@ -1,6 +1,11 @@
 package edu.wgu.osmt
 
-import edu.wgu.osmt.api.model.*
+import edu.wgu.osmt.api.model.ApiAlignment
+import edu.wgu.osmt.api.model.ApiAlignmentListUpdate
+import edu.wgu.osmt.api.model.ApiNamedReference
+import edu.wgu.osmt.api.model.ApiReferenceListUpdate
+import edu.wgu.osmt.api.model.ApiSkillUpdate
+import edu.wgu.osmt.api.model.ApiStringListUpdate
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
@@ -28,6 +33,7 @@ object TestObjectHelpers {
     fun collectionDoc(
         id: Long = elasticIdCounter,
         name: String,
+        description: String? = null,
         publishStatus: PublishStatus = PublishStatus.Draft,
         skillIds: List<String> = listOf(),
         author: String? = null
@@ -35,10 +41,12 @@ object TestObjectHelpers {
         id = id,
         uuid = UUID.randomUUID().toString(),
         name = name,
+        description = description,
         publishStatus = publishStatus,
         skillIds = skillIds,
         skillCount = skillIds.count(),
-        author = author ?: authorString + "-collection"
+        author = author ?: authorString + "-collection",
+        workspaceOwner = "owner@email.com"
     )
 
     fun randomString(): String = UUID.randomUUID().toString().replace("-", "")
@@ -55,7 +63,7 @@ object TestObjectHelpers {
     fun randomStrings() = (1..10).map { randomString() }
 
     fun randomCollectionDoc(): CollectionDoc {
-        return collectionDoc(name = randomString(), author = randomString())
+        return collectionDoc(name = randomString(), description = randomString(), author = randomString())
     }
 
     fun randomJobCode(): JobCode {
@@ -71,8 +79,8 @@ object TestObjectHelpers {
         return richSkillDoc(
             name = randomString(),
             statement = randomString(),
-            category = randomString(),
-            author = randomString()
+            categories = listOf(randomString()),
+            authors = listOf(randomString())
         ).copy(
             searchingKeywords = randomStrings(),
             standards = randomStrings(),
@@ -88,8 +96,8 @@ object TestObjectHelpers {
         id: Long = elasticIdCounter,
         name: String,
         statement: String,
-        category: String? = "default category",
-        author: String = authorString,
+        categories: List<String> = listOf("default category"),
+        authors: List<String> = listOf(authorString),
         publishStatus: PublishStatus = PublishStatus.Draft
     ): RichSkillDoc {
         val uuid = UUID.randomUUID().toString()
@@ -99,10 +107,10 @@ object TestObjectHelpers {
             uri = "/base/url/${uuid}",
             name = name,
             statement = statement,
-            category = category,
-            author = author,
+            categories = categories,
+            authors = authors,
             publishStatus = publishStatus,
-            collections = listOf(collectionDoc(elasticIdCounter, UUID.randomUUID().toString()))
+            collections = listOf(collectionDoc(elasticIdCounter, UUID.randomUUID().toString(), randomString()))
         )
     }
 
@@ -155,9 +163,13 @@ object TestObjectHelpers {
     ): ApiSkillUpdate {
         val skillName = name ?: UUID.randomUUID().toString()
         val skillStatement = statement ?: UUID.randomUUID().toString()
-        val categoryName = UUID.randomUUID().toString()
-        val author = UUID.randomUUID().toString()
 
+        val authors = ApiStringListUpdate(
+            add = (1..keywordCount).toList().map { "Author${it}" }
+        )
+        val categories = ApiStringListUpdate(
+            add = (1..keywordCount).toList().map { "Category${it}" }
+        )
         val keywords = ApiStringListUpdate(
             add = (1..keywordCount).toList().map { UUID.randomUUID().toString() }
         )
@@ -185,8 +197,8 @@ object TestObjectHelpers {
             skillName = skillName,
             skillStatement = skillStatement,
             publishStatus = publishStatus,
-            category = categoryName,
-            author = author,
+            categories = categories,
+            authors = authors,
             keywords = keywords,
             certifications = certifications,
             standards = standards,

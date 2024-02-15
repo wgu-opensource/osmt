@@ -1,0 +1,17 @@
+{
+    "type": "RichSkillCollection",
+    "name": "My Workspace",
+    "id": "http://localhost:8080/api/collections/3957adef-bbd6-4b79-a6ad-22e2ae8c6e4c",
+    "owner": "osmt.dev@example.com",
+    "description": null,
+    "status": "workspace",
+    "skills": [],
+    "author": "OSMT Developer",
+    "uuid": "3957adef-bbd6-4b79-a6ad-22e2ae8c6e4c",
+    "archiveDate": null,
+    "publishDate": null,
+    "creationDate": "2023-04-17T18:38:24.683187Z",
+    "updateDate": "2023-04-17T18:38:24.712471Z",
+    "creator": "https://credentialengineregistry.org/resources/ce-036d082d-d80e-41a7-99a0-2d63a4ad3a4a",
+    "@context": "https://rsd.openskillsnetwork.org/context-v1.json"
+}

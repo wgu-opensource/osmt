@@ -66,6 +66,22 @@ describe("SearchService", () => {
     expect(RouterData.commands).toEqual(["/skills/search"])
   })
 
+  it( "should pass advanced query to history.state via router navigation", () => {
+    // Arrange
+    const advanced = new ApiAdvancedSearch()
+    advanced.keywords = ["test keywords"]
+    const apiSearch = new ApiSearch({advanced});
+    RouterData.commands = []
+    RouterData.extras = {}
+
+    // Act
+    service.advancedSkillSearch(advanced)
+
+    // Assert
+    expect(RouterData.commands).toEqual(["/skills/search"])
+    expect(RouterData.extras).toEqual({state: apiSearch})
+  })
+
   it("should perform simple collection search", () => {
     // Arrange
     let result: ApiSearch | undefined

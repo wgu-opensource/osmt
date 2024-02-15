@@ -1,54 +1,77 @@
-import {ApiSearch, PaginatedSkills} from "../service/rich-skill-search.service";
-import {ApiSkillSummary} from "../ApiSkillSummary";
-import {checkArchived, determineFilters, PublishStatus} from "../../PublishStatus";
-import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions";
-import {Component, ElementRef, ViewChild} from "@angular/core";
-import {Observable} from "rxjs";
-import {ApiBatchResult} from "../ApiBatchResult";
-import {RichSkillService} from "../service/rich-skill.service";
-import {ToastService} from "../../toast/toast.service";
-import {ApiSortOrder} from "../ApiSkill";
-import {Router} from "@angular/router";
-import {QuickLinksHelper} from "../../core/quick-links-helper";
-import {ExtrasSelectedSkillsState} from "../../collection/add-skills-collection.component";
-import {TableActionBarComponent} from "../../table/skills-library-table/table-action-bar.component";
+import { Component, ElementRef, ViewChild } from "@angular/core";
+import { Router } from "@angular/router";
 
+import { Observable } from "rxjs";
+
+import { ApiBatchResult } from "../ApiBatchResult";
+import { ApiSortOrder, KeywordType } from "../ApiSkill";
+import { ApiSkillSummary } from "../ApiSkillSummary";
+import { RichSkillService } from "../service/rich-skill.service";
+import { ApiSearch, ApiSkillListUpdate, PaginatedSkills } from "../service/rich-skill-search.service";
+import { ButtonAction } from "../../auth/auth-roles";
+import { AuthService } from "../../auth/auth-service";
+import { ExtrasSelectedSkillsState } from "../../collection/add-skills-collection.component";
+import { ApiCollection } from "../../collection/ApiCollection"
+import { CollectionService } from "../../collection/service/collection.service"
+import { QuickLinksHelper } from "../../core/quick-links-helper";
+import { FilterDropdown } from "../../models/filter-dropdown.model"
+import { CollectionPipe } from "../../pipes"
+import { checkArchived, determineFilters, PublishStatus } from "../../PublishStatus";
+import { FilterControlsComponent } from "../../table/filter-controls/filter-controls.component"
+import { TableActionDefinition } from "../../table/skills-library-table/has-action-definitions";
+import { TableActionBarComponent } from "../../table/skills-library-table/table-action-bar.component";
+import { ToastService } from "../../toast/toast.service";
 
 @Component({
   selector: "app-skills-list",
   templateUrl: "./skills-list.component.html"
 })
 export class SkillsListComponent extends QuickLinksHelper {
-  /*
-   * In default configuration, ElasticSearch has an upper limit of returning 10000 elements.  For a short-term
-   * usability fix, we're simply going to add a "+" character when displaying 10000 (or more) total hits.
-   */
-  readonly upperLimit = 10000
 
   from = 0
   size = 50
+  collection?: ApiCollection
+  showAdvancedFilteredSearch = false
 
   @ViewChild("titleHeading") titleElement!: ElementRef
   @ViewChild(TableActionBarComponent) tableActionBar!: TableActionBarComponent
+  @ViewChild(FilterControlsComponent) filterControlsComponent!: FilterControlsComponent
 
 
   resultsLoaded: Observable<PaginatedSkills> | undefined
   results: PaginatedSkills | undefined
 
   selectedFilters: Set<PublishStatus> = new Set([PublishStatus.Draft, PublishStatus.Published])
+  keywords: FilterDropdown = {
+    categories: [],
+    certifications: [],
+    employers: [],
+    alignments: [],
+    keywords: [],
+    occupations: [],
+    standards: [],
+    authors: []
+  }
   selectedSkills?: ApiSkillSummary[]
   skillsSaved?: Observable<ApiBatchResult>
 
-  columnSort: ApiSortOrder = ApiSortOrder.NameAsc
+  columnSort: ApiSortOrder = ApiSortOrder.SkillAsc
+
+  showCategories = true
 
   showSearchEmptyMessage = false
   showLibraryEmptyMessage = false
 
   showAddToCollection = true
+  showExportSelected = false
+
+  selectAllChecked = false
 
   constructor(protected router: Router,
               protected richSkillService: RichSkillService,
-              protected toastService: ToastService
+              protected collectionService: CollectionService,
+              protected toastService: ToastService,
+              protected authService: AuthService,
   ) {
     super()
   }
@@ -57,8 +80,9 @@ export class SkillsListComponent extends QuickLinksHelper {
   matchingQuery?: string[]
   title?: string
   loadNextPage(): void {}
-  handleSelectAll(selectAllChecked: boolean): void {}
-
+  handleSelectAll(selectAllChecked: boolean): void {
+    this.selectAllChecked = selectAllChecked
+  }
 
   // base component methods
 
@@ -69,7 +93,7 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   get skillCountLabel(): string {
     if (this.totalCount > 0)  {
-      return `${this.totalCount}${this.totalCount >= this.upperLimit ? "+" : ""} RSD${this.totalCount > 1 ? "s" : ""}`
+      return `${this.totalCount} RSD${this.totalCount > 1 ? "s" : ""}`
     }
     return `0 RSDs`
   }
@@ -112,38 +136,49 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   publishVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return skill.publishDate === undefined
+      return skill.publishDate === undefined && this.authService.isEnabledByRoles(ButtonAction.SkillPublish)
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
       const unpublishedSkill = this.selectedSkills?.find(s => s.publishDate === undefined)
-      return unpublishedSkill !== undefined
+      return unpublishedSkill !== undefined && this.authService.isEnabledByRoles(ButtonAction.SkillPublish)
     }
   }
   archiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return !checkArchived(skill)
+      return !checkArchived(skill) && this.authService.isEnabledByRoles(ButtonAction.SkillUpdate)
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
       const unarchivedSkills = this.selectedSkills?.find(s => !checkArchived(s))
-      return unarchivedSkills !== undefined
+      return unarchivedSkills !== undefined && this.authService.isEnabledByRoles(ButtonAction.SkillUpdate)
     }
   }
 
   unarchiveVisible(skill?: ApiSkillSummary): boolean {
     if (skill !== undefined) {
-      return checkArchived(skill)
+      return checkArchived(skill) && this.authService.isEnabledByRoles(ButtonAction.SkillUpdate)
     } else if ((this.selectedSkills?.length ?? 0) === 0) {
       return false
     } else {
       const archivedSkill = this.selectedSkills?.find(checkArchived)
-      return archivedSkill !== undefined
+      return archivedSkill !== undefined && this.authService.isEnabledByRoles(ButtonAction.SkillUpdate)
     }
   }
 
+  protected exportSearchVisible(): boolean {
+    return false
+  }
+
+  addToVisible(): boolean {
+    return (this.selectedSkills?.length ?? 0) > 0
+  }
+
   addToCollectionVisible(skill?: ApiSkillSummary): boolean {
-    return ((this.selectedSkills?.length ?? 0) > 0)
+    if (this.collection?.status === PublishStatus.Workspace) {
+      return this.addToVisible() && this.authService.isEnabledByRoles(ButtonAction.MyWorkspace)
+    }
+    return this.addToVisible() && this.authService.isEnabledByRoles(ButtonAction.CollectionSkillsUpdate)
   }
 
   handleFiltersChanged(newFilters: Set<PublishStatus>): void {
@@ -188,11 +223,13 @@ export class SkillsListComponent extends QuickLinksHelper {
       actions.push(new TableActionDefinition({
         label: "Add to Collection",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
       }))
     } else {
       actions.push(new TableActionDefinition({
-        label: "Remove from Collection",
+        label: `Remove from ${this.collectionOrWorkspace(true)}`,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickRemoveCollection(action, skill),
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
       }))
     }
     return actions
@@ -227,24 +264,55 @@ export class SkillsListComponent extends QuickLinksHelper {
         icon: "unarchive",
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickUnarchive(action, skill),
         visible: (skill?: ApiSkillSummary) => this.unarchiveVisible(skill)
-      }),
+      })
     ]
+
+    if (this.showExportSelected) {
+      actions.push(new TableActionDefinition({
+        label: "Export Selected",
+        icon: "download",
+        visible: () => this.exportSearchVisible(),
+        menu: [
+          {
+            label: "Download as CSV",
+            callback: () => this.getRsdCsv(),
+            visible: () => true
+          },
+          {
+            label: "Download as Excel Workbook",
+            callback: () => this.getRsdXlsx(),
+            visible: () => true
+          }
+        ]
+      }))
+    }
 
     if (this.showAddToCollection) {
       actions.push(new TableActionDefinition({
-        label: "Add to Collection",
-        icon: "collection",
+        label: "Add to",
+        icon: "add",
         primary: true,
-        callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
-        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
+        visible: (skill?: ApiSkillSummary) => this.addToVisible(),
+        menu: [
+          {
+            label: "Add to Collection",
+            callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickAddCollection(action, skill),
+            visible: () => this.addToCollectionVisible()
+          },
+          {
+            label: "Add to Workspace",
+            callback: () => this.handleClickAddToWorkspace(),
+            visible: () => this.addToWorkspaceVisible()
+          }
+        ]
       }))
     } else {
       actions.push(new TableActionDefinition({
-        label: "Remove from Collection",
+        label: `Remove from ${this.collectionOrWorkspace(true)}`,
         icon: "dismiss",
         primary: true,
         callback: (action: TableActionDefinition, skill?: ApiSkillSummary) => this.handleClickRemoveCollection(action, skill),
-        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill)
+        visible: (skill?: ApiSkillSummary) => this.addToCollectionVisible(skill) || this.addToWorkspaceVisible()
       }))
     }
 
@@ -252,9 +320,35 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   }
 
+  protected addToWorkspaceVisible(): boolean {
+    return this.addToVisible() && this.authService.isEnabledByRoles(ButtonAction.MyWorkspace)
+  }
+
+  protected getRsdCsv(): void {}
+
+  protected getRsdXlsx(): void {}
+
   protected handleClickBackToTop(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
     this.focusAndScrollIntoView(this.titleElement.nativeElement)
     return false
+  }
+
+  protected handleClickAddToWorkspace(): void {
+    const skillListUpdate = this.selectAllChecked ? new ApiSkillListUpdate(
+      {add: new ApiSearch({query: this.matchingQuery?.join(""), filtered: {}})}
+    ) : new ApiSkillListUpdate(
+      {add: new ApiSearch({uuids: this.getSelectedSkills()?.map(i => i.uuid)})}
+    )
+    this.toastService.showBlockingLoader()
+    this.collectionService.getWorkspace().subscribe(workspace => {
+      this.collectionService.updateSkillsWithResult(workspace.uuid, skillListUpdate, this.selectedFilters).subscribe(result => {
+        if (result) {
+          const message = `You added ${result.modifiedCount} RSDs to the workspace.`
+          this.toastService.showToast("Success!", message)
+          this.toastService.hideBlockingLoader()
+        }
+      })
+    })
   }
 
   protected handleClickAddCollection(action: TableActionDefinition, skill?: ApiSkillSummary): boolean {
@@ -340,8 +434,6 @@ export class SkillsListComponent extends QuickLinksHelper {
 
   getMobileSortOptions(): {[s: string]: string} {
     return {
-      "name.asc": "Category (ascending)",
-      "name.desc": "Category (descending)",
       "skill.asc": "RSD Name (ascending)",
       "skill.desc": "RSD Name (descending)",
     }
@@ -361,4 +453,35 @@ export class SkillsListComponent extends QuickLinksHelper {
   focusActionBar(): void {
     this.tableActionBar.focus()
   }
+
+  collectionOrWorkspace(includesMy: boolean): string {
+    return new CollectionPipe().transform(this.collection?.status, includesMy)
+  }
+
+  keywordsChange(keywords: FilterDropdown): void {
+    this.keywords = keywords
+    this.loadNextPage()
+  }
+
+  sizeChange(size: number): void {
+    this.size = size
+    this.from = 0
+    this.handlePageClicked(1)
+  }
+
+  get selectedKeywords(): any {
+    const a: any = {}
+    const b: any = this.keywords
+    for (const key in this.keywords) {
+      if (b[key].length > 0) {
+        a[key] = b[key].map((i: any) => i.name ?? i.code)
+      }
+    }
+    return a
+  }
+
+  get isSizePaginationVisible(): () => boolean {
+    return () => this.totalCount > this.filterControlsComponent?.sizePagination?.values[0]
+  }
+
 }

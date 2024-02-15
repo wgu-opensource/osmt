@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import kotlin.system.exitProcess
 
 @Component
 @Profile("reindex")
@@ -24,8 +25,8 @@ class ReindexCommand: CommandLineRunner {
     override fun run(vararg args: String?) {
         elasticSearchReindexer.reindexAll()
         (applicationContext as ConfigurableApplicationContext).close()
+        exitProcess(0) // "./osmt_cli.sh -r" blocks without this
     }
-
 }
 
 fun main(args: Array<String>) {

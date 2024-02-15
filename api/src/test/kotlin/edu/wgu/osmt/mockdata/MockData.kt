@@ -3,9 +3,9 @@ package edu.wgu.osmt.mockdata
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.config.AppConfig
-import edu.wgu.osmt.csv.BlsJobCode
-import edu.wgu.osmt.csv.OnetJobCode
-import edu.wgu.osmt.csv.RichSkillRow
+import edu.wgu.osmt.io.csv.BlsJobCode
+import edu.wgu.osmt.io.csv.OnetJobCode
+import edu.wgu.osmt.io.csv.RichSkillRow
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.Keyword
@@ -144,8 +144,8 @@ class MockData {
             uri = "${appConfig.baseUrl}/api/skills/${rsd.uuid}",
             name = rsd.name,
             statement = rsd.statement,
-            category = rsd.category?.value,
-            author = rsd.author?.value,
+            categories = rsd.categories.mapNotNull { it.value },
+            authors = rsd.authors.mapNotNull { it.value },
             publishStatus = rsd.publishStatus(),
             searchingKeywords = rsd.searchingKeywords.mapNotNull { r -> r.value },
             jobCodes = rsd.jobCodes,
@@ -167,7 +167,7 @@ class MockData {
         val richSkillRow = RichSkillRow()
         richSkillRow.collections = rsd?.collections?.map{ it.name }?.joinToString(separator = sep)
         richSkillRow.skillName = rsd?.name
-        richSkillRow.skillCategory = rsd?.category?.value
+        richSkillRow.skillCategories = rsd?.categories?.map { it.value }?.joinToString(separator = sep)
         richSkillRow.skillStatement = rsd?.statement
         richSkillRow.keywords = rsd?.keywords?.map{ it.value }?.joinToString(separator = sep)
         richSkillRow.standards = rsd?.standards?.map{ it.value }?.joinToString(separator = sep)
@@ -177,7 +177,7 @@ class MockData {
         richSkillRow.blsBroads = rsd?.jobCodes?.map { it.broadCode }?.toMutableList()?.filterNotNull()?.distinct()?.joinToString (separator = sep)
         richSkillRow.blsDetaileds = rsd?.jobCodes?.map { it.detailedCode }?.toMutableList()?.filterNotNull()?.distinct()?.joinToString (separator = sep)
         richSkillRow.jobRoles = rsd?.jobCodes?.map { it.jobRoleCode }?.toMutableList()?.filterNotNull()?.distinct()?.joinToString (separator = sep)
-        richSkillRow.author = rsd?.author?.value
+        richSkillRow.authors = rsd?.authors?.map{ it.value }?.joinToString(separator = sep)
         richSkillRow.employer = rsd?.employers?.map { it.value }?.joinToString (separator = sep)
         richSkillRow.alignmentTitle = rsd?.alignments?.map { it.value }?.joinToString (separator = sep)
         richSkillRow.alignmentUri = rsd?.alignments?.map { it.uri }?.joinToString (separator = sep)
@@ -243,6 +243,8 @@ class MockData {
             "https://osmt.wgu.edu/credentialengineerregistry",
             "http://localhost:4200",
             "http://localhost:4200/login/success",
+            "user",
+            "user@email.com",
             true,
             true,
             false,
@@ -297,12 +299,14 @@ class MockData {
                 c.id!!,
                 c.uuid!!,
                 c.name!!,
-                PublishStatus.valueOf(c.status!!),
+                c.description!!,
+                c.status?.let { PublishStatus.forApiValue(it) }!!,
                 skillUUIDs as List<String>,
                 c.skillsCount,
                 lookupKeywordValue(c.author?.toLong()),
                 parseDateTime(c.archiveDate),
-                parseDateTime(c.publishDate)
+                parseDateTime(c.publishDate),
+                c.workspaceOwner!!
             )
         }
     }
@@ -344,6 +348,20 @@ class MockData {
                         .map { id: String? -> this.jobCodes[id?.toLong()]}
                         .collect(Collectors.toList())
 
+                val authors: MutableList<Keyword> =
+                    if (rsd.authorValues == null) ArrayList() else Arrays.stream(
+                        rsd.authorValues!!.split(",").toTypedArray()
+                    )
+                        .map { id: String? -> this.keywords[id?.toLong()]}
+                        .collect(Collectors.toList())
+
+                val categories: MutableList<Keyword> =
+                    if (rsd.categoryValues == null) ArrayList() else Arrays.stream(
+                        rsd.categoryValues!!.split(",").toTypedArray()
+                    )
+                        .map { id: String? -> this.keywords[id?.toLong()]}
+                        .collect(Collectors.toList())
+
                 val keywords: MutableList<Keyword> =
                     if (rsd.keywordValues == null) ArrayList() else Arrays.stream(
                         rsd.keywordValues!!.split(",").toTypedArray()
@@ -360,8 +378,6 @@ class MockData {
                     rsd.statement!!,
                     jobCodes,
                     keywords,
-                    lookupKeyword(rsd.categoryKeyword),
-                    lookupKeyword(rsd.authorKeyword),
                     parseDateTime(rsd.archiveDate),
                     parseDateTime(rsd.publishDate),
                     collections
@@ -377,9 +393,11 @@ class MockData {
             updateDate = now,
             uuid = doc?.uuid!!,
             name = doc.name,
+            description = doc.description,
             author = lookupKeywordByValue(doc.author),
             archiveDate = doc.archiveDate,
-            publishDate = doc.publishDate
+            publishDate = doc.publishDate,
+            status = doc.publishStatus
         )
     }
 
@@ -388,12 +406,14 @@ class MockData {
             id = c.id!!,
             uuid = c.uuid,
             name = c.name,
+            description = c.description,
             author = c.author?.value,
             archiveDate = c.archiveDate,
             publishDate = c.publishDate,
             publishStatus = c.publishStatus(),
             skillCount = 0,
-            skillIds = null
+            skillIds = null,
+            workspaceOwner = c.workspaceOwner
         )
     }
 

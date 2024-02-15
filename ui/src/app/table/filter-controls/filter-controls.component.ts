@@ -1,18 +1,46 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from "@angular/core"
 import {PublishStatus} from "../../PublishStatus";
+import {FilterDropdown} from "../../models/filter-dropdown.model"
+import {FormBuilder, FormControl, FormGroup} from "@angular/forms"
+import {SizePaginationComponent} from "../skills-library-table/size-pagination/size-pagination.component"
 
 @Component({
   selector: "app-filter-controls",
-  templateUrl: "./filter-controls.component.html"
+  templateUrl: "./filter-controls.component.html",
+  styleUrls: ["./filter-controls.component.scss"]
 })
-export class FilterControlsComponent implements OnInit {
-  @Input() selectedFilters: Set<PublishStatus> = new Set()
-  @Output() filtersChanged: EventEmitter<Set<PublishStatus>> = new EventEmitter<Set<PublishStatus>>()
+export class FilterControlsComponent implements OnInit, OnChanges {
 
-  constructor() {
+  @ViewChild(SizePaginationComponent) sizePagination!: SizePaginationComponent
+  @Input() selectedFilters: Set<PublishStatus> = new Set()
+  @Output() keywordsChanged: EventEmitter<FilterDropdown> = new EventEmitter<FilterDropdown>()
+  @Output() filtersChanged: EventEmitter<Set<PublishStatus>> = new EventEmitter<Set<PublishStatus>>()
+  @Input()
+  keywords?: FilterDropdown
+  filterFg: FormGroup
+  @Input()
+  showAdvancedFilteredSearch?: boolean
+  @Output()
+  changeValue: EventEmitter<number> = new EventEmitter()
+  sizeControl?: FormControl
+  @Input()
+  currentSize = 50
+  @Input()
+  isSizePaginationVisible: () => boolean = () => false
+
+  constructor(
+    protected formBuilder: FormBuilder
+  ) {
+    this.filterFg = this.configureFilterFg()
+    this.sizeControl = new FormControl(this.currentSize)
+    this.sizeControl.valueChanges.subscribe(value => this.changeValue.emit(value))
   }
 
   ngOnInit(): void {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.filterFg.patchValue(this.keywords ?? {})
   }
 
   onFilterChange(status: PublishStatus, isChecked: boolean): void {
@@ -39,4 +67,23 @@ export class FilterControlsComponent implements OnInit {
   isStatusChecked(status: PublishStatus): boolean | undefined {
     return this.selectedFilters.has(status) ? true : undefined
   }
+
+  applyFilter(event: FilterDropdown): void {
+    this.keywords = event
+    this.keywordsChanged.emit(this.keywords)
+  }
+
+  private configureFilterFg(): FormGroup {
+    return this.formBuilder.group({
+      categories: [],
+      keywords: [],
+      standards: [],
+      alignments: [],
+      certifications: [],
+      occupations: [],
+      employers: [],
+      authors: []
+    })
+  }
+
 }

@@ -5,8 +5,8 @@ version 1.1
 
 RSD Name:           notEmpty
 Skill Statement:    notEmpty
-Category:           @optional
-Author:             @optional
+Categories:         @optional
+Authors:            notEmpty    // multiple items can be separated by ";"
 Keywords:           @optional   // multiple items can be separated by ";"
 Standards:          @optional   // multiple items can be separated by ";"
 Certifications:     @optional   // multiple items can be separated by ";"

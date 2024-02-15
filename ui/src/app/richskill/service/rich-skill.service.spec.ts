@@ -6,6 +6,7 @@ import { HttpClientTestingModule, HttpTestingController } from "@angular/common/
 import { fakeAsync, TestBed, tick } from "@angular/core/testing"
 import { Router } from "@angular/router"
 import {
+  apiTaskResultForCSV,
   createMockAuditLog,
   createMockBatchResult,
   createMockPaginatedSkills,
@@ -25,6 +26,9 @@ import { ApiSkillSummary } from "../ApiSkillSummary"
 import { ApiSkillUpdate } from "../ApiSkillUpdate"
 import { ApiSearch, PaginatedSkills } from "./rich-skill-search.service"
 import { RichSkillService } from "./rich-skill.service"
+import { ApiTaskResult } from "../../task/ApiTaskResult"
+import {query} from "@angular/animations"
+import { getBaseApi } from "../../api-versions"
 
 
 // An example of how to test a service
@@ -51,7 +55,11 @@ describe("RichSkillService", () => {
         RichSkillService,
         Location,
         { provide: AuthService, useClass: AuthServiceStub },
-        { provide: Router, useClass: RouterStub }
+        { provide: Router, useClass: RouterStub },
+        {
+          provide: "BASE_API",
+          useFactory: getBaseApi,
+        },
       ]
     })
     .compileComponents()
@@ -74,17 +82,17 @@ describe("RichSkillService", () => {
     expect(testService).toBeTruthy()
   })
 
-  it("getSkills should return", () => {
+  it("getSkills filter should return", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const path = "api/skills?sort=name.asc&status=Draft&size=3&from=0"
+    const path = getBaseApi() + "/skills/filter?sort=skill.asc&status=draft&size=3&from=0"
     const testData: PaginatedSkills = createMockPaginatedSkills(3, 10)
     const statuses = new Set<PublishStatus>([ PublishStatus.Draft ])
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.getSkills(testData.skills.length, 0, statuses, ApiSortOrder.NameAsc)
+    const result$ = testService.getSkillsFiltered(testData.skills.length, 0,  new ApiSearch({filtered: {}}), statuses, ApiSortOrder.SkillAsc)
 
     // Assert
     result$
@@ -94,8 +102,8 @@ describe("RichSkillService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
-    expect(req.request.method).toEqual("GET")
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
+    expect(req.request.method).toEqual("POST")
     req.flush(testData.skills, {
       headers: { "x-total-count": "" + testData.totalCount}
     })
@@ -106,7 +114,7 @@ describe("RichSkillService", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const uuid = "uuid1"
-    const path = "api/skills/" + uuid
+    const path = getBaseApi() + "/skills/" + uuid
     const date = new Date("2020-06-25T14:58:46.313Z")
     const testData: ApiSkill = new ApiSkill(createMockSkill(date, date, PublishStatus.Draft))
 
@@ -122,7 +130,7 @@ describe("RichSkillService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
     expect(req.request.method).toEqual("GET")
     req.flush(testData)
   })
@@ -132,9 +140,9 @@ describe("RichSkillService", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
-    const path = "api/skills/" + uuid
+    const path = getBaseApi() + "/skills/" + uuid
     const testData =
-      "\"Canonical URL\",\"RSD Name\",\"Author\",\"Skill Statement\",\"Category\",\"Keywords\",\"Standards\",\"Certifications\",\"Occupation Major Groups\",\"Occupation Minor Groups\",\"Broad Occupations\",\"Detailed Occupations\",\"O*Net Job Codes\",\"Employers\",\"Alignment Name\",\"Alignment URL\"\n" +
+      "\"Canonical URL\",\"RSD Name\",\"Authors\",\"Skill Statement\",\"Categories\",\"Keywords\",\"Standards\",\"Certifications\",\"Occupation Major Groups\",\"Occupation Minor Groups\",\"Broad Occupations\",\"Detailed Occupations\",\"O*Net Job Codes\",\"Employers\",\"Alignment Name\",\"Alignment URL\"\n" +
       "\"https://localhost:8080/api/skills/f6aacc9e-bfc6-4cc9-924d-c7ef83afef07\",\"Situational Parameters\",\"Western Governors University\",\"Identify appropriate modes of written communication based on situational parameters.\",\"Written Communication\",\"SEL: Interpersonal Communication; Written Communication; Writing; Academic Writing\",\"\",\"\",\"29-0000\",\"29-1000\",\"29-1140\",\"29-1141\",\"29-1141.00; 29-1141.01; 29-1141.02; 29-1141.03; 29-1141.04\",\"Health Open Skills\",\"Written Communication\",\"skills.emsidata.com/skills/KS4425C63RPH46FJ9BX7\""
 
     // Act
@@ -149,9 +157,9 @@ describe("RichSkillService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
     expect(req.request.method).toEqual("GET")
-    expect(req.request.headers.get("Accept")).toEqual("text/csv")
+    expect(req.request.headers.get("Accept")).toEqual("application/json")
     req.flush(testData)
   })
   it("getSkillCsvByUUID should fail", () => {
@@ -163,7 +171,9 @@ describe("RichSkillService", () => {
       testService.getSkillCsvByUuid("")
     } catch (e) {
       // Assert
-      expect(e.message).toEqual("No uuid provided for single skill csv export")
+     if (e instanceof Error) {
+       expect(e.message).toEqual("No uuid provided for single skill csv export")
+     }
     }
   })
 
@@ -172,7 +182,7 @@ describe("RichSkillService", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
-    const path = "api/skills/" + uuid
+    const path = getBaseApi() + "/skills/" + uuid
     const testData =  // Doesn't matter what the string has in it.
       `{
           "foo": "bar"
@@ -190,7 +200,7 @@ describe("RichSkillService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
     expect(req.request.method).toEqual("GET")
     expect(req.request.headers.get("Accept")).toEqual("application/json")
     req.flush(testData)
@@ -204,7 +214,9 @@ describe("RichSkillService", () => {
       testService.getSkillJsonByUuid("")
     } catch (e) {
       // Assert
-      expect(e.message).toEqual("No uuid provided for single skill json export")
+      if (e instanceof Error) {
+        expect(e.message).toEqual("No uuid provided for single skill json export")
+      }
     }
   })
 
@@ -216,7 +228,7 @@ describe("RichSkillService", () => {
     const now = new Date()
     const skillResult: ApiSkill = new ApiSkill(createMockSkill(now, now, PublishStatus.Published))
     const expected = skillResult
-    const path1 = "api/skills"
+    const path1 = getBaseApi() + "/skills"
     const path2 = taskResult.id
     const skillUpdate = createMockSkillUpdate()
 
@@ -234,14 +246,14 @@ describe("RichSkillService", () => {
 
     /* Service call will make 2 requests: the requested action + the async task result */
     /* Setup for request 1 */
-    const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path1)
+    const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path1)
     expect(req1.request.method).toEqual("POST")
     req1.flush(taskResult)
 
     tick(ASYNC_WAIT_PERIOD)
 
     /* Setup for request 2 */
-    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path2)
+    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl  + path2)
     expect(req2.request.method).toEqual("GET")
     req2.flush([skillResult])
   }))
@@ -251,7 +263,7 @@ describe("RichSkillService", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
-    const path = "api/skills/" + uuid + "/update"
+    const path = getBaseApi() + "/skills/" + uuid + "/update"
     const skillUpdate: ApiSkillUpdate = createMockSkillUpdate()
     const now = new Date()
     const testData: ApiSkill = new ApiSkill(createMockSkill(now, now, PublishStatus.Draft))
@@ -268,7 +280,7 @@ describe("RichSkillService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
     expect(req.request.method).toEqual("POST")
     req.flush(testData)
   })
@@ -277,7 +289,7 @@ describe("RichSkillService", () => {
     // Arrange
     RouterData.commands = []
     AuthServiceData.isDown = false
-    const path = "api/search/skills"
+    const path = getBaseApi() + "/search/skills"
     const query = "testQueryString"
     const apiSearch = new ApiSearch({ query })
     const size = 5
@@ -298,13 +310,58 @@ describe("RichSkillService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path +
-      "?sort=skill.asc&status=Published&status=Draft&size=5&from=1")
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path +
+      "?sort=skill.asc&status=published&status=draft&size=5&from=1")
     expect(req.request.method).toEqual("POST")
     req.flush(testData.skills, {
       headers: { "x-total-count": "" + testData.totalCount}
     })
   })
+
+  it("libraryExport should return", fakeAsync(() => {
+    RouterData.commands = []
+
+    // Act
+    const result$ = testService.libraryExportCsv()
+
+    tick(ASYNC_WAIT_PERIOD)
+    // Assert
+    result$.subscribe((data: ApiTaskResult) => {
+      expect(RouterData.commands).toEqual([]) // No Errors
+    })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + getBaseApi() + "/export/library/csv")
+    expect(req.request.method).toEqual("GET")
+    expect(req.request.headers.get("Accept")).toEqual("application/json")
+    req.flush(result$)
+  }))
+
+
+  it("export search", fakeAsync(() => {
+    const result$ = testService.exportSearchCsv(new ApiSearch({query: "net"}))
+    tick(ASYNC_WAIT_PERIOD)
+    // Assert
+    result$.subscribe((data: ApiTaskResult) => {
+      expect(RouterData.commands).toEqual([]) // No Errors
+    })
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + getBaseApi() + "/export/skills/csv?sort=undefined")
+    expect(req.request.method).toEqual("POST")
+    expect(req.request.headers.get("Accept")).toEqual("application/json")
+    req.flush(result$)
+  }))
+
+  it("getResultExportedLibrary", fakeAsync(() => {
+    {
+      const taskResult = apiTaskResultForCSV
+      const path2 = taskResult.id
+      testService.getResultExportedCsvLibrary(path2).subscribe()
+      const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path2)
+      expect(req1.request.method).toEqual("GET")
+      req1.flush("csv")
+
+      tick(ASYNC_WAIT_PERIOD)
+    }
+  }))
 
   it("publishSkillsWithResult should return", fakeAsync(() => {
     // Arrange
@@ -313,7 +370,7 @@ describe("RichSkillService", () => {
     const taskResult = createMockTaskResult()
     const apiBatchResult = new ApiBatchResult(createMockBatchResult())
     const expected = apiBatchResult
-    const path1 = "api/skills/publish"
+    const path1 = getBaseApi() + "/skills/publish"
     const path2 = taskResult.id
     const query = "testQueryString"
     const apiSearch = new ApiSearch({ query })
@@ -332,15 +389,15 @@ describe("RichSkillService", () => {
 
     /* Service call will make 2 requests: the requested action + the async task result */
     /* Setup for request 1 */
-    const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path1 +
-            "?newStatus=Published")
+    const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path1 +
+            "?newStatus=published")
     expect(req1.request.method).toEqual("POST")
     req1.flush(taskResult)
 
     tick(ASYNC_WAIT_PERIOD)
 
     /* Setup for request 2 */
-    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path2)
+    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path2)
     expect(req2.request.method).toEqual("GET")
     req2.flush(apiBatchResult)
   }))
@@ -350,7 +407,7 @@ describe("RichSkillService", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
-    const path = "api/skills/" + uuid + "/log"
+    const path = getBaseApi() + "/skills/" + uuid + "/log"
     const auditLogs = [createMockAuditLog()]
     const testData: ApiAuditLog[] = [new ApiAuditLog(auditLogs[0])]
 
@@ -366,7 +423,7 @@ describe("RichSkillService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
     expect(req.request.method).toEqual("GET")
     req.flush(auditLogs)
   })
@@ -376,7 +433,7 @@ describe("RichSkillService", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const statement = "my statement"
-    const path = "api/search/skills/similarity"
+    const path = getBaseApi() + "/search/skills/similarity"
     const skillSummary = [createMockSkillSummary()]
     const testData: ApiSkillSummary[] = [new ApiSkillSummary(skillSummary[0])]
 
@@ -392,7 +449,7 @@ describe("RichSkillService", () => {
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
     expect(req.request.method).toEqual("POST")
     req.flush(skillSummary)
   })
@@ -402,22 +459,47 @@ describe("RichSkillService", () => {
     RouterData.commands = []
     AuthServiceData.isDown = false
     const statements = ["my statement"]
-    const path = "api/search/skills/similarities"
-    const testData: boolean[] = [true]
+    const path = getBaseApi() + "/search/skills/similarities/results"
+    const testData:  Array<ApiSkillSummary[]> = [[createMockSkillSummary()]]
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.similaritiesCheck(statements)
+    const result$ = testService.similaritiesResults(statements)
 
     // Assert
     result$
-      .subscribe((data: boolean[]) => {
+      .subscribe((data: Array<ApiSkillSummary[]>) => {
         expect(data).toEqual(testData)
         expect(RouterData.commands).toEqual([ ])  // No errors
         expect(AuthServiceData.isDown).toEqual(false)
       })
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + "/" + path)
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
+    expect(req.request.method).toEqual("POST")
+    req.flush(testData)
+  })
+
+  it("similaritiesResults should return", () => {
+    // Arrange
+    RouterData.commands = []
+    AuthServiceData.isDown = false
+    const statements = ["my statement"]
+    const path = getBaseApi() + "/search/skills/similarities/results"
+    const testData:  Array<ApiSkillSummary[]> = [[createMockSkillSummary()]]
+
+    // Act
+    // noinspection LocalVariableNamingConventionJS
+    const result$ = testService.similaritiesResults(statements)
+
+    // Assert
+    result$
+      .subscribe((data: Array<ApiSkillSummary[]>) => {
+        expect(data).toEqual(testData)
+        expect(RouterData.commands).toEqual([ ])  // No errors
+        expect(AuthServiceData.isDown).toEqual(false)
+      })
+
+    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
     expect(req.request.method).toEqual("POST")
     req.flush(testData)
   })

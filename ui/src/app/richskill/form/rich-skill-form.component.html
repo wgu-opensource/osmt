@@ -28,20 +28,21 @@
                 placeholder="Disseminate Intelligence"
                 [includePlaceholder]="!this.skillUuid"
                 required="true"
-                [errorMessage]="nameErrorMessage()"
+                [errorMessage]="nameErrorMessage"
               >
               </app-formfield-text>
             </div>
 
-            <div class="t-margin-medium t-margin-bottom">
-              <app-formfield-text
-                *ngIf="showAuthor()"
-                [control]="skillForm.controls.author"
-                name="author"
-                label="Author"
-                required="true"
-                errorMessage="Author required"
-              ></app-formfield-text>
+            <div *ngIf="showAuthors()" class="t-margin-medium t-margin-bottom">
+              <app-form-field-keyword-search-multi-select
+                [control]="skillForm.controls.authors"
+                label="Authors"
+                name="authors"
+                [includePlaceholder]="!this.skillUuid"
+                [errorMessage]="authorErrorMessage"
+                [keywordType]="keywordType.Author"
+                [createNonExisting]="true"
+              ></app-form-field-keyword-search-multi-select>
             </div>
 
             <div class="t-margin-medium t-margin-bottom">
@@ -53,7 +54,7 @@
                 placeholder="Disseminate items of highest intelligence value in a timely manner."
                 [includePlaceholder]="!this.skillUuid"
                 helpMessage='A description of the applied capabilities and/or behaviors of an individual for a given task, occupation, or need. The recommended format, to support interoperability and the common use of RSDs across organizations, is a predicate and context. Optionally, a skill statement may include a subject, such as "The employee ..." '
-                errorMessage="Skill statement required"
+                [errorMessage]="skillStatementErrorMessage"
                 (blur)="handleStatementBlur($event)"
                 [isWarning]="hasStatementWarning"
               ></app-formfield-textarea>
@@ -65,74 +66,74 @@
             </div>
 
             <div class="t-margin-medium t-margin-bottom">
-              <app-form-field-search-select
-                [control]="skillForm.controls.category"
-                label="Category"
-                name="category"
+              <app-form-field-keyword-search-multi-select
+                [control]="skillForm.controls.categories"
+                label="Categories"
+                name="categories"
                 [includePlaceholder]="!this.skillUuid"
-                helpMessage="An industry-recognized, general term that represents a broad group of related RSDs."
+                helpMessage="Industry-recognized, general terms that represents a broad group of related RSDs."
                 [keywordType]="keywordType.Category"
-              ></app-form-field-search-select>
+                [createNonExisting]="true"
+              ></app-form-field-keyword-search-multi-select>
             </div>
 
             <div class="t-margin-medium t-margin-bottom">
-              <app-form-field-search-multi-select
+              <app-form-field-keyword-search-multi-select
                 [control]="skillForm.controls.keywords"
                 label="Keywords"
                 name="keywords"
                 [includePlaceholder]="!this.skillUuid"
                 helpMessage="Related terms that help users search for and find an RSD."
+                errorMessage="Keywords are required"
                 [keywordType]="keywordType.Keyword"
-                (currentSelection)="handleKeywordTypeAheadResults($event)"
-              ></app-form-field-search-multi-select>
+                [createNonExisting]="true"
+              ></app-form-field-keyword-search-multi-select>
             </div>
 
             <div class="t-margin-medium t-margin-bottom">
-              <app-form-field-search-multi-select
+              <app-form-field-keyword-search-multi-select
                 [control]="skillForm.controls.standards"
                 label="Standards"
                 name="standards"
                 [includePlaceholder]="!this.skillUuid"
                 helpMessage="Names of professional standards that define skill mastery, sourced from industry-recognized frameworks."
                 [keywordType]="keywordType.Standard"
-                (currentSelection)="handleStandardsTypeAheadResults($event)"
-              ></app-form-field-search-multi-select>
+                [createNonExisting]="true"
+              ></app-form-field-keyword-search-multi-select>
             </div>
 
             <div class="t-margin-medium t-margin-bottom">
-              <app-form-field-search-multi-select
+              <app-form-field-keyword-search-multi-select
                 [control]="skillForm.controls.certifications"
                 label="Certifications"
                 name="certifications"
                 [includePlaceholder]="!this.skillUuid"
                 helpMessage="Related academic and professional certifications that support career advancement."
                 [keywordType]="keywordType.Certification"
-                (currentSelection)="handleCertificationTypeAheadResults($event)"
-              ></app-form-field-search-multi-select>
+                [createNonExisting]="true"
+              ></app-form-field-keyword-search-multi-select>
             </div>
 
             <div class="t-margin-medium t-margin-bottom">
-              <app-form-field-search-select-jobcode
+              <app-form-field-jobcode-search-multi-select
                 [control]="skillForm.controls.occupations"
-                [existing]="existingSkill?.occupations"
                 label="Occupations"
                 name="occupations"
                 [includePlaceholder]="!this.skillUuid"
                 helpMessage="Related jobs from the U.S. Bureau of Labor Statistics (BLS) or the Occupational Information Network (O*NET). Enter job names or codes."
-                (currentSelection)="handleJobCodesTypeAheadResults($event)"
-              ></app-form-field-search-select-jobcode>
+              ></app-form-field-jobcode-search-multi-select>
             </div>
 
             <div class="t-margin-medium t-margin-bottom">
-              <app-form-field-search-multi-select
+              <app-form-field-keyword-search-multi-select
                 [control]="skillForm.controls.employers"
                 label="Employers"
                 name="employers"
                 [includePlaceholder]="!this.skillUuid"
                 helpMessage="Employers who require this skill for a given job. Employers are not visible in the public view of an RSD."
                 [keywordType]="keywordType.Employer"
-                (currentSelection)="handleEmployersTypeAheadResults($event)"
-              ></app-form-field-search-multi-select>
+                [createNonExisting]="true"
+              ></app-form-field-keyword-search-multi-select>
             </div>
 
 

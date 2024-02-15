@@ -1,0 +1,10 @@
+<div class="size-pagination-container" *ngIf="isVisible()">
+  <label>
+    Items per page
+  </label>
+  <select name="size-pagination" #size (change)="onValueChange(+size.value)" [ngModel]="currentSize" class="m-text select">
+    <option [value]="value" *ngFor="let value of values">
+      {{value}}
+    </option>
+  </select>
+</div>

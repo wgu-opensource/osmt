@@ -11,6 +11,8 @@ import {CollectionService} from "./service/collection.service"
 import {TableActionDefinition} from "../table/skills-library-table/has-action-definitions"
 import {TableActionBarComponent} from "../table/skills-library-table/table-action-bar.component"
 import {Whitelabelled} from "../../whitelabel";
+import {AuthService} from "../auth/auth-service";
+import {ButtonAction} from "../auth/auth-roles";
 
 
 @Component({
@@ -41,6 +43,7 @@ export class CollectionsListComponent extends Whitelabelled {
   constructor(protected router: Router,
               protected toastService: ToastService,
               protected collectionService: CollectionService,
+              protected authService: AuthService,
   ) {
     super()
   }
@@ -111,34 +114,35 @@ export class CollectionsListComponent extends Whitelabelled {
     // return (this.selectedCollections?.length ?? 0) > 0
   }
 
-  publishVisible(skill?: ApiCollectionSummary): boolean {
-    if (skill !== undefined) {
-      return skill.publishDate === undefined
+  publishVisible(collection?: ApiCollectionSummary): boolean {
+    if (collection !== undefined) {
+      return collection.publishDate === undefined && this.authService.isEnabledByRoles(ButtonAction.CollectionPublish)
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
-      const unpublishedSkill = this.selectedCollections?.find(s => s.publishDate === undefined)
-      return unpublishedSkill !== undefined
+      const unpublishCollection = this.selectedCollections?.find(s => s.publishDate === undefined)
+      return (unpublishCollection !== undefined) && this.authService.isEnabledByRoles(ButtonAction.CollectionPublish)
     }
   }
-  archiveVisible(skill?: ApiCollectionSummary): boolean {
-    if (skill !== undefined) {
-      return !checkArchived(skill)
+
+  archiveVisible(collection?: ApiCollectionSummary): boolean {
+    if (collection !== undefined) {
+      return !checkArchived(collection) && this.authService.isEnabledByRoles(ButtonAction.CollectionUpdate)
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
-      const unarchivedSkills = this.selectedCollections?.find(s => !checkArchived(s))
-      return unarchivedSkills !== undefined
+      const unarchCollection = this.selectedCollections?.find(s => !checkArchived(s))
+      return unarchCollection !== undefined && this.authService.isEnabledByRoles(ButtonAction.CollectionUpdate)
     }
   }
-  unarchiveVisible(skill?: ApiCollectionSummary): boolean {
-    if (skill !== undefined) {
-      return checkArchived(skill)
+  unarchiveVisible(collection?: ApiCollectionSummary): boolean {
+    if (collection !== undefined) {
+      return checkArchived(collection) && this.authService.isEnabledByRoles(ButtonAction.CollectionUpdate)
     } else if ((this.selectedCollections?.length ?? 0) === 0) {
       return false
     } else {
-      const archivedSkill = this.selectedCollections?.find(checkArchived)
-      return archivedSkill !== undefined
+      const archCollection = this.selectedCollections?.find(checkArchived)
+      return archCollection !== undefined && this.authService.isEnabledByRoles(ButtonAction.CollectionUpdate)
     }
   }
 

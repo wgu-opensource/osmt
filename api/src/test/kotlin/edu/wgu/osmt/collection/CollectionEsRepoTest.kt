@@ -14,6 +14,7 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
@@ -38,7 +39,12 @@ class CollectionEsRepoTest @Autowired constructor(
             }
         }
 
-        val collectionDoc = TestObjectHelpers.collectionDoc(name = "Name with Orange in it", author = "Ronald Purple")
+        val collectionDoc = TestObjectHelpers.collectionDoc(
+            name = "Name with Orange in it",
+            description = "Description with Red in it",
+            author = "Ronald Purple"
+        )
+
         val elasticRichSkillDoc = TestObjectHelpers.randomRichSkillDoc().let {
             val cs = it.collections
             it.copy(collections = cs + collectionDoc)
@@ -57,19 +63,23 @@ class CollectionEsRepoTest @Autowired constructor(
         val searchByCollectionName =
             collectionEsRepo.byApiSearch(ApiSearch(query = "orange")).searchHits.map { it.content }
 
+        val searchByCollectionDescription =
+            collectionEsRepo.byApiSearch(ApiSearch(query = "red")).searchHits.map { it.content }
+
         val searchByCollectionAuthor =
             collectionEsRepo.byApiSearch(ApiSearch(query = "purple")).searchHits.map { it.content }
 
         Assertions.assertThat(searchByCollectionName[0].uuid).isEqualTo(collectionDoc.uuid)
+        Assertions.assertThat(searchByCollectionDescription[0].uuid).isEqualTo(collectionDoc.uuid)
         Assertions.assertThat(searchByCollectionAuthor[0].uuid).isEqualTo(collectionDoc.uuid)
 
         // assertions by rich skill properties
         val results1 = queryCollectionHits(elasticRichSkillDoc.name)
         assertAgainstCollectionDoc(results1)
-        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.author!!))
+        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.authors[elasticRichSkillDoc.authors.indices.random()]))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.statement))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.searchingKeywords[elasticRichSkillDoc.searchingKeywords.indices.random()]))
-        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.category!!))
+        assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.categories[elasticRichSkillDoc.categories.indices.random()]))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.jobCodes[elasticRichSkillDoc.jobCodes.indices.random()].code))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.standards[elasticRichSkillDoc.standards.indices.random()]))
         assertAgainstCollectionDoc(queryCollectionHits(elasticRichSkillDoc.certifications[elasticRichSkillDoc.certifications.indices.random()]))
@@ -100,7 +110,7 @@ class CollectionEsRepoTest @Autowired constructor(
 
     @Test
     fun `Should limit skill results to skills within a collection when collection id is present`() {
-        var collection = TestObjectHelpers.collectionDoc(name = "Test Collection")
+        var collection = TestObjectHelpers.collectionDoc(name = "Test Collection", description = "Description of Test Collection")
 
         val jobcode = TestObjectHelpers.randomJobCode().copy(name = "Bartenders")
 
@@ -122,4 +132,5 @@ class CollectionEsRepoTest @Autowired constructor(
         assertThat(result.first().uuid).isEqualTo(richskill1.uuid)
         assertThat(result.size).isEqualTo(1)
     }
+
 }

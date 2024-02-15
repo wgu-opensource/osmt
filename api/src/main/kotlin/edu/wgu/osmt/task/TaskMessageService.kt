@@ -1,6 +1,6 @@
 package edu.wgu.osmt.task
 
-import com.github.sonus21.rqueue.core.RqueueMessageSender
+import com.github.sonus21.rqueue.core.RqueueMessageEnqueuer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 class TaskMessageService {
 
     @Autowired
-    lateinit var rqueueMessageSender: RqueueMessageSender
+    lateinit var rqueueMessageSender: RqueueMessageEnqueuer
 
     @Autowired
     lateinit var redisTaskTemplate: RedisTemplate<String, Task>
@@ -43,5 +43,15 @@ class TaskMessageService {
         const val publishSkills = "batch-publish-skills"
         const val updateCollectionSkills = "update-collection-skills"
         const val skillsForCollectionCsv = "collection-skills-csv-process"
+        const val skillsForCollectionCsvV2 = "collection-skills-csv-process-v2"
+        
+        const val skillsForCollectionXlsx = "collection-skills-xlsx-process"
+        const val removeCollectionSkills = "remove-collection"
+        const val skillsForFullLibraryCsv = "full-library-skills-csv-process"
+        const val skillsForFullLibraryCsvV2 = "full-library-skills-csv-process-v2"
+        const val skillsForFullLibraryXlsx = "full-library-skills-xlsx-process"
+        const val skillsForCustomListExportCsv = "custom-rsd-list-csv-export"
+        const val skillsForCustomListExportCsvV2 = "custom-rsd-list-csv-export-v2"
+        const val skillsForCustomListExportXlsx = "custom-rsd-list-xlsx-export"
     }
 }

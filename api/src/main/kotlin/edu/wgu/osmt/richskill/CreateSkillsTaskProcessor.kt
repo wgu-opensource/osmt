@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 
 @Component
@@ -37,7 +37,7 @@ class CreateSkillsTaskProcessor {
     fun process(task: CreateSkillsTask) {
         logger.info("Started processing createSkillsTask uuid: ${task.uuid}")
 
-        val results = richSkillRepository.createFromApi(task.apiSkillUpdates, task.userString).map {
+        val results = richSkillRepository.createFromApi(task.apiSkillUpdates, task.userString, task.userIdentifier).map {
             it.uuid
         }
 

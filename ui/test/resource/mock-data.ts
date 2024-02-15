@@ -11,12 +11,14 @@ import {
   IAuditLog,
   INamedReference,
   ISkill,
-  IUuidReference
+  IUuidReference,
+  KeywordCount,
+  KeywordType
 } from "../../src/app/richskill/ApiSkill"
 import { ApiCollectionSummary, ICollectionSummary, ISkillSummary } from "../../src/app/richskill/ApiSkillSummary"
 import { ApiReferenceListUpdate, IRichSkillUpdate, IStringListUpdate } from "../../src/app/richskill/ApiSkillUpdate"
 import { PaginatedCollections, PaginatedSkills } from "../../src/app/richskill/service/rich-skill-search.service"
-import { ITaskResult } from "../../src/app/task/ApiTaskResult"
+import { ApiTaskResult, ITaskResult } from "../../src/app/task/ApiTaskResult"
 
 // Add mock data here.
 // For more examples, see https://github.com/WGU-edu/ema-eval-ui/blob/develop/src/app/admin/pages/edit-user/edit-user.component.spec.ts
@@ -125,7 +127,7 @@ export function createMockSkillUpdate(): IRichSkillUpdate {
     skillName: "my skill name",
     skillStatement: "my skill statement",
     status: PublishStatus.Draft,
-    category: "my skill category",
+    categories: createMockStringListUpdate(),
     keywords: createMockStringListUpdate(),
     collections: createMockStringListUpdate(),
     alignments: createMockApiReferenceListUpdate(),
@@ -133,7 +135,7 @@ export function createMockSkillUpdate(): IRichSkillUpdate {
     standards: createMockApiReferenceListUpdate(),
     occupations: createMockStringListUpdate(),
     employers: createMockApiReferenceListUpdate(),
-    author: "author"
+    authors: createMockStringListUpdate()
   }
 }
 
@@ -150,7 +152,7 @@ export function createMockSkillSummary(
     publishDate: publishDate ? publishDate : undefined,  // i.e., if "" is passed in, then treat as undefined here.
     skillName: "my skill summary name",
     skillStatement: "my skill summary statement",
-    category: "my skill category",
+    categories: ["category 1", "category 2"],
     keywords: [ "keyword 1", "keyword 2" ],
     occupations: [ createMockJobcode(), createMockJobcode() ]
   }
@@ -218,7 +220,7 @@ export function createMockTaskResult(uuid: string = "uuid1"): ITaskResult {
   return {
     status: PublishStatus.Draft,
     contentType: "my content type",
-    id: "api/tasks/" + uuid,
+    id: "/api/v3/tasks/" + uuid,
     uuid
   }
 }
@@ -233,15 +235,15 @@ export function createMockSkill(creationDate: Date, updateDate: Date, status: Pu
     skillName: "my skill name",
     skillStatement: "my skill statement",
     status,
-    category: "my skill category",
+    categories: ["category 1", "category 2"],
     collections: [createMockUuidReference("1", "coll")],
     keywords: ["keyword 1", "keyword 2"],
     alignments: [createMockAlignment("2", "alignment", { id: "22", name: "myFramework" })],
-    standards: [createMockNamedReference("3", "standard")],
+    standards: [createMockAlignment("3", "standard")],
     certifications: [createMockNamedReference("4", "cert")],
     occupations: [createMockJobcode(5, "jobcode", "my jobcode")],
     employers: [createMockNamedReference("6", "employer")],
-    author: "name"
+    authors: ["author 1", "author 2"]
   }
 }
 
@@ -253,6 +255,16 @@ export function createMockCollection(
   status: PublishStatus,
   skills: string[] = ["skill 1", "skill 2"]
 ): ICollection {
+  const skillKeywords: Map<KeywordType, KeywordCount[]> = new Map()
+
+  skillKeywords.set(KeywordType.Alignment, [new KeywordCount({ keyword: createMockAlignment(), count: 5 })])
+  skillKeywords.set(KeywordType.Author, [new KeywordCount({ keyword: "author1", count: 2 })])
+  skillKeywords.set(KeywordType.Category, [new KeywordCount({ keyword: "category1", count: 33 })])
+  skillKeywords.set(KeywordType.Certification, [new KeywordCount({ keyword: createMockApiNamedReference(), count: 1 })])
+  skillKeywords.set(KeywordType.Employer, [new KeywordCount({ keyword: createMockNamedReference(), count: 4 })])
+  skillKeywords.set(KeywordType.Keyword, [new KeywordCount({ keyword: "keyword1", count: 111 })])
+  skillKeywords.set(KeywordType.Standard, [new KeywordCount({ keyword: createMockAlignment(), count: 2 })])
+
   return {
     creationDate,
     updateDate,
@@ -264,6 +276,7 @@ export function createMockCollection(
     name: "my collection name",
     author: "name",
     skills,
+    skillKeywords,
     creator: "creator"
   }
 }
@@ -277,3 +290,27 @@ export function createMockCollectionUpdate(creationDate: Date, updateDate: Date,
     skills: createMockStringListUpdate()
   }
 }
+
+export const apiTaskResultForCSV: ApiTaskResult = {
+  uuid: "c2624480-4935-4362-bc71-86e052dcb852",
+  status: "Processing",
+  contentType: "text/csv",
+  id: "/api/v3/results/text/c2624480-4935-4362-bc71-86e052dcb852"
+}
+
+export const apiTaskResultForDeleteCollection: ApiTaskResult = {
+  uuid: "5ca6ea7f-e008-44fc-9108-eda19b01fa6a",
+  status: "Processing",
+  contentType: "application/json",
+  id: "/api/results/batch/5ca6ea7f-e008-44fc-9108-eda19b01fa6a"
+}
+
+export const mockTaskResultForExportSearch: ApiTaskResult = {
+  uuid: "77574cd6-933b-4ee0-a106-afadb7a3a292",
+  status: "Processing",
+  contentType: "application/json",
+  id: "/api/results/batch/77574cd6-933b-4ee0-a106-afadb7a3a292"
+}
+
+export const csvContent = {body: "value1,value2,value3"}
+

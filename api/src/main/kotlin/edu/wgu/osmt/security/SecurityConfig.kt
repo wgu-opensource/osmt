@@ -1,51 +1,30 @@
 package edu.wgu.osmt.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import edu.wgu.osmt.RoutePaths.COLLECTIONS_LIST
-import edu.wgu.osmt.RoutePaths.COLLECTION_AUDIT_LOG
-import edu.wgu.osmt.RoutePaths.COLLECTION_CREATE
-import edu.wgu.osmt.RoutePaths.COLLECTION_CSV
-import edu.wgu.osmt.RoutePaths.COLLECTION_DETAIL
-import edu.wgu.osmt.RoutePaths.COLLECTION_PUBLISH
-import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS
-import edu.wgu.osmt.RoutePaths.COLLECTION_SKILLS_UPDATE
-import edu.wgu.osmt.RoutePaths.COLLECTION_UPDATE
-import edu.wgu.osmt.RoutePaths.SEARCH_COLLECTIONS
-import edu.wgu.osmt.RoutePaths.SEARCH_JOBCODES_PATH
-import edu.wgu.osmt.RoutePaths.SEARCH_KEYWORDS_PATH
-import edu.wgu.osmt.RoutePaths.SEARCH_SKILLS
-import edu.wgu.osmt.RoutePaths.SKILLS_CREATE
-import edu.wgu.osmt.RoutePaths.SKILLS_LIST
-import edu.wgu.osmt.RoutePaths.SKILL_AUDIT_LOG
-import edu.wgu.osmt.RoutePaths.SKILL_DETAIL
-import edu.wgu.osmt.RoutePaths.SKILL_PUBLISH
-import edu.wgu.osmt.RoutePaths.SKILL_UPDATE
-import edu.wgu.osmt.RoutePaths.TASK_DETAIL_BATCH
-import edu.wgu.osmt.RoutePaths.TASK_DETAIL_SKILLS
-import edu.wgu.osmt.RoutePaths.TASK_DETAIL_TEXT
+import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiError
 import edu.wgu.osmt.config.AppConfig
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import org.springframework.http.HttpMethod.GET
-import org.springframework.http.HttpMethod.POST
+import org.springframework.http.HttpMethod.*
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.DefaultRedirectStrategy
+import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.stereotype.Component
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+
 
 /**
  * Security configurations
@@ -55,7 +34,7 @@ import javax.servlet.http.HttpServletResponse
 @Configuration
 @EnableWebSecurity
 @Profile("oauth2-okta | OTHER-OAUTH-PROFILE")
-class SecurityConfig : WebSecurityConfigurerAdapter() {
+class SecurityConfig {
 
     @Autowired
     lateinit var appConfig: AppConfig
@@ -66,34 +45,67 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     lateinit var returnUnauthorized: ReturnUnauthorized
 
-    @Override
-    override fun configure(http: HttpSecurity) {
+    @Bean
+    fun securityFilterChain(http: HttpSecurity) : SecurityFilterChain {
         http
             .cors().and()
             .csrf().disable()
             .httpBasic().disable()
-            .authorizeRequests()
+            .authorizeHttpRequests { auth ->
+                auth
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_AUDIT_LOG}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_AUDIT_LOG}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_AUDIT_LOG}").authenticated()
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_AUDIT_LOG}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_AUDIT_LOG}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_AUDIT_LOG}").authenticated()
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_SKILLS}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_SKILLS}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_SKILLS}").authenticated()
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_BATCH}").authenticated()
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_JOBCODES_PATH}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_JOBCODES_PATH}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_JOBCODES_PATH}").authenticated()
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_KEYWORDS_PATH}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_KEYWORDS_PATH}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_KEYWORDS_PATH}").authenticated()
 
-            .mvcMatchers(GET, SKILL_AUDIT_LOG).authenticated()
-            .mvcMatchers(GET, COLLECTION_AUDIT_LOG).authenticated()
-            .mvcMatchers(GET, TASK_DETAIL_SKILLS).authenticated()
-            .mvcMatchers(GET, TASK_DETAIL_BATCH).authenticated()
-            .mvcMatchers(GET, SEARCH_JOBCODES_PATH).authenticated()
-            .mvcMatchers(GET, SEARCH_KEYWORDS_PATH).authenticated()
+                    // public search endpoints
+                    .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_SKILLS}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_SKILLS}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_SKILLS}").permitAll()
+                    .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_COLLECTIONS}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_COLLECTIONS}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_COLLECTIONS}").permitAll()
 
-            // public search endpoints
-            .mvcMatchers(POST, SEARCH_SKILLS).permitAll()
-            .mvcMatchers(POST, SEARCH_COLLECTIONS).permitAll()
+                    // public canonical URL endpoints
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_DETAIL}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_DETAIL}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_DETAIL}").permitAll()
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_DETAIL}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_DETAIL}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_DETAIL}").permitAll()
 
-            // public canonical URL endpoints
-            .mvcMatchers(GET, SKILL_DETAIL).permitAll()
-            .mvcMatchers(GET, COLLECTION_DETAIL).permitAll()
+                    .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_SKILLS}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_SKILLS}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_SKILLS}").permitAll()
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_CSV}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_CSV}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_CSV}").permitAll()
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_TEXT}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_TEXT}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_TEXT}").permitAll()
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_XLSX}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_XLSX}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_XLSX}").permitAll()
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_MEDIA}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_MEDIA}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_MEDIA}").permitAll()
+            }
 
-            .mvcMatchers(POST, COLLECTION_SKILLS).permitAll()
-            .mvcMatchers(GET, COLLECTION_CSV).permitAll()
-            .mvcMatchers(GET, TASK_DETAIL_TEXT).permitAll()   // public csv results
-
-            .and().exceptionHandling().authenticationEntryPoint(returnUnauthorized)
+            .exceptionHandling().authenticationEntryPoint(returnUnauthorized)
             .and().oauth2Login().successHandler(redirectToFrontend)
             .and().oauth2ResourceServer().jwt()
 
@@ -102,6 +114,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         } else {
             configureForNoRoles(http)
         }
+
+        return http.build();
     }
 
     fun configureForRoles(http: HttpSecurity) {
@@ -111,44 +125,102 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         val READ = appConfig.scopeRead
 
         if (appConfig.allowPublicLists) {
-            http.authorizeRequests()
-                .mvcMatchers(GET, SKILLS_LIST).permitAll()
-                .mvcMatchers(GET, COLLECTIONS_LIST).permitAll()
+            http.authorizeHttpRequests { auth ->
+                auth
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}").permitAll()
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTIONS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTIONS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTIONS_LIST}").permitAll()
+            }
         } else {
-            http.authorizeRequests()
-                .mvcMatchers(GET, SKILLS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-                .mvcMatchers(GET, COLLECTIONS_LIST).hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+            http.authorizeHttpRequests { auth ->
+                auth
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTIONS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTIONS_LIST}",
+                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTIONS_LIST}").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+            }
         }
 
-        http.authorizeRequests()
-            .mvcMatchers(POST, SKILL_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(POST, SKILLS_CREATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(POST, SKILL_PUBLISH).hasAnyAuthority(ADMIN)
+        http.authorizeHttpRequests { auth ->
+            auth
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_UPDATE}").hasAnyAuthority(ADMIN, CURATOR)
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_CREATE}").hasAnyAuthority(ADMIN, CURATOR)
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_PUBLISH}").hasAnyAuthority(ADMIN)
 
-            .mvcMatchers(POST, COLLECTION_CREATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(POST, COLLECTION_PUBLISH).hasAnyAuthority(ADMIN)
-            .mvcMatchers(POST, COLLECTION_UPDATE).hasAnyAuthority(ADMIN, CURATOR)
-            .mvcMatchers(POST, COLLECTION_SKILLS_UPDATE).hasAnyAuthority(ADMIN)
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_CREATE}").hasAnyAuthority(ADMIN, CURATOR)
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_PUBLISH}").hasAnyAuthority(ADMIN)
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_UPDATE}").hasAnyAuthority(ADMIN, CURATOR)
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_SKILLS_UPDATE}").hasAnyAuthority(ADMIN, CURATOR)
+                .requestMatchers(DELETE, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_REMOVE}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_REMOVE}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_REMOVE}").hasAnyAuthority(ADMIN)
+                .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.WORKSPACE_PATH}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.WORKSPACE_PATH}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.WORKSPACE_PATH}").hasAnyAuthority(ADMIN, CURATOR)
 
-            .mvcMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+                .requestMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
+                .requestMatchers("/**").permitAll()
+        }
     }
 
     fun configureForNoRoles(http: HttpSecurity) {
-        http.authorizeRequests()
-            .mvcMatchers(GET, SKILLS_LIST).permitAll()
-            .mvcMatchers(GET, COLLECTIONS_LIST).permitAll()
+        http.authorizeHttpRequests { auth ->
+            auth
+                .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_LIST}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}").permitAll()
+                .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTIONS_LIST}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTIONS_LIST}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTIONS_LIST}").permitAll()
 
-            .mvcMatchers(POST, SKILL_UPDATE).authenticated()
-            .mvcMatchers(POST, SKILLS_CREATE).authenticated()
-            .mvcMatchers(POST, SKILL_PUBLISH).authenticated()
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_UPDATE}").authenticated()
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_CREATE}").authenticated()
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_PUBLISH}").authenticated()
 
-            .mvcMatchers(POST, COLLECTION_CREATE).authenticated()
-            .mvcMatchers(POST, COLLECTION_PUBLISH).authenticated()
-            .mvcMatchers(POST, COLLECTION_UPDATE).authenticated()
-            .mvcMatchers(POST, COLLECTION_SKILLS_UPDATE).authenticated()
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_CREATE}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_CREATE}").authenticated()
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_PUBLISH}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_PUBLISH}").authenticated()
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_UPDATE}").authenticated()
+                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_SKILLS_UPDATE}").authenticated()
+                .requestMatchers(DELETE, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_REMOVE}",
+                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_REMOVE}",
+                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_REMOVE}").denyAll()
 
-            // fall-through
-            .mvcMatchers("/api/**").permitAll()
+                // fall-through
+                .requestMatchers("/**").permitAll()
+        }
     }
 
     @Bean

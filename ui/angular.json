@@ -11,25 +11,15 @@
         },
         "@schematics/angular:component": {
           "prefix": "app",
-          "styleext": "scss",
-          "lintFix": true
+          "style": "scss"
         },
         "@schematics/angular:directive": {
-          "prefix": "app",
-          "lintFix": true
+          "prefix": "app"
         },
-        "@schematics/angular:pipe": {
-          "lintFix": true
-        },
-        "@schematics/angular:class": {
-          "lintFix": true
-        },
-        "@schematics/angular:module": {
-          "lintFix": true
-        },
-        "@schematics/angular:service": {
-          "lintFix": true
-        }
+        "@schematics/angular:pipe": {},
+        "@schematics/angular:class": {},
+        "@schematics/angular:module": {},
+        "@schematics/angular:service": {}
       },
       "root": "",
       "sourceRoot": "src",
@@ -38,6 +28,11 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "papaparse",
+              "file-saver",
+              "chroma-js"
+            ],
             "outputPath": "../api/src/main/resources/ui/",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -54,8 +49,8 @@
               }
             ],
             "styles": [
-              "src/styles.css",
-              "node_modules/@concentricsky/wgu-design-system-patternlibrary/dist/css/screen.css"
+              "node_modules/@concentricsky/wgu-design-system-patternlibrary/dist/css/screen.css",
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -70,7 +65,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -78,8 +72,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -87,6 +81,14 @@
                   "maximumError": "4kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           }
         },
@@ -99,8 +101,12 @@
           "configurations": {
             "production": {
               "browserTarget": "ui:build:production"
+            },
+            "development": {
+              "browserTarget": "ui:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -120,39 +126,28 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "scripts": [],
             "codeCoverage": true
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ui:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "ui:serve:production"
-            }
           }
         }
       }
     }
   },
-  "defaultProject": "ui"
+  "cli": {
+    "analytics": false,
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
+  }
 }

@@ -17,6 +17,10 @@ import {forkJoin, Observable} from "rxjs"
 import {SvgHelper, SvgIcon} from "../../core/SvgHelper"
 import {Title} from "@angular/platform-browser";
 import {AppConfig} from "../../app.config"
+import { BatchImportOptionsEnum } from "./BatchImportOptionsEnum";
+import { ApiSearch, ApiSkillListUpdate } from "../service/rich-skill-search.service";
+import { CollectionService } from "../../collection/service/collection.service";
+import { ApiSkillSummary } from "../ApiSkillSummary"
 
 
 export enum ImportStep {
@@ -29,14 +33,20 @@ export enum ImportStep {
 
 export const importSkillHeaderOrder = [
   {field: "skillName", label: "RSD Name"},
-  {field: "author", label: "Author"},
+  {field: "authors", label: "Authors"},
   {field: "skillStatement", label: "Skill Statement"},
-  {field: "category", label: "Category"},
+  {field: "categories", label: "Categories"},
   {field: "keywords", label: "Keywords"},
   {field: "standards", label: "Standards"},
   {field: "certifications", label: "Certifications"},
   {field: "occupations", label: "Occupations"},
   {field: "employers", label: "Employers"},
+]
+
+export const importSkillTargetOptions = [
+  {target: "existing", label: "Existing Collection"},
+  {target: "new", label: "New Collection"},
+  {target: "workspace", label: "User Workspace"},
 ]
 export const allMappingHeaderOrder = (alignmentCount: number = 3): {field: string, label: string}[] => {
   const alignmentHeaders = [...Array(alignmentCount).keys()].map(i => {
@@ -68,20 +78,35 @@ export class AuditedImportSkill {
   skill: ApiSkillUpdate
   missing: string[]
   similar: boolean
+  similarities: any[] = []
 
-  constructor(skill: ApiSkillUpdate, missing: string[], similar: boolean = false) {
+  constructor(skill: ApiSkillUpdate, missing: string[], similar: boolean = false, similarities: any[]) {
     this.skill = skill
     this.missing = missing
     this.similar = similar
+    this.similarities = similarities;
   }
 
-  get nameMissing(): boolean { return !this.skill.skillName }
-  get statementMissing(): boolean { return !this.skill.skillStatement }
-  get authorMissing(): boolean { return !this.skill.author }
+  get nameMissing(): boolean {
+    return !this.skill.skillName
+  }
+
+  get statementMissing(): boolean {
+    return !this.skill.skillStatement
+  }
+
+  get authorMissing(): boolean {
+    return !this.hasAuthors
+  }
+
+  get hasAuthors(): boolean {
+    return this.skill.authors?.add !== undefined && this.skill.authors?.add.length > 0
+  }
 
   get isError(): boolean {
     return this.nameMissing || this.statementMissing
   }
+
   get isWarning(): boolean {
     return this.similar
   }
@@ -111,15 +136,17 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   previewSkills?: ApiSkillUpdate[]
   auditedSkills?: AuditedImportSkill[]
   importedSkills?: AuditedImportSkill[]
+  skillsToBeImported?: ApiSkill[]
 
   alignmentCount: number = 3
 
   searchingSimilarity?: boolean
-  similarSkills?: boolean[]
+  similarSkills?: any[]
   importSimilarSkills = false
 
   docIcon = SvgHelper.path(SvgIcon.DOC)
   isHover: boolean = false
+  target: string = ""
 
   get similarSkillCount(): number {
     return (this.similarSkills?.filter(it => it).length ?? 0)
@@ -131,10 +158,12 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
               protected route: ActivatedRoute,
               protected location: Location,
               protected papa: Papa,
-              protected titleService: Title
+              protected titleService: Title,
+              protected collectionService: CollectionService
   ) {
     super()
     this.resetState()
+    this.route.queryParams.subscribe(params => this.target = params.to)
   }
 
   ngOnInit(): void {
@@ -190,7 +219,6 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
   hideStepLoader(): void {
     this.stepLoaded = undefined
   }
-
 
   handleClickNext(): boolean {
     this.focusAndScrollIntoView(this.stepHeadingRef.nativeElement)
@@ -371,7 +399,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
       const alignmentsHolder: ApiAlignment[] = []
       const jobcodes: string[] = []
-      let haveAuthor = false
+      let hasAuthor = false
       var alignMatches
 
       Object.keys(row).forEach(uploadedKey => {
@@ -380,9 +408,19 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         if (fieldName !== undefined && rawValue && typeof rawValue === "string") {
           const value: string = rawValue?.trim()
 
-          if (["author"].indexOf(fieldName) !== -1) {
-            newSkill[fieldName] = value
-            haveAuthor = true
+          if (["authors"].indexOf(fieldName) !== -1) {
+            const authors = value.split(";").map(it => it.trim()).filter(it => it !== "")
+
+            if (authors.length > 0) {
+              newSkill[fieldName] = new ApiStringListUpdate(authors)
+              hasAuthor = true
+            }
+          } else if (["categories"].indexOf(fieldName) !== -1) {
+            const categories = value.split(";").map(it => it.trim()).filter(it => it !== "")
+
+            if (categories.length > 0) {
+              newSkill[fieldName] = new ApiStringListUpdate(categories)
+            }
           }
           else if (["certifications", "employers"].indexOf(fieldName) !== -1) {
             newSkill[fieldName] = new ApiReferenceListUpdate(
@@ -428,10 +466,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
         newSkill.alignments = new ApiAlignmentListUpdate(Array.from(alignmentsHolder))
       }
 
-      if (!haveAuthor) {
-        const fieldName = "author"
-        newSkill[fieldName] = new ApiNamedReference({name: AppConfig.settings.defaultAuthorValue})
+      if (!hasAuthor && AppConfig.settings.defaultAuthorValue && AppConfig.settings.defaultAuthorValue.length > 0) {
+        newSkill["authors"] = new ApiStringListUpdate([AppConfig.settings.defaultAuthorValue])
       }
+
       return newSkill
     })
     let deduped = [...new Map(skillUpdates.map((item: { [x: string]: any }) =>[item["skillStatement"], item])).values()]
@@ -454,7 +492,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     this.handleMappingChanged(mappings)
   }
 
-  private batchSimilarity(statements: string[]): Observable<boolean[]> {
+  private batchSimilarity(statements: string[]): Observable<Array<ApiSkillSummary[]>> {
     const chunk = (arr: string[], size: number) => {
       return Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
         arr.slice(i * size, i * size + size)
@@ -462,10 +500,10 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     }
 
     const chunks: string[][] = chunk(statements, 100)
-    const observables: Observable<boolean[]>[] = chunks.map(it => this.richSkillService.similaritiesCheck(it))
+    const observables: Observable<Array<ApiSkillSummary[]>>[] = chunks.map(it => this.richSkillService.similaritiesResults(it))
     return new Observable(observer => {
       forkJoin(observables).subscribe(it => {
-        const allResponses: boolean[] = it.flat()
+        const allResponses: Array<ApiSkillSummary[]> = it.flat()
         observer.next(allResponses)
         observer.complete()
       }, err => observer.error(err))
@@ -480,13 +518,12 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     this.batchSimilarity(statements).subscribe(results => {
       this.searchingSimilarity = false
       this.similarSkills = results
-
       this.auditedSkills = this.previewSkills?.map((skill, idx) => {
         const required = ["skillName", "skillStatement"]
         // @ts-ignore
         const missing = required.filter(it => skill[it] === undefined)
-        const similar = results[idx] ?? false
-        return new AuditedImportSkill(skill, missing, similar)
+        const similar = (results[idx]?.length ?? 0) > 0
+        return new AuditedImportSkill(skill, missing, similar, results[idx])
       })
     })
   }
@@ -506,6 +543,7 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
     ).subscribe(results => {
       if (results) {
         this.hideStepLoader()
+        this.skillsToBeImported = results
       }
     })
 
@@ -513,6 +551,81 @@ export class BatchImportComponent extends QuickLinksHelper implements OnInit {
 
   handleSimilarityOk(importSimilar: boolean): void {
     this.importSimilarSkills = importSimilar
+  }
+
+  get validImportSkillsCount(): boolean {
+    return this.skillsToBeImported ? this.skillsToBeImported?.length > 0 : false
+  }
+
+  protected handleClickAddToWorkspace(): void {
+    let skillListUpdate = new ApiSkillListUpdate({
+      add: new ApiSearch(
+        {uuids:this.skillsToBeImported?.map(skill => skill.uuid)}
+      )
+    })
+    this.toastService.showBlockingLoader()
+    this.collectionService.getWorkspace().subscribe(workspace => {
+      this.collectionService.updateSkillsWithResult(workspace.uuid, skillListUpdate, undefined).subscribe(result => {
+        if (result) {
+          const message = `You added ${result.modifiedCount} RSDs to your workspace.`
+          this.toastService.showToast("Success!", message)
+          this.toastService.hideBlockingLoader()
+        }
+      })
+    })
+  }
+
+  protected handleAddToExistingCollection() {
+    this.router.navigate(["/collections/add-skills"],
+      {state:{selectedSkills: this.skillsToBeImported, totalCount:this.skillsToBeImported?.length}}
+    )
+  }
+
+  protected handleAddToANewCollection() {
+    this.router.navigate(["/collections/create/batch-import"],
+      {state: {selectedSkills: this.skillsToBeImported, totalCount:this.skillsToBeImported?.length}}
+    )
+  }
+
+  protected getBatchImportAction() {
+    switch (this.target) {
+      case BatchImportOptionsEnum.existing: {
+        this.handleAddToExistingCollection()
+        break
+      }
+      case BatchImportOptionsEnum.new: {
+        this.handleAddToANewCollection()
+        break
+      }
+      case BatchImportOptionsEnum.workspace: {
+        this.handleClickAddToWorkspace()
+        break
+      }
+      default: {
+        break
+      }
+    }
+  }
+
+  getImportOptionButtonLabel(): string {
+    switch (this.target) {
+      case BatchImportOptionsEnum.existing: {
+        return "Add to existing Collection"
+      }
+      case BatchImportOptionsEnum.new: {
+        return "Add to a new Collection"
+      }
+      case BatchImportOptionsEnum.workspace: {
+        return "Add to Workspace"
+      }
+      default: {
+        return ""
+      }
+    }
+  }
+
+  protected updateTarget(destination: string) {
+    this.target = destination
   }
 }
 

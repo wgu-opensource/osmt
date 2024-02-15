@@ -28,7 +28,7 @@ import {ApiSortOrder} from "../../richskill/ApiSkill";
 export class LabelWithSelectComponent implements OnInit {
 
   @Input() label = ""
-  @Input() currentSort: ApiSortOrder = ApiSortOrder.NameAsc
+  @Input() currentSort: ApiSortOrder = ApiSortOrder.SkillAsc
   @Input() options: {[s: string]: string} = {}
   @Output() sortChanged: EventEmitter<ApiSortOrder> = new EventEmitter<ApiSortOrder>()
 

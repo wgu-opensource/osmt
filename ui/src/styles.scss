@@ -1,0 +1,134 @@
+/* You can add global styles to this file, and also import other style files */
+.disabled-content {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* [START] Adjust heading text handling for app-collection-public-detail-card https://github.com/wgu-opensource/osmt/issues/381 */
+h2.t-type-heading1 {
+  overflow-wrap: anywhere;
+}
+/* [END] Adjust heading text handling for app-collection-public-detail-card */
+
+/* [START] Needed for search control refactor until design system is updated */
+.m-search .m-search-x-controls:before,
+.m-search .m-search-x-input:valid+.m-search-x-controls:before {
+  background-color: var(--color-background300);
+  border: 1px solid var(--color-background500);
+  border-style: solid;
+  border-color: var(--color-background500);
+  border-width: 1px;
+  border-radius: 8px;
+  outline: none;
+  outline-offset: 2px;
+  box-shadow: none;
+  transition: outline var(--t-transition), outline-offset var(--t-transition), border-radius var(--t-transition), border-color var(--t-transition), background-color var(--t-transition), box-shadow var(--t-transition);
+}
+
+.m-search .m-search-x-input:focus+.m-search-x-controls:before {
+  border-radius: 0 !important;
+  border-width: 2px;
+  border-color: var(--color-interactive2);
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.m-search .m-search-x-input:disabled+.m-search-x-controls:before {
+  background-color: var(--color-background200);
+  border-color: var(--color-background300);
+  cursor: not-allowed;
+}
+
+.m-search.m-is-error .m-search-x-input+.m-search-x-controls:before {
+  border-color: var(--color-attention);
+  border-width: 2px;
+}
+/* [END] Needed for search control refactor until design system is updated */
+
+/* [START] Select style for size-pagination and select-all */
+.select {
+  width: fit-content;
+  margin-left: 20px;
+  border-radius: 8px;
+  -webkit-box-sizing: border-box;
+  background-color: var(--color-background300);
+  border: 1px solid var(--color-background500);
+  outline: 2px solid transparent;
+  outline-offset: 4px;
+  box-sizing: border-box;
+  padding: 1px 8px;
+  -webkit-appearance: menulist;
+  transition: outline var(--t-transition),outline-offset var(--t-transition),border-radius var(--t-transition),border-color var(--t-transition),background-color var(--t-transition),box-shadow var(--t-transition);
+}
+/* [END] Select style for size-pagination and select-all */
+
+/* [START] Pill & Pill Group needed until design system is updated */
+.m-pill-group {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+}
+
+.m-pill-group-collapsible {
+  max-height: 100000px;
+  position: relative;
+  overflow-y: hidden;
+  transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+  padding-bottom: 60px;
+  transition: padding-bottom 0.5s cubic-bezier(0, 1, 0, 1);
+}
+.m-pill-group-collapsible.collapsed {
+  max-height: 100px;
+  padding-bottom: 0;
+  cursor: pointer;
+}
+.m-pill-group-collapsible .read-more-wrapper {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+.m-pill-group-collapsible .read-more-wrapper > div {
+  width: 100px;
+  margin: 1em auto;
+}
+.m-pill-group-collapsible .read-more-wrapper button {
+  width: 100%;
+  text-align: center;
+  background-color: var(--color-background300);  // 
+  color: var(--color-text2);
+  border: 1px solid var(--color-text3);
+  border-radius: 12px;
+}
+.m-pill-group-collapsible.collapsed .read-more-wrapper {
+  bottom: 0;
+  background: linear-gradient(rgba(255, 255, 255, 0) 0%, var(--color-background300) 100%);
+}
+
+.m-pill {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 16px;
+  background-color: var(--color-background100);
+}
+
+.m-pill:disabled {
+  cursor: default;
+}
+
+.m-pill.selected {
+  color: var(--color-text4);
+  background-color: var(--color-interactive1);
+}
+
+.m-pill .m-pill-secondary {
+  margin: 0 0 0 8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: var(--color-text4);
+  background-color: var(--color-background500);
+}
+/* [END] Pill & Pill Group needed until design system is updated */

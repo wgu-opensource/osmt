@@ -1,18 +1,20 @@
-import {Injectable} from "@angular/core"
-import {HttpClient, HttpHeaders} from "@angular/common/http"
-import {Observable} from "rxjs"
-import {ApiAuditLog, ApiSkill, ApiSortOrder, IAuditLog, ISkill} from "../ApiSkill"
-import {map, share} from "rxjs/operators"
-import {AbstractService} from "../../abstract.service"
-import {ApiSkillUpdate} from "../ApiSkillUpdate"
-import {AuthService} from "../../auth/auth-service"
-import {ApiSearch, PaginatedSkills} from "./rich-skill-search.service"
-import {PublishStatus} from "../../PublishStatus"
-import {ApiBatchResult} from "../ApiBatchResult"
-import {ApiTaskResult, ITaskResult} from "../../task/ApiTaskResult"
-import {ApiSkillSummary, ISkillSummary} from "../ApiSkillSummary"
-import {Router} from "@angular/router";
-import {Location} from "@angular/common";
+import { Location } from "@angular/common"
+import { HttpClient, HttpHeaders } from "@angular/common/http"
+import { Inject, Injectable } from "@angular/core"
+import { Router } from "@angular/router"
+
+import { Observable, of, throwError } from "rxjs"
+import { delay, map, retryWhen, share, switchMap } from "rxjs/operators"
+
+import { ApiSearch, PaginatedSkills } from "./rich-skill-search.service"
+import { ApiBatchResult } from "../ApiBatchResult"
+import { ApiAuditLog, ApiSkill, ApiSortOrder, IAuditLog, ISkill } from "../ApiSkill"
+import { ApiSkillSummary, ISkillSummary } from "../ApiSkillSummary"
+import { ApiSkillUpdate } from "../ApiSkillUpdate"
+import { AbstractService } from "../../abstract.service"
+import { AuthService } from "../../auth/auth-service"
+import { PublishStatus } from "../../PublishStatus"
+import { ApiTaskResult, ITaskResult } from "../../task/ApiTaskResult"
 
 
 @Injectable({
@@ -20,30 +22,38 @@ import {Location} from "@angular/common";
 })
 export class RichSkillService extends AbstractService {
 
-  constructor(httpClient: HttpClient, authService: AuthService, router: Router, location: Location) {
-    super(httpClient, authService, router, location)
+  constructor(
+    httpClient: HttpClient,
+    authService: AuthService,
+    router: Router,
+    location: Location,
+    @Inject("BASE_API") baseApi: string
+  ) {
+    super(httpClient, authService, router, location, baseApi)
   }
 
-  private serviceUrl = "api/skills"
+  private serviceUrl = "skills"
 
-  getSkills(
+  getSkillsFiltered(
     size: number = 50,
     from: number = 0,
+    apiSearch: ApiSearch,
     filterByStatuses: Set<PublishStatus> | undefined,
     sort: ApiSortOrder | undefined,
   ): Observable<PaginatedSkills> {
 
     const params = this.buildTableParams(size, from, filterByStatuses, sort)
-    return this.get<ApiSkillSummary[]>({
-      path: `${this.serviceUrl}`,
+    return this.post<ApiSkillSummary[]>({
+      path: `${this.serviceUrl}/filter`,
       params,
+      body: apiSearch
     })
       .pipe(share())
       .pipe(map(({body, headers}) => {
         return new PaginatedSkills(
           body?.map(skill => skill) || [],
           Number(headers.get("X-Total-Count"))
-      )
+        )
       }))
   }
 
@@ -67,7 +77,7 @@ export class RichSkillService extends AbstractService {
     return this.httpClient
       .get(this.buildUrl(`${this.serviceUrl}/${uuid}`), {
         headers: this.wrapHeaders(new HttpHeaders({
-            Accept: "text/csv"
+            Accept: "application/json"
           }
         )),
         responseType: "text",
@@ -75,6 +85,27 @@ export class RichSkillService extends AbstractService {
       })
       .pipe(share())
       .pipe(map((response) => this.safeUnwrapBody(response.body, errorMsg)))
+  }
+
+  // These two nearly identical getSkill functions can probably be joined.  the angular httpclient is weird though
+  // and overloads it's functions many times which makes any kind of abstraction seeking to broaden flexibility incompatible
+  getSkillXlsxByUuid(uuid: string): Observable<string> {
+    if (!uuid) {
+      throw new Error("No uuid provided for single skill xlsx export")
+    }
+    const errorMsg = `Could not find skill by uuid [${uuid}]`
+
+    return this.httpClient
+      .get(this.buildUrl(`${this.serviceUrl}/${uuid}`), {
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "application/vnd.ms-excel"
+          }
+        )),
+        responseType: "blob" as "json",
+        observe: "response"
+      })
+      .pipe(share())
+      .pipe(map((response) => this.safeUnwrapBody(response.body as string, errorMsg)))
   }
 
   getSkillJsonByUuid(uuid: string): Observable<string> {
@@ -137,7 +168,7 @@ export class RichSkillService extends AbstractService {
     const params = this.buildTableParams(size, from, filterByStatuses, sort)
 
     return this.post<ApiSkillSummary[]>({
-      path: "api/search/skills",
+      path: "search/skills",
       params,
       body: apiSearch,
     })
@@ -149,6 +180,124 @@ export class RichSkillService extends AbstractService {
       }))
   }
 
+  libraryExportCsv(): Observable<ApiTaskResult> {
+    return this.httpClient
+      .get<ApiTaskResult>(
+        this.buildUrl("export/library/csv"), {
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "application/json"
+          }
+        )),
+        observe: "response"
+      })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
+  }
+
+  libraryExportXlsx(): Observable<ApiTaskResult> {
+    return this.httpClient
+      .get<ApiTaskResult>(
+        this.buildUrl("export/library/xlsx"), {
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "application/json"
+          }
+        )),
+        observe: "response"
+      })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
+  }
+
+  exportSearchCsv(
+    apiSearch: ApiSearch,
+    filterByStatuses?: Set<PublishStatus>,
+  ): Observable<ApiTaskResult> {
+    const params = this.buildTableParams(undefined, undefined, filterByStatuses, undefined)
+    return this.httpClient.post<ApiTaskResult>(this.buildUrl("export/skills/csv"), apiSearch, {
+      params,
+      headers: this.wrapHeaders(new HttpHeaders({
+          Accept: "application/json"
+        }
+      )),
+      observe: "response"
+    })
+    .pipe(share())
+    .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
+  }
+
+  exportSearchXlsx(
+    apiSearch: ApiSearch,
+    filterByStatuses?: Set<PublishStatus>,
+  ): Observable<ApiTaskResult> {
+    const params = this.buildTableParams(undefined, undefined, filterByStatuses, undefined)
+    return this.httpClient.post<ApiTaskResult>(
+      this.buildUrl("export/skills/xlsx"), apiSearch, {
+        params,
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "application/json"
+          }
+        )),
+        observe: "response"
+      })
+      .pipe(share())
+      .pipe(map(({body}) => new ApiTaskResult(this.safeUnwrapBody(body, "unwrap failure"))))
+  }
+
+  /**
+   * Check if result exported with libraryExport() is ready if not check again every 1000 milliseconds.
+   * @param url Url to get RSD library exported as csv
+   * @param pollIntervalMs Milliseconds to retry request
+   */
+  getResultExportedCsvLibrary(url: string, pollIntervalMs: number = 1000): Observable<any> {
+    return this.httpClient
+      .get(this.buildUrl(url), {
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "text/csv"
+          }
+        )),
+        responseType: "text",
+        observe: "response"
+      })
+      .pipe(
+        retryWhen(errors => errors.pipe(
+          switchMap((error) => {
+            if (error.status === 404) {
+              return of(error.status)
+            }
+            return throwError(error)
+          }),
+          delay(pollIntervalMs),
+      )))
+  }
+
+  /**
+   * Check if result exported with libraryExport() is ready if not check again every 1000 milliseconds.
+   * @param url Url to get RSD library exported as xlsx
+   * @param pollIntervalMs Milliseconds to retry request
+   */
+  getResultExportedXlsxLibrary(url: string, pollIntervalMs: number = 1000): Observable<any> {
+    console.log(`endpoint: ${url}`)
+    return this.httpClient
+      .get(this.buildUrl(url), {
+        headers: this.wrapHeaders(new HttpHeaders({
+            Accept: "application/vnd.ms-excel;charset=utf-8;"
+          }
+        )),
+        responseType: "blob" as "json",
+        observe: "response"
+      })
+      .pipe(
+        retryWhen(errors => errors.pipe(
+          switchMap((error) => {
+            if (error.status === 404) {
+              return of(error.status)
+            }
+            return throwError(error)
+          }),
+          delay(pollIntervalMs),
+      )))
+  }
+
   publishSkillsWithResult(
     apiSearch: ApiSearch,
     newStatus: PublishStatus = PublishStatus.Published,
@@ -157,7 +306,7 @@ export class RichSkillService extends AbstractService {
     pollIntervalMs: number = 1000,
   ): Observable<ApiBatchResult> {
     return this.pollForTaskResult(
-      this.bulkStatusChange("api/skills/publish", apiSearch, newStatus, filterByStatuses, collectionUuid),
+      this.bulkStatusChange("skills/publish", apiSearch, newStatus, filterByStatuses, collectionUuid),
       pollIntervalMs
     )
   }
@@ -176,7 +325,7 @@ export class RichSkillService extends AbstractService {
 
   similarityCheck(statement: string): Observable<ApiSkillSummary[]> {
     return this.post<ISkillSummary[]>({
-      path: "api/search/skills/similarity",
+      path: "search/skills/similarity",
       body: {statement}
     })
       .pipe(share())
@@ -185,9 +334,19 @@ export class RichSkillService extends AbstractService {
       }))
   }
 
+  similaritiesResults(statements: string[]): Observable<Array<ApiSkillSummary[]>> {
+    return this.post<[ApiSkillSummary[]]>({
+      path: "search/skills/similarities/results",
+      body: statements.map(statement => ({statement}))
+    }).pipe(share())
+      .pipe(map(({body, headers}) => {
+        return body || []
+      }))
+  }
+
   similaritiesCheck(statements: string[]): Observable<boolean[]> {
     return this.post<boolean[]>({
-      path: "api/search/skills/similarities",
+      path: "search/skills/similarities",
       body: statements.map(statement => ({statement}))
     })
       .pipe(share())
@@ -195,4 +354,5 @@ export class RichSkillService extends AbstractService {
         return body || []
       }))
   }
+
 }

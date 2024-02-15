@@ -132,6 +132,14 @@ describe("CollectionPublicComponent", () => {
     expect(component.results).toEqual(expected)
   })
 
+  it("updateSkillCategories should be correct", () => {
+    const collection = component.collection
+    component.skillCategories = []
+    component.updateSkillCategories()
+    expect(component.skillCategories[0]).toBeTruthy()
+  })
+
+
   it("handleHeaderColumnSort should be correct", () => {
     // Arrange
     const expected = createMockPaginatedSkills()
@@ -163,5 +171,18 @@ describe("CollectionPublicComponent", () => {
     expect(component.size).toEqual(50)
     expect(component.from).toEqual((13 - 1) * 50)
     expect(component.results).toEqual(expected)
+  })
+
+  describe( "sizeChange", () => {
+    it("Should set size of page, from and call handlePageClicked", () => {
+      const size = 100
+      spyOn(component, "handlePageClicked").withArgs(1).and.callThrough()
+
+      component.sizeChange(size)
+
+      expect(component.from).toEqual(0)
+      expect(component.size).toEqual(size)
+      expect(component.handlePageClicked).toHaveBeenCalledTimes(1)
+    })
   })
 })

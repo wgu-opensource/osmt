@@ -7,14 +7,14 @@ import { AppConfig } from "src/app/app.config"
 import { EnvironmentService } from "src/app/core/environment.service"
 import { ActivatedRouteStubSpec } from "test/util/activated-route-stub.spec"
 import { createMockCollectionSummary, createMockPaginatedCollections } from "../../../test/resource/mock-data"
-import { CollectionServiceStub, SearchServiceStub } from "../../../test/resource/mock-stubs"
+import { AuthServiceStub, CollectionServiceStub, SearchServiceStub } from "../../../test/resource/mock-stubs"
 import { PublishStatus } from "../PublishStatus"
 import { ApiAdvancedSearch, ApiSearch } from "../richskill/service/rich-skill-search.service"
 import { SearchService } from "../search/search.service"
 import { ToastService } from "../toast/toast.service"
 import { CollectionSearchResultsComponent } from "./collection-search-results.component"
 import { CollectionService } from "./service/collection.service"
-
+import {AuthService} from "../auth/auth-service";
 
 export function createComponent(T: Type<CollectionSearchResultsComponent>, f?: () => void): Promise<void> {
   fixture = TestBed.createComponent(T)
@@ -65,6 +65,7 @@ describe("CollectionSearchResultsComponent", () => {
         { provide: CollectionService, useClass: CollectionServiceStub },
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
     .compileComponents()
@@ -208,6 +209,7 @@ describe("RichCollectionSearchResultsComponent with latestSearch", () => {
         { provide: CollectionService, useClass: CollectionServiceStub },
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
     .compileComponents()
@@ -257,6 +259,7 @@ describe("RichCollectionSearchResultsComponent with params", () => {
         { provide: CollectionService, useClass: CollectionServiceStub },
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: Router, useValue: routerSpy },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
     .compileComponents()

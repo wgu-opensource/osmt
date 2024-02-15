@@ -1,5 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {allMappingHeaderOrder, importSkillHeaderOrder, importSkillHeaders} from "./batch-import.component";
+import {
+  allMappingHeaderOrder,
+  importSkillTargetOptions,
+  importSkillHeaderOrder,
+} from "./batch-import.component";
 
 
 interface MappingChanged {
@@ -69,5 +73,47 @@ export class FieldMappingSelectComponent {
       uploadedHeader: this.data,
       property: value
     })
+  }
+}
+
+@Component({
+  selector: "app-batch-import-destination-select",
+  template: `
+    <tr class="m-tableRow m-tableRow-fieldMap">
+      <th scope="row">
+        <div class="m-fieldMapText">Select Import Destination</div>
+      </th>
+      <td>
+        <div class="m-select m-select-fieldMap">
+            <select class="m-select-x-select" (change)="handleChange($event)">
+                <option *ngFor="let item of optionElements" [value]="item.target"
+                    [attr.selected]="value === item.target ? '' : null">{{item.label}}</option>
+                <option selected="selected" value="">RSD Library</option>
+            </select>
+            <div class="m-select-x-icon">
+                <svg class="t-icon" aria-hidden="true">
+                    <use xlink:href="/assets/images/svg-defs.svg#icon-chevron"></use>
+                </svg>
+            </div>
+        </div>
+      </td>
+  `
+})
+export class BatchImportDestinationSelectComponent {
+
+  @Input() data: string = ""
+  @Input() value: string = ""
+  @Output() mappingChanged = new EventEmitter<string>()
+
+  get optionElements(): {target: string, label: string}[] {
+    return importSkillTargetOptions
+  }
+
+  handleChange($event: Event): void {
+    const target = $event.target as HTMLSelectElement
+    const value = target.value
+    this.mappingChanged.emit(
+      value
+    )
   }
 }

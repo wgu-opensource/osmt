@@ -9,7 +9,8 @@ import { AppConfig } from "../../app.config"
 import { EnvironmentService } from "../../core/environment.service"
 import { FormFieldText } from "../../form/form-field-text.component"
 import { FormField } from "../../form/form-field.component"
-import { INamedReference } from "../../richskill/ApiSkill"
+import { ApiNamedReference, IAlignment } from "../../richskill/ApiSkill"
+import { ApiJobCode, IJobCode } from "../../job-codes/Jobcode"
 import { ApiSearch } from "../../richskill/service/rich-skill-search.service"
 import { SearchService } from "../search.service"
 import { AdvancedSearchHorizontalActionBarComponent } from "./action-bar/advanced-search-horizontal-action-bar.component"
@@ -82,7 +83,7 @@ describe("AdvancedSearchComponent", () => {
 
   it("handleSearchSkills should return", () => {
     // Arrange
-    SearchServiceData.latestSearch = new ApiSearch({})  // Clear previous search
+    SearchServiceData.latestSearch = new ApiSearch({filtered: {}})  // Clear previous search
     const {
       name,
       author,
@@ -103,19 +104,20 @@ describe("AdvancedSearchComponent", () => {
       author,
       skillStatement,
       category,
-      keywords: tokenizeString(keywords),
-      standards: prepareNamedReferences(standards),
-      certifications: prepareNamedReferences(certifications),
-      occupations: tokenizeString(occupations),
-      employers: prepareNamedReferences(employers),
-      alignments: prepareNamedReferences(alignments),
+      keywords: keywords,
+      standards: standards.map((v: IAlignment) => new ApiNamedReference({ name: v.skillName })),
+      certifications: certifications,
+      occupations: occupations.map((v: IJobCode) => v.code),
+      employers: employers,
+      alignments: alignments.map((v: IAlignment) => new ApiNamedReference({ name: v.skillName })),
       collectionName
     }
-    const expected = new ApiSearch({ advanced })
+    const expected = new ApiSearch({ advanced, filtered: {} })
 
     // Act
     component.handleSearchSkills()
-
+    console.log(SearchServiceData.latestSearch)
+    console.log(expected)
     // Assert
     expect(SearchServiceData.latestSearch).toEqual(expected)
   })
@@ -129,12 +131,12 @@ function setupForm(isBlank: boolean): object {
       skillStatement: "",
       author: "",
       category: "",
-      keywords: [].join(";"),
-      standards: [].join(";"),
-      certifications: [].join(";"),
-      occupations: [].join(";"),
-      employers: [].join(";"),
-      alignments: [].join(";"),
+      keywords: [],
+      standards: [],
+      certifications: [],
+      occupations: [],
+      employers: [],
+      alignments: [],
       collectionName: ""
     }
     : {
@@ -142,26 +144,14 @@ function setupForm(isBlank: boolean): object {
       skillStatement: "my statement",
       author: "my author",
       category: "my category",
-      keywords: ["keyword1", "keyword2", "keyword3"].join(";"),
-      standards: ["standard1", "standard2", "standard3"].join(";"),
-      certifications: ["certification1", "certification2", "certification3"].join(";"),
-      occupations: ["occupation1", "occupation2", "occupation3"].join(";"),
-      employers: ["employer1", "employer2", "employer3"].join(";"),
-      alignments: ["alignment1", "alignment2"].join(";"),
+      keywords: ["keyword1", "keyword2", "keyword3"],
+      standards: ["standard1", "standard2", "standard3"].map(v => new ApiNamedReference({ name: v})),
+      certifications: ["certification1", "certification2", "certification3"].map(v => new ApiNamedReference({ name: v})),
+      occupations: ["occupation1", "occupation2", "occupation3"].map(v => new ApiJobCode({ code: v })),
+      employers: ["employer1", "employer2", "employer3"].map(v => new ApiNamedReference({ name: v })),
+      alignments: ["alignment1", "alignment2"].map(v => new ApiNamedReference({ name: v })),
       collectionName: "collection 1"
     }
   form.setValue(fields)
   return fields
-}
-
-function tokenizeString(s: string, token: string = ";"): string[] | undefined {
-  return s
-      .split(token)
-      .map(v => v.trim())
-      .filter(v => v.length > 0)
-    || undefined
-}
-
-function prepareNamedReferences(value: string, token: string = ";"): INamedReference[] | undefined {
-  return tokenizeString(value, token)?.map(v => ({name: v})) || undefined
 }

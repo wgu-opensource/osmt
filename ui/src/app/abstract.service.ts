@@ -1,15 +1,15 @@
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http"
 import {AppConfig} from "./app.config"
-import {Observable, Subscription} from "rxjs"
-import {AuthService} from "./auth/auth-service";
-import {ApiTaskResult, ITaskResult} from "./task/ApiTaskResult";
-import {PublishStatus} from "./PublishStatus";
-import {ApiSortOrder} from "./richskill/ApiSkill";
-import {ApiBatchResult} from "./richskill/ApiBatchResult";
-import {ApiSearch} from "./richskill/service/rich-skill-search.service";
-import {map, share} from "rxjs/operators";
-import {DefaultUrlSerializer, Router, UrlSerializer} from "@angular/router";
-import {Location} from "@angular/common";
+import {Observable} from "rxjs"
+import {IAuthService} from "./auth/iauth-service"
+import {ApiTaskResult, ITaskResult} from "./task/ApiTaskResult"
+import {PublishStatus} from "./PublishStatus"
+import {ApiSortOrder} from "./richskill/ApiSkill"
+import {ApiSearch, PaginatedSkills} from "./richskill/service/rich-skill-search.service"
+import {map, share} from "rxjs/operators"
+import {Router} from "@angular/router"
+import {Location} from "@angular/common"
+import { Inject } from "@angular/core"
 
 interface ApiGetParams {
   path: string,
@@ -20,14 +20,37 @@ interface ApiGetParams {
   body?: unknown
 }
 
+export interface IRelatedSkillsService<TEntityId> {
+  getRelatedSkills(
+    entityId: TEntityId,
+    size: number,
+    from: number,
+    statusFilters: Set<PublishStatus>,
+    sort?: ApiSortOrder
+  ): Observable<PaginatedSkills>
+
+  searchRelatedSkills(
+    entityId: TEntityId,
+    size: number,
+    from: number,
+    statusFilters: Set<PublishStatus>,
+    sort?: ApiSortOrder,
+    search?: ApiSearch
+  ): Observable<PaginatedSkills>
+}
+
 export abstract class AbstractService {
 
-  constructor(protected httpClient: HttpClient,
-              protected authService: AuthService,
-              protected router: Router,
-              protected location: Location
-  )
-  {
+  protected baseApi = ""
+
+  protected constructor(
+    protected httpClient: HttpClient,
+    protected authService: IAuthService,
+    protected router: Router,
+    protected location: Location,
+    @Inject("BASE_API") baseApi: string
+  ) {
+    this.baseApi = baseApi
   }
 
   redirectToLogin(error: any): void {
@@ -35,7 +58,7 @@ export abstract class AbstractService {
     if (status === 401) {
       this.authService.logout()
       const returnPath = this.location.path(true)
-      this.router.navigate(["/login"], {queryParams: {return: returnPath}})
+      this.authService.start(returnPath)
       return
     }
     else if (status === 0) {
@@ -83,10 +106,12 @@ export abstract class AbstractService {
     const baseUrl = AppConfig.settings.baseApiUrl
 
     // if user defined, make sure it delineates between the host and path
-    if (baseUrl && !baseUrl.endsWith("/") && !path.startsWith("/")) {
-      return baseUrl + "/" + path
+    if (path.includes("api")) {
+      return baseUrl + (path.startsWith("/") ? (path) : ("/" + path))
+    } else if (baseUrl && !baseUrl.endsWith("/") && !path.startsWith("/")) {
+      return baseUrl + this.baseApi + "/" + path
     } else {
-      return baseUrl + path
+      return baseUrl + this.baseApi + "/" + path
     }
   }
 
@@ -144,7 +169,8 @@ export abstract class AbstractService {
     size: number | undefined,
     from: number | undefined,
     filterByStatuses?: Set<PublishStatus>,
-    sort?: ApiSortOrder): any {
+    sort?: any
+  ): any {
 
     const params: any = {
       sort

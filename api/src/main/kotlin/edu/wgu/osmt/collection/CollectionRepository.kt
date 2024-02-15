@@ -1,5 +1,6 @@
 package edu.wgu.osmt.collection
 
+import edu.wgu.osmt.PaginationDefaults
 import edu.wgu.osmt.api.FormValidationException
 import edu.wgu.osmt.api.model.ApiBatchResult
 import edu.wgu.osmt.api.model.ApiCollectionUpdate
@@ -9,15 +10,25 @@ import edu.wgu.osmt.auditlog.AuditOperationType
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.ListFieldUpdate
 import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.keyword.KeywordRepository
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import edu.wgu.osmt.richskill.*
+import edu.wgu.osmt.richskill.RichSkillDescriptor
+import edu.wgu.osmt.richskill.RichSkillDescriptorDao
+import edu.wgu.osmt.richskill.RichSkillDescriptorTable
+import edu.wgu.osmt.richskill.RichSkillDoc
+import edu.wgu.osmt.richskill.RichSkillEsRepo
+import edu.wgu.osmt.richskill.RichSkillRepository
+import edu.wgu.osmt.richskill.diff
 import edu.wgu.osmt.task.PublishTask
 import edu.wgu.osmt.task.UpdateCollectionSkillsTask
 import org.jetbrains.exposed.sql.SizedIterable
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -33,14 +44,17 @@ interface CollectionRepository {
     fun findById(id: Long): CollectionDao?
     fun findByUUID(uuid: String): CollectionDao?
     fun findByName(name: String): CollectionDao?
-    fun create(name: String, user: String): CollectionDao?
-    fun create(updateObject: CollectionUpdateObject, user: String): CollectionDao?
+    fun create(name: String, user: String, email: String, description: String? = null): CollectionDao?
+    fun create(updateObject: CollectionUpdateObject, user: String, email: String): CollectionDao?
     fun update(updateObject: CollectionUpdateObject, user: String): CollectionDao?
+    fun remove(uuid: String): ApiBatchResult
+    fun findByOwner(owner: String) : CollectionDao?
 
     fun createFromApi(
         apiUpdates: List<ApiCollectionUpdate>,
         richSkillRepository: RichSkillRepository,
-        user: String
+        user: String,
+        email: String,
     ): List<CollectionDao>
 
     fun collectionUpdateObjectFromApi(
@@ -80,6 +94,7 @@ class CollectionRepositoryImpl @Autowired constructor(
 
     override val table = CollectionTable
     override val dao = CollectionDao.Companion
+    val collectionSkillsTable = CollectionSkills
 
     override fun findAll() = dao.all()
 
@@ -95,11 +110,18 @@ class CollectionRepositoryImpl @Autowired constructor(
         return query?.let { dao.wrapRow(it) }
     }
 
-    override fun create(name: String, user: String): CollectionDao? {
-        return create(CollectionUpdateObject(name = name), user)
+    override fun create(name: String, user: String, email: String, description: String?): CollectionDao? {
+        return create(
+            CollectionUpdateObject(
+                name = name,
+                description = NullableFieldUpdate(description)
+            ),
+            user,
+            email
+        )
     }
 
-    override fun create(updateObject: CollectionUpdateObject, user: String): CollectionDao? {
+    override fun create(updateObject: CollectionUpdateObject, user: String, email: String): CollectionDao? {
         if (updateObject.name.isNullOrBlank()) {
             return null
         }
@@ -109,10 +131,14 @@ class CollectionRepositoryImpl @Autowired constructor(
             this.updateDate = this.creationDate
             this.uuid = UUID.randomUUID().toString()
             this.name = updateObject.name
+            this.description = updateObject.description?.t
             this.author = updateObject.author?.t
         }
 
         updateObject.copy(id = newCollection.id.value).applyToDao(newCollection)
+        if(PublishStatus.Workspace == updateObject.publishStatus) {
+            newCollection.workspaceOwner = email
+        }
 
         newCollection.let {
             collectionEsRepo.save(it.toDoc())
@@ -197,10 +223,42 @@ class CollectionRepositoryImpl @Autowired constructor(
         return daoObject
     }
 
+    override fun remove(uuid: String): ApiBatchResult {
+
+        val collectionFound = findByUUID(uuid)
+        val esCollectionFound = collectionFound?.let { collectionEsRepo.findByUuid(it.uuid, PageRequest.of(0, PaginationDefaults.size))}
+
+        if (esCollectionFound != null && esCollectionFound.content.isNotEmpty()) {
+            transaction {
+                table.deleteWhere { table.id eq collectionFound.id }
+                collectionEsRepo.delete(collectionFound.toDoc())
+
+            }
+            return ApiBatchResult(
+                success = true,
+                modifiedCount = 1,
+                totalCount = 1
+            )
+        }
+
+        return ApiBatchResult(
+            success = false,
+            modifiedCount = 0,
+            totalCount = 0
+        )
+
+    }
+
+    override fun findByOwner(owner: String): CollectionDao? {
+        val query = table.select { table.workspaceOwner eq owner }.firstOrNull()
+        return query?.let { dao.wrapRow(it) }
+    }
+
     override fun createFromApi(
         apiUpdates: List<ApiCollectionUpdate>,
         richSkillRepository: RichSkillRepository,
-        user: String
+        user: String,
+        email: String
     ): List<CollectionDao> {
         // pre validate all rows
         val allErrors = apiUpdates.mapIndexed { i, updateDto ->
@@ -213,7 +271,7 @@ class CollectionRepositoryImpl @Autowired constructor(
         // create records
         val newSkills = apiUpdates.map { update ->
             val updateObject = collectionUpdateObjectFromApi(update, richSkillRepository)
-            create(updateObject, user)
+            create(updateObject, user, email)
         }
         return newSkills.filterNotNull()
     }
@@ -232,7 +290,8 @@ class CollectionRepositoryImpl @Autowired constructor(
         val collectionUpdateObject = collectionUpdateObjectFromApi(collectionUpdate, richSkillRepository)
 
         val updateObjectWithId = collectionUpdateObject.copy(
-            id = existingCollectionId
+            id = existingCollectionId,
+            publishStatus = collectionUpdate.publishStatus
         )
 
         return update(updateObjectWithId, user)
@@ -362,6 +421,7 @@ class CollectionRepositoryImpl @Autowired constructor(
 
         return CollectionUpdateObject(
             name = collectionUpdate.name,
+            description = collectionUpdate.description?.let { NullableFieldUpdate(it) },
             publishStatus = collectionUpdate.publishStatus,
             author = authorKeyword?.let { NullableFieldUpdate(it) },
             skills = if (adding.size + removing.size > 0) ListFieldUpdate(adding, removing) else null

@@ -1,15 +1,14 @@
-import {Component, OnInit} from "@angular/core";
-import {SkillsListComponent} from "../richskill/list/skills-list.component";
-import {CollectionsListComponent} from "./collections-list.component";
-import {ApiSearch, PaginatedCollections, PaginatedSkills} from "../richskill/service/rich-skill-search.service";
-import {ActivatedRoute, NavigationStart, Router} from "@angular/router";
-import {RichSkillService} from "../richskill/service/rich-skill.service";
-import {ToastService} from "../toast/toast.service";
-import {SearchService} from "../search/search.service";
-import {CollectionService} from "./service/collection.service";
-import {ApiSkillSummary, ICollectionSummary} from "../richskill/ApiSkillSummary";
-import {determineFilters} from "../PublishStatus";
-import {Title} from "@angular/platform-browser";
+import {Component, OnInit} from "@angular/core"
+import {CollectionsListComponent} from "./collections-list.component"
+import {ApiSearch, PaginatedCollections} from "../richskill/service/rich-skill-search.service"
+import {ActivatedRoute, Router} from "@angular/router"
+import {ToastService} from "../toast/toast.service"
+import {SearchService} from "../search/search.service"
+import {CollectionService} from "./service/collection.service"
+import {ICollectionSummary} from "../richskill/ApiSkillSummary"
+import {determineFilters} from "../PublishStatus"
+import {Title} from "@angular/platform-browser"
+import {AuthService} from "../auth/auth-service"
 
 @Component({
   selector: "app-collection-search-results",
@@ -29,9 +28,10 @@ export class CollectionSearchResultsComponent extends CollectionsListComponent i
               protected collectionService: CollectionService,
               protected searchService: SearchService,
               protected route: ActivatedRoute,
-              protected titleService: Title
+              protected titleService: Title,
+              protected authService: AuthService
   ) {
-    super(router, toastService, collectionService)
+    super(router, toastService, collectionService, authService)
     this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
   }
 

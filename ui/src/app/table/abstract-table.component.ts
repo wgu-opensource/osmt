@@ -1,8 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core"
+import {Component, EventEmitter, HostListener, Input, OnInit, Output} from "@angular/core"
 import {ApiSortOrder} from "../richskill/ApiSkill"
 import {TableActionDefinition} from "./skills-library-table/has-action-definitions"
 import {SvgHelper, SvgIcon} from "../core/SvgHelper"
 import {Observable} from "rxjs"
+import {SelectAll} from "./select-all/select-all.component"
+import {SelectAllEvent} from "../models"
 
 /**
  * Implement row components to hold datasets and figure out how to dynamically pass and use them
@@ -16,6 +18,7 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
   @Input() items: SummaryT[] = []
   @Input() currentSort?: ApiSortOrder = undefined
   @Input() rowActions: TableActionDefinition[] = []
+  @Input() showRowActions: boolean = true
   @Input() selectAllCount?: number
   @Input() selectAllEnabled = true
   @Input() clearSelected = new Observable<void>()
@@ -31,6 +34,7 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
   selectedItems: Set<SummaryT> = new Set()
 
   checkIcon = SvgHelper.path(SvgIcon.CHECK)
+  isShiftPressed = false
 
   constructor() { }
 
@@ -98,19 +102,33 @@ export class AbstractTableComponent<SummaryT> implements OnInit {
       this.selectedItems.delete(item)
     } else {
       this.selectedItems.add(item)
+      this.shiftSelection(item)
     }
     this.rowSelected.emit(Array.from(this.selectedItems))
   }
 
-  handleSelectAll(event: Event): void {
-    const checkbox = event.target as HTMLInputElement
-    const selected: boolean = checkbox.checked
-    this.selectAllSelected.emit(selected)
-    if (selected) {
+  shiftSelection(item: SummaryT): void {}
+
+  handleSelectAll(event: SelectAllEvent): void {
+    const isCheckboxSelected: boolean = event.selected
+    const isAllResultsSelected: boolean = event.selected && event.value === SelectAll.SELECT_ALL
+    this.selectAllSelected.emit(isAllResultsSelected)
+    if (isCheckboxSelected) {
       this.items.forEach(it => this.selectedItems.add(it))
     } else {
       this.selectedItems.clear()
     }
     this.rowSelected.emit(Array.from(this.selectedItems))
   }
+
+  @HostListener("document:keydown.shift", ["$event"])
+  onKeydownHandler(): void {
+    this.isShiftPressed = true
+  }
+
+  @HostListener("document:keyup.shift", ["$event"])
+  onKeyupHandler(): void {
+    this.isShiftPressed = false
+  }
+
 }

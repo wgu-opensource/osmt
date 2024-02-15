@@ -5,10 +5,11 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.collection.CollectionDoc
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.config.INDEX_RICHSKILL_DOC
 import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.keyword.KeywordTypeEnum
-import org.elasticsearch.core.Nullable
+import javax.annotation.Nullable
 import org.springframework.data.annotation.Id
 import org.springframework.data.elasticsearch.annotations.*
 import org.springframework.data.elasticsearch.annotations.FieldType.*
@@ -19,7 +20,7 @@ import java.time.LocalDateTime
  * Elasticsearch representation of a Rich Skill.
  * Also corresponds to `SkillSummary` API response object
  */
-@Document(indexName = "richskill_v1", createIndex = true, versionType = Document.VersionType.EXTERNAL)
+@Document(indexName = INDEX_RICHSKILL_DOC, createIndex = true, versionType = Document.VersionType.EXTERNAL)
 @Setting(settingPath = "/elasticsearch/settings.json")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class RichSkillDoc(
@@ -43,7 +44,8 @@ data class RichSkillDoc(
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
-            InnerField(suffix = "keyword", type = Keyword)
+            InnerField(suffix = "keyword", type = Keyword),
+            InnerField(suffix = "sort_insensitive", type = Keyword, normalizer = "lowercase_normalizer")
         ]
     )
     @get:JsonProperty("skillName")
@@ -54,13 +56,13 @@ data class RichSkillDoc(
         otherFields = [
             InnerField(suffix = "", type = Search_As_You_Type),
             InnerField(suffix = "raw", analyzer = "whitespace_exact", type = Text),
-            InnerField(suffix = "keyword", type = Keyword)
+            InnerField(suffix = "keyword", type = Keyword),
+            InnerField(suffix = "sort_insensitive", type = Keyword, normalizer = "lowercase_normalizer")
         ]
     )
     @get:JsonProperty("skillStatement")
     val statement: String,
 
-    @Nullable
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
@@ -69,10 +71,9 @@ data class RichSkillDoc(
             InnerField(suffix = "keyword", type = Keyword)
         ]
     )
-    @get:JsonProperty
-    val category: String? = null,
+    @get:JsonProperty("categories")
+    val categories: List<String> = listOf(),
 
-    @Nullable
     @MultiField(
         mainField = Field(type = Text, analyzer = "english_stemmer"),
         otherFields = [
@@ -81,8 +82,8 @@ data class RichSkillDoc(
             InnerField(suffix = "keyword", type = Keyword)
         ]
     )
-    @get:JsonProperty("author")
-    val author: String? = null,
+    @get:JsonProperty("authors")
+    val authors: List<String> = listOf(),
 
     @Field(type = Keyword)
     @get:JsonProperty("status")
@@ -111,7 +112,7 @@ data class RichSkillDoc(
             InnerField(suffix = "keyword", type = Keyword)
         ]
     )
-    @get:JsonIgnore
+    @get:JsonProperty("standards")
     val standards: List<String> = listOf(),
 
     @MultiField(
@@ -167,8 +168,8 @@ data class RichSkillDoc(
                 uri = "${appConfig.baseUrl}/api/skills/${dao.uuid}",
                 name = dao.name,
                 statement = dao.statement,
-                category = dao.category?.value,
-                author = dao.author?.value,
+                categories = dao.keywords.filter { it.type == KeywordTypeEnum.Category }.mapNotNull { it.value },
+                authors = dao.keywords.filter { it.type == KeywordTypeEnum.Author }.mapNotNull { it.value },
                 publishStatus = dao.publishStatus(),
                 searchingKeywords = dao.keywords.filter { it.type == KeywordTypeEnum.Keyword }.mapNotNull { it.value },
                 jobCodes = dao.jobCodes.map { it.toModel() },

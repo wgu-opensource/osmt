@@ -1,5 +1,6 @@
 package edu.wgu.osmt.api.model
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.db.PublishStatus
 
@@ -7,6 +8,10 @@ data class ApiCollectionUpdate(
     @JsonProperty("name")
     val name: String? = null,
 
+    @JsonProperty("description")
+    val description: String? = null,
+
+    @JsonFormat(with= [JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES])
     @JsonProperty("status")
     val publishStatus: PublishStatus? = null,
 

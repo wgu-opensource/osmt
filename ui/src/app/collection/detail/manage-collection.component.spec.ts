@@ -13,6 +13,7 @@ import {
   createMockSkillSummary
 } from "../../../../test/resource/mock-data"
 import {
+  AuthServiceStub,
   CollectionServiceStub,
   EnvironmentServiceStub,
   RichSkillServiceStub
@@ -28,6 +29,14 @@ import { ToastService } from "../../toast/toast.service"
 import { ApiCollection } from "../ApiCollection"
 import { CollectionService } from "../service/collection.service"
 import { ManageCollectionComponent } from "./manage-collection.component"
+import {AuthService} from "../../auth/auth-service";
+import * as FileSaver from "file-saver"
+import * as Auth from "../../auth/auth-roles"
+import {CollectionsLibraryComponent} from "../../table/collections-library.component"
+import {FormControl, FormGroup} from "@angular/forms"
+import {ITableActionDefinitionSubMenu} from "../../table/skills-library-table/has-action-definitions"
+import { KeywordCount } from "../../richskill/ApiSkill";
+import { KeywordCountPillControl } from "../../core/pill/pill-control";
 
 
 @Component({
@@ -68,7 +77,8 @@ describe("ManageCollectionComponent", () => {
         RouterTestingModule.withRoutes([
           { path: "collections/uuid1/add-skills", component: ManageCollectionComponent },
           { path: "collections/UUID1/edit", component: ManageCollectionComponent },
-          { path: "collections/uuid1/publish", component: ManageCollectionComponent }
+          { path: "collections/uuid1/publish", component: ManageCollectionComponent },
+          { path: "collections", component: CollectionsLibraryComponent}
         ]),
         HttpClientTestingModule
       ],
@@ -79,6 +89,7 @@ describe("ManageCollectionComponent", () => {
         { provide: EnvironmentService, useClass: EnvironmentServiceStub },  // Example of using a service stub
         { provide: RichSkillService, useClass: RichSkillServiceStub },
         { provide: CollectionService, useClass: CollectionServiceStub },
+        { provide: AuthService, useClass: AuthServiceStub },
       ]
     })
 
@@ -124,6 +135,13 @@ describe("ManageCollectionComponent", () => {
 
     // Assert
     expect(component.collection).toEqual(collection)
+  })
+
+  it("updateSkillCategories should be correct", () => {
+    const collection = component.collection
+    component.skillCategories = []
+    component.updateSkillCategories()
+    expect(component.skillCategories[0]).toBeTruthy()
   })
 
   it("loadNextPage should be correct", () => {
@@ -224,7 +242,6 @@ describe("ManageCollectionComponent", () => {
     while (!component.results) {}
 
     // Assert
-    expect(component.apiSearch).toBeFalsy()
     expect(component.from).toBeFalsy()
     expect(component.results).toBeTruthy()
     expect(result).toBeFalsy()
@@ -273,7 +290,7 @@ describe("ManageCollectionComponent", () => {
 
       // Assert
       expect(actions).toBeTruthy()
-      expect(actions.length).toEqual(5)
+      expect(actions.length).toEqual(6)
 
       let action = actions[0]
       expect(action.label).toEqual("Add RSDs to This Collection")
@@ -284,7 +301,7 @@ describe("ManageCollectionComponent", () => {
       expect(router.navigate).toHaveBeenCalledWith(["/collections/uuid1/add-skills"])
 
       action = actions[1]
-      expect(action.label).toEqual("Edit Collection Name")
+      expect(action.label).toEqual("Edit Collection")
       expect(action.primary).toBeFalsy()
       expect(action && action.callback).toBeTruthy()
       spyNavigate.calls.reset()
@@ -301,14 +318,38 @@ describe("ManageCollectionComponent", () => {
       expect(action && action.callback).toBeTruthy()
       action.callback?.(action)
       expect(action.visible?.()).toBeTruthy()  // !== PublishStatus.Archived  && !== PublishStatus.Deleted
-
-      action = actions[4]
-      expect(action.label).toEqual("Unarchive Collection ")
-      expect(action.primary).toBeFalsy()
-      expect(action && action.callback).toBeTruthy()
-      action.callback?.(action)
-      expect(action.visible?.()).toBeFalsy()  // === PublishStatus.Archived  || === PublishStatus.Deleted
     })
+  })
+
+  it("delete collection should be visible", () => {
+    const spy = spyOnProperty(Auth, "ENABLE_ROLES").and.returnValue(true)
+    const actions = component.actionDefinitions()
+    const action = actions[5]
+    expect(action.label).toEqual("Delete Collection")
+    expect(actions.length).toEqual(6)
+  })
+
+  it("delete collection should not be visible", () => {
+    // @ts-ignore
+    const spy = spyOnProperty(Auth, "ENABLE_ROLES").and.returnValue(false)
+    const actions = component.actionDefinitions()
+    const action = actions[5]
+    expect(action).toBeUndefined()
+    expect(actions.length).toEqual(5)
+  })
+
+  it("when delete collection action is called template should be confirm-delete-collection", () => {
+    component.deleteCollectionAction()
+    expect(component.template === "confirm-delete-collection")
+  })
+
+  it("handleConfirmDeleteCollection should call", () => {
+    const spyLoader = spyOn(component["toastService"].loaderSubject, "next")
+    const spyDeleteCollectionWithResult = spyOn(component["collectionService"], "deleteCollectionWithResult").and.callThrough()
+    // window.onbeforeunload = jasmine.createSpy()
+    component.handleConfirmDeleteCollection()
+    expect(spyLoader).toHaveBeenCalledWith(true)
+    expect(spyDeleteCollectionWithResult).toHaveBeenCalled()
   })
 
   it("publishAction should be correct", () => {
@@ -417,13 +458,13 @@ describe("ManageCollectionComponent", () => {
       createMockSkillSummary("id3")
     ]
     component.results = skills
-    component.showingMultipleConfirm = false
+    component.template = "default"
     component.selectAllChecked = false
 
     // Act
     component.removeFromCollection(skill)
     // Assert
-    expect(component.showingMultipleConfirm).toBeFalsy()
+    expect(component.template).toEqual("default")
     expect(component.submitSkillRemoval).toHaveBeenCalled()
 
     // Arrange
@@ -431,7 +472,7 @@ describe("ManageCollectionComponent", () => {
     // Act
     component.removeFromCollection()
     // Assert
-    expect(component.showingMultipleConfirm).toBeTruthy()
+    expect(component.template).toEqual("confirm-multiple")
     expect(component.submitSkillRemoval).not.toHaveBeenCalled()
 
     // Arrange
@@ -440,7 +481,7 @@ describe("ManageCollectionComponent", () => {
     // Act
     component.removeFromCollection(skill)
     // Assert
-    expect(component.showingMultipleConfirm).toBeTruthy()
+    expect(component.template).toEqual("confirm-multiple")
     expect(component.submitSkillRemoval).not.toHaveBeenCalled()
 
     // Arrange
@@ -450,6 +491,22 @@ describe("ManageCollectionComponent", () => {
     component.removeFromCollection(skill)
     // Assert
     expect(component.getApiSearch).not.toHaveBeenCalled()
+  })
+
+  it("remove skills should have api search with query", () => {
+    component.selectAllChecked = true
+    const searchQuery = "art"
+    component.searchForm?.get("search")?.patchValue(searchQuery)
+    component.removeFromCollection()
+    expect(component.apiSearch?.query).toEqual(searchQuery)
+  })
+
+  it("remove skills should have api search with query", () => {
+    component.selectAllChecked = true
+    component.removeFromCollection()
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Workspace)
+    expect(component.apiSearch?.uuids?.length).toBeGreaterThan(0)
   })
 
   it("submitSkillRemoval should be correct", () => {
@@ -466,10 +523,17 @@ describe("ManageCollectionComponent", () => {
     expect(component.loadNextPage).toHaveBeenCalled()
   })
 
+  it("handleCategoryClicked should be correct", () => {
+    const testKwCount = new KeywordCount({ keyword: "test1", count: 8 })
+    expect(component.keywords.categories.length).toEqual(0)
+    component.handleCategoryClicked(new KeywordCountPillControl(testKwCount))
+    expect(component.keywords.categories.length).toEqual(1)
+  })
+
   it("handleClickConfirmMulti should be correct", () => {
     // Arrange
     const spySubmitSkillRemoval = spyOn(component, "submitSkillRemoval").and.returnValue()  // Test just this method
-    component.showingMultipleConfirm = true
+    component.template = "confirm-multiple"
     component.apiSearch = new ApiSearch({})
 
     // Act
@@ -477,21 +541,62 @@ describe("ManageCollectionComponent", () => {
 
     // Assert
     expect(result).toBeFalsy()
-    expect(component.showingMultipleConfirm).toBeFalsy()
+    expect(component.template).toEqual("default")
     expect(component.apiSearch).toBeFalsy()
     expect(component.submitSkillRemoval).toHaveBeenCalled()
   })
 
   it("handleClickCancel should be correct", () => {
     // Arrange
-    component.showingMultipleConfirm = true
+    component.template = "confirm-multiple"
     component.apiSearch = new ApiSearch({})
 
     // Act
     component.handleClickCancel()
 
     // Assert
-    expect(component.showingMultipleConfirm).toBeFalsy()
+    expect(component.template).toEqual("default")
     expect(component.apiSearch).toBeFalsy()
+  })
+
+  it("Download should have submenu", () => {
+    const actionDownload = component.actionDefinitions().find(i => i.label === "Download")
+    expect(actionDownload?.menu?.length).toEqual(2)
+  })
+
+  it("Menu action download should call callback correctly", () => {
+    const actionDownload = component.actionDefinitions().find(i => i.label === "Download")
+    const downloadCsv = actionDownload?.menu ? actionDownload.menu[0] : undefined
+    const downloadXlsx = actionDownload?.menu ? actionDownload.menu[1] : undefined
+    const spyDownloadCsv = spyOn(component.exporter, "getCollectionCsv")
+    const spyDownloadXlsx = spyOn(component.exporter, "getCollectionXlsx")
+    expect(actionDownload).toBeTruthy()
+    if (downloadCsv?.callback && actionDownload) {
+      downloadCsv.callback(actionDownload)
+      expect(spyDownloadCsv).toHaveBeenCalled()
+    }
+    if (downloadXlsx?.callback && actionDownload) {
+      downloadXlsx.callback(actionDownload)
+      expect(spyDownloadXlsx).toHaveBeenCalled()
+    }
+  })
+
+  it("confirm message text", () => {
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Workspace)
+    component.collection.name = "Test Collection"
+    expect(component.confirmMessageText).toBe("delete Test Collection")
+  })
+
+  it("confirm button text", () => {
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Workspace)
+    expect(component.confirmButtonText).toBe("delete collection")
+  })
+
+  it("show log should be true", () => {
+    const date = new Date()
+    component.collection = createMockCollection(date, date, date, date, PublishStatus.Draft)
+    expect(component.showLog).toBeTrue()
   })
 })

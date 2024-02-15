@@ -1,4 +1,4 @@
-import {IJobCode} from "../job-codes/Jobcode"
+import {ApiJobCode, IJobCode} from "../job-codes/Jobcode"
 import {PublishStatus} from "../PublishStatus"
 
 
@@ -79,6 +79,21 @@ export class ApiAlignment implements IAlignment {
   }
 }
 
+export interface IKeywordCount {
+  keyword: IAlignment|INamedReference|string
+  count: number
+}
+
+export class KeywordCount implements IKeywordCount {
+  keyword: IAlignment|INamedReference|string
+  count: number
+
+  constructor(reference: KeywordCount) {
+    this.keyword = reference.keyword
+    this.count = reference.count
+  }
+}
+
 export enum KeywordType {
   Category = "category",
   Keyword = "keyword",
@@ -113,7 +128,7 @@ export interface ISkill {
   status: PublishStatus
   skillName: string
   skillStatement: string
-  category?: string
+  categories: string[]
   collections: IUuidReference[]
   keywords: string[]
   alignments: IAlignment[]
@@ -121,7 +136,7 @@ export interface ISkill {
   certifications: INamedReference[]
   occupations: IJobCode[]
   employers: INamedReference[]
-  author: string
+  authors: string[]
 }
 
 export class ApiSkill {
@@ -135,7 +150,7 @@ export class ApiSkill {
   status: PublishStatus
   skillName: string
   skillStatement: string
-  category?: string
+  categories: string[]
   collections: IUuidReference[]
   keywords: string[]
   alignments: IAlignment[]
@@ -143,7 +158,7 @@ export class ApiSkill {
   certifications: INamedReference[]
   occupations: IJobCode[]
   employers: INamedReference[]
-  author: string
+  authors: string[]
 
   constructor(iRichSkill: ISkill) {
     this.id = iRichSkill.id
@@ -162,17 +177,17 @@ export class ApiSkill {
     }
     this.skillName = iRichSkill.skillName
     this.skillStatement = iRichSkill.skillStatement
-    this.author = iRichSkill.author
-    this.keywords = iRichSkill.keywords
-    this.collections = iRichSkill.collections
+    this.authors = iRichSkill.authors?.map(it => it) ?? null
+    this.keywords = iRichSkill.keywords?.map(it => it) ?? null
+    this.collections = iRichSkill.collections?.map(it => it) ?? null
     this.status = iRichSkill.status
-    this.category = iRichSkill.category
-    this.certifications = iRichSkill.certifications
-    this.alignments = iRichSkill.alignments
-    this.standards = iRichSkill.standards
+    this.categories = iRichSkill.categories?.map(it => it) ?? null
+    this.certifications = iRichSkill.certifications?.map(it => new ApiNamedReference(it)) ?? null
+    this.alignments = iRichSkill.alignments?.map(it => new ApiAlignment(it)) ?? null
+    this.standards = iRichSkill.standards?.map(it => new ApiAlignment(it)) ?? null
     this.type = iRichSkill.type
-    this.employers = iRichSkill.employers
-    this.occupations = iRichSkill.occupations
+    this.employers = iRichSkill.employers?.map(it => new ApiNamedReference(it)) ?? null
+    this.occupations = iRichSkill.occupations?.map(it => new ApiJobCode(it)) ?? null
   }
 
   get sortedAlignments(): IAlignment[] {

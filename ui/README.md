@@ -1,8 +1,12 @@
 # OSMT UI 
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.6. Rather than installing Angular's CLI globally, you can invoke commands on OSMT's `ng` devDependency by calling `npm run ng whatever_command`. This may help avoid conflicts with other Angular tooling installed on your development machine.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli). Rather than installing Angular's CLI globally, you can invoke commands on OSMT's `ng` devDependency by calling `npm run ng whatever_command`. This may help avoid conflicts with other Angular tooling installed on your development machine.
 
 ## Development server
+OSMT's' UI is built in the resources directory of the API module (api/src/main/resources/ui -- this directory is gitignored). When you start the Spring app, the Spring jar already contains the UI files, and the UI is available via 8080. If the API is running, the UI is already in that jar. Everything works on the same host / port / server via Spring.
+
+When doing UI development, we need the OAuth2 redirect to come back to the Angular/webpack server on 4200. To support this for local UI development, uncomment the line with OSMT_FRONT_END_PORT in your api/osmt-dev-stack.env file. You can then proceed with typical Angular development workflows.
+
 Run `npm run ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
@@ -13,9 +17,6 @@ Run `npm run ng build` to build the project. The build artifacts will be stored 
 
 ## Running unit tests
 Run `npm run ng test` to execute the unit tests via [Karma](https://karma-runner.github.io). Use `<ctrl + c>` to exit.
-
-## Running end-to-end tests
-Run `npm run ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
 ## Whitelabel JSON config
 A whitelabel JSON file's URI can be defined in the environment file for deployment.  This file is loaded dynamically at runtime and can be replaced 

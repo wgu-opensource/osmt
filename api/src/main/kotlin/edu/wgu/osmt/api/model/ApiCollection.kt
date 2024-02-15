@@ -1,18 +1,26 @@
 package edu.wgu.osmt.api.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.keyword.KeywordCount
+import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptor
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
-class ApiCollection(private val collection: Collection, private val ss: List<RichSkillDescriptor>, private val appConfig: AppConfig) {
+open class ApiCollection(
+    @JsonIgnore open val collection: Collection,
+    @JsonIgnore open val ss: List<RichSkillDescriptor>,
+    @JsonIgnore open val keywords: Map<KeywordTypeEnum, List<KeywordCount>>,
+    private val appConfig: AppConfig
+) {
     @get:JsonProperty
     val id: String
         get() = collection.canonicalUrl(appConfig.baseUrl)
@@ -32,16 +40,20 @@ class ApiCollection(private val collection: Collection, private val ss: List<Ric
         get() = collection.name
 
     @get:JsonProperty
+    val description: String?
+        get() = collection.description
+
+    @get:JsonProperty
     val creator: String
         get() = appConfig.defaultCreatorUri
 
     @get:JsonProperty
     val author: String?
-        get() = collection.author?.let { it.value }
+        get() = collection.author?.value
 
     @get:JsonProperty
-    val status: PublishStatus
-        get() = collection.publishStatus()
+    val status: PublishStatus?
+        get() = collection.status
 
     @get:JsonProperty
     val creationDate: ZonedDateTime
@@ -60,12 +72,27 @@ class ApiCollection(private val collection: Collection, private val ss: List<Ric
         get() = collection.archiveDate?.atZone(ZoneId.of("UTC"))
 
     @get:JsonProperty
-    val skills: List<ApiSkillSummary>
+    open val skills: List<ApiSkillSummary>
         get() = ss.map { ApiSkillSummary.fromSkill(it, appConfig) }
+
+    @get:JsonProperty
+    open val skillKeywords: Map<KeywordTypeEnum, List<KeywordCount>>
+        get() = keywords
+
+    @get:JsonProperty
+    val owner: String?
+        get() = collection.workspaceOwner
 
     companion object {
         fun fromDao(collectionDao: CollectionDao, appConfig: AppConfig): ApiCollection {
-            return ApiCollection(collectionDao.toModel(), collectionDao.skills.map{ it.toModel() }, appConfig)
+            val skills = collectionDao.skills.map{ it.toModel() }
+
+            return ApiCollection(
+                collectionDao.toModel(),
+                skills,
+                RichSkillDescriptor.getKeywordsFromSkills(skills),
+                appConfig
+            )
         }
     }
 }

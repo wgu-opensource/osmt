@@ -4,13 +4,16 @@ import { Component, ElementRef, Type } from "@angular/core"
 import { async, ComponentFixture, TestBed } from "@angular/core/testing"
 import { RouterTestingModule } from "@angular/router/testing"
 import { createMockPaginatedSkills, createMockSkillSummary } from "../../../../test/resource/mock-data"
-import { RichSkillServiceStub } from "../../../../test/resource/mock-stubs"
+import {AuthServiceStub, CollectionServiceStub, RichSkillServiceStub} from "../../../../test/resource/mock-stubs"
 import { PublishStatus } from "../../PublishStatus"
 import { ToastService } from "../../toast/toast.service"
 import { ApiSortOrder } from "../ApiSkill"
 import { ApiSearch, PaginatedSkills } from "../service/rich-skill-search.service"
 import { RichSkillService } from "../service/rich-skill.service"
 import { SkillsListComponent } from "./skills-list.component"
+import {AuthService} from "../../auth/auth-service";
+import {HttpClientModule} from "@angular/common/http"
+import {CollectionService} from "../../collection/service/collection.service"
 
 
 @Component({
@@ -22,8 +25,6 @@ class ConcreteComponent extends SkillsListComponent {
   title = "Concrete Skills"
 
   loadNextPage(): void {}
-
-  handleSelectAll(selectAllChecked: boolean): void {}
 
   public setResults(results: PaginatedSkills): void {
     super.setResults(results)
@@ -56,6 +57,7 @@ describe("SkillsListComponent", () => {
         ConcreteComponent
       ],
       imports: [
+        HttpClientModule,
         RouterTestingModule.withRoutes([
           { path: "collections/add-skills", component: SkillsListComponent }
         ])
@@ -63,6 +65,8 @@ describe("SkillsListComponent", () => {
       providers: [
         ToastService,
         { provide: RichSkillService, useClass: RichSkillServiceStub },
+        { provide: AuthService, useClass: AuthServiceStub },
+        { provide: CollectionService, useClass: CollectionServiceStub },
       ]
     })
 
@@ -93,6 +97,25 @@ describe("SkillsListComponent", () => {
     expect(component.getSelectAllCount()).toEqual(component.curPageCount)
   })
 
+  it("handle click add to workspace", () => {
+    const collectionService = TestBed.inject(CollectionService)
+    const spy = spyOn(collectionService, "getWorkspace").and.callThrough()
+    component["handleClickAddToWorkspace"]()
+    expect(spy).toHaveBeenCalled()
+  })
+
+  it( "handleSelectAll should toggle select all checkbox to true",() =>  {
+    component.handleSelectAll(true)
+    const selectAll = component.selectAllChecked
+    expect(selectAll).toBeTrue()
+  })
+
+  it( "handleSelectAll should toggle select all checkbox to false", () =>  {
+    component["handleSelectAll"](false)
+    const selectAll = component.selectAllChecked
+    expect(selectAll).toBeFalse()
+  })
+
   it("skillCountLabel should be correct", () => {
     component.setResults(createMockPaginatedSkills(0, 0))
     expect(component.skillCountLabel).toEqual("0 RSDs")
@@ -120,8 +143,6 @@ describe("SkillsListComponent", () => {
   it("getMobileSortOptions should be correct", () => {
     const result = component.getMobileSortOptions()
     expect(result).toEqual({
-      "name.asc": "Category (ascending)",
-      "name.desc": "Category (descending)",
       "skill.asc": "RSD Name (ascending)",
       "skill.desc": "RSD Name (descending)",
     })
@@ -245,6 +266,11 @@ describe("SkillsListComponent", () => {
     expect(result2).toBeTruthy()
   })
 
+  it("export search should not be active (visible)", () => {
+    // tslint:disable-next-line:no-string-literal
+    expect(component["exportSearchVisible"]()).toBeFalse()
+  })
+
   it("addToCollectionVisible should be correct", () => {    // No skills
     /* Assumption: skill parameter does not matter. */
     component.selectedSkills = []
@@ -293,7 +319,7 @@ describe("SkillsListComponent", () => {
     // Arrange
     spyOn(component, "loadNextPage").and.callThrough()
     const sort = ApiSortOrder.SkillDesc
-    component.columnSort = ApiSortOrder.NameAsc
+    component.columnSort = ApiSortOrder.SkillAsc
     component.from = 47
 
     // Act
@@ -381,6 +407,7 @@ describe("SkillsListComponent", () => {
     expect(action3.callback?.(action3, skill3)).toBeFalsy()  // Always false
     expect(action3.visible?.(skill3)).toBeFalsy()  // != Archived
 
+
     component.selectedSkills = [
       createMockSkillSummary("id1", PublishStatus.Draft),
     ]
@@ -388,8 +415,9 @@ describe("SkillsListComponent", () => {
     tableActions = component.tableActions()
     let skill4 = createMockSkillSummary("id4", PublishStatus.Archived)
     let action4 = tableActions[4]
-    expect(action4.label).toEqual("Add to Collection")
-    expect(action4 && action4.callback).toBeTruthy()
+    expect(action4.label).toEqual("Add to")
+    expect(action4).toBeTruthy()
+    expect(action4.callback).toBeUndefined()
     expect(action4.callback?.(action4, skill4)).toBeFalsy()  // Always false
     expect(action4.visible?.(skill4)).toBeTruthy()  // There are selected skills
 
@@ -469,5 +497,25 @@ describe("SkillsListComponent", () => {
 
   it("getSelectAllEnabled should be true", () => {
     expect(component.getSelectAllEnabled()).toBeTruthy()
+  })
+
+  it("add to workspace should be visible", () => {
+    component.selectedSkills = [
+      createMockSkillSummary("id1", PublishStatus.Draft)
+    ]
+    expect(component["addToWorkspaceVisible"]()).toBeTrue()
+  })
+
+  describe( "sizeChange", () => {
+    it("Should set size of page, from and call handlePageClicked", () => {
+      const size = 100
+      spyOn(component, "handlePageClicked").withArgs(1).and.callThrough()
+
+      component.sizeChange(size)
+
+      expect(component.from).toEqual(0)
+      expect(component.size).toEqual(size)
+      expect(component.handlePageClicked).toHaveBeenCalledTimes(1)
+    })
   })
 })

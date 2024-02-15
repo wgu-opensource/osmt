@@ -5,6 +5,7 @@ import {RichSkillService} from "../../../../service/rich-skill.service"
 import {ToastService} from "../../../../../toast/toast.service"
 import {ManageRichSkillActionBarComponent} from "../manage-rich-skill-action-bar.component"
 import {SvgHelper} from "../../../../../core/SvgHelper"
+import {AuthService} from "../../../../../auth/auth-service";
 
 @Component({
   selector: "app-manage-skill-action-bar-vertical",
@@ -14,6 +15,7 @@ export class ManageSkillActionBarVerticalComponent extends ManageRichSkillAction
 
   @Input() skillUuid = ""
   @Input() skillName = ""
+  @Input() skillPublicUrl = ""
   @Input() archived = undefined
   @Input() published = undefined
 
@@ -26,8 +28,9 @@ export class ManageSkillActionBarVerticalComponent extends ManageRichSkillAction
     router: Router,
     richSkillService: RichSkillService,
     toastService: ToastService,
-    @Inject(LOCALE_ID) locale: string
+    @Inject(LOCALE_ID) locale: string,
+    authService: AuthService
   ) {
-    super(router, richSkillService, toastService, locale)
+    super(router, richSkillService, toastService, locale, authService)
   }
 }

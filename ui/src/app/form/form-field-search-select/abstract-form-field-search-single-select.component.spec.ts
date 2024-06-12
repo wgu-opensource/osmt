@@ -129,4 +129,13 @@ describe("AbstractFormFieldSearchSingleSelectComponent", () => {
       return true
     })()).toEqual(true)
   })
+
+  it("exact match detection works", () => {
+    component.results = []
+    component.searchControlValue = "abc";
+    expect(component.isExactMatchFound()).toEqual(false)
+
+    component.results = [{value:'abc'}]
+    expect(component.isExactMatchFound()).toEqual(true)
+  })
 })

@@ -264,8 +264,30 @@
 
       </div>
 
-      <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
+      <div class="l-stickyBar-x-bar t-hidden-desktopMin">
         <!-- @actionbarhorizontal -->
+        <nav class="l-flex l-flex-alignCenter l-flex-0 t-elevation-large">
+          <button class="m-actionBarItemHorizontal m-actionBarItemHorizontal-secondary" type="button" (click)="handleClickCancel()">
+            <svg class="m-actionBarItemHorizontal-x-icon t-icon">
+              <use [attr.xlink:href]="cancelIcon"></use>
+            </svg>
+            <span class="m-actionBarItemHorizontal-x-label">Cancel</span>
+            <span class="m-actionBarItemHorizontal-x-divider m-divider m-divider-large"></span>
+          </button>
+    
+          <app-formfield-submit
+                [formGroup]="skillForm"
+                [enabled]="formValid"
+                [dirty]="formDirty"
+                [observables]="[skillSaved]"
+                [mobileView]="true"
+                (errorsOccurred)="handleFormErrors($event)"
+              ></app-formfield-submit>
+          <div class="m-quickLinks" aria-labelledby="save-quicklinks">
+            <h3 class="t-visuallyHidden" id="save-quicklinks">Quick Links</h3>
+            <a (click)="scrollToTopClicked.emit()">Back to top</a>
+          </div>
+        </nav>
       </div>
     </div>
 

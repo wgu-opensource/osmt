@@ -1213,7 +1213,7 @@ components:
         type: RichSkillDescriptor
         creator: 'https://credentialengineregistry.org/resources/ce-036d082d-d80e-41a7-99a0-2d63a4ad3a4a'
         authors:
-          - Western Governors University
+          - Example University
         status: published
         creationDate: '2023-02-27T21:02:59.918235Z'
         updateDate: '2023-03-14T14:38:15.945775Z'
@@ -1224,7 +1224,7 @@ components:
         keywords:
           - design
           - Access Network
-          - 'WGUSID: 10407'
+          - 'EXAMPLEID: 10407'
         categories:
           - Access Network
         id: '-http://localhost:8080/api/v2/skills/cad699ef-64b9-40ee-81db-b5de69a90558'

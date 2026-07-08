@@ -44,8 +44,8 @@ class AuditLogUtils {
                     skill.id.value,
                     changes,
                     BatchImportRichSkill.user,
-                    AuditOperationType.Insert
-                )
+                    AuditOperationType.Insert,
+                ),
             )
         }
     }
@@ -60,8 +60,8 @@ class AuditLogUtils {
                     collection.id.value,
                     changes,
                     BatchImportRichSkill.user,
-                    AuditOperationType.Insert
-                )
+                    AuditOperationType.Insert,
+                ),
             )
         }
     }

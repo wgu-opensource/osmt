@@ -19,42 +19,47 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
-internal class ElasticSearchReindexerTest @Autowired constructor(
-    val richSkillRepository: RichSkillRepository
-) : SpringTest(), HasDatabaseReset, HasElasticsearchReset, QuotedSearchHelpers {
-
+internal class ElasticSearchReindexerTest
     @Autowired
-    lateinit var elasticSearchReindexer: ElasticSearchReindexer
+    constructor(
+        val richSkillRepository: RichSkillRepository,
+    ) : SpringTest(),
+        HasDatabaseReset,
+        HasElasticsearchReset,
+        QuotedSearchHelpers {
+        @Autowired
+        lateinit var elasticSearchReindexer: ElasticSearchReindexer
 
-    @MockBean
-    override lateinit var richSkillEsRepo: RichSkillEsRepo
+        @MockBean
+        override lateinit var richSkillEsRepo: RichSkillEsRepo
 
-    @MockBean
-    override lateinit var collectionEsRepo: CollectionEsRepo
+        @MockBean
+        override lateinit var collectionEsRepo: CollectionEsRepo
 
-    @MockBean
-    override lateinit var keywordEsRepo: KeywordEsRepo
+        @MockBean
+        override lateinit var keywordEsRepo: KeywordEsRepo
 
-    @MockBean
-    override lateinit var jobCodeEsRepo: JobCodeEsRepo
+        @MockBean
+        override lateinit var jobCodeEsRepo: JobCodeEsRepo
 
-    @Test
-    fun testReindexAll() {
-        // Arrange
-        // This creates 1 skill, 3 collections, 17 keywords and 3 jobCodes
-        richSkillRepository.createFromApi(
-            (1..1).toList().map { TestObjectHelpers.apiSkillUpdateGenerator() }, "testReindexAll", "testReindexAll"
-        )
+        @Test
+        fun testReindexAll() {
+            // Arrange
+            // This creates 1 skill, 3 collections, 17 keywords and 3 jobCodes
+            richSkillRepository.createFromApi(
+                (1..1).toList().map { TestObjectHelpers.apiSkillUpdateGenerator() },
+                "testReindexAll",
+                "testReindexAll",
+            )
 
-        // Act
-        // Assert
-        Assertions.assertDoesNotThrow { elasticSearchReindexer.reindexAll() }
+            // Act
+            // Assert
+            Assertions.assertDoesNotThrow { elasticSearchReindexer.reindexAll() }
 
-        // Each is called twice, one from the createFromApi, another one from the reindexAll.
-        Mockito.verify(this.richSkillEsRepo, Mockito.times(2)).save(any())
-        Mockito.verify(this.collectionEsRepo, Mockito.times(6)).save(any())
-        Mockito.verify(this.keywordEsRepo, Mockito.times(42)).save(any())
-        Mockito.verify(this.jobCodeEsRepo, Mockito.times(6)).save(any())
-
+            // Each is called twice, one from the createFromApi, another one from the reindexAll.
+            Mockito.verify(this.richSkillEsRepo, Mockito.times(2)).save(any())
+            Mockito.verify(this.collectionEsRepo, Mockito.times(6)).save(any())
+            Mockito.verify(this.keywordEsRepo, Mockito.times(42)).save(any())
+            Mockito.verify(this.jobCodeEsRepo, Mockito.times(6)).save(any())
+        }
     }
-}

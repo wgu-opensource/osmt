@@ -5,8 +5,10 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
-class JobCodeDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<JobCode> {
-
+class JobCodeDao(
+    id: EntityID<Long>,
+) : LongEntity(id),
+    OutputsModel<JobCode> {
     companion object : LongEntityClass<JobCodeDao>(JobCodeTable)
 
     var creationDate by JobCodeTable.creationDate
@@ -22,7 +24,6 @@ class JobCodeDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<JobCode> {
     var framework by JobCodeTable.framework
     var url by JobCodeTable.url
 
-
     override fun toModel(): JobCode =
         JobCode(
             id = id.value,
@@ -35,6 +36,6 @@ class JobCodeDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<JobCode> {
             name = name,
             description = description,
             framework = framework,
-            url = url
+            url = url,
         )
 }

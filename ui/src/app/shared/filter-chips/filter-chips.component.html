@@ -1,7 +1,12 @@
 <div class="chip-wrapper">
-  <div class="header">{{name | titlecase}}</div>
-  <div class="chip" *ngFor="let keyword of control?.value" (click)="onRemoveChip(keyword)">
-    {{resultName(keyword)}}
+  <div class="header">{{ name | titlecase }}</div>
+  <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+  <div
+    class="chip"
+    *ngFor="let keyword of control?.value"
+    (click)="onRemoveChip(keyword)"
+  >
+    {{ resultName(keyword) }}
     <span class="close-button">&times;</span>
   </div>
 </div>

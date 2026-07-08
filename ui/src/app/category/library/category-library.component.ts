@@ -1,17 +1,20 @@
-import {Component, OnInit} from "@angular/core"
-import {Router} from "@angular/router"
-import {ToastService} from "../../toast/toast.service"
-import {Title} from "@angular/platform-browser"
-import {AuthService} from "../../auth/auth-service"
-import {CategoryListComponent} from "../list/category-list.component"
-import {CategoryService} from "../service/category.service"
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastService } from '../../toast/toast.service';
+import { Title } from '@angular/platform-browser';
+import { AuthService } from '../../auth/auth-service';
+import { CategoryListComponent } from '../list/category-list.component';
+import { CategoryService } from '../service/category.service';
 
 @Component({
-  selector: "app-categories",
-  templateUrl: "../list/category-list.component.html"
+  selector: 'app-categories',
+  templateUrl: '../list/category-list.component.html',
 })
-export class CategoryLibraryComponent extends CategoryListComponent implements OnInit {
-  title = "Categories"
+export class CategoryLibraryComponent
+  extends CategoryListComponent
+  implements OnInit
+{
+  title = 'Categories';
 
   constructor(
     protected router: Router,
@@ -20,11 +23,11 @@ export class CategoryLibraryComponent extends CategoryListComponent implements O
     protected titleService: Title,
     protected authService: AuthService
   ) {
-    super(router, categoryService, toastService, authService)
+    super(router, categoryService, toastService, authService);
   }
 
   ngOnInit(): void {
-    this.titleService.setTitle(`Categories | ${this.whitelabel.toolName}`)
-    this.loadNextPage()
+    this.titleService.setTitle(`Categories | ${this.whitelabel.toolName}`);
+    this.loadNextPage();
   }
 }

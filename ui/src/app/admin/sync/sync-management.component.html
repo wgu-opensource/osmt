@@ -1,0 +1,287 @@
+<div class="l-container">
+  <h1 class="t-type-heading1 t-margin-small t-margin-bottom">External Sync</h1>
+  <p class="t-type-body t-margin-small t-margin-bottom">
+    Publish RSDs and Collections to the Credential Registry. Sync runs
+    asynchronously; check logs for progress.
+  </p>
+
+  <ng-container *ngIf="configured && !loading && state">
+    <label
+      class="t-type-body t-margin-small t-margin-bottom"
+      style="display: block"
+    >
+      <input type="checkbox" [(ngModel)]="autoRefreshUntilDone" />
+      Auto refresh until sync completes (up to 1 hour)
+    </label>
+  </ng-container>
+
+  <app-system-message
+    *ngIf="!configured"
+    title="Sync not configured"
+    body="Credential Registry sync is not configured. Set CREDENTIAL_ENGINE_* environment variables to enable."
+  >
+  </app-system-message>
+
+  <div *ngIf="loading" class="l-loading">
+    <span>Loading...</span>
+  </div>
+
+  <ng-container *ngIf="configured && !loading && state">
+    <section
+      class="l-syncSummary t-margin-medium t-margin-bottom"
+      aria-label="Sync summary"
+    >
+      <div
+        *ngIf="summaryStatus === 'up-to-date' && totalPendingCount === 0"
+        class="m-inlineMessage l-syncSummary-success"
+      >
+        <div class="m-inlineMessage-x-icon">
+          <svg class="t-icon" aria-hidden="true">
+            <use xlink:href="/assets/images/svg-defs.svg#icon-check"></use>
+          </svg>
+        </div>
+        <div class="m-inlineMessage-x-title">Sync is up to date</div>
+        <div class="m-inlineMessage-x-message">
+          All skills and collections are current.
+          @if (lastSyncedDisplay) {
+            Last synced: {{ lastSyncedDisplay | date: 'medium' }}.
+          }
+        </div>
+      </div>
+      <div
+        *ngIf="summaryStatus === 'up-to-date' && totalPendingCount > 0"
+        class="m-inlineMessage l-syncSummary-pending"
+      >
+        <div class="m-inlineMessage-x-title">
+          {{ pendingByRecordType.skills }} skills and
+          {{ pendingByRecordType.collections }} collections pending sync.
+        </div>
+        <div class="m-inlineMessage-x-message">
+          Use Sync New Changes to publish.
+        </div>
+      </div>
+      <div
+        *ngIf="summaryStatus === 'in-progress'"
+        class="m-inlineMessage l-syncSummary-info"
+      >
+        <div class="m-inlineMessage-x-title">Sync is in progress…</div>
+        <div class="m-inlineMessage-x-message">
+          <label
+            class="t-type-body"
+            style="display: inline-flex; align-items: center; gap: 0.5rem"
+          >
+            <input type="checkbox" [(ngModel)]="autoRefreshUntilDone" />
+            Auto-refresh until complete (up to 1 hour)
+          </label>
+        </div>
+      </div>
+      <div
+        *ngIf="summaryStatus === 'error'"
+        class="m-inlineMessage m-inlineMessage-error"
+      >
+        <div class="m-inlineMessage-x-icon">
+          <svg class="t-icon" aria-hidden="true">
+            <use xlink:href="/assets/images/svg-defs.svg#icon-error"></use>
+          </svg>
+        </div>
+        <div class="m-inlineMessage-x-title">Sync failed</div>
+        <div class="m-inlineMessage-x-message">
+          {{ summaryError ? summaryError.label : 'Unknown error' }}
+          @if (summaryError && summaryError.correlationId) {
+            <code
+              class="m-code-copyable"
+              [attr.title]="
+                'Correlation ID: ' +
+                summaryError.correlationId +
+                ' (click to copy)'
+              "
+              (click)="copyToClipboard(summaryError.correlationId)"
+            >
+              {{ summaryError.correlationId }}
+            </code>
+          }
+        </div>
+      </div>
+      <div
+        *ngIf="summaryStatus === 'never-synced'"
+        class="m-inlineMessage l-syncSummary-info"
+      >
+        <div class="m-inlineMessage-x-title">Sync has not run yet</div>
+        <div class="m-inlineMessage-x-message">
+          Use Sync New Changes or Resync All to publish.
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="l-syncSection t-margin-medium t-margin-bottom"
+      aria-labelledby="sync-new-changes-heading"
+    >
+      <h2
+        id="sync-new-changes-heading"
+        class="t-type-heading2 t-margin-small t-margin-bottom"
+      >
+        Sync New Changes
+      </h2>
+      <p class="t-type-body t-margin-small t-margin-bottom">
+        Publish only records that have been created or updated since the last
+        sync. Uses the watermark to skip already-synced records.
+      </p>
+      <div class="l-syncActions">
+        <button
+          class="m-button m-button-primary"
+          type="button"
+          [disabled]="syncing || resyncing || unpublishing"
+          (click)="onSyncNow()"
+        >
+          <svg class="m-button-x-icon t-icon" aria-hidden="true">
+            <use [attr.xlink:href]="syncNewChangesIcon"></use>
+          </svg>
+          <span class="m-button-x-text">{{
+            syncing ? 'Syncing...' : 'Sync New Changes'
+          }}</span>
+        </button>
+      </div>
+    </section>
+
+    <section
+      class="l-syncSection t-margin-medium t-margin-bottom"
+      aria-labelledby="resync-all-heading"
+    >
+      <h2
+        id="resync-all-heading"
+        class="t-type-heading2 t-margin-small t-margin-bottom"
+      >
+        Resync All
+      </h2>
+      <p class="t-type-body t-margin-small t-margin-bottom">
+        Clear watermarks and re-sync every published skill and collection from
+        the beginning. Use when recovering from errors or after bulk changes.
+        This can take a long time.
+      </p>
+      <div class="l-syncActions">
+        <button
+          class="m-button m-button-resync-danger"
+          type="button"
+          [disabled]="syncing || resyncing || unpublishing"
+          (click)="onResync()"
+        >
+          <svg class="m-button-x-icon t-icon" aria-hidden="true">
+            <use [attr.xlink:href]="resyncAllIcon"></use>
+          </svg>
+          <span class="m-button-x-text">{{
+            resyncing ? 'Resyncing...' : 'Resync All'
+          }}</span>
+        </button>
+      </div>
+    </section>
+
+    <section
+      *ngIf="state?.allowUnpublishAll"
+      class="l-syncSection t-margin-medium t-margin-bottom"
+      aria-labelledby="unpublish-all-heading"
+    >
+      <h2
+        id="unpublish-all-heading"
+        class="t-type-heading2 t-margin-small t-margin-bottom"
+      >
+        Unpublish All
+      </h2>
+      <p class="t-type-body t-margin-small t-margin-bottom">
+        Remove all published skills and collections from the Credential
+        Registry. Use to clean up dev/test data. This cannot be undone.
+      </p>
+      <div class="l-syncActions">
+        <button
+          class="m-button m-button-resync-danger"
+          type="button"
+          [disabled]="syncing || resyncing || unpublishing"
+          (click)="onUnpublishAll()"
+        >
+          {{ unpublishing ? 'Unpublishing...' : 'Unpublish All' }}
+        </button>
+      </div>
+    </section>
+
+    <section
+      class="l-syncSection t-margin-medium t-margin-bottom"
+      aria-labelledby="sync-details-heading"
+    >
+      <h2
+        id="sync-details-heading"
+        class="t-type-heading2 t-margin-small t-margin-bottom"
+      >
+        Technical Details
+      </h2>
+      <app-accordian
+        closedLabel="Show technical details"
+        openLabel="Hide technical details"
+      >
+        <table aria-label="Sync integrations">
+          <thead>
+            <tr class="m-tableHeader">
+              <th scope="col">Integration Key</th>
+              <th scope="col">Record Type</th>
+              <th scope="col">Watermark</th>
+              <th scope="col">Pending</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let i of state.integrations" class="m-tableRow">
+              <td>{{ i.syncKey }}</td>
+              <td>{{ i.recordType }}</td>
+              <td>{{ i.syncWatermark ?? '—' }}</td>
+              <td>{{ i.pendingCount ?? '—' }}</td>
+              <td>
+                @let status = getStatusDisplay(i);
+                {{ status.label }}
+                @if (status.correlationId) {
+                  <code
+                    class="m-code-copyable"
+                    [attr.title]="
+                      'Correlation ID: ' +
+                      status.correlationId +
+                      ' (click to copy)'
+                    "
+                    (click)="copyToClipboard(status.correlationId)"
+                  >
+                    {{ status.correlationId }}
+                  </code>
+                }
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <dl
+          class="t-type-bodySmall mt-6 grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1"
+          aria-label="Column definitions"
+        >
+          <dt><strong>Integration Key</strong></dt>
+          <dd>
+            Identifies the sync target configuration (e.g. default). Used when
+            multiple Credential Registry destinations exist.
+          </dd>
+          <dt><strong>Record Type</strong></dt>
+          <dd>
+            skill (RSDs published as Competencies) or collection (Collections).
+            Each type syncs separately.
+          </dd>
+          <dt><strong>Watermark</strong></dt>
+          <dd>
+            Timestamp of the last successfully synced record for this
+            integration. Incremental sync processes only records updated after
+            this point.
+          </dd>
+          <dt><strong>Pending</strong></dt>
+          <dd>Number of records not yet synced for this integration.</dd>
+          <dt><strong>Status</strong></dt>
+          <dd>
+            Outcome of the last run—Ok (N batches), In progress…, or Error. The
+            correlation ID (if present) can be copied for log lookups.
+          </dd>
+        </dl>
+      </app-accordian>
+    </section>
+  </ng-container>
+</div>

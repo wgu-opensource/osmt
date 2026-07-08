@@ -13,12 +13,25 @@ import java.time.ZoneOffset
 
 interface JobCodeRepository {
     val table: Table
+
     fun findAll(): SizedIterable<JobCodeDao>
+
     fun findById(id: Long): JobCodeDao?
+
     fun findByCode(code: String): JobCodeDao?
-    fun findByCodeOrCreate(code: String, framework: String? = null): JobCodeDao
+
+    fun findByCodeOrCreate(
+        code: String,
+        framework: String? = null,
+    ): JobCodeDao
+
     fun findBlsCode(code: String): JobCodeDao?
-    fun create(code: String, framework: String? = null): JobCodeDao
+
+    fun create(
+        code: String,
+        framework: String? = null,
+    ): JobCodeDao
+
     fun onetsByDetailCode(detailedCode: String): SizedIterable<JobCodeDao>
 
     companion object {
@@ -29,8 +42,7 @@ interface JobCodeRepository {
 
 @Repository
 @Transactional
-class JobCodeRepositoryImpl: JobCodeRepository {
-
+class JobCodeRepositoryImpl : JobCodeRepository {
     @Autowired
     @Lazy
     lateinit var jobCodeEsRepo: JobCodeEsRepo
@@ -47,34 +59,43 @@ class JobCodeRepositoryImpl: JobCodeRepository {
         return table.select { table.code eq code }.firstOrNull()?.let { dao.wrapRow(it) }
     }
 
-    override fun findBlsCode(code: String): JobCodeDao? {
-        return table.select { table.code eq code and (table.framework eq JobCodeRepository.BLS_FRAMEWORK) }
-            .firstOrNull()?.let { dao.wrapRow(it) }
-    }
+    override fun findBlsCode(code: String): JobCodeDao? =
+        table
+            .select { table.code eq code and (table.framework eq JobCodeRepository.BLS_FRAMEWORK) }
+            .firstOrNull()
+            ?.let { dao.wrapRow(it) }
 
-    override fun findByCodeOrCreate(code: String, framework: String?): JobCodeDao {
+    override fun findByCodeOrCreate(
+        code: String,
+        framework: String?,
+    ): JobCodeDao {
         val existing = findByCode(code)
         return existing ?: create(code, framework)
     }
 
-    override fun create(code: String, framework: String?): JobCodeDao {
-        val maybeDetailed = JobCodeBreakout.detailedCode(code).let{ findBlsCode(code) }
-        return dao.new {
-            creationDate = LocalDateTime.now(ZoneOffset.UTC)
-            this.code = code
-            this.framework = framework
-            maybeDetailed?.let { detailed ->
-                {
+    override fun create(
+        code: String,
+        framework: String?,
+    ): JobCodeDao {
+        val maybeDetailed = JobCodeBreakout.detailedCode(code).let { findBlsCode(code) }
+        return dao
+            .new {
+                creationDate = LocalDateTime.now(ZoneOffset.UTC)
+                this.code = code
+                this.framework = framework
+                maybeDetailed?.let { detailed ->
                     this.detailed = detailed.detailed
                     this.broad = detailed.broad
                     this.major = detailed.major
                     this.minor = detailed.minor
                 }
-            }
-        }.also { jobCodeEsRepo.save(it.toModel()) }
+            }.also { jobCodeEsRepo.save(it.toModel()) }
     }
 
-    override fun onetsByDetailCode(detailedCode: String): SizedIterable<JobCodeDao> {
-        return table.select {table.code regexp "${detailedCode}.[0-90-9]"}.let{dao.wrapRows(it)}
-    }
+    override fun onetsByDetailCode(detailedCode: String): SizedIterable<JobCodeDao> =
+        table
+            .select {
+                table.code regexp
+                    "$detailedCode.[0-90-9]"
+            }.let { dao.wrapRows(it) }
 }

@@ -1,18 +1,18 @@
-import {Component, OnInit} from "@angular/core"
-import {Title} from "@angular/platform-browser"
-import {Whitelabelled} from "../whitelabel"
-import {AuthService} from "./auth/auth-service"
-import {ToastService} from "./toast/toast.service"
-import {NavigationEnd, Router} from "@angular/router"
-import * as chroma from "chroma-js"
-import {SearchService} from "./search/search.service"
+import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { Whitelabelled } from '../whitelabel';
+import { AuthService } from './auth/auth-service';
+import { ToastService } from './toast/toast.service';
+import { NavigationEnd, Router } from '@angular/router';
+import chroma from 'chroma-js';
+import { SearchService } from './search/search.service';
 
 @Component({
-  selector: "app-root",
-  templateUrl: "./app.component.html"
+  selector: 'app-root',
+  templateUrl: './app.component.html',
 })
 export class AppComponent extends Whitelabelled implements OnInit {
-  blockingLoaderVisible = false
+  blockingLoaderVisible = false;
 
   public constructor(
     private titleService: Title,
@@ -21,32 +21,35 @@ export class AppComponent extends Whitelabelled implements OnInit {
     private authService: AuthService,
     private router: Router
   ) {
-    super()
+    super();
 
-    this.authService.setup()
+    this.authService.setup();
 
-    this.toastService.loaderSubject.subscribe(visible =>  {
-      this.blockingLoaderVisible = visible
-    })
-    this.validateRoles()
+    this.toastService.loaderSubject.subscribe(visible => {
+      this.blockingLoaderVisible = visible;
+    });
+    this.validateRoles();
   }
 
   ngOnInit(): void {
-    this.titleService.setTitle(this.whitelabel.toolName)
+    this.titleService.setTitle(this.whitelabel.toolName);
 
     if (this.whitelabel.colorBrandAccent1) {
-      this.setWhiteLabelColor(this.whitelabel.colorBrandAccent1)
+      this.setWhiteLabelColor(this.whitelabel.colorBrandAccent1);
     }
 
-    this.initClearSearchOnNavigate()
+    this.initClearSearchOnNavigate();
   }
 
   initClearSearchOnNavigate(): void {
     this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd && !this.isCurrentViewSearchResults()) {
-        this.searchService.clearSearch()
+      if (
+        event instanceof NavigationEnd &&
+        !this.isCurrentViewSearchResults()
+      ) {
+        this.searchService.clearSearch();
       }
-    })
+    });
   }
 
   /**
@@ -54,32 +57,48 @@ export class AppComponent extends Whitelabelled implements OnInit {
    * /collections/search or /skills/search
    */
   private isCurrentViewSearchResults(): boolean {
-    const pattern = /.*(?:collections|skills)\/search.*/
-    const currentUrl = this.router.url
-    return pattern.test(currentUrl)
+    const pattern = /.*(?:collections|skills)\/search.*/;
+    const currentUrl = this.router.url;
+    return pattern.test(currentUrl);
   }
 
   setWhiteLabelColor(newBrandAccent1: string): void {
     // Set new brand color
-    document.documentElement.style.setProperty("--color-brand1", newBrandAccent1)
+    document.documentElement.style.setProperty(
+      '--color-brand1',
+      newBrandAccent1
+    );
 
-    // Check other colors
-    const rootStyles = window.getComputedStyle(document.documentElement)
-    const black = rootStyles.getPropertyValue("--color-onBrandBlack")
-    const defaultA11yOnBrand = rootStyles.getPropertyValue("--color-onBrandWhite")
-    const contrast = chroma.contrast(defaultA11yOnBrand, newBrandAccent1)
+    // Check other colors (fallbacks: tests may run before CSS vars resolve)
+    const rootStyles = window.getComputedStyle(document.documentElement);
+    const black = rootStyles.getPropertyValue('--color-onBrandBlack').trim();
+    const defaultA11yOnBrand = rootStyles
+      .getPropertyValue('--color-onBrandWhite')
+      .trim();
+    const onBrandWhite = defaultA11yOnBrand || '#ffffff';
+    const onBrandBlack = black || '#000000';
+    const contrast = chroma.contrast(onBrandWhite, newBrandAccent1);
 
-    if (contrast < 4.5) { // If white and brand have a contrast of less than 4.5, switch, else set default
-      document.documentElement.style.setProperty("--color-a11yOnBrand", black)
+    if (contrast < 4.5) {
+      // If white and brand have a contrast of less than 4.5, switch, else set default
+      document.documentElement.style.setProperty(
+        '--color-a11yOnBrand',
+        onBrandBlack
+      );
     } else {
-      document.documentElement.style.setProperty("--color-a11yOnBrand", defaultA11yOnBrand)
+      document.documentElement.style.setProperty(
+        '--color-a11yOnBrand',
+        onBrandWhite
+      );
     }
-
   }
 
   validateRoles(): void {
-    if (this.authService.getRole() === null && this.authService.currentAuthToken()) {
-      this.router.navigate(["/logout"])
+    if (
+      this.authService.getRole() === null &&
+      this.authService.currentAuthToken()
+    ) {
+      this.router.navigate(['/logout']);
     }
   }
 }

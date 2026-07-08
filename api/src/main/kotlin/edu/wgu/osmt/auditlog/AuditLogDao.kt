@@ -7,7 +7,10 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
-class AuditLogDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<AuditLog> {
+class AuditLogDao(
+    id: EntityID<Long>,
+) : LongEntity(id),
+    OutputsModel<AuditLog> {
     companion object : LongEntityClass<AuditLogDao>(AuditLogTable)
 
     var creationDate by AuditLogTable.creationDate
@@ -20,6 +23,14 @@ class AuditLogDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<AuditLog> {
     override fun toModel(): AuditLog {
         val changeType = object : TypeToken<List<Change>>() {}.type
         val deserializedChanges = Gson().fromJson<List<Change>>(changedFields, changeType)
-        return AuditLog(id.value, creationDate, operationType, targetTableName, entityId, user, deserializedChanges)
+        return AuditLog(
+            id.value,
+            creationDate,
+            operationType,
+            targetTableName,
+            entityId,
+            user,
+            deserializedChanges,
+        )
     }
 }

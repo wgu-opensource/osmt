@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class TaskMessageService {
-
     @Autowired
     lateinit var rqueueMessageSender: RqueueMessageEnqueuer
 
@@ -16,7 +15,10 @@ class TaskMessageService {
 
     val opsForHash by lazy { redisTaskTemplate.opsForHash<String, Task>() }
 
-    fun enqueueJob(key: String, task: Task) {
+    fun enqueueJob(
+        key: String,
+        task: Task,
+    ) {
         rqueueMessageSender.enqueue(key, task)
         this.opsForHash.put(taskHashTable, task.uuid, task)
     }
@@ -44,7 +46,7 @@ class TaskMessageService {
         const val updateCollectionSkills = "update-collection-skills"
         const val skillsForCollectionCsv = "collection-skills-csv-process"
         const val skillsForCollectionCsvV2 = "collection-skills-csv-process-v2"
-        
+
         const val skillsForCollectionXlsx = "collection-skills-xlsx-process"
         const val removeCollectionSkills = "remove-collection"
         const val skillsForFullLibraryCsv = "full-library-skills-csv-process"

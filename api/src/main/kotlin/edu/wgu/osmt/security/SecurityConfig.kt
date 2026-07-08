@@ -10,32 +10,40 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import org.springframework.http.HttpMethod.*
+import org.springframework.http.HttpMethod.DELETE
+import org.springframework.http.HttpMethod.GET
+import org.springframework.http.HttpMethod.POST
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper
 import org.springframework.security.oauth2.core.oidc.user.OidcUser
+import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority
+import org.springframework.security.oauth2.jwt.JwtDecoder
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.DefaultRedirectStrategy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.stereotype.Component
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
-
 /**
- * Security configurations
- * - to enable another OAuth provider, include the profile name in place of `OTHER-OAUTH-PROFILE`
- *   in the @Profile annotation
+ * Security configuration for OAuth2 (profile: oauth2).
+ * Add providers via application-oauth2.properties; no code changes required.
  */
 @Configuration
 @EnableWebSecurity
-@Profile("oauth2-okta | OTHER-OAUTH-PROFILE")
+@Profile("oauth2 & !readonly")
 class SecurityConfig {
-
     @Autowired
     lateinit var appConfig: AppConfig
 
@@ -45,77 +53,119 @@ class SecurityConfig {
     @Autowired
     lateinit var returnUnauthorized: ReturnUnauthorized
 
+    @Autowired(required = false)
+    var adminUserAuthenticationFilter: AdminUserAuthenticationFilter? = null
+
+    @Autowired(required = false)
+    var jwtDecoder: JwtDecoder? = null
+
+    private fun jwtAuthenticationConverter(): JwtAuthenticationConverter {
+        val grantedAuthoritiesConverter = JwtGrantedAuthoritiesConverter()
+        grantedAuthoritiesConverter.setAuthoritiesClaimName(appConfig.oauth2RolesClaim)
+        grantedAuthoritiesConverter.setAuthorityPrefix("")
+        val converter = JwtAuthenticationConverter()
+        converter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter)
+        return converter
+    }
+
     @Bean
-    fun securityFilterChain(http: HttpSecurity) : SecurityFilterChain {
-        http
-            .cors().and()
-            .csrf().disable()
-            .httpBasic().disable()
-            .authorizeHttpRequests { auth ->
-                auth
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_AUDIT_LOG}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_AUDIT_LOG}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_AUDIT_LOG}").authenticated()
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_AUDIT_LOG}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_AUDIT_LOG}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_AUDIT_LOG}").authenticated()
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_SKILLS}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_SKILLS}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_SKILLS}").authenticated()
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_BATCH}").authenticated()
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_JOBCODES_PATH}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_JOBCODES_PATH}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_JOBCODES_PATH}").authenticated()
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_KEYWORDS_PATH}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_KEYWORDS_PATH}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_KEYWORDS_PATH}").authenticated()
+    fun userAuthoritiesMapper(): GrantedAuthoritiesMapper =
+        GrantedAuthoritiesMapper { authorities ->
+            authorities
+                .flatMap { authority ->
+                    when (authority) {
+                        is OidcUserAuthority -> {
+                            val claim =
+                                authority.idToken.claims[appConfig.oauth2RolesClaim]
+                            when (claim) {
+                                is Collection<*> -> {
+                                    claim
+                                        .filterIsInstance<String>()
+                                        .map { SimpleGrantedAuthority(it) }
+                                }
 
-                    // public search endpoints
-                    .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_SKILLS}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_SKILLS}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_SKILLS}").permitAll()
-                    .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SEARCH_COLLECTIONS}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SEARCH_COLLECTIONS}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SEARCH_COLLECTIONS}").permitAll()
+                                is String -> {
+                                    listOf(SimpleGrantedAuthority(claim))
+                                }
 
-                    // public canonical URL endpoints
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_DETAIL}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_DETAIL}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_DETAIL}").permitAll()
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_DETAIL}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_DETAIL}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_DETAIL}").permitAll()
+                                else -> {
+                                    listOf(authority)
+                                }
+                            }
+                        }
 
-                    .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_SKILLS}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_SKILLS}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_SKILLS}").permitAll()
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_CSV}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_CSV}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_CSV}").permitAll()
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_TEXT}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_TEXT}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_TEXT}").permitAll()
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_XLSX}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_XLSX}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_XLSX}").permitAll()
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_MEDIA}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_MEDIA}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_MEDIA}").permitAll()
-            }
+                        is OAuth2UserAuthority -> {
+                            val claim =
+                                authority.attributes[appConfig.oauth2RolesClaim]
+                            when (claim) {
+                                is Collection<*> -> {
+                                    claim
+                                        .filterIsInstance<String>()
+                                        .map { SimpleGrantedAuthority(it) }
+                                }
 
-            .exceptionHandling().authenticationEntryPoint(returnUnauthorized)
-            .and().oauth2Login().successHandler(redirectToFrontend)
-            .and().oauth2ResourceServer().jwt()
+                                is String -> {
+                                    listOf(SimpleGrantedAuthority(claim))
+                                }
 
-        if (appConfig.enableRoles) {
-            configureForRoles(http)
-        } else {
-            configureForNoRoles(http)
+                                else -> {
+                                    listOf(authority)
+                                }
+                            }
+                        }
+
+                        else -> {
+                            listOf(authority)
+                        }
+                    }
+                }.toMutableSet()
         }
 
-        return http.build();
+    @Bean
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        var config =
+            http
+                .cors()
+                .and()
+                .csrf()
+                .disable()
+                .httpBasic()
+                .disable()
+                // Configure public and authenticated endpoints using shared helper
+                // This ensures consistency with single-auth security configuration
+                .also {
+                    SecurityConfigHelper.configurePublicEndpoints(it)
+                    SecurityConfigHelper.configureAuthenticatedEndpoints(it)
+                }.exceptionHandling()
+                .authenticationEntryPoint(returnUnauthorized)
+                .and()
+        if (appConfig.singleAuthEnabled && adminUserAuthenticationFilter != null) {
+            config =
+                config.addFilterBefore(
+                    adminUserAuthenticationFilter!!,
+                    UsernamePasswordAuthenticationFilter::class.java,
+                )
+        }
+        config =
+            config
+                .oauth2Login()
+                .successHandler(redirectToFrontend)
+                .and()
+        config =
+            config.oauth2ResourceServer { oauth2 ->
+                oauth2.jwt { jwt ->
+                    jwtDecoder?.let { jwt.decoder(it) }
+                    jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())
+                }
+            }
+
+        if (appConfig.enableRoles) {
+            configureForRoles(config)
+        } else {
+            configureForNoRoles(config)
+        }
+
+        return config.build()
     }
 
     fun configureForRoles(http: HttpSecurity) {
@@ -124,108 +174,32 @@ class SecurityConfig {
         val VIEW = appConfig.roleView
         val READ = appConfig.scopeRead
 
-        if (appConfig.allowPublicLists) {
-            http.authorizeHttpRequests { auth ->
-                auth
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}").permitAll()
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTIONS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTIONS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTIONS_LIST}").permitAll()
-            }
-        } else {
-            http.authorizeHttpRequests { auth ->
-                auth
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-                    .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTIONS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTIONS_LIST}",
-                        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTIONS_LIST}").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-            }
-        }
-
-        http.authorizeHttpRequests { auth ->
-            auth
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_UPDATE}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_UPDATE}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_UPDATE}").hasAnyAuthority(ADMIN, CURATOR)
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_CREATE}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_CREATE}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_CREATE}").hasAnyAuthority(ADMIN, CURATOR)
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_PUBLISH}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_PUBLISH}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_PUBLISH}").hasAnyAuthority(ADMIN)
-
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_CREATE}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_CREATE}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_CREATE}").hasAnyAuthority(ADMIN, CURATOR)
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_PUBLISH}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_PUBLISH}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_PUBLISH}").hasAnyAuthority(ADMIN)
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_UPDATE}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_UPDATE}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_UPDATE}").hasAnyAuthority(ADMIN, CURATOR)
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_SKILLS_UPDATE}").hasAnyAuthority(ADMIN, CURATOR)
-                .requestMatchers(DELETE, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_REMOVE}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_REMOVE}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_REMOVE}").hasAnyAuthority(ADMIN)
-                .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.WORKSPACE_PATH}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.WORKSPACE_PATH}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.WORKSPACE_PATH}").hasAnyAuthority(ADMIN, CURATOR)
-
-                .requestMatchers("/api/**").hasAnyAuthority(ADMIN, CURATOR, VIEW, READ)
-                .requestMatchers("/**").permitAll()
-        }
+        // Use shared helper to ensure consistency with single-auth configuration
+        SecurityConfigHelper.configureListEndpoints(
+            http,
+            appConfig.allowPublicLists,
+            ADMIN,
+            CURATOR,
+            VIEW,
+            READ,
+        )
+        SecurityConfigHelper.configureRoleBasedEndpoints(
+            http,
+            ADMIN,
+            CURATOR,
+            VIEW,
+            READ,
+        )
     }
 
     fun configureForNoRoles(http: HttpSecurity) {
-        http.authorizeHttpRequests { auth ->
-            auth
-                .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_LIST}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_LIST}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_LIST}").permitAll()
-                .requestMatchers(GET, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTIONS_LIST}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTIONS_LIST}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTIONS_LIST}").permitAll()
-
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_UPDATE}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_UPDATE}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_UPDATE}").authenticated()
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILLS_CREATE}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILLS_CREATE}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILLS_CREATE}").authenticated()
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.SKILL_PUBLISH}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.SKILL_PUBLISH}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.SKILL_PUBLISH}").authenticated()
-
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_CREATE}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_CREATE}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_CREATE}").authenticated()
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_PUBLISH}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_PUBLISH}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_PUBLISH}").authenticated()
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_UPDATE}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_UPDATE}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_UPDATE}").authenticated()
-                .requestMatchers(POST, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_SKILLS_UPDATE}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_SKILLS_UPDATE}").authenticated()
-                .requestMatchers(DELETE, "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.COLLECTION_REMOVE}",
-                    "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.COLLECTION_REMOVE}",
-                    "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.COLLECTION_REMOVE}").denyAll()
-
-                // fall-through
-                .requestMatchers("/**").permitAll()
-        }
+        // Use shared helper to ensure consistency with single-auth configuration
+        SecurityConfigHelper.configureNoRoleEndpoints(http)
     }
 
     @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource?{
-        val  configuration: CorsConfiguration = CorsConfiguration()
+    fun corsConfigurationSource(): CorsConfigurationSource? {
+        val configuration: CorsConfiguration = CorsConfiguration()
         configuration.allowedOrigins = appConfig.corsAllowedOrigins.split(",")
         configuration.allowedMethods = listOf("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH")
         // setAllowCredentials(true) is important, otherwise:
@@ -235,25 +209,32 @@ class SecurityConfig {
         // will fail with 403 Invalid CORS request
         configuration.allowedHeaders = listOf("Authorization", "Cache-Control", "Content-Type")
         configuration.exposedHeaders = listOf("X-Total-Count")
-        val  source: UrlBasedCorsConfigurationSource = UrlBasedCorsConfigurationSource()
+        val source: UrlBasedCorsConfigurationSource = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
     }
 }
 
-
 @Component
+@Profile("oauth2")
 class RedirectToFrontend : AuthenticationSuccessHandler {
     @Autowired
     lateinit var appConfig: AppConfig
 
-    override fun onAuthenticationSuccess(request: HttpServletRequest?, response: HttpServletResponse?, authentication: Authentication?) {
+    @Autowired
+    lateinit var sessionTokenService: SessionTokenService
+
+    override fun onAuthenticationSuccess(
+        request: HttpServletRequest?,
+        response: HttpServletResponse?,
+        authentication: Authentication?,
+    ) {
         val redirectStrategy: DefaultRedirectStrategy = DefaultRedirectStrategy()
         when (authentication?.principal) {
             is OidcUser -> {
-                val oidcUser:OidcUser = authentication.principal as OidcUser
-                val tokenValue = oidcUser.idToken.tokenValue
-                val url = "${appConfig.loginSuccessRedirectUrl}?token=${tokenValue}"
+                val oidcUser: OidcUser = authentication.principal as OidcUser
+                val token = sessionTokenService.createToken(oidcUser)
+                val url = "${appConfig.loginSuccessRedirectUrl}?token=$token"
                 redirectStrategy.sendRedirect(request, response, url)
             }
         }
@@ -262,7 +243,11 @@ class RedirectToFrontend : AuthenticationSuccessHandler {
 
 @Component
 class ReturnUnauthorized : AuthenticationEntryPoint {
-    override fun commence(request: HttpServletRequest?, response: HttpServletResponse?, authentication: AuthenticationException?) {
+    override fun commence(
+        request: HttpServletRequest?,
+        response: HttpServletResponse?,
+        authentication: AuthenticationException?,
+    ) {
         response?.let {
             it.contentType = "application/json"
             it.characterEncoding = "UTF-8"
@@ -272,5 +257,4 @@ class ReturnUnauthorized : AuthenticationEntryPoint {
             it.flushBuffer()
         }
     }
-
 }

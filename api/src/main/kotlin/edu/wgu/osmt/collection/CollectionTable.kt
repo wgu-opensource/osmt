@@ -16,7 +16,10 @@ import org.jetbrains.exposed.sql.insertIgnore
 import org.jetbrains.exposed.sql.`java-time`.datetime
 import java.time.LocalDateTime
 
-object CollectionTable: TableWithUpdate<CollectionUpdateObject>, PublishStatusUpdate<CollectionUpdateObject>, LongIdTable("Collection") {
+object CollectionTable : TableWithUpdate<CollectionUpdateObject>,
+    PublishStatusUpdate<CollectionUpdateObject>, LongIdTable(
+        "Collection",
+    ) {
     override val creationDate = datetime("creationDate")
     override val updateDate = datetime("updateDate")
     override val archiveDate: Column<LocalDateTime?> = datetime("archiveDate").nullable()
@@ -24,43 +27,55 @@ object CollectionTable: TableWithUpdate<CollectionUpdateObject>, PublishStatusUp
     val uuid = varchar("uuid", 36).uniqueIndex()
     val description = text("description").nullable()
     val name = text("name")
-    val author = reference(
-        "author_id",
-        KeywordTable,
-        onDelete = ReferenceOption.RESTRICT,
-        onUpdate = ReferenceOption.CASCADE
-    ).nullable()
+    val author =
+        reference(
+            "author_id",
+            KeywordTable,
+            onDelete = ReferenceOption.RESTRICT,
+            onUpdate = ReferenceOption.CASCADE,
+        ).nullable()
     val workspaceOwner = varchar("workspace_owner", 64).index().default("")
-    val status = customEnumeration(
-        "status",
-        fromDb = { value -> PublishStatus.forApiValue(value as String)!! }, toDb = { it.name }).default(PublishStatus.Draft)
+    val status =
+        customEnumeration(
+            "status",
+            fromDb = { value -> PublishStatus.forApiValue(value as String)!! },
+            toDb = { it.name },
+        ).default(PublishStatus.Draft)
 }
 
 object CollectionSkills : Table("CollectionSkills") {
-    val collectionId = reference(
-        "collection_id",
-        CollectionTable,
-        onDelete = ReferenceOption.CASCADE,
-        onUpdate = ReferenceOption.CASCADE
-    ).index()
-    val skillId = reference(
-        "skill_id",
-        RichSkillDescriptorTable,
-        onDelete = ReferenceOption.CASCADE,
-        onUpdate = ReferenceOption.CASCADE
-    ).index()
+    val collectionId =
+        reference(
+            "collection_id",
+            CollectionTable,
+            onDelete = ReferenceOption.CASCADE,
+            onUpdate = ReferenceOption.CASCADE,
+        ).index()
+    val skillId =
+        reference(
+            "skill_id",
+            RichSkillDescriptorTable,
+            onDelete = ReferenceOption.CASCADE,
+            onUpdate = ReferenceOption.CASCADE,
+        ).index()
     override val primaryKey = PrimaryKey(collectionId, skillId, name = "PK_CollectionSkills_c_rs")
 
-    fun create(collectionId: Long, skillId: Long) {
+    fun create(
+        collectionId: Long,
+        skillId: Long,
+    ) {
         insertIgnore {
             it[this.collectionId] = EntityID(collectionId, CollectionTable)
             it[this.skillId] = EntityID(skillId, RichSkillDescriptorTable)
         }
     }
-    fun delete(collectionId: Long, skillId: Long): Int {
-        return deleteWhere {
+
+    fun delete(
+        collectionId: Long,
+        skillId: Long,
+    ): Int =
+        deleteWhere {
             (CollectionSkills.collectionId eq collectionId) and
-            (CollectionSkills.skillId eq skillId)
+                (CollectionSkills.skillId eq skillId)
         }
-    }
 }

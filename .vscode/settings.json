@@ -1,0 +1,66 @@
+{
+  // Kotlin Language Server Configuration
+  "kotlin.languageServer.enabled": true,
+  "kotlin.languageServer.transport": "stdio",
+  "kotlin.compiler.jvm.target": "21",
+  "kotlin.linting.debounceTime": 250,
+  "kotlin.debugAdapter.enabled": true,
+
+  // Java Language Server Configuration (required for Maven projects)
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.configuration.maven.userSettings": null,
+  "java.import.maven.enabled": true,
+  "java.import.maven.offline.enabled": false,
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.configuration.runtimes": [],
+  "java.jdt.ls.java.home": null,
+
+  // Maven Configuration
+  "maven.executable.path": null,
+  "maven.terminal.useJavaHome": true,
+  "maven.terminal.customEnv": [
+    {
+      "environmentVariable": "JAVA_HOME",
+      "value": "${env:JAVA_HOME}"
+    }
+  ],
+
+  // Workspace Configuration
+  "files.exclude": {
+    "**/target": true,
+    "**/node_modules": true,
+    "**/.git": false
+  },
+  "files.watcherExclude": {
+    "**/target/**": true,
+    "**/node_modules/**": true
+  },
+
+  // Editor Configuration for Kotlin
+  "[kotlin]": {
+    "editor.defaultFormatter": "mathiasfrohlich.Kotlin",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll.ktlint": "explicit"
+    },
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true
+  },
+  // ktlint Configuration
+  "kotlin.linter.ktlint.enabled": true,
+  "kotlin.linter.ktlint.codeStyle": "official",
+  "kotlin.linter.ktlint.formatOnSave": true,
+
+  // File Associations
+  "files.associations": {
+    "*.kt": "kotlin",
+    "*.kts": "kotlin"
+  },
+
+  // Search Configuration
+  "search.exclude": {
+    "**/target": true,
+    "**/node_modules": true
+  }
+}

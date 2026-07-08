@@ -1,40 +1,45 @@
-import {Subject} from "rxjs"
-import {Injectable} from "@angular/core"
+import { Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 export interface ToastMessage {
-  title: string
-  message: string
-  isAttention: boolean
+  title: string;
+  message: string;
+  isAttention: boolean;
 }
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root',
 })
 export class ToastService {
-  subject = new Subject<ToastMessage>()
-  loaderSubject = new Subject<boolean>()
+  subject = new Subject<ToastMessage | undefined>();
+  loaderSubject = new Subject<boolean>();
 
-  constructor() { }
+  constructor() {}
 
-  showToast(title: string, message: string, isAttention: boolean = false, autoDismissMs: number | undefined = 5000): void {
+  showToast(
+    title: string,
+    message: string,
+    isAttention = false,
+    autoDismissMs: number | undefined = 5000
+  ): void {
     this.subject.next({
       title,
       message,
-      isAttention
-    })
+      isAttention,
+    });
     if (autoDismissMs !== undefined) {
-      setTimeout(() => this.dismiss(), autoDismissMs)
+      setTimeout(() => this.dismiss(), autoDismissMs);
     }
   }
 
   dismiss(): void {
-    this.subject.next(undefined)
+    this.subject.next(undefined);
   }
 
   showBlockingLoader(): void {
-    this.loaderSubject.next( true)
+    this.loaderSubject.next(true);
   }
   hideBlockingLoader(): void {
-    this.loaderSubject.next( false)
+    this.loaderSubject.next(false);
   }
 }

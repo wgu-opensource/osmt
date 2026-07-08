@@ -1,4 +1,6 @@
-USE osmt_db;
+USE
+osmt_db;
 
 ALTER TABLE `JobCode`
-DROP COLUMN `updateDate`;
+DROP
+COLUMN `updateDate`;

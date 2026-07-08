@@ -1,50 +1,58 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   allMappingHeaderOrder,
   importSkillTargetOptions,
   importSkillHeaderOrder,
-} from "./batch-import.component";
-
+} from './batch-import.component';
 
 interface MappingChanged {
-  uploadedHeader: string
-  property: string
+  uploadedHeader: string;
+  property: string;
 }
 
 @Component({
-  selector: "app-field-mapping-table",
-  templateUrl: "./field-mapping-table.component.html"
+  selector: 'app-field-mapping-table',
+  templateUrl: './field-mapping-table.component.html',
 })
 export class FieldMappingTableComponent implements OnInit {
+  @Input() uploadedHeaders: string[] = [];
+  @Output() fieldMappingChanged = new EventEmitter<{ [p: string]: string }>();
+  @Input() alignmentCount = 3;
 
-  @Input() uploadedHeaders: string[] = []
-  @Output() fieldMappingChanged = new EventEmitter<{[p: string]: string}>()
-  @Input() alignmentCount: number = 3
+  @Input() currentMappings: { [p: string]: string } = {};
 
-  @Input() currentMappings: {[p: string]: string} = {}
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   handleMappingChanged(change: MappingChanged): void {
-    this.currentMappings[change.uploadedHeader] = change.property
-    this.fieldMappingChanged.emit(this.currentMappings)
+    this.currentMappings[change.uploadedHeader] = change.property;
+    this.fieldMappingChanged.emit(this.currentMappings);
   }
 
   hasRequiredFields(): boolean {
-    if (this.currentMappings === undefined) { return false }
-    const mapped = Object.values(this.currentMappings)
-    return (mapped.indexOf("skillName") !== -1 && mapped.indexOf("skillStatement") !== -1)
+    if (this.currentMappings === undefined) {
+      return false;
+    }
+    const mapped = Object.values(this.currentMappings);
+    return (
+      mapped.indexOf('skillName') !== -1 &&
+      mapped.indexOf('skillStatement') !== -1
+    );
   }
 }
 
 @Component({
-  selector: "app-field-mapping-select",
+  selector: 'app-field-mapping-select',
   template: `
     <div class="m-select m-select-fieldMap">
       <select class="m-select-x-select" (change)="handleChange($event)">
         <option value="">Select Property</option>
-        <option *ngFor="let item of headers" [value]="item.field" [attr.selected]="value === item.field ? '' : null">{{item.label}}</option>
+        <option
+          *ngFor="let item of headers"
+          [value]="item.field"
+          [attr.selected]="value === item.field ? '' : null"
+        >
+          {{ item.label }}
+        </option>
         <option value="">Do Not Import</option>
       </select>
       <div class="m-select-x-icon">
@@ -52,32 +60,33 @@ export class FieldMappingTableComponent implements OnInit {
           <use xlink:href="/assets/images/svg-defs.svg#icon-chevron"></use>
         </svg>
       </div>
-     </div>
-  `
+    </div>
+  `,
 })
 export class FieldMappingSelectComponent {
+  @Input() data = '';
+  @Input() value = '';
+  @Output() mappingChanged = new EventEmitter<MappingChanged>();
+  @Input() alignmentCount = 3;
 
-  @Input() data: string = ""
-  @Input() value: string = ""
-  @Output() mappingChanged = new EventEmitter<MappingChanged>()
-  @Input() alignmentCount: number = 3
-
-  get headers(): {field: string, label: string}[] {
-    return importSkillHeaderOrder.concat(allMappingHeaderOrder(this.alignmentCount))
+  get headers(): { field: string; label: string }[] {
+    return importSkillHeaderOrder.concat(
+      allMappingHeaderOrder(this.alignmentCount)
+    );
   }
 
   handleChange($event: Event): void {
-    const target = $event.target as HTMLSelectElement
-    const value = target.value
+    const target = $event.target as HTMLSelectElement;
+    const value = target.value;
     this.mappingChanged.emit({
       uploadedHeader: this.data,
-      property: value
-    })
+      property: value,
+    });
   }
 }
 
 @Component({
-  selector: "app-batch-import-destination-select",
+  selector: 'app-batch-import-destination-select',
   template: `
     <tr class="m-tableRow m-tableRow-fieldMap">
       <th scope="row">
@@ -85,35 +94,38 @@ export class FieldMappingSelectComponent {
       </th>
       <td>
         <div class="m-select m-select-fieldMap">
-            <select class="m-select-x-select" (change)="handleChange($event)">
-                <option *ngFor="let item of optionElements" [value]="item.target"
-                    [attr.selected]="value === item.target ? '' : null">{{item.label}}</option>
-                <option selected="selected" value="">RSD Library</option>
-            </select>
-            <div class="m-select-x-icon">
-                <svg class="t-icon" aria-hidden="true">
-                    <use xlink:href="/assets/images/svg-defs.svg#icon-chevron"></use>
-                </svg>
-            </div>
+          <select class="m-select-x-select" (change)="handleChange($event)">
+            <option
+              *ngFor="let item of optionElements"
+              [value]="item.target"
+              [attr.selected]="value === item.target ? '' : null"
+            >
+              {{ item.label }}
+            </option>
+            <option selected="selected" value="">RSD Library</option>
+          </select>
+          <div class="m-select-x-icon">
+            <svg class="t-icon" aria-hidden="true">
+              <use xlink:href="/assets/images/svg-defs.svg#icon-chevron"></use>
+            </svg>
+          </div>
         </div>
       </td>
-  `
+    </tr>
+  `,
 })
 export class BatchImportDestinationSelectComponent {
+  @Input() data = '';
+  @Input() value = '';
+  @Output() mappingChanged = new EventEmitter<string>();
 
-  @Input() data: string = ""
-  @Input() value: string = ""
-  @Output() mappingChanged = new EventEmitter<string>()
-
-  get optionElements(): {target: string, label: string}[] {
-    return importSkillTargetOptions
+  get optionElements(): { target: string; label: string }[] {
+    return importSkillTargetOptions;
   }
 
   handleChange($event: Event): void {
-    const target = $event.target as HTMLSelectElement
-    const value = target.value
-    this.mappingChanged.emit(
-      value
-    )
+    const target = $event.target as HTMLSelectElement;
+    const value = target.value;
+    this.mappingChanged.emit(value);
   }
 }

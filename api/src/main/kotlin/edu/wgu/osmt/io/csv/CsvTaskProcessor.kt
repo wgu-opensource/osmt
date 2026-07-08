@@ -23,19 +23,21 @@ class CsvTaskProcessor : TabularTask<CsvTask>() {
         value = [TaskMessageService.skillsForCollectionCsv],
         deadLetterQueueListenerEnabled = "true",
         deadLetterQueue = TaskMessageService.deadLetters,
-        concurrency = "1"
+        concurrency = "1",
     )
     override fun tabularSkillsInCollectionProcessor(task: CsvTask) {
         logger.info("Started processing task id: ${task.uuid}")
 
-        val csv = collectionRepository.findByUUID(task.collectionUuid)
-            ?.skills
-            ?.filter { PublishStatus.Archived != it.publishStatus() }
-            ?.map { RichSkillAndCollections.fromDao(it) }
-            ?.let { RichSkillCsvExport(appConfig).toCsv(it) }
+        val csv =
+            collectionRepository
+                .findByUUID(task.collectionUuid)
+                ?.skills
+                ?.filter { PublishStatus.Archived != it.publishStatus() }
+                ?.map { RichSkillAndCollections.fromDao(it) }
+                ?.let { RichSkillCsvExport(appConfig).toCsv(it) }
 
         taskMessageService.publishResult(
-            task.copy(result = csv, status = TaskStatus.Ready)
+            task.copy(result = csv, status = TaskStatus.Ready),
         )
         logger.info("Task ${task.uuid} completed")
     }
@@ -44,19 +46,20 @@ class CsvTaskProcessor : TabularTask<CsvTask>() {
         value = [TaskMessageService.skillsForFullLibraryCsv],
         deadLetterQueueListenerEnabled = "true",
         deadLetterQueue = TaskMessageService.deadLetters,
-        concurrency = "1"
+        concurrency = "1",
     )
     override fun tabularSkillsInFullLibraryProcessor(task: CsvTask) {
         logger.info("Started processing task for Full Library .csv export")
 
-        val csv = richSkillRepository.findAll()
-            ?.map { RichSkillAndCollections.fromDao(it) }
-            ?.let { RichSkillCsvExport(appConfig).toCsv(it) }
+        val csv =
+            richSkillRepository
+                .findAll()
+                .map { RichSkillAndCollections.fromDao(it) }
+                .let { RichSkillCsvExport(appConfig).toCsv(it) }
 
         taskMessageService.publishResult(
-            task.copy(result = csv, status = TaskStatus.Ready)
+            task.copy(result = csv, status = TaskStatus.Ready),
         )
         logger.info("Full Library export task .csv completed")
     }
-
 }

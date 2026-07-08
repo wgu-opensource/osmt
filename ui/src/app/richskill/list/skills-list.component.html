@@ -1,88 +1,106 @@
-
 <ng-template [appLoadingObservables]="[resultsLoaded]">
-<div class="l-stickyBar">
-
-  <div class="l-container t-padding-large t-padding-top">
-
-<!--    {{render '@listheading'}}-->
-    <div class="l-container l-container-mobile t-margin-medium t-margin-bottom">
-      <h2 *ngIf="title" class="t-type-heading1 t-margin-small t-margin-bottom" tabindex="0" #titleHeading>{{title}}</h2>
-      <p class="t-type-bodyLarge t-type-text3">
-        {{skillCountLabel}}
-        found based on
-        <ng-template [ngIf]="matchingQuery !== undefined">
-          <ng-template ngFor let-q [ngForOf]="matchingQuery" let-last="last">
-            <span class="t-type-bodyLargeBold t-type-text1">{{q}}</span>
-            <ng-template [ngIf]="!last && matchingQuery.length > 1">, </ng-template>
+  <div class="l-stickyBar">
+    <div class="l-container t-padding-large t-padding-top">
+      <!--    {{render '@listheading'}}-->
+      <div
+        class="l-container l-container-mobile t-margin-medium t-margin-bottom"
+      >
+        <h2
+          *ngIf="title"
+          class="t-type-heading1 t-margin-small t-margin-bottom"
+          tabindex="0"
+          #titleHeading
+        >
+          {{ title }}
+        </h2>
+        <p class="t-type-bodyLarge t-type-text3">
+          {{ skillCountLabel }}
+          found based on
+          <ng-template [ngIf]="matchingQuery !== undefined">
+            <ng-template ngFor let-q [ngForOf]="matchingQuery" let-last="last">
+              <span class="t-type-bodyLargeBold t-type-text1">{{ q }}</span>
+              <ng-template [ngIf]="!last && matchingQuery.length > 1"
+                >,
+              </ng-template>
+            </ng-template>
+            and
           </ng-template>
-          and
-        </ng-template>
-        your filters.
-        <ng-template [ngIf]="totalCount > 0">
-          Viewing {{firstRecordNo}}-{{lastRecordNo}}.
-        </ng-template>
-      </p>
-    </div>
+          your filters.
+          <ng-template [ngIf]="totalCount > 0">
+            Viewing {{ firstRecordNo }}-{{ lastRecordNo }}.
+          </ng-template>
+        </p>
+      </div>
 
-    <app-filter-controls
-      [selectedFilters]="selectedFilters"
-      [keywords]="keywords"
-      [currentSize]="size"
-      (changeValue)="sizeChange($event)"
-      [isSizePaginationVisible]="isSizePaginationVisible"
-      (keywordsChanged)="keywordsChange($event)"
-      [showAdvancedFilteredSearch]="showAdvancedFilteredSearch"
-      (filtersChanged)="handleFiltersChanged($event)"
-    ></app-filter-controls>
+      <app-filter-controls
+        [selectedFilters]="selectedFilters"
+        [keywords]="keywords"
+        [currentSize]="size"
+        (changeValue)="sizeChange($event)"
+        [isSizePaginationVisible]="isSizePaginationVisible"
+        (keywordsChanged)="keywordsChange($event)"
+        [showAdvancedFilteredSearch]="showAdvancedFilteredSearch"
+        (filtersChanged)="handleFiltersChanged($event)"
+      ></app-filter-controls>
 
-    <div class="t-margin-medium t-margin-bottom">
-      <app-blocking-loader [observables]="[resultsLoaded]">
-        <p class="t-visuallyHidden">Select one or more RSDs, then use the action menu to publish, archive, unarchive, or add the selected RSDs to a collection. </p>
-        <app-skill-table
-          *ngIf="!emptyResults"
-          [items]="results.skills"
-          [currentSort]="columnSort"
-          [mobileSortOptions]="getMobileSortOptions()"
-          [rowActions]="rowActions()"
-          [selectAllCount]="getSelectAllCount()"
-          [selectAllEnabled]="getSelectAllEnabled()"
-          (rowSelected)="handleNewSelection($event)"
-          (columnSorted)="handleHeaderColumnSort($event)"
-          (selectAllSelected)="handleSelectAll($event)"
-          (focusActionBar)="focusActionBar()"
-        ></app-skill-table>
-
-        <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">
-          <p class="m-emptyMessage-x-message">No RSDs found. Try modifying your search terms or filters.</p>
-        </app-empty-message>
-        <app-empty-message *ngIf="emptyResults && showLibraryEmptyMessage">
-          <p class="m-emptyMessage-x-message">0 RSDs in library</p>
-          <p class="m-emptyMessage-x-message">The library is ready to fill with RSDs.</p>
-          <p class="m-emptyMessage-x-message">
-          <a routerLink="/skills/create">Create an RSD</a> or <a href="/skills/import">Batch import RSDs</a>.
+      <div class="t-margin-medium t-margin-bottom">
+        <app-blocking-loader [observables]="[resultsLoaded]">
+          <p class="t-visuallyHidden">
+            Select one or more RSDs, then use the action menu to publish,
+            archive, unarchive, or add the selected RSDs to a collection.
           </p>
-        </app-empty-message>
-        <app-empty-message *ngIf="emptyResults && !showSearchEmptyMessage">
-          <p class="m-emptyMessage-x-message">No RSDs found. Try adjusting your filters.</p>
-        </app-empty-message>
-      </app-blocking-loader>
+          <app-skill-table
+            *ngIf="!emptyResults"
+            [items]="results.skills"
+            [currentSort]="columnSort"
+            [mobileSortOptions]="getMobileSortOptions()"
+            [rowActions]="rowActions()"
+            [isPublicView]="isPublicView"
+            [selectAllCount]="getSelectAllCount()"
+            [selectAllEnabled]="getSelectAllEnabled()"
+            (rowSelected)="handleNewSelection($event)"
+            (columnSorted)="handleHeaderColumnSort($event)"
+            (selectAllSelected)="handleSelectAll($event)"
+            (focusActionBar)="focusActionBar()"
+          ></app-skill-table>
+
+          <app-empty-message *ngIf="emptyResults && showSearchEmptyMessage">
+            <p class="m-emptyMessage-x-message">
+              No RSDs found. Try modifying your search terms or filters.
+            </p>
+          </app-empty-message>
+          <app-empty-message *ngIf="emptyResults && showLibraryEmptyMessage">
+            <p class="m-emptyMessage-x-message">0 RSDs in library</p>
+            <p class="m-emptyMessage-x-message">
+              The library is ready to fill with RSDs.
+            </p>
+            <p class="m-emptyMessage-x-message" *ngIf="!isPublicView">
+              <a routerLink="/skills/create">Create an RSD</a> or
+              <a href="/skills/import">Batch import RSDs</a>.
+            </p>
+          </app-empty-message>
+          <app-empty-message *ngIf="emptyResults && !showSearchEmptyMessage">
+            <p class="m-emptyMessage-x-message">
+              No RSDs found. Try adjusting your filters.
+            </p>
+          </app-empty-message>
+        </app-blocking-loader>
+      </div>
+
+      <app-pagination
+        [currentPage]="currentPageNo"
+        [totalPages]="totalPageCount"
+        (pageClicked)="handlePageClicked($event)"
+      ></app-pagination>
     </div>
 
-    <app-pagination
-      [currentPage]="currentPageNo"
-      [totalPages]="totalPageCount"
-      (pageClicked)="handlePageClicked($event)"
-    ></app-pagination>
-
-  </div>
-
-  <div *ngIf="actionsVisible()" class="l-stickyBar-x-bar t-padding-medium t-padding-top">
-    <div class="l-container l-container-tablet">
-      <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
+    <div
+      *ngIf="actionsVisible()"
+      class="l-stickyBar-x-bar t-padding-medium t-padding-top"
+    >
+      <div class="l-container l-container-tablet">
+        <app-table-action-bar [actions]="tableActions()"></app-table-action-bar>
+      </div>
     </div>
   </div>
-
-</div>
-
-
 </ng-template>

@@ -1,5 +1,3 @@
-
-
 <div *ngIf="loaderVisible; else justContent" class="l-loader">
   <div class="l-loader-x-loader">
     <div class="m-loader">
@@ -7,7 +5,7 @@
         <div class="m-loader-x-loader">
           <div class="m-loaderGraphic m-loaderGraphic-large"></div>
         </div>
-        <p *ngIf="messageVisible" class="m-loader-x-message">{{message}}</p>
+        <p *ngIf="messageVisible" class="m-loader-x-message">{{ message }}</p>
       </div>
     </div>
   </div>

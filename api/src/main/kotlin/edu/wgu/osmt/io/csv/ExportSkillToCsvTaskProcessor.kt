@@ -33,19 +33,20 @@ class ExportSkillToCsvTaskProcessor {
         value = [TaskMessageService.skillsForCustomListExportCsv],
         deadLetterQueueListenerEnabled = "true",
         deadLetterQueue = TaskMessageService.deadLetters,
-        concurrency = "1"
+        concurrency = "1",
     )
     fun csvSkillsInCustomRsdListProcessor(task: ExportSkillsToCsvTask) {
         logger.info("Started processing task for Custom RSD List export")
 
-        val csv = task.uuids?.map { richSkillRepository.findByUUID(it) }
-            ?.map { RichSkillAndCollections.fromDao(it!!) }
-            ?.let { RichSkillCsvExport(appConfig).toCsv(it) }
+        val csv =
+            task.uuids
+                ?.map { richSkillRepository.findByUUID(it) }
+                ?.map { RichSkillAndCollections.fromDao(it!!) }
+                ?.let { RichSkillCsvExport(appConfig).toCsv(it) }
 
         taskMessageService.publishResult(
-            task.copy(result = csv, status = TaskStatus.Ready)
+            task.copy(result = csv, status = TaskStatus.Ready),
         )
         logger.info("Custom RSD List export task completed")
     }
-
 }

@@ -12,13 +12,16 @@ enum class KeywordTypeEnum {
     Certification,
     Alignment,
     Employer,
-    Author
+    Author,
     ;
-
 
     open val displayName: String = this.name
 
     companion object {
-        fun forApiValue(apiValue: String) = KeywordTypeEnum.values().find { it.name.toLowerCase() == apiValue.toLowerCase() }
+        fun forApiValue(apiValue: String) =
+            KeywordTypeEnum.values().find {
+                it.name.lowercase() ==
+                    apiValue.lowercase()
+            }
     }
 }

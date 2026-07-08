@@ -1,0 +1,15 @@
+{
+  "editableAuthor": true,
+  "defaultAuthorValue": "",
+  "toolName": "OSMT",
+  "toolNameLong": "Open Skills Management Tool",
+  "publicSkillTitle": "Rich Skill Descriptor",
+  "publicCollectionTitle": "Rich Skill Descriptor Collection",
+  "licensePrimary": "Copyright © OSMT Contributors",
+  "licenseSecondary": "All rights reserved.",
+  "poweredBy": "",
+  "poweredByUrl": "",
+  "poweredByLabel": "",
+  "colorBrandAccent1": "#1e40af",
+  "logoUrl": "/assets/images/logo-light.svg"
+}

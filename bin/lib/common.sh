@@ -14,6 +14,8 @@ declare OAUTH_ISSUER="${OAUTH_ISSUER:-}"
 declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
 declare OAUTH_CLIENTSECRET="${OAUTH_CLIENTSECRET:-}"
 declare OAUTH_AUDIENCE="${OAUTH_AUDIENCE:-}"
+declare OAUTH_GOOGLE_CLIENT_ID="${OAUTH_GOOGLE_CLIENT_ID:-}"
+declare OAUTH_GOOGLE_CLIENT_SECRET="${OAUTH_GOOGLE_CLIENT_SECRET:-}"
 
 declare OKTA_URL="${OKTA_URL:-}"
 declare OKTA_USERNAME="${OKTA_USERNAME:-}"
@@ -89,11 +91,24 @@ source_env_file_unless_provided_okta() {
 start_osmt_docker_stack() {
   local stack_name="${1}"
   local -i rc
+  local docker_cmd
   echo
   echo_info "Starting OSMT ${stack_name} Docker stack. You can stop it with $(basename "${0}") -e"
-  cd "${PROJECT_DIR}/docker" || return 1
+  cd "${PROJECT_DIR}" || return 1
+  
+  # Detect docker-compose command (docker compose for newer versions, docker-compose for older)
+  if command -v docker-compose &> /dev/null; then
+    docker_cmd="docker-compose"
+  elif docker compose version &> /dev/null; then
+    docker_cmd="docker compose"
+  else
+    echo_err "docker-compose or 'docker compose' command not found. Please install Docker Compose."
+    return 1
+  fi
+  
   # Docker stack should receive the service port variables sourced from the shell environment
-  docker-compose --file dev-stack.yml --project-name "${stack_name}" up --detach
+  # Use docker-compose.yml with 'all' profile to start MySQL, Redis, and Elasticsearch services
+  ${docker_cmd} --profile all --project-name "${stack_name}" up --detach db-mysql db-redis db-elasticsearch
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Starting OSMT ${stack_name} Docker stack failed. Exiting..."
@@ -106,10 +121,22 @@ start_osmt_docker_stack() {
 stop_osmt_docker_stack() {
   local stack_name="${1}"
   local -i rc
+  local docker_cmd
   echo
   echo_info "Stopping OSMT ${stack_name} Docker stack"
-  cd "${PROJECT_DIR}/docker" || return 1
-  docker-compose --file dev-stack.yml --project-name "${stack_name}" down
+  cd "${PROJECT_DIR}" || return 1
+  
+  # Detect docker-compose command (docker compose for newer versions, docker-compose for older)
+  if command -v docker-compose &> /dev/null; then
+    docker_cmd="docker-compose"
+  elif docker compose version &> /dev/null; then
+    docker_cmd="docker compose"
+  else
+    echo_err "docker-compose or 'docker compose' command not found. Please install Docker Compose."
+    return 1
+  fi
+  
+  ${docker_cmd} --profile all --project-name "${stack_name}" down
   rc=$?
   if [[ $rc -ne 0 ]]; then
     echo_err "Stopping OSMT ${stack_name} Docker stack failed. Exiting..."
@@ -166,6 +193,33 @@ echo_debug_env() {
   echo
 }
 
+# Detect which security profile to use based on OAuth credentials
+# This function provides a single source of truth for profile detection
+# Used by all scripts that need to determine security profile
+# Returns: "oauth2" or "single-auth"
+detect_security_profile() {
+  # Priority 1: If OSMT_SECURITY_PROFILE is explicitly set, use it
+  if [[ -n "${OSMT_SECURITY_PROFILE:-}" ]]; then
+    echo "${OSMT_SECURITY_PROFILE}"
+    return 0
+  fi
+
+  # Priority 2: Check for OAuth credentials (Okta or Google)
+  if [[ -n "${OAUTH_ISSUER:-}" ]] && [[ -n "${OAUTH_CLIENTID:-}" ]] &&
+    [[ -n "${OAUTH_CLIENTSECRET:-}" ]] && [[ -n "${OAUTH_AUDIENCE:-}" ]]; then
+    echo "oauth2"
+    return 0
+  fi
+  if [[ -n "${OAUTH_GOOGLE_CLIENT_ID:-}" ]] &&
+    [[ -n "${OAUTH_GOOGLE_CLIENT_SECRET:-}" ]]; then
+    echo "oauth2"
+    return 0
+  fi
+
+  # Priority 3: Default to single-auth when OAuth credentials are missing
+  echo "single-auth"
+}
+
 _validate_env_file() {
   local env_file="${1}"
 
@@ -177,8 +231,14 @@ _validate_env_file() {
 
   echo_info "Checking ${env_file} for invalid default values (xxxxxx)"
   if grep -q "xxxxxx" "${env_file}"; then
-    echo_err "${env_file} should be updated with valid OAUTH2 values"
-    return 1
+    local security_profile; security_profile="$(detect_security_profile)"
+    if [[ "${security_profile}" == "single-auth" ]]; then
+      echo_warn "${env_file} contains 'xxxxxx' values, but single-auth profile will be used. OAuth values are optional."
+      echo_info "No invalid default values found for single-auth mode in ${env_file}"
+    else
+      echo_err "${env_file} should be updated with valid OAUTH2 values"
+      return 1
+    fi
   else
     echo_info "No invalid default values in ${env_file}"
   fi
@@ -321,8 +381,16 @@ _validate_osmt_dev_dependencies() {
   echo_info "Maven version: $(mvn --version)"
 
   echo
+  if [[ -f "${PROJECT_DIR}/.sdkmanrc" ]]; then
+    echo_info "Found .sdkmanrc file. To use SDKMAN for version management, run 'sdk env install' or 'sdk env'."
+  fi
+
+  echo
   echo_info "OSMT development recommends NodeJS version v18.18.2 or greater. Maven uses an embedded copy of NodeJS v18.18.2 via frontend-maven-plugin."
   echo_info "NodeJS version: $(node --version)"
+  if [[ -f "${PROJECT_DIR}/.nvmrc" ]]; then
+    echo_info "Found .nvmrc file. To use nvm for version management, run 'nvm install' or 'nvm use'."
+  fi
   echo
   echo_info "OSMT development recommends npm version 9.8.1 or greater. Maven uses an embedded copy of npm 9.8.1 via frontend-maven-plugin."
   echo_info "npm version: $(npm --version)"
@@ -352,9 +420,13 @@ _init_osmt_env_file() {
     echo_warn "Env file ${env_file} already exists.${NL}Please remove if you want to recreate it. Make a note of any OAUTH2 values before deleting the file."
   else
     cp "${env_file}.example" "${env_file}"
-    echo_info "Created ${env_file}.${NL}This file is ignored by git, and will not be added to git commits. Replace the 'xxxxxx' values in ${NL}${env_file} with your OAUTH2/OIDC values, shown below.${NL}Follow guidance in the 'OAuth2 and Okta Configuration' section of the project README.md."
+    echo_info "Created ${env_file}.${NL}This file is ignored by git, and will not be added to git commits."
+    echo_info "OAUTH2/OIDC values are optional for local development. If you leave 'xxxxxx' values,${NL}OSMT will use the 'single-auth' profile for local development.${NL}To use OAuth2, replace the 'xxxxxx' values in ${env_file} with your OAUTH2/OIDC values.${NL}Follow guidance in the 'OAuth2 and Okta Configuration' section of the project README.md."
     echo
-    grep xxxxxx "${env_file}"
+    if grep -q xxxxxx "${env_file}"; then
+      echo_info "OAuth values found in file (optional):"
+      grep xxxxxx "${env_file}" || true
+    fi
   fi
 }
 

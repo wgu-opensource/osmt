@@ -1,34 +1,46 @@
-import {Injectable} from "@angular/core"
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router"
-import {ENABLE_ROLES} from "./auth-roles"
-import {AuthService} from "./auth-service"
-import {ToastService} from "../toast/toast.service"
+import { Injectable } from '@angular/core';
+import {
+  ActivatedRouteSnapshot,
+  Router,
+  RouterStateSnapshot,
+} from '@angular/router';
+import { ENABLE_ROLES } from './auth-roles';
+import { AuthService } from './auth-service';
+import { ToastService } from '../toast/toast.service';
 
 @Injectable()
-export class AuthGuard  {
-  constructor(private router: Router, protected toastService: ToastService, private authService: AuthService) {
-
-  }
+export class AuthGuard {
+  constructor(
+    private router: Router,
+    protected toastService: ToastService,
+    private authService: AuthService
+  ) {}
 
   // tslint:disable-next-line:max-line-length
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): boolean {
     if (this.authService.isAuthenticated()) {
-
-      const requiredRoles = route.data?.roles
+      const requiredRoles = route.data?.roles;
       if (requiredRoles) {
-        const userRoles = this.authService.getRole()?.split(",")
-        if (!ENABLE_ROLES || this.authService.hasRole(requiredRoles, userRoles)) {
-          return true
+        const userRoles = this.authService.getRole()?.split(',');
+        if (
+          !ENABLE_ROLES ||
+          this.authService.hasRole(requiredRoles, userRoles)
+        ) {
+          return true;
         }
-        this.toastService.showToast("Whoops!", "You need permission to perform this action. If this seems to be an error, please contact your OSMT administrator.")
-        return false
+        this.toastService.showToast(
+          'Whoops!',
+          'You need permission to perform this action. If this seems to be an error, please contact your OSMT administrator.'
+        );
+        return false;
       }
-      return true
+      return true;
     }
 
-    this.authService.start(state.url)
-    return false
+    this.authService.start(state.url);
+    return false;
   }
-
 }

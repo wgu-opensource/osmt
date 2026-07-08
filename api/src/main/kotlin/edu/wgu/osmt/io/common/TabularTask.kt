@@ -7,7 +7,7 @@ import edu.wgu.osmt.task.Task
 import edu.wgu.osmt.task.TaskMessageService
 import org.springframework.beans.factory.annotation.Autowired
 
-abstract class TabularTask<T: Task> {
+abstract class TabularTask<T : Task> {
     @Autowired
     lateinit var taskMessageService: TaskMessageService
 

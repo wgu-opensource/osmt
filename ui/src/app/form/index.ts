@@ -1,1 +1,1 @@
-export * from "./form-field-search-select"
+export * from './form-field-search-select';

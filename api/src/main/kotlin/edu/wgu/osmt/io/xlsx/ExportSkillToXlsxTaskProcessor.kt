@@ -33,19 +33,20 @@ class ExportSkillToXlsxTaskProcessor {
         value = [TaskMessageService.skillsForCustomListExportXlsx],
         deadLetterQueueListenerEnabled = "true",
         deadLetterQueue = TaskMessageService.deadLetters,
-        concurrency = "1"
+        concurrency = "1",
     )
     fun xlsxSkillsInCustomRsdListProcessor(task: ExportSkillsToXlsxTask) {
         logger.info("Started processing task for Custom RSD List .xlsx export")
 
-        val xlsx = task.uuids?.map { richSkillRepository.findByUUID(it) }
-            ?.map { RichSkillAndCollections.fromDao(it!!) }
-            ?.let { RichSkillXlsxExport(appConfig).toXlsx(it) }
+        val xlsx =
+            task.uuids
+                ?.map { richSkillRepository.findByUUID(it) }
+                ?.map { RichSkillAndCollections.fromDao(it!!) }
+                ?.let { RichSkillXlsxExport(appConfig).toXlsx(it) }
 
         taskMessageService.publishResult(
-            task.copy(result = xlsx, status = TaskStatus.Ready)
+            task.copy(result = xlsx, status = TaskStatus.Ready),
         )
         logger.info("Custom RSD List .xlsx export task completed")
     }
-
 }

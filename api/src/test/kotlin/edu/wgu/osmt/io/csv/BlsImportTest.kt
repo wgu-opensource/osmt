@@ -16,37 +16,43 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
 
-
 @Transactional
-internal class BlsImportTest @Autowired constructor(
+internal class BlsImportTest
+    @Autowired
+    constructor(
         override val richSkillEsRepo: RichSkillEsRepo,
         override val collectionEsRepo: CollectionEsRepo,
         override val keywordEsRepo: KeywordEsRepo,
-        override val jobCodeEsRepo: JobCodeEsRepo
-): SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset {
+        override val jobCodeEsRepo: JobCodeEsRepo,
+    ) : SpringTest(),
+        BaseDockerizedTest,
+        HasDatabaseReset,
+        HasElasticsearchReset {
+        @Autowired
+        lateinit var blsImport: BlsImport
 
-    @Autowired
-    lateinit var blsImport: BlsImport
+        @Autowired
+        lateinit var searchController: SearchController
 
-    @Autowired
-    lateinit var searchController: SearchController
+        @Test
+        fun testHandleRows() {
+            // Arrange
+            val listOfBlsJobCodes = MockData().getBlsJobCodes()
 
-    @Test
-    fun testHandleRows() {
-        // Arrange
-        val listOfBlsJobCodes = MockData().getBlsJobCodes()
+            // Act
+            blsImport.handleRows(listOfBlsJobCodes)
 
-        // Act
-        blsImport.handleRows(listOfBlsJobCodes)
+            // this major code should pull back many related minor, borad, and detailed job codes
+            val expectedMajorCode = "15-0000"
+            // searchJobCodes will only return 10 items in the list
+            val result =
+                expectedMajorCode?.let {
+                    searchController.searchJobCodes(UriComponentsBuilder.newInstance(), it, null)
+                }
+            val listOfApiJobCodes = result?.body?.map { it.code }
 
-        // this major code should pull back many related minor, borad, and detailed job codes
-        val expectedMajorCode = "15-0000"
-        // searchJobCodes will only return 10 items in the list
-        val result = expectedMajorCode?.let { searchController.searchJobCodes(UriComponentsBuilder.newInstance(), it) }
-        val listOfApiJobCodes = result?.body?.map { it.code }
-
-        // Assert
-        assertThat(result).isNotNull
-        assertThat(listOfApiJobCodes).contains(expectedMajorCode)
+            // Assert
+            assertThat(result).isNotNull
+            assertThat(listOfApiJobCodes).contains(expectedMajorCode)
+        }
     }
-}

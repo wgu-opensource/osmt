@@ -5,6 +5,10 @@
     "outDir": "./out-tsc/spec",
     "types": [
       "jasmine"
+    ],
+    "lib": [
+      "es2022",
+      "dom"
     ]
   },
   "files": [

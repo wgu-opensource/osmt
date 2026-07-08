@@ -1,21 +1,22 @@
-import {Component, Input, OnInit} from "@angular/core"
-import {ApiCategory} from "../../ApiCategory"
+import { Component, Input } from '@angular/core';
+import { ApiCategory } from '../../ApiCategory';
 
 @Component({
-  selector: "[app-category-table-row]",
-  templateUrl: "./category-table-row.component.html"
+  // eslint-disable-next-line @angular-eslint/component-selector -- legacy
+  selector: '[app-category-table-row]',
+  templateUrl: './category-table-row.component.html',
 })
 export class CategoryTableRowComponent {
-  @Input() category?: ApiCategory
-  @Input() id = "category-list-row"
+  @Input() category?: ApiCategory;
+  @Input() id = 'category-list-row';
 
   focusFirstColumnInRow(): boolean {
-    const ref = document.getElementById(`${this.id}-header-name`)
+    const ref = document.getElementById(`${this.id}-header-name`);
     if (ref) {
-      ref.focus()
-      return true
+      ref.focus();
+      return true;
     } else {
-      return false
+      return false;
     }
   }
 }

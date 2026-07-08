@@ -70,6 +70,8 @@ export class AuthServiceStub {  // TODO consider using real class
   setup(): void {
   }
   start(returnPath: string): void {
+    RouterData.commands = ['/login'];
+    RouterData.extras = { queryParams: { return: returnPath } };
   }
   public logout(): void {
   }
@@ -96,7 +98,7 @@ export class AuthServiceStub {  // TODO consider using real class
 
 export let SearchServiceData = {
   latestSearch: new ApiSearch({}) as ApiSearch | undefined,
-  searchQuerySource: new Subject<ApiSearch>(),
+  searchQuerySource: new Subject<ApiSearch | undefined>(),
   _latestQuery: ""
 }
 export class SearchServiceStub {
@@ -318,6 +320,18 @@ export class CollectionServiceStub {
     )
   }
 
+  duplicateCollection(uuid: string, updateObject: ICollectionUpdate): Observable<ApiCollection> {
+    return of(
+      new ApiCollection(createMockCollection(
+        new Date("2020-06-25T14:58:46.313Z"),
+        new Date("2020-06-25T14:58:46.313Z"),
+        new Date("2020-06-25T14:58:46.313Z"),
+        new Date("2020-06-25T14:58:46.313Z"),
+        PublishStatus.Draft
+      ))
+    )
+  }
+
   // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
   updateSkillsWithResult(collectionUuid: string,
                          skillListUpdate: ApiSkillListUpdate,
@@ -531,5 +545,45 @@ export class IdleStub {
   setInterrupts(interrupts: any[]): void {
   }
   watch(): void {
+  }
+}
+
+export let ToastServiceData = {
+  lastToast: null as any
+};
+
+export class ToastServiceStub {
+  subject = new Subject<any>();
+  loaderSubject = new Subject<boolean>();
+
+  constructor() {}
+
+  showToast(
+    title: string,
+    message: string,
+    isAttention = false,
+    autoDismissMs: number | undefined = 5000
+  ): void {
+    ToastServiceData.lastToast = { title, message, isAttention };
+    this.subject.next({
+      title,
+      message,
+      isAttention,
+    });
+    if (autoDismissMs !== undefined) {
+      setTimeout(() => this.dismiss(), autoDismissMs);
+    }
+  }
+
+  dismiss(): void {
+    this.subject.next(undefined);
+  }
+
+  showBlockingLoader(): void {
+    this.loaderSubject.next(true);
+  }
+
+  hideBlockingLoader(): void {
+    this.loaderSubject.next(false);
   }
 }

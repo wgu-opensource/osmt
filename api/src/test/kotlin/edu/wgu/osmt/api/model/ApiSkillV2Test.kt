@@ -12,7 +12,6 @@ import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ApiSkillV2Test {
-
     private lateinit var mockData: MockData
 
     @BeforeAll
@@ -31,7 +30,13 @@ internal class ApiSkillV2Test {
 
         // Assert
         Assertions.assertThat(mockData.appConfig.defaultCreatorUri).isEqualTo(actual.creator)
-        Assertions.assertThat(rsd.authors.mapNotNull { it.value }.sorted().joinToString(SEMICOLON)).isEqualTo(actual.author)
+        Assertions
+            .assertThat(
+                rsd.authors
+                    .mapNotNull { it.value }
+                    .sorted()
+                    .joinToString(SEMICOLON),
+            ).isEqualTo(actual.author)
         Assertions.assertThat(rsd.publishStatus()).isEqualTo(actual.status)
         Assertions.assertThat(rsd.creationDate).isEqualTo(actual.creationDate.toLocalDateTime())
         Assertions.assertThat(rsd.updateDate).isEqualTo(actual.updateDate.toLocalDateTime())
@@ -39,11 +44,23 @@ internal class ApiSkillV2Test {
         Assertions.assertThat(rsd.archiveDate).isEqualTo(actual.archiveDate?.toLocalDateTime())
         Assertions.assertThat(rsd.name).isEqualTo(actual.skillName)
         Assertions.assertThat(rsd.statement).isEqualTo(actual.skillStatement)
-        Assertions.assertThat(rsd.categories.mapNotNull { it.value }.sorted().joinToString(SEMICOLON)).isEqualTo(actual.category)
-        Assertions.assertThat(mockData.appConfig.baseUrl + "/api/skills/" + rsd.uuid).isEqualTo(actual.id)
+        Assertions
+            .assertThat(
+                rsd.categories
+                    .mapNotNull { it.value }
+                    .sorted()
+                    .joinToString(SEMICOLON),
+            ).isEqualTo(actual.category)
+        Assertions
+            .assertThat(
+                mockData.appConfig.baseUrl + "/api/skills/" + rsd.uuid,
+            ).isEqualTo(actual.id)
         Assertions.assertThat(rsd.uuid).isEqualTo(actual.uuid)
 
-        Assertions.assertThat("https://rsd.openskillsnetwork.org/context-v1.json").isEqualTo(actual.context)
+        Assertions
+            .assertThat(
+                "https://rsd.openskillsnetwork.org/context-v1.json",
+            ).isEqualTo(actual.context)
         Assertions.assertThat("RichSkillDescriptor").isEqualTo(actual.type)
     }
 
@@ -138,8 +155,12 @@ internal class ApiSkillV2Test {
 
         // Assert
         Assertions.assertThat(actual.certifications.size).isEqualTo(rsd.certifications.size)
-        assertTrue(rsd.certifications.map { it.value }.containsAll(actual.certifications.map { it.name }))
-        assertTrue(actual.certifications.map { it.name }.containsAll(rsd.certifications.map { it.value }))
+        assertTrue(
+            rsd.certifications.map { it.value }.containsAll(actual.certifications.map { it.name }),
+        )
+        assertTrue(
+            actual.certifications.map { it.name }.containsAll(rsd.certifications.map { it.value }),
+        )
     }
 
     @Test
@@ -164,8 +185,12 @@ internal class ApiSkillV2Test {
 
         // Assert
         Assertions.assertThat(actual.standards.size).isEqualTo(rsd.standards.size)
-        assertTrue(rsd.standards.map { it.value }.containsAll(actual.standards.map { it.skillName }))
-        assertTrue(actual.standards.map { it.skillName }.containsAll(rsd.standards.map { it.value }))
+        assertTrue(
+            rsd.standards.map { it.value }.containsAll(actual.standards.map { it.skillName }),
+        )
+        assertTrue(
+            actual.standards.map { it.skillName }.containsAll(rsd.standards.map { it.value }),
+        )
     }
 
     @Test
@@ -190,10 +215,13 @@ internal class ApiSkillV2Test {
 
         // Assert
         Assertions.assertThat(actual.alignments.size).isEqualTo(rsd.alignments.size)
-        assertTrue(rsd.alignments.map { it.value }.containsAll(actual.alignments.map { it.skillName }))
-        assertTrue(actual.alignments.map { it.skillName }.containsAll(rsd.alignments.map { it.value }))
+        assertTrue(
+            rsd.alignments.map { it.value }.containsAll(actual.alignments.map { it.skillName }),
+        )
+        assertTrue(
+            actual.alignments.map { it.skillName }.containsAll(rsd.alignments.map { it.value }),
+        )
     }
-
 
     @Test
     fun testApiSkillsEmployers() {

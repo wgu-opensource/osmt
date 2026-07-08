@@ -15,43 +15,46 @@ import java.util.concurrent.ForkJoinPool
 
 @Controller
 @Transactional
-class ElasticSearchAdminController @Autowired constructor(
-    val appConfig: AppConfig,
-    val oAuthHelper: OAuthHelper,
-    val esReindexer: ElasticSearchReindexer
-) {
-
-    @RequestMapping(path = [
-        "${RoutePaths.API}${RoutePaths.ES_ADMIN_DELETE_INDICES}"]
-    )
+class ElasticSearchAdminController
+    @Autowired
+    constructor(
+        val appConfig: AppConfig,
+        val oAuthHelper: OAuthHelper,
+        val esReindexer: ElasticSearchReindexer,
+    ) {
+        @RequestMapping(
+            path = [
+                "${RoutePaths.API}${RoutePaths.ES_ADMIN_DELETE_INDICES}",
+            ],
+        )
         @PostMapping
-    fun deleteElasticSearchIndices(): ResponseEntity<String> {
+        fun deleteElasticSearchIndices(): ResponseEntity<String> {
+            if (!oAuthHelper.hasRole(appConfig.roleAdmin)) {
+                throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+            }
 
-        if (!oAuthHelper.hasRole(appConfig.roleAdmin)) {
-            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+            ForkJoinPool.commonPool().submit(esReindexer::deleteAllIndices)
+            return ResponseEntity(
+                "Deleting ElasticSearch indices in the background. Please refer to the logs.",
+                HttpStatus.ACCEPTED,
+            )
         }
 
-        ForkJoinPool.commonPool().submit(esReindexer::deleteAllIndices)
-        return ResponseEntity(
-            "Deleting ElasticSearch indices in the background. Please refer to the logs.",
-            HttpStatus.ACCEPTED
+        @RequestMapping(
+            path = [
+                "${RoutePaths.API}${RoutePaths.ES_ADMIN_REINDEX}",
+            ],
         )
-    }
+        @PostMapping
+        fun reindexElasticSearch(): ResponseEntity<String> {
+            if (!oAuthHelper.hasRole(appConfig.roleAdmin)) {
+                throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+            }
 
-    @RequestMapping(path = [
-        "${RoutePaths.API}${RoutePaths.ES_ADMIN_REINDEX}"]
-    )
-    @PostMapping
-    fun reindexElasticSearch(): ResponseEntity<String> {
-
-        if (!oAuthHelper.hasRole(appConfig.roleAdmin)) {
-            throw ResponseStatusException(HttpStatus.UNAUTHORIZED)
+            ForkJoinPool.commonPool().submit(esReindexer::reindexAll)
+            return ResponseEntity(
+                "Reindexing ElasticSearch in the background. Please refer to the logs.",
+                HttpStatus.ACCEPTED,
+            )
         }
-
-        ForkJoinPool.commonPool().submit(esReindexer::reindexAll)
-        return ResponseEntity(
-            "Reindexing ElasticSearch in the background. Please refer to the logs.",
-            HttpStatus.ACCEPTED
-        )
     }
-}

@@ -2,7 +2,14 @@ package edu.wgu.osmt.collection
 
 import edu.wgu.osmt.auditlog.Change
 import edu.wgu.osmt.auditlog.Comparison
-import edu.wgu.osmt.db.*
+import edu.wgu.osmt.db.DatabaseData
+import edu.wgu.osmt.db.HasPublishStatus
+import edu.wgu.osmt.db.HasUpdateDate
+import edu.wgu.osmt.db.ListFieldUpdate
+import edu.wgu.osmt.db.NullableFieldUpdate
+import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.db.PublishStatusDetails
+import edu.wgu.osmt.db.UpdateObject
 import edu.wgu.osmt.keyword.Keyword
 import edu.wgu.osmt.keyword.KeywordDao
 import edu.wgu.osmt.keyword.KeywordTypeEnum
@@ -25,14 +32,17 @@ data class Collection(
     val workspaceOwner: String? = null,
     val status: PublishStatus,
     override val archiveDate: LocalDateTime? = null,
-    override val publishDate: LocalDateTime? = null
-) : DatabaseData, HasUpdateDate, PublishStatusDetails {
+    override val publishDate: LocalDateTime? = null,
+) : DatabaseData,
+    HasUpdateDate,
+    PublishStatusDetails {
+    fun canonicalUrl(baseUrl: String): String = "$baseUrl/api/collections/$uuid"
 
-    fun canonicalUrl(baseUrl: String): String = "$baseUrl/api/collections/${uuid}"
-
-    fun isWorkspace() : Boolean {
-        return  (this.status == PublishStatus.Workspace && StringUtils.isNotEmpty(this.workspaceOwner))
-    }
+    fun isWorkspace(): Boolean =
+        (
+            this.status == PublishStatus.Workspace &&
+                StringUtils.isNotEmpty(this.workspaceOwner)
+        )
 }
 
 data class CollectionUpdateObject(
@@ -41,8 +51,9 @@ data class CollectionUpdateObject(
     val description: NullableFieldUpdate<String>? = null,
     val author: NullableFieldUpdate<KeywordDao>? = null,
     val skills: ListFieldUpdate<RichSkillDescriptorDao>? = null,
-    override val publishStatus: PublishStatus? = null
-) : UpdateObject<CollectionDao>, HasPublishStatus<CollectionDao> {
+    override val publishStatus: PublishStatus? = null,
+) : UpdateObject<CollectionDao>,
+    HasPublishStatus<CollectionDao> {
     init {
         validate(this) {
             validate(CollectionUpdateObject::author).validate {
@@ -53,7 +64,7 @@ data class CollectionUpdateObject(
         }
     }
 
-    override fun applyToDao(dao: CollectionDao): Unit{
+    override fun applyToDao(dao: CollectionDao) {
         dao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
         applyStatusChange(dao)
         name?.let { dao.name = it }
@@ -78,37 +89,41 @@ data class CollectionUpdateObject(
 
     fun applyStatusChange(dao: CollectionDao) {
         when (publishStatus) {
-            PublishStatus.Archived ->  {
+            PublishStatus.Archived -> {
                 dao.archiveDate = LocalDateTime.now(ZoneOffset.UTC)
                 dao.status = PublishStatus.Archived
             }
+
             PublishStatus.Published -> {
                 dao.publishDate = LocalDateTime.now(ZoneOffset.UTC)
                 dao.status = PublishStatus.Published
                 dao.archiveDate = null
             }
+
             PublishStatus.Unarchived -> {
                 if (dao.publishDate != null) {
                     dao.status = PublishStatus.Published
-
                 } else {
                     dao.status = PublishStatus.Draft
                 }
                 dao.archiveDate = null
             }
+
             PublishStatus.Draft -> {
                 dao.status = PublishStatus.Draft
                 dao.archiveDate = null
                 dao.publishDate = null
             }
+
             PublishStatus.Workspace -> {
                 dao.status = PublishStatus.Workspace
             }
+
             else -> {}
         }
     }
 
-    fun applySkills(): CollectionUpdateObject{
+    fun applySkills(): CollectionUpdateObject {
         skills?.let {
             it.add?.forEach { skill ->
                 CollectionSkills.create(collectionId = id!!, skillId = skill.id.value)
@@ -124,33 +139,41 @@ data class CollectionUpdateObject(
 fun Collection.diff(old: Collection?): List<Change> {
     val new = this
 
-    old?.let{if (it.uuid != new.uuid) throw Exception("Tried to compare different UUIDs, ${it.uuid} != ${new.uuid}")}
+    old?.let {
+        if (it.uuid !=
+            new.uuid
+        ) {
+            throw Exception("Tried to compare different UUIDs, ${it.uuid} != ${new.uuid}")
+        }
+    }
 
-    val comparisons: List<Comparison<*>> = listOf(
-        Comparison(Collection::name.name, CollectionComparison::compareName, old, new),
-        Comparison(Collection::description.name, CollectionComparison::compareDescription, old, new),
-        Comparison(Collection::author.name, CollectionComparison::compareAuthor, old, new),
-        Comparison(Collection::publishStatus.name, CollectionComparison::comparePublishStatus, old, new)
-    )
+    val comparisons: List<Comparison<*>> =
+        listOf(
+            Comparison(Collection::name.name, CollectionComparison::compareName, old, new),
+            Comparison(
+                Collection::description.name,
+                CollectionComparison::compareDescription,
+                old,
+                new,
+            ),
+            Comparison(Collection::author.name, CollectionComparison::compareAuthor, old, new),
+            Comparison(
+                Collection::publishStatus.name,
+                CollectionComparison::comparePublishStatus,
+                old,
+                new,
+            ),
+        )
 
     return comparisons.mapNotNull { it.compare() }
 }
 
 object CollectionComparison {
-    fun compareName(c: Collection): String {
-        return c.name
-    }
+    fun compareName(c: Collection): String = c.name
 
-    fun compareDescription(c: Collection): String? {
-        return c.description
-    }
+    fun compareDescription(c: Collection): String? = c.description
 
-    fun compareAuthor(c: Collection): String? {
-        return c.author?.value
-    }
+    fun compareAuthor(c: Collection): String? = c.author?.value
 
-    fun comparePublishStatus(c: Collection): String {
-        return c.publishStatus().name
-    }
+    fun comparePublishStatus(c: Collection): String = c.publishStatus().name
 }
-

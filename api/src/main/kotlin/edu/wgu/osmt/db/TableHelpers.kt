@@ -14,13 +14,17 @@ interface TableWithUpdate<UpdateObjectType : UpdateObject<*>> : BaseTable {
     val updateDate: Column<LocalDateTime>
 }
 
-fun LongIdTable.sortAdapter(pageable: Pageable?): Array<Pair<Column<*>, SortOrder>> = if (pageable != null){
-    pageable.sort.mapNotNull { order ->
-        val column = this.columns.firstOrNull() {it.name == order.property} ?: throw Error("invalid order parameter")
-        val sortOrder = SortOrder.valueOf(order.direction.name)
-        val statement = column to sortOrder
-        statement
-    }.toTypedArray()
-} else {
-    arrayOf()
-}
+fun LongIdTable.sortAdapter(pageable: Pageable?): Array<Pair<Column<*>, SortOrder>> =
+    if (pageable != null) {
+        pageable.sort
+            .mapNotNull { order ->
+                val column =
+                    this.columns.firstOrNull { it.name == order.property }
+                        ?: throw Error("invalid order parameter")
+                val sortOrder = SortOrder.valueOf(order.direction.name)
+                val statement = column to sortOrder
+                statement
+            }.toTypedArray()
+    } else {
+        arrayOf()
+    }

@@ -1,64 +1,56 @@
-import { Component, Type } from "@angular/core"
-import { async, ComponentFixture, TestBed } from "@angular/core/testing"
-import { By } from "@angular/platform-browser"
-import { LoadingComponent } from "./loading.component"
+import { Component, Type } from '@angular/core';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { LoadingComponent } from './loading.component';
 
 // An example of how to test an @Input
 
-
-const EXPECTED_CLASS_NAME = "foo"
+const EXPECTED_CLASS_NAME = 'foo';
 
 @Component({
-  template: `
-    <app-loading [className]="myClass">
-    </app-loading>`
+  template: ` <app-loading [className]="myClass"> </app-loading>`,
 })
 class TestHostComponent {
-  myClass = EXPECTED_CLASS_NAME
+  myClass = EXPECTED_CLASS_NAME;
 }
 
-
 export function createComponent(T: Type<TestHostComponent>): Promise<void> {
-  hostFixture = TestBed.createComponent(T)
-  hostComponent = hostFixture.componentInstance
+  hostFixture = TestBed.createComponent(T);
+  hostComponent = hostFixture.componentInstance;
 
-  const debugEl = hostFixture.debugElement.query(By.directive(LoadingComponent))
-  childComponent = debugEl.componentInstance
+  const debugEl = hostFixture.debugElement.query(
+    By.directive(LoadingComponent)
+  );
+  childComponent = debugEl.componentInstance;
 
   // 1st change detection triggers ngOnInit which gets a hero
-  hostFixture.detectChanges()
+  hostFixture.detectChanges();
 
   return hostFixture.whenStable().then(() => {
     // 2nd change detection displays the async-fetched hero
-    hostFixture.detectChanges()
-  })
+    hostFixture.detectChanges();
+  });
 }
 
+let hostFixture: ComponentFixture<TestHostComponent>;
+let hostComponent: TestHostComponent;
+let childComponent: LoadingComponent;
 
-let hostFixture: ComponentFixture<TestHostComponent>
-let hostComponent: TestHostComponent
-let childComponent: LoadingComponent
-
-
-describe("LoadingComponent", () => {
-  beforeEach(async(() => {
+describe('LoadingComponent', () => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        LoadingComponent,
-        TestHostComponent
-      ]
-    })
-    .compileComponents()
+      declarations: [LoadingComponent, TestHostComponent],
+    }).compileComponents();
 
-    createComponent(TestHostComponent)
-  }))
+    createComponent(TestHostComponent);
+  }));
 
-  it("should be created", () => {
-    expect(hostComponent).toBeTruthy()
-    expect(childComponent).toBeTruthy()
-  })
+  it('should be created', () => {
+    expect(hostComponent).toBeTruthy();
+    expect(childComponent).toBeTruthy();
+  });
 
-  it("should assign className correctly", () => {
-    expect(childComponent.className).toEqual(EXPECTED_CLASS_NAME)
-  })
-})
+  it('should assign className correctly', () => {
+    expect(childComponent.className).toEqual(EXPECTED_CLASS_NAME);
+  });
+});

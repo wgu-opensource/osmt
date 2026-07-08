@@ -1,70 +1,78 @@
-import {Component, OnInit} from "@angular/core"
-import {CollectionsListComponent} from "./collections-list.component"
-import {ApiSearch, PaginatedCollections} from "../richskill/service/rich-skill-search.service"
-import {ActivatedRoute, Router} from "@angular/router"
-import {ToastService} from "../toast/toast.service"
-import {SearchService} from "../search/search.service"
-import {CollectionService} from "./service/collection.service"
-import {ICollectionSummary} from "../richskill/ApiSkillSummary"
-import {determineFilters} from "../PublishStatus"
-import {Title} from "@angular/platform-browser"
-import {AuthService} from "../auth/auth-service"
+import { Component, OnInit } from '@angular/core';
+import { CollectionsListComponent } from './collections-list.component';
+import {
+  ApiSearch,
+  PaginatedCollections,
+} from '../richskill/service/rich-skill-search.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastService } from '../toast/toast.service';
+import { SearchService } from '../search/search.service';
+import { CollectionService } from './service/collection.service';
+import { ICollectionSummary } from '../richskill/ApiSkillSummary';
+import { determineFilters } from '../PublishStatus';
+import { Title } from '@angular/platform-browser';
+import { AuthService } from '../auth/auth-service';
 
 @Component({
-  selector: "app-collection-search-results",
-  templateUrl: "./collections-list.component.html"
+  selector: 'app-collection-search-results',
+  templateUrl: './collections-list.component.html',
 })
-export class CollectionSearchResultsComponent extends CollectionsListComponent implements OnInit {
+export class CollectionSearchResultsComponent
+  extends CollectionsListComponent
+  implements OnInit
+{
+  apiSearch: ApiSearch | undefined;
 
-  apiSearch: ApiSearch | undefined
+  title = 'Search Results';
 
-  title = "Search Results"
+  showSearchEmptyMessage = true;
+  private multiplePagesSelected = false;
 
-  showSearchEmptyMessage = true
-  private multiplePagesSelected: boolean = false
-
-  constructor(protected router: Router,
-              protected toastService: ToastService,
-              protected collectionService: CollectionService,
-              protected searchService: SearchService,
-              protected route: ActivatedRoute,
-              protected titleService: Title,
-              protected authService: AuthService
+  constructor(
+    protected router: Router,
+    protected toastService: ToastService,
+    protected collectionService: CollectionService,
+    protected searchService: SearchService,
+    protected route: ActivatedRoute,
+    protected titleService: Title,
+    protected authService: AuthService
   ) {
-    super(router, toastService, collectionService, authService)
-    this.searchService.searchQuery$.subscribe(apiSearch => this.handleNewSearch(apiSearch) )
+    super(router, toastService, collectionService, authService);
+    this.searchService.searchQuery$.subscribe(apiSearch =>
+      this.handleNewSearch(apiSearch)
+    );
   }
 
   ngOnInit(): void {
-    this.titleService.setTitle(`Search Results | ${this.whitelabel.toolName}`)
+    this.titleService.setTitle(`Search Results | ${this.whitelabel.toolName}`);
 
     if (this.searchService.latestSearch !== undefined) {
-      this.handleNewSearch(this.searchService.latestSearch)
+      this.handleNewSearch(this.searchService.latestSearch);
     } else {
       this.route.queryParams.subscribe(params => {
-        const query = params.q
+        const query = params.q;
         if (query && query.length > 0) {
-          this.handleNewSearch(new ApiSearch({query}))
+          this.handleNewSearch(new ApiSearch({ query }));
         }
-      })
+      });
     }
   }
 
   private handleNewSearch(apiSearch?: ApiSearch): void {
-    this.apiSearch = apiSearch
+    this.apiSearch = apiSearch;
     if (this.apiSearch?.query !== undefined) {
-      this.matchingQuery = [this.apiSearch.query]
+      this.matchingQuery = [this.apiSearch.query];
     } else if (this.apiSearch?.advanced !== undefined) {
-      this.matchingQuery = this.apiSearch?.advancedMatchingQuery()
+      this.matchingQuery = this.apiSearch?.advancedMatchingQuery();
     }
-    this.from = 0
-    this.loadNextPage()
+    this.from = 0;
+    this.loadNextPage();
   }
 
   loadNextPage(): void {
     if (this.selectedFilters.size < 1) {
-      this.setResults(new PaginatedCollections([], 0))
-      return
+      this.setResults(new PaginatedCollections([], 0));
+      return;
     }
 
     if (this.apiSearch !== undefined) {
@@ -73,20 +81,23 @@ export class CollectionSearchResultsComponent extends CollectionsListComponent i
         this.size,
         this.from,
         determineFilters(this.selectedFilters),
-        this.columnSort)
-      this.resultsLoaded.subscribe(results => this.setResults(results))
+        this.columnSort
+      );
+      this.resultsLoaded.subscribe(results => this.setResults(results));
     }
   }
 
   getApiSearch(item?: ICollectionSummary): ApiSearch | undefined {
-    return (this.multiplePagesSelected) ? this.apiSearch : super.getApiSearch(item)
+    return this.multiplePagesSelected
+      ? this.apiSearch
+      : super.getApiSearch(item);
   }
 
   handleSelectAll(selectAllChecked: boolean): void {
-    this.multiplePagesSelected = this.totalPageCount > 1
+    this.multiplePagesSelected = this.totalPageCount > 1;
   }
 
   getSelectAllCount(): number {
-    return this.totalCount
+    return this.totalCount;
   }
 }

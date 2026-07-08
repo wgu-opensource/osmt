@@ -1,1 +1,1 @@
-export * from "./collection.pipe"
+export * from './collection.pipe';

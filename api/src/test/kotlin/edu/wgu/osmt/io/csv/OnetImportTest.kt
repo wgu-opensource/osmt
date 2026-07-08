@@ -17,42 +17,46 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
 
-
 @Transactional
-internal class OnetImportTest @Autowired constructor(
+internal class OnetImportTest
+    @Autowired
+    constructor(
         override val richSkillEsRepo: RichSkillEsRepo,
         override val collectionEsRepo: CollectionEsRepo,
         override val keywordEsRepo: KeywordEsRepo,
-        override val jobCodeEsRepo: JobCodeEsRepo
-): SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset {
+        override val jobCodeEsRepo: JobCodeEsRepo,
+    ) : SpringTest(),
+        BaseDockerizedTest,
+        HasDatabaseReset,
+        HasElasticsearchReset {
+        @Autowired
+        lateinit var onetImport: OnetImport
 
-    @Autowired
-    lateinit var onetImport: OnetImport
+        @Autowired
+        lateinit var searchController: SearchController
 
-    @Autowired
-    lateinit var searchController: SearchController
+        private lateinit var mockData: MockData
 
-    private lateinit var mockData : MockData
+        @BeforeAll
+        fun setup() {
+            mockData = MockData()
+        }
 
-    @BeforeAll
-    fun setup() {
-        mockData = MockData()
+        @Test
+        fun testHandleRows() {
+            // Arrange
+            val listOfOnetCodes = mockData.getOnetJobCodes()
+
+            // Act
+            onetImport.handleRows(listOfOnetCodes)
+            val result =
+                listOfOnetCodes[0].code?.let {
+                    searchController.searchJobCodes(UriComponentsBuilder.newInstance(), it, null)
+                }
+
+            // Assert
+            assertThat(result).isNotNull
+            assertThat(result?.body?.map { it.code }).contains(listOfOnetCodes[0].code)
+            assertThat(result?.body?.map { it.targetNodeName }).contains(listOfOnetCodes[0].title)
+        }
     }
-
-    @Test
-    fun testHandleRows(){
-        // Arrange
-        val listOfOnetCodes = mockData.getOnetJobCodes()
-
-        // Act
-        onetImport.handleRows(listOfOnetCodes)
-        val result = listOfOnetCodes[0].code?.let { searchController.searchJobCodes(UriComponentsBuilder.newInstance(), it) }
-
-
-        // Assert
-        assertThat(result).isNotNull
-        assertThat(result?.body?.map { it.code }).contains(listOfOnetCodes[0].code)
-        assertThat(result?.body?.map { it.targetNodeName }).contains(listOfOnetCodes[0].title)
-    }
-
-}

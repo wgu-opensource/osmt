@@ -1,78 +1,123 @@
-import {ComponentFixture, TestBed} from "@angular/core/testing"
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 
-import {ConvertToCollectionComponent} from "./convert-to-collection.component"
-import {RouterTestingModule} from "@angular/router/testing"
-import {HttpClientTestingModule} from "@angular/common/http/testing"
-import {AppConfig} from "../../app.config"
-import {Location} from "@angular/common"
-import {Title} from "@angular/platform-browser"
-import {ToastService} from "../../toast/toast.service"
-import {EnvironmentService} from "../../core/environment.service"
-import {CollectionServiceStub, EnvironmentServiceStub} from "../../../../test/resource/mock-stubs"
-import {CollectionService} from "../../collection/service/collection.service"
-import {ActivatedRoute, Router} from "@angular/router"
-import {ActivatedRouteStubSpec} from "../../../../test/util/activated-route-stub.spec"
+import { ConvertToCollectionComponent } from './convert-to-collection.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { AppConfig } from '../../app.config';
+import { Location } from '@angular/common';
+import { Title } from '@angular/platform-browser';
+import { ToastService } from '../../toast/toast.service';
+import { EnvironmentService } from '../../core/environment.service';
+import {
+  CollectionServiceStub,
+  EnvironmentServiceStub,
+} from '../../../../test/resource/mock-stubs';
+import { CollectionService } from '../../collection/service/collection.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRouteStubSpec } from '../../../../test/util/activated-route-stub.spec';
+import { ApiCollection } from '../../collection/ApiCollection';
+import { PublishStatus } from '../../PublishStatus';
+import { createMockCollection } from '../../../../test/resource/mock-data';
 
-describe("ConvertToCollectionComponent", () => {
-  let component: ConvertToCollectionComponent
-  let fixture: ComponentFixture<ConvertToCollectionComponent>
-  let activatedRoute: ActivatedRouteStubSpec
+describe('ConvertToCollectionComponent', () => {
+  let component: ConvertToCollectionComponent;
+  let fixture: ComponentFixture<ConvertToCollectionComponent>;
+  let activatedRoute: ActivatedRouteStubSpec;
 
-  activatedRoute = new ActivatedRouteStubSpec()
-  activatedRoute.setParams({ uuid: "uuid1" })
+  // eslint-disable-next-line prefer-const -- legacy
+  activatedRoute = new ActivatedRouteStubSpec({});
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ConvertToCollectionComponent],
-      imports: [
-        RouterTestingModule,
-        HttpClientTestingModule
-      ],
+      imports: [RouterTestingModule, HttpClientTestingModule],
       providers: [
         AppConfig,
         Location,
         Title,
         ToastService,
-        {provide: EnvironmentService, useClass: EnvironmentServiceStub},
-        {provide: CollectionService, useClass: CollectionServiceStub},
+        { provide: EnvironmentService, useClass: EnvironmentServiceStub },
+        { provide: CollectionService, useClass: CollectionServiceStub },
         { provide: ActivatedRoute, useValue: activatedRoute },
-      ]
-    }).compileComponents()
+      ],
+    }).compileComponents();
 
-    const appConfig = TestBed.inject(AppConfig)
-    AppConfig.settings = appConfig.defaultConfig()
+    const appConfig = TestBed.inject(AppConfig);
+    AppConfig.settings = appConfig.defaultConfig();
 
-    const environmentService = TestBed.inject(EnvironmentService)
-    environmentService.environment.editableAuthor = true
-    AppConfig.settings.editableAuthor = true  // Doubly sure
-  })
+    const environmentService = TestBed.inject(EnvironmentService);
+    environmentService.environment.editableAuthor = true;
+    AppConfig.settings.editableAuthor = true; // Doubly sure
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ConvertToCollectionComponent)
-    component = fixture.componentInstance
-    fixture.detectChanges()
-  })
+    const date = new Date();
+    const workspaceBase = createMockCollection(
+      date,
+      date,
+      undefined,
+      undefined,
+      PublishStatus.Workspace
+    );
+    const workspace = new ApiCollection({
+      ...workspaceBase,
+      name: 'Workspace title',
+      description: 'Workspace description text',
+      author: 'workspace-author',
+    });
+    const svc = TestBed.inject(CollectionService);
+    spyOn(svc, 'getWorkspace').and.returnValue(of(workspace));
 
-  it("should create", () => {
-    expect(component).toBeTruthy()
-  })
+    fixture = TestBed.createComponent(ConvertToCollectionComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-  it("on submit should call create", () => {
-    const spyUpdateObject = spyOn(component, "updateObject")
-    const router = TestBed.inject(Router)
-    const spyRouter = spyOn(router, "navigate").and.resolveTo(true)
-    const service = TestBed.inject(CollectionService)
-    const spyService = spyOn(service, "createCollection").and.callThrough()
-    component.onSubmit()
-    expect(spyUpdateObject).toHaveBeenCalled()
-    expect(spyService).toHaveBeenCalled()
-    expect(spyRouter).toHaveBeenCalled()
-  })
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-  it("update object should has skills", () => {
-    const spyLocalStorage = spyOn(localStorage, "getItem").and.returnValue("[423423, 234234]")
-    const updateObject = component.updateObject()
-    expect(spyLocalStorage).toHaveBeenCalled()
-    expect(updateObject.skills).toBeTruthy()
-  })
-})
+  it('on submit should call create', () => {
+    const spyUpdateObject = spyOn(component, 'updateObject');
+    const router = TestBed.inject(Router);
+    const spyRouter = spyOn(router, 'navigate').and.resolveTo(true);
+    const service = TestBed.inject(CollectionService);
+    const spyService = spyOn(service, 'createCollection').and.callThrough();
+    component.onSubmit();
+    expect(spyUpdateObject).toHaveBeenCalled();
+    expect(spyService).toHaveBeenCalled();
+    expect(spyRouter).toHaveBeenCalled();
+  });
+
+  it('update object should has skills', () => {
+    const spyLocalStorage = spyOn(localStorage, 'getItem').and.returnValue(
+      '[423423, 234234]'
+    );
+    const updateObject = component.updateObject();
+    expect(spyLocalStorage).toHaveBeenCalled();
+    expect(updateObject.skills).toBeTruthy();
+  });
+
+  it('updateObject includes description from form', () => {
+    spyOn(localStorage, 'getItem').and.returnValue('[]');
+    component.collectionForm.patchValue({
+      collectionName: 'n',
+      description: 'saved description',
+      author: 'a',
+    });
+    expect(component.updateObject().description).toBe('saved description');
+  });
+
+  it('ngOnInit patches form from getWorkspace', () => {
+    expect(component.collectionForm.get('collectionName')?.value).toBe(
+      'Workspace title'
+    );
+    expect(component.collectionForm.get('description')?.value).toBe(
+      'Workspace description text'
+    );
+    expect(component.collectionForm.get('author')?.value).toBe(
+      'workspace-author'
+    );
+  });
+});

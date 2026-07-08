@@ -1,10 +1,19 @@
 // noinspection LocalVariableNamingConventionJS
 
-import { Location } from "@angular/common"
-import { HttpClient, HttpResponse } from "@angular/common/http"
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
-import {async, fakeAsync, flush, TestBed, tick} from "@angular/core/testing"
-import { Router } from "@angular/router"
+import { Location } from '@angular/common';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import {
+  waitForAsync,
+  fakeAsync,
+  flush,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
+import { Router } from '@angular/router';
 import {
   apiTaskResultForDeleteCollection,
   createMockBatchResult,
@@ -12,43 +21,45 @@ import {
   createMockPaginatedCollections,
   createMockPaginatedSkills,
   createMockTaskResult,
-  csvContent
-} from "../../../../test/resource/mock-data"
-import { AuthServiceData, AuthServiceStub, RouterData, RouterStub } from "../../../../test/resource/mock-stubs"
-import { AppConfig } from "../../app.config"
-import { AuthService } from "../../auth/auth-service"
-import { EnvironmentService } from "../../core/environment.service"
-import { PublishStatus } from "../../PublishStatus"
-import { ApiBatchResult } from "../../richskill/ApiBatchResult"
-import { ApiSortOrder } from "../../richskill/ApiSkill"
-import { IStringListUpdate } from "../../richskill/ApiSkillUpdate"
+  csvContent,
+} from '../../../../test/resource/mock-data';
+import {
+  AuthServiceData,
+  AuthServiceStub,
+  RouterData,
+  RouterStub,
+} from '../../../../test/resource/mock-stubs';
+import { AppConfig } from '../../app.config';
+import { AuthService } from '../../auth/auth-service';
+import { EnvironmentService } from '../../core/environment.service';
+import { PublishStatus } from '../../PublishStatus';
+import { ApiBatchResult } from '../../richskill/ApiBatchResult';
+import { ApiSortOrder } from '../../richskill/ApiSkill';
+import { IStringListUpdate } from '../../richskill/ApiSkillUpdate';
 import {
   ApiSearch,
   ApiSkillListUpdate,
   PaginatedCollections,
-  PaginatedSkills
-} from "../../richskill/service/rich-skill-search.service"
-import { ApiTaskResult, ITaskResult } from "../../task/ApiTaskResult"
-import { ApiCollection, ApiCollectionUpdate } from "../ApiCollection"
-import { CollectionService } from "./collection.service"
-import { getBaseApi } from "../../api-versions"
+  PaginatedSkills,
+} from '../../richskill/service/rich-skill-search.service';
+import { ApiTaskResult, ITaskResult } from '../../task/ApiTaskResult';
+import { ApiCollection, ApiCollectionUpdate } from '../ApiCollection';
+import { CollectionService } from './collection.service';
+import { getBaseApi } from '../../api-versions';
 
+const ASYNC_WAIT_PERIOD = 3000;
 
-const ASYNC_WAIT_PERIOD = 3000
+describe('CollectionService', () => {
+  let httpClient: HttpClient;
+  let httpTestingController: HttpTestingController;
+  let router: RouterStub;
+  let authService: AuthServiceStub;
+  let testService: CollectionService;
 
-describe("CollectionService", () => {
-  let httpClient: HttpClient
-  let httpTestingController: HttpTestingController
-  let router: RouterStub
-  let authService: AuthServiceStub
-  let testService: CollectionService
-
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [],
-      imports: [
-        HttpClientTestingModule,
-      ],
+      imports: [HttpClientTestingModule],
       providers: [
         EnvironmentService,
         AppConfig,
@@ -57,531 +68,641 @@ describe("CollectionService", () => {
         { provide: AuthService, useClass: AuthServiceStub },
         { provide: Router, useClass: RouterStub },
         {
-          provide: "BASE_API",
+          provide: 'BASE_API',
           useFactory: getBaseApi,
-        }
-      ]
-    })
-    .compileComponents()
+        },
+      ],
+    }).compileComponents();
 
-    const appConfig = TestBed.inject(AppConfig)
-    AppConfig.settings = appConfig.defaultConfig()  // This avoids the race condition on reading the config's whitelabel.toolName
+    const appConfig = TestBed.inject(AppConfig);
+    AppConfig.settings = appConfig.defaultConfig(); // This avoids the race condition on reading the config's whitelabel.toolName
 
-    httpClient = TestBed.inject(HttpClient)
-    httpTestingController = TestBed.inject(HttpTestingController)
-    router = TestBed.inject(Router)
-    authService = TestBed.inject(AuthService)
-    testService = TestBed.inject(CollectionService)
-  }))
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    router = TestBed.inject(Router);
+    authService = TestBed.inject(AuthService);
+    testService = TestBed.inject(CollectionService);
+  }));
 
   afterEach(() => {
-    httpTestingController.verify()
-  })
+    httpTestingController.verify();
+  });
 
-  it("should be created", () => {
-    expect(testService).toBeTruthy()
-  })
+  it('should be created', () => {
+    expect(testService).toBeTruthy();
+  });
 
-  it("getCollections should return", () => {
+  it('getCollections should return', () => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const path = getBaseApi() + "/collections?sort=name.asc&status=draft&size=3&from=0"
-    const testData: PaginatedCollections = createMockPaginatedCollections(3, 10)
-    const statuses = new Set<PublishStatus>([ PublishStatus.Draft ])
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const path =
+      getBaseApi() + '/collections?status=draft&size=3&from=0&sort=name.asc';
+    const testData: PaginatedCollections = createMockPaginatedCollections(
+      3,
+      10
+    );
+    const statuses = new Set<PublishStatus>([PublishStatus.Draft]);
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.getCollections(testData.collections.length, 0, statuses, ApiSortOrder.NameAsc)
+    const result$ = testService.getCollections(
+      testData.collections.length,
+      0,
+      statuses,
+      ApiSortOrder.NameAsc
+    );
 
     // Assert
-    result$
-      .subscribe((data: PaginatedCollections) => {
-        expect(data).toEqual(testData)
-        expect(RouterData.commands).toEqual([ ])  // No errors
-        expect(AuthServiceData.isDown).toEqual(false)
-      })
+    result$.subscribe((data: PaginatedCollections) => {
+      expect(data).toEqual(testData);
+      expect(RouterData.commands).toEqual([]); // No errors
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
-    expect(req.request.method).toEqual("GET")
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl + path
+    );
+    expect(req.request.method).toEqual('GET');
     req.flush(testData.collections, {
-      headers: { "x-total-count": "" + testData.totalCount}
-    })
-  })
+      headers: { 'x-total-count': '' + testData.totalCount },
+    });
+  });
 
-  it("getCollectionByUUID should return", () => {
+  it('getCollectionByUUID should return', () => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const uuid = "uuid1"
-    const path = getBaseApi() + "/collections/" + uuid
-    const date = new Date("2020-06-25T14:58:46.313Z")
-    const testData: ApiCollection = new ApiCollection(createMockCollection(date, date, date, date, PublishStatus.Draft))
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const uuid = 'uuid1';
+    const path = getBaseApi() + '/collections/' + uuid;
+    const date = new Date('2020-06-25T14:58:46.313Z');
+    const testData: ApiCollection = new ApiCollection(
+      createMockCollection(date, date, date, date, PublishStatus.Draft)
+    );
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.getCollectionByUUID(uuid)
+    const result$ = testService.getCollectionByUUID(uuid);
 
     // Assert
-    result$
-      .subscribe((data: ApiCollection) => {
-        expect(data).toEqual(testData)
-        expect(RouterData.commands).toEqual([ ])  // No errors
-        expect(AuthServiceData.isDown).toEqual(false)
-      })
+    result$.subscribe((data: ApiCollection) => {
+      expect(data).toEqual(testData);
+      expect(RouterData.commands).toEqual([]); // No errors
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
-    expect(req.request.method).toEqual("GET")
-    req.flush(testData)
-  })
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl + path
+    );
+    expect(req.request.method).toEqual('GET');
+    req.flush(testData);
+  });
 
-  it("getCollectionJson should return", () => {
+  it('getCollectionJson should return', () => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const uuid = "uuid1"
-    const path = getBaseApi() + "/collections/" + uuid
-    const date = new Date("2020-06-25T14:58:46.313Z")
-    const testData: ApiCollection = new ApiCollection(createMockCollection(date, date, date, date, PublishStatus.Draft))
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const uuid = 'uuid1';
+    const path = getBaseApi() + '/collections/' + uuid;
+    const date = new Date('2020-06-25T14:58:46.313Z');
+    const testData: ApiCollection = new ApiCollection(
+      createMockCollection(date, date, date, date, PublishStatus.Draft)
+    );
 
     // Act
     // noinspection LocalVariableNamingConventionJS
-    const result$ = testService.getCollectionJson(uuid)
+    const result$ = testService.getCollectionJson(uuid);
 
     // Assert
-    result$
-      .subscribe((data: string) => {
-        expect(data).toEqual(JSON.stringify(testData))
-        expect(RouterData.commands).toEqual([ ])  // No errors
-        expect(AuthServiceData.isDown).toEqual(false)
-      })
+    result$.subscribe((data: string) => {
+      expect(data).toEqual(JSON.stringify(testData));
+      expect(RouterData.commands).toEqual([]); // No errors
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
-    expect(req.request.method).toEqual("GET")
-    req.flush(testData)
-  })
-  it("getCollectionJson should not return", () => {
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl + path
+    );
+    expect(req.request.method).toEqual('GET');
+    req.flush(testData);
+  });
+  it('getCollectionJson should not return', () => {
     // Arrange
-    const uuid: string = undefined as unknown as string
-    const path = "api/collections/" + uuid
+    const uuid: string = undefined as unknown as string;
+    const path = 'api/collections/' + uuid;
 
     // Act
     try {
-      testService.getCollectionJson(uuid)
+      testService.getCollectionJson(uuid);
     } catch (e) {
-      expect(e instanceof Error).toBeTrue()
+      expect(e instanceof Error).toBeTrue();
       if (e instanceof Error) {
-        expect(e.message).toEqual("No uuid provided for collection json export")
+        expect(e.message).toEqual(
+          'No uuid provided for collection json export'
+        );
       }
     }
 
     // Assert
-    httpTestingController.expectNone(AppConfig.settings.baseApiUrl + "/" + path)
-  })
+    httpTestingController.expectNone(
+      AppConfig.settings.baseApiUrl + '/' + path
+    );
+  });
 
-  it("requestCollectionSkillsXlsx", () => {
-    const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
-    const path = getBaseApi() + "/collections/" + uuid + "/xlsx"
-    const result = testService.requestCollectionSkillsXlsx(uuid)
-    const testData = createMockTaskResult()
-    const expected = new ApiTaskResult(testData)
+  it('requestCollectionSkillsXlsx', () => {
+    const uuid = 'f6aacc9e-bfc6-4cc9-924d-c7ef83afef07';
+    const path = getBaseApi() + '/collections/' + uuid + '/xlsx';
+    const result = testService.requestCollectionSkillsXlsx(uuid);
+    const testData = createMockTaskResult();
+    const expected = new ApiTaskResult(testData);
 
     result.subscribe(data => {
-      expect(data).toEqual(expected)
-    })
+      expect(data).toEqual(expected);
+    });
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
-    expect(req.request.method).toEqual("GET")
-    req.flush(testData)
-  })
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl + path
+    );
+    expect(req.request.method).toEqual('GET');
+    req.flush(testData);
+  });
 
-  it("getXlsxTaskResultsIfComplete should return", () => {
+  it('getXlsxTaskResultsIfComplete should return', () => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
-    const path = getBaseApi() + "/results/media/" + uuid
-    const blob = new Blob([""], { type: "application/vnd.ms-excel" })
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const uuid = 'f6aacc9e-bfc6-4cc9-924d-c7ef83afef07';
+    const path = getBaseApi() + '/results/media/' + uuid;
+    const blob = new Blob([''], { type: 'application/vnd.ms-excel' });
 
     // Act
-    const result = testService.getXlsxTaskResultsIfComplete(uuid)
+    const result = testService.getXlsxTaskResultsIfComplete(uuid);
     result.subscribe(data => {
-      console.log(data.body)
-      expect(data.body).toEqual(blob)
-    })
+      console.log(data.body);
+      expect(data.body).toEqual(blob);
+    });
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
-    expect(req.request.method).toEqual("GET")
-    req.flush(blob)
-  })
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl + path
+    );
+    expect(req.request.method).toEqual('GET');
+    req.flush(blob);
+  });
 
-  it("getCollectionSkillsCsv should return", () => {
+  it('getCollectionSkillsCsv should return', () => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
-    const path = getBaseApi() + "/collections/" + uuid + "/csv"
-    const testData = createMockTaskResult()
-    const expected = new ApiTaskResult(testData)
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const uuid = 'f6aacc9e-bfc6-4cc9-924d-c7ef83afef07';
+    const path = getBaseApi() + '/collections/' + uuid + '/csv';
+    const testData = createMockTaskResult();
+    const expected = new ApiTaskResult(testData);
 
     // Act
-    const result$ = testService.requestCollectionSkillsCsv(uuid)
+    const result$ = testService.requestCollectionSkillsCsv(uuid);
 
     // Assert
-    result$
-      .subscribe((data: ITaskResult) => {
-        expect(data).toEqual(expected)
-        expect(RouterData.commands).toEqual([ ])  // No errors
-        expect(AuthServiceData.isDown).toEqual(false)
-      })
+    result$.subscribe((data: ITaskResult) => {
+      expect(data).toEqual(expected);
+      expect(RouterData.commands).toEqual([]); // No errors
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
-    expect(req.request.method).toEqual("GET")
-    req.flush(testData)
-  })
-  it("getCollectionSkillsCsv should not return", () => {
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl + path
+    );
+    expect(req.request.method).toEqual('GET');
+    req.flush(testData);
+  });
+  it('getCollectionSkillsCsv should not return', () => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const uuid: string = undefined as unknown as string
-    const path = "api/collections/" + uuid + "/csv"
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const uuid: string = undefined as unknown as string;
+    const path = 'api/collections/' + uuid + '/csv';
 
     // Act
     try {
-      testService.requestCollectionSkillsCsv(uuid)
+      testService.requestCollectionSkillsCsv(uuid);
     } catch (e) {
-      expect(e instanceof Error).toBeTrue()
+      expect(e instanceof Error).toBeTrue();
       if (e instanceof Error) {
-        expect(e.message).toEqual("Invalid collection uuid.")
+        expect(e.message).toEqual('Invalid collection uuid.');
       }
     }
 
     // Assert
-    httpTestingController.expectNone(AppConfig.settings.baseApiUrl + "/" + path)
-  })
+    httpTestingController.expectNone(
+      AppConfig.settings.baseApiUrl + '/' + path
+    );
+  });
 
-  it("getCsvTaskResultsIfComplete should return", () => {
+  it('getCsvTaskResultsIfComplete should return', () => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
-    const path = getBaseApi() + "/results/text/" + uuid
-    const testData = { foo: "bar" }
-    const expected = testData
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const uuid = 'f6aacc9e-bfc6-4cc9-924d-c7ef83afef07';
+    const path = getBaseApi() + '/results/text/' + uuid;
+    const testData = { foo: 'bar' };
+    const expected = testData;
 
     // Act
-    const result$ = testService.getCsvTaskResultsIfComplete(uuid)
+    const result$ = testService.getCsvTaskResultsIfComplete(uuid);
 
     // Assert
-    result$
-      .subscribe((data: HttpResponse<{ foo: string}>) => {
-        expect(data.body?.toString()).toEqual(JSON.stringify(expected))
-        expect(RouterData.commands).toEqual([ ])  // No errors
-        expect(AuthServiceData.isDown).toEqual(false)
-      })
+    result$.subscribe((data: HttpResponse<{ foo: string }>) => {
+      expect(data.body?.toString()).toEqual(JSON.stringify(expected));
+      expect(RouterData.commands).toEqual([]); // No errors
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
-    expect(req.request.method).toEqual("GET")
-    req.flush(testData)
-  })
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl + path
+    );
+    expect(req.request.method).toEqual('GET');
+    req.flush(testData);
+  });
 
-  it("getCollectionSkills should return", () => {
+  it('getCollectionSkills should return', () => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
-    const path = getBaseApi() + "/collections/" + uuid + "/skills?sort=undefined"
-    const testData = createMockPaginatedSkills()
-    const expected = testData
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const uuid = 'f6aacc9e-bfc6-4cc9-924d-c7ef83afef07';
+    const path = getBaseApi() + '/collections/' + uuid + '/skills';
+    const testData = createMockPaginatedSkills();
+    const expected = testData;
 
     // Act
-    const result$ = testService.getCollectionSkills(uuid)
+    const result$ = testService.getCollectionSkills(uuid);
 
     // Assert
-    result$
-      .subscribe((data: PaginatedSkills) => {
-        expect(data).toEqual(expected)
-        expect(RouterData.commands).toEqual([ ])  // No errors
-        expect(AuthServiceData.isDown).toEqual(false)
-      })
+    result$.subscribe((data: PaginatedSkills) => {
+      expect(data).toEqual(expected);
+      expect(RouterData.commands).toEqual([]); // No errors
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
-    expect(req.request.method).toEqual("POST")
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl + path
+    );
+    expect(req.request.method).toEqual('POST');
     req.flush(testData.skills, {
-      headers: { "x-total-count": "" + testData.totalCount}
-    })
-  })
+      headers: { 'x-total-count': '' + testData.totalCount },
+    });
+  });
 
-  it("createCollection should return", () => {
+  it('createCollection should return', () => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const path = getBaseApi() + "/collections"
-    const now = new Date()
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const path = getBaseApi() + '/collections';
+    const now = new Date();
     const testData = [
-      new ApiCollection(createMockCollection(
-        now, now, now, now,
-        PublishStatus.Draft
-        // The default is to have some skills
-      ))
-    ]
-    const stringListUpdate: IStringListUpdate = { add: [], remove: [] }
-    const expected = testData[0]
-    expected.skills.forEach(s => stringListUpdate.add?.push(s))
+      new ApiCollection(
+        createMockCollection(
+          now,
+          now,
+          now,
+          now,
+          PublishStatus.Draft
+          // The default is to have some skills
+        )
+      ),
+    ];
+    const stringListUpdate: IStringListUpdate = { add: [], remove: [] };
+    const expected = testData[0];
+    expected.skills.forEach(s => stringListUpdate.add?.push(s));
     const input = new ApiCollectionUpdate({
       name: expected.name,
       description: expected.description,
       status: expected.status,
       author: expected.author,
-      skills: stringListUpdate
-    })
+      skills: stringListUpdate,
+    });
 
     // Act
-    const result$ = testService.createCollection(input)
+    const result$ = testService.createCollection(input);
 
     // Assert
-    result$
-      .subscribe((data: ApiCollection) => {
-        expect(data).toEqual(expected)
-        expect(RouterData.commands).toEqual([ ])  // No errors
-        expect(AuthServiceData.isDown).toEqual(false)
-      })
+    result$.subscribe((data: ApiCollection) => {
+      expect(data).toEqual(expected);
+      expect(RouterData.commands).toEqual([]); // No errors
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
-    expect(req.request.method).toEqual("POST")
-    req.flush(testData)
-  })
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl + path
+    );
+    expect(req.request.method).toEqual('POST');
+    req.flush(testData);
+  });
 
-  it("updateCollection should return", () => {
+  it('updateCollection should return', () => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const now = new Date()
-    const testData = new ApiCollection(createMockCollection(
-        now, now, now, now,
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const now = new Date();
+    const testData = new ApiCollection(
+      createMockCollection(
+        now,
+        now,
+        now,
+        now,
         PublishStatus.Draft
         // The default is to have some skills
-      ))
-    const stringListUpdate: IStringListUpdate = { add: [], remove: [] }
-    const expected = testData
-    const uuid = expected.uuid
-    const path = getBaseApi() + "/collections/" + uuid + "/update"
-    expected.skills.forEach(s => stringListUpdate.add?.push(s))
+      )
+    );
+    const stringListUpdate: IStringListUpdate = { add: [], remove: [] };
+    const expected = testData;
+    const uuid = expected.uuid;
+    const path = getBaseApi() + '/collections/' + uuid + '/update';
+    expected.skills.forEach(s => stringListUpdate.add?.push(s));
     const input = new ApiCollectionUpdate({
       name: expected.name,
       description: expected.description,
       status: expected.status,
       author: expected.author,
-      skills: stringListUpdate
-    })
+      skills: stringListUpdate,
+    });
 
     // Act
-    const result$ = testService.updateCollection(uuid, input)
+    const result$ = testService.updateCollection(uuid, input);
 
     // Assert
-    result$
-      .subscribe((data: ApiCollection) => {
-        expect(data).toEqual(expected)
-        expect(RouterData.commands).toEqual([ ])  // No errors
-        expect(AuthServiceData.isDown).toEqual(false)
-      })
+    result$.subscribe((data: ApiCollection) => {
+      expect(data).toEqual(expected);
+      expect(RouterData.commands).toEqual([]); // No errors
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path)
-    expect(req.request.method).toEqual("POST")
-    req.flush(testData)
-  })
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl + path
+    );
+    expect(req.request.method).toEqual('POST');
+    req.flush(testData);
+  });
 
-  it("searchCollections should return", () => {
+  it('duplicateCollection should return', () => {
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const now = new Date();
+    const testData = new ApiCollection(
+      createMockCollection(now, now, now, now, PublishStatus.Draft)
+    );
+    const uuid = testData.uuid;
+    const path = getBaseApi() + '/collections/' + uuid + '/duplicate';
+    const input = new ApiCollectionUpdate({
+      name: 'Duplicated Name',
+      description: testData.description,
+      status: testData.status,
+      author: testData.author,
+    });
+
+    const result$ = testService.duplicateCollection(uuid, input);
+
+    result$.subscribe((data: ApiCollection) => {
+      expect(data).toEqual(testData);
+      expect(RouterData.commands).toEqual([]);
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
+
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl + path
+    );
+    expect(req.request.method).toEqual('POST');
+    expect(req.request.body.name).toEqual('Duplicated Name');
+    req.flush(testData);
+  });
+
+  it('searchCollections should return', () => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const testData: PaginatedCollections = createMockPaginatedCollections()
-    const expected = testData
-    const path = getBaseApi() + "/search/collections"
-    const query = "testQueryString"
-    const apiSearch = new ApiSearch({ query })
-    const size = 5
-    const from = 1
-    const filter = new Set<PublishStatus>([PublishStatus.Published, PublishStatus.Draft])
-    const sort = ApiSortOrder.SkillAsc
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const testData: PaginatedCollections = createMockPaginatedCollections();
+    const expected = testData;
+    const path = getBaseApi() + '/search/collections';
+    const query = 'testQueryString';
+    const apiSearch = new ApiSearch({ query });
+    const size = 5;
+    const from = 1;
+    const filter = new Set<PublishStatus>([
+      PublishStatus.Published,
+      PublishStatus.Draft,
+    ]);
+    const sort = ApiSortOrder.SkillAsc;
 
     // Act
-    const result$ = testService.searchCollections(apiSearch, size, from, filter, sort)
+    const result$ = testService.searchCollections(
+      apiSearch,
+      size,
+      from,
+      filter,
+      sort
+    );
 
     // Assert
-    result$
-      .subscribe((data: PaginatedCollections) => {
-        expect(data).toEqual(expected)
-        expect(RouterData.commands).toEqual([ ])  // No errors
-        expect(AuthServiceData.isDown).toEqual(false)
-      })
+    result$.subscribe((data: PaginatedCollections) => {
+      expect(data).toEqual(expected);
+      expect(RouterData.commands).toEqual([]); // No errors
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path +
-        `?sort=${sort}&status=${PublishStatus.Published}&status=${PublishStatus.Draft}&size=${size}&from=${from}`)
-    expect(req.request.method).toEqual("POST")
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl +
+        path +
+        `?status=${PublishStatus.Published}&status=${PublishStatus.Draft}&size=${size}&from=${from}&sort=${sort}`
+    );
+    expect(req.request.method).toEqual('POST');
     req.flush(testData.collections, {
-      headers: { "x-total-count": "" + testData.totalCount}
-    })
-  })
+      headers: { 'x-total-count': '' + testData.totalCount },
+    });
+  });
 
-  it("updateSkills should return", () => {
+  it('updateSkills should return', () => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const testData = createMockTaskResult()
-    const expected = new ApiTaskResult(testData)
-    const uuid = expected.uuid
-    const path = getBaseApi() + "/collections/" + uuid + "/updateSkills"
-    const query = "testQueryString"
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const testData = createMockTaskResult();
+    const expected = new ApiTaskResult(testData);
+    const uuid = expected.uuid;
+    const path = getBaseApi() + '/collections/' + uuid + '/updateSkills';
+    const query = 'testQueryString';
     const update = new ApiSkillListUpdate({
-      add: new ApiSearch({query}),
-      remove: new ApiSearch({query})
-    })
-    const filter = new Set<PublishStatus>([PublishStatus.Published, PublishStatus.Draft])
-    const sort = undefined
+      add: new ApiSearch({ query }),
+      remove: new ApiSearch({ query }),
+    });
+    const filter = new Set<PublishStatus>([
+      PublishStatus.Published,
+      PublishStatus.Draft,
+    ]);
+    const sort = undefined;
 
     // Act
-    const result$ = testService.updateSkills(uuid, update, filter)
+    const result$ = testService.updateSkills(uuid, update, filter);
 
     // Assert
-    result$
-      .subscribe((data: ITaskResult) => {
-        expect(data).toEqual(expected)
-        expect(RouterData.commands).toEqual([ ])  // No errors
-        expect(AuthServiceData.isDown).toEqual(false)
-      })
+    result$.subscribe((data: ITaskResult) => {
+      expect(data).toEqual(expected);
+      expect(RouterData.commands).toEqual([]); // No errors
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path +
-      `?sort=${sort}&status=${PublishStatus.Published}&status=${PublishStatus.Draft}`)
-    expect(req.request.method).toEqual("POST")
-    req.flush(testData)
-  })
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl +
+        path +
+        `?status=${PublishStatus.Published}&status=${PublishStatus.Draft}`
+    );
+    expect(req.request.method).toEqual('POST');
+    req.flush(testData);
+  });
 
-  it("delete collection with result should works", fakeAsync(() => {
-    const result$ = testService.deleteCollectionWithResult(apiTaskResultForDeleteCollection.uuid)
-    tick(ASYNC_WAIT_PERIOD)
+  it('delete collection with result should works', fakeAsync(() => {
+    const result$ = testService.deleteCollectionWithResult(
+      apiTaskResultForDeleteCollection.uuid
+    );
+    tick(ASYNC_WAIT_PERIOD);
     // Assert
     result$.subscribe((data: ApiBatchResult) => {
-      expect(RouterData.commands).toEqual([]) // No Errors
-    })
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + `${getBaseApi()}/collections/${apiTaskResultForDeleteCollection.uuid}/remove`)
-    expect(req.request.method).toEqual("DELETE")
-    expect(req.request.headers.get("Accept")).toEqual("application/json")
-  }))
+      expect(RouterData.commands).toEqual([]); // No Errors
+    });
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl +
+        `${getBaseApi()}/collections/${apiTaskResultForDeleteCollection.uuid}/remove`
+    );
+    expect(req.request.method).toEqual('DELETE');
+    expect(req.request.headers.get('Accept')).toEqual('application/json');
+  }));
 
-  it("updateSkillsWithResult should return", fakeAsync(() => {
+  it('updateSkillsWithResult should return', fakeAsync(() => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const taskResult = createMockTaskResult()
-    const apiBatchResult = new ApiBatchResult(createMockBatchResult())
-    const expected = apiBatchResult
-    const uuid: string = taskResult.uuid ? taskResult.uuid : ""
-    const path1 = getBaseApi() + "/collections/" + uuid + "/updateSkills"
-    const path2 = taskResult.id
-    const query = "testQueryString"
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const taskResult = createMockTaskResult();
+    const apiBatchResult = new ApiBatchResult(createMockBatchResult());
+    const expected = apiBatchResult;
+    const uuid: string = taskResult.uuid ? taskResult.uuid : '';
+    const path1 = getBaseApi() + '/collections/' + uuid + '/updateSkills';
+    const path2 = taskResult.id;
+    const query = 'testQueryString';
     const update = new ApiSkillListUpdate({
-      add: new ApiSearch({query}),
-      remove: new ApiSearch({query})
-    })
-    const filter = new Set<PublishStatus>([PublishStatus.Published, PublishStatus.Draft])
-    const sort = undefined
+      add: new ApiSearch({ query }),
+      remove: new ApiSearch({ query }),
+    });
+    const filter = new Set<PublishStatus>([
+      PublishStatus.Published,
+      PublishStatus.Draft,
+    ]);
+    const sort = undefined;
 
     // Act
-    const result$ = testService.updateSkillsWithResult(uuid, update, filter)
+    const result$ = testService.updateSkillsWithResult(uuid, update, filter);
 
     // Assert
-    result$
-      .subscribe((data: ApiBatchResult) => {
-        expect(data).toEqual(expected)
-        expect(RouterData.commands).toEqual([ ])  // No errors
-        expect(AuthServiceData.isDown).toEqual(false)
-      })
+    result$.subscribe((data: ApiBatchResult) => {
+      expect(data).toEqual(expected);
+      expect(RouterData.commands).toEqual([]); // No errors
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
 
     /* Service call will make 2 requests: the requested action + the async task result */
     /* Setup for request 1 */
-    const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path1 +
-      `?sort=${sort}&status=${PublishStatus.Published}&status=${PublishStatus.Draft}`)
-    expect(req1.request.method).toEqual("POST")
-    req1.flush(taskResult)
+    const req1 = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl +
+        path1 +
+        `?status=${PublishStatus.Published}&status=${PublishStatus.Draft}`
+    );
+    expect(req1.request.method).toEqual('POST');
+    req1.flush(taskResult);
 
-    tick(ASYNC_WAIT_PERIOD)
+    tick(ASYNC_WAIT_PERIOD);
 
     /* Setup for request 2 */
-    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path2)
-    expect(req2.request.method).toEqual("GET")
-    req2.flush(apiBatchResult)
-  }))
+    const req2 = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl + path2
+    );
+    expect(req2.request.method).toEqual('GET');
+    req2.flush(apiBatchResult);
+  }));
 
   // An example of how to test a multiple requests.  In this case, one service request precipitated the next.
-  it("publishCollectionWithResult should return", fakeAsync(() => {
+  it('publishCollectionWithResult should return', fakeAsync(() => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const taskResult = createMockTaskResult()
-    const apiBatchResult = new ApiBatchResult(createMockBatchResult())
-    const expected = apiBatchResult
-    const path1 = getBaseApi() + "/collections/publish"
-    const path2 = taskResult.id
-    const query = "testQueryString"
-    const apiSearch = new ApiSearch({ query })
-    const filter = new Set<PublishStatus>([PublishStatus.Draft])
-    const newStatus = PublishStatus.Published
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const taskResult = createMockTaskResult();
+    const apiBatchResult = new ApiBatchResult(createMockBatchResult());
+    const expected = apiBatchResult;
+    const path1 = getBaseApi() + '/collections/publish';
+    const path2 = taskResult.id;
+    const query = 'testQueryString';
+    const apiSearch = new ApiSearch({ query });
+    const filter = new Set<PublishStatus>([PublishStatus.Draft]);
+    const newStatus = PublishStatus.Published;
 
     // Act
-    const result$ = testService.publishCollectionsWithResult(apiSearch, newStatus, filter)
+    const result$ = testService.publishCollectionsWithResult(
+      apiSearch,
+      newStatus,
+      filter
+    );
 
     // Assert
-    result$
-      .subscribe((data: ApiBatchResult) => {
-        expect(data).toEqual(expected)
-        expect(RouterData.commands).toEqual([ ])  // No errors
-        expect(AuthServiceData.isDown).toEqual(false)
-      })
+    result$.subscribe((data: ApiBatchResult) => {
+      expect(data).toEqual(expected);
+      expect(RouterData.commands).toEqual([]); // No errors
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
 
     /* Service call will make 2 requests: the requested action + the async task result */
     /* Setup for request 1 */
-    const req1 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path1 +
-      `?newStatus=${newStatus}&filterByStatus=${PublishStatus.Draft}`)
-    expect(req1.request.method).toEqual("POST")
-    req1.flush(taskResult)
+    const req1 = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl +
+        path1 +
+        `?newStatus=${newStatus}&filterByStatus=${PublishStatus.Draft}`
+    );
+    expect(req1.request.method).toEqual('POST');
+    req1.flush(taskResult);
 
-    tick(ASYNC_WAIT_PERIOD)
+    tick(ASYNC_WAIT_PERIOD);
 
     /* Setup for request 2 */
-    const req2 = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path2)
-    expect(req2.request.method).toEqual("GET")
-    req2.flush(apiBatchResult)
-  }))
+    const req2 = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl + path2
+    );
+    expect(req2.request.method).toEqual('GET');
+    req2.flush(apiBatchResult);
+  }));
 
-  it("collectionReadyToPublish should return", () => {
+  it('collectionReadyToPublish should return', () => {
     // Arrange
-    RouterData.commands = []
-    AuthServiceData.isDown = false
-    const uuid = "f6aacc9e-bfc6-4cc9-924d-c7ef83afef07"
-    const path = getBaseApi() + "/collections/" + uuid + "/skills"
-    const testData = createMockPaginatedSkills(0, 0)
-    const expected = true
-    const size = 1
-    const from = 0
-    const sort = undefined
+    RouterData.commands = [];
+    AuthServiceData.isDown = false;
+    const uuid = 'f6aacc9e-bfc6-4cc9-924d-c7ef83afef07';
+    const path = getBaseApi() + '/collections/' + uuid + '/skills';
+    const testData = createMockPaginatedSkills(0, 0);
+    const expected = true;
+    const size = 1;
+    const from = 0;
+    const sort = undefined;
 
     // Act
-    const result$ = testService.collectionReadyToPublish(uuid)
+    const result$ = testService.collectionReadyToPublish(uuid);
 
     // Assert
-    result$
-      .subscribe((data: boolean) => {
-        expect(data).toEqual(expected)
-        expect(RouterData.commands).toEqual([ ])  // No errors
-        expect(AuthServiceData.isDown).toEqual(false)
-      })
+    result$.subscribe((data: boolean) => {
+      expect(data).toEqual(expected);
+      expect(RouterData.commands).toEqual([]); // No errors
+      expect(AuthServiceData.isDown).toEqual(false);
+    });
 
-    const req = httpTestingController.expectOne(AppConfig.settings.baseApiUrl + path +
-      `?sort=${sort}&status=${PublishStatus.Archived}&status=${PublishStatus.Draft}&size=${size}&from=${from}`)
-    expect(req.request.method).toEqual("POST")
+    const req = httpTestingController.expectOne(
+      AppConfig.settings.baseApiUrl +
+        path +
+        `?status=${PublishStatus.Archived}&status=${PublishStatus.Draft}&size=${size}&from=${from}`
+    );
+    expect(req.request.method).toEqual('POST');
     req.flush(testData.skills, {
-      headers: { "x-total-count": "" + testData.totalCount}
-    })
-  })
-})
+      headers: { 'x-total-count': '' + testData.totalCount },
+    });
+  });
+});

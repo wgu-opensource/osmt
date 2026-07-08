@@ -11,4 +11,6 @@ package edu.wgu.osmt.db
  * the update object field type would be :NullableFieldUpdate<T>?
  * TODO WIP, needs example and tests
  */
-data class NullableFieldUpdate<T>(val t: T?)
+data class NullableFieldUpdate<T>(
+    val t: T?,
+)

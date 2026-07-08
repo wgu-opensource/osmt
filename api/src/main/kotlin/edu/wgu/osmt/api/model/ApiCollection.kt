@@ -13,13 +13,12 @@ import edu.wgu.osmt.richskill.RichSkillDescriptor
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-
 @JsonInclude(JsonInclude.Include.ALWAYS)
 open class ApiCollection(
     @JsonIgnore open val collection: Collection,
     @JsonIgnore open val ss: List<RichSkillDescriptor>,
     @JsonIgnore open val keywords: Map<KeywordTypeEnum, List<KeywordCount>>,
-    private val appConfig: AppConfig
+    private val appConfig: AppConfig,
 ) {
     @get:JsonProperty
     val id: String
@@ -83,15 +82,22 @@ open class ApiCollection(
     val owner: String?
         get() = collection.workspaceOwner
 
+    @JsonProperty
+    @get:JsonInclude(JsonInclude.Include.NON_NULL)
+    var credentialEngineUrl: String? = null
+
     companion object {
-        fun fromDao(collectionDao: CollectionDao, appConfig: AppConfig): ApiCollection {
-            val skills = collectionDao.skills.map{ it.toModel() }
+        fun fromDao(
+            collectionDao: CollectionDao,
+            appConfig: AppConfig,
+        ): ApiCollection {
+            val skills = collectionDao.skills.map { it.toModel() }
 
             return ApiCollection(
                 collectionDao.toModel(),
                 skills,
                 RichSkillDescriptor.getKeywordsFromSkills(skills),
-                appConfig
+                appConfig,
             )
         }
     }

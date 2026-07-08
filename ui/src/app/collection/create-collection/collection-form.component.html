@@ -1,20 +1,18 @@
 <ng-template [appLoadingObservables]="[collectionLoaded]">
   <form [formGroup]="collectionForm" (ngSubmit)="onSubmit()">
-    <div  class="l-stickyBar">
+    <div class="l-stickyBar">
       <div class="l-stickySidebar l-container">
         <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
           <div class="m-skillBackground l-skillBackground">
             <div class="t-margin-medium t-margin-bottom">
-
               <h3 class="m-iconTitle">
                 <div class="m-iconTitle-x-icon">
                   <svg aria-hidden="true">
                     <use [attr.xlink:href]="iconCollection"></use>
                   </svg>
                 </div>
-                <div class="m-iconTitle-x-label">{{pageTitle()}}</div>
+                <div class="m-iconTitle-x-label">{{ pageTitle() }}</div>
               </h3>
-
             </div>
 
             <div class="t-margin-medium t-margin-bottom">
@@ -23,7 +21,7 @@
                 name="collectionName"
                 label="Collection Name"
                 placeholder="Health Open Skills"
-                errorMessage="Name required"
+                [errorMessage]="collectionNameErrorMessage"
                 [required]="true"
               ></app-formfield-textarea>
             </div>
@@ -48,20 +46,25 @@
                 [required]="true"
               ></app-formfield-text>
             </div>
-
           </div>
 
-          <div class="t-margin-medium t-margin-top" *ngIf="this.collectionUuid">
-            <app-audit-log [collectionUuid]="this.collectionUuid"
-                           closedLabel="View Audit Log"
-                           openLabel="Hide Audit Log">
+          <div
+            class="t-margin-medium t-margin-top"
+            *ngIf="this.collectionUuid && !isDuplicating"
+          >
+            <app-audit-log
+              [collectionUuid]="this.collectionUuid"
+              closedLabel="View Audit Log"
+              openLabel="Hide Audit Log"
+            >
             </app-audit-log>
           </div>
-
         </div>
 
         <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
-          <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
+          <div
+            class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top"
+          >
             <!-- vertical action bar -->
             <app-create-collection-action-bar-vertical
               (cancelClicked)="handleCancel()"
@@ -74,7 +77,9 @@
         </div>
       </div>
 
-      <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
+      <div
+        class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top"
+      >
         <!-- Horizontal action bar -->
         <app-create-collection-action-bar-horizontal
           (cancelClicked)="handleCancel()"
@@ -83,7 +88,6 @@
           [collectionSaved]="collectionSaved"
         ></app-create-collection-action-bar-horizontal>
       </div>
-
     </div>
   </form>
 </ng-template>

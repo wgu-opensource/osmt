@@ -21,93 +21,98 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.util.UriComponentsBuilder
 import java.lang.String.CASE_INSENSITIVE_ORDER
 
-
 @Transactional
-internal class RichSkillSortOrderTest @Autowired constructor(
+internal class RichSkillSortOrderTest
+    @Autowired
+    constructor(
         override val richSkillEsRepo: RichSkillEsRepo,
         override val collectionEsRepo: CollectionEsRepo,
         override val keywordEsRepo: KeywordEsRepo,
-        override val jobCodeEsRepo: JobCodeEsRepo
-): SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset {
+        override val jobCodeEsRepo: JobCodeEsRepo,
+    ) : SpringTest(),
+        BaseDockerizedTest,
+        HasDatabaseReset,
+        HasElasticsearchReset {
+        @Autowired
+        lateinit var richSkillController: RichSkillController
 
-    @Autowired
-    lateinit var richSkillController: RichSkillController
+        private lateinit var mockData: MockData
 
-    private lateinit var mockData : MockData
+        private val nullJwt: Jwt? = null
 
-    private val nullJwt : Jwt? = null
+        @Nested
+        @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+        inner class SortedResults {
+            var size: Int = 0
+            private lateinit var listOfSkills: List<RichSkillDoc>
 
+            @BeforeAll
+            fun setup() {
+                // Arrange
+                mockData = MockData()
+                size = 50
+                listOfSkills = mockData.getRichSkillDocs()
+                richSkillEsRepo.saveAll(listOfSkills)
+            }
 
+            @Test
+            fun `sorted by default(name ASC)`() {
+                // Act
+                val result =
+                    richSkillController.allPaginatedV2(
+                        UriComponentsBuilder.newInstance(),
+                        size,
+                        0,
+                        arrayOf("draft", "published"),
+                        "",
+                        nullJwt,
+                    )
+                val rsdList: List<RichSkillDocV2>? = result.body
 
-    @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    inner class SortedResults {
+                // Assert
+                assertThat(rsdList).isSortedAccordingTo(
+                    Comparator.comparing(RichSkillDocV2::name, CASE_INSENSITIVE_ORDER),
+                )
+            }
 
-        var size: Int = 0
-        private lateinit var listOfSkills: List<RichSkillDoc>
+            @Test
+            fun `sorted by name ASC`() {
+                // Act
+                val result =
+                    richSkillController.allPaginatedV2(
+                        UriComponentsBuilder.newInstance(),
+                        size,
+                        0,
+                        arrayOf("draft", "published"),
+                        NAME_ASC,
+                        nullJwt,
+                    )
+                val rsdList: List<RichSkillDocV2>? = result.body
 
-        @BeforeAll
-        fun setup() {
-            // Arrange
-            mockData = MockData()
-            size = 50
-            listOfSkills = mockData.getRichSkillDocs()
-            richSkillEsRepo.saveAll(listOfSkills)
-        }
+                // Assert
+                assertThat(rsdList).isSortedAccordingTo(
+                    Comparator.comparing(RichSkillDocV2::name, CASE_INSENSITIVE_ORDER),
+                )
+            }
 
-        @Test
-        fun `sorted by default(name ASC)`() {
-            // Act
-            val result = richSkillController.allPaginatedV2(
-                    UriComponentsBuilder.newInstance(),
-                    size,
-                    0,
-                    arrayOf("draft", "published"),
-                    "",
-                    nullJwt
-            )
-            val rsdList: List<RichSkillDocV2>? = result.body
+            @Test
+            fun `sorted by name DESC`() {
+                // Act
+                val result =
+                    richSkillController.allPaginatedV2(
+                        UriComponentsBuilder.newInstance(),
+                        size,
+                        0,
+                        arrayOf("draft", "published"),
+                        NAME_DESC,
+                        nullJwt,
+                    )
+                val rsdList: List<RichSkillDocV2>? = result.body
 
-            // Assert
-            assertThat(rsdList).isSortedAccordingTo(
-                Comparator.comparing(RichSkillDocV2::name, CASE_INSENSITIVE_ORDER)
-            )
-        }
-        @Test
-        fun `sorted by name ASC`() {
-            // Act
-            val result = richSkillController.allPaginatedV2(
-                UriComponentsBuilder.newInstance(),
-                size,
-                0,
-                arrayOf("draft", "published"),
-                NAME_ASC,
-                nullJwt
-            )
-            val rsdList: List<RichSkillDocV2>? = result.body
-
-            // Assert
-            assertThat(rsdList).isSortedAccordingTo(
-                Comparator.comparing(RichSkillDocV2::name, CASE_INSENSITIVE_ORDER)
-            )
-        }
-        @Test
-        fun `sorted by name DESC`() {
-            // Act
-            val result = richSkillController.allPaginatedV2(
-                UriComponentsBuilder.newInstance(),
-                size,
-                0,
-                arrayOf("draft", "published"),
-                NAME_DESC,
-                nullJwt
-            )
-            val rsdList: List<RichSkillDocV2>? = result.body
-
-            // Assert
-            assertThat(rsdList).isSortedAccordingTo(
-                Comparator.comparing(RichSkillDocV2::name, CASE_INSENSITIVE_ORDER).reversed()
-            )
+                // Assert
+                assertThat(rsdList).isSortedAccordingTo(
+                    Comparator.comparing(RichSkillDocV2::name, CASE_INSENSITIVE_ORDER).reversed(),
+                )
+            }
         }
     }
-}

@@ -1,0 +1,22 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="OSMT API Dev" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="dev,apiserver,single-auth" />
+    <envs>
+      <env name="DB_URI" value="osmt_db_user:password@localhost:3306" />
+      <env name="REDIS_URI" value="localhost:6379" />
+      <env name="ELASTICSEARCH_URI" value="http://localhost:9200" />
+    </envs>
+    <module name="osmt-api" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="edu.wgu.osmt.ApplicationKt" />
+    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/api" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="edu.wgu.osmt.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

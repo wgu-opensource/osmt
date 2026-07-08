@@ -13,18 +13,34 @@
     <div class="t-margin-medium t-margin-bottom">
       <form [formGroup]="searchForm" (ngSubmit)="handleSearchSubmit()">
         <div class="m-text">
-          <svg aria-hidden="true" class="m-text-x-icon t-icon" (click)="clearSearch()"><use [attr.xlink:href]="searchIcon"></use></svg>
-          <input type="text" placeholder="Search RSDs in this category" [formControl]="searchForm.controls.search">
+          <svg
+            aria-hidden="true"
+            class="m-text-x-icon t-icon"
+            (click)="clearSearch()"
+          >
+            <use [attr.xlink:href]="searchIcon"></use>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search RSDs in this category"
+            [formControl]="searchForm.controls.search"
+          />
         </div>
       </form>
-      <p *ngIf="skillTableControl.totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
-        {{skillsCountLabel}}
+      <p
+        *ngIf="skillTableControl.totalCount > 0"
+        class="t-type-bodyLarge t-margin-small t-margin-top"
+      >
+        {{ skillsCountLabel }}
         <ng-template [ngIf]="skillTableControl.query">
-          <span class="t-type-bodyLargeBold t-type-text1">{{skillTableControl.query}}</span> and
+          <span class="t-type-bodyLargeBold t-type-text1">{{
+            skillTableControl.query
+          }}</span>
+          and
         </ng-template>
         your filters.
         <ng-template [ngIf]="skillTableControl.totalCount > 0">
-        {{skillsViewingLabel}}
+          {{ skillsViewingLabel }}
         </ng-template>
       </p>
     </div>
@@ -45,6 +61,7 @@
           *ngIf="showSkillsTable"
           [items]="skillTableControl.skills"
           [showRowActions]="false"
+          [isPublicView]="true"
           [currentSort]="skillTableControl.sort"
           [mobileSortOptions]="getMobileSkillSortOptions()"
           (columnSorted)="handleHeaderColumnSort($event)"
@@ -54,7 +71,9 @@
         <p class="m-emptyMessage-x-message">Loading information...</p>
       </app-empty-message>
       <app-empty-message *ngIf="showSkillsEmpty">
-        <p class="m-emptyMessage-x-message">0 RSDs associated with this category</p>
+        <p class="m-emptyMessage-x-message">
+          0 RSDs associated with this category
+        </p>
       </app-empty-message>
       <app-pagination
         [currentPage]="skillTableControl.currPageNumber"

@@ -1,7 +1,6 @@
 <ng-template [appLoadingObservables]="[skillLoaded]">
   <div class="l-stickyBar" *ngIf="richSkill; else noSkill">
     <div class="l-stickySidebar l-container t-margin-medium t-margin-bottom">
-
       <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
         <app-detail-card
           [sections]="getCardFormat()"
@@ -15,32 +14,41 @@
       </div>
 
       <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
-        <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
+        <div
+          class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top"
+        >
           <app-public-skill-action-bar-vertical
             [skillUuid]="getSkillUuid()"
             [skillStatus]="getSkillStatus()"
             [skillName]="getSkillName()"
             [skillUrl]="getSkillUrl()"
+            [credentialEngineUrl]="richSkill?.credentialEngineUrl"
           ></app-public-skill-action-bar-vertical>
         </div>
       </div>
-
     </div>
 
-    <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
+    <div
+      class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top"
+    >
       <app-public-skill-action-bar-horizontal
         [skillUuid]="getSkillUuid()"
         [skillName]="getSkillName()"
         [skillUrl]="getSkillUrl()"
+        [credentialEngineUrl]="richSkill?.credentialEngineUrl"
       ></app-public-skill-action-bar-horizontal>
     </div>
   </div>
   <ng-template #noSkill>
     <div *ngIf="loading; else noData" class="lds-dual-ring">Loading...</div>
-    <ng-template #noData>
-      No data to load.
-    </ng-template>
+    <ng-template #noData> No data to load. </ng-template>
   </ng-template>
+</ng-template>
+
+<ng-template #categoriesTemplate>
+  <app-category-links
+    [categories]="richSkill?.categories ?? []"
+  ></app-category-links>
 </ng-template>
 
 <!-- This is injected into the detail card occupations section -->
@@ -51,8 +59,12 @@
       [isCollapsed]="isOccupationsCollapsed"
     ></app-occupations-card-section>
     <div class="t-margin-extraSmall t-margin-top">
-      <button class="t-link" type="button" (click)="isOccupationsCollapsed = !isOccupationsCollapsed">
-        <span>View {{isOccupationsCollapsed ? "All" : "Fewer"}} Groups</span>
+      <button
+        class="t-link"
+        type="button"
+        (click)="isOccupationsCollapsed = !isOccupationsCollapsed"
+      >
+        <span>View {{ isOccupationsCollapsed ? 'All' : 'Fewer' }} Groups</span>
       </button>
     </div>
   </div>

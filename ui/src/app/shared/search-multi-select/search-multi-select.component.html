@@ -1,13 +1,15 @@
+<!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
 <div class="expand-panel" (click)="showInput = !showInput">
-  <strong><b>{{name | titlecase}}</b></strong>
-  <div [ngClass]="{'up-arrow': showInput, 'down-arrow': !showInput}"></div>
+  <strong
+    ><b>{{ name | titlecase }}</b></strong
+  >
+  <div [ngClass]="{ 'up-arrow': showInput, 'down-arrow': !showInput }"></div>
 </div>
-<div class="m-field"  [ngClass]="{'visible': showInput}">
+<div class="m-field" [ngClass]="{ visible: showInput }">
   <div class="m-field-x-input">
     <div class="l-searchSelect">
       <div class="l-searchSelect-x-search">
         <div class="m-search">
-
           <svg class="m-search-x-icon t-icon" aria-hidden="true">
             <use [attr.xlink:href]="iconSearch"></use>
           </svg>
@@ -16,16 +18,20 @@
             [formControl]="inputFc"
             class="m-search-x-input"
             type="text"
-            placeholder="Type {{name}} to filter"
+            placeholder="Type {{ name }} to filter"
             [attr.aria-label]="name"
             role="search"
             [attr.aria-describedby]="name + '-results'"
             [attr.aria-controls]="name + '-results'"
-          >
+          />
           <div class="m-search-x-controls">
             <div class="m-search-x-clear">
-              <button class="m-iconInteractive" type="button" (click)="clearField()" *ngIf="inputFc.value!.length > 0">
-
+              <button
+                class="m-iconInteractive"
+                type="button"
+                (click)="clearField()"
+                *ngIf="inputFc.value!.length > 0"
+              >
                 <span class="t-visuallyHidden">Clear Search</span>
 
                 <div class="m-iconInteractive-x-icon">
@@ -33,11 +39,9 @@
                     <use [attr.xlink:href]="iconDismiss"></use>
                   </svg>
                 </div>
-
               </button>
             </div>
           </div>
-
         </div>
       </div>
       <!-- Loading results state -->
@@ -54,17 +58,27 @@
 
       <!-- Loaded results state -->
       <ng-template #loaded>
-        <div id="{{name}}-results" class="l-searchSelect-x-menu" aria-live="assertive">
+        <div
+          id="{{ name }}-results"
+          class="l-searchSelect-x-menu"
+          aria-live="assertive"
+        >
           <div class="m-selectMenu m-selectMenu-fixed m-selectMenu-is-active">
-
             <!-- Results -->
-            <div class="m-selectMenu-x-content" *ngIf="results && results.length > 0; else emptyResults">
-              <div class="t-visuallyHidden">Showing search results: </div>
-              <div class="result-container" *ngFor="let result of results;">
-              <span class="m-buttonText-x-text result-text">
-                {{resultName(result)}}
-              </span>
-                <input type="checkbox" [checked]="isResultSelected(result)" (click)="selectResult(result)">
+            <div
+              class="m-selectMenu-x-content"
+              *ngIf="results && results.length > 0; else emptyResults"
+            >
+              <div class="t-visuallyHidden">Showing search results:</div>
+              <div class="result-container" *ngFor="let result of results">
+                <span class="m-buttonText-x-text result-text">
+                  {{ resultName(result) }}
+                </span>
+                <input
+                  type="checkbox"
+                  [checked]="isResultSelected(result)"
+                  (click)="selectResult(result)"
+                />
               </div>
             </div>
 
@@ -80,15 +94,19 @@
         </div>
 
         <div class="l-searchSelect-x-items">
-          <div class="m-inputItem" *ngFor="let result of control.value" (click)="selectResult(result)">
-            <span class="m-inputItem-x-text">{{resultName(result)}}</span>
+          <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+          <div
+            class="m-inputItem"
+            *ngFor="let result of control.value"
+            (click)="selectResult(result)"
+          >
+            <span class="m-inputItem-x-text">{{ resultName(result) }}</span>
             <button class="m-inputItem-x-icon" type="button">
               <svg aria-hidden="true">
                 <use [attr.xlink:href]="iconDismiss"></use>
               </svg>
             </button>
           </div>
-
         </div>
       </ng-template>
     </div>

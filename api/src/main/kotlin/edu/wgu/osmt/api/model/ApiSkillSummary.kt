@@ -18,12 +18,14 @@ open class ApiSkillSummary(
     @JsonProperty open val skillStatement: String,
     @JsonProperty open val categories: List<String> = listOf(),
     @JsonProperty open val keywords: List<String> = listOf(),
-    @JsonProperty open val occupations: List<ApiJobCode> = listOf()
+    @JsonProperty open val occupations: List<ApiJobCode> = listOf(),
 ) {
-
     companion object {
-        fun fromSkill(rsd: RichSkillDescriptor, appConfig: AppConfig): ApiSkillSummary {
-            return ApiSkillSummary(
+        fun fromSkill(
+            rsd: RichSkillDescriptor,
+            appConfig: AppConfig,
+        ): ApiSkillSummary =
+            ApiSkillSummary(
                 id = rsd.canonicalUrl(appConfig.baseUrl),
                 uuid = rsd.uuid,
                 status = rsd.publishStatus(),
@@ -33,16 +35,16 @@ open class ApiSkillSummary(
                 skillStatement = rsd.statement,
                 categories = rsd.categories.mapNotNull { it.value },
                 keywords = rsd.keywords.mapNotNull { it.value },
-                occupations = rsd.jobCodes.map { ApiJobCode.fromJobCode(it) }
+                occupations = rsd.jobCodes.map { ApiJobCode.fromJobCode(it) },
             )
-        }
 
-        fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkillSummary {
-            return fromSkill(rsdDao.toModel(), appConfig)
-        }
+        fun fromDao(
+            rsdDao: RichSkillDescriptorDao,
+            appConfig: AppConfig,
+        ): ApiSkillSummary = fromSkill(rsdDao.toModel(), appConfig)
 
-        fun fromDoc(rsDoc: RichSkillDoc): ApiSkillSummary {
-            return with(rsDoc) {
+        fun fromDoc(rsDoc: RichSkillDoc): ApiSkillSummary =
+            with(rsDoc) {
                 ApiSkillSummary(
                     uri,
                     uuid,
@@ -53,9 +55,8 @@ open class ApiSkillSummary(
                     statement,
                     categories,
                     searchingKeywords,
-                    jobCodes.map { ApiJobCode.fromJobCode(it) })
+                    jobCodes.map { ApiJobCode.fromJobCode(it) },
+                )
             }
-        }
     }
 }
-

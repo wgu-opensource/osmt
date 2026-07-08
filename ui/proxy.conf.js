@@ -1,6 +1,6 @@
 const PROXY_CONFIG = [
   {
-    context: ["/api"],
+    context: ["/api", "/whitelabel"],
     target: "http://localhost:8080",
     secure: false
   }

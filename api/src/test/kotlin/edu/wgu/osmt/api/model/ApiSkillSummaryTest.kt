@@ -10,8 +10,7 @@ import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ApiSkillSummaryTest {
-
-    private lateinit var mockData : MockData
+    private lateinit var mockData: MockData
 
     @BeforeAll
     fun setup() {
@@ -89,12 +88,12 @@ internal class ApiSkillSummaryTest {
         Assertions.assertThat(skill.skillStatement).isEqualTo(expected.statement)
 
         // Categories
-        assertTrue(expected.categories.map{it.value}.containsAll(skill.categories))
-        assertTrue(skill.categories.containsAll(expected.categories.map{it.value}))
+        assertTrue(expected.categories.map { it.value }.containsAll(skill.categories))
+        assertTrue(skill.categories.containsAll(expected.categories.map { it.value }))
 
         // Search Keywords
-        assertTrue(expected.keywords.map{it.value}.containsAll(skill.keywords))
-        assertTrue(skill.keywords.containsAll(expected.searchingKeywords.map{it.value}))
+        assertTrue(expected.keywords.map { it.value }.containsAll(skill.keywords))
+        assertTrue(skill.keywords.containsAll(expected.searchingKeywords.map { it.value }))
 
         // jobCodes
         Assertions.assertThat(skill.occupations.size).isEqualTo(expected.jobCodes.size)
@@ -102,5 +101,4 @@ internal class ApiSkillSummaryTest {
             JobCodeTest.assertEquals(expected.jobCodes[i], skill.occupations[i])
         }
     }
-
 }

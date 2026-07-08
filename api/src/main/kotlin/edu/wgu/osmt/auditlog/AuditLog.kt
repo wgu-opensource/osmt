@@ -10,78 +10,69 @@ import java.time.ZoneOffset
 enum class AuditOperationType {
     Insert,
     Update,
-    PublishStatusChange
+    PublishStatusChange,
 }
 
 data class Change(
     val fieldName: String,
     val old: String?,
-    val new: String?
+    val new: String?,
 ) {
     companion object {
         fun maybeChange(
             fieldName: String,
             old: String?,
-            new: String?
-        ): Change? {
-            return if (old != new) {
+            new: String?,
+        ): Change? =
+            if (old != new) {
                 Change(fieldName, old, new)
-            } else null
-        }
+            } else {
+                null
+            }
     }
 }
 
-fun List<Change>.findByFieldName(fieldName: String): Change? {
-    return this.find{it.fieldName == fieldName}
-}
+fun List<Change>.findByFieldName(fieldName: String): Change? =
+    this.find {
+        it.fieldName == fieldName
+    }
 
 data class AuditLog(
     @JsonIgnore
     override val id: Long?,
-
     override val creationDate: LocalDateTime,
-
     val operationType: String,
-
     @JsonIgnore
     val tableName: String,
-
     @JsonIgnore
     val entityId: Long,
-
     val user: String,
-
-    val changedFields: List<Change>
+    val changedFields: List<Change>,
 ) : DatabaseData {
-
     companion object {
-
         fun fromAtomicOp(
             table: Table,
             entityId: Long,
             changes: List<Change>,
             user: String,
-            opType: AuditOperationType
-        ): AuditLog {
-            return AuditLog(
+            opType: AuditOperationType,
+        ): AuditLog =
+            AuditLog(
                 id = null,
                 creationDate = LocalDateTime.now(ZoneOffset.UTC),
                 operationType = opType.name,
                 tableName = table.tableName,
                 entityId = entityId,
                 user = user,
-                changedFields = changes
+                changedFields = changes,
             )
-        }
 
         fun fromAtomicOp(
             table: Table,
             entityId: Long,
             changes: List<Change>,
             user: OAuth2User,
-            opType: AuditOperationType
-        ): AuditLog {
-            return fromAtomicOp(table, entityId, changes, user.name.toString(), opType)
-        }
+            opType: AuditOperationType,
+        ): AuditLog = fromAtomicOp(table, entityId, changes, user.name.toString(), opType)
     }
 }

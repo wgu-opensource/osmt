@@ -1,9 +1,5 @@
-
-
 <div class="l-stickyBar">
-
   <div class="l-stickySidebar l-container t-margin-medium t-margin-bottom">
-
     <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
       <app-collection-public-detail-card
         *ngIf="collection"
@@ -15,19 +11,20 @@
     </div>
 
     <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
-      <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
+      <div
+        class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top"
+      >
         <app-collection-public-vertical-action-bar
           [collectionUrl]="collectionUrl"
           [collectionUuid]="uuidParam"
           [collectionName]="collectionName"
+          [credentialEngineUrl]="collection?.credentialEngineUrl"
         ></app-collection-public-vertical-action-bar>
       </div>
     </div>
-
   </div>
 
   <div class="l-container">
-
     <div class="t-margin-medium">
       <div class="t-margin-small"><b>Categories</b></div>
       <app-pill-group [pillControls]="skillCategories"></app-pill-group>
@@ -36,12 +33,17 @@
     <app-size-pagination
       [isVisible]="isSizePaginationVisible"
       [currentSize]="size"
-      [control]="sizeControl">
+      [control]="sizeControl"
+    >
     </app-size-pagination>
 
     <ng-template [appLoadingObservables]="[resultsLoaded]">
       <div class="t-margin-medium t-margin-bottom">
-        <p class="t-visuallyHidden">Select one or more RSDs in the table, or select all in the table heading, then use the action menu to publish, archive, unarchive, or add the selected RSDs to a collection. </p>
+        <p class="t-visuallyHidden">
+          Select one or more RSDs in the table, or select all in the table
+          heading, then use the action menu to publish, archive, unarchive, or
+          add the selected RSDs to a collection.
+        </p>
 
         <app-public-table
           *ngIf="!emptyResults"
@@ -56,7 +58,9 @@
       </app-empty-message>
 
       <app-empty-message *ngIf="emptyResults">
-        <p class="m-emptyMessage-x-message">0 RSDs associated with this collection</p>
+        <p class="m-emptyMessage-x-message">
+          0 RSDs associated with this collection
+        </p>
       </app-empty-message>
 
       <app-pagination
@@ -66,11 +70,14 @@
       ></app-pagination>
     </ng-template>
   </div>
-  <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
+  <div
+    class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top"
+  >
     <app-collection-public-horizontal-action-bar
       [collectionUrl]="collectionUrl"
       [collectionUuid]="uuidParam"
       [collectionName]="collectionName"
+      [credentialEngineUrl]="collection?.credentialEngineUrl"
     ></app-collection-public-horizontal-action-bar>
   </div>
 </div>

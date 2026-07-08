@@ -5,14 +5,14 @@
   justify-content: space-between;
 }
 
-input[type=checkbox] {
+input[type='checkbox'] {
   margin-right: 20px;
   position: relative;
   cursor: pointer;
 }
 
-input[type=checkbox]:before {
-  content: "";
+input[type='checkbox']:before {
+  content: '';
   display: block;
   position: absolute;
   width: 15px;
@@ -22,19 +22,19 @@ input[type=checkbox]:before {
   background-color: var(--color-text3);
 }
 
-input[type=checkbox]:checked:before {
-  content: "";
+input[type='checkbox']:checked:before {
+  content: '';
   display: block;
   position: absolute;
   width: 20px;
   height: 20px;
   top: 0;
   left: 0;
-  background-color:#1E80EF;
+  background-color: #1e80ef;
 }
 
-input[type=checkbox]:checked:after {
-  content: "";
+input[type='checkbox']:checked:after {
+  content: '';
   display: block;
   width: 5px;
   height: 10px;
@@ -87,14 +87,14 @@ strong {
   background-color: var(--color-interactive2);
   width: 15px;
   height: 15px;
-  -webkit-mask: url("/assets/images/down-arrow.svg") no-repeat center;
-  mask: url("/assets/images/down-arrow.svg") no-repeat center;
+  -webkit-mask: url('/assets/images/down-arrow.svg') no-repeat center;
+  mask: url('/assets/images/down-arrow.svg') no-repeat center;
 }
 
 .up-arrow {
   background-color: var(--color-interactive2);
   width: 15px;
   height: 15px;
-  -webkit-mask: url("/assets/images/up-arrow.svg") no-repeat center;
-  mask: url("/assets/images/up-arrow.svg") no-repeat center;
+  -webkit-mask: url('/assets/images/up-arrow.svg') no-repeat center;
+  mask: url('/assets/images/up-arrow.svg') no-repeat center;
 }

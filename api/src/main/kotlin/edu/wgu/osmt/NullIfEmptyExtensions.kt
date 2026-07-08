@@ -1,11 +1,10 @@
 package edu.wgu.osmt
 
-fun String?.nullIfEmpty(): String? {
-    return if (this == ""){
+fun String?.nullIfEmpty(): String? =
+    if (this == "") {
         null
-    } else this
-}
+    } else {
+        this
+    }
 
-fun <T> List<T>.nullIfEmpty(): List<T>? {
-    return if (this.isEmpty()) null else this
-}
+fun <T> List<T>.nullIfEmpty(): List<T>? = if (this.isEmpty()) null else this

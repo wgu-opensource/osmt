@@ -11,14 +11,12 @@ import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ApiSkillSummaryV2Test {
-
-    private lateinit var mockData : MockData
+    private lateinit var mockData: MockData
 
     @BeforeAll
     fun setup() {
         mockData = MockData()
     }
-
 
     @Test
     fun testFromSkill() {
@@ -49,12 +47,17 @@ internal class ApiSkillSummaryV2Test {
         Assertions.assertThat(skill.skillName).isEqualTo(expected.name)
         Assertions.assertThat(skill.skillStatement).isEqualTo(expected.statement)
         Assertions.assertThat(skill.category).isEqualTo(
-                (expected.categories.mapNotNull { it.value }.sorted().joinToString(SEMICOLON))
+            (
+                expected.categories
+                    .mapNotNull { it.value }
+                    .sorted()
+                    .joinToString(SEMICOLON)
+            ),
         )
 
         // Search Keywords
-        assertTrue(expected.keywords.map{it.value}.containsAll(skill.keywords))
-        assertTrue(skill.keywords.containsAll(expected.searchingKeywords.map{it.value}))
+        assertTrue(expected.keywords.map { it.value }.containsAll(skill.keywords))
+        assertTrue(skill.keywords.containsAll(expected.searchingKeywords.map { it.value }))
 
         // jobCodes
         Assertions.assertThat(skill.occupations.size).isEqualTo(expected.jobCodes.size)
@@ -62,5 +65,4 @@ internal class ApiSkillSummaryV2Test {
             JobCodeTest.assertEquals(expected.jobCodes[i], skill.occupations[i])
         }
     }
-
 }

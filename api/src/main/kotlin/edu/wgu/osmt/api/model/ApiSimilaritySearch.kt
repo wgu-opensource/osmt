@@ -6,5 +6,5 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonInclude(JsonInclude.Include.ALWAYS)
 data class ApiSimilaritySearch(
     @JsonProperty("statement")
-    val statement: String
+    val statement: String,
 )

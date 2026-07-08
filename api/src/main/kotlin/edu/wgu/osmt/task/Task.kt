@@ -19,7 +19,7 @@ import java.util.*
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
-    property = "type"
+    property = "type",
 )
 @JsonSubTypes(
     JsonSubTypes.Type(value = CsvTask::class, name = "CsvTask"),
@@ -30,15 +30,20 @@ import java.util.*
     JsonSubTypes.Type(value = PublishTask::class, name = "PublishTask"),
     JsonSubTypes.Type(value = PublishTaskV2::class, name = "PublishTaskV2"),
     JsonSubTypes.Type(value = ApiSkillListUpdate::class, name = "ApiSkillListUpdate"),
-    JsonSubTypes.Type(value = UpdateCollectionSkillsTask::class, name = "UpdateCollectionSkillsTask"),
+    JsonSubTypes.Type(
+        value = UpdateCollectionSkillsTask::class,
+        name = "UpdateCollectionSkillsTask",
+    ),
     JsonSubTypes.Type(value = CreateSkillsTask::class, name = "CreateSkillsTask"),
     JsonSubTypes.Type(value = CreateSkillsTaskV2::class, name = "CreateSkillsTaskV2"),
     JsonSubTypes.Type(value = ExportSkillsToCsvTask::class, name = "ExportSkillsToCsvTask"),
     JsonSubTypes.Type(value = ExportSkillsToXlsxTask::class, name = "ExportSkillsToXlsxTask"),
-    JsonSubTypes.Type(value = RemoveCollectionSkillsTask::class, name = "RemoveCollectionSkillsTask"),
-    JsonSubTypes.Type(value = ExportSkillsToCsvTaskV2::class, name = "ExportSkillsToCsvTaskV2")
+    JsonSubTypes.Type(
+        value = RemoveCollectionSkillsTask::class,
+        name = "RemoveCollectionSkillsTask",
+    ),
+    JsonSubTypes.Type(value = ExportSkillsToCsvTaskV2::class, name = "ExportSkillsToCsvTaskV2"),
 )
-
 interface Task {
     val uuid: String
     val start: Date
@@ -71,21 +76,23 @@ data class CsvTask(
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: String? = null,
-    override val status: TaskStatus = TaskStatus.Processing
+    override val status: TaskStatus = TaskStatus.Processing,
 ) : Task {
     override val contentType = "text/csv"
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_TEXT}"
+    override val apiResultPath =
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_TEXT}"
 }
 
 data class CsvTaskV2(
-        val collectionUuid: String = "",
-        override val uuid: String = UUID.randomUUID().toString(),
-        override val start: Date = Date(),
-        override val result: String? = null,
-        override val status: TaskStatus = TaskStatus.Processing
+    val collectionUuid: String = "",
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: String? = null,
+    override val status: TaskStatus = TaskStatus.Processing,
 ) : Task {
     override val contentType = "text/csv"
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_TEXT}"
+    override val apiResultPath =
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_TEXT}"
 }
 
 data class XlsxTask(
@@ -93,10 +100,11 @@ data class XlsxTask(
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: ByteArray? = null,
-    override val status: TaskStatus = TaskStatus.Processing
+    override val status: TaskStatus = TaskStatus.Processing,
 ) : Task {
     override val contentType = "application/vnd.ms-excel"
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_MEDIA}"
+    override val apiResultPath =
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_MEDIA}"
 }
 
 data class ExportSkillsToCsvTask(
@@ -105,22 +113,24 @@ data class ExportSkillsToCsvTask(
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: String? = null,
-    override val status: TaskStatus = TaskStatus.Processing
+    override val status: TaskStatus = TaskStatus.Processing,
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}"
+    override val apiResultPath =
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}"
 }
 
 data class ExportSkillsToCsvTaskV2(
-        val collectionUuid: String = "",
-        val uuids: List<String>? = null,
-        override val uuid: String = UUID.randomUUID().toString(),
-        override val start: Date = Date(),
-        override val result: String? = null,
-        override val status: TaskStatus = TaskStatus.Processing
+    val collectionUuid: String = "",
+    val uuids: List<String>? = null,
+    override val uuid: String = UUID.randomUUID().toString(),
+    override val start: Date = Date(),
+    override val result: String? = null,
+    override val status: TaskStatus = TaskStatus.Processing,
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}"
+    override val apiResultPath =
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}"
 }
 
 data class ExportSkillsToXlsxTask(
@@ -129,10 +139,11 @@ data class ExportSkillsToXlsxTask(
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: ByteArray? = null,
-    override val status: TaskStatus = TaskStatus.Processing
+    override val status: TaskStatus = TaskStatus.Processing,
 ) : Task {
     override val contentType = "application/vnd.ms-excel"
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}"
+    override val apiResultPath =
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_MEDIA}"
 }
 
 data class CreateSkillsTask(
@@ -142,10 +153,11 @@ data class CreateSkillsTask(
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: List<String>? = null,
-    override val status: TaskStatus = TaskStatus.Processing
+    override val status: TaskStatus = TaskStatus.Processing,
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_SKILLS}"
+    override val apiResultPath =
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_SKILLS}"
 }
 
 data class CreateSkillsTaskV2(
@@ -155,16 +167,18 @@ data class CreateSkillsTaskV2(
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: List<String>? = null,
-    override val status: TaskStatus = TaskStatus.Processing
+    override val status: TaskStatus = TaskStatus.Processing,
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_SKILLS}"
+    override val apiResultPath =
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_SKILLS}"
 }
 
 enum class AppliesToType {
     Collection,
     Skill,
 }
+
 data class PublishTask(
     val appliesToType: AppliesToType = AppliesToType.Skill,
     val search: ApiSearch = ApiSearch(),
@@ -175,10 +189,11 @@ data class PublishTask(
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: ApiBatchResult? = null,
-    override val status: TaskStatus = TaskStatus.Processing
+    override val status: TaskStatus = TaskStatus.Processing,
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}"
+    override val apiResultPath =
+        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}"
 }
 
 data class PublishTaskV2(
@@ -191,10 +206,11 @@ data class PublishTaskV2(
     override val uuid: String = UUID.randomUUID().toString(),
     override val start: Date = Date(),
     override val result: ApiBatchResult? = null,
-    override val status: TaskStatus = TaskStatus.Processing
+    override val status: TaskStatus = TaskStatus.Processing,
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    override val apiResultPath = "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}"
+    override val apiResultPath =
+        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}"
 }
 
 data class UpdateCollectionSkillsTask(
@@ -206,10 +222,9 @@ data class UpdateCollectionSkillsTask(
     override val start: Date = Date(),
     override val result: ApiBatchResult? = null,
     override val status: TaskStatus = TaskStatus.Processing,
-    override val apiResultPath: String = ""
+    override val apiResultPath: String = "",
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-    
 }
 
 data class RemoveCollectionSkillsTask(
@@ -218,14 +233,12 @@ data class RemoveCollectionSkillsTask(
     override val start: Date = Date(),
     override val result: ApiBatchResult? = null,
     override val status: TaskStatus = TaskStatus.Processing,
-    override val apiResultPath: String = ""
+    override val apiResultPath: String = "",
 ) : Task {
     override val contentType = MediaType.APPLICATION_JSON_VALUE
-
 }
-
 
 enum class TaskStatus {
     Processing,
-    Ready
+    Ready,
 }

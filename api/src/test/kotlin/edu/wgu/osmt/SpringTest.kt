@@ -29,8 +29,10 @@ import org.springframework.transaction.annotation.Transactional
 @ConfigurationPropertiesScan("edu.wgu.osmt.config")
 @ContextConfiguration
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestPropertySource(locations=["classpath:config/application-test.properties"])
-abstract class SpringTest: BaseDockerizedTest {
+@TestPropertySource(
+    locations = ["classpath:config/application-test.properties"],
+)
+abstract class SpringTest : BaseDockerizedTest {
     val logger: Logger = LoggerFactory.getLogger(SpringTest::class.java)
 
     val testUser = "test-user"
@@ -38,18 +40,22 @@ abstract class SpringTest: BaseDockerizedTest {
     val testEmail = "test@email.com"
 
     init {
-        logger.info("Mysql port ${Containers.mysqlContainer.getMappedPort(3306)}")
-        logger.info("Redis port ${Containers.redisContainer.getMappedPort(6379)}")
-        logger.info("ES port ${Containers.elasticContainer.getMappedPort(9200)}")
+        logger.info(
+            "Mysql port ${Containers.mysqlContainer.getMappedPort(3306)}",
+        )
+        logger.info(
+            "Redis port ${Containers.redisContainer.getMappedPort(6379)}",
+        )
+        logger.info(
+            "ES port ${Containers.elasticContainer.getMappedPort(9200)}",
+        )
     }
 }
 
-
 interface HasDatabaseReset {
-
     @Transactional
     @BeforeEach
-    fun resetDb(): Unit {
+    fun resetDb() {
         RichSkillJobCodes.deleteAll()
         RichSkillKeywords.deleteAll()
         CollectionSkills.deleteAll()
@@ -68,10 +74,28 @@ interface HasElasticsearchReset {
     val jobCodeEsRepo: JobCodeEsRepo
 
     @BeforeEach
-    fun resetElasticsearch(): Unit {
-        richSkillEsRepo.deleteAll()
-        collectionEsRepo.deleteAll()
-        keywordEsRepo.deleteAll()
-        jobCodeEsRepo.deleteAll()
+    fun resetElasticsearch() {
+        // In readonly mode, indices may not exist (creation is skipped).
+        // Silently ignore NoSuchIndexException to allow tests to proceed.
+        try {
+            richSkillEsRepo.deleteAll()
+        } catch (_: org.springframework.data.elasticsearch.NoSuchIndexException) {
+            // Index doesn't exist, nothing to delete
+        }
+        try {
+            collectionEsRepo.deleteAll()
+        } catch (_: org.springframework.data.elasticsearch.NoSuchIndexException) {
+            // Index doesn't exist, nothing to delete
+        }
+        try {
+            keywordEsRepo.deleteAll()
+        } catch (_: org.springframework.data.elasticsearch.NoSuchIndexException) {
+            // Index doesn't exist, nothing to delete
+        }
+        try {
+            jobCodeEsRepo.deleteAll()
+        } catch (_: org.springframework.data.elasticsearch.NoSuchIndexException) {
+            // Index doesn't exist, nothing to delete
+        }
     }
 }

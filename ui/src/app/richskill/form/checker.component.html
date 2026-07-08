@@ -2,10 +2,12 @@
   <!--{{render '@m-checker'}}-->
 
   <!-- searching or results came back with no matches -->
-  <div *ngIf="!hasMatches; else similarMatchesTmpl"
+  <div
+    *ngIf="!hasMatches; else similarMatchesTmpl"
     class="m-checker"
-       [class.m-checker-is-searching]="isSearching"
-       [class.m-checker-is-affirmative]="isAffirmative">
+    [class.m-checker-is-searching]="isSearching"
+    [class.m-checker-is-affirmative]="isAffirmative"
+  >
     <div class="m-checker-x-loader">
       <span class="m-loaderGraphic"></span>
     </div>
@@ -14,62 +16,98 @@
         <use xlink:href="/assets/images/svg-defs.svg#icon-check-outline"></use>
       </svg>
     </div>
-    <p *ngIf="isNeutral" class="m-checker-x-message">{{neutralMessage}}</p>
-    <p *ngIf="isSearching" class="m-checker-x-message">{{searchingMessage}}</p>
-    <p *ngIf="isAffirmative" class="m-checker-x-message">{{affirmativeMessage}}</p>
+    <p *ngIf="isNeutral" class="m-checker-x-message">{{ neutralMessage }}</p>
+    <p *ngIf="isSearching" class="m-checker-x-message">
+      {{ searchingMessage }}
+    </p>
+    <p *ngIf="isAffirmative" class="m-checker-x-message">
+      {{ affirmativeMessage }}
+    </p>
   </div>
 
   <ng-template #similarMatchesTmpl>
-
     <ng-template [ngIf]="hasSingleMatch" [ngIfElse]="multipleMatchesTmpl">
-      <p class="t-type-small" *ngIf="!showInTable">{{similarSingleMessage}}</p>
+      <p class="t-type-small" *ngIf="!showInTable">
+        {{ similarSingleMessage }}
+      </p>
 
       <app-inline-error [message]="similarSingleMessage" *ngIf="showInTable">
       </app-inline-error>
 
-      <div class="t-margin-extraSmall t-margin-top" *ngFor="let skill of similarSkills.slice(0,1)">
+      <div
+        class="t-margin-extraSmall t-margin-top"
+        *ngFor="let skill of similarSkills.slice(0, 1)"
+      >
         <!--{{render '@m-interactivetext&#45;&#45;small-with-iconleft'}}-->
-        <a class="m-interactiveText m-interactiveText-small" routerLink="/skills/{{skill.uuid}}/manage" target="_blank">
+        <a
+          class="m-interactiveText m-interactiveText-small"
+          routerLink="/skills/{{ skill.uuid }}/manage"
+          target="_blank"
+        >
           <span class="m-interactiveText-x-icon">
-            <svg class="t-icon"><use xlink:href="/assets/images/svg-defs.svg#icon-warning"></use></svg>
+            <svg class="t-icon">
+              <use xlink:href="/assets/images/svg-defs.svg#icon-warning"></use>
+            </svg>
           </span>
-          <span class="m-interactiveText-x-text">{{skill.skillName}}</span>
+          <span class="m-interactiveText-x-text">{{ skill.skillName }}</span>
         </a>
-        <ng-container *ngTemplateOutlet="extraInformation; context: {skill: skill}">
+        <ng-container
+          *ngTemplateOutlet="extraInformation; context: { skill: skill }"
+        >
         </ng-container>
       </div>
     </ng-template>
 
     <ng-template #multipleMatchesTmpl>
-      <app-accordian *ngIf="showAccordion" [closedLabel]="similarMultipleMessage" [openLabel]="similarMultipleMessage">
+      <app-accordian
+        *ngIf="showAccordion"
+        [closedLabel]="similarMultipleMessage"
+        [openLabel]="similarMultipleMessage"
+      >
         <div class="m-skillBackground l-inset t-margin-small t-margin-top">
-          <div class="t-margin-extraSmall t-margin-top" *ngFor="let skill of similarSkills">
+          <div
+            class="t-margin-extraSmall t-margin-top"
+            *ngFor="let skill of similarSkills"
+          >
             <!--{{render '@m-interactivetext&#45;&#45;small-with-iconleft'}}-->
-            <a class="m-interactiveText m-interactiveText-small" routerLink="/skills/{{skill.uuid}}/manage" target="_blank">
+            <a
+              class="m-interactiveText m-interactiveText-small"
+              routerLink="/skills/{{ skill.uuid }}/manage"
+              target="_blank"
+            >
               <span class="m-interactiveText-x-icon">
-                <svg class="t-icon"><use xlink:href="/assets/images/svg-defs.svg#icon-warning"></use></svg>
+                <svg class="t-icon">
+                  <use
+                    xlink:href="/assets/images/svg-defs.svg#icon-warning"
+                  ></use>
+                </svg>
               </span>
-              <span class="m-interactiveText-x-text">{{skill.skillName}}</span>
+              <span class="m-interactiveText-x-text">{{
+                skill.skillName
+              }}</span>
             </a>
-            <ng-container *ngTemplateOutlet="extraInformation; context: {skill: skill}">
+            <ng-container
+              *ngTemplateOutlet="extraInformation; context: { skill: skill }"
+            >
             </ng-container>
           </div>
-
         </div>
       </app-accordian>
-
     </ng-template>
-
   </ng-template>
 </div>
 
 <ng-template #extraInformation let-skill="skill">
   <div class="extra-info" *ngIf="showExtraInformation">
     <p>
-      <span class="m-interactiveText-x-text text-small"><strong>Statement: </strong>{{skill.skillStatement}}</span>
+      <span class="m-interactiveText-x-text text-small"
+        ><strong>Statement: </strong>{{ skill.skillStatement }}</span
+      >
     </p>
     <p>
-      <span class="m-interactiveText-x-text text-small"><strong>Categories: </strong>{{skill.categories.join(",")}}</span>
+      <span class="m-interactiveText-x-text text-small"
+        ><strong>Categories: </strong>{{ skill.categories.join(',') }}</span
+      >
     </p>
   </div>
 </ng-template>

@@ -42,17 +42,27 @@ class ImportCommandRunner : CommandLineRunner {
          * --import-type=
          * must match an entry in [[ImportType]]
          */
-        val importType = arguments.find { it.contains("--import-type") }?.split("=")?.last()
-            ?.let { ImportType.valueOf(it.toLowerCase().capitalize()) } ?: ImportType.Batchskill
+        val importType =
+            arguments
+                .find { it.contains("--import-type") }
+                ?.split("=")
+                ?.last()
+                ?.let {
+                    ImportType.valueOf(
+                        it.lowercase().replaceFirstChar { char ->
+                            char.uppercaseChar()
+                        },
+                    )
+                }
+                ?: ImportType.Batchskill
 
         if (csvPath != null) {
-            LOG.info("running import command for ${importType}")
+            LOG.info("running import command for $importType")
             when (importType) {
                 ImportType.Batchskill -> batchImportRichSkill.processCsv(csvPath)
                 ImportType.Bls -> blsImport.processCsv(csvPath)
                 ImportType.Onet -> onetImport.processCsv(csvPath)
             }
-
         } else {
             LOG.error("Missing --csv=path/to/csv argument")
         }
@@ -64,5 +74,5 @@ class ImportCommandRunner : CommandLineRunner {
 enum class ImportType {
     Batchskill,
     Onet,
-    Bls
+    Bls,
 }

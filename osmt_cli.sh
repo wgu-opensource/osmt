@@ -38,6 +38,10 @@ validate_osmt_dev_environment() {
 
   echo
   echo_info "Checking environment files used in local OSMT instances..."
+  # Source env files to check OAuth values, but don't fail if missing (single-auth mode)
+  if [[ -f "${DEV_ENV_FILE}" ]]; then
+    source_env_file_unless_provided_oauth "${DEV_ENV_FILE}" || true
+  fi
   _validate_env_file "${DEV_ENV_FILE}" || is_environment_valid+=1
   _validate_env_file "${APITEST_ENV_FILE}" || is_environment_valid+=1
 
@@ -98,10 +102,42 @@ start_osmt_spring_app() {
 
   source_env_file_unless_provided_oauth "${DEV_ENV_FILE}" || return 1
 
+  # Detect security profile using shared function from common.sh
+  # This ensures consistent profile detection across all scripts
+  local security_profile; security_profile="$(detect_security_profile)"
+  echo_info "Detected security profile: ${security_profile}"
+
+  # Export admin auth variables if set for single-auth mode
+  # Standardize on SINGLE_AUTH_ADMIN_USERNAME/PASSWORD for consistency
+  if [[ "${security_profile}" == "single-auth" ]]; then
+    # Support both OSMT_TEST_ROLE (legacy) and TEST_ROLE for backward compatibility
+    if [[ -n "${TEST_ROLE:-}" ]]; then
+      export TEST_ROLE="${TEST_ROLE}"
+      echo_info "Using test role: ${TEST_ROLE}"
+    elif [[ -n "${OSMT_TEST_ROLE:-}" ]]; then
+      export TEST_ROLE="${OSMT_TEST_ROLE}"
+      echo_warn "OSMT_TEST_ROLE is deprecated, use TEST_ROLE instead"
+      echo_info "Using test role: ${TEST_ROLE}"
+    fi
+    # Support both OSMT_TEST_USER_NAME (legacy) and TEST_USER_NAME
+    if [[ -n "${TEST_USER_NAME:-}" ]]; then
+      export TEST_USER_NAME="${TEST_USER_NAME}"
+    elif [[ -n "${OSMT_TEST_USER_NAME:-}" ]]; then
+      export TEST_USER_NAME="${OSMT_TEST_USER_NAME}"
+      echo_warn "OSMT_TEST_USER_NAME is deprecated, use TEST_USER_NAME instead"
+    fi
+    # Support both OSMT_TEST_USER_EMAIL (legacy) and TEST_USER_EMAIL
+    if [[ -n "${TEST_USER_EMAIL:-}" ]]; then
+      export TEST_USER_EMAIL="${TEST_USER_EMAIL}"
+    elif [[ -n "${OSMT_TEST_USER_EMAIL:-}" ]]; then
+      export TEST_USER_EMAIL="${OSMT_TEST_USER_EMAIL}"
+      echo_warn "OSMT_TEST_USER_EMAIL is deprecated, use TEST_USER_EMAIL instead"
+    fi
+  fi
+
   _cd_osmt_project_dir || return 1
   cd api || return 1
 
-  local security_profile="${OSMT_SECURITY_PROFILE:-oauth2-okta}"
   echo
   echo_info "Starting OSMT via Maven Spring Boot plug-in with ${security_profile} security profile (Maven log output suppressed)..."
   mvn -q -Dspring-boot.run.profiles=dev,apiserver,"${security_profile}" spring-boot:run
@@ -243,7 +279,8 @@ Usage:
        be detached, with containers named "osmt_dev". You can review status with 'docker ps'.
   -e   Stop the detached backend Development Docker stack (MySQL, ElasticSearch, Redis).
   -s   Start the local Spring app, as built from source code. This also sources the api/osmt-dev-stack.env file
-       for OAUTH2-related environment variables.
+       for OAUTH2-related environment variables. If OAuth credentials are missing, the 'single-auth' profile will be
+       used automatically. Set OSMT_SECURITY_PROFILE to override (oauth2 or single-auth).
   -l   Load the static CI dataset into the local MySQL instance. This will delete all data from the MySQL database.
        This action requires the database schema to be present. Locally, this is done by Flyway when the Spring
        application starts. You may need to start the Spring application first, and you will need to reindex

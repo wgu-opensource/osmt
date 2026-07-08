@@ -1,0 +1,26 @@
+{
+  "recommendations": [
+    "fwcd.kotlin",
+    "mathiasfrohlich.Kotlin",
+    "vscjava.vscode-java-pack",
+    "vmware.vscode-spring-boot",
+    "angular.ng-template",
+    "johnpapa.angular2",
+    "dbaeumer.vscode-eslint",
+    "vscjava.vscode-maven",
+    "firsttris.vscode-jest-runner",
+    "mtxr.sqltools",
+    "mtxr.sqltools-driver-mysql",
+    "ms-azuretools.vscode-docker",
+    "esbenp.prettier-vscode",
+    "sonarsource.sonarlint-vscode",
+    "redhat.vscode-yaml",
+    "redhat.vscode-xml",
+    "humao.rest-client",
+    "usernamehw.errorlens",
+    "christian-kohler.path-intellisense",
+    "rangav.vscode-thunder-client"
+  ]
+}
+
+

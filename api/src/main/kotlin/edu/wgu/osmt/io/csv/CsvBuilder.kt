@@ -7,7 +7,8 @@ package edu.wgu.osmt.io.csv
  * Unlike implementing CsvResource with a concrete type, this function produces an anonymous class implementation
  * so it probably shouldn't be invoked repeatedly for identical document shapes, like in a loop.
  */
-fun <T> buildCsv(lambda: CsvResourceBuilder<T>.() -> Unit): CsvResource<T> = CsvResourceBuilder<T>().apply(lambda).build()
+fun <T> buildCsv(lambda: CsvResourceBuilder<T>.() -> Unit): CsvResource<T> =
+    CsvResourceBuilder<T>().apply(lambda).build()
 
 class CsvResourceBuilder<T> {
     var name: String = ""
@@ -30,21 +31,19 @@ class CsvResourceBuilder<T> {
         return this
     }
 
-    fun build(): CsvResource<T> {
-        return object : CsvResource<T>(name) {
+    fun build(): CsvResource<T> =
+        object : CsvResource<T>(name) {
             override fun columnTranslations(d: List<T>): Array<CsvColumn<T>> = data.toTypedArray()
+
             override fun configureCsv(): CsvConfig = config
         }
-    }
 }
 
 class CsvColumnBuilder<T> {
     var name = ""
     var translate: (T) -> String = { t -> t.toString() }
 
-    fun build(): CsvColumn<T> {
-        return CsvColumn(name, translate)
-    }
+    fun build(): CsvColumn<T> = CsvColumn(name, translate)
 }
 
 class CsvConfigBuilder<T> {
@@ -54,7 +53,5 @@ class CsvConfigBuilder<T> {
     var lineEnd: String = CsvConfig.lineEnd
     var includeHeader: Boolean = CsvConfig.includeHeader
 
-    fun build(): CsvConfig {
-        return CsvConfig(delimiter, quoteChar, escapeChar, lineEnd, includeHeader)
-    }
+    fun build(): CsvConfig = CsvConfig(delimiter, quoteChar, escapeChar, lineEnd, includeHeader)
 }

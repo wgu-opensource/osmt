@@ -1,24 +1,33 @@
-import { Component, Inject, LOCALE_ID, OnInit } from "@angular/core"
-import { Title } from "@angular/platform-browser"
-import { ActivatedRoute, Router } from "@angular/router"
+import {
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  LOCALE_ID,
+  OnInit,
+} from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { AuthService } from "../auth/auth-service"
-import { ManageCollectionComponent } from "../collection/detail/manage-collection.component"
-import { CollectionService } from "../collection/service/collection.service"
-import { RichSkillService } from "../richskill/service/rich-skill.service"
-import { ApiSearch } from "../richskill/service/rich-skill-search.service"
-import { TableActionDefinition } from "../table/skills-library-table/has-action-definitions"
-import { ToastService } from "../toast/toast.service"
+import { AuthService } from '../auth/auth-service';
+import { ManageCollectionComponent } from '../collection/detail/manage-collection.component';
+import { CollectionService } from '../collection/service/collection.service';
+import { RichSkillService } from '../richskill/service/rich-skill.service';
+import { ApiSearch } from '../richskill/service/rich-skill-search.service';
+import { TableActionDefinition } from '../table/skills-library-table/has-action-definitions';
+import { ToastService } from '../toast/toast.service';
+import { SyncService } from '../admin/sync/sync.service';
 
-export const WORKSPACE_COLLECTIONS_UUIDS = "workspace-collections-uuids"
+export const WORKSPACE_COLLECTIONS_UUIDS = 'workspace-collections-uuids';
 
 @Component({
-  selector: "app-my-workspace",
-  templateUrl: "../collection/detail/manage-collection.component.html"
+  selector: 'app-my-workspace',
+  templateUrl: '../collection/detail/manage-collection.component.html',
 })
-export class MyWorkspaceComponent extends ManageCollectionComponent implements OnInit {
-
-  showLog = false
+export class MyWorkspaceComponent
+  extends ManageCollectionComponent
+  implements OnInit
+{
+  showLog = false;
 
   constructor(
     protected router: Router,
@@ -28,95 +37,115 @@ export class MyWorkspaceComponent extends ManageCollectionComponent implements O
     protected route: ActivatedRoute,
     protected titleService: Title,
     protected authService: AuthService,
-    @Inject(LOCALE_ID) protected locale: string
+    @Inject(LOCALE_ID) protected locale: string,
+    protected cdr: ChangeDetectorRef,
+    protected syncService: SyncService
   ) {
-    super(router, richSkillService, toastService, collectionService, route, titleService, authService, locale)
+    super(
+      router,
+      richSkillService,
+      toastService,
+      collectionService,
+      route,
+      titleService,
+      authService,
+      locale,
+      cdr,
+      syncService
+    );
   }
 
   ngOnInit(): void {
-    this.reloadCollection()
+    this.reloadCollection();
   }
 
   reloadCollection(): void {
-      this.collectionService.getWorkspace().subscribe(collection => {
-        this.titleService.setTitle(`${collection.name} | Collection | ${this.whitelabel.toolName}`)
-        this.collection = collection
-        this.uuidParam = this.collection.uuid
-        this.loadNextPage()
-      })
+    this.collectionService.getWorkspace().subscribe(collection => {
+      this.titleService.setTitle(
+        `${collection.name} | Collection | ${this.whitelabel.toolName}`
+      );
+      this.collection = collection;
+      this.uuidParam = this.collection.uuid;
+      this.loadNextPage();
+    });
   }
 
   actionDefinitions(): TableActionDefinition[] {
     return [
       new TableActionDefinition({
-        label: "Add RSDs to My Workspace",
+        label: 'Add RSDs to My Workspace',
         icon: this.addIcon,
         callback: () => this.addSkillsAction(),
-        visible: () => true
+        visible: () => true,
       }),
       new TableActionDefinition({
-        label: "Download",
+        label: 'Download',
         icon: this.downloadIcon,
         menu: [
           {
-            label: "Download as CSV",
+            label: 'Download as CSV',
             visible: () => true,
-            callback: () => this.exporter.getCollectionCsv(
-              this.uuidParam ?? "",
-              this.collection?.name ?? ""
-            )
+            callback: () =>
+              this.exporter.getCollectionCsv(
+                this.uuidParam ?? '',
+                this.collection?.name ?? ''
+              ),
           },
           {
-            label: "Download as Excel Workbook",
+            label: 'Download as Excel Workbook',
             visible: () => true,
-            callback: () => this.exporter.getCollectionXlsx(
-              this.uuidParam ?? "",
-              this.collection?.name ?? ""
-            ),
-          }
+            callback: () =>
+              this.exporter.getCollectionXlsx(
+                this.uuidParam ?? '',
+                this.collection?.name ?? ''
+              ),
+          },
         ],
-        visible: () => !this.workspaceEmpty()
+        visible: () => !this.workspaceEmpty(),
       }),
       new TableActionDefinition({
-        label: "Convert to Collection",
+        label: 'Convert to Collection',
         icon: this.publishIcon,
         callback: () => this.convertToCollectionAction(),
-        visible: () => !this.workspaceEmpty()
+        visible: () => !this.workspaceEmpty(),
       }),
       new TableActionDefinition({
-        label: "Reset My Workspace",
+        label: 'Reset My Workspace',
         icon: this.deleteIcon,
         callback: () => this.deleteCollectionAction(),
-        visible: () => !this.workspaceEmpty()
-      })
-    ]
+        visible: () => !this.workspaceEmpty(),
+      }),
+    ];
   }
 
   private workspaceEmpty(): boolean {
-    return (this.collection?.skills?.length ?? 0) === 0
+    return (this.collection?.skills?.length ?? 0) === 0;
   }
 
   get confirmMessageText(): string {
-    return "reset My Workspace"
+    return 'reset My Workspace';
   }
 
   get confirmButtonText(): string {
-    return "reset My Workspace"
+    return 'reset My Workspace';
   }
 
-   handleConfirmDeleteCollection(): void {
-    this.submitSkillRemoval(new ApiSearch({uuids: this.collection?.skills.map(s => (s as any).uuid)}))
-    this.template = "default"
+  handleConfirmDeleteCollection(): void {
+    this.submitSkillRemoval(
+      new ApiSearch({
+        uuids: this.collection?.skills.map(s => (s as any).uuid),
+      })
+    );
+    this.template = 'default';
   }
 
   private convertToCollectionAction(): void {
-    const uuids = this.collection?.skills.map(s => (s as any).uuid)
-    localStorage.setItem(WORKSPACE_COLLECTIONS_UUIDS, JSON.stringify(uuids))
-    this.router.navigate(["/my-workspace/convert-to-collection"])
+    const uuids = this.collection?.skills.map(s => (s as any).uuid);
+    localStorage.setItem(WORKSPACE_COLLECTIONS_UUIDS, JSON.stringify(uuids));
+    this.router.navigate(['/my-workspace/convert-to-collection']);
   }
 
   addSkillsAction(): void {
-    this.router.navigate([`/my-workspace/${this.collection?.uuid}/add-skills`])
+    this.router.navigate([`/my-workspace/${this.collection?.uuid}/add-skills`]);
   }
-
 }

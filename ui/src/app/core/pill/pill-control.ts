@@ -1,48 +1,75 @@
-import {IAlignment, INamedReference, KeywordCount} from "../../richskill/ApiSkill";
+import {
+  IAlignment,
+  INamedReference,
+  KeywordCount,
+} from '../../richskill/ApiSkill';
 
 export abstract class AbstractPillControl {
+  private selected = false;
 
-  private selected: boolean = false
+  abstract get primaryLabel(): string;
 
-  abstract get primaryLabel(): string
+  get linkUrl(): string | undefined {
+    return undefined;
+  }
 
-  get secondaryLabel(): string|undefined { return undefined }
+  get secondaryLabel(): string | undefined {
+    return undefined;
+  }
 
   get isSelected(): boolean {
-    return this.selected
+    return this.selected;
   }
 
   deselect() {
-    this.selected = false
+    this.selected = false;
   }
 
   select() {
-    this.selected = true
+    this.selected = true;
   }
 }
 
 export class KeywordCountPillControl extends AbstractPillControl {
+  readonly keywordCount: KeywordCount;
+  readonly categoryLinkPrefix?: string;
 
-  readonly keywordCount: KeywordCount
-
-  constructor(keywordCount: KeywordCount) {
+  constructor(keywordCount: KeywordCount, categoryLinkPrefix?: string) {
     super();
-    this.keywordCount = keywordCount
+    this.keywordCount = keywordCount;
+    this.categoryLinkPrefix = categoryLinkPrefix;
   }
 
   get keyword(): IAlignment | INamedReference | string {
-    return this.keywordCount.keyword
+    return this.keywordCount.keyword;
   }
 
   get count(): number {
-    return this.keywordCount.count
+    return this.keywordCount.count;
   }
 
   get primaryLabel(): string {
-    return `${this.keyword}`
+    const kw = this.keyword;
+    if (typeof kw === 'object' && kw !== null && 'name' in kw) {
+      return (kw as INamedReference).name ?? '';
+    }
+    if (typeof kw === 'object' && kw !== null && 'skillName' in kw) {
+      return (kw as IAlignment).skillName ?? '';
+    }
+    return String(kw ?? '');
+  }
+
+  get linkUrl(): string | undefined {
+    if (!this.categoryLinkPrefix) return undefined;
+    const kw = this.keyword;
+    const id =
+      typeof kw === 'object' && kw !== null && 'id' in kw
+        ? (kw as INamedReference).id
+        : undefined;
+    return id ? `${this.categoryLinkPrefix}${id}` : undefined;
   }
 
   get secondaryLabel(): string | undefined {
-    return `${this.count}`
+    return `${this.count}`;
   }
 }

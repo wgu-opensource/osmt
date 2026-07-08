@@ -12,19 +12,24 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
-
 @Transactional
-class KeywordRepositoryTest: SpringTest(), HasDatabaseReset {
-
+class KeywordRepositoryTest :
+    SpringTest(),
+    HasDatabaseReset {
     @Autowired
     lateinit var keywordRepository: KeywordRepository
 
     @Test
     fun `should not create keyword with blank value and uri`() {
-        var keyword = keywordRepository.findOrCreate(KeywordTypeEnum.Keyword, value=null, uri=null)
+        var keyword =
+            keywordRepository.findOrCreate(
+                KeywordTypeEnum.Keyword,
+                value = null,
+                uri = null,
+            )
         assertThat(keyword).isNull()
 
-        keyword = keywordRepository.create(KeywordTypeEnum.Category, value=null, uri=null)
+        keyword = keywordRepository.create(KeywordTypeEnum.Category, value = null, uri = null)
         assertThat(keyword).isNull()
     }
 
@@ -33,10 +38,20 @@ class KeywordRepositoryTest: SpringTest(), HasDatabaseReset {
         val keywordName = UUID.randomUUID().toString()
         val keywordUri = UUID.randomUUID().toString()
 
-        val byNameAndUri = keywordRepository.findOrCreate(KeywordTypeEnum.Standard, value=keywordName, uri=keywordUri)?.toModel()
+        val byNameAndUri =
+            keywordRepository
+                .findOrCreate(
+                    KeywordTypeEnum.Standard,
+                    value = keywordName,
+                    uri = keywordUri,
+                )?.toModel()
         assertThat(byNameAndUri).isNotNull
 
-        val byNameDao = keywordRepository.findOrCreate(KeywordTypeEnum.Standard, value=keywordName)
+        val byNameDao =
+            keywordRepository.findOrCreate(
+                KeywordTypeEnum.Standard,
+                value = keywordName,
+            )
         assertThat(byNameDao).isNotNull
 
         val byName = keywordRepository.findById(byNameDao!!.id.value)?.toModel()
@@ -45,43 +60,53 @@ class KeywordRepositoryTest: SpringTest(), HasDatabaseReset {
         assertThat(byName?.value).isEqualTo(keywordName)
         assertThat(byName?.uri).isNull()
 
-        val relookupByName = keywordRepository.findOrCreate(KeywordTypeEnum.Standard, value=keywordName)
+        val relookupByName =
+            keywordRepository.findOrCreate(
+                KeywordTypeEnum.Standard,
+                value = keywordName,
+            )
         assertThat(relookupByName).isNotNull
         assertThat(relookupByName!!.id).isEqualTo(byNameDao.id)
 
-        val byUriDao = keywordRepository.findOrCreate(KeywordTypeEnum.Standard, uri=keywordUri)
+        val byUriDao = keywordRepository.findOrCreate(KeywordTypeEnum.Standard, uri = keywordUri)
         assertThat(byUriDao).isNotNull
         val byUri = keywordRepository.findById(byUriDao!!.id.value)?.toModel()
         assertThat(byUri).isNotNull
         assertThat(byUri?.id).isNotEqualTo(byNameAndUri?.id)
         assertThat(byUri?.value).isNull()
         assertThat(byUri?.uri).isEqualTo(keywordUri)
-
     }
 
     @Test
     fun `should (de)serialize all ApiAlignment fields correctly`() {
         val mapper = jacksonObjectMapper()
         val frameworkName = "frameworkName"
-        val frameworkRef = ApiNamedReference(name=frameworkName)
-        val alignment = ApiAlignment(id="http://skill.test/test-skill", skillName="Test Skill", isPartOf=frameworkRef)
+        val frameworkRef = ApiNamedReference(name = frameworkName)
+        val alignment =
+            ApiAlignment(
+                id = "http://skill.test/test-skill",
+                skillName = "Test Skill",
+                isPartOf = frameworkRef,
+            )
         val jsonstr = mapper.writeValueAsString(alignment)
 
-        val expectedJson = "{\"id\":\"${alignment.id}\",\"skillName\":\"${alignment.skillName}\",\"isPartOf\":{\"name\":\"${frameworkName}\"}}"
+        val expectedJson =
+            "{\"id\":\"${alignment.id}\",\"skillName\":\"${alignment.skillName}\",\"isPartOf\":{\"name\":\"${frameworkName}\"}}"
         assertThat(jsonstr).isEqualTo(expectedJson)
 
         val readAlignment: ApiAlignment = mapper.readValue(expectedJson, ApiAlignment::class.java)
         assertThat(readAlignment).isEqualTo(alignment)
 
-        val alu = ApiAlignmentListUpdate(add=listOf(alignment))
+        val alu = ApiAlignmentListUpdate(add = listOf(alignment))
         val aluStr = mapper.writeValueAsString(alu)
-        val expectedAlu = "{\"add\":[${expectedJson}],\"remove\":null}"
+        val expectedAlu = "{\"add\":[$expectedJson],\"remove\":null}"
         assertThat(aluStr).isEqualTo(expectedAlu)
 
-        val readAlu: ApiAlignmentListUpdate = mapper.readValue(expectedAlu, ApiAlignmentListUpdate::class.java)
+        val readAlu: ApiAlignmentListUpdate =
+            mapper.readValue(
+                expectedAlu,
+                ApiAlignmentListUpdate::class.java,
+            )
         assertThat(readAlu).isEqualTo(alu)
-
     }
-
 }
-

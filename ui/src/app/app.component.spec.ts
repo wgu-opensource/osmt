@@ -1,138 +1,132 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing"
-import { Type } from "@angular/core"
-import { async, ComponentFixture, TestBed } from "@angular/core/testing"
-import { FormsModule } from "@angular/forms"
-import { Title } from "@angular/platform-browser"
-import { NavigationEnd, Router } from "@angular/router"
-import { RouterTestingModule } from "@angular/router/testing"
-import { of } from "rxjs"
-import { AppConfig } from "src/app/app.config"
-import { EnvironmentService } from "src/app/core/environment.service"
-import { ActivatedRouteStubSpec } from "test/util/activated-route-stub.spec"
-import { AuthServiceStub, SearchServiceStub } from "../../test/resource/mock-stubs"
-import { RouterStubSpec } from "../../test/util/router-stub.spec"
-import { AppComponent } from "./app.component"
-import { AuthService } from "./auth/auth-service"
-import { SearchService } from "./search/search.service"
-import { ToastService } from "./toast/toast.service"
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Type } from '@angular/core';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
+import { NavigationEnd, Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
+import { AppConfig } from 'src/app/app.config';
+import { EnvironmentService } from 'src/app/core/environment.service';
+import { ActivatedRouteStubSpec } from 'test/util/activated-route-stub.spec';
+import {
+  AuthServiceStub,
+  SearchServiceStub,
+} from '../../test/resource/mock-stubs';
+import { RouterStubSpec } from '../../test/util/router-stub.spec';
+import { AppComponent } from './app.component';
+import { AuthService } from './auth/auth-service';
+import { SearchService } from './search/search.service';
+import { ToastService } from './toast/toast.service';
 
 export function createComponent(T: Type<AppComponent>): Promise<void> {
-  fixture = TestBed.createComponent(T)
-  component = fixture.componentInstance
+  fixture = TestBed.createComponent(T);
+  component = fixture.componentInstance;
 
   // 1st change detection triggers ngOnInit which gets a hero
-  fixture.detectChanges()
+  fixture.detectChanges();
 
   return fixture.whenStable().then(() => {
     // 2nd change detection displays the async-fetched hero
-    fixture.detectChanges()
-  })
+    fixture.detectChanges();
+  });
 }
 
+let routerStub: RouterStubSpec;
+let component: AppComponent;
+let fixture: ComponentFixture<AppComponent>;
 
-let routerStub: RouterStubSpec
-let component: AppComponent
-let fixture: ComponentFixture<AppComponent>
-
-
-describe("AppComponent construction", () => {
+describe('AppComponent construction', () => {
   beforeEach(() => {
     // By using RouterStubSpec, AppComponent.initClearSearchOnNavigate() is covered.
-    routerStub = new RouterStubSpec()
-  })
+    routerStub = new RouterStubSpec();
+  });
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
+      declarations: [AppComponent],
       imports: [
-        RouterTestingModule,  // Required for routerLink
-        HttpClientTestingModule,  // Needed to avoid the toolName race condition below
+        RouterTestingModule, // Required for routerLink
+        HttpClientTestingModule, // Needed to avoid the toolName race condition below
       ],
       providers: [
-        EnvironmentService,  // Needed to avoid the toolName race condition below
-        AppConfig,  // Needed to avoid the toolName race condition below
+        EnvironmentService, // Needed to avoid the toolName race condition below
+        AppConfig, // Needed to avoid the toolName race condition below
         Title,
         ToastService,
         { provide: AuthService, useClass: AuthServiceStub },
         { provide: SearchService, useClass: SearchServiceStub },
         { provide: Router, useValue: routerStub },
-      ]
-    })
-    .compileComponents()
+      ],
+    }).compileComponents();
 
-    const appConfig = TestBed.inject(AppConfig)
-    AppConfig.settings = appConfig.defaultConfig()  // This avoids the race condition on reading the config's whitelabel.toolName
+    const appConfig = TestBed.inject(AppConfig);
+    AppConfig.settings = appConfig.defaultConfig(); // This avoids the race condition on reading the config's whitelabel.toolName
 
-    const url = "/api/collections/search"
-    routerStub.setNavigationEnd(new NavigationEnd(0, url, url))
+    const url = '/api/collections/search';
+    routerStub.setNavigationEnd(new NavigationEnd(0, url, url));
 
-    createComponent(AppComponent)
-  }))
+    createComponent(AppComponent);
+  }));
 
-  it("should be created", () => {
-    expect(component).toBeTruthy()
-  })
-})
+  it('should be created', () => {
+    expect(component).toBeTruthy();
+  });
+});
 
-describe("AppComponent methods", () => {
-  beforeEach(async(() => {
-    const routerSpy = ActivatedRouteStubSpec.createRouterSpy()
+describe('AppComponent methods', () => {
+  beforeEach(waitForAsync(() => {
+    const routerSpy = ActivatedRouteStubSpec.createRouterSpy();
 
     TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
+      declarations: [AppComponent],
       imports: [
-        FormsModule,  // Required for ([ngModel])
-        RouterTestingModule,  // Required for routerLink
-        HttpClientTestingModule,  // Needed to avoid the toolName race condition below
+        FormsModule, // Required for ([ngModel])
+        RouterTestingModule, // Required for routerLink
+        HttpClientTestingModule, // Needed to avoid the toolName race condition below
       ],
       providers: [
-        EnvironmentService,  // Needed to avoid the toolName race condition below
-        AppConfig,  // Needed to avoid the toolName race condition below
+        EnvironmentService, // Needed to avoid the toolName race condition below
+        AppConfig, // Needed to avoid the toolName race condition below
         Title,
         ToastService,
         { provide: AuthService, useClass: AuthServiceStub },
         { provide: SearchService, useClass: SearchServiceStub },
         { provide: Router, useValue: routerSpy },
-      ]
-    })
-    .compileComponents()
+      ],
+    }).compileComponents();
 
-    const appConfig = TestBed.inject(AppConfig)
-    AppConfig.settings = appConfig.defaultConfig()  // This avoids the race condition on reading the config's whitelabel.toolName
+    const appConfig = TestBed.inject(AppConfig);
+    AppConfig.settings = appConfig.defaultConfig(); // This avoids the race condition on reading the config's whitelabel.toolName
 
-/* Cannot set color through AppConfig because the required white/black defaults aren't being set.  It's an unused feature.
+    /* Cannot set color through AppConfig because the required white/black defaults aren't being set.  It's an unused feature.
     const testColor = "#234567"
     AppConfig.settings.colorBrandAccent1 = testColor
 */
 
-    routerSpy.events = of(undefined)  // Component uses events, but it was undefined, so making it an Observable.
+    routerSpy.events = of(undefined); // Component uses events, but it was undefined, so making it an Observable.
 
-    createComponent(AppComponent)
-  }))
+    createComponent(AppComponent);
+  }));
 
-  it("setWhiteLabelColor should return", () => {
+  it('setWhiteLabelColor should return', () => {
     // Arrange
-    const testBlack = "#2F2F2F"
-    const testWhite = "#CFCFCF"
-    const testColor = "#123456"
-    const style = document.documentElement.style
-    const expected = testColor
+    const testBlack = '#2F2F2F';
+    const testWhite = '#CFCFCF';
+    const testColor = '#123456';
+    const style = document.documentElement.style;
+    const expected = testColor;
 
     // This tests a function that is not apparently used, and the default styles don't seem to be set either, causing
     //   the method to throw an exception.  So in order to get the test to run, we fix those assumed colors here.
-    style.setProperty("--color-onBrandBlack", testBlack)
-    style.setProperty("--color-onBrandWhite", testWhite)
+    style.setProperty('--color-onBrandBlack', testBlack);
+    style.setProperty('--color-onBrandWhite', testWhite);
 
     // Act
-    component.setWhiteLabelColor(testColor)
+    component.setWhiteLabelColor(testColor);
 
     // Assert
-    expect(style.getPropertyValue("--color-brand1")).toEqual(expected)
-    expect(style.getPropertyValue("--color-a11yOnBrand")).toEqual(testWhite)
-  })
-})
+    expect(style.getPropertyValue('--color-brand1')).toEqual(expected);
+    expect(style.getPropertyValue('--color-a11yOnBrand')).toEqual(testWhite);
+  });
+});

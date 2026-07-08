@@ -8,7 +8,7 @@ describe('InlineErrorComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [InlineErrorComponent]
+      declarations: [InlineErrorComponent],
     });
     fixture = TestBed.createComponent(InlineErrorComponent);
     component = fixture.componentInstance;

@@ -28,13 +28,10 @@ class ApiKeyword(
         get() = totalSkills
 
     companion object {
-        fun fromDao(
-            keywordDao: KeywordDao,
-        ): ApiKeyword {
-            return ApiKeyword(
+        fun fromDao(keywordDao: KeywordDao): ApiKeyword =
+            ApiKeyword(
                 keyword = keywordDao.toModel(),
                 totalSkills = keywordDao.skills.count(),
             )
-        }
     }
 }

@@ -1,23 +1,25 @@
-import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core"
-import {RichSkillService} from "../service/rich-skill.service"
-import {ActivatedRoute} from "@angular/router"
-import {ApiSkill, ApiUuidReference, INamedReference} from "../ApiSkill"
-import {IDetailCardSectionData} from "../../detail-card/section/section.component"
-import {Observable} from "rxjs"
-import {PublishStatus} from "../../PublishStatus"
-import {QuickLinksHelper} from "../../core/quick-links-helper"
-import {dateformat} from "../../core/DateHelper"
-import {Title} from "@angular/platform-browser";
+import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
+import { RichSkillService } from '../service/rich-skill.service';
+import { ActivatedRoute } from '@angular/router';
+import { ApiSkill, ApiUuidReference, INamedReference } from '../ApiSkill';
+import { IDetailCardSectionData } from '../../detail-card/section/section.component';
+import { Observable } from 'rxjs';
+import { PublishStatus } from '../../PublishStatus';
+import { QuickLinksHelper } from '../../core/quick-links-helper';
+import { dateformat } from '../../core/DateHelper';
+import { canonicalSkillPublicUrl } from '../../core/canonical-public-url.utils';
+import { Title } from '@angular/platform-browser';
 
-@Component({template: ``})
-export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper implements OnInit {
+@Component({ template: `` })
+export abstract class AbstractRichSkillDetailComponent
+  extends QuickLinksHelper
+  implements OnInit
+{
+  uuidParam: string | null;
+  richSkill: ApiSkill | null = null;
+  loading = true;
 
-
-  uuidParam: string | null
-  richSkill: ApiSkill | null = null
-  loading = true
-
-  skillLoaded: Observable<ApiSkill> | null = null
+  skillLoaded: Observable<ApiSkill> | null = null;
 
   constructor(
     protected richSkillService: RichSkillService,
@@ -25,97 +27,108 @@ export abstract class AbstractRichSkillDetailComponent extends QuickLinksHelper 
     protected titleService: Title,
     @Inject(LOCALE_ID) protected locale: string
   ) {
-    super()
-    this.uuidParam = this.route.snapshot.paramMap.get("uuid")
+    super();
+    this.uuidParam = this.route.snapshot.paramMap.get('uuid');
   }
 
   ngOnInit(): void {
-    this.loadSkill()
+    this.loadSkill();
   }
 
-  abstract getCardFormat(): IDetailCardSectionData[]
+  abstract getCardFormat(): IDetailCardSectionData[];
 
   loadSkill(): void {
-
-    this.skillLoaded = this.richSkillService.getSkillByUUID(this.uuidParam ?? "")
+    this.skillLoaded = this.richSkillService.getSkillByUUID(
+      this.uuidParam ?? ''
+    );
     this.skillLoaded.subscribe(skill => {
-      this.richSkill = skill
-      this.titleService.setTitle(`${skill.skillName} | Rich Skill Descriptor | ${this.whitelabel.toolName}`)
-    })
+      this.richSkill = skill;
+      this.titleService.setTitle(
+        `${skill.skillName} | Rich Skill Descriptor | ${this.whitelabel.toolName}`
+      );
+    });
   }
 
   getAuthors(): string {
-    return this.joinAuthors()
+    return this.joinAuthors();
   }
 
   getSkillUuid(): string {
-    return this.richSkill?.uuid ?? ""
+    return this.richSkill?.uuid ?? '';
   }
 
   getSkillName(): string {
-    return this.richSkill?.skillName ?? ""
+    return this.richSkill?.skillName ?? '';
   }
 
   getSkillStatus(): PublishStatus | undefined {
-    return this.richSkill?.status
+    return this.richSkill?.status;
   }
 
   getPublishStatus(): PublishStatus {
-    return this.richSkill?.status ?? PublishStatus.Draft
+    return this.richSkill?.status ?? PublishStatus.Draft;
   }
 
   getSkillUrl(): string {
-    return this.richSkill?.id ?? ""
+    return canonicalSkillPublicUrl(
+      this.richSkill?.id ?? '',
+      this.richSkill?.uuid ?? ''
+    );
   }
 
   getPublishedDate(): string {
     return this.richSkill?.publishDate
       ? dateformat(this.richSkill?.publishDate, this.locale)
-      : ""
+      : '';
   }
 
   getArchivedDate(): string {
     return this.richSkill?.archiveDate
       ? dateformat(this.richSkill?.archiveDate, this.locale)
-      : ""
+      : '';
   }
 
   joinAuthors(): string {
-    const authors = this.richSkill?.authors || []
-    return this.joinList("; ", authors)
+    const authors = this.richSkill?.authors || [];
+    return this.joinList('; ', authors);
   }
 
   joinKeywords(): string {
-    const keywords = this.richSkill?.keywords || []
-    return this.joinList("; ", keywords)
+    const keywords = this.richSkill?.keywords || [];
+    return this.joinList('; ', keywords);
   }
 
   joinEmployers(): string {
-    const employers = this.richSkill?.employers || []
-    return this.joinGenericKeywords("; ", employers)
+    const employers = this.richSkill?.employers || [];
+    return this.joinGenericKeywords('; ', employers);
   }
 
   private joinList(delimiter: string, list: string[]): string {
-    return list
-      .filter(item => item)
-      .join(delimiter)
+    return list.filter(item => item).join(delimiter);
   }
 
-  private joinGenericKeywords(delimiter: string, keywords: INamedReference[]): string {
-    const filteredList: string[] = keywords
-      .map(keyword => (keyword.name ? keyword.name : keyword.id) as string)
+  private joinGenericKeywords(
+    delimiter: string,
+    keywords: INamedReference[]
+  ): string {
+    const filteredList: string[] = keywords.map(
+      keyword => (keyword.name ? keyword.name : keyword.id) as string
+    );
 
-    return this.joinList(delimiter, filteredList)
+    return this.joinList(delimiter, filteredList);
   }
 
   protected formatAssociatedCollections(isAuthorized: boolean): string {
     const targetUrl = (it: ApiUuidReference) => {
-      return `/collections/${it.uuid}${isAuthorized ? "/manage" : ""}`
-    }
-    return this.richSkill?.collections
-      ?.map(it => `<div><a class="t-link" href="${targetUrl(it)}">${it.name}</a></div>`)
-      ?.join("<br>")
-      ?? ""
-
+      return `/collections/${it.uuid}${isAuthorized ? '/manage' : ''}`;
+    };
+    return (
+      this.richSkill?.collections
+        ?.map(
+          it =>
+            `<div><a class="t-link" href="${targetUrl(it)}">${it.name}</a></div>`
+        )
+        ?.join('<br>') ?? ''
+    );
   }
 }

@@ -1,0 +1,87 @@
+services:
+  ui:
+    image: osmt-ui:${OSMT_VERSION:-latest}
+    build:
+      context: .
+      dockerfile: ui/Dockerfile
+      target: deploy
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./ui/src/config/config.json:/usr/share/nginx/html/config/config.json:ro
+    profiles:
+      - all
+      - build
+      - ui-build
+      - test
+  api:
+    image: osmt-api:${OSMT_VERSION:-latest}
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+      target: deploy
+    depends_on:
+      - ui
+    profiles:
+      - all
+      - build
+
+  api-test:
+    image: osmt-api-test:${OSMT_VERSION:-latest}
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+      target: test
+    depends_on:
+      - ui
+    profiles:
+      - test
+
+  db-mysql:
+    image: library/mysql:8.0
+    command: --default-authentication-plugin=caching_sha2_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - sql_db:/var/lib/mysql:rw
+      - ./api/docker/mysql-init:/docker-entrypoint-initdb.d
+    environment:
+      - "MYSQL_PASSWORD=password"
+      - "MYSQL_HOST=0.0.0.0"
+      - "MYSQL_ROOT_PASSWORD=password"
+      - "MYSQL_USER=user"
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    profiles:
+      - all
+
+  db-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.3
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+    environment:
+      - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+    ports:
+      - "${ELASTICSEARCH_HTTP_PORT:-9200}:9200"
+      - "${ELASTICSEARCH_TRANSPORT_PORT:-9300}:9300"
+    profiles:
+      - all
+
+  db-redis:
+    image: library/redis:6.0.6
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    profiles:
+      - all
+
+# networks:
+#   osmt:
+#     driver: bridge
+
+volumes:
+  sql_db:
+  elastic_data:

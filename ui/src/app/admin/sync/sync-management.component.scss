@@ -1,0 +1,46 @@
+.l-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.l-loading {
+  margin: 2rem 0;
+}
+
+.l-syncSummary {
+  .m-inlineMessage-x-message .m-code-copyable {
+    margin-left: 0.25em;
+  }
+}
+
+.l-syncSection {
+  margin-top: 1.5rem;
+}
+
+.l-syncActions {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.m-button-resync-danger {
+  background-color: var(--color-attention, #bd2b41) !important;
+  color: white !important;
+  border: none;
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-attention, #bd2b41) !important;
+    filter: brightness(1.1);
+  }
+}
+
+.m-code-copyable {
+  cursor: pointer;
+  padding: 0.15em 0.35em;
+  border-radius: 3px;
+  background: var(--color-surface-2, #f0f0f0);
+  font-family: monospace;
+  font-size: 0.9em;
+}

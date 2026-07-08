@@ -1,17 +1,14 @@
-import {Component, Input, OnInit} from "@angular/core";
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: "app-empty-message",
-  templateUrl: "./empty-message.component.html"
+  selector: 'app-empty-message',
+  templateUrl: './empty-message.component.html',
 })
 export class EmptyMessageComponent implements OnInit {
-  @Input() count: number = 0
-  @Input() isForm: boolean = false
+  @Input() count = 0;
+  @Input() isForm = false;
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

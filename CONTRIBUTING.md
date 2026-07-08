@@ -33,17 +33,17 @@ We use GitHub's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues).
     - Our E2E tests should be implemented in WebdriverIO as automated browser tests, and should require walking through functionality on an actual OSMT instance. These are the most expensive and time-consuming tests. They are needed to ensure that layers of the application are wired up correctly, but should be used sparingly.
 
 ## Release / Branching Strategy
-The OSMT project will follow the [GitFlow](https://nvie.com/posts/a-successful-git-branching-model/) model, with
-* Enhancement and bug fix work done on feature branches (```feature/branch-name```)
-* Feature branches merge into ```develop```, as the integration branch
-* Releases are cut from ```develop``` (as ```release-branch-name```), and merged back in to both ```master``` and ```develop```
->
+The OSMT project uses `main` as the primary integration branch:
+* Enhancement and bug fix work done on feature branches (`feature/branch-name`)
+* Feature branches merge into `main`
+* Patch versions are tagged automatically on each merge to `main`
+* See [docs/versioning.md](docs/versioning.md) for versioning details
 
 ### Using git with this project
 1. Use the project's [Issue Tracker](https://github.com/wgu-opensource/osmt/issues) to find an issue that you want to address, or a feature that you would like to add.
 2. Clone the repository to your local machine using `git clone https://github.com/wgu-opensource/osmt.git` or `git@github.com:wgu-opensource/osmt.git` for SSH.
-3. Create a new branch for your fix using `git checkout origin/develop -b your-local-branch-name`.
-   - Note, make sure you only branch from `origin/develop`!
+3. Create a new branch for your fix using `git checkout origin/main -b your-local-branch-name`.
+   - Note, make sure you only branch from `origin/main`!
 4. Make the appropriate changes for the issue you are trying to address, or the feature that you want to add. Include appropriate test coverage.
 5. Use `git add insert-paths-of-changed-files-here` to stage the changed files for the commit.
 6. Use `git commit` to commit the contents of the index. This should open an editor; please provide a useful commit message (see below for [more about commit messages](#commit-message-format))

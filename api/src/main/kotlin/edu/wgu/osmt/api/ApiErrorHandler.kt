@@ -14,10 +14,15 @@ import org.springframework.web.context.request.WebRequest
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
+class FormValidationException(
+    override val message: String,
+    val errors: List<ApiFieldError>,
+) : Exception(message)
 
-class FormValidationException(override val message: String, val errors:List<ApiFieldError>): Exception(message)
-
-class GeneralApiException(override val message: String, val status: HttpStatus): Exception(message)
+class GeneralApiException(
+    override val message: String,
+    val status: HttpStatus,
+) : Exception(message)
 
 @Order(value = 0)
 @ControllerAdvice
@@ -32,20 +37,26 @@ class GeneralApiExceptionHandler : ResponseEntityExceptionHandler() {
 @Order(value = 1)
 @ControllerAdvice
 class ApiErrorHandler : ResponseEntityExceptionHandler() {
-
     fun handleHttpMessageNotReadable(
         ex: HttpMessageNotReadableException,
         headers: HttpHeaders,
         status: HttpStatus,
-        request: WebRequest
+        request: WebRequest,
     ): ResponseEntity<Any> {
-        val apiError = when (ex.rootCause) {
-            is MismatchedInputException -> {
-                val mie = ex.rootCause as MismatchedInputException
-                ApiError("JSON Parse Error", listOf(ApiFieldError(field="body", message=mie.message!!)))
+        val apiError =
+            when (ex.rootCause) {
+                is MismatchedInputException -> {
+                    val mie = ex.rootCause as MismatchedInputException
+                    ApiError(
+                        "JSON Parse Error",
+                        listOf(ApiFieldError(field = "body", message = mie.message!!)),
+                    )
+                }
+
+                else -> {
+                    ApiError("Bad Request")
+                }
             }
-            else -> ApiError("Bad Request")
-        }
         return ResponseEntity(apiError, status)
     }
 
@@ -60,5 +71,4 @@ class ApiErrorHandler : ResponseEntityExceptionHandler() {
         val apiError = ApiError(ex.message)
         return ResponseEntity(apiError, ex.statusCode)
     }
-
 }

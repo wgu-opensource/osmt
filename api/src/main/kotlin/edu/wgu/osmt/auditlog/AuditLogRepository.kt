@@ -22,63 +22,81 @@ interface AuditLogRepository {
     val dao: AuditLogDao.Companion
 
     fun create(auditLog: AuditLog): AuditLogDao?
-    fun findByTableAndId(tableName: String, entityId: Long, offsetPageable: OffsetPageable? = null): SizedIterable<AuditLogDao>
+
+    fun findByTableAndId(
+        tableName: String,
+        entityId: Long,
+        offsetPageable: OffsetPageable? = null,
+    ): SizedIterable<AuditLogDao>
 }
 
 @Repository
 @Transactional
-class AuditLogRepositoryImpl @Autowired constructor(appConfig: AppConfig) : AuditLogRepository {
-    override val table = AuditLogTable
-    override val dao = AuditLogDao.Companion
+class AuditLogRepositoryImpl
+    @Autowired
+    constructor(
+        _appConfig: AppConfig,
+    ) : AuditLogRepository {
+        override val table = AuditLogTable
+        override val dao = AuditLogDao.Companion
 
-    override fun create(auditLog: AuditLog): AuditLogDao? {
-        if (auditLog.id != null) {
-            return null
+        override fun create(auditLog: AuditLog): AuditLogDao? {
+            if (auditLog.id != null) {
+                return null
+            }
+
+            val auditLogDao =
+                dao.new {
+                    this.entityId = auditLog.entityId
+                    this.creationDate = auditLog.creationDate
+                    this.changedFields = Gson().toJson(auditLog.changedFields)
+                    this.operationType = auditLog.operationType
+                    this.targetTableName = auditLog.tableName
+                    this.user = auditLog.user
+                }
+            return auditLogDao
         }
 
-        val auditLog = dao.new {
-            this.entityId = auditLog.entityId
-            this.creationDate = auditLog.creationDate
-            this.changedFields = Gson().toJson(auditLog.changedFields)
-            this.operationType = auditLog.operationType
-            this.targetTableName = auditLog.tableName
-            this.user = auditLog.user
+        override fun findByTableAndId(
+            tableName: String,
+            entityId: Long,
+            offsetPageable: OffsetPageable?,
+        ): SizedIterable<AuditLogDao> {
+            val query =
+                table
+                    .select {
+                        table.targetTableName eq tableName and (table.entityId eq entityId)
+                    }.orderBy(*table.sortAdapter(offsetPageable))
+
+            return if (offsetPageable != null) {
+                dao.wrapRows(query).limit(offsetPageable.limit, offsetPageable.offset.toLong())
+            } else {
+                dao.wrapRows(query)
+            }
         }
-        return auditLog
     }
 
-    override fun findByTableAndId(tableName: String, entityId: Long, offsetPageable: OffsetPageable?): SizedIterable<AuditLogDao> {
-        val query = table.select {
-            table.targetTableName eq tableName and (table.entityId eq entityId)
-        }.orderBy(*table.sortAdapter(offsetPageable))
-
-        return if (offsetPageable != null){
-            dao.wrapRows(query).limit(offsetPageable.limit, offsetPageable.offset.toLong())
-        } else {
-            dao.wrapRows(query)
-        }
-    }
-}
-
-enum class AuditLogSortEnum(override val apiValue: String): SortOrder {
-    DateAsc("date.asc"){
+enum class AuditLogSortEnum(
+    override val apiValue: String,
+) : SortOrder {
+    DateAsc("date.asc") {
         override val sort = Sort.by("creationDate").ascending()
     },
 
-    DateDesc("date.desc"){
+    DateDesc("date.desc") {
         override val sort = Sort.by("creationDate").descending()
-    }
-    ;
+    }, ;
 
-    companion object : SortOrderCompanion<AuditLogSortEnum>{
+    companion object : SortOrderCompanion<AuditLogSortEnum> {
         override val logger: Logger = LoggerFactory.getLogger(SkillSortEnum::class.java)
 
         override val defaultSort = AuditLogSortEnum.DateAsc
 
-        override fun forApiValue(apiValue: String): AuditLogSortEnum {
-            return AuditLogSortEnum.values().find { it.apiValue == apiValue } ?: DateAsc.also {
-                logger.warn("Sort with value ${apiValue} could not be found; using default ${DateAsc.apiValue} sort")
+        override fun forApiValue(apiValue: String): AuditLogSortEnum =
+            AuditLogSortEnum.values().find { it.apiValue == apiValue } ?: DateAsc.also {
+                logger.warn(
+                    "Sort with value $apiValue could not be found; using default ${DateAsc.apiValue} sort",
+                )
             }
-        }
     }
 }

@@ -1,6 +1,8 @@
 <nav class="m-quickLinks" aria-labelledby="header-quicklinks">
   <h3 class="t-visuallyHidden" id="header-quicklinks">Quick Links</h3>
+  <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
   <a (click)="handleQuicklink('content')">Skip to content</a>
+  <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
   <a (click)="handleQuicklink('commoncontrols-search')">Skip to search</a>
 </nav>
 
@@ -8,34 +10,85 @@
   <h1 class="t-visuallyHidden" id="header-header">Site Header</h1>
 
   <!-- {{render '@m-navbar'}} -->
-  <nav class="m-navBar" id="navBar" aria-labelledby="header-navigation" [class.m-navBar-is-active]="menuExpanded" [class.m-navBar-public]="showPublicNavbar()">
+  <nav
+    class="m-navBar"
+    id="navBar"
+    aria-labelledby="header-navigation"
+    [class.m-navBar-is-active]="menuExpanded"
+    [class.m-navBar-public]="showPublicNavbar()"
+  >
     <h2 class="t-visuallyHidden">Site Navigation</h2>
 
     <div class="m-navBar-x-container">
       <a class="m-navBar-x-brand" href="#">
         <span class="t-visuallyHidden">Homepage</span>
-        <img src="/assets/images/logo-dark.svg" alt="Site logo" aria-hidden="true" width="110" height="24">
+        <img
+          [src]="whitelabel.logoUrl || '/assets/images/logo-light.svg'"
+          [alt]="whitelabel.toolName + ' logo'"
+          width="110"
+          height="28"
+        />
       </a>
 
-      <div class="m-navBar-x-tagline">{{whitelabel.toolNameLong}}</div>
+      <div class="m-navBar-x-tagline">{{ whitelabel.toolNameLong }}</div>
 
-      <ul *ngIf="!showPublicNavbar()" class="m-navBar-x-desktopNav">
+      <ul class="m-navBar-x-desktopNav">
         <li>
-          <a class="m-navItem " [class.m-navItem-is-active]="skillsActive" aria-current="page" routerLink="/skills">RSD Library</a>
+          <a
+            class="m-navItem"
+            [class.m-navItem-is-active]="skillsActive"
+            [attr.aria-current]="skillsActive ? 'page' : null"
+            routerLink="/skills"
+            >RSD Library</a
+          >
         </li>
         <li>
-          <a class="m-navItem" [class.m-navItem-is-active]="collectionsActive" routerLink="/collections">Collections</a>
+          <a
+            class="m-navItem"
+            [class.m-navItem-is-active]="collectionsActive"
+            routerLink="/collections"
+            >Collections</a
+          >
         </li>
         <li>
-          <a class="m-navItem" [class.m-navItem-is-active]="categoriesActive" routerLink="/categories">Categories</a>
+          <a
+            class="m-navItem"
+            [class.m-navItem-is-active]="categoriesActive"
+            routerLink="/categories"
+            >Categories</a
+          >
         </li>
-        <li *ngIf="canHaveWorkspace" id="li-my-workspace">
-          <a class="m-navItem" [class.m-navItem-is-active]="myWorkspaceActive" routerLink="/my-workspace">
+        <li *ngIf="!isReadOnlyPublicInstance && !isAuthenticated()">
+          <a
+            class="m-navItem"
+            routerLink="/login"
+            [queryParams]="{ return: getCurrentUrl() }"
+            >Login</a
+          >
+        </li>
+        <li *ngIf="isAuthenticated() && canHaveWorkspace" id="li-my-workspace">
+          <a
+            class="m-navItem"
+            [class.m-navItem-is-active]="myWorkspaceActive"
+            routerLink="/my-workspace"
+          >
             My Workspace
           </a>
         </li>
-        <li>
-          <a class="m-iconInteractive m-iconInteractive-onDark" routerLink="/logout">
+        <li *ngIf="isAuthenticated() && canSyncManage" id="li-sync">
+          <a
+            class="m-navItem"
+            [class.m-navItem-is-active]="syncActive"
+            routerLink="/admin/sync"
+          >
+            Sync
+          </a>
+        </li>
+        <li *ngIf="isAuthenticated()">
+          <a
+            class="m-iconInteractive m-iconInteractive-onDark"
+            routerLink="/logout"
+          >
             <span class="t-visuallyHidden">Icon Interactive</span>
             <span class="m-iconInteractive-x-icon">
               <svg aria-hidden="true">
@@ -46,17 +99,20 @@
         </li>
       </ul>
 
-      <button *ngIf="isAuthenticated()"
+      <button
         (click)="handleClickMenu()"
         [attr.aria-expanded]="menuExpanded"
         class="m-navBar-x-toggle m-iconInteractive m-iconInteractive-onBrand"
         type="button"
         aria-controls="navbarSupportedContent"
-        data-nav-bar="navBar">
-
+        data-nav-bar="navBar"
+      >
         <span class="t-visuallyHidden">Toggle Navigation</span>
         <div class="m-iconInteractive-x-icon">
-          <div class="l-iconTransition" [class.l-iconTransition-is-toggled]="menuExpanded">
+          <div
+            class="l-iconTransition"
+            [class.l-iconTransition-is-toggled]="menuExpanded"
+          >
             <svg class="l-iconTransition-x-icon t-icon">
               <use xlink:href="/assets/images/svg-defs.svg#icon-menu"></use>
             </svg>
@@ -66,14 +122,20 @@
           </div>
         </div>
       </button>
-
     </div>
 
-    <div *ngIf="!showPublicNavbar()" class="m-navBar-x-collapse" id="navbarSupportedContent" app-commoncontrols-mobile>
-    </div>
+    <div
+      class="m-navBar-x-collapse"
+      id="navbarSupportedContent"
+      app-commoncontrols-mobile
+    ></div>
   </nav>
 
-  <div *ngIf="!showPublicNavbar()" class="t-hidden-desktopMax">
+  <!-- Show search bar for authenticated users (mobile) and public users on skills page (all devices) -->
+  <div
+    *ngIf="shouldShowSearchBar()"
+    [class.t-hidden-desktopMax]="isAuthenticated()"
+  >
     <app-commoncontrols></app-commoncontrols>
   </div>
 </header>

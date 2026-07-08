@@ -20,8 +20,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-
-class RichSkillRow: CsvRow {
+class RichSkillRow : CsvRow {
     @CsvBindByName(column = "Collection")
     var collections: String? = null
 
@@ -72,8 +71,7 @@ class RichSkillRow: CsvRow {
 }
 
 @Component
-class BatchImportRichSkill: CsvImport<RichSkillRow> {
-
+class BatchImportRichSkill : CsvImport<RichSkillRow> {
     companion object {
         const val user = "Batch Import"
     }
@@ -94,33 +92,51 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
     @Autowired
     private lateinit var collectionRepository: CollectionRepository
 
-    fun splitField(value: String?, delimiters: String = ";"): List<String>? {
+    fun splitField(
+        value: String?,
+        delimiters: String = ";",
+    ): List<String>? {
         val strings = value?.let { it.split(delimiters).map { it.trim() } }?.distinct()
-        return strings?.map{if (it.isBlank()) null else it}?.filterNotNull()
+        return strings?.map { if (it.isBlank()) null else it }?.filterNotNull()
     }
 
-    fun parseKeywords(keywordType: KeywordTypeEnum, rowValue: String?, useUri: Boolean = false): List<KeywordDao>? {
-        return splitField(rowValue)?.map {
-            if (useUri)
-                keywordRepository.findOrCreate(keywordType, uri = it)
-            else
-                keywordRepository.findOrCreate(keywordType, value = it)
-        }?.filterNotNull()
-    }
+    fun parseKeywords(
+        keywordType: KeywordTypeEnum,
+        rowValue: String?,
+        useUri: Boolean = false,
+    ): List<KeywordDao>? =
+        splitField(rowValue)
+            ?.map {
+                if (useUri) {
+                    keywordRepository.findOrCreate(keywordType, uri = it)
+                } else {
+                    keywordRepository.findOrCreate(keywordType, value = it)
+                }
+            }?.filterNotNull()
 
-    fun parseJobCodes(rowValue: String?, parserFunction:
-        (codeParam: String) -> String?): List<JobCodeDao>? {
-        return splitField(rowValue)?.map {
-                code -> jobCodeRepository.findByCodeOrCreate(parserFunction(code)!!)
+    fun parseJobCodes(
+        rowValue: String?,
+        parserFunction: (codeParam: String) -> String?,
+    ): List<JobCodeDao>? =
+        splitField(rowValue)?.map { code ->
+            jobCodeRepository.findByCodeOrCreate(parserFunction(code)!!)
         }
-    }
 
-    fun parseCollections(rowValue: String?): List<CollectionDao>? {
-        return splitField(rowValue)?.filter { it.isNotBlank() }?.mapNotNull { collectionName ->
+    fun parseCollections(rowValue: String?): List<CollectionDao>? =
+        splitField(rowValue)?.filter { it.isNotBlank() }?.mapNotNull { collectionName ->
             val collection = collectionRepository.findByName(collectionName)
-            collection ?: collection?.let { collectionRepository.create(CollectionUpdateObject(name = collectionName, author = NullableFieldUpdate(keywordRepository.getDefaultAuthor())), user, email = it.workspaceOwner) }
+            collection
+                ?: collection?.let {
+                    collectionRepository.create(
+                        CollectionUpdateObject(
+                            name = collectionName,
+                            author = NullableFieldUpdate(keywordRepository.getDefaultAuthor()),
+                        ),
+                        user,
+                        email = it.workspaceOwner,
+                    )
+                }
         }
-    }
 
     fun <T> concatenate(vararg lists: List<T>?): List<T>? {
         val flat = lists.filterNotNull().flatten()
@@ -133,57 +149,103 @@ class BatchImportRichSkill: CsvImport<RichSkillRow> {
     override fun handleRows(rows: List<RichSkillRow>) {
         log.info("Processing ${rows.size} rows...")
 
-        for (row in rows) transaction {
-            var authors: List<KeywordDao>? = null
-            var categories: List<KeywordDao>? = null
-            var keywords: List<KeywordDao>? = null
-            var standards: List<KeywordDao>? = null
-            var certifications: List<KeywordDao>? = null
-            var employers: List<KeywordDao>? = null
-            var alignments: List<KeywordDao>? = null
-            var blsMajor: List<JobCodeDao>? = null
-            var blsMinor: List<JobCodeDao>? = null
-            var blsBroad: List<JobCodeDao>? = null
-            var blsDetailed: List<JobCodeDao>? = null
-            var occupations: List<JobCodeDao>? = null
-            var collections: List<CollectionDao>? = null
+        for (row in rows) {
+            transaction {
+                @Suppress("RedundantInitializer")
+                var authors: List<KeywordDao>? = null
 
-            categories = parseKeywords(KeywordTypeEnum.Category, row.skillCategories)
-            keywords = parseKeywords(KeywordTypeEnum.Keyword, row.keywords)
-            standards = parseKeywords(KeywordTypeEnum.Standard, row.standards)
-            certifications = parseKeywords(KeywordTypeEnum.Certification, row.certifications)
-            employers = parseKeywords(KeywordTypeEnum.Employer, row.employer)
-            blsMajor = parseJobCodes(row.blsMajors, JobCodeBreakout::majorCode)
-            blsMinor = parseJobCodes(row.blsMinors, JobCodeBreakout::minorCode)
-            blsBroad = parseJobCodes(row.blsBroads, JobCodeBreakout::broadCode)
-            blsDetailed = parseJobCodes(row.blsDetaileds, JobCodeBreakout::detailedCode)
-            occupations = parseJobCodes(row.jobRoles, JobCodeBreakout::jobRoleCode)
-            collections = parseCollections(row.collections)
-            authors = parseKeywords(KeywordTypeEnum.Author, row.authors)
+                @Suppress("RedundantInitializer")
+                var categories: List<KeywordDao>? = null
 
-            // If no Authors set to default Author
-            if (authors.isNullOrEmpty()) {
-                authors = listOf(keywordRepository.getDefaultAuthor())
-            }
+                @Suppress("RedundantInitializer")
+                var keywords: List<KeywordDao>? = null
 
-            if (row.alignmentTitle != null || row.alignmentUri != null) {
-                alignments = listOf( keywordRepository.findOrCreate(KeywordTypeEnum.Alignment, value = row.alignmentTitle, uri = row.alignmentUri) ).filterNotNull()
-            }
+                @Suppress("RedundantInitializer")
+                var standards: List<KeywordDao>? = null
 
-            val allKeyWords = concatenate(keywords, authors, categories, standards, certifications, employers, alignments)
-            val allJobcodes = concatenate(blsMajor,blsMinor,blsBroad,blsDetailed,occupations)
+                @Suppress("RedundantInitializer")
+                var certifications: List<KeywordDao>? = null
 
-            if (row.skillName != null && row.skillStatement != null) {
-                richSkillRepository.create(RsdUpdateObject(
-                    name = row.skillName!!,
-                    statement = row.skillStatement!!,
-                    keywords = allKeyWords?.let { ListFieldUpdate(add = it) },
-                    collections = collections?.let { ListFieldUpdate(add = it) },
-                    jobCodes = allJobcodes?.let { ListFieldUpdate(add = it) },
-                ), user)
-                log.info("created skill '${row.skillName!!}'")
+                @Suppress("RedundantInitializer")
+                var employers: List<KeywordDao>? = null
+
+                @Suppress("RedundantInitializer")
+                var alignments: List<KeywordDao>? = null
+
+                @Suppress("RedundantInitializer")
+                var blsMajor: List<JobCodeDao>? = null
+
+                @Suppress("RedundantInitializer")
+                var blsMinor: List<JobCodeDao>? = null
+
+                @Suppress("RedundantInitializer")
+                var blsBroad: List<JobCodeDao>? = null
+
+                @Suppress("RedundantInitializer")
+                var blsDetailed: List<JobCodeDao>? = null
+
+                @Suppress("RedundantInitializer")
+                var occupations: List<JobCodeDao>? = null
+
+                @Suppress("RedundantInitializer")
+                var collections: List<CollectionDao>? = null
+
+                categories = parseKeywords(KeywordTypeEnum.Category, row.skillCategories)
+                keywords = parseKeywords(KeywordTypeEnum.Keyword, row.keywords)
+                standards = parseKeywords(KeywordTypeEnum.Standard, row.standards)
+                certifications = parseKeywords(KeywordTypeEnum.Certification, row.certifications)
+                employers = parseKeywords(KeywordTypeEnum.Employer, row.employer)
+                blsMajor = parseJobCodes(row.blsMajors, JobCodeBreakout::majorCode)
+                blsMinor = parseJobCodes(row.blsMinors, JobCodeBreakout::minorCode)
+                blsBroad = parseJobCodes(row.blsBroads, JobCodeBreakout::broadCode)
+                blsDetailed = parseJobCodes(row.blsDetaileds, JobCodeBreakout::detailedCode)
+                occupations = parseJobCodes(row.jobRoles, JobCodeBreakout::jobRoleCode)
+                collections = parseCollections(row.collections)
+                authors = parseKeywords(KeywordTypeEnum.Author, row.authors)
+
+                // If no Authors set to default Author
+                if (authors.isNullOrEmpty()) {
+                    authors = listOf(keywordRepository.getDefaultAuthor())
+                }
+
+                if (row.alignmentTitle != null || row.alignmentUri != null) {
+                    alignments =
+                        listOf(
+                            keywordRepository.findOrCreate(
+                                KeywordTypeEnum.Alignment,
+                                value = row.alignmentTitle,
+                                uri = row.alignmentUri,
+                            ),
+                        ).filterNotNull()
+                }
+
+                val allKeyWords =
+                    concatenate(
+                        keywords,
+                        authors,
+                        categories,
+                        standards,
+                        certifications,
+                        employers,
+                        alignments,
+                    )
+                val allJobcodes =
+                    concatenate(blsMajor, blsMinor, blsBroad, blsDetailed, occupations)
+
+                if (row.skillName != null && row.skillStatement != null) {
+                    richSkillRepository.create(
+                        RsdUpdateObject(
+                            name = row.skillName!!,
+                            statement = row.skillStatement!!,
+                            keywords = allKeyWords?.let { ListFieldUpdate(add = it) },
+                            collections = collections?.let { ListFieldUpdate(add = it) },
+                            jobCodes = allJobcodes?.let { ListFieldUpdate(add = it) },
+                        ),
+                        user,
+                    )
+                    log.info("created skill '${row.skillName!!}'")
+                }
             }
         }
-
     }
 }

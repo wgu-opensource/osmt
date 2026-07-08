@@ -1,37 +1,37 @@
-import {Component, Input, OnInit} from "@angular/core"
-import {AbstractControl, FormControl} from "@angular/forms"
-
+import { Component, Input, OnInit } from '@angular/core';
+import { AbstractControl, FormControl } from '@angular/forms';
 
 @Component({
-  selector: "app-formfield",
-  templateUrl: "./form-field.component.html"
+  selector: 'app-formfield',
+  templateUrl: './form-field.component.html',
 })
 export class FormField implements OnInit {
+  @Input() control = new FormControl();
+  @Input() label = '';
+  @Input() placeholder = '';
+  @Input() includePlaceholder = true;
+  @Input() errorMessage = '';
+  @Input() helpMessage = '';
+  @Input() required = false;
+  @Input() name = '';
 
-  @Input() control = new FormControl()
-  @Input() label = ""
-  @Input() placeholder = ""
-  @Input() includePlaceholder = true
-  @Input() errorMessage = ""
-  @Input() helpMessage = ""
-  @Input() required = false
-  @Input() name = ""
-
-  constructor() {
-  }
+  constructor() {}
 
   get valueFromControl(): string {
-    return this.control.value
+    return this.control.value;
   }
 
   clearField(): void {
-    this.control.setValue("")
+    this.control.setValue('');
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   isError(): boolean {
-    return this.control && (this.control.dirty || this.control.touched) && this.control.invalid
+    return (
+      this.control &&
+      (this.control.dirty || this.control.touched) &&
+      this.control.invalid
+    );
   }
 }

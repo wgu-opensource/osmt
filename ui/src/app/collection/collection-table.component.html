@@ -1,11 +1,19 @@
 <table class="l-table">
-  <caption> </caption>
+  <caption></caption>
   <thead>
     <tr class="m-tableHeader m-tableHeader-bare">
-      <th class="t-hidden-tabletMin" scope="col" colspan="3"><span class="t-visuallyHidden">Collections</span></th>
-      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Collection Name</span></th>
-      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">RSDs</span></th>
-      <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Status</span></th>
+      <th class="t-hidden-tabletMin" scope="col" colspan="3">
+        <span class="t-visuallyHidden">Collections</span>
+      </th>
+      <th class="t-hidden-tabletMax" scope="col">
+        <span class="t-visuallyHidden">Collection Name</span>
+      </th>
+      <th class="t-hidden-tabletMax" scope="col">
+        <span class="t-visuallyHidden">RSDs</span>
+      </th>
+      <th class="t-hidden-tabletMax" scope="col">
+        <span class="t-visuallyHidden">Status</span>
+      </th>
     </tr>
 
     <tr class="m-tableHeader">
@@ -18,7 +26,7 @@
         ></app-label-with-select>
       </td>
 
-      <td class="t-hidden-tabletMax"  aria-hidden="true">
+      <td class="t-hidden-tabletMax" aria-hidden="true">
         <app-label-with-filter
           *ngIf="allowSorting; else noSortName"
           label="Collection Name"
@@ -32,15 +40,18 @@
         </ng-template>
       </td>
 
-      <td class="t-hidden-tabletMax"  aria-hidden="true">
+      <td class="t-hidden-tabletMax" aria-hidden="true">
         <app-label-with-filter
           *ngIf="allowSorting; else noSortSkills"
           [sortAscending]="getSkillSort()"
           (sortChanged)="sortColumn('skill', $event)"
-        >RSD<span class="t-type-lowercase">s</span></app-label-with-filter>
+          >RSD<span class="t-type-lowercase">s</span></app-label-with-filter
+        >
         <ng-template #noSortSkills>
           <span class="m-tableLabel">
-            <span class="m-tableLabel-x-text">RSD<span class="t-type-lowercase">s</span></span>
+            <span class="m-tableLabel-x-text"
+              >RSD<span class="t-type-lowercase">s</span></span
+            >
           </span>
         </ng-template>
       </td>
@@ -56,30 +67,30 @@
           [selectAllEnabled]="selectAllEnabled"
           (valueChange)="handleSelectAll($event)"
           [totalCount]="getSelectAllCount()"
-          [totalPageCount]="items.length">
+          [totalPageCount]="items.length"
+        >
         </app-select-all>
         <!--nav class="m-quickLinks" aria-labelledby="save-quicklinks">
           <h3 class="t-visuallyHidden" id="save-quicklinks">Quick Links</h3>
           <a class="t-visuallyHidden" (click)="focusActionBar.emit()">Ations menu.</a>
         </nav-->
       </td>
-
     </tr>
   </thead>
 
   <tbody>
-  <tr
-    *ngFor="let collection of items; let i=index"
-    id="table-row-{{i}}"
-    class="m-tableRow"
-    [class.m-tableRow-is-selected]="isSelected(collection)"
-
-    app-collection-list-row
-    [collection]="collection"
-    [isSelected]="isSelected(collection)"
-    [rowActions]="rowActions"
-    (rowSelected)="onRowToggle($event)"
-    (focusActionBar)="focusActionBar.emit()"
-  ></tr>
+    <tr
+      *ngFor="let collection of items; let i = index"
+      id="table-row-{{ i }}"
+      class="m-tableRow"
+      [class.m-tableRow-is-selected]="isSelected(collection)"
+      app-collection-list-row
+      [collection]="collection"
+      [isSelected]="isSelected(collection)"
+      [isPublicView]="isPublicView"
+      [rowActions]="rowActions"
+      (rowSelected)="onRowToggle($event)"
+      (focusActionBar)="focusActionBar.emit()"
+    ></tr>
   </tbody>
 </table>

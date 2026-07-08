@@ -1,63 +1,74 @@
 <table class="l-table">
   <caption></caption>
   <thead>
-  <tr class="m-tableHeader m-tableHeader-bare">
-    <th class="t-hidden-tabletMin" scope="col" colspan="2"><span class="t-visuallyHidden">RSDs</span></th>
-    <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Category</span></th>
-    <th class="t-hidden-tabletMax" scope="col"><span class="t-visuallyHidden">Rich Skill Descriptor</span></th>
-  </tr>
-  <tr class="m-tableHeader">
-    <td class="t-hidden-tabletMin"  colspan="2" aria-hidden="true">
-      <app-label-with-select
-        label="RSDs"
-        [options]="mobileSortOptions"
-        [currentSort]="currentSort"
-        (sortChanged)="mobileSortColumn($event)"
-      ></app-label-with-select>
-    </td>
+    <tr class="m-tableHeader m-tableHeader-bare">
+      <th class="t-hidden-tabletMin" scope="col" colspan="2">
+        <span class="t-visuallyHidden">RSDs</span>
+      </th>
+      <th class="t-hidden-tabletMax" scope="col">
+        <span class="t-visuallyHidden">Category</span>
+      </th>
+      <th class="t-hidden-tabletMax" scope="col">
+        <span class="t-visuallyHidden">Rich Skill Descriptor</span>
+      </th>
+    </tr>
+    <tr class="m-tableHeader">
+      <td class="t-hidden-tabletMin" colspan="2" aria-hidden="true">
+        <app-label-with-select
+          label="RSDs"
+          [options]="mobileSortOptions"
+          [currentSort]="currentSort"
+          (sortChanged)="mobileSortColumn($event)"
+        ></app-label-with-select>
+      </td>
 
-    <td class="t-hidden-tabletMax" aria-hidden="true">
-      <div class="m-tableLabel">
-        <span class="m-tableLabel-x-text">Categories</span>
-      </div>
-    </td>
+      <td class="t-hidden-tabletMax" aria-hidden="true">
+        <div class="m-tableLabel">
+          <span class="m-tableLabel-x-text">Categories</span>
+        </div>
+      </td>
 
-    <td class="t-hidden-tabletMax" aria-hidden="true">
-      <app-label-with-filter
-        label="Rich Skill Descriptor  "
-        [sortAscending]="getSkillSort()"
-        (sortChanged)="sortColumn('skill', $event)"
-      ></app-label-with-filter>
-    </td>
+      <td class="t-hidden-tabletMax" aria-hidden="true">
+        <app-label-with-filter
+          label="Rich Skill Descriptor  "
+          [sortAscending]="getSkillSort()"
+          (sortChanged)="sortColumn('skill', $event)"
+        ></app-label-with-filter>
+      </td>
 
-    <td *ngIf="showRowActions" class="m-tableHeader-x-actions" aria-hidden="true">
-      <app-select-all
-        [selectAllEnabled]="selectAllEnabled"
-        (valueChange)="handleSelectAll($event)"
-        [totalCount]="getSelectAllCount()"
-        [totalPageCount]="items.length">
-      </app-select-all>
-      <!--nav class="m-quickLinks" aria-labelledby="save-quicklinks">
+      <td
+        *ngIf="showRowActions"
+        class="m-tableHeader-x-actions"
+        aria-hidden="true"
+      >
+        <app-select-all
+          [selectAllEnabled]="selectAllEnabled"
+          (valueChange)="handleSelectAll($event)"
+          [totalCount]="getSelectAllCount()"
+          [totalPageCount]="items.length"
+        >
+        </app-select-all>
+        <!--nav class="m-quickLinks" aria-labelledby="save-quicklinks">
         <h3 class="t-visuallyHidden" id="save-quicklinks">Quick Links</h3>
         <a class="t-visuallyHidden" (click)="focusActionBar.emit()">Ations menu.</a>
       </nav-->
-    </td>
-  </tr>
+      </td>
+    </tr>
   </thead>
 
   <tbody>
     <tr
-      *ngFor="let skill of items; let i=index"
-      id="table-row-{{i}}"
+      *ngFor="let skill of items; let i = index"
+      id="table-row-{{ i }}"
       class="m-tableRow"
       [class.m-tableRow-is-selected]="isSelected(skill)"
-
       app-skill-list-row
-      nextId="table-row-{{i+1}}-name"
+      nextId="table-row-{{ i + 1 }}-name"
       [skill]="skill"
       [isSelected]="isSelected(skill)"
       [rowActions]="rowActions"
       [showActions]="showRowActions"
+      [isPublicView]="isPublicView"
       (rowSelected)="onRowToggle($event)"
       (focusActionBar)="focusActionBar.emit()"
     ></tr>

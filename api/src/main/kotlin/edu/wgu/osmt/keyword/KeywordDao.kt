@@ -7,7 +7,10 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
-class KeywordDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Keyword> {
+class KeywordDao(
+    id: EntityID<Long>,
+) : LongEntity(id),
+    OutputsModel<Keyword> {
     companion object : LongEntityClass<KeywordDao>(KeywordTable)
 
     var creationDate by KeywordTable.creationDate
@@ -20,13 +23,14 @@ class KeywordDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Keyword> {
 
     var skills by RichSkillDescriptorDao via RichSkillKeywords
 
-    override fun toModel(): Keyword = Keyword(
-        id = id.value,
-        creationDate = creationDate,
-        updateDate = updateDate,
-        value = value,
-        type = type,
-        uri = uri,
-        framework = framework
-    )
+    override fun toModel(): Keyword =
+        Keyword(
+            id = id.value,
+            creationDate = creationDate,
+            updateDate = updateDate,
+            value = value,
+            type = type,
+            uri = uri,
+            framework = framework,
+        )
 }

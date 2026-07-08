@@ -15,21 +15,22 @@ interface CsvImport<T> where T : CsvRow {
     fun handleRows(rows: List<T>): Unit
 
     fun processCsv(csvPath: String) {
-        log.info("Starting to process csv: ${csvPath}")
+        log.info("Starting to process csv: $csvPath")
 
         var fileReader: BufferedReader? = null
 
         try {
             fileReader = BufferedReader(FileReader(csvPath))
-            val csvToBean = CsvToBeanBuilder<T>(fileReader)
-                .withType(csvRowClass)
-                .withIgnoreLeadingWhiteSpace(true)
-                .build()
+            val csvToBean =
+                CsvToBeanBuilder<T>(fileReader)
+                    .withType(csvRowClass)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .build()
 
             val rows = csvToBean.parse()
             handleRows(rows)
         } catch (e: FileNotFoundException) {
-            log.error("Could not find file: ${csvPath}")
+            log.error("Could not find file: $csvPath")
         } finally {
             fileReader?.close()
         }
@@ -39,21 +40,13 @@ interface CsvImport<T> where T : CsvRow {
 interface HasCodeHierarchy {
     var code: String?
 
-    fun major(): String? {
-        return code?.let { JobCodeBreakout.majorCode(it) }
-    }
+    fun major(): String? = code?.let { JobCodeBreakout.majorCode(it) }
 
-    fun minor(): String? {
-        return code?.let { JobCodeBreakout.minorCode(it) }
-    }
+    fun minor(): String? = code?.let { JobCodeBreakout.minorCode(it) }
 
-    fun broad(): String? {
-        return code?.let { JobCodeBreakout.broadCode(it) }
-    }
+    fun broad(): String? = code?.let { JobCodeBreakout.broadCode(it) }
 
-    fun detailed(): String? {
-        return code?.let { JobCodeBreakout.detailedCode(it) }
-    }
+    fun detailed(): String? = code?.let { JobCodeBreakout.detailedCode(it) }
 }
 
 interface CsvRow

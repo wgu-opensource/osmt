@@ -1,3 +1,5 @@
-USE osmt_db;
+USE
+osmt_db;
 
-DELETE FROM osmt_db.AuditLog;
+DELETE
+FROM osmt_db.AuditLog;

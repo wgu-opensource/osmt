@@ -1,0 +1,27 @@
+# Editor configuration, see https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{ts,js,json,html,scss,css}]
+indent_size = 2
+
+[*.{kt,kts}]
+indent_size = 4
+max_line_length = 100
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_property-naming = disabled
+
+[**/test/**/*.{kt,kts}]
+ktlint_standard_max-line-length = off
+
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
+
+[*/target/**]
+ktlint_standard = disabled

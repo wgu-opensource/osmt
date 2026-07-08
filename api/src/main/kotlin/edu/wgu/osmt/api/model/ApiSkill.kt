@@ -12,13 +12,14 @@ import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-
 @JsonInclude(JsonInclude.Include.ALWAYS)
-open class ApiSkill(@JsonIgnore open val rsd: RichSkillDescriptor, @JsonIgnore open val cs: Set<Collection>, private val appConfig: AppConfig) {
-
+open class ApiSkill(
+    @JsonIgnore open val rsd: RichSkillDescriptor,
+    @JsonIgnore open val cs: Set<Collection>,
+    private val appConfig: AppConfig,
+) {
     @JsonProperty("@context")
     val context = appConfig.rsdContextUrl
-
 
     @JsonProperty
     val `type` = "RichSkillDescriptor"
@@ -91,14 +92,47 @@ open class ApiSkill(@JsonIgnore open val rsd: RichSkillDescriptor, @JsonIgnore o
     val occupations: List<ApiJobCode>
         get() {
             return rsd.jobCodes.filter { it.code.isNotBlank() }.map { jobCode ->
-                val parents = listOfNotNull(
-                    jobCode.major.let {jobCode.majorCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.major, level=JobCodeLevel.Major) }},
-                    jobCode.minor.let{jobCode.minorCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.minor, level=JobCodeLevel.Minor) }},
-                    jobCode.broad?.let {jobCode.broadCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.broad, level=JobCodeLevel.Broad) }},
-                    jobCode.detailed?.let {jobCode.detailedCode?.let { ApiJobCode(code=it, targetNodeName=jobCode.detailed, level=JobCodeLevel.Detailed) }}
-                ).distinct()
+                val parents =
+                    listOfNotNull(
+                        jobCode.major.let {
+                            jobCode.majorCode?.let {
+                                ApiJobCode(
+                                    code = it,
+                                    targetNodeName = jobCode.major,
+                                    level = JobCodeLevel.Major,
+                                )
+                            }
+                        },
+                        jobCode.minor.let {
+                            jobCode.minorCode?.let {
+                                ApiJobCode(
+                                    code = it,
+                                    targetNodeName = jobCode.minor,
+                                    level = JobCodeLevel.Minor,
+                                )
+                            }
+                        },
+                        jobCode.broad?.let {
+                            jobCode.broadCode?.let {
+                                ApiJobCode(
+                                    code = it,
+                                    targetNodeName = jobCode.broad,
+                                    level = JobCodeLevel.Broad,
+                                )
+                            }
+                        },
+                        jobCode.detailed?.let {
+                            jobCode.detailedCode?.let {
+                                ApiJobCode(
+                                    code = it,
+                                    targetNodeName = jobCode.detailed,
+                                    level = JobCodeLevel.Detailed,
+                                )
+                            }
+                        },
+                    ).distinct()
 
-                ApiJobCode.fromJobCode(jobCode, parents=parents)
+                ApiJobCode.fromJobCode(jobCode, parents = parents)
             }
         }
 
@@ -110,12 +144,22 @@ open class ApiSkill(@JsonIgnore open val rsd: RichSkillDescriptor, @JsonIgnore o
     val collections: List<ApiUuidReference>
         get() = cs.map { ApiUuidReference.fromCollection(it) }
 
+    @JsonProperty
+    @get:JsonInclude(JsonInclude.Include.NON_NULL)
+    var credentialEngineUrl: String? = null
+
     companion object {
-        fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkill{
-            return ApiSkill(rsdDao.toModel(), rsdDao.collections.map{ it.toModel() }.filter { !it.isWorkspace() }.toSet(), appConfig)
-        }
+        fun fromDao(
+            rsdDao: RichSkillDescriptorDao,
+            appConfig: AppConfig,
+        ): ApiSkill =
+            ApiSkill(
+                rsdDao.toModel(),
+                rsdDao.collections
+                    .map { it.toModel() }
+                    .filter { !it.isWorkspace() }
+                    .toSet(),
+                appConfig,
+            )
     }
 }
-
-
-

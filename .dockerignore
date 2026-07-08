@@ -1,0 +1,8 @@
+Dockerfile
+/ui/node_modules
+/ui/reports
+/ui/.angular
+
+# Exclude previously built artifacts
+/ui/dist
+/api/target

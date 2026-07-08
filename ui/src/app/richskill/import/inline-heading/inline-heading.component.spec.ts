@@ -8,7 +8,7 @@ describe('InlineheadingComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [InlineHeadingComponent]
+      declarations: [InlineHeadingComponent],
     });
     fixture = TestBed.createComponent(InlineHeadingComponent);
     component = fixture.componentInstance;

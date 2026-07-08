@@ -1,44 +1,71 @@
 <div class="l-stickyBar">
-
   <div class="l-container t-padding-large t-padding-top">
-
     <div class="l-container l-container-mobile">
-
-<!--      {{render '@listheading'}}-->
-      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">Add {{addingCount}} RSD<ng-template [ngIf]="isPlural">s</ng-template> to a Collection</h2>
+      <!--      {{render '@listheading'}}-->
+      <h2 class="t-type-heading1 t-margin-small t-margin-bottom">
+        Add {{ addingCount }} RSD<ng-template [ngIf]="isPlural">s</ng-template>
+        to a Collection
+      </h2>
 
       <ng-template [ngIf]="isPlural" [ngIfElse]="singleSkillSummary">
         <app-accordian closedLabel="View RSDs" openLabel="Hide RSDs">
           <div class="m-skillBackground l-inset t-margin-small t-margin-top">
             <div class="m-content">
               <ol>
-                <li *ngFor="let skill of state?.selectedSkills">{{skill.skillName}}</li>
+                <li *ngFor="let skill of state?.selectedSkills">
+                  {{ skill.skillName }}
+                </li>
               </ol>
-              <p *ngIf="state?.search">and {{state?.totalCount - state?.selectedSkills.length}} more...</p>
+              <p *ngIf="state?.search">
+                and
+                {{ state?.totalCount - state?.selectedSkills.length }} more...
+              </p>
             </div>
           </div>
         </app-accordian>
       </ng-template>
 
       <ng-template #singleSkillSummary>
-        <p *ngIf="state && state.selectedSkills && state.selectedSkills.length > 0" class="t-type-bodyLarge t-type-text3 t-margin-medium t-margin-bottom">RSD: {{state.selectedSkills[0].skillName}}</p>
+        <p
+          *ngIf="
+            state && state.selectedSkills && state.selectedSkills.length > 0
+          "
+          class="t-type-bodyLarge t-type-text3 t-margin-medium t-margin-bottom"
+        >
+          RSD: {{ state.selectedSkills[0].skillName }}
+        </p>
       </ng-template>
 
-<!--      {{render '@listheadingsearch'}}-->
+      <!--      {{render '@listheadingsearch'}}-->
       <div class="t-margin-medium t-margin-bottom">
         <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
-        <div class="m-text">
-          <svg class="m-text-x-icon t-icon" (click)="clearSearch()"><use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use></svg>
-          <input type="text" placeholder="Search Collections" [formControl]="searchForm.controls.search">
-        </div>
+          <div class="m-text">
+            <svg class="m-text-x-icon t-icon" (click)="clearSearch()">
+              <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
+            </svg>
+            <input
+              type="text"
+              placeholder="Search Collections"
+              [formControl]="searchForm.controls.search"
+            />
+          </div>
 
-        <p *ngIf="totalCount > 0" class="t-type-bodyLarge t-margin-small t-margin-top">
-          {{totalCount}} <ng-template [ngIf]="totalCount > 1" [ngIfElse]="singular">collections</ng-template><ng-template #singular>collection</ng-template> found based on
-          <span class="t-type-bodyLargeBold t-type-text1">{{searchQuery}}</span> and your filters.
-          <ng-template [ngIf]="totalCount > 0">
-            Viewing {{firstRecordNo}}-{{lastRecordNo}}.
-          </ng-template>
-        </p>
+          <p
+            *ngIf="totalCount > 0"
+            class="t-type-bodyLarge t-margin-small t-margin-top"
+          >
+            {{ totalCount }}
+            <ng-template [ngIf]="totalCount > 1" [ngIfElse]="singular"
+              >collections</ng-template
+            ><ng-template #singular>collection</ng-template> found based on
+            <span class="t-type-bodyLargeBold t-type-text1">{{
+              searchQuery
+            }}</span>
+            and your filters.
+            <ng-template [ngIf]="totalCount > 0">
+              Viewing {{ firstRecordNo }}-{{ lastRecordNo }}.
+            </ng-template>
+          </p>
         </form>
       </div>
 
@@ -46,12 +73,15 @@
         [selectedFilters]="selectedFilters"
         (filtersChanged)="handleFiltersChanged($event)"
       ></app-filter-controls>
-
     </div>
 
     <div class="t-margin-medium t-margin-bottom">
       <app-blocking-loader [observables]="[resultsLoaded]">
-      <p class="t-visuallyHidden">Select one or more collections in the table, or select all in the table heading, then use the action menu to publish, archive, or unarchive the selected collections.</p>
+        <p class="t-visuallyHidden">
+          Select one or more collections in the table, or select all in the
+          table heading, then use the action menu to publish, archive, or
+          unarchive the selected collections.
+        </p>
         <app-collection-table
           *ngIf="!emptyResults"
           [items]="results.collections"
@@ -60,8 +90,12 @@
         ></app-collection-table>
 
         <app-empty-message *ngIf="emptyResults">
-          <p *ngIf="results === undefined" class="m-emptyMessage-x-message">Search for and select a collection.</p>
-          <p *ngIf="results !== undefined" class="m-emptyMessage-x-message">No collections found. Try modifying your search terms or filters.</p>
+          <p *ngIf="results === undefined" class="m-emptyMessage-x-message">
+            Search for and select a collection.
+          </p>
+          <p *ngIf="results !== undefined" class="m-emptyMessage-x-message">
+            No collections found. Try modifying your search terms or filters.
+          </p>
         </app-empty-message>
       </app-blocking-loader>
     </div>
@@ -71,8 +105,5 @@
       [totalPages]="totalPageCount"
       (pageClicked)="handlePageClicked($event)"
     ></app-pagination>
-
   </div>
-
-
 </div>

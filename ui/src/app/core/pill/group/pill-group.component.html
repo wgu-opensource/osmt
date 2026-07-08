@@ -1,20 +1,55 @@
-<div [ngClass]="{'m-pill-group-collapsible': true, collapsed: collapsed}" aria-controls="pill-group-controls" [attr.aria-expanded]="!collapsed && pillControls.length > 20" (click)="expand()">
-  <div class="read-more-wrapper" *ngIf="pillControls.length > 20">
-    <div>
-      <button (click)="toggleCollapse($event)">
+<!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+<div
+  [ngClass]="{
+    'm-pill-group-collapsible': hasOverflow,
+    collapsed: collapsed && hasOverflow,
+  }"
+  (click)="onWrapperClick($event)"
+>
+  <div class="read-more-wrapper" *ngIf="hasOverflow">
+    <div class="mx-auto w-full max-w-xs px-small pb-extraSmall">
+      <button
+        type="button"
+        class="t-focus inline-flex w-full flex-nowrap items-center justify-center gap-extraSmall rounded-lg border border-text-3 bg-background-200 px-small py-extraSmall text-button font-semibold text-text-2 shadow-sm transition-[color,box-shadow,border-color] duration-150 ease-out hover:border-interactive-1 hover:text-text-1 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+        aria-controls="pill-group-controls"
+        [attr.aria-expanded]="!collapsed"
+        (click)="toggleCollapse($event)"
+      >
         <span *ngIf="collapsed">Show all {{ pillControls.length }}</span>
         <span *ngIf="!collapsed">Show fewer</span>
+        <span
+          class="l-iconTransition shrink-0"
+          [class.l-iconTransition-is-flipped]="!collapsed"
+          aria-hidden="true"
+        >
+          <svg class="l-iconTransition-x-icon t-icon">
+            <use [attr.xlink:href]="caretIconHref"></use>
+          </svg>
+        </span>
       </button>
     </div>
   </div>
-  <ul id="pill-group-controls" class="m-pill-group">
-    <li *ngFor="let c of pillControls;">
-      <ng-container *ngIf="hasPillClickedObservers; then withClickedObserver; else withoutClickedObserver"></ng-container>
+  <ul #pillList id="pill-group-controls" class="m-pill-group">
+    <li *ngFor="let c of pillControls">
+      <ng-container
+        *ngIf="
+          hasPillClickedObservers;
+          then withClickedObserver;
+          else withoutClickedObserver
+        "
+      ></ng-container>
       <ng-template #withClickedObserver>
-      <app-pill [control]="c" [tabSelectEnabled]="!collapsed" (clicked)="onPillClicked($event)"></app-pill>
+        <app-pill
+          [control]="c"
+          [tabSelectEnabled]="!collapsed || !hasOverflow"
+          (clicked)="onPillClicked($event)"
+        ></app-pill>
       </ng-template>
       <ng-template #withoutClickedObserver>
-      <app-pill [control]="c"></app-pill>
+        <app-pill
+          [control]="c"
+          [tabSelectEnabled]="!collapsed || !hasOverflow"
+        ></app-pill>
       </ng-template>
     </li>
   </ul>

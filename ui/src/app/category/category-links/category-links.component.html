@@ -1,0 +1,13 @@
+<ng-container *ngIf="categories?.length; else empty">
+  <ng-container *ngFor="let name of categories; let last = last">
+    <a
+      *ngIf="getId(name) !== undefined"
+      class="t-type-bodyLink"
+      [routerLink]="['/categories', getId(name)]"
+      >{{ name }}</a
+    >
+    <span *ngIf="getId(name) === undefined">{{ name }}</span>
+    <ng-container *ngIf="!last">; </ng-container>
+  </ng-container>
+</ng-container>
+<ng-template #empty></ng-template>

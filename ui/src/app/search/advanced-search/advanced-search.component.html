@@ -1,11 +1,12 @@
-<form [formGroup]="skillForm" (ngSubmit)="handleSearchSkills()" class="l-stickyBar">
-
+<form
+  [formGroup]="skillForm"
+  (ngSubmit)="handleSearchSkills()"
+  class="l-stickyBar"
+>
   <div class="l-stickySidebar l-container">
-
     <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
       <div class="m-skillBackground l-skillBackground">
         <div class="t-margin-medium t-margin-bottom">
-
           <h3 class="m-iconTitle">
             <div class="m-iconTitle-x-icon">
               <svg class="t-icon" aria-hidden="true">
@@ -14,7 +15,6 @@
             </div>
             <div class="m-iconTitle-x-label">Advanced Search</div>
           </h3>
-
         </div>
 
         <div class="t-margin-medium t-margin-bottom">
@@ -118,21 +118,23 @@
     </div>
 
     <div class="l-stickySidebar-x-sidebar t-hidden-desktopMax">
-      <div class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top">
+      <div
+        class="l-stickySidebar-x-sidebarContent t-padding-medium t-padding-top"
+      >
         <app-advanced-search-vertical-action-bar
           (searchSkillsClicked)="handleSearchSkills()"
           (searchCollectionsClicked)="handleSearchCollections()"
         ></app-advanced-search-vertical-action-bar>
       </div>
     </div>
-
   </div>
 
-  <div class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top">
+  <div
+    class="l-stickyBar-x-bar t-hidden-desktopMin t-padding-medium t-padding-top"
+  >
     <app-advanced-search-horizontal-action-bar
       (searchSkillsClicked)="handleSearchSkills()"
       (searchCollectionsClicked)="handleSearchCollections()"
     ></app-advanced-search-horizontal-action-bar>
   </div>
-
 </form>

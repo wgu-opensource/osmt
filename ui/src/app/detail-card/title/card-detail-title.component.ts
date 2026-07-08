@@ -1,22 +1,19 @@
-import {Component, Input, OnInit} from "@angular/core"
-import {PublishStatus} from "../../PublishStatus";
+import { Component, Input, OnInit } from '@angular/core';
+import { PublishStatus } from '../../PublishStatus';
 
 @Component({
-  selector: "app-card-detail-title",
-  templateUrl: "./card-detail-title.component.html"
+  selector: 'app-card-detail-title',
+  templateUrl: './card-detail-title.component.html',
 })
 export class CardDetailTitleComponent implements OnInit {
+  @Input() cardType = '';
+  @Input() title = '';
+  @Input() authors = '';
+  @Input() status: PublishStatus = PublishStatus.Draft;
+  @Input() publishDate = '';
+  @Input() archiveDate = '';
 
-  @Input() cardType = ""
-  @Input() title = ""
-  @Input() authors = ""
-  @Input() status: PublishStatus = PublishStatus.Draft
-  @Input() publishDate = ""
-  @Input() archiveDate = ""
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

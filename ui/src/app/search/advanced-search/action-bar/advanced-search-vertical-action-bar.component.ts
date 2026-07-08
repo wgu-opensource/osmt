@@ -1,14 +1,15 @@
-import {Component} from "@angular/core"
-import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-search-action-bar.component"
+import { Component } from '@angular/core';
+import { AbstractAdvancedSearchActionBarComponent } from './abstract-advanced-search-action-bar.component';
 
 @Component({
-  selector: "app-advanced-search-vertical-action-bar",
+  selector: 'app-advanced-search-vertical-action-bar',
   template: `
     <div class="l-actionBarVertical">
-
       <div class="l-actionBarVertical-x-action">
         <button class="m-button" (click)="skillButtonClicked()">
-          <span class="m-button-x-text">Search RSD<span class="t-type-lowercase">s</span></span>
+          <span class="m-button-x-text"
+            >Search RSD<span class="t-type-lowercase">s</span></span
+          >
         </button>
       </div>
 
@@ -18,11 +19,10 @@ import {AbstractAdvancedSearchActionBarComponent} from "./abstract-advanced-sear
         </button>
       </div>
     </div>
-  `
+  `,
 })
 export class AdvancedSearchVerticalActionBarComponent extends AbstractAdvancedSearchActionBarComponent {
-
   constructor() {
-    super()
+    super();
   }
 }

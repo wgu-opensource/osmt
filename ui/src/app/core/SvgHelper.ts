@@ -1,29 +1,36 @@
 export enum SvgIcon {
-  ADD = "icon-add",
-  ARCHIVE = "icon-archive",
-  UNARCHIVE = "icon-unarchive",
-  CANCEL = "icon-cancel",
-  CHECK = "icon-check",
-  CHECK_OUTLINE = "icon-check-outline",
-  CHEVRON = "icon-chevron",
-  COLLECTION = "icon-collection",
-  DISMISS = "icon-dismiss",
-  DOC = "icon-doc",
-  DOWNLOAD = "icon-download",
-  DUPLICATE = "icon-duplicate",
-  EDIT = "icon-edit",
-  ICON_UP = "icon-up",
-  MORE = "icon-more",
-  PUBLISH = "icon-publish",
-  SEARCH = "icon-search",
-  DELETE = "icon-remove"
+  ADD = 'icon-add',
+  ARCHIVE = 'icon-archive',
+  UNARCHIVE = 'icon-unarchive',
+  CANCEL = 'icon-cancel',
+  CHECK = 'icon-check',
+  CHECK_OUTLINE = 'icon-check-outline',
+  CHEVRON = 'icon-chevron',
+  COLLECTION = 'icon-collection',
+  DISMISS = 'icon-dismiss',
+  DOC = 'icon-doc',
+  DOWNLOAD = 'icon-download',
+  DUPLICATE = 'icon-duplicate',
+  EDIT = 'icon-edit',
+  EXTERNAL_LINK = 'icon-external-link',
+  ICON_UP = 'icon-up',
+  MORE = 'icon-more',
+  PUBLISH = 'icon-publish',
+  UNPUBLISH = 'icon-unpublish',
+  SEARCH = 'icon-search',
+  DELETE = 'icon-remove',
+  UPLOAD = 'icon-upload',
 }
 
 export class SvgHelper {
-
   // To use this in an html template, set path as a property in the component and reference:
   //  [attr.xlink:href]="iconPathProperty"
   public static path(icon: SvgIcon): string {
-    return `assets/images/svg-defs.svg#${icon}`
+    return `assets/images/svg-defs.svg#${icon}`;
+  }
+
+  /** Symbols in assets/images/svg-extra-defs.svg. */
+  public static extraPath(symbolId: string): string {
+    return `assets/images/svg-extra-defs.svg#${symbolId}`;
   }
 }

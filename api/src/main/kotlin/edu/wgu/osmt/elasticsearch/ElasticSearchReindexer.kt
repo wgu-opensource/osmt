@@ -49,7 +49,7 @@ class ElasticSearchReindexer {
     lateinit var jobCodeRepository: JobCodeRepository
 
     @Value("\${edu.wgu.osmt.elasticsearch.Reindex.batch_size:1000}")
-    lateinit var limit: Integer
+    var limit: Int = 1000
 
     fun deleteAllIndices() {
         richSkillEsRepo.deleteIndex()
@@ -157,7 +157,6 @@ class ElasticSearchReindexer {
                     trace.finish()
                     exit = true
                 }
-
             }
         }
     }

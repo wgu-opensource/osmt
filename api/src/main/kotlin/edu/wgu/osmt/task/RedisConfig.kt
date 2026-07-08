@@ -13,24 +13,21 @@ import org.springframework.session.data.redis.config.ConfigureRedisAction
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer
 
-
 @Configuration
 @EnableRedisHttpSession
-class RedisConfig: AbstractHttpSessionApplicationInitializer(){
-
+class RedisConfig : AbstractHttpSessionApplicationInitializer() {
     @Value("\${redis.uri}")
     lateinit var redisUri: String
 
     @Bean
-    fun configureRedisAction(): ConfigureRedisAction {
-        return ConfigureRedisAction.NO_OP
-    }
+    fun configureRedisAction(): ConfigureRedisAction = ConfigureRedisAction.NO_OP
 
     @Bean
     fun redisConnectionFactory(): LettuceConnectionFactory {
         val (redisHost, redisPort) = redisUri.split(":")
 
-        val redisStandaloneConfiguration = RedisStandaloneConfiguration(redisHost, redisPort.toInt())
+        val redisStandaloneConfiguration =
+            RedisStandaloneConfiguration(redisHost, redisPort.toInt())
         return LettuceConnectionFactory(redisStandaloneConfiguration)
     }
 
@@ -50,4 +47,3 @@ class RedisConfig: AbstractHttpSessionApplicationInitializer(){
         return template
     }
 }
-

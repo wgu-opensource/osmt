@@ -1,24 +1,41 @@
 <ng-template [ngIf]="!!skill">
-
-  <th scope="row" id="{{id}}-header">
-    <div class="t-hidden-tabletMax">{{getFormattedCategories()}}</div>
+  <th scope="row" id="{{ id }}-header">
+    <div class="t-hidden-tabletMax">
+      <app-category-links
+        [categories]="skill?.categories ?? []"
+      ></app-category-links>
+    </div>
 
     <div class="t-hidden-tabletMin">
       <!--{{render '@m-inline-heading'}}-->
       <div class="m-inlineHeading">
         <h5 class="m-inlineHeading-x-heading">Categories:</h5>
-        <p class="m-inlineHeading-x-text">{{getFormattedCategories()}}</p>
+        <p class="m-inlineHeading-x-text">
+          <app-category-links
+            [categories]="skill?.categories ?? []"
+          ></app-category-links>
+        </p>
       </div>
     </div>
   </th>
 
   <td>
-
     <h4 class="t-margin-extraSmall t-margin-bottom" tabindex="0">
-      <a id="{{id}}-name" class="t-focus t-type-bodyLink" routerLink="/skills/{{skill.uuid}}/manage">{{skill.skillName}}</a>
+      <a
+        id="{{ id }}-name"
+        class="t-focus t-type-bodyLink"
+        [routerLink]="
+          isPublicView
+            ? ['/skills', skill.uuid]
+            : ['/skills', skill.uuid, 'manage']
+        "
+        >{{ skill.skillName }}</a
+      >
     </h4>
 
-    <p class="t-margin-small t-margin-bottom t-type-text3">{{skill.skillStatement}}</p>
+    <p class="t-margin-small t-margin-bottom t-type-text3">
+      {{ skill.skillStatement }}
+    </p>
 
     <div class="t-margin-small t-margin-bottom">
       <app-status-bar
@@ -32,26 +49,39 @@
     <div class="t-margin-small t-margin-bottom" *ngIf="getFormattedKeywords()">
       <div class="m-inlineHeading m-inlineHeading-is-truncated">
         <h5 class="m-inlineHeading-x-heading">Keywords:</h5>
-        <p class="m-inlineHeading-x-text">{{getFormattedKeywords()}}</p>
+        <p class="m-inlineHeading-x-text">{{ getFormattedKeywords() }}</p>
       </div>
     </div>
 
-    <div class="t-margin-small t-margin-bottom" *ngIf="getFormattedOccupations()">
+    <div
+      class="t-margin-small t-margin-bottom"
+      *ngIf="getFormattedOccupations()"
+    >
       <div class="m-inlineHeading m-inlineHeading-is-truncated">
         <h5 class="m-inlineHeading-x-heading">Detailed Occupations:</h5>
-        <p class="m-inlineHeading-x-text">{{getFormattedOccupations()}}</p>
+        <p class="m-inlineHeading-x-text">{{ getFormattedOccupations() }}</p>
       </div>
     </div>
-
   </td>
 
   <td *ngIf="showActions" class="m-tableRow-x-actions">
-
     <!-- Items must be grouped-->
     <div>
       <div class="m-checkbox">
-        <label class="t-visuallyHidden" for="{{id}}-toggle" aria-labelledby="{{id}}-header">Select this Skill.</label>
-        <input type="checkbox" id="{{id}}-toggle" name="{{id}}-toggle" data-table-row="{{id}}" [checked]="isSelected" (click)="selected()">
+        <label
+          class="t-visuallyHidden"
+          for="{{ id }}-toggle"
+          aria-labelledby="{{ id }}-header"
+          >Select this Skill.</label
+        >
+        <input
+          type="checkbox"
+          id="{{ id }}-toggle"
+          name="{{ id }}-toggle"
+          data-table-row="{{ id }}"
+          [checked]="isSelected"
+          (click)="selected()"
+        />
         <div class="m-checkbox-x-icon">
           <svg class="t-icon" aria-hidden="true">
             <use [attr.xlink:href]="checkIcon"></use>
@@ -59,12 +89,11 @@
         </div>
       </div>
       <div class="m-quickLinks">
+        <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
         <a (click)="focusActionBar.emit()">Actions menu.</a>
       </div>
     </div>
 
     <app-dots-menu [actions]="rowActions" [data]="skill"></app-dots-menu>
   </td>
-
-
 </ng-template>

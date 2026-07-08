@@ -7,13 +7,10 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class ApiBatchResult(
     @JsonProperty("success")
     val success: Boolean = false,
-
     @JsonProperty("message")
     val message: String? = null,
-
     @JsonProperty("modifiedCount")
     val modifiedCount: Number? = null,
-
     @JsonProperty("totalCount")
-    val totalCount: Number? = null
+    val totalCount: Number? = null,
 )

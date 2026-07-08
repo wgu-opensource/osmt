@@ -1,9 +1,123 @@
+<div class="l-stickyBar">
+  <div class="l-stickySidebar l-container">
+    <div class="l-stickySidebar-x-content t-padding-medium t-padding-top">
+      <div class="m-skillBackground l-skillBackground">
+        <div class="t-margin-medium t-margin-bottom">
+          <h3 class="m-iconTitle">
+            <div class="m-iconTitle-x-label">
+              <ng-container *ngIf="isReadOnly; else signInTitle">
+                Public skill browser
+              </ng-container>
+              <ng-template #signInTitle>Sign In</ng-template>
+            </div>
+          </h3>
+        </div>
 
-<div class="l-loader-x-loader">
-  <div class="m-loader">
-    <div class="m-loader-x-body">
-      <div class="m-loader-x-loader">
-        <div class="m-loaderGraphic m-loaderGraphic-large"></div>
+        <ng-container *ngIf="isReadOnly">
+          <div class="t-margin-medium t-margin-bottom">
+            <p class="t-type-body">{{ readOnlyMessageText }}</p>
+          </div>
+        </ng-container>
+
+        <div
+          *ngIf="!isReadOnly && authoringWelcomeText"
+          class="t-margin-medium t-margin-bottom"
+        >
+          <p class="t-type-body">{{ authoringWelcomeText }}</p>
+        </div>
+
+        <ng-container *ngIf="!isReadOnly">
+          <ng-container *ngIf="showLoginPage">
+            <div
+              *ngIf="oauthProviders?.length"
+              class="t-margin-medium t-margin-bottom"
+            >
+              <p class="t-type-body">Sign in with your organization account:</p>
+              <div class="oauth-providers">
+                <a
+                  *ngFor="let provider of oauthProviders"
+                  class="m-button oauth-provider-button"
+                  [attr.href]="provider.authorizationUrl"
+                  role="button"
+                  aria-label="Sign in with {{ provider.name }}"
+                >
+                  <span
+                    class="oauth-provider-button-x-icon"
+                    *ngIf="getIcon(provider.id) as icon"
+                  >
+                    <svg class="t-icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path [attr.d]="icon.path" [attr.fill]="'#' + icon.hex" />
+                    </svg>
+                  </span>
+                  <span class="m-button-x-text">{{ provider.name }}</span>
+                </a>
+              </div>
+            </div>
+
+            <div *ngIf="singleAuthEnabled" class="t-margin-medium">
+              <p
+                *ngIf="oauthProviders?.length"
+                class="t-type-body t-margin-small"
+              >
+                Or sign in with an OSMT username:
+              </p>
+              <form (ngSubmit)="onLogin($event)" class="login-form">
+                <div class="t-margin-medium t-margin-bottom">
+                  <label for="username">Username</label>
+                  <div class="m-text">
+                    <input
+                      id="username"
+                      type="text"
+                      [(ngModel)]="username"
+                      name="username"
+                      placeholder="Enter username"
+                      required
+                      [disabled]="isLoading"
+                    />
+                  </div>
+                </div>
+                <div class="t-margin-medium t-margin-bottom">
+                  <label for="password">Password</label>
+                  <div class="m-text">
+                    <input
+                      id="password"
+                      type="password"
+                      [(ngModel)]="password"
+                      name="password"
+                      placeholder="Enter password"
+                      required
+                      [disabled]="isLoading"
+                      (keyup.enter)="onLogin($event)"
+                    />
+                  </div>
+                </div>
+                <div *ngIf="loginError" class="error-message">
+                  {{ loginError }}
+                </div>
+                <button
+                  type="submit"
+                  class="m-button"
+                  [disabled]="isLoading || !username || !password"
+                >
+                  <span *ngIf="isLoading" class="m-button-x-loader">
+                    <span class="m-loaderGraphic m-loaderGraphic-medium"></span>
+                  </span>
+                  <span *ngIf="!isLoading" class="m-button-x-text">Login</span>
+                  <span *ngIf="isLoading" class="m-button-x-text"
+                    >Logging in...</span
+                  >
+                </button>
+              </form>
+            </div>
+          </ng-container>
+
+          <div *ngIf="!showLoginPage" class="t-margin-medium">
+            <p class="t-type-body">
+              No login options available. Ensure the backend is running at
+              {{ baseApiUrl }} and OAuth or single-auth is configured.
+            </p>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>

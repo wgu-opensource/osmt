@@ -1,119 +1,124 @@
-import {Component, ElementRef, ViewChild} from "@angular/core"
-import {Router} from "@angular/router"
-import {Observable} from "rxjs"
-import {AuthService} from "../../auth/auth-service"
-import {ToastService} from "../../toast/toast.service"
-import {QuickLinksHelper} from "../../core/quick-links-helper"
-import {TableActionDefinition} from "../../table/skills-library-table/has-action-definitions"
-import {KeywordSortOrder, PaginatedCategories} from "../ApiCategory"
-import {CategoryService} from "../service/category.service"
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthService } from '../../auth/auth-service';
+import { ToastService } from '../../toast/toast.service';
+import { QuickLinksHelper } from '../../core/quick-links-helper';
+import { TableActionDefinition } from '../../table/skills-library-table/has-action-definitions';
+import { KeywordSortOrder, PaginatedCategories } from '../ApiCategory';
+import { CategoryService } from '../service/category.service';
 
 @Component({
-  selector: "app-category-list",
-  templateUrl: "./category-list.component.html"
+  selector: 'app-category-list',
+  templateUrl: './category-list.component.html',
 })
 export class CategoryListComponent extends QuickLinksHelper {
-  @ViewChild("titleHeading") titleElement!: ElementRef
+  @ViewChild('titleHeading') titleElement!: ElementRef;
 
-  from = 0
-  size = 50
+  from = 0;
+  size = 50;
 
-  title?: string
+  title?: string;
 
-  resultsLoaded: Observable<PaginatedCategories> | undefined
-  results: PaginatedCategories | undefined
+  resultsLoaded: Observable<PaginatedCategories> | undefined;
+  results: PaginatedCategories | undefined;
 
-  columnSort: KeywordSortOrder = KeywordSortOrder.KeywordAsc
+  columnSort: KeywordSortOrder = KeywordSortOrder.KeywordAsc;
 
   constructor(
     protected router: Router,
     protected categoryService: CategoryService,
     protected toastService: ToastService,
-    protected authService: AuthService,
+    protected authService: AuthService
   ) {
-    super()
+    super();
   }
 
   get categoryCountLabel(): string {
-    if (this.totalCount > 0)  {
-      return `${this.totalCount} categor${this.totalCount > 1 ? "ies" : "y"}`
+    if (this.totalCount > 0) {
+      return `${this.totalCount} categor${this.totalCount > 1 ? 'ies' : 'y'}`;
     }
-    return `0 categories`
+    return `0 categories`;
   }
 
   get firstRecordNo(): number {
-    return this.from + 1
+    return this.from + 1;
   }
 
   get lastRecordNo(): number {
-    return Math.min(this.from + this.currPageCount, this.totalCount)
+    return Math.min(this.from + this.currPageCount, this.totalCount);
   }
 
   get currPageNo(): number {
-    return Math.floor(this.from / this.size) + 1
+    return Math.floor(this.from / this.size) + 1;
   }
 
   get currPageCount(): number {
-    return this.results?.categories.length ?? 0
+    return this.results?.categories.length ?? 0;
   }
 
   get totalCount(): number {
-    return this.results?.totalCount ?? 0
+    return this.results?.totalCount ?? 0;
   }
 
   get totalPageCount(): number {
-    return Math.ceil(this.totalCount / this.size)
+    return Math.ceil(this.totalCount / this.size);
   }
 
   get hasResults(): boolean {
-    return this.currPageCount > 0
+    return this.currPageCount > 0;
   }
 
   get emptyResults(): boolean {
-    return !this.hasResults
+    return !this.hasResults;
   }
 
   get tableActions(): TableActionDefinition[] {
     return [
       new TableActionDefinition({
-        label: "Back to Top",
-        icon: "up",
+        label: 'Back to Top',
+        icon: 'up',
         offset: true,
-        callback: (action: TableActionDefinition) => this.handleClickBackToTop(action),
-        visible: () => true
-      })
-    ]
+        callback: (action: TableActionDefinition) =>
+          this.handleClickBackToTop(action),
+        visible: () => true,
+      }),
+    ];
   }
 
   protected setResults(results: PaginatedCategories | undefined): void {
-    this.results = results
+    this.results = results;
   }
 
   loadNextPage(): void {
-    this.resultsLoaded = this.categoryService.getAllPaginated(this.size, this.from, this.columnSort)
+    this.resultsLoaded = this.categoryService.getAllPaginated(
+      this.size,
+      this.from,
+      this.columnSort
+    );
 
-    this.resultsLoaded.subscribe((results) => {
-      this.setResults(results)
-    })
+    this.resultsLoaded.subscribe(results => {
+      this.setResults(results);
+    });
   }
 
   navigateToPage(newPageNo: number): void {
-    this.from = (newPageNo - 1) * this.size
-    this.loadNextPage()
+    this.from = (newPageNo - 1) * this.size;
+    this.loadNextPage();
   }
 
   handleClickBackToTop(action: TableActionDefinition): boolean {
-    this.focusAndScrollIntoView(this.titleElement.nativeElement)
-    return false
+    this.focusAndScrollIntoView(this.titleElement.nativeElement);
+    return false;
   }
 
   handlePageClicked(newPageNo: number): void {
-    this.navigateToPage(newPageNo)
+    this.navigateToPage(newPageNo);
   }
 
   handleHeaderColumnSort(sort: KeywordSortOrder): void {
-    this.columnSort = sort
-    this.from = 0
-    this.loadNextPage()
+    this.columnSort = sort;
+    this.from = 0;
+    this.loadNextPage();
   }
 }

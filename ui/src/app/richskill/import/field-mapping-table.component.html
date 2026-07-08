@@ -1,6 +1,12 @@
 <div class="t-margin-medium t-margin-bottom">
-  <h3 class="t-type-bodyLargeBold t-type-text1 t-margin-extraSmall t-margin-bottom">Map Fields</h3>
-  <p *ngIf="!hasRequiredFields()" class="t-type-attention">Name and skill statement required</p>
+  <h3
+    class="t-type-bodyLargeBold t-type-text1 t-margin-extraSmall t-margin-bottom"
+  >
+    Map Fields
+  </h3>
+  <p *ngIf="!hasRequiredFields()" class="t-type-attention">
+    Name and skill statement required
+  </p>
 </div>
 
 <div class="t-hidden-tabletMin">
@@ -26,9 +32,12 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let head of uploadedHeaders; let i=index" class="m-tableRow m-tableRow-fieldMap">
+    <tr
+      *ngFor="let head of uploadedHeaders; let i = index"
+      class="m-tableRow m-tableRow-fieldMap"
+    >
       <th scope="row">
-        <div class="m-fieldMapText">{{head || "(unlabeled field)" }}</div>
+        <div class="m-fieldMapText">{{ head || '(unlabeled field)' }}</div>
       </th>
       <td>
         <app-field-mapping-select

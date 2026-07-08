@@ -16,36 +16,44 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional
-internal class BatchImportRichSkillTest @Autowired constructor(
+internal class BatchImportRichSkillTest
+    @Autowired
+    constructor(
         override val richSkillEsRepo: RichSkillEsRepo,
         override val collectionEsRepo: CollectionEsRepo,
         override val keywordEsRepo: KeywordEsRepo,
-        override val jobCodeEsRepo: JobCodeEsRepo
-) : SpringTest(), BaseDockerizedTest, HasDatabaseReset, HasElasticsearchReset {
+        override val jobCodeEsRepo: JobCodeEsRepo,
+    ) : SpringTest(),
+        BaseDockerizedTest,
+        HasDatabaseReset,
+        HasElasticsearchReset {
+        @Autowired
+        lateinit var batchImportRichSkill: BatchImportRichSkill
 
-    @Autowired
-    lateinit var batchImportRichSkill: BatchImportRichSkill
+        @Test
+        fun testHandleRows() {
+            // Arrange
+            val mockData = MockData()
+            val numOfSkills = 3
+            val richSkillRows = mockData.getRichSkillRows()
+            val listOfRichSkillRows = mutableListOf<RichSkillRow>()
 
-    @Test
-    fun testHandleRows() {
-        // Arrange
-        val mockData = MockData()
-        val numOfSkills = 3
-        val richSkillRows = mockData.getRichSkillRows()
-        val listOfRichSkillRows = mutableListOf<RichSkillRow>()
+            for (i in 1..numOfSkills) {
+                listOfRichSkillRows.add(richSkillRows[i])
+            }
 
-        for (i in 1..numOfSkills ) {
-            listOfRichSkillRows.add(richSkillRows[i])
+            // Act
+            batchImportRichSkill.handleRows(listOfRichSkillRows)
+
+            val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
+
+            // Assert
+            Assertions
+                .assertThat(
+                    skillResult.searchHits.map {
+                        it.content.name
+                    },
+                ).contains(richSkillRows[1].skillName)
+            Assertions.assertThat(skillResult.searchHits.size).isEqualTo(numOfSkills)
         }
-
-        // Act
-        batchImportRichSkill.handleRows(listOfRichSkillRows)
-
-        val skillResult = richSkillEsRepo.byApiSearch(ApiSearch())
-
-        // Assert
-        Assertions.assertThat(skillResult.searchHits.map { it.content.name }).contains(richSkillRows[1].skillName)
-        Assertions.assertThat(skillResult.searchHits.size).isEqualTo(numOfSkills)
-
     }
-}

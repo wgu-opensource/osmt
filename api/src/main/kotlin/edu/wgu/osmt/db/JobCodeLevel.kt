@@ -6,14 +6,21 @@ const val BROAD = "broad"
 const val MINOR = "minor"
 const val MAJOR = "major"
 
-enum class JobCodeLevel(val apiValue: String) {
+enum class JobCodeLevel(
+    val apiValue: String,
+) {
     ONet(ONET),
     Detailed(DETAILED),
     Broad(BROAD),
     Minor(MINOR),
-    Major(MAJOR);
+    Major(MAJOR),
+    ;
 
     companion object {
-        fun forApiValue(apiValue: String) = values().find { it.apiValue.toLowerCase() == apiValue.toLowerCase() }
+        fun forApiValue(apiValue: String) =
+            values().find {
+                it.apiValue.lowercase() ==
+                    apiValue.lowercase()
+            }
     }
 }

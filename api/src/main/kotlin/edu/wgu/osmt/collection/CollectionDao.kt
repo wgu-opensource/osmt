@@ -9,7 +9,11 @@ import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import java.time.LocalDateTime
 
-class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collection>, MutablePublishStatusDetails {
+class CollectionDao(
+    id: EntityID<Long>,
+) : LongEntity(id),
+    OutputsModel<Collection>,
+    MutablePublishStatusDetails {
     companion object : LongEntityClass<CollectionDao>(CollectionTable)
 
     var creationDate by CollectionTable.creationDate
@@ -26,8 +30,8 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
     override var publishDate: LocalDateTime? by CollectionTable.publishDate
     override var archiveDate: LocalDateTime? by CollectionTable.archiveDate
 
-    override fun toModel(): Collection {
-        return Collection(
+    override fun toModel(): Collection =
+        Collection(
             id = id.value,
             creationDate = creationDate,
             updateDate = updateDate,
@@ -38,12 +42,11 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             workspaceOwner = workspaceOwner,
             status = status,
             archiveDate = archiveDate,
-            publishDate = publishDate
+            publishDate = publishDate,
         )
-    }
 
-    fun toDoc(embedded: Boolean = false): CollectionDoc {
-        return CollectionDoc(
+    fun toDoc(embedded: Boolean = false): CollectionDoc =
+        CollectionDoc(
             id = id.value,
             uuid = uuid,
             name = name,
@@ -54,7 +57,6 @@ class CollectionDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<Collectio
             skillCount = if (embedded) null else skills.count().toInt(),
             author = author?.value,
             archiveDate = archiveDate,
-            publishDate = publishDate
+            publishDate = publishDate,
         )
-    }
 }

@@ -5,7 +5,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.`java-time`.datetime
 
-object JobCodeTable: LongIdTable("JobCode"), BaseTable {
+object JobCodeTable : LongIdTable("JobCode"), BaseTable {
     override val creationDate = datetime("creationDate")
 
     val major: Column<String?> = varchar("major", 1024).nullable()

@@ -11,7 +11,10 @@ import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import java.time.LocalDateTime
 
-class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<RichSkillDescriptor>,
+class RichSkillDescriptorDao(
+    id: EntityID<Long>,
+) : LongEntity(id),
+    OutputsModel<RichSkillDescriptor>,
     MutablePublishStatusDetails {
     companion object : LongEntityClass<RichSkillDescriptorDao>(RichSkillDescriptorTable)
 
@@ -32,19 +35,20 @@ class RichSkillDescriptorDao(id: EntityID<Long>) : LongEntity(id), OutputsModel<
     var collections by CollectionDao via CollectionSkills
 
     override fun toModel(): RichSkillDescriptor {
-        val rsd = RichSkillDescriptor(
-            id = id.value,
-            creationDate = creationDate,
-            updateDate = updateDate,
-            uuid = uuid,
-            name = name,
-            statement = statement,
-            jobCodes = jobCodes.map { it.toModel() }.sortedBy { it.code },
-            keywords = keywords.map { it.toModel() }.sortedBy { it.id!! },
-            archiveDate = archiveDate,
-            publishDate = publishDate,
-            collections = collections.map { it.toModel() }.toList().sortedBy { it.name }
-        )
+        val rsd =
+            RichSkillDescriptor(
+                id = id.value,
+                creationDate = creationDate,
+                updateDate = updateDate,
+                uuid = uuid,
+                name = name,
+                statement = statement,
+                jobCodes = jobCodes.map { it.toModel() }.sortedBy { it.code },
+                keywords = keywords.map { it.toModel() }.sortedBy { it.id!! },
+                archiveDate = archiveDate,
+                publishDate = publishDate,
+                collections = collections.map { it.toModel() }.toList().sortedBy { it.name },
+            )
         return rsd
     }
 }

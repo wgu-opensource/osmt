@@ -6,8 +6,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class TaskTest : SpringTest(), BaseDockerizedTest {
-
+class TaskTest :
+    SpringTest(),
+    BaseDockerizedTest {
     @Autowired
     lateinit var tms: TaskMessageService
 

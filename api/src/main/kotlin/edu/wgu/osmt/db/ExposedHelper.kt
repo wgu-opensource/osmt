@@ -11,16 +11,19 @@ import org.jetbrains.exposed.sql.vendors.currentDialect
 fun SchemaUtils.addMissingColumnsStatementsPublic(vararg tables: Table): List<String> {
     with(TransactionManager.current()) {
         val statements = ArrayList<String>()
-        if (tables.isEmpty())
+        if (tables.isEmpty()) {
             return statements
+        }
 
         val existingTableColumns = currentDialect.tableColumns(*tables)
 
         for (table in tables) {
-            //create columns
+            // create columns
             val thisTableExistingColumns = existingTableColumns[table].orEmpty()
             val missingTableColumns =
-                table.columns.filterNot { c -> thisTableExistingColumns.any { it.name.equals(c.name, true) } }
+                table.columns.filterNot { c ->
+                    thisTableExistingColumns.any { it.name.equals(c.name, true) }
+                }
             missingTableColumns.flatMapTo(statements) { it.ddl }
 
             if (db.supportsAlterTableWithAddColumn) {
@@ -32,14 +35,15 @@ fun SchemaUtils.addMissingColumnsStatementsPublic(vararg tables: Table): List<St
                 }
 
                 // sync nullability of existing columns
-                val incorrectNullabilityColumns = table.columns.filter { c ->
-                    thisTableExistingColumns.any {
-                        c.name.equals(
-                            it.name,
-                            true
-                        ) && it.nullable != c.columnType.nullable
+                val incorrectNullabilityColumns =
+                    table.columns.filter { c ->
+                        thisTableExistingColumns.any {
+                            c.name.equals(
+                                it.name,
+                                true,
+                            ) && it.nullable != c.columnType.nullable
+                        }
                     }
-                }
                 incorrectNullabilityColumns.flatMapTo(statements) { it.modifyStatement() }
             }
         }
@@ -51,12 +55,14 @@ fun SchemaUtils.addMissingColumnsStatementsPublic(vararg tables: Table): List<St
                 for (column in table.columns) {
                     val foreignKey = column.foreignKey
                     if (foreignKey != null) {
-                        val existingConstraint = existingColumnConstraint[table to column]?.firstOrNull()
+                        val existingConstraint =
+                            existingColumnConstraint[table to column]
+                                ?.firstOrNull()
                         if (existingConstraint == null) {
                             statements.addAll(createFKey(column))
-                        } else if (existingConstraint.target.table != foreignKey.target.table
-                            || foreignKey.deleteRule != existingConstraint.deleteRule
-                            || foreignKey.updateRule != existingConstraint.updateRule
+                        } else if (existingConstraint.target.table != foreignKey.target.table ||
+                            foreignKey.deleteRule != existingConstraint.deleteRule ||
+                            foreignKey.updateRule != existingConstraint.updateRule
                         ) {
                             statements.addAll(existingConstraint.dropStatement())
                             statements.addAll(createFKey(column))

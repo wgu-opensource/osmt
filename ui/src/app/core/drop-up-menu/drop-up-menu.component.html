@@ -1,6 +1,11 @@
 <ng-container *ngFor="let menu of action?.menu; let last = last">
-  <button class="dropup-item" (click)="menu.callback(action)" [disabled]="!menu.visible()" type="button">
-    {{menu.label}}
+  <button
+    class="dropup-item"
+    (click)="menu.callback(action)"
+    [disabled]="!menu.visible()"
+    type="button"
+  >
+    {{ menu.label }}
   </button>
-  <hr *ngIf="!last">
+  <hr *ngIf="!last" />
 </ng-container>

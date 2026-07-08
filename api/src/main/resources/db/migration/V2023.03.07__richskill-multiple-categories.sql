@@ -1,4 +1,5 @@
-USE osmt_db;
+USE
+osmt_db;
 
 --
 -- Migration of RichSkillDescriptor.cat_id to RichSkillKeywords table.
@@ -14,6 +15,8 @@ WHERE RichSkillDescriptor.cat_id is not null;
 --
 
 ALTER TABLE `RichSkillDescriptor`
-    DROP FOREIGN KEY `fk_RichSkillDescriptor_cat_id_id`,
-    DROP COLUMN `cat_id`
+DROP
+FOREIGN KEY `fk_RichSkillDescriptor_cat_id_id`,
+    DROP
+COLUMN `cat_id`
 ;

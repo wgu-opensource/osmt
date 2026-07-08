@@ -8,17 +8,14 @@ import edu.wgu.osmt.config.AppConfig
 import edu.wgu.osmt.keyword.KeywordCount
 import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.richskill.RichSkillDescriptor
-import java.util.*
-
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 class ApiCollectionV2(
-        collection: Collection,
-        @JsonIgnore override val ss: List<RichSkillDescriptor>,
-        @JsonIgnore override val keywords: Map<KeywordTypeEnum, List<KeywordCount>>,
-        @JsonIgnore private val appConfig: AppConfig
+    collection: Collection,
+    @JsonIgnore override val ss: List<RichSkillDescriptor>,
+    @JsonIgnore override val keywords: Map<KeywordTypeEnum, List<KeywordCount>>,
+    @JsonIgnore private val appConfig: AppConfig,
 ) : ApiCollection(collection, ss, keywords, appConfig) {
-
     @get:JsonIgnore
     override val skillKeywords: Map<KeywordTypeEnum, List<KeywordCount>>
         get() = keywords
@@ -32,16 +29,18 @@ class ApiCollectionV2(
         get() = ss.map { ApiSkillSummaryV2.fromSkill(it, appConfig) }
 
     companion object {
-
-        fun fromLatest(apiCollection: ApiCollection, appConfig: AppConfig) : ApiCollectionV2 {
-
-            val result = ApiCollectionV2(
+        fun fromLatest(
+            apiCollection: ApiCollection,
+            appConfig: AppConfig,
+        ): ApiCollectionV2 {
+            val result =
+                ApiCollectionV2(
                     collection = apiCollection.collection,
                     ss = apiCollection.ss,
                     keywords = apiCollection.keywords,
-                    appConfig
-            )
-
+                    appConfig,
+                )
+            result.credentialEngineUrl = apiCollection.credentialEngineUrl
             return result
         }
     }

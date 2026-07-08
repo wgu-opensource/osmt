@@ -1,19 +1,22 @@
-import {Component, OnInit} from "@angular/core"
-import {Router} from "@angular/router"
-import {ToastService} from "../toast/toast.service"
-import {PaginatedCollections} from "../richskill/service/rich-skill-search.service"
-import {CollectionService} from "../collection/service/collection.service"
-import {CollectionsListComponent} from "../collection/collections-list.component"
-import {determineFilters} from "../PublishStatus"
-import {Title} from "@angular/platform-browser"
-import {AuthService} from "../auth/auth-service"
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastService } from '../toast/toast.service';
+import { PaginatedCollections } from '../richskill/service/rich-skill-search.service';
+import { CollectionService } from '../collection/service/collection.service';
+import { CollectionsListComponent } from '../collection/collections-list.component';
+import { determineFilters, PublishStatus } from '../PublishStatus';
+import { Title } from '@angular/platform-browser';
+import { AuthService } from '../auth/auth-service';
 
 @Component({
-  selector: "app-collections-library",
-  templateUrl: "../collection/collections-list.component.html"
+  selector: 'app-collections-library',
+  templateUrl: '../collection/collections-list.component.html',
 })
-export class CollectionsLibraryComponent extends CollectionsListComponent implements OnInit {
-  title = "Collections"
+export class CollectionsLibraryComponent
+  extends CollectionsListComponent
+  implements OnInit
+{
+  title = 'Collections';
 
   constructor(
     protected router: Router,
@@ -22,27 +25,41 @@ export class CollectionsLibraryComponent extends CollectionsListComponent implem
     protected titleService: Title,
     protected authService: AuthService
   ) {
-    super(router, toastService, collectionService, authService)
+    super(router, toastService, collectionService, authService);
   }
 
   ngOnInit(): void {
-    this.titleService.setTitle(`Collections | ${this.whitelabel.toolName}`)
-    this.loadNextPage()
+    this.titleService.setTitle(`Collections | ${this.whitelabel.toolName}`);
+
+    if (!this.authService.isAuthenticated()) {
+      this.isPublicView = true;
+      this.selectedFilters = new Set([
+        PublishStatus.Published,
+        PublishStatus.Archived,
+      ]);
+    }
+
+    this.loadNextPage();
   }
 
   loadNextPage(): void {
     if (this.selectedFilters.size < 1) {
-      this.setResults(new PaginatedCollections([], 0))
-      return
+      this.setResults(new PaginatedCollections([], 0));
+      return;
     }
 
-    this.resultsLoaded = this.collectionService.getCollections(this.size, this.from, determineFilters(this.selectedFilters), this.columnSort)
-    this.resultsLoaded.subscribe((results) => {
-      this.setResults(results)
-    })
+    this.resultsLoaded = this.collectionService.getCollections(
+      this.size,
+      this.from,
+      determineFilters(this.selectedFilters),
+      this.columnSort
+    );
+    this.resultsLoaded.subscribe(results => {
+      this.setResults(results);
+    });
   }
 
   getSelectAllEnabled(): boolean {
-    return false
+    return false;
   }
 }

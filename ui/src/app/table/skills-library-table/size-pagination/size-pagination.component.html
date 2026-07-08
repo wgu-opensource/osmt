@@ -1,10 +1,18 @@
-<div class="size-pagination-container" *ngIf="isVisible()">
-  <label>
-    Items per page
-  </label>
-  <select name="size-pagination" #size (change)="onValueChange(+size.value)" [ngModel]="currentSize" class="m-text select">
+<div
+  class="size-pagination-container items-center whitespace-nowrap"
+  *ngIf="isVisible()"
+>
+  <!-- eslint-disable-next-line @angular-eslint/template/label-has-associated-control -->
+  <label> Items per page </label>
+  <select
+    name="size-pagination"
+    #size
+    (change)="onValueChange(+size.value)"
+    [ngModel]="currentSize"
+    class="m-text select"
+  >
     <option [value]="value" *ngFor="let value of values">
-      {{value}}
+      {{ value }}
     </option>
   </select>
 </div>

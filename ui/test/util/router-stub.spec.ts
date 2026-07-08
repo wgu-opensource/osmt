@@ -15,7 +15,9 @@ export class RouterStubSpec {
 
   get events(): Observable<NavigationEnd> {
     return new Observable(observer => {
-      observer.next(this.ne)
+      if (this.ne !== undefined) {
+        observer.next(this.ne)
+      }
       observer.complete()
     })
   }

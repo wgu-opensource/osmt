@@ -4,7 +4,10 @@
       "english_stemmer": {
         "type": "custom",
         "tokenizer": "standard",
-        "filter": ["lowercase", "stemmer"]
+        "filter": [
+          "lowercase",
+          "stemmer"
+        ]
       },
       "whitespace_exact": {
         "type": "custom",
@@ -18,7 +21,9 @@
       "lowercase_normalizer": {
         "type": "custom",
         "char_filter": [],
-        "filter": ["lowercase"]
+        "filter": [
+          "lowercase"
+        ]
       }
     }
   }

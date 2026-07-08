@@ -4,6 +4,8 @@ import edu.wgu.osmt.RoutePaths
 import edu.wgu.osmt.api.model.ApiSkill
 import edu.wgu.osmt.api.model.ApiSkillV2
 import edu.wgu.osmt.config.AppConfig
+import edu.wgu.osmt.credentialengine.CredentialEngineUrlProvider
+import edu.wgu.osmt.db.PublishStatus
 import edu.wgu.osmt.richskill.RichSkillRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
@@ -17,98 +19,131 @@ import org.springframework.web.bind.annotation.ResponseBody
 
 @Controller
 @Transactional
-class TaskController @Autowired constructor(
-    val taskMessageService: TaskMessageService,
-    val richSkillRepository: RichSkillRepository,
-    val appConfig: AppConfig
-) {
-    private fun taskResult(uuid: String): HttpEntity<*> {
-        val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
-        
-        return when (task?.status) {
-            TaskStatus.Ready -> Task.resultResponse(task)
-            else -> ResponseEntity.status(404).body("Task with id $uuid not ready or not found")
-        }
-    }
-    
-    @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_TEXT}",
-        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_TEXT}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_TEXT}"
-    ])
-    @ResponseBody
-    fun textResult(
-        @PathVariable uuid: String
-    ): HttpEntity<*> {
-        
-        return taskResult(uuid)
-    }
-    
-    @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_MEDIA}")
-    @ResponseBody
-    fun mediaResult(@PathVariable uuid: String): HttpEntity<*> {
-        
-        return taskResult(uuid)
-    }
-    
-    @GetMapping(path = [
-        "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}",
-        "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}",
-        "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_BATCH}"
-    ])
-    @ResponseBody
-    fun batchResult(
-        @PathVariable uuid: String
-    ): HttpEntity<*> {
-        
-        return taskResult(uuid)
-    }
-    
-    @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_SKILLS}")
-    @ResponseBody
-    fun skillsResult(@PathVariable uuid: String): HttpEntity<*> {
-        val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
-        
-        return when (task?.status) {
-            TaskStatus.Ready -> {
-                // CreateSkillsTask.results is a list of skill uuids, look them up and return
-                val createSkillsTask: CreateSkillsTask = task as CreateSkillsTask
-                val skillDaos = richSkillRepository.findManyByUUIDs(createSkillsTask.result!!)
-                val apiSkills = skillDaos?.map { ApiSkill.fromDao(it, appConfig) }
-                
-                val responseHeaders = HttpHeaders()
-                responseHeaders.add("Content-Type", task.contentType)
-                return ResponseEntity.ok().headers(responseHeaders).body(apiSkills)
+class TaskController
+    @Autowired
+    constructor(
+        val taskMessageService: TaskMessageService,
+        val richSkillRepository: RichSkillRepository,
+        val appConfig: AppConfig,
+        val credentialEngineUrlProvider: CredentialEngineUrlProvider,
+    ) {
+        private fun taskResult(uuid: String): HttpEntity<*> {
+            val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
+
+            return when (task?.status) {
+                TaskStatus.Ready -> Task.resultResponse(task)
+                else -> ResponseEntity.status(404).body("Task with id $uuid not ready or not found")
             }
-            
-            else -> ResponseEntity.status(404).body("Task with id $uuid not ready or not found")
         }
-    }
-    
-    @GetMapping(
-        path = [
-            "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_SKILLS}",
-            "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_SKILLS}",
-        ],
-    )
-    @ResponseBody
-    fun skillsResultV2(@PathVariable uuid: String): HttpEntity<*> {
-        val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
-        
-        return when (task?.status) {
-            TaskStatus.Ready -> {
-                // CreateSkillsTask.results is a list of skill uuids, look them up and return
-                val createSkillsTaskV2: CreateSkillsTaskV2 = task as CreateSkillsTaskV2
-                val skillDaos = richSkillRepository.findManyByUUIDs(createSkillsTaskV2.result!!)
-                val apiSkills = skillDaos?.map { ApiSkillV2.fromDao(it, appConfig) }
-                
-                val responseHeaders = HttpHeaders()
-                responseHeaders.add("Content-Type", task.contentType)
-                return ResponseEntity.ok().headers(responseHeaders).body(apiSkills)
+
+        @GetMapping(
+            path = [
+                "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_TEXT}",
+                "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_TEXT}",
+                "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_TEXT}",
+            ],
+        )
+        @ResponseBody
+        fun textResult(
+            @PathVariable uuid: String,
+        ): HttpEntity<*> = taskResult(uuid)
+
+        @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_MEDIA}")
+        @ResponseBody
+        fun mediaResult(
+            @PathVariable uuid: String,
+        ): HttpEntity<*> = taskResult(uuid)
+
+        @GetMapping(
+            path = [
+                "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_BATCH}",
+                "${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_BATCH}",
+                "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_BATCH}",
+            ],
+        )
+        @ResponseBody
+        fun batchResult(
+            @PathVariable uuid: String,
+        ): HttpEntity<*> = taskResult(uuid)
+
+        @GetMapping("${RoutePaths.API}${RoutePaths.API_V3}${RoutePaths.TASK_DETAIL_SKILLS}")
+        @ResponseBody
+        fun skillsResult(
+            @PathVariable uuid: String,
+        ): HttpEntity<*> {
+            val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
+
+            return when (task?.status) {
+                TaskStatus.Ready -> {
+                    // CreateSkillsTask.results is a list of skill uuids, look them up and return
+                    val createSkillsTask: CreateSkillsTask = task as CreateSkillsTask
+                    val skillDaos = richSkillRepository.findManyByUUIDs(createSkillsTask.result!!)
+                    val apiSkills =
+                        skillDaos?.map {
+                            ApiSkill.fromDao(it, appConfig).also { skill ->
+                                if (it.toModel().publishStatus() in
+                                    listOf(
+                                        PublishStatus.Published,
+                                        PublishStatus.Archived,
+                                    )
+                                ) {
+                                    skill.credentialEngineUrl =
+                                        credentialEngineUrlProvider.skillFinderUrl(it.uuid)
+                                }
+                            }
+                        }
+
+                    val responseHeaders = HttpHeaders()
+                    responseHeaders.add("Content-Type", task.contentType)
+                    return ResponseEntity.ok().headers(responseHeaders).body(apiSkills)
+                }
+
+                else -> {
+                    ResponseEntity.status(404).body("Task with id $uuid not ready or not found")
+                }
             }
-            
-            else -> ResponseEntity.status(404).body("Task with id $uuid not ready or not found")
+        }
+
+        @GetMapping(
+            path = [
+                "${RoutePaths.API}${RoutePaths.API_V2}${RoutePaths.TASK_DETAIL_SKILLS}",
+                "${RoutePaths.API}${RoutePaths.UNVERSIONED}${RoutePaths.TASK_DETAIL_SKILLS}",
+            ],
+        )
+        @ResponseBody
+        fun skillsResultV2(
+            @PathVariable uuid: String,
+        ): HttpEntity<*> {
+            val task = taskMessageService.opsForHash.get(TaskMessageService.taskHashTable, uuid)
+
+            return when (task?.status) {
+                TaskStatus.Ready -> {
+                    // CreateSkillsTask.results is a list of skill uuids, look them up and return
+                    val createSkillsTaskV2: CreateSkillsTaskV2 = task as CreateSkillsTaskV2
+                    val skillDaos = richSkillRepository.findManyByUUIDs(createSkillsTaskV2.result!!)
+                    val apiSkills =
+                        skillDaos?.map {
+                            ApiSkillV2.fromDao(it, appConfig).also { skill ->
+                                if (it.toModel().publishStatus() in
+                                    listOf(
+                                        PublishStatus.Published,
+                                        PublishStatus.Archived,
+                                    )
+                                ) {
+                                    skill.credentialEngineUrl =
+                                        credentialEngineUrlProvider.skillFinderUrl(it.uuid)
+                                }
+                            }
+                        }
+
+                    val responseHeaders = HttpHeaders()
+                    responseHeaders.add("Content-Type", task.contentType)
+                    return ResponseEntity.ok().headers(responseHeaders).body(apiSkills)
+                }
+
+                else -> {
+                    ResponseEntity.status(404).body("Task with id $uuid not ready or not found")
+                }
+            }
         }
     }
-    
-}

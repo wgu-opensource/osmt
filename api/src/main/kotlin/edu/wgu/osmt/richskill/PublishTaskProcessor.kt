@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
-
 @Component
 @Profile("apiserver")
 @Transactional
@@ -33,18 +32,19 @@ class PublishTaskProcessor {
         value = [TaskMessageService.publishSkills],
         deadLetterQueueListenerEnabled = "true",
         deadLetterQueue = TaskMessageService.deadLetters,
-        concurrency = "1"
+        concurrency = "1",
     )
     fun process(publishTask: PublishTask) {
         logger.info("Started processing publish task id: ${publishTask.uuid}")
 
-        val batchResult = when (publishTask.appliesToType) {
-            AppliesToType.Skill -> richSkillRepository.changeStatusesForTask(publishTask)
-            AppliesToType.Collection -> collectionRepository.changeStatusesForTask(publishTask)
-        }
+        val batchResult =
+            when (publishTask.appliesToType) {
+                AppliesToType.Skill -> richSkillRepository.changeStatusesForTask(publishTask)
+                AppliesToType.Collection -> collectionRepository.changeStatusesForTask(publishTask)
+            }
 
         taskMessageService.publishResult(
-            publishTask.copy(result=batchResult, status=TaskStatus.Ready)
+            publishTask.copy(result = batchResult, status = TaskStatus.Ready),
         )
 
         logger.info("Task ${publishTask.uuid} completed")

@@ -1,13 +1,14 @@
 package edu.wgu.osmt.io.csv
 
 import com.opencsv.CSVWriter
-import edu.wgu.osmt.io.common.TabularResource
 import edu.wgu.osmt.io.common.TabColumn
+import edu.wgu.osmt.io.common.TabularResource
 import java.io.StringWriter
 import java.io.Writer
 
-abstract class CsvResource<T>(val debugName: String) : TabularResource<CsvColumn<T>, T> {
-
+abstract class CsvResource<T>(
+    val debugName: String,
+) : TabularResource<CsvColumn<T>, T> {
     /**
      * Defines the columns of this csv in their desired order.
      */
@@ -41,11 +42,12 @@ abstract class CsvResource<T>(val debugName: String) : TabularResource<CsvColumn
     private fun getCsvWriter(writer: Writer): CSVWriter {
         val config = configureCsv()
 
-        return CSVWriter(writer,
-                config.delimiter,
-                config.quoteChar,
-                config.escapeChar,
-                config.lineEnd
+        return CSVWriter(
+            writer,
+            config.delimiter,
+            config.quoteChar,
+            config.escapeChar,
+            config.lineEnd,
         )
     }
 
@@ -55,33 +57,42 @@ abstract class CsvResource<T>(val debugName: String) : TabularResource<CsvColumn
         }
     }
 
-    private fun writeHeaderRow(data: List<T>, csvWriter: CSVWriter) {
+    private fun writeHeaderRow(
+        data: List<T>,
+        csvWriter: CSVWriter,
+    ) {
         if (configureCsv().includeHeader) {
             val headerRow = columnTranslations(data).map { column -> column.name }.toTypedArray()
             writeRow(headerRow, csvWriter)
         }
     }
 
-    private fun writeRows(data: List<T>, csvWriter: CSVWriter) {
-        val rowsList: List<Array<String>> = data.map { datum ->
-            columnTranslations(data).map { it.translate(datum) }.toTypedArray()
-        }
+    private fun writeRows(
+        data: List<T>,
+        csvWriter: CSVWriter,
+    ) {
+        val rowsList: List<Array<String>> =
+            data.map { datum ->
+                columnTranslations(data).map { it.translate(datum) }.toTypedArray()
+            }
         rowsList.forEach { writeRow(it, csvWriter) }
     }
 
-    private fun writeRow(rowData: Array<String>, csvWriter: CSVWriter) {
+    private fun writeRow(
+        rowData: Array<String>,
+        csvWriter: CSVWriter,
+    ) {
         csvWriter.writeNext(rowData)
     }
 }
-
 
 /**
  * Define the translation from the source object to a column's expected value
  */
 data class CsvColumn<T>(
-        val name: String = "",
-        val translate: (T) -> String
-): TabColumn<T>
+    val name: String = "",
+    val translate: (T) -> String,
+) : TabColumn<T>
 
 /**
  * Configure the global attributes of a csv export
@@ -91,7 +102,7 @@ data class CsvConfig(
     val quoteChar: Char = Defaults.quoteChar,
     val escapeChar: Char = Defaults.escapeChar,
     val lineEnd: String = Defaults.lineEnd,
-    val includeHeader: Boolean = Defaults.includeHeader
+    val includeHeader: Boolean = Defaults.includeHeader,
 ) {
     companion object Defaults { // Allows the default values to be shared with its builder
         val delimiter: Char = CSVWriter.DEFAULT_SEPARATOR
@@ -102,5 +113,9 @@ data class CsvConfig(
     }
 }
 
-data class CsvMissingHeaderException(val debugName: String)
-    : RuntimeException("Can't produce $debugName csv, one or more required column headers are missing.", null)
+data class CsvMissingHeaderException(
+    val debugName: String,
+) : RuntimeException(
+        "Can't produce $debugName csv, one or more required column headers are missing.",
+        null,
+    )

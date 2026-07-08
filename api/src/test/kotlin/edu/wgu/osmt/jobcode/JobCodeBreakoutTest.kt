@@ -3,7 +3,6 @@ package edu.wgu.osmt.jobcode
 import org.junit.jupiter.api.Test
 
 internal class JobCodeBreakoutTest {
-
     @Test
     fun goldenPathTest() {
         // Setup
@@ -23,11 +22,21 @@ internal class JobCodeBreakoutTest {
         val jobRoleResult = JobCodeBreakout.jobRoleCode(code)
 
         // Verify
-        assert(majorResult == expectedMajor) { "Wrong major code.  Expected=[$expectedMajor] Actual=[$majorResult]" }
-        assert(minorResult == expectedMinor) { "Wrong minor code.  Expected=[$expectedMinor] Actual=[$minorResult]" }
-        assert(broadResult == expectedBroad) { "Wrong broad code.  Expected=[$expectedBroad] Actual=[$broadResult]" }
-        assert(detailedResult == expectedDetailed) { "Wrong detailed code.  Expected=[$expectedDetailed] Actual=[$detailedResult]" }
-        assert(jobRoleResult == expectedJobRole) { "Wrong job role code.  Expected=[$expectedJobRole] Actual=[$jobRoleResult]" }
+        assert(majorResult == expectedMajor) {
+            "Wrong major code.  Expected=[$expectedMajor] Actual=[$majorResult]"
+        }
+        assert(minorResult == expectedMinor) {
+            "Wrong minor code.  Expected=[$expectedMinor] Actual=[$minorResult]"
+        }
+        assert(broadResult == expectedBroad) {
+            "Wrong broad code.  Expected=[$expectedBroad] Actual=[$broadResult]"
+        }
+        assert(detailedResult == expectedDetailed) {
+            "Wrong detailed code.  Expected=[$expectedDetailed] Actual=[$detailedResult]"
+        }
+        assert(jobRoleResult == expectedJobRole) {
+            "Wrong job role code.  Expected=[$expectedJobRole] Actual=[$jobRoleResult]"
+        }
     }
 
     @Test
@@ -47,11 +56,21 @@ internal class JobCodeBreakoutTest {
         val jobRoleResult = JobCodeBreakout.jobRoleCode(code)
 
         // Verify
-        assert(majorResult == expectedMajor) { "Wrong major code.  Expected=[$expectedMajor] Actual=[$majorResult]" }
-        assert(minorResult == expectedMinor) { "Wrong minor code.  Expected=[$expectedMinor] Actual=[$minorResult]" }
-        assert(broadResult == expectedBroad) { "Wrong broad code.  Expected=[$expectedBroad] Actual=[$broadResult]" }
-        assert(detailedResult == null) { "Wrong detailed code.  Expected=[null] Actual=[$detailedResult]" }
-        assert(jobRoleResult == null) { "Wrong job role code.  Expected=[null] Actual=[$jobRoleResult]" }
+        assert(majorResult == expectedMajor) {
+            "Wrong major code.  Expected=[$expectedMajor] Actual=[$majorResult]"
+        }
+        assert(minorResult == expectedMinor) {
+            "Wrong minor code.  Expected=[$expectedMinor] Actual=[$minorResult]"
+        }
+        assert(broadResult == expectedBroad) {
+            "Wrong broad code.  Expected=[$expectedBroad] Actual=[$broadResult]"
+        }
+        assert(
+            detailedResult == null,
+        ) { "Wrong detailed code.  Expected=[null] Actual=[$detailedResult]" }
+        assert(
+            jobRoleResult == null,
+        ) { "Wrong job role code.  Expected=[null] Actual=[$jobRoleResult]" }
     }
 
     @Test
@@ -73,11 +92,21 @@ internal class JobCodeBreakoutTest {
         val jobRoleResult = JobCodeBreakout.jobRoleCode(code)
 
         // Verify
-        assert(majorResult == expectedMajor) { "Wrong major code.  Expected=[$expectedMajor] Actual=[$majorResult]" }
-        assert(minorResult == expectedMinor) { "Wrong minor code.  Expected=[$expectedMinor] Actual=[$minorResult]" }
-        assert(broadResult == expectedBroad) { "Wrong broad code.  Expected=[$expectedBroad] Actual=[$broadResult]" }
-        assert(detailedResult == expectedDetailed) { "Wrong detailed code.  Expected=[$expectedDetailed] Actual=[$detailedResult]" }
-        assert(jobRoleResult == expectedJobRole) { "Wrong job role code.  Expected=[$expectedJobRole] Actual=[$jobRoleResult]" }
+        assert(majorResult == expectedMajor) {
+            "Wrong major code.  Expected=[$expectedMajor] Actual=[$majorResult]"
+        }
+        assert(minorResult == expectedMinor) {
+            "Wrong minor code.  Expected=[$expectedMinor] Actual=[$minorResult]"
+        }
+        assert(broadResult == expectedBroad) {
+            "Wrong broad code.  Expected=[$expectedBroad] Actual=[$broadResult]"
+        }
+        assert(detailedResult == expectedDetailed) {
+            "Wrong detailed code.  Expected=[$expectedDetailed] Actual=[$detailedResult]"
+        }
+        assert(jobRoleResult == expectedJobRole) {
+            "Wrong job role code.  Expected=[$expectedJobRole] Actual=[$jobRoleResult]"
+        }
     }
 
     @Test
@@ -99,11 +128,21 @@ internal class JobCodeBreakoutTest {
         val jobRoleResult = JobCodeBreakout.jobRoleCode(code)
 
         // Verify
-        assert(majorResult == expectedMajor) { "Wrong major code.  Expected=[$expectedMajor] Actual=[$majorResult]" }
-        assert(minorResult == expectedMinor) { "Wrong minor code.  Expected=[$expectedMinor] Actual=[$minorResult]" }
-        assert(broadResult == expectedBroad) { "Wrong broad code.  Expected=[$expectedBroad] Actual=[$broadResult]" }
-        assert(detailedResult == expectedDetailed) { "Wrong detailed code.  Expected=[$expectedDetailed] Actual=[$detailedResult]" }
-        assert(jobRoleResult == expectedJobRole) { "Wrong job role code.  Expected=[null] Actual=[$jobRoleResult]" }
+        assert(majorResult == expectedMajor) {
+            "Wrong major code.  Expected=[$expectedMajor] Actual=[$majorResult]"
+        }
+        assert(minorResult == expectedMinor) {
+            "Wrong minor code.  Expected=[$expectedMinor] Actual=[$minorResult]"
+        }
+        assert(broadResult == expectedBroad) {
+            "Wrong broad code.  Expected=[$expectedBroad] Actual=[$broadResult]"
+        }
+        assert(detailedResult == expectedDetailed) {
+            "Wrong detailed code.  Expected=[$expectedDetailed] Actual=[$detailedResult]"
+        }
+        assert(jobRoleResult == expectedJobRole) {
+            "Wrong job role code.  Expected=[null] Actual=[$jobRoleResult]"
+        }
     }
 
     @Test
@@ -116,7 +155,7 @@ internal class JobCodeBreakoutTest {
 
         val expectedMinor = "31-1100"
         val expectedMinor2 = "15-1200"
-        val expectedMinor3= "51-5100"
+        val expectedMinor3 = "51-5100"
 
         val expectedNormalMinorCode = "31-1000"
 

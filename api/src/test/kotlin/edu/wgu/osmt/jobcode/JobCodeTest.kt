@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 internal class JobCodeTest {
-
     @Test
     fun create() {
         // Arrange
@@ -20,7 +19,10 @@ internal class JobCodeTest {
     }
 
     companion object {
-        fun assertEquals(jobCode: JobCode, apiJobCode: ApiJobCode) {
+        fun assertEquals(
+            jobCode: JobCode,
+            apiJobCode: ApiJobCode,
+        ) {
             Assertions.assertThat(apiJobCode.code).isEqualTo(jobCode.code)
             Assertions.assertThat(apiJobCode.targetNodeName).isEqualTo(jobCode.name)
             Assertions.assertThat(apiJobCode.frameworkName).isEqualTo(jobCode.framework)

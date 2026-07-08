@@ -1,25 +1,24 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing"
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HorizontalActionBarItemComponent } from "./horizontal-action-bar-item.component"
+import { HorizontalActionBarItemComponent } from './horizontal-action-bar-item.component';
 
-describe("HorizontalActionBarItemComponent", () => {
-  let component: HorizontalActionBarItemComponent
-  let fixture: ComponentFixture<HorizontalActionBarItemComponent>
+describe('HorizontalActionBarItemComponent', () => {
+  let component: HorizontalActionBarItemComponent;
+  let fixture: ComponentFixture<HorizontalActionBarItemComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HorizontalActionBarItemComponent ]
-    })
-    .compileComponents()
-  })
+      declarations: [HorizontalActionBarItemComponent],
+    }).compileComponents();
+  });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HorizontalActionBarItemComponent)
-    component = fixture.componentInstance
-    fixture.detectChanges()
-  })
+    fixture = TestBed.createComponent(HorizontalActionBarItemComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-  it("should create", () => {
-    expect(component).toBeTruthy()
-  })
-})
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

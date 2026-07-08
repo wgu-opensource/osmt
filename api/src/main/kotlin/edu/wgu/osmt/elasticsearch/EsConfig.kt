@@ -6,5 +6,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 data class EsConfig(
     val uri: String,
     val username: String?,
-    val password: String?
+    val password: String?,
 )

@@ -8,8 +8,7 @@ import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ApiCollectionV2Test {
-
-    private lateinit var mockData : MockData
+    private lateinit var mockData: MockData
 
     @BeforeAll
     fun setup() {

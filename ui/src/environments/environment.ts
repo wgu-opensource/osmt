@@ -4,10 +4,10 @@
 
 export const environment = {
   production: false,
-  baseApiUrl: "http://localhost:8080",
-  loginUrl: "http://localhost:8080/oauth2/authorization/okta",
-  dynamicWhitelabel: true
-}
+  baseApiUrl: 'http://localhost:8080',
+  loginUrl: 'http://localhost:8080/oauth2/authorization/okta',
+  dynamicWhitelabel: true,
+};
 
 /*
  * For easier debugging in development mode, you can import the following file

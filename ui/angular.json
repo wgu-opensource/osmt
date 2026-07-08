@@ -33,7 +33,7 @@
               "file-saver",
               "chroma-js"
             ],
-            "outputPath": "../api/src/main/resources/ui/",
+            "outputPath": "dist/",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -42,14 +42,15 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              "src/config",
               {
                 "glob": "**/*",
-                "input": "./node_modules/@concentricsky/wgu-design-system-patternlibrary/dist",
+                "input": "src/pattern-library",
                 "output": "./assets"
               }
             ],
             "styles": [
-              "node_modules/@concentricsky/wgu-design-system-patternlibrary/dist/css/screen.css",
+              "src/pattern-library/css/screen.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -95,15 +96,15 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ui:build",
+            "buildTarget": "ui:build",
             "proxyConfig": "proxy.conf.js"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ui:build:production"
+              "buildTarget": "ui:build:production"
             },
             "development": {
-              "browserTarget": "ui:build:development"
+              "buildTarget": "ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -111,7 +112,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ui:build"
+            "buildTarget": "ui:build"
           }
         },
         "test": {
@@ -121,13 +122,8 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets", "src/config"],
+            "styles": ["src/styles.scss"],
             "scripts": [],
             "codeCoverage": true
           }
@@ -135,10 +131,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
@@ -146,8 +139,6 @@
   },
   "cli": {
     "analytics": false,
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ]
+    "schematicCollections": ["@angular-eslint/schematics"]
   }
 }

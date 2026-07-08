@@ -15,12 +15,6 @@ buildNumber.properties
 # OSX metadata
 **/.DS_Store
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -31,8 +25,10 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
-.vscode/
+### Cursor ###
+# Cursor plans directory - contains development plans and notes
+.plans
+.cursor/plans
 
 ### Local nodejs downloaded for frontend-maven-plugin
 ui/node
@@ -46,3 +42,7 @@ osmt*.env
 /test/postman/token.env
 /test/node_modules
 **/target/
+
+.m2-cache
+.m2
+task-logs-*

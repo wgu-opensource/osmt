@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
-
 @Component
 @Profile("apiserver")
 @Transactional
@@ -32,17 +31,23 @@ class CreateSkillsTaskProcessor {
         value = [TaskMessageService.createSkills],
         deadLetterQueueListenerEnabled = "true",
         deadLetterQueue = TaskMessageService.deadLetters,
-        concurrency = "1"
+        concurrency = "1",
     )
     fun process(task: CreateSkillsTask) {
         logger.info("Started processing createSkillsTask uuid: ${task.uuid}")
 
-        val results = richSkillRepository.createFromApi(task.apiSkillUpdates, task.userString, task.userIdentifier).map {
-            it.uuid
-        }
+        val results =
+            richSkillRepository
+                .createFromApi(
+                    task.apiSkillUpdates,
+                    task.userString,
+                    task.userIdentifier,
+                ).map {
+                    it.uuid
+                }
 
         taskMessageService.publishResult(
-            task.copy(result=results, status=TaskStatus.Ready)
+            task.copy(result = results, status = TaskStatus.Ready),
         )
 
         logger.info("Task ${task.uuid} completed")

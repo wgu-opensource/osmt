@@ -1,211 +1,238 @@
-import {NgModule} from "@angular/core"
-import {RouterModule, Routes} from "@angular/router"
-import {RichSkillPublicComponent} from "./richskill/detail/rich-skill-public/rich-skill-public.component"
-import {RichSkillsLibraryComponent} from "./richskill/library/rich-skills-library.component"
-import {RichSkillFormComponent} from "./richskill/form/rich-skill-form.component"
-import {LoginSuccessComponent} from "./auth/login-success.component"
-import {LogoutComponent} from "./auth/logout.component"
-import {AuthGuard} from "./auth/auth.guard"
-import {LoginComponent} from "./auth/login.component"
-import {RichSkillManageComponent} from "./richskill/detail/rich-skill-manage/rich-skill-manage.component"
-import {RichSkillSearchResultsComponent} from "./search/rich-skill-search-results.component"
-import {AdvancedSearchComponent} from "./search/advanced-search/advanced-search.component"
-import {AddSkillsCollectionComponent} from "./collection/add-skills-collection.component"
-import {CollectionFormComponent} from "./collection/create-collection/collection-form.component"
-import {FormDirtyGuard} from "./core/abstract-form.component"
-import {CategoryDetailComponent} from "./category/detail/category-detail.component"
-import {CategoryLibraryComponent} from "./category/library/category-library.component"
-import {CollectionsLibraryComponent} from "./table/collections-library.component"
-import {CollectionSearchResultsComponent} from "./collection/collection-search-results.component"
-import {CollectionPublicComponent} from "./collection/detail/collection-public/collection-public.component"
-import {ManageCollectionComponent} from "./collection/detail/manage-collection.component"
-import {PublishCollectionComponent} from "./collection/detail/publish-collection.component"
-import {CollectionSkillSearchComponent} from "./collection/collection-skill-search.component"
-import {BatchImportComponent} from "./richskill/import/batch-import.component"
-import { ActionByRoles, ButtonAction } from "./auth/auth-roles"
-import {MyWorkspaceComponent} from "./my-workspace/my-workspace.component"
-import {ConvertToCollectionComponent} from "./my-workspace/convert-to-collection/convert-to-collection.component"
-import {
-  BatchImportCollectionComponent
-} from "./collection/create-collection/batch-import-collection/batch-import-collection.component"
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { RichSkillPublicComponent } from './richskill/detail/rich-skill-public/rich-skill-public.component';
+import { RichSkillsLibraryComponent } from './richskill/library/rich-skills-library.component';
+import { RichSkillFormComponent } from './richskill/form/rich-skill-form.component';
+import { LoginSuccessComponent } from './auth/login-success.component';
+import { LogoutComponent } from './auth/logout.component';
+import { AuthGuard } from './auth/auth.guard';
+import { LoginComponent } from './auth/login.component';
+import { RichSkillManageComponent } from './richskill/detail/rich-skill-manage/rich-skill-manage.component';
+import { RichSkillSearchResultsComponent } from './search/rich-skill-search-results.component';
+import { AdvancedSearchComponent } from './search/advanced-search/advanced-search.component';
+import { AddSkillsCollectionComponent } from './collection/add-skills-collection.component';
+import { CollectionFormComponent } from './collection/create-collection/collection-form.component';
+import { FormDirtyGuard } from './core/abstract-form.component';
+import { CategoryDetailComponent } from './category/detail/category-detail.component';
+import { CategoryLibraryComponent } from './category/library/category-library.component';
+import { CollectionsLibraryComponent } from './table/collections-library.component';
+import { CollectionSearchResultsComponent } from './collection/collection-search-results.component';
+import { CollectionPublicComponent } from './collection/detail/collection-public/collection-public.component';
+import { ManageCollectionComponent } from './collection/detail/manage-collection.component';
+import { PublishCollectionComponent } from './collection/detail/publish-collection.component';
+import { CollectionSkillSearchComponent } from './collection/collection-skill-search.component';
+import { BatchImportComponent } from './richskill/import/batch-import.component';
+import { ActionByRoles, ButtonAction } from './auth/auth-roles';
+import { MyWorkspaceComponent } from './my-workspace/my-workspace.component';
+import { ConvertToCollectionComponent } from './my-workspace/convert-to-collection/convert-to-collection.component';
+import { BatchImportCollectionComponent } from './collection/create-collection/batch-import-collection/batch-import-collection.component';
+import { SyncManagementComponent } from './admin/sync/sync-management.component';
 
 const routes: Routes = [
-  { path: "", redirectTo: "/skills", pathMatch: "full" },
+  { path: '', redirectTo: '/skills', pathMatch: 'full' },
 
   /* SKILLS */
 
   // create skill
-  {path: "skills/create",
+  {
+    path: 'skills/create',
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.SkillCreate)
+      roles: ActionByRoles.get(ButtonAction.SkillCreate),
     },
-    canDeactivate: [FormDirtyGuard]
+    canDeactivate: [FormDirtyGuard],
   },
   // skill search results
-  {path: "skills/search",
+  {
+    path: 'skills/search',
     component: RichSkillSearchResultsComponent,
-    canActivate: [AuthGuard],
   },
   // edit skill
-  {path: "skills/:uuid/edit",
+  {
+    path: 'skills/:uuid/edit',
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.SkillUpdate)
+      roles: ActionByRoles.get(ButtonAction.SkillUpdate),
     },
-    canDeactivate: [FormDirtyGuard]
+    canDeactivate: [FormDirtyGuard],
   },
   // clone skill
-  {path: "skills/:uuid/duplicate",
+  {
+    path: 'skills/:uuid/duplicate',
     component: RichSkillFormComponent,
     canActivate: [AuthGuard],
     canDeactivate: [FormDirtyGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.SkillCreate)
+      roles: ActionByRoles.get(ButtonAction.SkillCreate),
     },
   },
   // manage skill
-  {path: "skills/:uuid/manage",
+  {
+    path: 'skills/:uuid/manage',
     component: RichSkillManageComponent,
-    canActivate: [AuthGuard]
-  },
-  // skills library
-  {path: "skills",
-    component: RichSkillsLibraryComponent,
     canActivate: [AuthGuard],
   },
+  // skills library
+  {
+    path: 'skills',
+    component: RichSkillsLibraryComponent,
+  },
   // batch import
-  {path: "skills/import",
+  {
+    path: 'skills/import',
     component: BatchImportComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.SkillCreate)
+      roles: ActionByRoles.get(ButtonAction.SkillCreate),
     },
   },
 
-  /* CATEGORIES */
+  /* CATEGORIES (public, like skills/collections) */
 
-  // category detail
-  {path: "categories/:id",
+  {
+    path: 'categories/:id',
     component: CategoryDetailComponent,
-    canActivate: [AuthGuard]
   },
-  {path: "categories",
+  {
+    path: 'categories',
     component: CategoryLibraryComponent,
-    canActivate: [AuthGuard]
   },
 
   /* COLLECTIONS */
 
   // create collection
-  {path: "collections/create",
+  {
+    path: 'collections/create',
     component: CollectionFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.CollectionCreate)
+      roles: ActionByRoles.get(ButtonAction.CollectionCreate),
     },
-    canDeactivate: [FormDirtyGuard]
+    canDeactivate: [FormDirtyGuard],
   },
-  {path: "collections/create/batch-import",
+  {
+    path: 'collections/create/batch-import',
     component: BatchImportCollectionComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.CollectionCreate)
+      roles: ActionByRoles.get(ButtonAction.CollectionCreate),
     },
-    canDeactivate: [FormDirtyGuard]
+    canDeactivate: [FormDirtyGuard],
   },
   // collection search results
-  {path: "collections/search",
+  {
+    path: 'collections/search',
     component: CollectionSearchResultsComponent,
-    canActivate: [AuthGuard],
   },
   // edit collection
-  {path: "collections/:uuid/edit",
+  {
+    path: 'collections/:uuid/edit',
     component: CollectionFormComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.CollectionUpdate)
+      roles: ActionByRoles.get(ButtonAction.CollectionUpdate),
     },
-    canDeactivate: [FormDirtyGuard]
+    canDeactivate: [FormDirtyGuard],
+  },
+  {
+    path: 'collections/:uuid/duplicate',
+    component: CollectionFormComponent,
+    canActivate: [AuthGuard],
+    canDeactivate: [FormDirtyGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.CollectionCreate),
+    },
   },
   // manage collection
-  {path: "collections/:uuid/manage",
+  {
+    path: 'collections/:uuid/manage',
     component: ManageCollectionComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   // publish collection guard wizard
-  {path: "collections/:uuid/publish",
+  {
+    path: 'collections/:uuid/publish',
     component: PublishCollectionComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.CollectionPublish)
+      roles: ActionByRoles.get(ButtonAction.CollectionPublish),
     },
   },
   // find skills to add to a collection
-  {path: "collections/:uuid/add-skills",
+  {
+    path: 'collections/:uuid/add-skills',
     component: CollectionSkillSearchComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.CollectionSkillsUpdate)
+      roles: ActionByRoles.get(ButtonAction.CollectionSkillsUpdate),
     },
   },
   // find a collection to add a selection of skills to
-  {path: "collections/add-skills",
+  {
+    path: 'collections/add-skills',
     component: AddSkillsCollectionComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.CollectionSkillsUpdate)
+      roles: ActionByRoles.get(ButtonAction.CollectionSkillsUpdate),
     },
   },
-  // collections library
-  {path: "collections",
+  // collections library (public)
+  {
+    path: 'collections',
     component: CollectionsLibraryComponent,
-    canActivate: [AuthGuard],
   },
 
   // advanced search
-  {path: "search",
+  {
+    path: 'search',
     component: AdvancedSearchComponent,
     canActivate: [AuthGuard],
   },
   {
-    path: "my-workspace",
+    path: 'my-workspace',
     component: MyWorkspaceComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
-    path: "my-workspace/:uuid/add-skills",
+    path: 'my-workspace/:uuid/add-skills',
     component: CollectionSkillSearchComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.MyWorkspace)
-    }
+      roles: ActionByRoles.get(ButtonAction.MyWorkspace),
+    },
   },
   {
-    path: "my-workspace/convert-to-collection",
+    path: 'my-workspace/convert-to-collection',
     component: ConvertToCollectionComponent,
     canActivate: [AuthGuard],
     data: {
-      roles: ActionByRoles.get(ButtonAction.MyWorkspace)
-    }
+      roles: ActionByRoles.get(ButtonAction.MyWorkspace),
+    },
+  },
+  {
+    path: 'admin/sync',
+    component: SyncManagementComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: ActionByRoles.get(ButtonAction.SyncManage),
+    },
   },
   /* PUBLIC VIEWS */
-  {path: "skills/:uuid", component: RichSkillPublicComponent},
-  {path: "collections/:uuid", component: CollectionPublicComponent},
-  {path: "api/skills/:uuid", component: RichSkillPublicComponent},
-  {path: "api/collections/:uuid", component: CollectionPublicComponent},
+  { path: 'skills/:uuid', component: RichSkillPublicComponent },
+  { path: 'collections/:uuid', component: CollectionPublicComponent },
+  { path: 'api/skills/:uuid', component: RichSkillPublicComponent },
+  { path: 'api/collections/:uuid', component: CollectionPublicComponent },
 
   /* AUTHENTICATION REDIRECTS */
-  {path: "login", component: LoginComponent},  // redirect to oauth login
-  {path: "logout", component: LogoutComponent},  // app logout
-  {path: "login/success", component: LoginSuccessComponent},  // post-login redirect destination
-]
+  { path: 'login', component: LoginComponent }, // redirect to oauth login
+  { path: 'logout', component: LogoutComponent }, // app logout
+  { path: 'login/success', component: LoginSuccessComponent }, // post-login redirect destination
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

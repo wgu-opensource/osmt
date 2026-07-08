@@ -36,8 +36,8 @@ error_handler() {
 }
 
 main() {
-  # Sourcing API test env file
-  source_env_file_unless_provided_okta "${PROJECT_DIR}/test/osmt-apitest.env"
+  # Sourcing API test env file (Okta credentials optional - can use single-auth mode)
+  source_env_file_unless_provided_okta "${PROJECT_DIR}/test/osmt-apitest.env" || true
   source_env_file "${PROJECT_DIR}/test/bin/osmt-apitest.rc"
 
   # Run NPM install

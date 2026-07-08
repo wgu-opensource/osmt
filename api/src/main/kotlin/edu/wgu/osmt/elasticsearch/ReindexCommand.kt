@@ -13,7 +13,7 @@ import kotlin.system.exitProcess
 
 @Component
 @Profile("reindex")
-class ReindexCommand: CommandLineRunner {
+class ReindexCommand : CommandLineRunner {
     val logger: Logger = LoggerFactory.getLogger(ReindexCommand::class.java)
 
     @Autowired

@@ -9,11 +9,10 @@ import edu.wgu.osmt.richskill.RichSkillDescriptor
 import edu.wgu.osmt.richskill.RichSkillDescriptorDao
 
 class ApiSkillV2(
-        @JsonIgnore override val rsd: RichSkillDescriptor,
-        @JsonIgnore override val cs: Set<Collection>,
-        private val appConfig: AppConfig
-): ApiSkill(rsd, cs, appConfig) {
-
+    @JsonIgnore override val rsd: RichSkillDescriptor,
+    @JsonIgnore override val cs: Set<Collection>,
+    private val appConfig: AppConfig,
+) : ApiSkill(rsd, cs, appConfig) {
     @get:JsonIgnore
     override val authors: List<String>
         get() = rsd.authors.mapNotNull { it.value }
@@ -24,26 +23,42 @@ class ApiSkillV2(
 
     @get:JsonProperty
     val author: String
-        get() = rsd.authors.mapNotNull { it.value }.sorted().joinToString(SEMICOLON)
-    
+        get() =
+            rsd.authors
+                .mapNotNull { it.value }
+                .sorted()
+                .joinToString(SEMICOLON)
+
     @get:JsonProperty
     val category: String
-        get() = rsd.categories.mapNotNull { it.value }.sorted().joinToString(SEMICOLON)
+        get() =
+            rsd.categories
+                .mapNotNull { it.value }
+                .sorted()
+                .joinToString(SEMICOLON)
 
     companion object {
-        fun fromDao(rsdDao: RichSkillDescriptorDao, appConfig: AppConfig): ApiSkillV2 {
-            return ApiSkillV2(rsdDao.toModel(), rsdDao.collections.map{ it.toModel() }.filter { !it.isWorkspace() }.toSet(), appConfig)
-        }
-
-        fun fromLatest(apiSkill: ApiSkill, appConfig: AppConfig): ApiSkillV2 {
-            return ApiSkillV2(
-                    rsd = apiSkill.rsd,
-                    cs = apiSkill.cs,
-                    appConfig
+        fun fromDao(
+            rsdDao: RichSkillDescriptorDao,
+            appConfig: AppConfig,
+        ): ApiSkillV2 =
+            ApiSkillV2(
+                rsdDao.toModel(),
+                rsdDao.collections
+                    .map { it.toModel() }
+                    .filter { !it.isWorkspace() }
+                    .toSet(),
+                appConfig,
             )
-        }
+
+        fun fromLatest(
+            apiSkill: ApiSkill,
+            appConfig: AppConfig,
+        ): ApiSkillV2 =
+            ApiSkillV2(
+                rsd = apiSkill.rsd,
+                cs = apiSkill.cs,
+                appConfig,
+            )
     }
 }
-
-
-

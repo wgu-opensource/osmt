@@ -8,7 +8,13 @@ import edu.wgu.osmt.auditlog.DELIMITER
 import edu.wgu.osmt.collection.Collection
 import edu.wgu.osmt.collection.CollectionDao
 import edu.wgu.osmt.collection.CollectionSkills
-import edu.wgu.osmt.db.*
+import edu.wgu.osmt.db.DatabaseData
+import edu.wgu.osmt.db.HasPublishStatus
+import edu.wgu.osmt.db.HasUpdateDate
+import edu.wgu.osmt.db.ListFieldUpdate
+import edu.wgu.osmt.db.PublishStatus
+import edu.wgu.osmt.db.PublishStatusDetails
+import edu.wgu.osmt.db.UpdateObject
 import edu.wgu.osmt.jobcode.JobCode
 import edu.wgu.osmt.jobcode.JobCodeDao
 import edu.wgu.osmt.keyword.Keyword
@@ -22,19 +28,20 @@ import java.util.*
 import kotlin.reflect.KProperty1
 
 open class RichSkillDescriptor(
-        override val id: Long?,
-        override val creationDate: LocalDateTime,
-        override val updateDate: LocalDateTime,
-        open val uuid: String,
-        open val name: String,
-        open val statement: String,
-        open val jobCodes: List<JobCode> = listOf(),
-        open val keywords: List<Keyword> = listOf(),
-        override val archiveDate: LocalDateTime? = null,
-        override val publishDate: LocalDateTime? = null,
-        open val collections: List<Collection> = listOf()
-) : DatabaseData, HasUpdateDate, PublishStatusDetails {
-
+    override val id: Long?,
+    override val creationDate: LocalDateTime,
+    override val updateDate: LocalDateTime,
+    open val uuid: String,
+    open val name: String,
+    open val statement: String,
+    open val jobCodes: List<JobCode> = listOf(),
+    open val keywords: List<Keyword> = listOf(),
+    override val archiveDate: LocalDateTime? = null,
+    override val publishDate: LocalDateTime? = null,
+    open val collections: List<Collection> = listOf(),
+) : DatabaseData,
+    HasUpdateDate,
+    PublishStatusDetails {
     // Keyword collections
     val authors: List<Keyword>
         get() = this.keywords.filter { it.type == KeywordTypeEnum.Author }
@@ -57,10 +64,13 @@ open class RichSkillDescriptor(
     val employers: List<Keyword>
         get() = this.keywords.filter { it.type == KeywordTypeEnum.Employer }
 
-    fun canonicalUrl(baseUrl: String): String = "$baseUrl/api/skills/${uuid}"
+    fun canonicalUrl(baseUrl: String): String = "$baseUrl/api/skills/$uuid"
 
     companion object {
-        fun create(name: String, statement: String): RichSkillDescriptor {
+        fun create(
+            name: String,
+            statement: String,
+        ): RichSkillDescriptor {
             val now = LocalDateTime.now(ZoneOffset.UTC)
             return RichSkillDescriptor(
                 id = null,
@@ -68,54 +78,87 @@ open class RichSkillDescriptor(
                 name = name,
                 statement = statement,
                 creationDate = now,
-                updateDate = now
+                updateDate = now,
             )
         }
 
         fun getKeywordsFromSkills(skills: Iterable<RichSkillDescriptor>): Map<KeywordTypeEnum, List<KeywordCount>> {
-            val alignments = skills.flatMap { it.alignments }
-                .map { ApiAlignment.fromKeyword(it) }
-                .sortedBy{ it.id }
+            val alignments =
+                skills
+                    .flatMap { it.alignments }
+                    .map { ApiAlignment.fromKeyword(it) }
+                    .sortedBy { it.id }
 
-            val authors = skills.flatMap { it.authors }
-                .mapNotNull { it.value }
-                .sortedBy{ it }
+            val authors =
+                skills
+                    .flatMap { it.authors }
+                    .mapNotNull { it.value }
+                    .sortedBy { it }
 
-            val categories = skills.flatMap { it.categories }
-                .mapNotNull { it.value }
-                .sortedBy { it }
+            val categoryKeywords =
+                skills
+                    .flatMap { it.categories }
+                    .distinctBy { it.id }
+                    .sortedBy { it.value }
 
-            val certifications = skills.flatMap { it.certifications }
-                .map { ApiNamedReference.fromKeyword(it) }
-                .sortedBy { it.name }
+            val certifications =
+                skills
+                    .flatMap { it.certifications }
+                    .map { ApiNamedReference.fromKeyword(it) }
+                    .sortedBy { it.name }
 
-            val employers = skills.flatMap { it.employers }
-                .map { ApiNamedReference.fromKeyword(it) }
-                .sortedBy { it.name }
+            val employers =
+                skills
+                    .flatMap { it.employers }
+                    .map { ApiNamedReference.fromKeyword(it) }
+                    .sortedBy { it.name }
 
-            val keywords = skills.flatMap { it.searchingKeywords }
-                .mapNotNull { it.value }
-                .sortedBy { it }
+            val keywords =
+                skills
+                    .flatMap { it.searchingKeywords }
+                    .mapNotNull { it.value }
+                    .sortedBy { it }
 
-            val standards = skills.flatMap { it.standards }
-                .map { ApiAlignment.fromKeyword(it) }
-                .sortedBy { it.id }
+            val standards =
+                skills
+                    .flatMap { it.standards }
+                    .map { ApiAlignment.fromKeyword(it) }
+                    .sortedBy { it.id }
 
             return mapOf(
                 KeywordTypeEnum.Alignment to
-                    alignments.distinct().map { k ->  KeywordCount(k, alignments.count { it == k }) },
+                    alignments.distinct().map { k ->
+                        KeywordCount(k, alignments.count { it == k })
+                    },
                 KeywordTypeEnum.Author to
-                    authors.distinct().map { k ->  KeywordCount(k, authors.count { it == k }) },
+                    authors.distinct().map { k -> KeywordCount(k, authors.count { it == k }) },
                 KeywordTypeEnum.Category to
-                    categories.distinct().map { k ->  KeywordCount(k, categories.count { it == k }) },
+                    categoryKeywords.map { k ->
+                        val count =
+                            skills.flatMap { it.categories }.count { it.id == k.id }
+                        val ref =
+                            ApiNamedReference(
+                                id = k.id?.toString(),
+                                name = k.value,
+                            )
+                        KeywordCount(ref, count)
+                    },
                 KeywordTypeEnum.Certification to
-                    certifications.distinct().map { k ->  KeywordCount(k, certifications.count { it == k }) },
+                    certifications.distinct().map { k ->
+                        KeywordCount(
+                            k,
+                            certifications.count {
+                                it ==
+                                    k
+                            },
+                        )
+                    },
                 KeywordTypeEnum.Employer to
-                    employers.distinct().map { k ->  KeywordCount(k, employers.count { it == k }) },
+                    employers.distinct().map { k -> KeywordCount(k, employers.count { it == k }) },
                 KeywordTypeEnum.Keyword to
-                    keywords.distinct().map { k ->  KeywordCount(k, keywords.count { it == k }) },
+                    keywords.distinct().map { k -> KeywordCount(k, keywords.count { it == k }) },
                 KeywordTypeEnum.Standard to
-                    standards.distinct().map { k ->  KeywordCount(k, standards.count { it == k }) },
+                    standards.distinct().map { k -> KeywordCount(k, standards.count { it == k }) },
             )
         }
     }
@@ -124,37 +167,89 @@ open class RichSkillDescriptor(
 fun RichSkillDescriptor.diff(old: RichSkillDescriptor?): List<Change> {
     val new = this
 
-    old?.let { if (it.uuid != new.uuid) throw Exception("Tried to compare different UUIDs, ${it.uuid} != ${new.uuid}") }
+    old?.let {
+        if (it.uuid !=
+            new.uuid
+        ) {
+            throw Exception("Tried to compare different UUIDs, ${it.uuid} != ${new.uuid}")
+        }
+    }
 
-    val comparisons: List<Comparison<*>> = listOf(
-        Comparison(RichSkillDescriptor::name.name, RichSkillDescriptorComparisons::compareName, old, new),
-        Comparison(RichSkillDescriptor::statement.name, RichSkillDescriptorComparisons::compareStatement, old, new),
-        Comparison(RichSkillDescriptor::categories.name, RichSkillDescriptorComparisons::compareCategories, old, new),
-        Comparison(RichSkillDescriptor::authors.name, RichSkillDescriptorComparisons::compareAuthors, old, new),
-        Comparison(
-            RichSkillDescriptor::publishStatus.name,
-            RichSkillDescriptorComparisons::comparePublishStatus,
-            old,
-            new
-        ),
-        Comparison(
-            RichSkillDescriptor::certifications.name,
-            RichSkillDescriptorComparisons::compareCertifications,
-            old,
-            new
-        ),
-        Comparison(RichSkillDescriptor::standards.name, RichSkillDescriptorComparisons::compareStandards, old, new),
-        Comparison(RichSkillDescriptor::alignments.name, RichSkillDescriptorComparisons::compareAlignments, old, new),
-        Comparison(RichSkillDescriptor::employers.name, RichSkillDescriptorComparisons::compareEmployers, old, new),
-        Comparison(
-            RichSkillDescriptor::searchingKeywords.name,
-            RichSkillDescriptorComparisons::compareSearchingKeywords,
-            old,
-            new
-        ),
-        Comparison(RichSkillDescriptor::jobCodes.name, RichSkillDescriptorComparisons::compareJobCodes, old, new),
-        Comparison(RichSkillDescriptor::collections.name, RichSkillDescriptorComparisons::compareCollections, old, new)
-    )
+    val comparisons: List<Comparison<*>> =
+        listOf(
+            Comparison(
+                RichSkillDescriptor::name.name,
+                RichSkillDescriptorComparisons::compareName,
+                old,
+                new,
+            ),
+            Comparison(
+                RichSkillDescriptor::statement.name,
+                RichSkillDescriptorComparisons::compareStatement,
+                old,
+                new,
+            ),
+            Comparison(
+                RichSkillDescriptor::categories.name,
+                RichSkillDescriptorComparisons::compareCategories,
+                old,
+                new,
+            ),
+            Comparison(
+                RichSkillDescriptor::authors.name,
+                RichSkillDescriptorComparisons::compareAuthors,
+                old,
+                new,
+            ),
+            Comparison(
+                RichSkillDescriptor::publishStatus.name,
+                RichSkillDescriptorComparisons::comparePublishStatus,
+                old,
+                new,
+            ),
+            Comparison(
+                RichSkillDescriptor::certifications.name,
+                RichSkillDescriptorComparisons::compareCertifications,
+                old,
+                new,
+            ),
+            Comparison(
+                RichSkillDescriptor::standards.name,
+                RichSkillDescriptorComparisons::compareStandards,
+                old,
+                new,
+            ),
+            Comparison(
+                RichSkillDescriptor::alignments.name,
+                RichSkillDescriptorComparisons::compareAlignments,
+                old,
+                new,
+            ),
+            Comparison(
+                RichSkillDescriptor::employers.name,
+                RichSkillDescriptorComparisons::compareEmployers,
+                old,
+                new,
+            ),
+            Comparison(
+                RichSkillDescriptor::searchingKeywords.name,
+                RichSkillDescriptorComparisons::compareSearchingKeywords,
+                old,
+                new,
+            ),
+            Comparison(
+                RichSkillDescriptor::jobCodes.name,
+                RichSkillDescriptorComparisons::compareJobCodes,
+                old,
+                new,
+            ),
+            Comparison(
+                RichSkillDescriptor::collections.name,
+                RichSkillDescriptorComparisons::compareCollections,
+                old,
+                new,
+            ),
+        )
 
     return comparisons.mapNotNull { it.compare() }
 }
@@ -166,10 +261,10 @@ data class RsdUpdateObject(
     val keywords: ListFieldUpdate<KeywordDao>? = null,
     val jobCodes: ListFieldUpdate<JobCodeDao>? = null,
     val collections: ListFieldUpdate<CollectionDao>? = null,
-    override val publishStatus: PublishStatus? = null
-) : UpdateObject<RichSkillDescriptorDao>, HasPublishStatus<RichSkillDescriptorDao> {
-
-    override fun applyToDao(dao: RichSkillDescriptorDao): Unit {
+    override val publishStatus: PublishStatus? = null,
+) : UpdateObject<RichSkillDescriptorDao>,
+    HasPublishStatus<RichSkillDescriptorDao> {
+    override fun applyToDao(dao: RichSkillDescriptorDao) {
         dao.updateDate = LocalDateTime.now(ZoneOffset.UTC)
 
         applyPublishStatus(dao)
@@ -210,7 +305,7 @@ data class RsdUpdateObject(
             it.add?.forEach { collection ->
                 CollectionSkills.create(
                     collectionId = collection.id.value,
-                    skillId = id!!
+                    skillId = id!!,
                 )
             }
             it.remove?.forEach { collection ->
@@ -224,56 +319,49 @@ data class RsdUpdateObject(
 object RichSkillDescriptorComparisons {
     fun keywordsCompare(
         receiver: RichSkillDescriptor,
-        kproperty: KProperty1<RichSkillDescriptor, List<Keyword>>
-    ): String? {
-        return kproperty.call(receiver).mapNotNull { it.value }.nullIfEmpty()?.joinToString(DELIMITER)
-    }
+        kproperty: KProperty1<RichSkillDescriptor, List<Keyword>>,
+    ): String? =
+        kproperty
+            .call(receiver)
+            .mapNotNull { it.value }
+            .nullIfEmpty()
+            ?.joinToString(DELIMITER)
 
-    fun compareName(r: RichSkillDescriptor): String {
-        return r.name
-    }
+    fun compareName(r: RichSkillDescriptor): String = r.name
 
-    fun compareStatement(r: RichSkillDescriptor): String {
-        return r.statement
-    }
+    fun compareStatement(r: RichSkillDescriptor): String = r.statement
 
-    fun compareCategories(receiver: RichSkillDescriptor): String? {
-        return keywordsCompare(receiver, RichSkillDescriptor::categories)
-    }
+    fun compareCategories(receiver: RichSkillDescriptor): String? =
+        keywordsCompare(receiver, RichSkillDescriptor::categories)
 
-    fun compareAuthors(receiver: RichSkillDescriptor): String? {
-        return keywordsCompare(receiver, RichSkillDescriptor::authors)
-    }
+    fun compareAuthors(receiver: RichSkillDescriptor): String? = keywordsCompare(receiver, RichSkillDescriptor::authors)
 
-    fun comparePublishStatus(r: RichSkillDescriptor): String {
-        return r.publishStatus().name
-    }
+    fun comparePublishStatus(r: RichSkillDescriptor): String = r.publishStatus().name
 
-    fun compareCertifications(receiver: RichSkillDescriptor): String? {
-        return keywordsCompare(receiver, RichSkillDescriptor::certifications)
-    }
+    fun compareCertifications(receiver: RichSkillDescriptor): String? =
+        keywordsCompare(receiver, RichSkillDescriptor::certifications)
 
-    fun compareStandards(receiver: RichSkillDescriptor): String? {
-        return keywordsCompare(receiver, RichSkillDescriptor::standards)
-    }
+    fun compareStandards(receiver: RichSkillDescriptor): String? =
+        keywordsCompare(receiver, RichSkillDescriptor::standards)
 
-    fun compareAlignments(receiver: RichSkillDescriptor): String? {
-        return keywordsCompare(receiver, RichSkillDescriptor::alignments)
-    }
+    fun compareAlignments(receiver: RichSkillDescriptor): String? =
+        keywordsCompare(receiver, RichSkillDescriptor::alignments)
 
-    fun compareEmployers(receiver: RichSkillDescriptor): String? {
-        return keywordsCompare(receiver, RichSkillDescriptor::employers)
-    }
+    fun compareEmployers(receiver: RichSkillDescriptor): String? =
+        keywordsCompare(receiver, RichSkillDescriptor::employers)
 
-    fun compareSearchingKeywords(receiver: RichSkillDescriptor): String? {
-        return keywordsCompare(receiver, RichSkillDescriptor::searchingKeywords)
-    }
+    fun compareSearchingKeywords(receiver: RichSkillDescriptor): String? =
+        keywordsCompare(receiver, RichSkillDescriptor::searchingKeywords)
 
-    fun compareJobCodes(r: RichSkillDescriptor): String? {
-        return r.jobCodes.mapNotNull { it.code }.nullIfEmpty()?.joinToString(DELIMITER)
-    }
+    fun compareJobCodes(r: RichSkillDescriptor): String? =
+        r.jobCodes
+            .mapNotNull { it.code }
+            .nullIfEmpty()
+            ?.joinToString(DELIMITER)
 
-    fun compareCollections(r: RichSkillDescriptor): String?{
-        return r.collections.mapNotNull{it.name}.nullIfEmpty()?.joinToString(DELIMITER)
-    }
+    fun compareCollections(r: RichSkillDescriptor): String? =
+        r.collections
+            .mapNotNull { it.name }
+            .nullIfEmpty()
+            ?.joinToString(DELIMITER)
 }

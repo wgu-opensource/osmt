@@ -1,27 +1,25 @@
-import { Component, Input, OnInit } from "@angular/core"
-import { IDetailCardSectionData } from "./section/section.component"
-import {PublishStatus} from "../PublishStatus";
+import { Component, Input, OnInit } from '@angular/core';
+import { IDetailCardSectionData } from './section/section.component';
+import { PublishStatus } from '../PublishStatus';
 
 @Component({
-  selector: "app-detail-card",
-  templateUrl: "./detail-card.component.html"
+  selector: 'app-detail-card',
+  templateUrl: './detail-card.component.html',
 })
 export class DetailCardComponent implements OnInit {
+  @Input() sections: IDetailCardSectionData[] = [];
+  @Input() title = '';
+  @Input() titleLabel = '';
+  @Input() authors = '';
+  @Input() publishDate = '';
+  @Input() archiveDate = '';
+  @Input() status = PublishStatus.Draft;
 
-  @Input() sections: IDetailCardSectionData[] = []
-  @Input() title = ""
-  @Input() titleLabel = ""
-  @Input() authors = ""
-  @Input() publishDate = ""
-  @Input() archiveDate = ""
-  @Input() status = PublishStatus.Draft
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   cardTypeLabel(): string {
-    return "RichSkillDescriptor"
+    return 'RichSkillDescriptor';
   }
 }

@@ -36,23 +36,42 @@ interface HasAllPaginated<T> {
         @RequestParam(required = false, defaultValue = "0") from: Int,
         @RequestParam(
             required = false,
-            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET
+            defaultValue = PublishStatus.DEFAULT_API_PUBLISH_STATUS_SET,
         ) status: Array<String>,
         @RequestParam(required = false) sort: String?,
-        @AuthenticationPrincipal user: Jwt?
+        @AuthenticationPrincipal user: Jwt?,
     ): HttpEntity<List<T>> {
-
-        val publishStatuses = status.mapNotNull {
-            val status = PublishStatus.forApiValue(it)
-            if (user == null && (status == PublishStatus.Deleted  || status == PublishStatus.Draft)) null else status
-        }.toSet()
+        val publishStatuses =
+            status
+                .mapNotNull {
+                    val publishStatus = PublishStatus.forApiValue(it)
+                    if (user == null &&
+                        (
+                            publishStatus == PublishStatus.Deleted ||
+                                publishStatus == PublishStatus.Draft
+                        )
+                    ) {
+                        null
+                    } else {
+                        publishStatus
+                    }
+                }.toSet()
         val sortEnum: SortOrder = sortOrderCompanion.forValueOrDefault(sort)
         val pageable = OffsetPageable(from, size, sortEnum.sort)
 
-        val searchHits: SearchHits<T> = elasticRepository.findAllFilteredByPublishStatus(publishStatuses, pageable)
+        val searchHits: SearchHits<T> =
+            elasticRepository.findAllFilteredByPublishStatus(
+                publishStatuses,
+                pageable,
+            )
 
         val responseHeaders = HttpHeaders()
-        val countAllFilteredByPublishStatus: Long = elasticRepository.countAllFilteredByPublishStatus(publishStatuses, pageable)
+        val countAllFilteredByPublishStatus: Long =
+            elasticRepository
+                .countAllFilteredByPublishStatus(
+                    publishStatuses,
+                    pageable,
+                )
         responseHeaders.add("X-Total-Count", countAllFilteredByPublishStatus.toString())
 
         // build up current uri with path and params
@@ -61,15 +80,17 @@ interface HasAllPaginated<T> {
             .queryParam(RoutePaths.QueryParams.FROM, from)
             .queryParam(RoutePaths.QueryParams.SIZE, size)
             .queryParam(RoutePaths.QueryParams.SORT, sort)
-            .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").toLowerCase())
+            .queryParam(RoutePaths.QueryParams.STATUS, status.joinToString(",").lowercase())
 
         PaginatedLinks(
             pageable,
-            searchHits.totalHits.toInt(),
-            uriComponentsBuilder
+            countAllFilteredByPublishStatus.toInt(),
+            uriComponentsBuilder,
         ).addToHeaders(responseHeaders)
 
-        return ResponseEntity.status(200).headers(responseHeaders)
+        return ResponseEntity
+            .status(200)
+            .headers(responseHeaders)
             .body(searchHits.map { it.content }.toList())
     }
 }

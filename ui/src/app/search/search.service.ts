@@ -1,45 +1,49 @@
-import {Injectable} from "@angular/core"
-import {ApiAdvancedSearch, ApiSearch} from "../richskill/service/rich-skill-search.service"
-import {Router} from "@angular/router"
-import {Subject} from "rxjs"
+import { Injectable } from '@angular/core';
+import {
+  ApiAdvancedSearch,
+  ApiSearch,
+} from '../richskill/service/rich-skill-search.service';
+import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root',
 })
 export class SearchService {
-  latestSearch?: ApiSearch
+  latestSearch?: ApiSearch;
 
-  private searchQuerySource: Subject<ApiSearch> = new Subject()
-  searchQuery$ = this.searchQuerySource.asObservable()
+  private searchQuerySource: Subject<ApiSearch | undefined> = new Subject();
+  searchQuery$ = this.searchQuerySource.asObservable();
 
-  constructor(private router: Router) {
-  }
+  constructor(private router: Router) {}
 
   simpleSkillSearch(query: string): void {
-    this.setLatestSearch(new ApiSearch({query}))
-    this.router.navigate(["/skills/search"], {queryParams: {q: query}})
+    this.setLatestSearch(new ApiSearch({ query }));
+    this.router.navigate(['/skills/search'], { queryParams: { q: query } });
   }
   advancedSkillSearch(advanced: ApiAdvancedSearch): void {
-    this.setLatestSearch(new ApiSearch({advanced}))
-    this.router.navigate(["/skills/search"], {state: this.latestSearch})
+    this.setLatestSearch(new ApiSearch({ advanced }));
+    this.router.navigate(['/skills/search'], { state: this.latestSearch });
   }
 
   simpleCollectionSearch(query: string): void {
-    this.setLatestSearch(new ApiSearch({query}))
-    this.router.navigate(["/collections/search"], {queryParams: {q: query}})
+    this.setLatestSearch(new ApiSearch({ query }));
+    this.router.navigate(['/collections/search'], {
+      queryParams: { q: query },
+    });
   }
   advancedCollectionSearch(advanced: ApiAdvancedSearch): void {
-    this.setLatestSearch(new ApiSearch({advanced}))
-    this.router.navigate(["/collections/search"])
+    this.setLatestSearch(new ApiSearch({ advanced }));
+    this.router.navigate(['/collections/search']);
   }
 
   protected setLatestSearch(apiSearch?: ApiSearch): void {
-    this.latestSearch = apiSearch
-    this.searchQuerySource.next(this.latestSearch)
+    this.latestSearch = apiSearch;
+    this.searchQuerySource.next(this.latestSearch);
   }
 
   public clearSearch(): void {
-    this.latestSearch = undefined
-    this.searchQuerySource.next(this.latestSearch)
+    this.latestSearch = undefined;
+    this.searchQuerySource.next(this.latestSearch);
   }
 }

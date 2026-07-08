@@ -22,46 +22,59 @@
   <!--{{render '@m-search'}}-->
   <form [formGroup]="searchForm" (ngSubmit)="handleDefaultSubmit()">
     <div class="m-search">
-    <svg class="m-search-x-icon t-icon">
-      <use xlink:href="/assets/images/svg-defs.svg#icon-search"></use>
-    </svg>
-    <input class="m-search-x-input" type="text" required [formControl]="searchForm.controls.search">
+      <svg class="m-search-x-icon t-icon">
+        <use xlink:href="/assets/images/svg-defs.svg#icon-search"></use>
+      </svg>
+      <input
+        class="m-search-x-input"
+        type="text"
+        required
+        [formControl]="searchForm.controls.search"
+      />
       <div class="m-search-x-controls">
-      <div class="m-search-x-clear">
-        <button class="m-iconInteractive" type="button" (click)="clearSearch()">
+        <div class="m-search-x-clear">
+          <button
+            class="m-iconInteractive"
+            type="button"
+            (click)="clearSearch()"
+          >
+            <span class="t-visuallyHidden">Clear Search</span>
 
-          <span class="t-visuallyHidden">Clear Search</span>
+            <div class="m-iconInteractive-x-icon">
+              <svg class="t-icon" aria-hidden="true">
+                <use
+                  xlink:href="/assets/images/svg-defs.svg#icon-dismiss"
+                ></use>
+              </svg>
+            </div>
+          </button>
+        </div>
+        <div class="l-buttonTextBar">
+          <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+          <a class="m-buttonText" (click)="submitSkillSearch()">
+            <span class="m-buttonText-x-text">RSDs</span>
+          </a>
 
-          <div class="m-iconInteractive-x-icon">
-            <svg class="t-icon" aria-hidden="true">
-              <use xlink:href="/assets/images/svg-defs.svg#icon-dismiss"></use>
-            </svg>
-          </div>
+          <div class="m-divider"></div>
 
-        </button>
-      </div>
-      <div class="l-buttonTextBar">
-
-        <a class="m-buttonText" (click)="submitSkillSearch()">
-          <span class="m-buttonText-x-text">RSDs</span>
-        </a>
-
-        <div class="m-divider"></div>
-
-        <a class="m-buttonText" (click)="submitCollectionSearch()">
-          <span class="m-buttonText-x-text">Collections</span>
-        </a>
-
+          <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+          <a class="m-buttonText" (click)="submitCollectionSearch()">
+            <span class="m-buttonText-x-text">Collections</span>
+          </a>
+        </div>
       </div>
     </div>
-  </div>
   </form>
 </div>
 
-<ul class="m-navBar-x-nav">
-
+<ul *ngIf="isAuthenticated()" class="m-navBar-x-nav">
   <li>
-    <button class="m-buttonText m-buttonText-onDark" routerLink="/skills/create" type="button" [disabled]="!canSkillCreate">
+    <button
+      class="m-buttonText m-buttonText-onDark"
+      routerLink="/skills/create"
+      type="button"
+      [disabled]="!canSkillCreate"
+    >
       <span class="m-buttonText-x-icon">
         <svg class="t-icon" aria-hidden="true">
           <use xlink:href="/assets/images/svg-defs.svg#icon-doc"></use>
@@ -72,7 +85,12 @@
   </li>
 
   <li>
-    <button class="m-buttonText m-buttonText-onDark" routerLink="/collections/create" type="button" [disabled]="!canCollectionCreate">
+    <button
+      class="m-buttonText m-buttonText-onDark"
+      routerLink="/collections/create"
+      type="button"
+      [disabled]="!canCollectionCreate"
+    >
       <span class="m-buttonText-x-icon">
         <svg class="t-icon" aria-hidden="true">
           <use xlink:href="/assets/images/svg-defs.svg#icon-collection"></use>
@@ -83,24 +101,46 @@
   </li>
 
   <li>
-    <button class="m-buttonText m-buttonText-onDark" routerLink="/skills/import" type="button" [disabled]="!canSkillCreate">
+    <button
+      class="m-buttonText m-buttonText-onDark"
+      routerLink="/skills/import"
+      type="button"
+      [disabled]="!canSkillCreate"
+    >
       <span class="m-buttonText-x-icon">
         <svg class="t-icon" aria-hidden="true">
           <use xlink:href="/assets/images/svg-defs.svg#icon-upload"></use>
         </svg>
       </span>
-      <span class="m-buttonText-x-text">Batch Import RSD<span class="t-type-lowercase">s</span></span>
+      <span class="m-buttonText-x-text"
+        >Batch Import RSD<span class="t-type-lowercase">s</span></span
+      >
     </button>
   </li>
 
+  <li *ngIf="canSyncManage">
+    <button
+      class="m-buttonText m-buttonText-onDark"
+      routerLink="/admin/sync"
+      type="button"
+    >
+      <span class="m-buttonText-x-text">Sync</span>
+    </button>
+  </li>
 </ul>
 
 <ul class="m-navBar-x-nav">
-  <li>
+  <li *ngIf="!isReadOnlyPublicInstance && !isAuthenticated()">
+    <a
+      class="m-buttonText m-buttonText-onDark"
+      routerLink="/login"
+      [queryParams]="{ return: getCurrentUrl() }"
+      >Login</a
+    >
+  </li>
+  <li *ngIf="isAuthenticated()">
     <button class="m-buttonText m-buttonText-onDark" routerLink="/logout">
       <span class="m-buttonText-x-text">Logout</span>
     </button>
   </li>
 </ul>
-
-

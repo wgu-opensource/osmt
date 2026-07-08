@@ -1,7 +1,9 @@
-<div class="m-field" id="formfield-container-{{name}}">
-  <label *ngIf="required" for="formfield-{{name}}">{{label}} (Required)</label>
-  <label *ngIf="!required" for="formfield-{{name}}">{{label}}</label>
-  <p *ngIf="helpMessage" class="m-field-x-note">{{helpMessage}}</p>
+<div class="m-field" id="formfield-container-{{ name }}">
+  <label *ngIf="required" for="formfield-{{ name }}"
+    >{{ label }} (Required)</label
+  >
+  <label *ngIf="!required" for="formfield-{{ name }}">{{ label }}</label>
+  <p *ngIf="helpMessage" class="m-field-x-note">{{ helpMessage }}</p>
   <div class="m-field-x-input">
     <div class="l-searchSelect">
       <div class="l-searchSelect-x-search">
@@ -18,10 +20,14 @@
             role="search"
             [attr.aria-describedby]="name + '-results'"
             (keydown.enter)="onEnterKeyDown($event)"
-          >
+          />
           <div class="m-search-x-controls">
             <div class="m-search-x-clear">
-              <button class="m-iconInteractive" type="button" (click)="onClearSearchClicked()">
+              <button
+                class="m-iconInteractive"
+                type="button"
+                (click)="onClearSearchClicked()"
+              >
                 <span class="t-visuallyHidden">Clear Search</span>
                 <div class="m-iconInteractive-x-icon">
                   <svg class="t-icon" aria-hidden="true">
@@ -44,18 +50,31 @@
           </div>
         </div>
       </div>
-      <p *ngIf="errorMessage && isError" class="m-field-x-error">{{errorMessage}}</p>
+      <p *ngIf="errorMessage && isError" class="m-field-x-error">
+        {{ errorMessage }}
+      </p>
 
       <!-- Loaded results state -->
       <ng-template #loaded>
-        <div id="{{name}}-results" class="l-searchSelect-x-menu" *ngIf="showResults">
+        <div
+          id="{{ name }}-results"
+          class="l-searchSelect-x-menu"
+          *ngIf="showResults"
+        >
           <div class="m-selectMenu m-selectMenu-fixed m-selectMenu-is-active">
-
             <!-- Results -->
-            <div class="m-selectMenu-x-content" *ngIf="results && results.length > 0; else emptyResults">
-              <div class="t-visuallyHidden">Showing search results: </div>
-              <button class="m-buttonText" *ngFor="let r of results" type="button" (click)="onSearchResultClicked(r)">
-                <span class="m-buttonText-x-text">{{labelFor(r)}}</span>
+            <div
+              class="m-selectMenu-x-content"
+              *ngIf="results && results.length > 0; else emptyResults"
+            >
+              <div class="t-visuallyHidden">Showing search results:</div>
+              <button
+                class="m-buttonText"
+                *ngFor="let r of results"
+                type="button"
+                (click)="onSearchResultClicked(r)"
+              >
+                <span class="m-buttonText-x-text">{{ labelFor(r) }}</span>
               </button>
             </div>
 

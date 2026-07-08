@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.1.2</version>
-        <relativePath /> <!-- lookup parent from repository -->
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>edu.wgu.osmt</groupId>
     <artifactId>osmt-parent</artifactId>
-    <version>3.1.0-SNAPSHOT</version>
+    <version>0.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>OSMT</name>
-    <description>The Open Skills Management Tool (OSMT) makes it possible for employers, educators, military, and other stakeholders to create and share open skills libraries. OSMT advances skills-based education and hiring.</description>
+    <description>The Open Skills Management Tool (OSMT) makes it possible for
+        employers, educators, military, and other stakeholders to create and
+        share open skills libraries. OSMT advances skills-based education and
+        hiring.
+    </description>
     <url>https://osmt.io</url>
 
     <licenses>
@@ -27,25 +33,12 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>17</java.version>
+        <project.reporting.outputEncoding>UTF-8
+        </project.reporting.outputEncoding>
+        <java.version>21</java.version>
         <mysql.version>8.0.31</mysql.version>
     </properties>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -61,8 +54,11 @@
     </developers>
 
     <scm>
-        <connection>scm:git:ssh://git@github.com/wgu-opensource/osmt.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/wgu-opensource/osmt.git</developerConnection>
+        <connection>scm:git:ssh://git@github.com/wgu-opensource/osmt.git
+        </connection>
+        <developerConnection>
+            scm:git:ssh://git@github.com/wgu-opensource/osmt.git
+        </developerConnection>
         <url>https://github.com/wgu-opensource/osmt.git</url>
         <tag>HEAD</tag>
     </scm>
@@ -70,11 +66,14 @@
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots
+            </url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url>
+                https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/
+            </url>
         </repository>
     </distributionManagement>
 
@@ -89,7 +88,7 @@
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
-                <version>1.7.20</version>
+                <version>2.1.0</version>
                 <executions>
                     <execution>
                         <phase>prepare-package</phase>
@@ -102,7 +101,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.1</version>
+                <!-- <version>3.2.1</version> -->
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -115,7 +115,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
+                <!-- <version>3.0.1</version> -->
+                <version>3.1.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -170,7 +171,36 @@
                                 </goals>
                                 <configuration>
                                     <keyname>${gpg.keyname}</keyname>
-                                    <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                                    <passphraseServerId>${gpg.keyname}
+                                    </passphraseServerId>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>validate</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>validate-versions</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <commandlineArgs>bin/validate-versions.sh
+                                    </commandlineArgs>
+                                    <workingDirectory>${project.basedir}
+                                    </workingDirectory>
                                 </configuration>
                             </execution>
                         </executions>
@@ -182,4 +212,3 @@
     </profiles>
 
 </project>
-

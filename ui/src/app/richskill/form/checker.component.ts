@@ -1,44 +1,42 @@
-import {Component, Input, OnInit} from "@angular/core";
-import {ApiSkillSummary} from "../ApiSkillSummary";
+import { Component, Input, OnInit } from '@angular/core';
+import { ApiSkillSummary } from '../ApiSkillSummary';
 
 @Component({
-  selector: "app-checker",
-  templateUrl: "./checker.component.html",
-  styleUrls: ["./checker.scss"]
+  selector: 'app-checker',
+  templateUrl: './checker.component.html',
+  styleUrls: ['./checker.scss'],
 })
 export class CheckerComponent implements OnInit {
+  @Input() searchingMessage = 'Checking for skill statement similarity …';
+  @Input() neutralMessage = 'Similarity: —';
+  @Input() similarMultipleMessage =
+    'Skill statement is very similar to those in multiple RSDs.';
+  @Input() similarSingleMessage =
+    'Skill statement is very similar to one already in the library.';
+  @Input() affirmativeMessage = 'Skill statement OK.';
+  @Input() similarSkills?: ApiSkillSummary[];
+  @Input() searching? = false;
 
-  @Input() searchingMessage = "Checking for skill statement similarity …"
-  @Input() neutralMessage = "Similarity: —"
-  @Input() similarMultipleMessage = "Skill statement is very similar to those in multiple RSDs."
-  @Input() similarSingleMessage = "Skill statement is very similar to one already in the library."
-  @Input() affirmativeMessage = "Skill statement OK."
-  @Input() similarSkills?: ApiSkillSummary[]
-  @Input() searching?  = false
+  @Input() showAccordion = true;
+  @Input() showExtraInformation = false;
+  @Input() showInTable = false;
 
-  @Input() showAccordion = true
-  @Input() showExtraInformation = false
-  @Input() showInTable = false
-
-
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   get isNeutral(): boolean {
-    return this.searching === undefined
+    return this.searching === undefined;
   }
 
   get isSearching(): boolean {
-    return this.searching ?? false
+    return this.searching ?? false;
   }
   get isAffirmative(): boolean {
-    return !this.searching && this.similarSkills?.length === 0
+    return !this.searching && this.similarSkills?.length === 0;
   }
   get hasMatches(): boolean {
-    return !this.searching && (this.similarSkills?.length ?? 0) > 0
+    return !this.searching && (this.similarSkills?.length ?? 0) > 0;
   }
   get hasSingleMatch(): boolean {
-    return this.similarSkills?.length === 1
+    return this.similarSkills?.length === 1;
   }
 }

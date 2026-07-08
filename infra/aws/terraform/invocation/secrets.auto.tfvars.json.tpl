@@ -6,7 +6,7 @@
         },
         "app": {
             "base_domain": "<e.g. base_domain.net>",
-            "environment": "apiserver,oauth2-okta",
+            "environment": "apiserver,oauth2",
             "frontend_url": "<e.g. https://base_domain.net>",
             "oauth_issuer": "<oauth_issuer e.g. https://dev-82064468.okta.com/oauth2/default>",
             "oauth_clientid": "<oauch_clientid>",

@@ -13,7 +13,6 @@ import java.util.stream.Collectors
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
 
-
 @Component
 @Profile("debug")
 class PropertyLogger {
@@ -23,18 +22,24 @@ class PropertyLogger {
         LOGGER.info("====== Environment and configuration ======")
         LOGGER.info("Active profiles: {}", Arrays.toString(env.activeProfiles))
         val sources = (env as AbstractEnvironment).propertySources
-        val unsecretProperties: Stream<String> = StreamSupport.stream(sources.spliterator(), false)
-            .filter { ps: PropertySource<*>? -> ps is EnumerablePropertySource<*> }
-            .map { ps: PropertySource<*> -> (ps as EnumerablePropertySource<*>).propertyNames }
-            .flatMap { array: Array<String>? -> Arrays.stream(array) }
-            .distinct()
-            .filter { prop: String -> !(
-                    prop.contains("credentials", true) ||
+        val unsecretProperties: Stream<String> =
+            StreamSupport
+                .stream(sources.spliterator(), false)
+                .filter { ps: PropertySource<*>? -> ps is EnumerablePropertySource<*> }
+                .map { ps: PropertySource<*> -> (ps as EnumerablePropertySource<*>).propertyNames }
+                .flatMap { array: Array<String>? -> Arrays.stream(array) }
+                .distinct()
+                .filter { prop: String ->
+                    !(
+                        prop.contains("credentials", true) ||
                             prop.contains("secret", true) ||
                             prop.contains("password", true)
-                    )}
+                    )
+                }
 
-        unsecretProperties.sorted().collect(Collectors.toList())
+        unsecretProperties
+            .sorted()
+            .collect(Collectors.toList())
             .forEach { prop: String? -> LOGGER.info("{}: {}", prop, env.getProperty(prop!!)) }
 
         LOGGER.info("===========================================")

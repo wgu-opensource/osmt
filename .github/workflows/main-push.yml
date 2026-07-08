@@ -1,0 +1,29 @@
+name: Main push - Version tag
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: main-push-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  tag-next-version:
+    name: Tag next patch version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate and push tag
+        env:
+          BRANCH: main
+          CI: "true"
+        run: bin/tag-next-version.sh

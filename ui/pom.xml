@@ -4,12 +4,12 @@
   <parent>
     <groupId>edu.wgu.osmt</groupId>
     <artifactId>osmt-parent</artifactId>
-    <version>3.1.0-SNAPSHOT</version>
+    <version>0.0.0-SNAPSHOT</version>
   </parent>
 
   <groupId>edu.wgu.osmt</groupId>
   <artifactId>osmt-ui</artifactId>
-  <version>3.1.0-SNAPSHOT</version>
+  <version>0.0.0-SNAPSHOT</version>
 
   <packaging>jar</packaging>
 
@@ -30,7 +30,7 @@
         <version>1.12.1</version>
         <configuration>
           <workingDirectory>./</workingDirectory>
-          <nodeVersion>v18.10.0</nodeVersion>
+          <nodeVersion>v20.18.3</nodeVersion>
           <npmVersion>8.19.2</npmVersion>
         </configuration>
         <executions>
@@ -46,9 +46,40 @@
             <goals>
               <goal>npm</goal>
             </goals>
+            <phase>process-sources</phase>
             <configuration>
               <npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
               <arguments>install</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>format</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>process-sources</phase>
+            <configuration>
+              <arguments>run format</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>lint-fix</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>process-sources</phase>
+            <configuration>
+              <arguments>run lint:fix</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm-build-prod</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>process-sources</phase>
+            <configuration>
+              <arguments>run build-prod</arguments>
             </configuration>
           </execution>
           <execution>
@@ -59,16 +90,6 @@
             <phase>test</phase>
             <configuration>
               <arguments>run ci-test</arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>npm-build-prod</id>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <phase>generate-resources</phase>
-            <configuration>
-              <arguments>run build-prod</arguments>
             </configuration>
           </execution>
         </executions>

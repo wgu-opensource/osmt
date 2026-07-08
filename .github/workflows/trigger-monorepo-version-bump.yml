@@ -1,0 +1,31 @@
+name: Trigger Monorepo Version Bump
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.MONOREPO_APP_ID }}
+          private-key: ${{ secrets.MONOREPO_APP_PRIVATE_KEY }}
+          owner: skybridgeskills
+          repositories: skybridgeskills-monorepo
+
+      - name: Trigger monorepo version bump workflow
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          gh workflow run osmt-bump-version.yml \
+            --repo skybridgeskills/skybridgeskills-monorepo \
+            --ref main
+          echo "✅ Triggered monorepo version bump workflow"

@@ -1,95 +1,106 @@
-import {Component, OnInit, ViewChild} from "@angular/core"
-import {ApiSearch, PaginatedSkills} from "../../../richskill/service/rich-skill-search.service"
-import {RichSkillService} from "../../../richskill/service/rich-skill.service"
-import {ActivatedRoute, Router} from "@angular/router"
-import {ToastService} from "../../../toast/toast.service"
-import {CollectionService} from "../../service/collection.service"
-import {Observable} from "rxjs"
-import {ApiSortOrder, KeywordType} from "../../../richskill/ApiSkill"
-import {PublishStatus} from "../../../PublishStatus"
-import {ApiCollection} from "../../ApiCollection"
-import {Title} from "@angular/platform-browser";
-import {Whitelabelled} from "../../../../whitelabel";
-import {FormControl} from "@angular/forms"
-import {SizePaginationComponent} from "../../../table/skills-library-table/size-pagination/size-pagination.component"
-import {KeywordCountPillControl} from "../../../core/pill/pill-control";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  ApiSearch,
+  PaginatedSkills,
+} from '../../../richskill/service/rich-skill-search.service';
+import { RichSkillService } from '../../../richskill/service/rich-skill.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastService } from '../../../toast/toast.service';
+import { CollectionService } from '../../service/collection.service';
+import { Observable } from 'rxjs';
+import { ApiSortOrder, KeywordType } from '../../../richskill/ApiSkill';
+import { PublishStatus } from '../../../PublishStatus';
+import { ApiCollection } from '../../ApiCollection';
+import { Title } from '@angular/platform-browser';
+import { canonicalCollectionPublicUrl } from '../../../core/canonical-public-url.utils';
+import { Whitelabelled } from '../../../../whitelabel';
+import { FormControl } from '@angular/forms';
+import { SizePaginationComponent } from '../../../table/skills-library-table/size-pagination/size-pagination.component';
+import { KeywordCountPillControl } from '../../../core/pill/pill-control';
 
 @Component({
-  selector: "app-collection-public",
-  templateUrl: "./collection-public.component.html"
+  selector: 'app-collection-public',
+  templateUrl: './collection-public.component.html',
 })
 export class CollectionPublicComponent extends Whitelabelled implements OnInit {
+  @ViewChild(SizePaginationComponent) sizePagination!: SizePaginationComponent;
+  title = 'Collection';
+  uuidParam: string | null;
+  collection: ApiCollection | undefined;
+  skillCategories: KeywordCountPillControl[] = [];
+  apiSearch: ApiSearch = new ApiSearch({});
 
-  @ViewChild(SizePaginationComponent) sizePagination!: SizePaginationComponent
-  title = "Collection"
-  uuidParam: string | null
-  collection: ApiCollection | undefined
-  skillCategories: KeywordCountPillControl[] = []
-  apiSearch: ApiSearch = new ApiSearch({})
+  resultsLoaded: Observable<PaginatedSkills> | undefined;
+  results: PaginatedSkills | undefined;
 
-  resultsLoaded: Observable<PaginatedSkills> | undefined
-  results: PaginatedSkills | undefined
+  from = 0;
+  size = 50;
+  columnSort: ApiSortOrder = ApiSortOrder.NameAsc;
 
-  from = 0
-  size = 50
-  columnSort: ApiSortOrder = ApiSortOrder.NameAsc
+  showLibraryEmptyMessage = false;
+  sizeControl: FormControl = new FormControl(this.size);
 
-  showLibraryEmptyMessage = false
-  sizeControl: FormControl = new FormControl(this.size)
-
-  constructor(protected router: Router,
-              protected skillService: RichSkillService,
-              protected collectionService: CollectionService,
-              protected toastService: ToastService,
-              protected route: ActivatedRoute,
-              protected titleService: Title
+  constructor(
+    protected router: Router,
+    protected skillService: RichSkillService,
+    protected collectionService: CollectionService,
+    protected toastService: ToastService,
+    protected route: ActivatedRoute,
+    protected titleService: Title
   ) {
-    super()
-    this.sizeControl.valueChanges.subscribe(value => this.sizeChange(value))
-    this.uuidParam = this.route.snapshot.paramMap.get("uuid")
+    super();
+    this.sizeControl.valueChanges.subscribe(value => this.sizeChange(value));
+    this.uuidParam = this.route.snapshot.paramMap.get('uuid');
   }
 
   ngOnInit(): void {
-    this.collectionService.getCollectionByUUID(this.uuidParam ?? "").subscribe(collection => {
-      this.titleService.setTitle(`${collection.name} | Collection | ${this.whitelabel.toolName}`)
-      this.collection = collection
-      this.updateSkillCategories()
-      this.loadNextPage()
-    })
+    this.collectionService
+      .getCollectionByUUID(this.uuidParam ?? '')
+      .subscribe(collection => {
+        this.titleService.setTitle(
+          `${collection.name} | Collection | ${this.whitelabel.toolName}`
+        );
+        this.collection = collection;
+        this.updateSkillCategories();
+        this.loadNextPage();
+      });
   }
 
   get totalCount(): number {
-    return this.results?.totalCount ?? 0
+    return this.results?.totalCount ?? 0;
   }
 
   get emptyResults(): boolean {
-    return  this.curPageCount === 0
+    return this.curPageCount === 0;
   }
   get loadingResults(): boolean {
-    return this.curPageCount < 0
+    return this.curPageCount < 0;
   }
 
   get curPageCount(): number {
-    return this.results?.skills.length ?? -1
+    return this.results?.skills.length ?? -1;
   }
 
   get totalPageCount(): number {
-    return Math.ceil(this.totalCount / this.size)
+    return Math.ceil(this.totalCount / this.size);
   }
   get currentPageNo(): number {
-    return Math.floor(this.from / this.size) + 1
+    return Math.floor(this.from / this.size) + 1;
   }
 
   get collectionUrl(): string {
-    return this.collection?.id ?? ""
+    return canonicalCollectionPublicUrl(
+      this.collection?.id ?? '',
+      this.collection?.uuid ?? ''
+    );
   }
 
   get collectionUuid(): string {
-    return this.collection?.uuid ?? ""
+    return this.collection?.uuid ?? '';
   }
 
   get collectionName(): string {
-    return this.collection?.name ?? ""
+    return this.collection?.name ?? '';
   }
 
   loadSkillsInCollection(): void {
@@ -97,48 +108,49 @@ export class CollectionPublicComponent extends Whitelabelled implements OnInit {
       this.collectionUuid,
       this.size,
       this.from,
-      new Set<PublishStatus>([PublishStatus.Archived, PublishStatus.Draft, PublishStatus.Published]),
+      new Set<PublishStatus>([PublishStatus.Published]),
       this.columnSort
-    )
-    this.resultsLoaded.subscribe(skills => this.setResults(skills))
+    );
+    this.resultsLoaded.subscribe(skills => this.setResults(skills));
   }
 
   loadNextPage(): void {
-    this.loadSkillsInCollection()
+    this.loadSkillsInCollection();
   }
 
   updateSkillCategories() {
-    const categories = this.collection?.skillKeywords?.get(KeywordType.Category)?.map(c => new KeywordCountPillControl(c))
-    this.skillCategories = (categories) ? categories : []
+    const categories = this.collection?.skillKeywords
+      ?.get(KeywordType.Category)
+      ?.map(c => new KeywordCountPillControl(c, '/categories/'));
+    this.skillCategories = categories ? categories : [];
   }
 
   protected setResults(results: PaginatedSkills): void {
-    this.results = results
+    this.results = results;
   }
 
   handleHeaderColumnSort(sort: ApiSortOrder): void {
-    this.columnSort = sort
-    this.from = 0
-    this.loadNextPage()
+    this.columnSort = sort;
+    this.from = 0;
+    this.loadNextPage();
   }
 
   handlePageClicked(newPageNo: number): void {
-    this.navigateToPage(newPageNo)
+    this.navigateToPage(newPageNo);
   }
 
   navigateToPage(newPageNo: number): void {
-    this.from = (newPageNo - 1) * this.size
-    this.loadNextPage()
+    this.from = (newPageNo - 1) * this.size;
+    this.loadNextPage();
   }
 
   sizeChange(size: number): void {
-    this.size = size
-    this.from = 0
-    this.handlePageClicked(1)
+    this.size = size;
+    this.from = 0;
+    this.handlePageClicked(1);
   }
 
   get isSizePaginationVisible(): () => boolean {
-    return () => this.totalCount > this.sizePagination?.values[0]
+    return () => this.totalCount > this.sizePagination?.values[0];
   }
-
 }

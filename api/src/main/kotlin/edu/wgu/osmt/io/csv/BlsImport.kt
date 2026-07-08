@@ -25,18 +25,18 @@ class BlsImport : CsvImport<BlsJobCode> {
 
     override val csvRowClass = BlsJobCode::class.java
 
-    private lateinit var jobCodeRepository: JobCodeRepository
-    private lateinit var jobCodeEsRepo: JobCodeEsRepo
-    private lateinit var richSkillRepository: RichSkillRepository
-    private lateinit var richSkillEsRepo: RichSkillEsRepo
-    private lateinit var appConfig: AppConfig
+    private val jobCodeRepository: JobCodeRepository
+    private val jobCodeEsRepo: JobCodeEsRepo
+    private val richSkillRepository: RichSkillRepository
+    private val richSkillEsRepo: RichSkillEsRepo
+    private val appConfig: AppConfig
 
     constructor(
         jobCodeRepository: JobCodeRepository,
         jobCodeEsRepo: JobCodeEsRepo,
         richSkillRepository: RichSkillRepository,
         richSkillEsRepo: RichSkillEsRepo,
-        appConfig: AppConfig
+        appConfig: AppConfig,
     ) {
         this.jobCodeRepository = jobCodeRepository
         this.jobCodeEsRepo = jobCodeEsRepo
@@ -51,52 +51,68 @@ class BlsImport : CsvImport<BlsJobCode> {
         val major = rows.filter { it.socGroup == "Major" }
 
         log.info("Processing ${rows.size} rows...")
-        for (row in rows) transaction {
-            log.info("Importing ${row.socTitle} - ${row.code}")
-            val broadTitle = broad.find { it.code == row.broad() }?.socTitle
-            val minorTitle = minor.find { it.code == row.minor() }?.socTitle
-            val majorTitle = major.find { it.code == row.major() }?.socTitle
+        for (row in rows) {
+            transaction {
+                log.info("Importing ${row.socTitle} - ${row.code}")
+                val broadTitle = broad.find { it.code == row.broad() }?.socTitle
+                val minorTitle = minor.find { it.code == row.minor() }?.socTitle
+                val majorTitle = major.find { it.code == row.major() }?.socTitle
 
-            val existingOnetCodes = row.code?.let{jobCodeRepository.onetsByDetailCode(it).toList()} ?: listOf()
-            val jobCode = row.code?.let { jobCodeRepository.findByCodeOrCreate(it, JobCodeRepository.BLS_FRAMEWORK) }
+                val existingOnetCodes =
+                    row.code?.let { jobCodeRepository.onetsByDetailCode(it).toList() } ?: listOf()
+                val jobCode =
+                    row.code?.let {
+                        jobCodeRepository.findByCodeOrCreate(it, JobCodeRepository.BLS_FRAMEWORK)
+                    }
 
-            jobCode?.let {
-                it.name = row.socTitle
-                it.description = row.socDefinition
-                it.detailed = row.socTitle
-                broadTitle.let { broad -> it.broad = broad }
-                minorTitle.let { minor -> it.minor = minor }
-                majorTitle.let { major -> it.major = major }
-            }.also {
-                jobCode?.let { jobCodeEsRepo.save(it.toModel()) }
-                jobCode?.let {
-                    richSkillRepository.containingJobCode(it.code)
-                        .map { dao -> richSkillEsRepo.save(RichSkillDoc.fromDao(dao, appConfig)) }
-                }
-            }
+                jobCode
+                    ?.let {
+                        it.name = row.socTitle
+                        it.description = row.socDefinition
+                        it.detailed = row.socTitle
+                        broadTitle.let { broad -> it.broad = broad }
+                        minorTitle.let { minor -> it.minor = minor }
+                        majorTitle.let { major -> it.major = major }
+                    }.also {
+                        jobCode?.let { jobCodeEsRepo.save(it.toModel()) }
+                        jobCode?.let {
+                            richSkillRepository
+                                .containingJobCode(it.code)
+                                .map { dao ->
+                                    richSkillEsRepo.save(RichSkillDoc.fromDao(dao, appConfig))
+                                }
+                        }
+                    }
 
-            existingOnetCodes.map{
-                if (it.code.endsWith("00")){
-                    row.socTitle.let {name -> it.name = name}
-                    row.socDefinition.let{ description -> it.description = description}
-                    it.framework = JobCodeRepository.`O*NET_FRAMEWORK`
-                }
-                it.detailed = row.socTitle
-                broadTitle.let { broad -> it.broad = broad }
-                minorTitle.let { minor -> it.minor = minor }
-                majorTitle.let { major -> it.major = major }
-            }.also {
-                jobCode?.let { jobCodeEsRepo.save(it.toModel()) }
-                jobCode?.let {
-                    richSkillRepository.containingJobCode(it.code)
-                        .map { dao -> richSkillEsRepo.save(RichSkillDoc.fromDao(dao, appConfig)) }
-                }
+                existingOnetCodes
+                    .map {
+                        if (it.code.endsWith("00")) {
+                            row.socTitle.let { name -> it.name = name }
+                            row.socDefinition.let { description -> it.description = description }
+                            it.framework = JobCodeRepository.`O*NET_FRAMEWORK`
+                        }
+                        it.detailed = row.socTitle
+                        broadTitle.let { broad -> it.broad = broad }
+                        minorTitle.let { minor -> it.minor = minor }
+                        majorTitle.let { major -> it.major = major }
+                    }.also {
+                        jobCode?.let { jobCodeEsRepo.save(it.toModel()) }
+                        jobCode?.let {
+                            richSkillRepository
+                                .containingJobCode(it.code)
+                                .map { dao ->
+                                    richSkillEsRepo.save(RichSkillDoc.fromDao(dao, appConfig))
+                                }
+                        }
+                    }
             }
         }
     }
 }
 
-class BlsJobCode : CsvRow, HasCodeHierarchy {
+class BlsJobCode :
+    CsvRow,
+    HasCodeHierarchy {
     @CsvBindByName(column = "SOC Group")
     var socGroup: String? = null
 

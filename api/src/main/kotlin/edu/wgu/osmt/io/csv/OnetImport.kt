@@ -44,38 +44,54 @@ class OnetImport : CsvImport<OnetJobCode> {
 
     override fun handleRows(rows: List<OnetJobCode>) {
         log.info("Processing ${rows.size} rows...")
-        for (row in rows) transaction {
-            log.info("Importing ${row.title} - ${row.code}")
-            val jobCode =
-                row.code?.let { jobCodeRepository.findByCodeOrCreate(it, JobCodeRepository.`O*NET_FRAMEWORK`) }
+        for (row in rows) {
+            transaction {
+                log.info("Importing ${row.title} - ${row.code}")
+                val jobCode =
+                    row.code?.let {
+                        jobCodeRepository.findByCodeOrCreate(
+                            it,
+                            JobCodeRepository.`O*NET_FRAMEWORK`,
+                        )
+                    }
 
-            val detailed = row.detailed()?.let { jobCodeRepository.findBlsCode(it) }
+                val detailed = row.detailed()?.let { jobCodeRepository.findBlsCode(it) }
 
-            // Optimization, only fetch these if detailed failed
-            val broad = detailed?.broad ?: row.broad()?.let { jobCodeRepository.findBlsCode(it) }?.broad
-            val major = detailed?.major ?: row.major()?.let { jobCodeRepository.findBlsCode(it) }?.major
-            val minor = detailed?.minor ?: row.minor()?.let { jobCodeRepository.findBlsCode(it) }?.minor
+                // Optimization, only fetch these if detailed failed
+                val broad =
+                    detailed?.broad ?: row.broad()?.let { jobCodeRepository.findBlsCode(it) }?.broad
+                val major =
+                    detailed?.major ?: row.major()?.let { jobCodeRepository.findBlsCode(it) }?.major
+                val minor =
+                    detailed?.minor ?: row.minor()?.let { jobCodeRepository.findBlsCode(it) }?.minor
 
-            jobCode?.let {
-                it.name = row.title
-                it.description = row.description
-                it.detailed = detailed?.name
-                it.broad = broad
-                it.minor = minor
-                it.major = major
-                it.framework = JobCodeRepository.`O*NET_FRAMEWORK`
-            }.also {
-                jobCode?.let { jobCodeEsRepo.save(it.toModel()) }
-                jobCode?.let {
-                    richSkillRepository.containingJobCode(it.code)
-                        .map { dao -> richSkillEsRepo.save(RichSkillDoc.fromDao(dao, appConfig)) }
-                }
+                jobCode
+                    ?.let {
+                        it.name = row.title
+                        it.description = row.description
+                        it.detailed = detailed?.name
+                        it.broad = broad
+                        it.minor = minor
+                        it.major = major
+                        it.framework = JobCodeRepository.`O*NET_FRAMEWORK`
+                    }.also {
+                        jobCode?.let { jobCodeEsRepo.save(it.toModel()) }
+                        jobCode?.let {
+                            richSkillRepository
+                                .containingJobCode(it.code)
+                                .map { dao ->
+                                    richSkillEsRepo.save(RichSkillDoc.fromDao(dao, appConfig))
+                                }
+                        }
+                    }
             }
         }
     }
 }
 
-class OnetJobCode : CsvRow, HasCodeHierarchy {
+class OnetJobCode :
+    CsvRow,
+    HasCodeHierarchy {
     @CsvBindByName(column = "O*NET-SOC Code")
     override var code: String? = null
 

@@ -19,48 +19,76 @@ interface FindsAllByPublishStatus<T> {
     val elasticSearchTemplate: ElasticsearchTemplate
     val javaClass: Class<T>
 
-    fun findAllFilteredByPublishStatus(publishStatus: Set<PublishStatus>, pageable: Pageable): SearchHits<T> {
+    fun findAllFilteredByPublishStatus(
+        publishStatus: Set<PublishStatus>,
+        pageable: Pageable,
+    ): SearchHits<T> {
         val nativeQuery = createMatchAllRichSkillNativeQuery(pageable, publishStatus)
         return elasticSearchTemplate.search(nativeQuery, javaClass)
     }
 
-    fun countAllFilteredByPublishStatus(publishStatus: Set<PublishStatus>, pageable: Pageable): Long {
+    fun countAllFilteredByPublishStatus(
+        publishStatus: Set<PublishStatus>,
+        pageable: Pageable,
+    ): Long {
         val nativeQuery = createMatchAllRichSkillNativeQuery(pageable, publishStatus)
         return elasticSearchTemplate.count(nativeQuery, javaClass)
     }
 
-    fun createMatchAllRichSkillNativeQuery(pageable: Pageable, publishStatus: Set<PublishStatus>): NativeQuery {
+    fun createMatchAllRichSkillNativeQuery(
+        pageable: Pageable,
+        publishStatus: Set<PublishStatus>,
+    ): NativeQuery {
         val MATCH_ALL = matchAll().build()._toQuery()
-        var filterValues = publishStatus
-                            .stream()
-                            .map { ps -> ps.name}
-                            .collect(Collectors.toList())
-        var filter = createTermsDslQuery( RichSkillDoc::publishStatus.name, filterValues, false)
+        var filterValues =
+            publishStatus
+                .stream()
+                .map { ps -> ps.name }
+                .collect(Collectors.toList())
+        var filter = createTermsDslQuery(RichSkillDoc::publishStatus.name, filterValues, false)
 
         return createNativeQuery(pageable, filter, MATCH_ALL)
     }
 
-    fun getCollectionUuidsFromComplexName(pageable: Pageable, dslFilter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, collectionName: String, msgPrefix: String, log: Logger) : List<String> {
+    fun getCollectionUuidsFromComplexName(
+        pageable: Pageable,
+        dslFilter: co.elastic.clients.elasticsearch._types.query_dsl.Query?,
+        collectionName: String,
+        msgPrefix: String,
+        log: Logger,
+    ): List<String> {
         var dslQuery = createSimpleQueryDslQuery("${CollectionDoc::name.name}.raw", collectionName)
         var nativeQuery = createNativeQuery(pageable, dslFilter, dslQuery, msgPrefix, log)
 
         return elasticSearchTemplate
-                            .search( nativeQuery, CollectionDoc::class.java )
-                            .searchHits
-                            .map { it.content.uuid }
+            .search(nativeQuery, CollectionDoc::class.java)
+            .searchHits
+            .map { it.content.uuid }
     }
 
-    fun getCollectionUuidsFromName(pageable: Pageable, dslFilter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, collectionName: String, msgPrefix: String, log: Logger) : List<String> {
+    fun getCollectionUuidsFromName(
+        pageable: Pageable,
+        dslFilter: co.elastic.clients.elasticsearch._types.query_dsl.Query?,
+        collectionName: String,
+        msgPrefix: String,
+        log: Logger,
+    ): List<String> {
         var dslQuery = createMatchPhrasePrefixDslQuery(CollectionDoc::name.name, collectionName)
         var nativeQuery = createNativeQuery(pageable, dslFilter, dslQuery, msgPrefix, log)
 
         return elasticSearchTemplate
-                            .search( nativeQuery, CollectionDoc::class.java )
-                            .searchHits
-                            .map { it.content.uuid }
+            .search(nativeQuery, CollectionDoc::class.java)
+            .searchHits
+            .map { it.content.uuid }
     }
 
-    fun getCollectionFromUuids(pageable: Pageable, dslFilter: co.elastic.clients.elasticsearch._types.query_dsl.Query?, uuids: List<String>, msgPrefix: String, log: Logger ): SearchHits<CollectionDoc> {
+    fun getCollectionFromUuids(
+        pageable: Pageable,
+        dslFilter: co.elastic.clients.elasticsearch._types.query_dsl.Query?,
+        uuids: List<String>,
+        msgPrefix: String,
+        log: Logger,
+    ): SearchHits<CollectionDoc> {
         var dslQuery = createTermsDslQuery("_id", uuids)
         var nativeQuery = createNativeQuery(pageable, dslFilter, dslQuery, msgPrefix, log)
 

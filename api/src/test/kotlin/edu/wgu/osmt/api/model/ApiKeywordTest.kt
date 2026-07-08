@@ -1,7 +1,6 @@
 package edu.wgu.osmt.api.model
 
 import edu.wgu.osmt.keyword.Keyword
-import edu.wgu.osmt.keyword.KeywordTypeEnum
 import edu.wgu.osmt.mockdata.MockData
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeAll
@@ -10,8 +9,7 @@ import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ApiKeywordTest {
-
-    private lateinit var mockData : MockData
+    private lateinit var mockData: MockData
 
     @BeforeAll
     fun setup() {

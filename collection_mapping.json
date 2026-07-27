@@ -1,0 +1,62 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "english_stemmer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "stemmer"]
+        },
+        "whitespace_exact": {
+          "type": "custom",
+          "tokenizer": "whitespace",
+          "filter": ["lowercase"]
+        }
+      },
+      "normalizer": {
+        "lowercase_normalizer": {
+          "type": "custom",
+          "char_filter": [],
+          "filter": ["lowercase"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "uuid": {"type": "keyword"},
+      "name": {
+        "type": "text",
+        "analyzer": "english_stemmer",
+        "fields": {
+          "raw": {"type": "text", "analyzer": "whitespace_exact"},
+          "keyword": {"type": "keyword"},
+          "sort_insensitive": {"type": "keyword", "normalizer": "lowercase_normalizer"}
+        }
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "english_stemmer",
+        "fields": {
+          "raw": {"type": "text", "analyzer": "whitespace_exact"},
+          "keyword": {"type": "keyword"},
+          "sort_insensitive": {"type": "keyword", "normalizer": "lowercase_normalizer"}
+        }
+      },
+      "publishStatus": {"type": "keyword"},
+      "skillIds": {"type": "keyword"},
+      "skillCount": {"type": "integer"},
+      "author": {
+        "type": "text",
+        "analyzer": "english_stemmer",
+        "fields": {
+          "raw": {"type": "text", "analyzer": "whitespace_exact"},
+          "keyword": {"type": "keyword"}
+        }
+      },
+      "archiveDate": {"type": "date", "format": "date_hour_minute_second"},
+      "publishDate": {"type": "date", "format": "date_hour_minute_second"},
+      "workspaceOwner": {"type": "text"}
+    }
+  }
+}

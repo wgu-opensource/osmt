@@ -1,6 +1,1 @@
-USE
-osmt_db;
-
-ALTER TABLE `JobCode`
-DROP
-COLUMN `updateDate`;
+ALTER TABLE "JobCode" DROP COLUMN IF EXISTS "updateDate";

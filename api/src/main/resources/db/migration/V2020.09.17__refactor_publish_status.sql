@@ -1,18 +1,12 @@
-USE
-osmt_db;
+ALTER TABLE "RichSkillDescriptor"
+    DROP CONSTRAINT IF EXISTS "fk_RichSkillDescriptor_publish_status_id_id",
+    ADD COLUMN "archiveDate" TIMESTAMP(6) NULL,
+    ADD COLUMN "publishDate" TIMESTAMP(6) NULL;
 
-ALTER TABLE `RichSkillDescriptor`
-DROP
-FOREIGN KEY `fk_RichSkillDescriptor_publish_status_id_id`,
-ADD COLUMN `archiveDate` datetime(6) null,
-ADD COLUMN `publishDate` datetime(6) null;
+DROP TABLE IF EXISTS "PublishStatus";
 
-DROP TABLE IF EXISTS `PublishStatus`;
+ALTER TABLE "RichSkillDescriptor" DROP COLUMN IF EXISTS publish_status_id;
 
-ALTER TABLE `RichSkillDescriptor` DROP COLUMN publish_status_id;
-
-ALTER TABLE `Collection`
-    ADD COLUMN `archiveDate` datetime(6) null,
-ADD COLUMN `publishDate` datetime(6) null;
-
-
+ALTER TABLE "Collection"
+    ADD COLUMN "archiveDate" TIMESTAMP(6) NULL,
+    ADD COLUMN "publishDate" TIMESTAMP(6) NULL;

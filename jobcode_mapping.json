@@ -1,0 +1,94 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "english_stemmer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "stemmer"]
+        },
+        "whitespace_exact": {
+          "type": "custom",
+          "tokenizer": "whitespace",
+          "filter": ["lowercase"]
+        }
+      },
+      "normalizer": {
+        "lowercase_normalizer": {
+          "type": "custom",
+          "char_filter": [],
+          "filter": ["lowercase"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "major": {
+        "type": "text",
+        "analyzer": "english_stemmer",
+        "fields": {
+          "raw": {"type": "text", "analyzer": "whitespace_exact"},
+          "keyword": {"type": "keyword"}
+        }
+      },
+      "minor": {
+        "type": "text",
+        "analyzer": "english_stemmer",
+        "fields": {
+          "raw": {"type": "text", "analyzer": "whitespace_exact"},
+          "keyword": {"type": "keyword"}
+        }
+      },
+      "broad": {
+        "type": "text",
+        "analyzer": "english_stemmer",
+        "fields": {
+          "raw": {"type": "text", "analyzer": "whitespace_exact"},
+          "keyword": {"type": "keyword"}
+        }
+      },
+      "detailed": {
+        "type": "text",
+        "analyzer": "english_stemmer",
+        "fields": {
+          "raw": {"type": "text", "analyzer": "whitespace_exact"},
+          "keyword": {"type": "keyword"}
+        }
+      },
+      "code": {
+        "type": "text",
+        "analyzer": "english_stemmer",
+        "fields": {
+          "raw": {"type": "text", "analyzer": "whitespace_exact"},
+          "keyword": {"type": "keyword"}
+        }
+      },
+      "name": {
+        "type": "text",
+        "analyzer": "english_stemmer",
+        "fields": {
+          "raw": {"type": "text", "analyzer": "whitespace_exact"},
+          "keyword": {"type": "keyword"}
+        }
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "english_stemmer",
+        "fields": {
+          "raw": {"type": "text", "analyzer": "whitespace_exact"},
+          "keyword": {"type": "keyword"}
+        }
+      },
+      "framework": {
+        "type": "text",
+        "analyzer": "english_stemmer",
+        "fields": {
+          "raw": {"type": "text", "analyzer": "whitespace_exact"},
+          "keyword": {"type": "keyword"}
+        }
+      },
+      "creationDate": {"type": "date", "format": "date_hour_minute_second"}
+    }
+  }
+}

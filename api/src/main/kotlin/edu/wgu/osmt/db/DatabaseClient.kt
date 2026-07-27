@@ -9,21 +9,17 @@ import org.springframework.context.annotation.Primary
 import javax.sql.DataSource
 
 @Configuration
-class DatabaseClient
-    @Autowired
-    constructor(
-        val dbConfig: DbConfig,
-    ) {
-        @Bean
-        fun db(): Database =
-            Database.connect(
-                url = dbConfig.composedUrl,
-                driver = "com.mysql.cj.jdbc.Driver",
-                user = "",
-                password = "",
-            )
+class DatabaseClient @Autowired constructor(val dbConfig: DbConfig) {
 
-        @Bean
-        @Primary
-        fun transactionManager(dataSource: DataSource): SpringTransactionManager = SpringTransactionManager(dataSource)
+    @Bean
+    fun db(): Database = Database.connect(
+        url = dbConfig.composedUrl,
+        driver = "org.postgresql.Driver", user = "", password = ""
+    )
+
+    @Bean
+    @Primary
+    fun transactionManager(dataSource: DataSource): SpringTransactionManager {
+        return SpringTransactionManager(dataSource)
     }
+}

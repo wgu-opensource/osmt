@@ -1,6 +1,1 @@
-USE
-osmt_db;
-
-ALTER TABLE `Keyword`
-    ADD COLUMN `framework` varchar(768)
-;
+ALTER TABLE "Keyword" ADD COLUMN IF NOT EXISTS framework VARCHAR(768);

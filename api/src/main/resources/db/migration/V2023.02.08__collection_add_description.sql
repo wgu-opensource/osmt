@@ -1,6 +1,1 @@
-USE
-osmt_db;
-
-ALTER TABLE `Collection`
-    ADD COLUMN `description` text
-;
+ALTER TABLE "Collection" ADD COLUMN IF NOT EXISTS description TEXT;

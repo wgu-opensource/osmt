@@ -77,6 +77,15 @@ class AppConfig(
     val publicInstanceUrl: String,
     @Value("\${app.authoringWelcomeMessage:}")
     val authoringWelcomeMessage: String,
+    // Generic OIDC provider (oidc registration) button branding. Kept at the end
+    // with defaults so positional test constructors stay valid; Spring injects
+    // these via @Value regardless of the Kotlin defaults.
+    @Value("\${app.oauth2.oidc.providerName:Single sign-on}")
+    val oidcProviderName: String = "Single sign-on",
+    @Value("\${app.oauth2.oidc.iconUrl:}")
+    val oidcIconUrl: String = "",
+    @Value("\${app.oauth2.oidc.iconSlug:}")
+    val oidcIconSlug: String = "",
 ) {
     @Autowired
     lateinit var environment: Environment

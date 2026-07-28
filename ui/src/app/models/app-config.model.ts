@@ -2,6 +2,10 @@ export interface AuthProvider {
   id: string;
   name: string;
   authorizationUrl: string;
+  // Optional button icon for the generic oidc provider: an image URL or a slug
+  // from the bundled simple-icons allowlist. Absent for okta/google.
+  iconUrl?: string;
+  iconSlug?: string;
 }
 
 export interface IAppConfig {

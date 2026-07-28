@@ -65,4 +65,63 @@ describe('LoginComponent', () => {
     const el: HTMLElement = fixture.nativeElement;
     expect(el.textContent).toContain('Sign In');
   });
+
+  describe('getIcon', () => {
+    let component: LoginComponent;
+
+    beforeEach(() => {
+      component = fixture.componentInstance;
+    });
+
+    it('renders no icon for the generic oidc provider with no icon config', () => {
+      const icon = component.getIcon({
+        id: 'oidc',
+        name: 'University SSO',
+        authorizationUrl: 'https://example.com/oauth',
+      });
+      expect(icon).toBeNull();
+    });
+
+    it('uses an image URL when iconUrl is set on the oidc provider', () => {
+      const icon = component.getIcon({
+        id: 'oidc',
+        name: 'University SSO',
+        authorizationUrl: 'https://example.com/oauth',
+        iconUrl: 'https://cdn.example.edu/sso.svg',
+      });
+      expect(icon).toEqual({
+        kind: 'url',
+        url: 'https://cdn.example.edu/sso.svg',
+      });
+    });
+
+    it('resolves an allowlisted iconSlug to an svg mark', () => {
+      const icon = component.getIcon({
+        id: 'oidc',
+        name: 'University SSO',
+        authorizationUrl: 'https://example.com/oauth',
+        iconSlug: 'openid',
+      });
+      expect(icon?.kind).toBe('svg');
+    });
+
+    it('renders no icon for an unknown iconSlug on the oidc provider', () => {
+      const icon = component.getIcon({
+        id: 'oidc',
+        name: 'University SSO',
+        authorizationUrl: 'https://example.com/oauth',
+        iconSlug: 'pingfederate',
+      });
+      expect(icon).toBeNull();
+    });
+
+    it('keeps the built-in mark for google via id fallback', () => {
+      const icon = component.getIcon({
+        id: 'google',
+        name: 'Google',
+        authorizationUrl: 'https://example.com/oauth',
+      });
+      expect(icon?.kind).toBe('svg');
+    });
+  });
 });

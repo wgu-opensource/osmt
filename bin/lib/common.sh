@@ -204,14 +204,21 @@ detect_security_profile() {
     return 0
   fi
 
-  # Priority 2: Check for OAuth credentials (Okta or Google)
+  # Priority 2: Check for OAuth credentials (Okta, Google, or generic OIDC)
+  # IMPORTANT: This logic MUST be kept in sync with the inline detection in
+  # api/docker/bin/docker_entrypoint.sh
   if [[ -n "${OAUTH_ISSUER:-}" ]] && [[ -n "${OAUTH_CLIENTID:-}" ]] &&
-    [[ -n "${OAUTH_CLIENTSECRET:-}" ]] && [[ -n "${OAUTH_AUDIENCE:-}" ]]; then
+    [[ -n "${OAUTH_CLIENTSECRET:-}" ]]; then
     echo "oauth2"
     return 0
   fi
   if [[ -n "${OAUTH_GOOGLE_CLIENT_ID:-}" ]] &&
     [[ -n "${OAUTH_GOOGLE_CLIENT_SECRET:-}" ]]; then
+    echo "oauth2"
+    return 0
+  fi
+  if [[ -n "${OAUTH_OIDC_ISSUER:-}" ]] && [[ -n "${OAUTH_OIDC_CLIENTID:-}" ]] &&
+    [[ -n "${OAUTH_OIDC_CLIENTSECRET:-}" ]]; then
     echo "oauth2"
     return 0
   fi

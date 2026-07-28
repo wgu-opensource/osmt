@@ -82,12 +82,16 @@ class UiController {
         }
         val providers = authConfigProvider?.getOAuthProviders() ?: emptyList()
         dynamicConfig["authProviders"] =
-            providers.map {
-                mapOf(
-                    "id" to it.id,
-                    "name" to it.name,
-                    "authorizationUrl" to it.authorizationUrl,
-                )
+            providers.map { provider ->
+                buildMap<String, Any> {
+                    put("id", provider.id)
+                    put("name", provider.name)
+                    put("authorizationUrl", provider.authorizationUrl)
+                    // Icon fields are present only for the generic oidc provider when
+                    // configured; omitted (not null) otherwise, matching loginUrl above.
+                    provider.iconUrl?.takeIf { it.isNotBlank() }?.let { put("iconUrl", it) }
+                    provider.iconSlug?.takeIf { it.isNotBlank() }?.let { put("iconSlug", it) }
+                }
             }
         return dynamicConfig
     }

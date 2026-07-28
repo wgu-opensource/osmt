@@ -10,9 +10,11 @@ declare ELASTICSEARCH_URI="${ELASTICSEARCH_URI:-}"
 declare OAUTH_ISSUER="${OAUTH_ISSUER:-}"
 declare OAUTH_CLIENTID="${OAUTH_CLIENTID:-}"
 declare OAUTH_CLIENTSECRET="${OAUTH_CLIENTSECRET:-}"
-declare OAUTH_AUDIENCE="${OAUTH_AUDIENCE:-}"
 declare OAUTH_GOOGLE_CLIENT_ID="${OAUTH_GOOGLE_CLIENT_ID:-}"
 declare OAUTH_GOOGLE_CLIENT_SECRET="${OAUTH_GOOGLE_CLIENT_SECRET:-}"
+declare OAUTH_OIDC_ISSUER="${OAUTH_OIDC_ISSUER:-}"
+declare OAUTH_OIDC_CLIENTID="${OAUTH_OIDC_CLIENTID:-}"
+declare OAUTH_OIDC_CLIENTSECRET="${OAUTH_OIDC_CLIENTSECRET:-}"
 declare MIGRATIONS_ENABLED="${MIGRATIONS_ENABLED:-}"
 declare SKIP_METADATA_IMPORT="${SKIP_METADATA_IMPORT:-}"
 declare REINDEX_ELASTICSEARCH="${REINDEX_ELASTICSEARCH:-}"
@@ -69,7 +71,7 @@ function validate() {
   # IMPORTANT: This logic MUST be kept in sync with detect_security_profile() in bin/lib/common.sh
   local -i has_oauth_okta=0
   if [[ -n "${OAUTH_ISSUER:-}" ]] && [[ -n "${OAUTH_CLIENTID:-}" ]] &&
-    [[ -n "${OAUTH_CLIENTSECRET:-}" ]] && [[ -n "${OAUTH_AUDIENCE:-}" ]]; then
+    [[ -n "${OAUTH_CLIENTSECRET:-}" ]]; then
     has_oauth_okta=1
   fi
   local -i has_oauth_google=0
@@ -77,11 +79,18 @@ function validate() {
     [[ -n "${OAUTH_GOOGLE_CLIENT_SECRET:-}" ]]; then
     has_oauth_google=1
   fi
+  # Generic OIDC provider (PingFederate, Entra, any OIDC IdP) - own OAUTH_OIDC_* vars
+  local -i has_oauth_oidc=0
+  if [[ -n "${OAUTH_OIDC_ISSUER:-}" ]] && [[ -n "${OAUTH_OIDC_CLIENTID:-}" ]] &&
+    [[ -n "${OAUTH_OIDC_CLIENTSECRET:-}" ]]; then
+    has_oauth_oidc=1
+  fi
 
-  echo_debug "OAuth check: has_oauth_okta=${has_oauth_okta}, has_oauth_google=${has_oauth_google}"
+  echo_debug "OAuth check: has_oauth_okta=${has_oauth_okta}, has_oauth_google=${has_oauth_google}, has_oauth_oidc=${has_oauth_oidc}"
   echo_debug "ENVIRONMENT before OAuth logic: '${ENVIRONMENT}'"
 
-  if [[ ${has_oauth_okta} -eq 1 ]] || [[ ${has_oauth_google} -eq 1 ]]; then
+  if [[ ${has_oauth_okta} -eq 1 ]] || [[ ${has_oauth_google} -eq 1 ]] ||
+    [[ ${has_oauth_oidc} -eq 1 ]]; then
     echo_info "OAuth credentials provided - will use oauth2 profile"
     if [[ "${ENVIRONMENT}" != *"oauth2"* ]]; then
       ENVIRONMENT="${ENVIRONMENT},oauth2"
@@ -89,7 +98,8 @@ function validate() {
     fi
   fi
   # Add single-auth when no OAuth, or when ENABLE_SINGLE_AUTH=true (staging)
-  if [[ ${has_oauth_okta} -eq 0 ]] && [[ ${has_oauth_google} -eq 0 ]]; then
+  if [[ ${has_oauth_okta} -eq 0 ]] && [[ ${has_oauth_google} -eq 0 ]] &&
+    [[ ${has_oauth_oidc} -eq 0 ]]; then
     echo_info "OAuth credentials not provided - will use single-auth profile"
     if [[ "${ENVIRONMENT}" != *"single-auth"* ]]; then
       ENVIRONMENT="${ENVIRONMENT},single-auth"

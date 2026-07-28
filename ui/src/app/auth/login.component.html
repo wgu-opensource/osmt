@@ -43,9 +43,21 @@
                 >
                   <span
                     class="oauth-provider-button-x-icon"
-                    *ngIf="getIcon(provider.id) as icon"
+                    *ngIf="getIcon(provider) as icon"
                   >
-                    <svg class="t-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <img
+                      *ngIf="icon.kind === 'url'"
+                      class="t-icon"
+                      [attr.src]="icon.url"
+                      alt=""
+                      aria-hidden="true"
+                    />
+                    <svg
+                      *ngIf="icon.kind === 'svg'"
+                      class="t-icon"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
                       <path [attr.d]="icon.path" [attr.fill]="'#' + icon.hex" />
                     </svg>
                   </span>
